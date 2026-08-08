@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 63,
+  "registry_version": 64,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -778,6 +778,33 @@
       "status": "trusted"
     },
     {
+      "id": "counter.producer.optional_self_entry",
+      "version": 1,
+      "official_rules": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one ordinary optional fixed self-entry counter ability as an affected-object replacement inside the canonical zone-change and counter-placement tree.",
+        "inputs": ["one source-spanned ordinary Unleash keyword instance", "same physical card proposing battlefield entry", "prospective battlefield controller", "fixed +1/+1 counter amount", "complete represented zone and counter replacement set"],
+        "outputs": ["one independent optional affected-object entry replacement per keyword instance", "seat-scoped affected-controller apply-or-decline choice", "nested replacement-aware counter placement", "canonical replacement journal", "exact replay"],
+        "exclusions": ["variable or nonpositive amounts", "optional entry results other than a fixed named counter", "Riot and choices with a noncounter alternative", "granted or copied Unleash outside trusted typed ability fragments", "unrepresented zone or counter replacement families"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.unleash.unleash_entry_handler_descriptor", "quorune.compiler.keyword_nodes.unleash_keyword_nodes", "quorune.semantic_runtime.self_entry_counters.SelfEntryCounterHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.semantic_runtime.zone_replacements.commit_counter_events_from_resolution"],
+      "positive_tests": ["test_ordinary_unleash_lowers_to_two_source_spanned_typed_programs", "test_apply_or_decline_optional_entry_counter"],
+      "negative_tests": ["test_unleash_models_and_descriptors_reject_malformed_values", "test_unsupported_unleash_wording_remains_material_residual"],
+      "interaction_tests": ["test_unleash_counter_uses_canonical_quantity_replacement_order"],
+      "multiplayer_tests": ["test_unleash_choice_is_destination_controller_scoped_and_replays"],
+      "privacy_tests": ["test_unleash_choice_is_destination_controller_scoped_and_replays"],
+      "replay_tests": ["test_unleash_choice_is_destination_controller_scoped_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The generated optional entry-counter program cannot become trusted when canonical counter-quantity replacement is blocked.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_unleash_entry_runtime_mutation_is_killed removes the self-entry replacement effect and the accepted apply choice no longer produces its required counter.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "counter.producer.persist",
       "version": 1,
       "official_rules": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.79", "702.79a"],
@@ -1395,6 +1422,33 @@
       "dependency_fail_closed_rationale": "The bounded basic-type query consumes canonical current keyword and land characteristic snapshots and has no capability dependency; unsupported landwalk variants fail closed.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_basic_landwalk_keyword_mapping_mutant_is_killed removes the Swampwalk mapping and the canonical matching-land rejection assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "combat.block.self_counter_prohibition",
+      "version": 1,
+      "official_rules": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Prohibit an ordinary current creature from blocking while that same permanent has at least one counter of the typed named kind.",
+        "inputs": ["one source-spanned ordinary Unleash keyword instance", "current blocker physical identity", "immutable current counter snapshot", "complete proposed blocker-attacker pair"],
+        "outputs": ["counter-bearing source prohibited from blocking", "source without the counter left to remaining restrictions", "same verdict for advertised and accepted block legality", "transactional rejection before combat mutation"],
+        "exclusions": ["counter-conditional restrictions on another object", "negative or variable thresholds", "nonblocking declaration restrictions", "granted or copied Unleash outside trusted typed ability fragments", "unrepresented continuous, copy, face-down, and ability-changing producers"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.unleash.unleash_block_handler_descriptor", "quorune.semantic_runtime.block_restrictions.SelfCounterBlockRestrictionHandler", "quorune.semantic_runtime.block_restrictions.current_self_block_prohibitions", "quorune.combat_evasion_engine_adapter.engine_combat_evasion_verdict", "CommanderEngine._can_block"],
+      "positive_tests": ["test_unleash_counter_prohibition_tracks_current_counter_state"],
+      "negative_tests": ["test_unleash_models_and_descriptors_reject_malformed_values"],
+      "interaction_tests": ["test_unleash_counter_uses_canonical_quantity_replacement_order"],
+      "multiplayer_tests": ["test_unleash_block_offer_and_command_share_legality_and_rollback"],
+      "privacy_tests": ["test_unleash_block_offer_and_command_share_legality_and_rollback"],
+      "replay_tests": ["test_unleash_choice_is_destination_controller_scoped_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded restriction consumes only a current immutable public counter snapshot and has no optional capability dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_unleash_block_runtime_mutation_is_killed removes typed prohibition lowering and the counter-bearing source is incorrectly allowed to block.",
       "blockers": [],
       "status": "trusted"
     },

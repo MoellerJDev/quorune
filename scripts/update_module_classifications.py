@@ -62,6 +62,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/prevention_triggers.py",
         "quorune/replacement/immutable.py",
         "quorune/trigger_batches.py",
+        "quorune/unleash.py",
     }:
         return "domain"
     if relative in {
@@ -241,6 +242,8 @@ def _owner(relative: str, layer: str) -> str:
         return "cast_timing"
     if relative == "quorune/enchant_spec.py":
         return "aura_rules"
+    if relative == "quorune/unleash.py":
+        return "keyword_abilities"
     if relative == "quorune/protection.py":
         return "protection"
     if relative.startswith("quorune/drawing/"):

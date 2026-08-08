@@ -160,6 +160,9 @@ def _generated_ability_id(
             return f"{base}:{parts[-2]}:{parts[-1]}"
         return base
     if static_declaration:
+        suffix = str(node_id or "").rsplit(":", 1)[-1]
+        if suffix in {"unleash-entry", "unleash-block"}:
+            return f"static:{face_id}:n{line}:{suffix}"
         if str(node_id or "").endswith(":flash"):
             return f"static:{face_id}:n{line}:flash"
         return f"static:{face_id}:n{line}"

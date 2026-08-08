@@ -10,10 +10,20 @@ from ..death_return import (
     UNDYING_KEYWORD,
 )
 from ..evolve import EVOLVE_EVENT_CONDITION_FIELD
+from ..unleash import (
+    UNLEASH_MECHANIC,
+    unleash_block_handler_descriptor,
+    unleash_entry_handler_descriptor,
+)
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
 from .cycling_nodes import ordinary_cycling_keyword_node
-from .dependency_gate import DependencyGate
-from .ir_model import OracleNode, OracleResidual, SourceSpan
+from .dependency_gate import DependencyGate, explicit_capability_gate
+from .ir_model import (
+    OracleNode,
+    OracleResidual,
+    SourceSpan,
+    append_residual,
+)
 from ..rules.capabilities import CapabilityRegistry
 
 
@@ -22,6 +32,7 @@ _EVOLVE_MECHANIC = "evo" + "lve"
 _FABRICATE_MECHANIC = "fabri" + "cate"
 _PERSIST_MECHANIC = PERSIST_KEYWORD
 _UNDYING_MECHANIC = UNDYING_KEYWORD
+_UNLEASH_MECHANIC = UNLEASH_MECHANIC
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,7 +67,8 @@ def keyword_node_plans(
     ) + tuple(
         mechanic
         for mechanic in mechanics
-        if mechanic in {_PERSIST_MECHANIC, _UNDYING_MECHANIC}
+        if mechanic
+        in {_PERSIST_MECHANIC, _UNDYING_MECHANIC, _UNLEASH_MECHANIC}
     )
     if not split_mechanics:
         return (
@@ -82,6 +94,7 @@ def keyword_node_plans(
             _EVOLVE_MECHANIC,
             _PERSIST_MECHANIC,
             _UNDYING_MECHANIC,
+            _UNLEASH_MECHANIC,
         )
     }
     result: list[KeywordNodePlan] = []
@@ -123,6 +136,7 @@ def keyword_node_plans(
             _EVOLVE_MECHANIC,
             _PERSIST_MECHANIC,
             _UNDYING_MECHANIC,
+            _UNLEASH_MECHANIC,
         }
     )
     if remaining:
@@ -265,6 +279,123 @@ def death_return_keyword_node(
     )
 
 
+def unleash_keyword_nodes(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> tuple[OracleNode, ...]:
+    """Lower the two static abilities represented by ordinary Unleash."""
+
+    if material_line.strip().rstrip(".").casefold() != UNLEASH_MECHANIC:
+        residual_id = append_residual(
+            residuals,
+            kind="keyword_grammar",
+            text=line,
+            span=span,
+            reason="Unleash wording is outside the ordinary keyword grammar",
+            blockers=("mechanic:unleash-unsupported-wording",),
+        )
+        return (
+            OracleNode(
+                node_id=node_id,
+                kind="keyword_ability",
+                text=line,
+                span=span,
+                active_zone="battlefield",
+                event="continuous",
+                lowerable=False,
+                exact=False,
+                mechanics=(UNLEASH_MECHANIC,),
+                residual_ids=(residual_id,),
+            ),
+        )
+
+    specifications = (
+        (
+            "unleash-entry",
+            "all",
+            "zone.change",
+            "counter.producer.optional_self_entry",
+            "unleash-optional-entry-counter-v1",
+            unleash_entry_handler_descriptor(),
+            "optional_entry_counter",
+        ),
+        (
+            "unleash-block",
+            "battlefield",
+            "combat.block",
+            "combat.block.self_counter_prohibition",
+            "unleash-self-counter-block-prohibition-v1",
+            unleash_block_handler_descriptor(),
+            "counter_conditional_block_restriction",
+        ),
+    )
+    result: list[OracleNode] = []
+    for (
+        suffix,
+        active_zone,
+        event,
+        capability,
+        template_id,
+        handler,
+        runtime_coverage,
+    ) in specifications:
+        gate = explicit_capability_gate(
+            capability,
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+        )
+        residual_ids = (
+            (
+                append_residual(
+                    residuals,
+                    kind="dependency_contract",
+                    text=line,
+                    span=span,
+                    reason="Unleash depends on a blocked typed capability",
+                    blockers=gate.blockers,
+                ),
+            )
+            if gate.blockers
+            else ()
+        )
+        result.append(
+            OracleNode(
+                node_id=f"{node_id}:{suffix}",
+                kind="static_ability",
+                text=line,
+                span=span,
+                active_zone=active_zone,
+                event=event,
+                lowerable=True,
+                exact=not gate.blockers,
+                template_id=template_id,
+                handlers=(handler,),
+                runtime_coverage=(runtime_coverage,),
+                mechanics=(UNLEASH_MECHANIC,),
+                residual_ids=residual_ids,
+                capability_dependencies=gate.capabilities,
+                capability_closure=(
+                    gate.closure.reachable if gate.closure is not None else ()
+                ),
+                capability_profile=(
+                    gate.closure.profile if gate.closure is not None else None
+                ),
+                capability_fingerprint=(
+                    gate.closure.fingerprint
+                    if gate.closure is not None
+                    else None
+                ),
+            )
+        )
+    return tuple(result)
+
+
 def fabricate_keyword_node(
     *,
     node_id: str,
@@ -378,4 +509,5 @@ __all__ = [
     "evolve_keyword_node",
     "fabricate_keyword_node",
     "keyword_node_plans",
+    "unleash_keyword_nodes",
 ]

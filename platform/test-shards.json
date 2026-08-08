@@ -196,7 +196,8 @@
       "test_targeted_destruction_effect_clauses",
       "test_targeted_exile_effect_clauses",
       "test_targeted_return_to_hand_effect_clauses",
-      "test_targeted_tap_state_effect_clauses"
+      "test_targeted_tap_state_effect_clauses",
+      "test_unleash_rules"
     ],
     "server-replay-privacy": [
       "test_application_protocol",

@@ -4,13 +4,13 @@
     "baseline_main_commit": "8fda2112510ef5bb8ee7211a8b7ef01d8d56b77b",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-08",
-    "phase": "closed_source_self_reference_compilation",
-    "scope_note": "The evaluated source tree includes the certified counter-placement foundation through attachment-relative placement. This branch adds one immutable CR 201.5c source-reference grammar shared by represented counter, damage, prevention, trigger, entry, activation-cost, and declaration producers. Accepted complete names and bounded leading forms lower to the ordinary physical source identity; arbitrary prefixes, suffixes, nicknames, and unsupported alternate-name behavior remain residual. The harvest uses CardProgram V2 and Oracle IR v55 without runtime Oracle parsing, direct GameState writes, or card-identity branches."
+    "phase": "harvested_unleash_entry_and_block_restriction",
+    "scope_note": "The evaluated source tree includes the typed counter-placement, replacement-aware entry, and combat block-legality foundations through Persist and Undying. This branch adds ordinary printed Unleash as two independent source-spanned CardProgram V2 abilities: an optional affected-object battlefield-entry counter replacement and a current-counter block prohibition. The entry choice reuses the immutable zone-change and nested counter-placement tree; advertised and accepted block declarations share one typed legality query. Riot, nonkeyword equivalents, and unrepresented granted, copied, lost, or face-down ability behavior remain explicit residuals. Oracle IR v59 adds no runtime Oracle parsing, direct GameState writes, or card-identity branches."
   },
   "ci": {
     "workflow": "PR",
-    "run_id": 31267011141,
-    "url": "https://github.com/MoellerJDev/quorune/actions/runs/31267011141",
+    "run_id": 31282459637,
+    "url": "https://github.com/MoellerJDev/quorune/actions/runs/31282459637",
     "status": "pass",
     "python_versions": [
       "3.12"
@@ -207,6 +207,7 @@
         "quorune/replacement_decisions.py",
         "quorune/semantic_runtime/token_replacements.py",
         "quorune/semantic_runtime/zone_replacements.py",
+        "quorune/semantic_runtime/self_entry_counters.py",
         "quorune/engine.py"
       ],
       "missing_dedicated_owner": false
@@ -246,9 +247,11 @@
       "owners": [
         "quorune/combat.py",
         "quorune/combat_constraints.py",
+        "quorune/combat_evasion_engine_adapter.py",
         "quorune/declaration_costs.py",
         "quorune/declaration_restrictions.py",
         "quorune/damage.py",
+        "quorune/semantic_runtime/block_restrictions.py",
         "quorune/engine.py"
       ],
       "missing_dedicated_owner": false
@@ -365,10 +368,10 @@
     },
     {
       "id": "capability_closure",
-      "current_status": "fine_grained_damage_slice_with_legacy_fallback",
+      "current_status": "fine_grained_profile_scoped_closure_with_fail_closed_dependencies",
       "evidence_symbols": [
         "CapabilityRegistry",
-        "_dependency_gate",
+        "explicit_capability_gate",
         "generated_programs"
       ]
     },

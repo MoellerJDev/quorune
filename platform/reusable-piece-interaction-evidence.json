@@ -626,6 +626,38 @@
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_permanent_target_set_effect"],
       "interaction_order": 2,
       "assertion": "One immutable APNAP-canonical target set suspends for permanent-counter quantity replacement and resumes the same batch with exact replay."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_ordinary_unleash_lowers_to_two_source_spanned_typed_programs",
+      "piece_ids": ["capability.counter.producer.optional_self_entry", "mechanic.unleash"],
+      "capability_ids": ["counter.producer.optional_self_entry"],
+      "interaction_order": 2,
+      "assertion": "One exact printed Unleash instance lowers its optional entry-counter half to a distinct capability-closed typed program."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_ordinary_unleash_lowers_to_two_source_spanned_typed_programs",
+      "piece_ids": ["capability.combat.block.self_counter_prohibition", "mechanic.unleash"],
+      "capability_ids": ["combat.block.self_counter_prohibition"],
+      "interaction_order": 2,
+      "assertion": "One exact printed Unleash instance lowers its counter-conditional block half to a distinct capability-closed typed program."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_unleash_counter_uses_canonical_quantity_replacement_order",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.optional_self_entry"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.optional_self_entry"],
+      "interaction_order": 2,
+      "assertion": "An accepted optional self-entry counter becomes a nested canonical counter event and consumes the represented quantity replacement before entry commits."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_unleash_counter_uses_canonical_quantity_replacement_order",
+      "piece_ids": ["capability.combat.block.self_counter_prohibition", "capability.counter.producer.optional_self_entry"],
+      "capability_ids": ["combat.block.self_counter_prohibition", "counter.producer.optional_self_entry"],
+      "interaction_order": 2,
+      "assertion": "The public counter state committed by the optional entry producer is consumed by the shared blocker-legality prohibition without a second Oracle interpreter."
     }
   ]
 }

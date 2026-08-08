@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.98 — Unleash",
+  "cases": [
+    {
+      "rule_id": "702.98",
+      "rule_text_sha256": "a8ffc6cae4d271ab18a89650f6e76b734832e7e015a092b6be068534fdf1b927",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/unleash.json"],
+      "executable_test_ids": ["tests.test_unleash_rules.UnleashCompilerAndModelTests.test_ordinary_unleash_lowers_to_two_source_spanned_typed_programs"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded ordinary printed family is split between optional self-entry counters and current self-counter block prohibition capabilities."]
+    },
+    {
+      "rule_id": "702.98a",
+      "rule_text_sha256": "6a97c4d0bf59ac139a903c7eaa7f31e20212c53de88af4780a7ce83c6336975e",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.keyword_nodes.unleash_keyword_nodes", "quorune.semantic_runtime.self_entry_counters.SelfEntryCounterHandler", "quorune.semantic_runtime.block_restrictions.SelfCounterBlockRestrictionHandler", "quorune.combat_evasion_engine_adapter.engine_combat_evasion_verdict"],
+      "executable_test_ids": ["tests.test_unleash_rules.UnleashRuntimeTests.test_apply_or_decline_optional_entry_counter", "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_counter_uses_canonical_quantity_replacement_order", "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_counter_prohibition_tracks_current_counter_state", "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_block_offer_and_command_share_legality_and_rollback", "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_choice_is_destination_controller_scoped_and_replays"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["granted, copied, lost, and face-down Unleash outside trusted typed ability propagation is not compiled", "Oracle-equivalent nonkeyword wording remains outside the closed grammar", "unrepresented zone and counter replacement families remain fail-closed"],
+      "notes": ["Each represented printed instance creates its own optional affected-object replacement and the shared block legality boundary reads the current public +1/+1 counter state for both offers and submitted commands."]
+    }
+  ]
+}

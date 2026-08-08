@@ -1114,6 +1114,70 @@
       "applicability_note": "Replay the accepted Reach block and exact combat relation."
     },
     {
+      "capability_id": "combat.block.self_counter_prohibition",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_counter_uses_canonical_quantity_replacement_order",
+      "official_rule_ids": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use the final replacement-modified current counter state when the entered permanent later participates in block legality."
+    },
+    {
+      "capability_id": "combat.block.self_counter_prohibition",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_block_offer_and_command_share_legality_and_rollback",
+      "official_rule_ids": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply the current counter prohibition only to the attacked seat's four-player blocker decision."
+    },
+    {
+      "capability_id": "combat.block.self_counter_prohibition",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_block_runtime_mutation_is_killed",
+      "official_rule_ids": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of typed self-counter block-prohibition lowering."
+    },
+    {
+      "capability_id": "combat.block.self_counter_prohibition",
+      "evidence_class": "negative",
+      "test_id": "tests.test_unleash_rules.UnleashCompilerAndModelTests.test_unleash_models_and_descriptors_reject_malformed_values",
+      "official_rule_ids": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject unknown descriptor fields, malformed identities, boolean amounts, and nonpositive thresholds."
+    },
+    {
+      "capability_id": "combat.block.self_counter_prohibition",
+      "evidence_class": "positive",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_counter_prohibition_tracks_current_counter_state",
+      "official_rule_ids": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prohibit blocking only while the same current permanent has the named +1/+1 counter."
+    },
+    {
+      "capability_id": "combat.block.self_counter_prohibition",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_block_offer_and_command_share_legality_and_rollback",
+      "official_rule_ids": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the constrained blocker task only to the attacked seat using public counter state."
+    },
+    {
+      "capability_id": "combat.block.self_counter_prohibition",
+      "evidence_class": "replay",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_choice_is_destination_controller_scoped_and_replays",
+      "official_rule_ids": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the chosen public counter state that determines subsequent typed block legality."
+    },
+    {
+      "capability_id": "combat.block.self_counter_prohibition",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_block_offer_and_command_share_legality_and_rollback",
+      "official_rule_ids": ["122.1", "509.1b", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject an injected prohibited block without changing combat or authoritative state."
+    },
+    {
       "capability_id": "combat.block.shadow",
       "evidence_class": "interaction",
       "test_id": "tests.test_combat_evasion_restrictions.CombatEvasionRestrictionTests.test_all_represented_restrictions_are_cumulative",
@@ -3197,6 +3261,62 @@
       "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the affected-seat replacement order and resolving permanent entry to the same authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.optional_self_entry",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_counter_uses_canonical_quantity_replacement_order",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Route the optional entry counter through the canonical quantity-replacement tree before exposing its block result."
+    },
+    {
+      "capability_id": "counter.producer.optional_self_entry",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_choice_is_destination_controller_scoped_and_replays",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Assign the optional entry decision to the prospective controller in a four-player game."
+    },
+    {
+      "capability_id": "counter.producer.optional_self_entry",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_entry_runtime_mutation_is_killed",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the typed affected-object self-entry replacement."
+    },
+    {
+      "capability_id": "counter.producer.optional_self_entry",
+      "evidence_class": "negative",
+      "test_id": "tests.test_unleash_rules.UnleashCompilerAndModelTests.test_unleash_models_and_descriptors_reject_malformed_values",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed names, boolean or nonpositive amounts, nonboolean optionality, and unknown descriptor fields."
+    },
+    {
+      "capability_id": "counter.producer.optional_self_entry",
+      "evidence_class": "positive",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_apply_or_decline_optional_entry_counter",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply or canonically decline one optional +1/+1 self-entry replacement before battlefield mutation."
+    },
+    {
+      "capability_id": "counter.producer.optional_self_entry",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_choice_is_destination_controller_scoped_and_replays",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose the replacement task only to the prospective controller without leaking authoritative object identity."
+    },
+    {
+      "capability_id": "counter.producer.optional_self_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_choice_is_destination_controller_scoped_and_replays",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.98", "702.98a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the seat-scoped apply decision to the identical counter state and final authoritative hash."
     },
     {
       "capability_id": "counter.producer.persist",
