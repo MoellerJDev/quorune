@@ -4,6 +4,11 @@ from dataclasses import dataclass
 import re
 
 from ..cast_timing import PRINTED_FLASH_MECHANIC
+from ..death_return import (
+    DeathReturnSpec,
+    PERSIST_KEYWORD,
+    UNDYING_KEYWORD,
+)
 from ..evolve import EVOLVE_EVENT_CONDITION_FIELD
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
 from .cycling_nodes import ordinary_cycling_keyword_node
@@ -15,6 +20,8 @@ from ..rules.capabilities import CapabilityRegistry
 _DREDGE_MECHANIC = "dred" + "ge"
 _EVOLVE_MECHANIC = "evo" + "lve"
 _FABRICATE_MECHANIC = "fabri" + "cate"
+_PERSIST_MECHANIC = PERSIST_KEYWORD
+_UNDYING_MECHANIC = UNDYING_KEYWORD
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,6 +53,10 @@ def keyword_node_plans(
         _EVOLVE_MECHANIC
         for mechanic in mechanics
         if mechanic == _EVOLVE_MECHANIC
+    ) + tuple(
+        mechanic
+        for mechanic in mechanics
+        if mechanic in {_PERSIST_MECHANIC, _UNDYING_MECHANIC}
     )
     if not split_mechanics:
         return (
@@ -53,15 +64,26 @@ def keyword_node_plans(
         )
 
     occurrence: dict[str, int] = {}
-    evolve_parts = tuple(
-        (
-            match.group().strip().rstrip("."),
-            match.start() + len(match.group()) - len(match.group().lstrip()),
-            match.end() - len(match.group()) + len(match.group().rstrip()),
+    instance_parts = {
+        mechanic: tuple(
+            (
+                match.group().strip().rstrip("."),
+                match.start()
+                + len(match.group())
+                - len(match.group().lstrip()),
+                match.end()
+                - len(match.group())
+                + len(match.group().rstrip()),
+            )
+            for match in re.finditer(r"[^,]+", material_line)
+            if match.group().strip().rstrip(".").casefold() == mechanic
         )
-        for match in re.finditer(r"[^,]+", material_line)
-        if match.group().strip().rstrip(".").casefold() == _EVOLVE_MECHANIC
-    )
+        for mechanic in (
+            _EVOLVE_MECHANIC,
+            _PERSIST_MECHANIC,
+            _UNDYING_MECHANIC,
+        )
+    }
     result: list[KeywordNodePlan] = []
     for mechanic in split_mechanics:
         occurrence[mechanic] = occurrence.get(mechanic, 0) + 1
@@ -73,11 +95,9 @@ def keyword_node_plans(
         selected_line = line
         selected_material_line = material_line
         selected_span = span
-        if (
-            mechanic == _EVOLVE_MECHANIC
-            and occurrence[mechanic] <= len(evolve_parts)
-        ):
-            fragment, start, end = evolve_parts[occurrence[mechanic] - 1]
+        parts = instance_parts.get(mechanic, ())
+        if occurrence[mechanic] <= len(parts):
+            fragment, start, end = parts[occurrence[mechanic] - 1]
             selected_line = fragment
             selected_material_line = fragment
             selected_span = SourceSpan(
@@ -101,6 +121,8 @@ def keyword_node_plans(
             PRINTED_FLASH_MECHANIC,
             _FABRICATE_MECHANIC,
             _EVOLVE_MECHANIC,
+            _PERSIST_MECHANIC,
+            _UNDYING_MECHANIC,
         }
     )
     if remaining:
@@ -184,6 +206,50 @@ def evolve_keyword_node(
             "op": "truthy",
         },
         runtime_coverage=("intervening_condition",),
+        mechanics=mechanics,
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        capability_profile=(
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    )
+
+
+def death_return_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    mechanics: tuple[str, ...],
+    gate: DependencyGate,
+    residual_ids: tuple[str, ...],
+) -> OracleNode | None:
+    if mechanics not in {(_PERSIST_MECHANIC,), (_UNDYING_MECHANIC,)}:
+        return None
+    mechanic = mechanics[0]
+    if material_line.strip().rstrip(".").casefold() != mechanic:
+        return None
+    spec = DeathReturnSpec.for_keyword(mechanic)
+    return OracleNode(
+        node_id=node_id,
+        kind="triggered_ability",
+        text=line,
+        span=span,
+        active_zone="battlefield",
+        event="creature.dies.self",
+        lowerable=True,
+        exact=not gate.blockers,
+        template_id=f"{mechanic}-death-return-counter-v1",
+        effects=(spec.effect_descriptor(),),
+        event_condition=spec.event_condition(),
+        runtime_coverage=("departure_intervening_condition",),
         mechanics=mechanics,
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,
@@ -308,6 +374,7 @@ __all__ = [
     "KeywordNodePlan",
     "closed_special_keyword_node",
     "dredge_keyword_node",
+    "death_return_keyword_node",
     "evolve_keyword_node",
     "fabricate_keyword_node",
     "keyword_node_plans",

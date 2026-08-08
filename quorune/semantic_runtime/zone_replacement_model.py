@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ..entry_counters import IntrinsicEntryCounter
+from ..entry_counters import EffectEntryCounter, IntrinsicEntryCounter
 from ..replacement_effects import (
     ReplaceableEvent,
     ReplacementBatchChoice,
@@ -118,6 +118,7 @@ class ZoneChangeSubjectSnapshot:
     object_types: tuple[str, ...]
     is_card_object: bool
     intrinsic_entry_counters: tuple[IntrinsicEntryCounter, ...] = ()
+    effect_entry_counters: tuple[EffectEntryCounter, ...] = ()
 
     def __post_init__(self) -> None:
         required = (
@@ -156,6 +157,19 @@ class ZoneChangeSubjectSnapshot:
             )
         object.__setattr__(
             self, "intrinsic_entry_counters", entry_counters
+        )
+        effect_entry_counters = tuple(self.effect_entry_counters)
+        if any(
+            not isinstance(value, EffectEntryCounter)
+            for value in effect_entry_counters
+        ):
+            raise ZoneReplacementError(
+                "Zone replacement effect entry counters must be typed instructions"
+            )
+        object.__setattr__(
+            self,
+            "effect_entry_counters",
+            effect_entry_counters,
         )
         if type(self.is_card_object) is not bool:
             raise ZoneReplacementError(

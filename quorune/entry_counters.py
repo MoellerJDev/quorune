@@ -17,6 +17,7 @@ from .replacement import (
 )
 from .entry_counter_model import (
     EntryCounterError,
+    EffectEntryCounter,
     IntrinsicEntryCounter,
     intrinsic_entry_counters,
 )
@@ -96,6 +97,55 @@ def intrinsic_entry_counter_effects(
                         amount=counter.amount,
                         placing_player=destination_controller,
                         source_ref=source_ref,
+                        sequence=sequence,
+                    ),
+                ),
+                label=(
+                    f"{object_ref}: enter with {counter.amount} "
+                    f"{counter.counter_name} counter(s)"
+                ),
+            )
+        )
+    return tuple(effects)
+
+
+def effect_entry_counter_effects(
+    *,
+    object_ref: str,
+    counters: Sequence[EffectEntryCounter],
+) -> tuple[ReplacementEffect, ...]:
+    """Lower effect-generated entry counters into the same event tree."""
+
+    if type(object_ref) is not str or not object_ref:
+        raise EntryCounterError(
+            "Effect entry counter effects require object identity"
+        )
+    effects: list[ReplacementEffect] = []
+    for sequence, counter in enumerate(counters):
+        if not isinstance(counter, EffectEntryCounter):
+            raise EntryCounterError(
+                "Effect entry counters require typed instructions"
+            )
+        effects.append(
+            ReplacementEffect(
+                effect_id=(
+                    "replacement.effect-entry-counter:"
+                    f"{object_ref}:{counter.source_ref}:{sequence}:"
+                    f"{counter.counter_name}:{counter.rule_id}"
+                ),
+                source_id=counter.source_ref,
+                event_kind="zone.change",
+                replacement_class=ReplacementClass.SELF_REPLACEMENT,
+                conditions={
+                    "destination": {"eq": "battlefield"},
+                    "object_ref": {"eq": object_ref},
+                },
+                operations=(
+                    CreateAffectedObjectCounter(
+                        counter_name=counter.counter_name,
+                        amount=counter.amount,
+                        placing_player=counter.placing_player,
+                        source_ref=counter.source_ref,
                         sequence=sequence,
                     ),
                 ),
@@ -215,8 +265,10 @@ __all__ = [
     "capture_prospective_entry_characteristics",
     "EntryCounterError",
     "EntryCharacteristicsQuery",
+    "EffectEntryCounter",
     "IntrinsicEntryCounter",
     "commit_unreplaced_intrinsic_entry_counters",
+    "effect_entry_counter_effects",
     "intrinsic_entry_counter_effects",
     "intrinsic_entry_counters",
     "mark_intrinsic_entry_counters_initialized",

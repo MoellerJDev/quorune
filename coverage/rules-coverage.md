@@ -15,7 +15,7 @@ maintenance: "generated"
 - Trusted rules: 0
 - Trusted fraction: 0.00%
 - Semantic conformance passes: 213
-- Unreviewed conformance cases: 2573
+- Unreviewed conformance cases: 2569
 - Current snapshot complete: false
 
 A green completeness claim is blocked until every behavioral rule and mechanic contract in the pinned snapshot is trusted.

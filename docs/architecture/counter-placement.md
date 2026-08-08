@@ -1,7 +1,7 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, semantic_runtime/counter_replacements.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/death_return.py, semantic_runtime/counter_replacements.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
 verified: "2026-08-08"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -96,6 +96,30 @@ the ordinary affected-controller quantity-replacement ordering. A resolving
 permanent can suspend through `resolving_entry` and resume without replaying
 earlier spell effects. Simultaneous entries prepare in APNAP order without
 mutation.
+
+Effect-generated entry counters use the same nested replacement tree through
+an immutable `EffectEntryCounter`. The instruction pins the physical card's
+expected zone-change counter, prospective battlefield controller, placing
+player, source, counter name, amount, and rule identity. Semantic preparation
+completes every represented destination and counter-quantity replacement
+choice before committing the move. A missing card, stale incarnation,
+inactive placing player, non-battlefield destination, or malformed counter
+fails or safely makes an explicitly optional return do nothing before state
+mutation.
+
+Printed Persist and Undying are the first compiler harvest of that generic
+boundary. Oracle IR v58 emits one source-spanned triggered CardProgram per
+printed keyword instance. Trigger discovery evaluates the relevant counter
+from the departed creature's last-known public snapshot, preserves the
+graveyard incarnation and trigger controller, and places simultaneous triggers
+in the existing APNAP batch. Resolution returns only that same graveyard
+incarnation under its owner, then applies the required -1/-1 or +1/+1 counter
+through the effect-entry transaction. Control changes, duplicated keyword
+instances, destination and quantity replacements, tokens, private projection,
+and replay therefore share existing owners rather than keyword-specific state
+writes. Granted or copied instances outside trusted typed ability fragments,
+Oracle-equivalent prose, and unrepresented replacement families remain
+explicit residuals.
 
 Oracle IR v54 lowers the closed reusable fixed-placement grammars through the
 typed operation in spell, triggered, and activated contexts. It accepts one

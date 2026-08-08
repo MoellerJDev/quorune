@@ -2439,6 +2439,62 @@
       "applicability_note": "Replay replacement selection, staged payment refusal, and sacrifice to the identical final authoritative hash."
     },
     {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_zone_and_counter_replacements_complete_before_return_mutates",
+      "official_rule_ids": ["122.1", "122.6", "400.6", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose an effect-generated entry counter with the canonical destination and counter-quantity replacement tree before committing the zone move."
+    },
+    {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_four_player_simultaneous_deaths_place_triggers_apnap_and_keep_choices_scoped",
+      "official_rule_ids": ["122.1", "122.6", "400.6", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve independently identified effect-entry results for simultaneous four-player death triggers in APNAP order."
+    },
+    {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_effect_entry_counter_generation_mutant_is_killed",
+      "official_rule_ids": ["122.1", "122.6", "400.6", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove effect-entry counter lowering and require the returned permanent's missing counter to kill the mutant."
+    },
+    {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "negative",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingCompilerTests.test_effect_entry_counter_and_intent_identity_reject_malformed_values",
+      "official_rule_ids": ["122.1", "122.6", "400.6", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject boolean, nonpositive, noncanonical, unpinned, and structurally malformed counter-entry instructions before mutation."
+    },
+    {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "positive",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingCompilerTests.test_effect_entry_counter_model_and_zone_intent_are_canonical",
+      "official_rule_ids": ["122.1", "122.6", "400.6", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Round-trip one typed effect-entry counter and its identity-pinned zone intent through canonical serialization."
+    },
+    {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_four_player_simultaneous_deaths_place_triggers_apnap_and_keep_choices_scoped",
+      "official_rule_ids": ["122.1", "122.6", "400.6", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project public death-return objects without exposing opposing hands or authoritative zone-incarnation counters."
+    },
+    {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly",
+      "official_rule_ids": ["122.1", "122.6", "400.6", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay suspended destination and counter replacement ordering to the identical authoritative state hash."
+    },
+    {
       "capability_id": "counter.producer.evolve",
       "evidence_class": "interaction",
       "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_quantity_replacement_and_control_change_use_trigger_controller",
@@ -3143,6 +3199,62 @@
       "applicability_note": "Replay the affected-seat replacement order and resolving permanent entry to the same authoritative state hash."
     },
     {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_control_change_uses_trigger_controller_as_placing_player_and_owner_as_controller",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.79", "702.79a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use the Persist trigger controller as the counter-placing player while returning the card under its owner after a control change."
+    },
+    {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_four_player_simultaneous_deaths_place_triggers_apnap_and_keep_choices_scoped",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.79", "702.79a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Place simultaneous Persist and Undying triggers in four-player APNAP order with independent physical source identity."
+    },
+    {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingCompilerTests.test_death_return_dependencies_and_compiler_mutation_fail_closed",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.79", "702.79a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove typed death-return lowering and require the absent Persist CardProgram to kill the compiler mutant."
+    },
+    {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "negative",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_existing_minus_counter_prevents_persist_trigger",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.79", "702.79a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Do not create a Persist trigger when last-known information shows the dying creature had a -1/-1 counter."
+    },
+    {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "positive",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_persist_returns_under_owner_with_replacement_aware_counter",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.79", "702.79a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve Persist by returning the same graveyard incarnation under its owner with a replacement-aware -1/-1 counter."
+    },
+    {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_four_player_simultaneous_deaths_place_triggers_apnap_and_keep_choices_scoped",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.79", "702.79a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose public Persist triggers without projecting unrelated opposing hand cards or authoritative incarnation counters."
+    },
+    {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.79", "702.79a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay a suspended Persist replacement choice and identity-pinned return to the identical authoritative hash."
+    },
+    {
       "capability_id": "counter.producer.proliferate",
       "evidence_class": "interaction",
       "test_id": "tests.test_proliferate_rules.ProliferateEngineTests.test_proliferate_counter_replacements_suspend_whole_batch_before_mutation",
@@ -3293,6 +3405,62 @@
       "official_rule_ids": ["101.4", "115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "614.16", "616.1", "701.41", "701.41a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the same partial Support target set, replacement selection, and final authoritative hash."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_control_change_uses_trigger_controller_as_placing_player_and_owner_as_controller",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.93", "702.93a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use the Undying trigger controller as the counter-placing player while returning the card under its owner after a control change."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_four_player_simultaneous_deaths_place_triggers_apnap_and_keep_choices_scoped",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.93", "702.93a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Place simultaneous Persist and Undying triggers in four-player APNAP order with independent physical source identity."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingCompilerTests.test_death_return_dependencies_and_compiler_mutation_fail_closed",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.93", "702.93a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove typed death-return lowering and require the absent Undying CardProgram to kill the compiler mutant."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "negative",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_existing_plus_counter_prevents_undying_trigger",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.93", "702.93a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Do not create an Undying trigger when last-known information shows the dying creature had a +1/+1 counter."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "positive",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_undying_returns_with_plus_counter",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.93", "702.93a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve Undying by returning the same graveyard incarnation under its owner with a replacement-aware +1/+1 counter."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_four_player_simultaneous_deaths_place_triggers_apnap_and_keep_choices_scoped",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.93", "702.93a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose public Undying triggers without projecting unrelated opposing hand cards or authoritative incarnation counters."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly",
+      "official_rule_ids": ["122.1", "122.6", "400.7", "603.4", "603.6c", "603.10a", "603.10e", "702.93", "702.93a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay a suspended Undying replacement choice and identity-pinned return to the identical authoritative hash."
     },
     {
       "capability_id": "counter.removal.rule_generated",

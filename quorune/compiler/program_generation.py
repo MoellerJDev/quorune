@@ -6,6 +6,7 @@ import hashlib
 from typing import Any, Iterable, Mapping
 
 from ..carddb import CardDatabase, CardRecord
+from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..object_predicate import ObjectQuerySpec
 from ..rules.capabilities import (
     CapabilityRegistry,
@@ -153,7 +154,8 @@ def _generated_ability_id(
         if (
             len(parts) >= 2
             and parts[-1].isdigit()
-            and parts[-2] == _EVOLVE_MECHANIC
+            and parts[-2]
+            in {_EVOLVE_MECHANIC, PERSIST_KEYWORD, UNDYING_KEYWORD}
         ):
             return f"{base}:{parts[-2]}:{parts[-1]}"
         return base

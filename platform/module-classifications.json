@@ -1645,6 +1645,18 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/death_return.py",
+      "layer": "domain",
+      "owning_subsystem": "counter_placement",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/deathtouch.py",
       "layer": "rules",
       "owning_subsystem": "damage",
@@ -3304,6 +3316,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_choices/death_return.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_choices",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_choices/defaults.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_choices",
@@ -4510,5 +4537,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "4c92772009ccdf4a831947651d0cbfeeff29241e1321e4194a1a16c27a46902c"
+  "fingerprint": "54fa803342c0f2174aea578e87d3ec857c9f16b01a6578b84dcec6122e73983b"
 }

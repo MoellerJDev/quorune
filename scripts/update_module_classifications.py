@@ -52,6 +52,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/ability_fragments.py",
         "quorune/damage_source.py",
         "quorune/damage_modifier_state.py",
+        "quorune/death_return.py",
         "quorune/continuous_effect_model.py",
         "quorune/enchant_spec.py",
         "quorune/entry_counter_model.py",
@@ -317,6 +318,7 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/entry_counters.py",
         "quorune/entry_counter_model.py",
         "quorune/evolve.py",
+        "quorune/death_return.py",
     }:
         return "counter_placement"
     if relative == "quorune/cumulative_upkeep.py":
@@ -456,6 +458,7 @@ def build_classifications() -> dict[str, Any]:
                             "damage_prevention",
                             "damage_transaction.py",
                             "damage_results.py",
+                            "death_return.py",
                             "delayed_triggers.py",
                             "drawing/",
                             "life_change.py",

@@ -55,3 +55,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0038 — source-context-aware Support lowering](0038-source-context-aware-support.md)
 - [ADR 0039 — typed attachment-relative result references](0039-typed-attachment-relative-results.md)
 - [ADR 0040 — closed source-self references](0040-closed-source-self-references.md)
+- [ADR 0041 — effect entry counters and identity-pinned death return](0041-effect-entry-counters-and-death-return.md)

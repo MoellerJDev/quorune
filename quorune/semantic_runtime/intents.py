@@ -10,6 +10,7 @@ from ..drawing.model import (
     RevealDrawnCard,
 )
 from ..fixed_damage_set_model import FixedDamageSetSpec
+from ..entry_counter_model import EffectEntryCounter
 from ..replacement.immutable import FrozenMap, freeze_value
 
 
@@ -347,9 +348,32 @@ class ZoneMoveIntent:
     ] = "preserve"
     semantic_events: bool = True
     optional_if_missing: bool = False
+    expected_zone_change_counter: int | None = None
+    effect_entry_counters: tuple[EffectEntryCounter, ...] = ()
     replacement_selections: tuple[str | FrozenMap, ...] = ()
 
     def __post_init__(self) -> None:
+        if self.expected_zone_change_counter is not None and (
+            type(self.expected_zone_change_counter) is not int
+            or self.expected_zone_change_counter < 0
+        ):
+            raise ValueError(
+                "Zone move expected zone-change counter must be nonnegative or null"
+            )
+        counters = tuple(self.effect_entry_counters)
+        if any(not isinstance(value, EffectEntryCounter) for value in counters):
+            raise ValueError(
+                "Zone move effect entry counters must be typed instructions"
+            )
+        if counters and self.expected_zone_change_counter is None:
+            raise ValueError(
+                "Effect-generated entry counters require pinned object identity"
+            )
+        if counters and self.destination != "battlefield":
+            raise ValueError(
+                "Effect-generated entry counters require a battlefield move"
+            )
+        object.__setattr__(self, "effect_entry_counters", counters)
         object.__setattr__(
             self,
             "replacement_selections",

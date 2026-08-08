@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "8eed999792cb2d6f4e4f8ef64cc800af164f2639",
+  "baseline_commit": "ee4fb061376d5e87a81614a1831cc9e27b235087",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -2259,9 +2259,9 @@
     "physical_lines": 12927
   },
   "exception_binding": {
-    "adr": "docs/adr/0037-typed-fixed-target-set-counter-placement.md",
-    "allowance_fingerprint": "37c6168c71e92be9c3fb21df0b32297d39a9fa6f2524f442bb7d66b65e3ebe42",
-    "exception_id": "ARCH-EXC-0017"
+    "adr": "docs/adr/0041-effect-entry-counters-and-death-return.md",
+    "allowance_fingerprint": "6bd684c8e0eed7e7cda7d5ac23bea077189b2eda5cbb224e83cfe344e6063913",
+    "exception_id": "ARCH-EXC-0018"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2430,12 +2430,12 @@
     },
     {
       "file": "quorune/oracle_ir.py",
-      "logical_lines": 453,
+      "logical_lines": 450,
       "symbol": "_compile_face"
     },
     {
       "file": "quorune/oracle_ir.py",
-      "logical_lines": 276,
+      "logical_lines": 275,
       "symbol": "_effect_template"
     },
     {
@@ -2557,6 +2557,7 @@
     "damage_each_opponent",
     "damage_fixed_set",
     "daretti_exchange",
+    "death_return_with_counter",
     "delayed_mana",
     "delayed_pact_payment",
     "delayed_trigger",

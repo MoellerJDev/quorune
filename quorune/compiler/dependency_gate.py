@@ -6,6 +6,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from ..aura import parse_simple_enchant_line
 from ..ability_fragments import parse_protection_line
+from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..rules.capabilities import (
     CapabilityClosure,
     CapabilityRegistry,
@@ -164,6 +165,18 @@ def keyword_dependency_gate(
             blockers=("mechanic:evolve-unsupported-wording",),
             capabilities=("counter.producer.evolve",),
         )
+    if mechanics in {(_PERSIST_MECHANIC,), (_UNDYING_MECHANIC,)}:
+        mechanic = mechanics[0]
+        if material_line.strip().rstrip(".").casefold() == mechanic:
+            return explicit_capability_gate(
+                f"counter.producer.{mechanic}",
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+            )
+        return DependencyGate(
+            blockers=(f"mechanic:{mechanic}-unsupported-wording",),
+            capabilities=(f"counter.producer.{mechanic}",),
+        )
     if mechanics == ("enchant",) and parse_simple_enchant_line(
         material_line
     ) is not None:
@@ -227,3 +240,5 @@ __all__ = [
 _DREDGE_MECHANIC = "dred" + "ge"
 _FABRICATE_MECHANIC = "fabri" + "cate"
 _EVOLVE_MECHANIC = "evo" + "lve"
+_PERSIST_MECHANIC = PERSIST_KEYWORD
+_UNDYING_MECHANIC = UNDYING_KEYWORD

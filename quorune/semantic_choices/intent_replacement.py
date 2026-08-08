@@ -7,6 +7,7 @@ from ..affected_permanents import (
     AffectedPermanentSetError,
     AffectedPermanentSetSpec,
 )
+from ..entry_counter_model import EntryCounterError, EffectEntryCounter
 from ..replacement.immutable import FrozenMap, thaw_value
 from ..semantic_runtime import (
     PlaceCountersIntent,
@@ -67,6 +68,10 @@ _ZONE_MOVE_FIELDS = {
     "tapped_policy",
     "semantic_events",
     "optional_if_missing",
+}
+_ZONE_MOVE_EFFECT_ENTRY_FIELDS = _ZONE_MOVE_FIELDS | {
+    "expected_zone_change_counter",
+    "effect_entry_counters",
 }
 _PROLIFERATE_FIELDS = {
     "actor",
@@ -205,22 +210,38 @@ def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
             },
         )
     if isinstance(intent, ZoneMoveIntent):
+        identity = {
+            "actor": intent.actor,
+            "object_ref": intent.object_ref,
+            "expected_zones": list(intent.expected_zones),
+            "destination": intent.destination,
+            _REASON_FIELD: intent.reason,
+            "required_types": list(intent.required_types),
+            "owned_only": intent.owned_only,
+            "controlled_only": intent.controlled_only,
+            "new_controller": intent.new_controller,
+            "tapped_policy": intent.tapped_policy,
+            "semantic_events": intent.semantic_events,
+            "optional_if_missing": intent.optional_if_missing,
+        }
+        if (
+            intent.expected_zone_change_counter is not None
+            or intent.effect_entry_counters
+        ):
+            identity.update(
+                {
+                    "expected_zone_change_counter": (
+                        intent.expected_zone_change_counter
+                    ),
+                    "effect_entry_counters": [
+                        counter.to_dict()
+                        for counter in intent.effect_entry_counters
+                    ],
+                }
+            )
         return (
             "zone_move",
-            {
-                "actor": intent.actor,
-                "object_ref": intent.object_ref,
-                "expected_zones": list(intent.expected_zones),
-                "destination": intent.destination,
-                _REASON_FIELD: intent.reason,
-                "required_types": list(intent.required_types),
-                "owned_only": intent.owned_only,
-                "controlled_only": intent.controlled_only,
-                "new_controller": intent.new_controller,
-                "tapped_policy": intent.tapped_policy,
-                "semantic_events": intent.semantic_events,
-                "optional_if_missing": intent.optional_if_missing,
-            },
+            identity,
         )
     raise SemanticChoiceError(
         "Semantic replacement continuation requires a supported typed intent"
@@ -416,9 +437,19 @@ def validate_semantic_intent_identity(
     if not isinstance(value, Mapping):
         raise SemanticChoiceError("Zone-move intent identity must be an object")
     actual = set(value)
-    if actual != _ZONE_MOVE_FIELDS:
-        missing = sorted(_ZONE_MOVE_FIELDS - actual)
-        unknown = sorted(actual - _ZONE_MOVE_FIELDS)
+    if (
+        actual != _ZONE_MOVE_FIELDS
+        and actual != _ZONE_MOVE_EFFECT_ENTRY_FIELDS
+    ):
+        expected = (
+            _ZONE_MOVE_EFFECT_ENTRY_FIELDS
+            if actual.intersection(
+                {"expected_zone_change_counter", "effect_entry_counters"}
+            )
+            else _ZONE_MOVE_FIELDS
+        )
+        missing = sorted(expected - actual)
+        unknown = sorted(actual - expected)
         details = [
             *(f"missing {name}" for name in missing),
             *(f"unknown {name}" for name in unknown),
@@ -453,7 +484,7 @@ def validate_semantic_intent_identity(
             raise SemanticChoiceError(
                 f"Zone-move {field_name} must be a boolean"
             )
-    return {
+    result = {
         "actor": actor,
         "object_ref": object_ref,
         "expected_zones": _string_sequence(
@@ -471,6 +502,45 @@ def validate_semantic_intent_identity(
         "semantic_events": value["semantic_events"],
         "optional_if_missing": value["optional_if_missing"],
     }
+    if actual == _ZONE_MOVE_EFFECT_ENTRY_FIELDS:
+        incarnation = value["expected_zone_change_counter"]
+        if incarnation is not None and (
+            type(incarnation) is not int or incarnation < 0
+        ):
+            raise SemanticChoiceError(
+                "Zone-move zone-change counter is malformed"
+            )
+        raw_counters = value["effect_entry_counters"]
+        if not isinstance(raw_counters, (list, tuple)):
+            raise SemanticChoiceError(
+                "Zone-move effect entry counters must be an array"
+            )
+        try:
+            counters = tuple(
+                EffectEntryCounter.from_dict(counter)
+                for counter in raw_counters
+            )
+        except (EntryCounterError, TypeError) as exc:
+            raise SemanticChoiceError(
+                "Zone-move effect entry counters are malformed"
+            ) from exc
+        if counters and incarnation is None:
+            raise SemanticChoiceError(
+                "Effect-generated entry counters require pinned object identity"
+            )
+        if counters and value["destination"] != "battlefield":
+            raise SemanticChoiceError(
+                "Effect-generated entry counters require a battlefield move"
+            )
+        result.update(
+            {
+                "expected_zone_change_counter": incarnation,
+                "effect_entry_counters": [
+                    counter.to_dict() for counter in counters
+                ],
+            }
+        )
+    return result
 
 
 def _validate_proliferate_intent_identity(
