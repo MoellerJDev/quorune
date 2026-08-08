@@ -15,6 +15,7 @@ from .token_and_copy import TOKEN_AND_COPY_CHOICE_HANDLERS
 from .damage_prevention import DAMAGE_PREVENTION_CHOICE_HANDLERS
 from .conditional_draw import CONDITIONAL_DRAW_CHOICE_HANDLERS
 from .optional_draw import OPTIONAL_DRAW_CHOICE_HANDLERS
+from .death_return import DEATH_RETURN_CHOICE_HANDLERS
 
 
 @lru_cache(maxsize=1)
@@ -33,5 +34,6 @@ def default_semantic_choice_registry() -> SemanticChoiceRegistry:
             *DAMAGE_PREVENTION_CHOICE_HANDLERS,
             *CONDITIONAL_DRAW_CHOICE_HANDLERS,
             *OPTIONAL_DRAW_CHOICE_HANDLERS,
+            *DEATH_RETURN_CHOICE_HANDLERS,
         )
     ).freeze()

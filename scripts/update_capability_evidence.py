@@ -38,6 +38,21 @@ LEGACY_EVIDENCE_FIELDS = {
     "replay": "replay_tests",
 }
 MUTATION_TESTS = {
+    "counter.producer.effect_entry": (
+        "tests.test_persist_undying_rules."
+        "PersistUndyingRuntimeTests."
+        "test_effect_entry_counter_generation_mutant_is_killed"
+    ),
+    "counter.producer.persist": (
+        "tests.test_persist_undying_rules."
+        "PersistUndyingCompilerTests."
+        "test_death_return_dependencies_and_compiler_mutation_fail_closed"
+    ),
+    "counter.producer.undying": (
+        "tests.test_persist_undying_rules."
+        "PersistUndyingCompilerTests."
+        "test_death_return_dependencies_and_compiler_mutation_fail_closed"
+    ),
     "counter.producer.cumulative_upkeep_fixed_mana": (
         "tests.test_cumulative_upkeep_counter_placement."
         "CumulativeUpkeepCompilerTests."

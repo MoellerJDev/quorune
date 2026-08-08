@@ -364,6 +364,28 @@
         "tests.test_fixed_counter_placement_target_sets.FixedCounterPlacementTargetSetRuntimeTests.test_partial_target_revalidation_places_only_on_still_legal_targets",
         "tests.test_fixed_counter_placement_target_sets.FixedCounterPlacementTargetSetRuntimeTests.test_target_set_suspends_for_quantity_replacement_and_replays"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0018",
+      "adr": "docs/adr/0041-effect-entry-counters-and-death-return.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "6bd684c8e0eed7e7cda7d5ac23bea077189b2eda5cbb224e83cfe344e6063913",
+      "exact_allowance": "Only the reduced structural write identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, and legacy helpers serialized after typed effect-entry counter and death-return extraction.",
+      "rationale": "The Persist and Undying family adds one closed universal semantic operation while keeping CommanderEngine, direct GameState writes, oversized symbols, and Oracle-ID literals flat and reducing printed-name specificity. Its strict read-only handler emits an identity-pinned ZoneMoveIntent; the existing zone-change replacement tree and canonical counter transaction own ordering, suspension, rollback, replay, and mutation.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "Existing serialized residual allowances plus the reviewed death_return_with_counter operation and effect-entry counter value described by ADR 0041; removals are allowed and additions or growth are forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered allowance has migrated to a reviewed owner; remove death_return_with_counter only if a successor typed result model preserves last-known trigger facts, physical-card incarnation validation, effect counter provenance, replacement ordering, transactional continuation, privacy, and exact replay.",
+      "target_milestone": "typed death-return keywords and shared replacement-aware effect-entry counter closure",
+      "replay_implications": "Game Record v3 remains compatible; source-spanned keyword descriptors, saved last-known trigger facts, identity-pinned graveyard objects, and canonical nested counter events preserve exact command replay.",
+      "privacy_implications": "The trigger and return use public battlefield and graveyard identities plus only the resolving controller's seat-scoped replacement choices; hidden hands, libraries, and opposing private continuations are neither queried nor projected.",
+      "security_implications": "The strict operation accepts only a closed Persist or Undying descriptor, emits a typed immutable intent, and grants no callback, arbitrary mutation, runtime Oracle parsing, transport access, or card-identity dispatch.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint",
+        "tests.test_persist_undying_rules.PersistUndyingCompilerTests.test_printed_persist_and_undying_lower_each_instance_with_exact_spans",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_zone_and_counter_replacements_complete_before_return_mutates",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly"
+      ]
     }
   ]
 }

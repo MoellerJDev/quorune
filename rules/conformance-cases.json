@@ -68105,23 +68105,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.79",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_persist_undying_rules.PersistUndyingCompilerTests.test_printed_persist_and_undying_lower_each_instance_with_exact_spans"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword heading; the bounded ordinary printed family is owned by counter.producer.persist."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.79",
       "rule_text_sha256": "7e8e414d91c629acdbc5398099daff6e64ddf881d2a1ff82949a142a413c311b",
       "schema_version": 1,
@@ -68130,26 +68134,57 @@
         "end_line": 4581,
         "start_line": 4580
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "granted or copied Persist outside trusted typed ability fragments is not compiled",
+        "Oracle-equivalent nonkeyword return wording remains outside the closed grammar",
+        "unrepresented zone and counter replacement families remain fail-closed"
       ],
       "case_id": "cr-702.79a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.79"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_persist_returns_under_owner_with_replacement_aware_counter",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_existing_minus_counter_prevents_persist_trigger",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_repeated_persist_instances_trigger_separately_but_only_one_returns",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_control_change_uses_trigger_controller_as_placing_player_and_owner_as_controller",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_stale_or_departed_graveyard_incarnation_does_not_return",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.death_return.DeathReturnSpec",
+        "quorune.compiler.keyword_nodes.death_return_keyword_node",
+        "quorune.trigger_discovery.semantic_event_condition_matches",
+        "quorune.semantic_choices.death_return.DeathReturnWithCounterHandler",
+        "quorune.entry_counters.effect_entry_counter_effects"
+      ],
+      "notes": [
+        "Each represented printed Persist instance uses the departed creature's last-known -1/-1 counter state, returns only the same graveyard incarnation under its owner, and places the required counter through the canonical replacement-aware entry transaction."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.79a",
       "rule_text_sha256": "b4b88f393a44099ca5c9c337496a99e04fbc3336d249ce55f6c96adcc68e458d",
       "schema_version": 1,
@@ -68158,7 +68193,7 @@
         "end_line": 4583,
         "start_line": 4582
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "static_traceability",
@@ -69657,23 +69692,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.93",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_persist_undying_rules.PersistUndyingCompilerTests.test_printed_persist_and_undying_lower_each_instance_with_exact_spans"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword heading; the bounded ordinary printed family is owned by counter.producer.undying."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.93",
       "rule_text_sha256": "a32babbf86faa7f1aab91148bc47d2546738e0838088a3fdfa61e5b4801f12cf",
       "schema_version": 1,
@@ -69682,26 +69721,56 @@
         "end_line": 4677,
         "start_line": 4676
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "granted or copied Undying outside trusted typed ability fragments is not compiled",
+        "Oracle-equivalent nonkeyword return wording remains outside the closed grammar",
+        "unrepresented zone and counter replacement families remain fail-closed"
       ],
       "case_id": "cr-702.93a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.93"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_undying_returns_with_plus_counter",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_existing_plus_counter_prevents_undying_trigger",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_control_change_uses_trigger_controller_as_placing_player_and_owner_as_controller",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_stale_or_departed_graveyard_incarnation_does_not_return",
+        "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.death_return.DeathReturnSpec",
+        "quorune.compiler.keyword_nodes.death_return_keyword_node",
+        "quorune.trigger_discovery.semantic_event_condition_matches",
+        "quorune.semantic_choices.death_return.DeathReturnWithCounterHandler",
+        "quorune.entry_counters.effect_entry_counter_effects"
+      ],
+      "notes": [
+        "Each represented printed Undying instance uses the departed creature's last-known +1/+1 counter state, returns only the same graveyard incarnation under its owner, and places the required counter through the canonical replacement-aware entry transaction."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.93a",
       "rule_text_sha256": "c07a2d9fe39c78593daa30c485cc52fbfe5a69bfedaf53a96c54bf5edc5f991c",
       "schema_version": 1,
@@ -69710,7 +69779,7 @@
         "end_line": 4679,
         "start_line": 4678
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

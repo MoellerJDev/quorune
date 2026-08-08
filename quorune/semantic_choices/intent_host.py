@@ -70,6 +70,9 @@ from ..semantic_runtime import (
     ShuffleLibraryIntent,
     ZoneMoveIntent,
 )
+from ..semantic_runtime.zone_replacements import (
+    prepare_zone_change_replacement,
+)
 from ..util import unique_preserving_order
 
 
@@ -302,6 +305,16 @@ class SemanticChoiceIntentHostMixin:
             if intent.optional_if_missing:
                 return ""
             raise
+        if (
+            intent.expected_zone_change_counter is not None
+            and card.zone_change_counter
+            != intent.expected_zone_change_counter
+        ):
+            if intent.optional_if_missing:
+                return ""
+            raise GameRuleError(
+                "The selected object is no longer the expected zone incarnation"
+            )
         types, _, _ = self._type_parts(
             str(self._effective_card_data(card).get("type_line") or "")
         )
@@ -319,6 +332,21 @@ class SemanticChoiceIntentHostMixin:
             tapped = True
         elif intent.tapped_policy == "untapped":
             tapped = False
+        replacement_selections = tuple(
+            thaw_value(value) for value in intent.replacement_selections
+        )
+        prepared_replacement = None
+        if intent.effect_entry_counters:
+            prepared_replacement = prepare_zone_change_replacement(
+                self,
+                card,
+                intent.destination,
+                destination_controller=intent.new_controller,
+                effect_entry_counters=intent.effect_entry_counters,
+                selections=replacement_selections,
+                error_type=GameRuleError,
+            )
+            replacement_selections = ()
         self.move_card(
             card.object_id,
             intent.destination,
@@ -326,10 +354,8 @@ class SemanticChoiceIntentHostMixin:
             tapped=tapped,
             reason=intent.reason,
             semantic_events=intent.semantic_events,
-            replacement_selections=tuple(
-                thaw_value(value)
-                for value in intent.replacement_selections
-            ),
+            replacement_selections=replacement_selections,
+            prepared_replacement=prepared_replacement,
         )
         return card.ref
 

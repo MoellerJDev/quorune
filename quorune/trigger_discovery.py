@@ -20,6 +20,12 @@ from .evolve import (
     EvolveCharacteristics,
     evolve_condition_holds,
 )
+from .death_return import (
+    DEATH_RETURN_EVENT_CONDITION_FIELD,
+    DeathReturnError,
+    death_return_condition_holds,
+    death_return_counter_snapshot,
+)
 from .model import CardInstance, StackItem
 from .semantics import SemanticProgram
 from .trigger_processing import enqueue_trigger_batch
@@ -287,6 +293,19 @@ def _semantic_condition_actual(
                 toughness=host._numeric_stat(entered.object_id, "toughness"),
             ),
         )
+    if field == DEATH_RETURN_EVENT_CONDITION_FIELD:
+        counter = condition.get("counter")
+        counters = context.get("death_return_counter_snapshot")
+        if counters is None:
+            counters = source.counters
+        if not isinstance(counters, Mapping):
+            raise GameRuleError(
+                "Death-return event requires last-known counter facts"
+            )
+        try:
+            return death_return_condition_holds(counters, str(counter or ""))
+        except DeathReturnError as exc:
+            raise GameRuleError(str(exc)) from exc
     if field.startswith("source_annotation."):
         return source.annotations.get(field.removeprefix("source_annotation."))
     if field == "source_active_face":
@@ -625,6 +644,27 @@ def dispatch_semantic_event(
                 )
                 return [item.ref for item in triggered]
             ref = host._next_ref("S")
+            stack_context = {
+                "event": event,
+                **copy.deepcopy(dict(context)),
+                **_trigger_attachment_context(host, source, program),
+                **(
+                    {"trigger_target_selection_pending": True}
+                    if program.target_schema
+                    else {}
+                ),
+            }
+            if (
+                isinstance(program.event_condition, Mapping)
+                and program.event_condition.get("field")
+                == DEATH_RETURN_EVENT_CONDITION_FIELD
+            ):
+                try:
+                    stack_context["death_return_counter_snapshot"] = dict(
+                        death_return_counter_snapshot(source.counters)
+                    )
+                except DeathReturnError as exc:
+                    raise GameRuleError(str(exc)) from exc
             item = StackItem(
                 stack_id=host._stable_runtime_id("stack", ref),
                 ref=ref,
@@ -634,16 +674,7 @@ def dispatch_semantic_event(
                 source_object_id=source.object_id,
                 semantic_key=program.key,
                 visibility=list(host.seats),
-                context={
-                    "event": event,
-                    **copy.deepcopy(dict(context)),
-                    **_trigger_attachment_context(host, source, program),
-                    **(
-                        {"trigger_target_selection_pending": True}
-                        if program.target_schema
-                        else {}
-                    ),
-                },
+                context=stack_context,
             )
             if (
                 trigger_batch is not None

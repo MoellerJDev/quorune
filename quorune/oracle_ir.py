@@ -45,6 +45,7 @@ from .compiler.fixed_numbers import fixed_number as _number
 from .compiler.keyword_templates import keyword_mechanics
 from .compiler.keyword_nodes import (
     closed_special_keyword_node,
+    death_return_keyword_node,
     dredge_keyword_node,
     evolve_keyword_node,
     fabricate_keyword_node,
@@ -76,7 +77,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v57"
+ORACLE_COMPILER_VERSION = "oracle-ir-v58"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -578,6 +579,16 @@ def _keyword_node_for_mechanics(
         residual_ids=residual_ids,
     ):
         return evolve
+    if death_return := death_return_keyword_node(
+        node_id=node_id,
+        line=line,
+        material_line=material_line,
+        span=span,
+        mechanics=mechanics,
+        gate=gate,
+        residual_ids=residual_ids,
+    ):
+        return death_return
     if dredge := dredge_keyword_node(
         node_id=node_id,
         line=line,

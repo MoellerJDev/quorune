@@ -1,5 +1,5 @@
 {
-  "contract_count": 83,
+  "contract_count": 85,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -380,6 +380,12 @@
       "version": 5
     },
     {
+      "mechanic_id": "persist",
+      "path": "mechanics/contracts/persist.json",
+      "sha256": "a2399152880651898009e22770dbf8e3aa973d8076e16991e0f6e9e5b88545d7",
+      "version": 1
+    },
+    {
       "mechanic_id": "cr-615-prevention-effects",
       "path": "mechanics/contracts/prevention-effects.json",
       "sha256": "057b9ffb22fd0564f951367653ed50ca3bcd4b496679927da735b57c9a5144f9",
@@ -474,6 +480,12 @@
       "path": "mechanics/contracts/unconditional-enters-tapped.json",
       "sha256": "45899d24ee8f2a00028a8ecbe878198fea75c39024dfd66a4c9e8b1733acbc16",
       "version": 3
+    },
+    {
+      "mechanic_id": "undying",
+      "path": "mechanics/contracts/undying.json",
+      "sha256": "c7dc31d6c916087e44c868bd37f8da548a2cfbd73c6af4f90ceb7a259ff98e57",
+      "version": 1
     },
     {
       "mechanic_id": "cr-502-untap-step",
@@ -3251,19 +3263,41 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/persist.json",
+      "contract_sha256": "a2399152880651898009e22770dbf8e3aa973d8076e16991e0f6e9e5b88545d7",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.death_return, quorune.compiler.keyword_nodes.death_return_keyword_node, quorune.trigger_discovery, quorune.semantic_choices.death_return, and the canonical zone/counter replacement tree",
+      "implementation_version": "typed-persist-entry-counter-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "granted, copied, and face-down Persist requires trusted typed ability fragments",
+        "Oracle-equivalent nonkeyword return wording remains unsupported",
+        "unrepresented zone and counter replacement families remain fail-closed",
+        "aggregate triggered abilities, counters, and replacement effects remain incomplete"
+      ],
       "mechanic_id": "persist",
       "official_name": "Persist",
       "rule_references": [
         "702.79"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_printed_persist_and_undying_lower_each_instance_with_exact_spans",
+        "test_unsupported_death_return_wording_remains_material_residual",
+        "test_persist_returns_under_owner_with_replacement_aware_counter",
+        "test_existing_minus_counter_prevents_persist_trigger",
+        "test_repeated_persist_instances_trigger_separately_but_only_one_returns",
+        "test_stale_or_departed_graveyard_incarnation_does_not_return",
+        "test_control_change_uses_trigger_controller_as_placing_player_and_owner_as_controller",
+        "test_zone_and_counter_replacements_complete_before_return_mutates",
+        "test_tokens_with_death_return_keywords_do_not_return",
+        "test_four_player_simultaneous_deaths_place_triggers_apnap_and_keep_choices_scoped",
+        "test_death_return_replacement_resume_replays_exactly",
+        "test_death_return_dependencies_and_compiler_mutation_fail_closed"
+      ],
       "trust_level": "untrusted"
     },
     {
@@ -4255,19 +4289,40 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/undying.json",
+      "contract_sha256": "c7dc31d6c916087e44c868bd37f8da548a2cfbd73c6af4f90ceb7a259ff98e57",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.death_return, quorune.compiler.keyword_nodes.death_return_keyword_node, quorune.trigger_discovery, quorune.semantic_choices.death_return, and the canonical zone/counter replacement tree",
+      "implementation_version": "typed-undying-entry-counter-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "granted, copied, and face-down Undying requires trusted typed ability fragments",
+        "Oracle-equivalent nonkeyword return wording remains unsupported",
+        "unrepresented zone and counter replacement families remain fail-closed",
+        "aggregate triggered abilities, counters, and replacement effects remain incomplete"
+      ],
       "mechanic_id": "undying",
       "official_name": "Undying",
       "rule_references": [
         "702.93"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_printed_persist_and_undying_lower_each_instance_with_exact_spans",
+        "test_unsupported_death_return_wording_remains_material_residual",
+        "test_undying_returns_with_plus_counter",
+        "test_existing_plus_counter_prevents_undying_trigger",
+        "test_stale_or_departed_graveyard_incarnation_does_not_return",
+        "test_control_change_uses_trigger_controller_as_placing_player_and_owner_as_controller",
+        "test_zone_and_counter_replacements_complete_before_return_mutates",
+        "test_tokens_with_death_return_keywords_do_not_return",
+        "test_four_player_simultaneous_deaths_place_triggers_apnap_and_keep_choices_scoped",
+        "test_death_return_replacement_resume_replays_exactly",
+        "test_death_return_dependencies_and_compiler_mutation_fail_closed"
+      ],
       "trust_level": "untrusted"
     },
     {

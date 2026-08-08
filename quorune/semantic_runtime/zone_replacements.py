@@ -6,6 +6,8 @@ from typing import Any, Mapping, Protocol, Sequence
 
 from ..entry_counters import (
     EntryCounterError,
+    EffectEntryCounter,
+    effect_entry_counter_effects,
     intrinsic_entry_counter_effects,
     intrinsic_entry_counters,
 )
@@ -385,18 +387,22 @@ def collect_zone_change_replacement_effects(
     return tuple(effects)
 
 
-def capture_zone_change_replacement_snapshot(
+def _validated_zone_change_snapshot_inputs(
     host: ZoneReplacementHost,
     changes: Sequence[tuple[str, str]],
     *,
-    destination_controllers: Mapping[str, str | None] | None = None,
-    entry_characteristics: Mapping[str, Mapping[str, Any]] | None = None,
-    sources: Sequence[Any] | None = None,
-    source_zones: Mapping[str, str] | None = None,
-    error_type: type[Exception] = ZoneReplacementError,
-) -> ZoneChangeReplacementSnapshot:
-    """Capture every represented source and affected object before mutation."""
-
+    destination_controllers: Mapping[str, str | None] | None,
+    entry_characteristics: Mapping[str, Mapping[str, Any]] | None,
+    effect_entry_counters: Mapping[
+        str, Sequence[EffectEntryCounter]
+    ] | None,
+    error_type: type[Exception],
+) -> tuple[
+    tuple[tuple[str, str], ...],
+    Mapping[str, str | None],
+    Mapping[str, Mapping[str, Any]],
+    Mapping[str, Sequence[EffectEntryCounter]],
+]:
     supplied = tuple(changes)
     if any(
         not isinstance(change, tuple)
@@ -412,26 +418,56 @@ def capture_zone_change_replacement_snapshot(
         raise error_type(
             "Zone replacement snapshots cannot repeat one object"
         )
-    destination_controllers = destination_controllers or {}
-    if set(destination_controllers) - set(object_ids):
+
+    controllers = destination_controllers or {}
+    characteristics = entry_characteristics or {}
+    effect_counters = effect_entry_counters or {}
+    if set(controllers) - set(object_ids):
         raise error_type(
             "Zone replacement destination controllers reference unknown objects"
         )
-    entry_characteristics = entry_characteristics or {}
-    if set(entry_characteristics) - set(object_ids):
+    if set(characteristics) - set(object_ids):
         raise error_type(
             "Zone replacement entry characteristics reference unknown objects"
         )
-    if any(
-        not isinstance(value, Mapping)
-        for value in entry_characteristics.values()
-    ):
+    if any(not isinstance(value, Mapping) for value in characteristics.values()):
         raise error_type(
             "Zone replacement entry characteristics must be mappings"
         )
+    if set(effect_counters) - set(object_ids):
+        raise error_type(
+            "Zone replacement effect entry counters reference unknown objects"
+        )
+    if any(
+        not isinstance(values, (list, tuple))
+        or any(not isinstance(value, EffectEntryCounter) for value in values)
+        for values in effect_counters.values()
+    ):
+        raise error_type(
+            "Zone replacement effect entry counters must be typed sequences"
+        )
+    if any(
+        counter.placing_player not in host.active_seats
+        for values in effect_counters.values()
+        for counter in values
+    ):
+        raise error_type(
+            "Zone replacement effect entry counter player is not active"
+        )
+    return supplied, controllers, characteristics, effect_counters
 
+
+def _zone_change_snapshot_subjects(
+    host: ZoneReplacementHost,
+    changes: Sequence[tuple[str, str]],
+    *,
+    destination_controllers: Mapping[str, str | None],
+    entry_characteristics: Mapping[str, Mapping[str, Any]],
+    effect_entry_counters: Mapping[str, Sequence[EffectEntryCounter]],
+    error_type: type[Exception],
+) -> tuple[ZoneChangeSubjectSnapshot, ...]:
     subjects: list[ZoneChangeSubjectSnapshot] = []
-    for object_id, destination in supplied:
+    for object_id, destination in changes:
         card = host.state.cards.get(object_id)
         if card is None:
             raise error_type(
@@ -446,17 +482,10 @@ def capture_zone_change_replacement_snapshot(
             card_types, subtypes, supertypes = host._type_parts(
                 str(characteristics.get("type_line") or "")
             )
-            types = tuple(
-                sorted({*card_types, *subtypes, *supertypes})
-            )
             destination_controller = (
                 destination_controllers[object_id]
                 if object_id in destination_controllers
-                else (
-                    card.controller
-                    if card.zone == "stack"
-                    else card.owner
-                )
+                else card.controller if card.zone == "stack" else card.owner
             )
             subjects.append(
                 ZoneChangeSubjectSnapshot(
@@ -476,7 +505,12 @@ def capture_zone_change_replacement_snapshot(
                         characteristics,
                         card_types=tuple(sorted(card_types)),
                     ),
-                    object_types=types,
+                    effect_entry_counters=tuple(
+                        effect_entry_counters.get(card.object_id, ())
+                    ),
+                    object_types=tuple(
+                        sorted({*card_types, *subtypes, *supertypes})
+                    ),
                     is_card_object=card.is_card_object,
                 )
             )
@@ -486,13 +520,21 @@ def capture_zone_change_replacement_snapshot(
             ZoneReplacementError,
         ) as exc:
             raise error_type(str(exc)) from exc
+    return tuple(subjects)
 
+
+def _active_zone_replacement_sources(
+    host: ZoneReplacementHost,
+    *,
+    sources: Sequence[Any] | None,
+    source_zones: Mapping[str, str] | None,
+) -> tuple[Any, ...]:
     candidates = (
         tuple(sources)
         if sources is not None
         else tuple(host._semantic_event_sources(zones={"battlefield"}))
     )
-    active_sources = tuple(
+    return tuple(
         source
         for source in candidates
         if (
@@ -506,33 +548,94 @@ def capture_zone_change_replacement_snapshot(
             and source.controller in host.active_seats
         )
     )
+
+
+def _zone_change_snapshot_effects(
+    host: ZoneReplacementHost,
+    subjects: Sequence[ZoneChangeSubjectSnapshot],
+    active_sources: Sequence[Any],
+) -> tuple[ReplacementEffect, ...]:
+    ambient_effects = collect_zone_change_replacement_effects(
+        host,
+        sources=active_sources,
+        source_zones={source.object_id: "battlefield" for source in active_sources},
+    )
+    intrinsic_effects = tuple(
+        effect
+        for subject in subjects
+        if subject.destination_controller is not None
+        for effect in intrinsic_entry_counter_effects(
+            object_ref=subject.object_ref,
+            destination_controller=subject.destination_controller,
+            counters=subject.intrinsic_entry_counters,
+        )
+    )
+    generated_effects = tuple(
+        effect
+        for subject in subjects
+        for effect in effect_entry_counter_effects(
+            object_ref=subject.object_ref,
+            counters=subject.effect_entry_counters,
+        )
+    )
+    return tuple(
+        sorted(
+            (*ambient_effects, *intrinsic_effects, *generated_effects),
+            key=lambda effect: effect.effect_id,
+        )
+    )
+
+
+def capture_zone_change_replacement_snapshot(
+    host: ZoneReplacementHost,
+    changes: Sequence[tuple[str, str]],
+    *,
+    destination_controllers: Mapping[str, str | None] | None = None,
+    entry_characteristics: Mapping[str, Mapping[str, Any]] | None = None,
+    effect_entry_counters: Mapping[
+        str, Sequence[EffectEntryCounter]
+    ] | None = None,
+    sources: Sequence[Any] | None = None,
+    source_zones: Mapping[str, str] | None = None,
+    error_type: type[Exception] = ZoneReplacementError,
+) -> ZoneChangeReplacementSnapshot:
+    """Capture every represented source and affected object before mutation."""
+
+    (
+        supplied,
+        controllers,
+        characteristics,
+        effect_counters,
+    ) = _validated_zone_change_snapshot_inputs(
+        host,
+        changes,
+        destination_controllers=destination_controllers,
+        entry_characteristics=entry_characteristics,
+        effect_entry_counters=effect_entry_counters,
+        error_type=error_type,
+    )
+    subjects = _zone_change_snapshot_subjects(
+        host,
+        supplied,
+        destination_controllers=controllers,
+        entry_characteristics=characteristics,
+        effect_entry_counters=effect_counters,
+        error_type=error_type,
+    )
+    active_sources = _active_zone_replacement_sources(
+        host,
+        sources=sources,
+        source_zones=source_zones,
+    )
     try:
-        ambient_effects = collect_zone_change_replacement_effects(
-            host,
-            sources=active_sources,
-            source_zones={source.object_id: "battlefield" for source in active_sources},
-        )
-        intrinsic_effects = tuple(
-            effect
-            for subject in subjects
-            if subject.destination_controller is not None
-            for effect in intrinsic_entry_counter_effects(
-                object_ref=subject.object_ref,
-                destination_controller=subject.destination_controller,
-                counters=subject.intrinsic_entry_counters,
-            )
-        )
         return ZoneChangeReplacementSnapshot(
             revision=host.state.revision,
             event_sequence=host.state.event_sequence,
             apnap_order=tuple(host.apnap_order()),
             source_refs=tuple(source.ref for source in active_sources),
-            subjects=tuple(subjects),
-            effects=tuple(
-                sorted(
-                    (*ambient_effects, *intrinsic_effects),
-                    key=lambda effect: effect.effect_id,
-                )
+            subjects=subjects,
+            effects=_zone_change_snapshot_effects(
+                host, subjects, active_sources
             ),
         )
     except (SemanticNodeError, ZoneReplacementError) as exc:
@@ -606,6 +709,7 @@ def prepare_zone_change_replacement(
     source_zones: Mapping[str, str] | None = None,
     destination_controller: str | None = None,
     entry_characteristics: Mapping[str, Any] | None = None,
+    effect_entry_counters: Sequence[EffectEntryCounter] = (),
     selections: Sequence[str | None | Mapping[str, Any]] = (),
     prepared: PreparedZoneChange | None = None,
     error_type: type[Exception] = ZoneReplacementError,
@@ -640,6 +744,11 @@ def prepare_zone_change_replacement(
             if entry_characteristics is not None
             else None
         ),
+        effect_entry_counters=(
+            {card.object_id: tuple(effect_entry_counters)}
+            if effect_entry_counters
+            else None
+        ),
         sources=sources,
         source_zones=source_zones,
         selections=selections,
@@ -657,6 +766,9 @@ def prepare_zone_change_replacement_batch(
     entry_characteristics: Mapping[
         str, Mapping[str, Any]
     ] | None = None,
+    effect_entry_counters: Mapping[
+        str, Sequence[EffectEntryCounter]
+    ] | None = None,
     selections: Sequence[str | None | Mapping[str, Any]] = (),
     error_type: type[Exception] = ZoneReplacementError,
 ) -> dict[str, PreparedZoneChange]:
@@ -667,6 +779,7 @@ def prepare_zone_change_replacement_batch(
         changes,
         destination_controllers=destination_controllers,
         entry_characteristics=entry_characteristics,
+        effect_entry_counters=effect_entry_counters,
         sources=sources,
         source_zones=source_zones,
         error_type=error_type,
