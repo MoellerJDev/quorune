@@ -229,6 +229,7 @@ class PersistUndyingCompilerTests(unittest.TestCase):
                     == f"{mechanic}-death-return-counter-v1"
                 ]
                 self.assertEqual(2, len(programs))
+                self.assertEqual(2, len({program.key for program in programs}))
                 self.assertTrue(all(program.capability_closure["trusted"] for program in programs))
 
     def test_unsupported_death_return_wording_remains_material_residual(self):
@@ -370,12 +371,16 @@ class PersistUndyingRuntimeTests(unittest.TestCase):
         repeated: bool = False,
     ):
         record = self.db.by_oracle_id(source.oracle_id)
-        if repeated:
-            record = replace(
-                record,
-                oracle_text=f"{mechanic}, {mechanic}",
-                keywords=(mechanic,),
-            )
+        # Runtime fixtures grant only the keyword under test to the chosen
+        # creature body.  Isolating its Oracle line prevents unrelated printed
+        # abilities on a high-toughness body from becoming trust prerequisites.
+        record = replace(
+            record,
+            oracle_text=(
+                f"{mechanic}, {mechanic}" if repeated else mechanic
+            ),
+            keywords=(mechanic,),
+        )
         for program in tuple(engine.semantics.programs_for_oracle(source.oracle_id)):
             if program.event == "creature.dies.self":
                 engine.semantics.remove(program.key)
@@ -432,7 +437,7 @@ class PersistUndyingRuntimeTests(unittest.TestCase):
         session = self.session(7027901)
         engine = session.engine
         source = self.add_card(
-            engine, seat="A", name="Putrid Goblin", ref="persist-source"
+            engine, seat="A", name="Protean Hulk", ref="persist-source"
         )
         self.add_card(
             engine,
@@ -499,6 +504,7 @@ class PersistUndyingRuntimeTests(unittest.TestCase):
             mechanic="Persist",
             repeated=True,
         )
+        self.assertEqual(2, len({program.key for program in programs}))
         self.die(engine, source)
         self.assertEqual("trigger.order", engine.state.pending_decision.kind)
         refs = [item.ref for item in engine.state.pending_trigger_batches[0].items]
@@ -580,7 +586,7 @@ class PersistUndyingRuntimeTests(unittest.TestCase):
     def test_zone_and_counter_replacements_complete_before_return_mutates(self):
         for offset, (name, mechanic, counter) in enumerate(
             (
-                ("Putrid Goblin", "Persist", "-1/-1"),
+                ("Protean Hulk", "Persist", "-1/-1"),
                 ("Young Wolf", "Undying", "+1/+1"),
             )
         ):
@@ -719,7 +725,7 @@ class PersistUndyingRuntimeTests(unittest.TestCase):
 
     def test_death_return_replacement_resume_replays_exactly(self):
         for offset, (name, mechanic) in enumerate(
-            (("Putrid Goblin", "Persist"), ("Young Wolf", "Undying"))
+            (("Protean Hulk", "Persist"), ("Young Wolf", "Undying"))
         ):
             with self.subTest(mechanic=mechanic):
                 session = self.session(7027910 + offset, players=4)

@@ -1727,7 +1727,7 @@
           "module": "quorune.effect_runtime.zones_and_attachments"
         }
       ],
-      "internal_edges": 1186,
+      "internal_edges": 1187,
       "modules": [
         {
           "fan_in": 2,
@@ -2156,7 +2156,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 7,
+          "fan_out": 8,
           "module": "quorune.compiler.program_generation"
         },
         {
@@ -2295,7 +2295,7 @@
           "module": "quorune.damage_values"
         },
         {
-          "fan_in": 4,
+          "fan_in": 5,
           "fan_out": 1,
           "module": "quorune.death_return"
         },
@@ -3701,7 +3701,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 120238,
+      "logical_lines": 120240,
       "methods": {
         "dunder": 313,
         "private": 677,
@@ -3888,8 +3888,8 @@
           "file": "quorune/compiler/program_generation.py",
           "functions_and_methods": 31,
           "language": "python",
-          "logical_lines": 887,
-          "physical_lines": 1000
+          "logical_lines": 889,
+          "physical_lines": 1002
         },
         {
           "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
@@ -6410,7 +6410,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 131403,
+      "physical_lines": 131405,
       "python_file_count": 312,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -10809,7 +10809,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:600",
+            "quorune/compiler/program_generation.py:602",
             "quorune/oracle_ir.py:1494"
           ]
         },
@@ -10833,7 +10833,7 @@
             "quorune/compiler/dependency_gate.py:10",
             "quorune/compiler/draw_templates.py:6",
             "quorune/compiler/keyword_nodes.py:17",
-            "quorune/compiler/program_generation.py:10",
+            "quorune/compiler/program_generation.py:11",
             "quorune/compiler/unlock_frontier.py:13",
             "quorune/oracle_ir.py:73",
             "quorune/preflight.py:28",
@@ -10845,7 +10845,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:600",
+            "quorune/compiler/program_generation.py:602",
             "quorune/oracle_ir.py:1494"
           ]
         },
@@ -10892,7 +10892,7 @@
             "quorune/engine.py:30"
           ],
           "register_generated_programs": [
-            "quorune/compiler/program_generation.py:866",
+            "quorune/compiler/program_generation.py:868",
             "quorune/oracle_ir.py:1517",
             "quorune/preflight.py:16",
             "quorune/session.py:14"
@@ -11335,7 +11335,7 @@
           "maintenance": "generated",
           "status": "generated",
           "title": "Platform implementation status",
-          "verified": "a0499dc1b7f7b4e1987e06b9ea8d66f927d693797f0f1d2237a4cf17ae507390"
+          "verified": "7035250fea4ccad21d710659ce58284bf82d0de5a668fa04dd792dda95a8f265"
         },
         "metadata_complete": true,
         "missing_metadata": [],
