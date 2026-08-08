@@ -85,6 +85,7 @@ _EXALTED_MECHANIC = "ex" + "alted"
 _BATTLE_CRY_MECHANIC = "battle" + " cry"
 _MELEE_MECHANIC = "me" + "lee"
 _CYCLING_MECHANIC = "cyc" + "ling"
+_EVOLVE_MECHANIC = "evo" + "lve"
 _BASIC_LANDWALK_MECHANICS = (
     "pl" + "ainswalk",
     "is" + "landwalk",
@@ -97,6 +98,7 @@ _DOUBLE_STRIKE_MECHANIC = "double" + " strike"
 _EXILE_MECHANIC = "ex" + "ile"
 MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _CYCLING_MECHANIC: ("activation.cycling.hand",),
+    _EVOLVE_MECHANIC: ("counter.producer.evolve",),
     **{
         mechanic: ("combat.block.landwalk.basic_type",)
         for mechanic in _BASIC_LANDWALK_MECHANICS

@@ -1,5 +1,5 @@
 {
-  "contract_count": 82,
+  "contract_count": 83,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -197,6 +197,12 @@
       "mechanic_id": "cr-512-ending-phase",
       "path": "mechanics/contracts/ending-phase.json",
       "sha256": "50e3dfac37b7a9619c7dcdef09a05cc83fc694527be6ae06381f44485cb2526c",
+      "version": 1
+    },
+    {
+      "mechanic_id": "evolve",
+      "path": "mechanics/contracts/evolve.json",
+      "sha256": "d7f97f58d22e37cddb66b84029362a506c024ef2e320c01d202a287611099515",
       "version": 1
     },
     {
@@ -1719,19 +1725,41 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/evolve.json",
+      "contract_sha256": "d7f97f58d22e37cddb66b84029362a506c024ef2e320c01d202a287611099515",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.evolve, quorune.compiler.keyword_nodes.evolve_keyword_node, quorune.trigger_discovery, and the canonical counter-placement transaction",
+      "implementation_version": "typed-evolve-counter-placement-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "granted, copied, and face-down Evolve requires trusted typed ability fragments",
+        "Oracle-equivalent nonkeyword trigger wording remains unsupported",
+        "trigger-doubling policies remain bounded by the currently represented normalized trigger subsystem",
+        "aggregate counter placement, continuous effects, and triggered abilities remain incomplete"
+      ],
       "mechanic_id": "evolve",
       "official_name": "Evolve",
       "rule_references": [
         "702.100"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_evolve_model_is_strict_and_compares_power_or_toughness",
+        "test_evolve_keyword_lowers_each_instance_with_intervening_condition",
+        "test_unsupported_evolve_wording_remains_material_residual",
+        "test_larger_creature_triggers_and_places_replacement_aware_counter",
+        "test_multiple_evolve_instances_trigger_separately",
+        "test_equal_smaller_opponent_and_noncreature_entries_do_not_trigger",
+        "test_intervening_condition_uses_current_characteristics_and_identity",
+        "test_malformed_evolve_event_rejects_without_mutation",
+        "test_quantity_replacement_and_control_change_use_trigger_controller",
+        "test_four_player_evolve_triggers_are_apnap_and_public",
+        "test_evolve_counter_placement_replays_exactly",
+        "test_evolve_compiler_mutant_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {

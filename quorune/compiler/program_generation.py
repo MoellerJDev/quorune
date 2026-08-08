@@ -32,6 +32,7 @@ from ..semantics import SemanticProgram, SemanticRegistry
 from ..util import stable_json
 
 
+_EVOLVE_MECHANIC = "evo" + "lve"
 _EXILE_MECHANIC = "exile"
 
 
@@ -141,7 +142,21 @@ def _generated_ability_id(
     if kind in {"activated_ability", "mana_ability"}:
         return f"ability:ab{line}"
     if kind == "triggered_ability":
-        return f"trigger:{face_id}:n{line}"
+        base = f"trigger:{face_id}:n{line}"
+        # Most Oracle lines contain one triggered ability, so preserve their
+        # long-lived IDs.  A repeated keyword can nevertheless create more
+        # than one independent trigger on the same source line (for example,
+        # multiple instances of Evolve).  The IR node carries a canonical
+        # ``:<family>:<occurrence>`` suffix for that case; retain it so one
+        # generated program cannot overwrite its sibling in the registry.
+        parts = str(node_id or "").split(":")
+        if (
+            len(parts) >= 2
+            and parts[-1].isdigit()
+            and parts[-2] == _EVOLVE_MECHANIC
+        ):
+            return f"{base}:{parts[-2]}:{parts[-1]}"
+        return base
     if static_declaration:
         if str(node_id or "").endswith(":flash"):
             return f"static:{face_id}:n{line}:flash"
@@ -724,6 +739,7 @@ def generated_programs(
                             kind=node.kind,
                             runtime_handler=runtime_handler_declaration,
                         ),
+                        *node.runtime_coverage,
                         *represented_mechanics,
                     ],
                     capability_dependencies=list(

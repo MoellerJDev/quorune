@@ -148,6 +148,22 @@ def keyword_dependency_gate(
             blockers=("mechanic:fabricate-unsupported-wording",),
             capabilities=("counter.producer.fabricate",),
         )
+    if mechanics == (_EVOLVE_MECHANIC,):
+        instances = tuple(
+            part
+            for part in material_line.rstrip(".").split(",")
+            if part.strip().casefold() == _EVOLVE_MECHANIC
+        )
+        if instances:
+            return explicit_capability_gate(
+                "counter.producer.evolve",
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+            )
+        return DependencyGate(
+            blockers=("mechanic:evolve-unsupported-wording",),
+            capabilities=("counter.producer.evolve",),
+        )
     if mechanics == ("enchant",) and parse_simple_enchant_line(
         material_line
     ) is not None:
@@ -210,3 +226,4 @@ __all__ = [
 
 _DREDGE_MECHANIC = "dred" + "ge"
 _FABRICATE_MECHANIC = "fabri" + "cate"
+_EVOLVE_MECHANIC = "evo" + "lve"

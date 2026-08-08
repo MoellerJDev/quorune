@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 61,
+  "registry_version": 62,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -747,6 +747,33 @@
       "dependency_fail_closed_rationale": "The card-form compiler refuses trusted promotion when the canonical counter-placement quantity replacement dependency is blocked.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "The focused mutation removes intrinsic entry-counter effect generation and the ordinary Planeswalker entry assertion rejects the surviving zero-counter result.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.evolve",
+      "version": 1,
+      "official_rules": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve each printed Evolve instance as an independently checked creature-entry trigger using current effective power and toughness, then place one +1/+1 counter through the canonical replacement-aware counter owner.",
+        "inputs": ["one printed Evolve keyword instance", "normalized creature-entry event", "current source and entered-creature logical incarnations", "current effective creature types, power, and toughness", "trigger controller captured at trigger time"],
+        "outputs": ["one trigger per Evolve instance", "trigger-time and resolution-time intervening-if checks", "replacement-aware +1/+1 counter placement on the current source incarnation", "APNAP trigger placement", "exact replay"],
+        "exclusions": ["granted Evolve outside trusted typed ability fragments", "Oracle-equivalent nonkeyword trigger wording", "unsupported power or toughness characteristic evaluation", "counter-placement replacement families outside the canonical represented owner", "trigger-doubling policies beyond the currently represented normalized trigger subsystem"]
+      },
+      "dependencies": ["counter.producer.fixed_effect", "trigger.event.normalized_zone_change", "trigger.placement.apnap"],
+      "implementation_components": ["quorune.evolve.EvolveCharacteristics", "quorune.evolve.evolve_condition_holds", "quorune.compiler.keyword_nodes.evolve_keyword_node", "quorune.trigger_discovery.semantic_event_condition_matches", "quorune.semantic_runtime.counter_placement_handlers.FixedCounterPlacementHandler", "quorune.counter_placement.place_counters_on_refs"],
+      "positive_tests": ["test_evolve_model_is_strict_and_compares_power_or_toughness", "test_evolve_keyword_lowers_each_instance_with_intervening_condition", "test_larger_creature_triggers_and_places_replacement_aware_counter", "test_multiple_evolve_instances_trigger_separately"],
+      "negative_tests": ["test_equal_smaller_opponent_and_noncreature_entries_do_not_trigger", "test_intervening_condition_uses_current_characteristics_and_identity", "test_malformed_evolve_event_rejects_without_mutation", "test_unsupported_evolve_wording_remains_material_residual"],
+      "interaction_tests": ["test_quantity_replacement_and_control_change_use_trigger_controller"],
+      "multiplayer_tests": ["test_four_player_evolve_triggers_are_apnap_and_public"],
+      "privacy_tests": ["test_four_player_evolve_triggers_are_apnap_and_public"],
+      "replay_tests": ["test_evolve_counter_placement_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The generated Evolve node cannot become trusted when fixed counter placement, normalized zone-change triggers, or APNAP trigger placement is blocked.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler mutant removes Evolve lowering and the assertion rejects the absence of the typed creature-entry trigger and counter effect.",
       "blockers": [],
       "status": "trusted"
     },

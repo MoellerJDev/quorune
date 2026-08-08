@@ -2439,6 +2439,110 @@
       "applicability_note": "Replay replacement selection, staged payment refusal, and sacrifice to the identical final authoritative hash."
     },
     {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_quantity_replacement_and_control_change_use_trigger_controller",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose Evolve with the canonical counter quantity-replacement owner and preserve the trigger controller when control of the source changes before resolution."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_four_player_evolve_triggers_are_apnap_and_public",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Collect simultaneous Evolve triggers in ordinary four-player APNAP order while exposing only public source and entrant facts."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_evolve_counter_placement.EvolveCompilerTests.test_evolve_compiler_mutant_is_killed",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a compiler mutant that removes the typed Evolve trigger and leaves the keyword outside exact CardProgram lowering."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "negative",
+      "test_id": "tests.test_evolve_counter_placement.EvolveCompilerTests.test_unsupported_evolve_wording_remains_material_residual",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep valued and noncanonical Evolve wording outside the closed printed-keyword grammar as a precise material residual."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "negative",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_equal_smaller_opponent_and_noncreature_entries_do_not_trigger",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject entries that are equal or smaller, are not creatures, or are not controlled by the Evolve source's controller."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "negative",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_intervening_condition_uses_current_characteristics_and_identity",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Recheck current effective characteristics and both logical incarnations on resolution, countering the trigger when the intervening condition no longer holds."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "negative",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_malformed_evolve_event_rejects_without_mutation",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed or boolean-valued normalized Evolve event identities before trigger placement and without authoritative mutation."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "positive",
+      "test_id": "tests.test_evolve_counter_placement.EvolveCompilerTests.test_evolve_keyword_lowers_each_instance_with_intervening_condition",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower each printed Evolve instance to its own source-spanned normalized creature-entry trigger with typed condition and counter effect."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "positive",
+      "test_id": "tests.test_evolve_counter_placement.EvolveCompilerTests.test_evolve_model_is_strict_and_compares_power_or_toughness",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Validate exact typed creature, power, and toughness inputs and accept a strict increase in either characteristic."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "positive",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_larger_creature_triggers_and_places_replacement_aware_counter",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Create the normalized Evolve trigger for a larger creature and resolve one +1/+1 counter through the canonical transaction."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "positive",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_multiple_evolve_instances_trigger_separately",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Create and resolve one independently identified trigger for each printed Evolve instance on the source."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_four_player_evolve_triggers_are_apnap_and_public",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project public Evolve sources, entrants, and triggers without disclosing unrelated opposing hand cards."
+    },
+    {
+      "capability_id": "counter.producer.evolve",
+      "evidence_class": "replay",
+      "test_id": "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_evolve_counter_placement_replays_exactly",
+      "official_rule_ids": ["122.1", "122.6", "603.4", "603.6a", "702.100", "702.100a", "702.100b", "702.100c", "702.100d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the source-pinned Evolve trigger and canonical counter placement to the identical authoritative state hash."
+    },
+    {
       "capability_id": "counter.producer.fabricate",
       "evidence_class": "interaction",
       "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_counter_resume_executes_later_typed_completion_intents_once",
