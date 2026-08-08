@@ -43,6 +43,11 @@ MUTATION_TESTS = {
         "CumulativeUpkeepCompilerTests."
         "test_dependency_and_compiler_mutations_fail_closed"
     ),
+    "counter.producer.evolve": (
+        "tests.test_evolve_counter_placement."
+        "EvolveCompilerTests."
+        "test_evolve_compiler_mutant_is_killed"
+    ),
     "counter.producer.intrinsic_entry": (
         "tests.test_intrinsic_entry_counters."
         "IntrinsicEntryCounterTests."

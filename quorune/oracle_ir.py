@@ -46,7 +46,9 @@ from .compiler.keyword_templates import keyword_mechanics
 from .compiler.keyword_nodes import (
     closed_special_keyword_node,
     dredge_keyword_node,
+    evolve_keyword_node,
     fabricate_keyword_node,
+    keyword_node_plans,
 )
 from .compiler.ir_model import (
     append_residual as _residual,
@@ -74,9 +76,8 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v56"
+ORACLE_COMPILER_VERSION = "oracle-ir-v57"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
-_FABRICATE_MECHANIC = "fabri" + "cate"
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
     re.IGNORECASE,
@@ -567,6 +568,16 @@ def _keyword_node_for_mechanics(
         residual_ids=residual_ids,
     ):
         return fabricate
+    if evolve := evolve_keyword_node(
+        node_id=node_id,
+        line=line,
+        material_line=material_line,
+        span=span,
+        mechanics=mechanics,
+        gate=gate,
+        residual_ids=residual_ids,
+    ):
+        return evolve
     if dredge := dredge_keyword_node(
         node_id=node_id,
         line=line,
@@ -635,44 +646,26 @@ def _keyword_nodes(
     if mechanics is None:
         return ()
 
-    def build(
-        selected: tuple[str, ...], *, selected_node_id: str
-    ) -> OracleNode:
-        return _keyword_node_for_mechanics(
-            node_id=selected_node_id,
-            line=line,
-            material_line=material_line,
-            span=span,
-            mechanics=selected,
+    return tuple(
+        _keyword_node_for_mechanics(
+            node_id=plan.node_id,
+            line=plan.line,
+            material_line=plan.material_line,
+            span=plan.span,
+            mechanics=plan.mechanics,
             trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry,
             capability_profile=capability_profile,
             residuals=residuals,
         )
-
-    split_mechanics = tuple(
-        mechanic
-        for mechanic in (PRINTED_FLASH_MECHANIC, _FABRICATE_MECHANIC)
-        if mechanic in mechanics
-    )
-    if not split_mechanics:
-        return (build(mechanics, selected_node_id=node_id),)
-
-    result = [
-        build(
-            (mechanic,),
-            selected_node_id=f"{node_id}:{mechanic}",
+        for plan in keyword_node_plans(
+            node_id=node_id,
+            line=line,
+            material_line=material_line,
+            span=span,
+            mechanics=mechanics,
         )
-        for mechanic in split_mechanics
-    ]
-    remaining = tuple(
-        mechanic
-        for mechanic in mechanics
-        if mechanic not in split_mechanics
     )
-    if remaining:
-        result.append(build(remaining, selected_node_id=node_id))
-    return tuple(result)
 
 
 def _runtime_handler_node(

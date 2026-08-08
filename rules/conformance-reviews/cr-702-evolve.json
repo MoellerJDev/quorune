@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.100 — Evolve",
+  "cases": [
+    {
+      "rule_id": "702.100",
+      "rule_text_sha256": "ebeb9bde8b6eb4ea464d22b8cf2e803d08f72172c36b10f3cb52c5b30823102c",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.capabilities.CapabilityRegistry"],
+      "executable_test_ids": ["tests.test_evolve_counter_placement.EvolveCompilerTests.test_evolve_keyword_lowers_each_instance_with_intervening_condition"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded ordinary printed family is owned by counter.producer.evolve."]
+    },
+    {
+      "rule_id": "702.100a",
+      "rule_text_sha256": "2035308c398d6356fdc825a29026eb79a0a4db7175a2a14a9b8aea3fae21b121",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.evolve.evolve_condition_holds", "quorune.compiler.keyword_nodes.evolve_keyword_node", "quorune.trigger_discovery.semantic_event_condition_matches", "quorune.counter_placement.place_counters_on_refs"],
+      "executable_test_ids": ["tests.test_evolve_counter_placement.EvolveRuntimeTests.test_larger_creature_triggers_and_places_replacement_aware_counter", "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_intervening_condition_uses_current_characteristics_and_identity", "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_quantity_replacement_and_control_change_use_trigger_controller", "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_evolve_counter_placement_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["granted, copied, and face-down Evolve does not yet propagate through the typed ability-fragment boundary", "Oracle-equivalent nonkeyword trigger wording remains outside the closed compiler grammar", "aggregate triggered-ability and characteristic-effect coverage remains incomplete"],
+      "notes": ["Each represented printed Evolve instance observes normalized creature entry, checks current effective creature types and power/toughness at trigger creation and resolution, and places its counter through the canonical replacement-aware transaction."]
+    },
+    {
+      "rule_id": "702.100b",
+      "rule_text_sha256": "0739a3df7c7e996345cf077a500cf10bd878e32c45d89262b2812adc728687c8",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.counter_placement.place_counters_on_refs"],
+      "executable_test_ids": ["tests.test_evolve_counter_placement.EvolveRuntimeTests.test_larger_creature_triggers_and_places_replacement_aware_counter", "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_quantity_replacement_and_control_change_use_trigger_controller"],
+      "required_scenarios": ["positive", "interaction"],
+      "covered_scenarios": ["positive", "interaction"],
+      "blockers": ["the derived creature-evolves event consumed by other abilities is not yet represented as a typed result event"],
+      "notes": ["The counter result is canonical and replacement aware, but downstream abilities that ask whether a creature evolved remain outside this slice."]
+    },
+    {
+      "rule_id": "702.100c",
+      "rule_text_sha256": "47ad4dfe6055b7d358d5ce580beb0e6987610d8659a3d55677afc8e96cd52c37",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["quorune.evolve.EvolveCharacteristics", "quorune.evolve.evolve_condition_holds", "quorune.trigger_discovery.semantic_event_condition_matches"],
+      "executable_test_ids": ["tests.test_evolve_counter_placement.EvolveCompilerTests.test_evolve_model_is_strict_and_compares_power_or_toughness", "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_equal_smaller_opponent_and_noncreature_entries_do_not_trigger", "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_intervening_condition_uses_current_characteristics_and_identity"],
+      "required_scenarios": ["positive", "negative"],
+      "covered_scenarios": ["positive", "negative"],
+      "blockers": [],
+      "notes": ["A current noncreature source or entering noncreature cannot satisfy either greater-characteristic comparison."]
+    },
+    {
+      "rule_id": "702.100d",
+      "rule_text_sha256": "1b12ba0d65f14b22340efac2df8025301a56e34f25de83532cbc7c8c64364c07",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.oracle_ir._keyword_nodes", "quorune.compiler.program_generation._generated_ability_id"],
+      "executable_test_ids": ["tests.test_evolve_counter_placement.EvolveCompilerTests.test_evolve_keyword_lowers_each_instance_with_intervening_condition", "tests.test_evolve_counter_placement.EvolveRuntimeTests.test_multiple_evolve_instances_trigger_separately"],
+      "required_scenarios": ["positive", "replay"],
+      "covered_scenarios": ["positive"],
+      "blockers": ["multiple granted or copied Evolve instances are not yet propagated through the typed ability-fragment boundary", "a focused repeated-instance replay fixture is not yet present"],
+      "notes": ["Repeated printed instances receive distinct source spans, generated ability identities, and independently resolving triggers; broader ability propagation and replay evidence remain blocked."]
+    }
+  ]
+}

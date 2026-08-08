@@ -55,6 +55,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/continuous_effect_model.py",
         "quorune/enchant_spec.py",
         "quorune/entry_counter_model.py",
+        "quorune/evolve.py",
         "quorune/model.py",
         "quorune/object_predicate.py",
         "quorune/prevention_triggers.py",
@@ -315,6 +316,7 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/entry_counter_coordination.py",
         "quorune/entry_counters.py",
         "quorune/entry_counter_model.py",
+        "quorune/evolve.py",
     }:
         return "counter_placement"
     if relative == "quorune/cumulative_upkeep.py":

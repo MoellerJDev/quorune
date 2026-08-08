@@ -15,6 +15,11 @@ from .attachment_references import (
     required_attachment_relation,
 )
 from .errors import GameRuleError
+from .evolve import (
+    EVOLVE_EVENT_CONDITION_FIELD,
+    EvolveCharacteristics,
+    evolve_condition_holds,
+)
 from .model import CardInstance, StackItem
 from .semantics import SemanticProgram
 from .trigger_processing import enqueue_trigger_batch
@@ -105,6 +110,8 @@ class TriggerDiscoveryHost(Protocol):
     def _resolve_object(
         self, actor: str, ref: str, *, zones: set[str]
     ) -> CardInstance: ...
+
+    def _numeric_stat(self, object_id: str, stat: str) -> int: ...
 
     def card_record(self, card: CardInstance) -> Any: ...
 
@@ -214,6 +221,71 @@ def _semantic_condition_actual(
                     controlled_values.append(value)
         return bool(
             controlled_values and max(controlled_values) == max(all_values)
+        )
+    if field == EVOLVE_EVENT_CONDITION_FIELD:
+        expected_source_identity = context.get("source_logical_object_id")
+        resolving = expected_source_identity is not None
+        if resolving and (
+            type(expected_source_identity) is not str
+            or not expected_source_identity
+        ):
+            raise GameRuleError(
+                "Evolve source logical identity must be a nonempty string"
+            )
+        if (
+            source.zone != "battlefield"
+            or source.phased_out
+            or (
+                resolving
+                and source.logical_object_id != expected_source_identity
+            )
+        ):
+            return False
+        entered_ref = context.get("card")
+        entered_incarnation = context.get("card_zone_change_counter")
+        if type(entered_ref) is not str or not entered_ref:
+            raise GameRuleError("Evolve event requires an entered card ref")
+        if (
+            type(entered_incarnation) is not int
+            or entered_incarnation < 0
+        ):
+            raise GameRuleError(
+                "Evolve event requires a nonnegative zone-change counter"
+            )
+        entered = next(
+            (
+                card
+                for card in host.state.cards.values()
+                if card.ref == entered_ref
+            ),
+            None,
+        )
+        if (
+            entered is None
+            or entered.zone != "battlefield"
+            or entered.phased_out
+            or entered.zone_change_counter != entered_incarnation
+        ):
+            return False
+        if not resolving and context.get("controller") != source.controller:
+            return False
+        source_types, _, _ = host._type_parts(
+            str(host._effective_card_data(source).get("type_line") or "")
+        )
+        entered_types, _, _ = host._type_parts(
+            str(host._effective_card_data(entered).get("type_line") or "")
+        )
+        return evolve_condition_holds(
+            EvolveCharacteristics(
+                is_creature="creature" in source_types,
+                power=host._numeric_stat(source.object_id, "power"),
+                toughness=host._numeric_stat(source.object_id, "toughness"),
+            ),
+            EvolveCharacteristics(
+                is_creature="creature" in entered_types,
+                power=host._numeric_stat(entered.object_id, "power"),
+                toughness=host._numeric_stat(entered.object_id, "toughness"),
+            ),
         )
     if field.startswith("source_annotation."):
         return source.annotations.get(field.removeprefix("source_annotation."))

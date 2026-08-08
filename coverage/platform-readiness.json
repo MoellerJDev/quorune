@@ -32,7 +32,7 @@
     "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete"
   ],
   "generated": {
-    "evaluated_source_tree_hash": "cd8e15c07c4921fb41810807e1b78d990c0496a21151ee2347cff3793cfe58f6",
+    "evaluated_source_tree_hash": "c3a94123fd21b9aca36cfd8f50180c3717278e7c44cb29c571d301646963807c",
     "generator": "scripts/update_platform_status.py",
     "source": "platform/readiness-source.json",
     "source_tree_fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3",
@@ -479,10 +479,10 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 46969,
+      "material_residuals": 46947,
       "status_counts": {
-        "exact": 2338,
-        "partial": 13304,
+        "exact": 2345,
+        "partial": 13297,
         "unresolved": 15981
       },
       "total": 31623
@@ -493,28 +493,28 @@
     "mechanics": {
       "status_counts": {
         "partial": 60,
-        "tested": 17,
+        "tested": 18,
         "trusted": 5,
-        "unclassified": 343
+        "unclassified": 342
       },
       "total": 425,
       "trusted": 5
     },
     "oracle": {
-      "material_residuals": 54611,
+      "material_residuals": 54588,
       "status_counts": {
-        "exact": 5303,
-        "partial": 14458,
+        "exact": 5310,
+        "partial": 14451,
         "unresolved": 18862
       },
       "total": 38623
     },
     "rules": {
-      "blocked": 385,
-      "definition_only": 125,
-      "passing": 212,
+      "blocked": 388,
+      "definition_only": 126,
+      "passing": 213,
       "total": 3300,
-      "unreviewed": 2578
+      "unreviewed": 2573
     },
     "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
   },
@@ -539,7 +539,7 @@
     }
   },
   "tests": {
-    "deterministic_cases_discovered": 5378,
+    "deterministic_cases_discovered": 5391,
     "migration_files": 1,
     "schema_files": 18,
     "server_files": 5,
@@ -549,31 +549,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 46972,
+        "material_residuals": 46950,
         "status_counts": {
-          "residual": 29285,
-          "trusted": 2338
+          "residual": 29278,
+          "trusted": 2345
         },
         "trust_basis_counts": {
-          "capability_closed": 2333,
+          "capability_closed": 2340,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 29285
+          "unresolved": 29278
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 54613,
+        "material_residuals": 54590,
         "status_counts": {
           "failed": 2248,
-          "residual": 33317,
-          "trusted": 3058
+          "residual": 33310,
+          "trusted": 3065
         },
         "trust_basis_counts": {
-          "capability_closed": 3053,
+          "capability_closed": 3060,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 33317
+          "unresolved": 33310
         }
       }
     },

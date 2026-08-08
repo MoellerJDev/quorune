@@ -2059,6 +2059,18 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/evolve.py",
+      "layer": "domain",
+      "owning_subsystem": "counter_placement",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/fixed_damage_set.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -4498,5 +4510,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "0f85a981b79367c2d920322a0875a6a587a2f488d70917803aff6a7fd1bf9edb"
+  "fingerprint": "4c92772009ccdf4a831947651d0cbfeeff29241e1321e4194a1a16c27a46902c"
 }
