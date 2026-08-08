@@ -431,7 +431,10 @@ class UnleashRuntimeTests(unittest.TestCase):
             "A",
             next(option for option in options if not option.startswith("decline:")),
         )
-        while engine.state.pending_decision is not None:
+        while (
+            engine.state.pending_decision is not None
+            and engine.state.pending_decision.kind == "replacement.order"
+        ):
             _, options = self.replacement_options(session, "A")
             self.choose(session, "A", options[0])
         self.assertEqual("battlefield", card.zone)
@@ -506,6 +509,15 @@ class UnleashRuntimeTests(unittest.TestCase):
             },
         )[0]
         attacker = engine._resolve_object("A", attacker_ref, zones={"battlefield"})
+        legal_blocker_ref = engine.create_token(
+            "C",
+            name="Legal blocker",
+            characteristics={
+                "type_line": "Token Creature — Test",
+                "power": "1",
+                "toughness": "1",
+            },
+        )[0]
         attacker.attacking = "C"
         engine.state.combat = CombatState(
             attackers_declared=True,
@@ -515,7 +527,9 @@ class UnleashRuntimeTests(unittest.TestCase):
         )
         engine._begin_blocker_decisions()
         decision = session.packet("pilot:C", full=True)["decision"]
+        self.assertIsNotNone(decision)
         self.assertNotIn(blocker.ref, decision["ctx"]["legal_blocks"])
+        self.assertIn(legal_blocker_ref, decision["ctx"]["legal_blocks"])
         self.assertTrue(
             all(
                 session.packet(f"pilot:{seat}", full=True)["decision"] is None
