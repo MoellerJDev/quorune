@@ -32,6 +32,7 @@ from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
 )
+from quorune.session import CommanderSession
 from quorune.semantic_choices.intent_replacement import (
     semantic_intent_identity,
     validate_semantic_intent_identity,
@@ -774,6 +775,69 @@ class PersistUndyingRuntimeTests(unittest.TestCase):
                     replay = replay_record(record_dir, self.db, verify=True)
                 self.assertTrue(replay["ok"], replay)
                 self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_death_return_replacement_continuation_survives_process_restart(self):
+        for offset, (name, mechanic, counter) in enumerate(
+            (
+                ("Protean Hulk", "Persist", "-1/-1"),
+                ("Young Wolf", "Undying", "+1/+1"),
+            )
+        ):
+            with self.subTest(mechanic=mechanic):
+                session = self.session(7027920 + offset, players=4)
+                engine = session.engine
+                source = self.add_card(
+                    engine,
+                    seat="A",
+                    name=name,
+                    ref=f"restart-{mechanic.casefold()}",
+                )
+                self.stage_competing_counter_sources(engine, seat="A")
+                self.register_keyword(engine, source, mechanic=mechanic)
+                self.die(engine, source)
+                self.resolve_top(engine)
+                self.assertEqual(
+                    "replacement.order", engine.state.pending_decision.kind
+                )
+                session.initial_checkpoint = checkpoint_envelope(engine.state)
+                session.commands.clear()
+                session.decisions.clear()
+
+                with tempfile.TemporaryDirectory() as temporary:
+                    record_dir = Path(temporary) / mechanic.casefold()
+                    session.save(record_dir)
+                    restarted = CommanderSession.load(self.db, record_dir)
+                    packet = StateProjector(
+                        self.db, restarted.engine.state
+                    )._decision("pilot:A")
+                    self.assertIsNotNone(packet)
+                    for seat in ("B", "C", "D"):
+                        self.assertIsNone(
+                            StateProjector(
+                                self.db, restarted.engine.state
+                            )._decision(f"pilot:{seat}")
+                        )
+                    selection = packet["ctx"]["options"][0]["id"]
+                    result = restarted.act(
+                        "pilot:A",
+                        {
+                            "action_id": "choose",
+                            "choices": {"replacement": selection},
+                        },
+                    )
+                    self.assertTrue(result.ok, result.summary)
+                    restarted_source = restarted.engine.state.cards[
+                        source.object_id
+                    ]
+                    self.assertEqual("battlefield", restarted_source.zone)
+                    self.assertIn(restarted_source.counters[counter], {3, 4})
+                    restarted.save(record_dir)
+                    replay = replay_record(record_dir, self.db, verify=True)
+                self.assertTrue(replay["ok"], replay)
+                self.assertEqual(
+                    authoritative_state_hash(restarted.engine.state),
+                    replay["final_state_hash"],
+                )
 
 
 if __name__ == "__main__":

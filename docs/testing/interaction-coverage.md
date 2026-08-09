@@ -2,7 +2,7 @@
 title: "Interaction coverage"
 status: "current"
 authoritative_source: "platform/reusable-piece-interaction-evidence.json, capability evidence, mechanic contracts, conformance records, semantic programs, and tests"
-verified: "2026-08-05"
+verified: "2026-08-09"
 audience: "rules and test contributors"
 maintenance: "hand-maintained"
 ---
@@ -35,3 +35,13 @@ runtime dependency. The versioned capability registry is the authoritative
 fine-grained trust graph for migrated slices; current mechanic contracts and
 conformance cases remain migration inputs where fine-grained capability
 mappings do not yet exist.
+
+The matrix includes both printed-card co-occurrence and cross-card composition.
+`platform/reusable-piece-policy.json` declares bounded ambient high-risk piece
+pairs whose interaction is reachable even when no single card prints both
+pieces. An explicit evidence declaration also makes its exact pair visible.
+Each generated row records whether it came from corpus co-occurrence, an
+ambient high-risk declaration, explicit interaction evidence, or a combination.
+Adding an ambient pair without evidence therefore creates an uncovered
+high-risk row; evidence can cover it only by naming a registered test and the
+exact participating pieces.

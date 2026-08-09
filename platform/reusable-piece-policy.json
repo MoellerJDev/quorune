@@ -128,6 +128,13 @@
     ["replacement_prevention", "triggers"],
     ["stack_resolution", "triggers"]
   ],
+  "ambient_high_risk_piece_pairs": [
+    ["capability.counter.placement.quantity_replacement", "capability.counter.producer.optional_self_entry"],
+    ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
+    ["capability.counter.placement.quantity_replacement", "capability.counter.producer.riot"],
+    ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
+    ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"]
+  ],
   "complex_card_weights": {
     "distinct_piece": 3,
     "universal_system": 5,

@@ -268,6 +268,7 @@ def validate_reusable_piece_interactions(
                 "ability_count",
                 "covered",
                 "high_risk",
+                "applicability_bases",
                 "evidence_test_ids",
                 "evidence_basis",
             },
@@ -287,6 +288,21 @@ def validate_reusable_piece_interactions(
         ):
             raise ValueError("Reusable-piece interaction pair is invalid")
         identities.append(tuple(piece_ids))
+        applicability_bases = row.get("applicability_bases")
+        allowed_bases = {
+            "corpus_cooccurrence",
+            "declared_ambient_high_risk",
+            "explicit_interaction_evidence",
+        }
+        if (
+            not isinstance(applicability_bases, list)
+            or not applicability_bases
+            or applicability_bases != sorted(set(applicability_bases))
+            or not set(applicability_bases) <= allowed_bases
+        ):
+            raise ValueError(
+                "Reusable-piece interaction applicability is invalid"
+            )
         if bool(row.get("covered")) != bool(row.get("evidence_test_ids")):
             raise ValueError("Reusable-piece interaction evidence is invalid")
     if identities != sorted(identities) or len(identities) != len(set(identities)):

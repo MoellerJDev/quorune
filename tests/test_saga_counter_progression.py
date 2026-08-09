@@ -39,6 +39,7 @@ from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
 )
+from quorune.session import CommanderSession
 from quorune.saga_progression import (
     SagaProgressionError,
     advance_active_player_sagas,
@@ -664,6 +665,68 @@ class SagaCounterProgressionTests(unittest.TestCase):
             replay = replay_record(record_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_saga_entry_replacement_continuation_survives_process_restart(self):
+        session = self.session(7143017, players=4)
+        engine = session.engine
+        self.stage_competing_sources(engine, seat="A")
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine._remove_from_zone(saga)
+        engine._reset_zone_change(saga, "stack")
+        saga.zone = "stack"
+        saga.controller = "A"
+        saga.known_to = list(engine.seats)
+        saga.revealed_to = list(engine.seats)
+        item = StackItem(
+            stack_id="saga-restart-stack",
+            ref="S-saga-restart",
+            kind="spell",
+            controller="A",
+            label="Saga Restart Fixture",
+            card_object_id=saga.object_id,
+            default_destination="battlefield",
+            visibility=list(engine.seats),
+        )
+        engine.state.stack.append(item)
+        engine._continue_resolution(
+            stack_ref=item.ref,
+            effects=[],
+            destination=None,
+            note="Saga entry restart",
+        )
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "saga-entry-restart"
+            session.save(record_dir)
+            restarted = CommanderSession.load(self.db, record_dir)
+            projector = StateProjector(self.db, restarted.engine.state)
+            projected_a = projector._decision("pilot:A")
+            self.assertIsNotNone(projected_a)
+            for seat in ("B", "C", "D"):
+                self.assertIsNone(projector._decision(f"pilot:{seat}"))
+            selection = projected_a["ctx"]["options"][0]["id"]
+            result = restarted.act(
+                "pilot:A",
+                {
+                    "action_id": "choose",
+                    "choices": {"replacement": selection},
+                },
+            )
+            self.assertTrue(result.ok, result.summary)
+            restarted_saga = restarted.engine.state.cards[saga.object_id]
+            self.assertEqual("battlefield", restarted_saga.zone)
+            self.assertIn(restarted_saga.counters["lore"], {3, 4})
+            restarted.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(
+            authoritative_state_hash(restarted.engine.state),
+            replay["final_state_hash"],
+        )
 
     def test_precombat_saga_progression_replays_exactly(self):
         session = self.session(7143014)
