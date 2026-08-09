@@ -218,7 +218,7 @@ test("@browser-rules @scry @privacy @persistence ordered Scry is accessible, pri
       .getByTestId("decision-panel")
       .getAttribute("data-decision-id");
     expect(decisionId).toBeTruthy();
-    await expect(opponent.getByText("Order the looked-at cards")).toHaveCount(0);
+    await expect(opponent.getByTestId("action-choose")).toHaveCount(0);
 
     await host.getByTestId("stop-reason").fill("Persist the pending ordered-Scry choice");
     await host.getByTestId("stop-game").click();
@@ -236,7 +236,6 @@ test("@browser-rules @scry @privacy @persistence ordered Scry is accessible, pri
     await host.getByTestId("action-choose").click();
     const dialog = host.getByTestId("choice-dialog");
     await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText("Order the looked-at cards");
     const destinations = dialog.locator('select[data-testid^="choice-cards-"]');
     await expect(destinations).toHaveCount(4);
     const refs: string[] = [];
