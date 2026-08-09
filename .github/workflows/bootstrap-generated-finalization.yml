@@ -6,6 +6,7 @@ on:
       - agent/generated-finalization
     paths:
       - .github/bootstrap_payload.txt
+      - .github/bootstrap_payload.*
       - .github/workflows/bootstrap-generated-finalization.yml
 
 permissions:
@@ -36,9 +37,12 @@ jobs:
           import base64
           from pathlib import Path
           import zlib
-          payload = Path(".github/bootstrap_payload.txt").read_bytes()
+          parts = sorted(Path(".github").glob("bootstrap_payload.[0-9][0-9]"))
+          if len(parts) != 6:
+              raise SystemExit(f"expected 6 bootstrap payload chunks, found {len(parts)}")
+          payload = b"".join(path.read_bytes() for path in parts)
           Path(".github/bootstrap_generated_finalization.py").write_bytes(
-              zlib.decompress(base64.b64decode(payload))
+              zlib.decompress(base64.b64decode(payload, validate=True))
           )
           PY
           set +e
@@ -56,9 +60,10 @@ jobs:
           fi
       - name: Remove one-time bootstrap files before generation
         run: |
-          rm .github/bootstrap_payload.txt
+          rm -f .github/bootstrap_payload.txt .github/bootstrap_payload.[0-9][0-9]
           rm .github/bootstrap_generated_finalization.py
           rm .github/workflows/bootstrap-generated-finalization.yml
+          rm -f .github/bootstrap_error.txt
       - name: Install validation dependencies
         run: python -m pip install -e . -r requirements-dev.txt
       - name: Compile changed Python surfaces
