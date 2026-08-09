@@ -128,6 +128,29 @@ class ContinuousEffectStateHost(Protocol):
     ) -> tuple[set[str], set[str], set[str]]: ...
 
 
+def commit_continuous_effect(
+    state: Any,
+    effect: ContinuousEffect,
+) -> ContinuousEffect:
+    """Append one validated effect through the canonical journal owner."""
+
+    if not isinstance(effect, ContinuousEffect):
+        raise ContinuousEffectStateError(
+            "Continuous-effect commits require a typed effect"
+        )
+    journal = state.continuous_effects
+    if journal is None:
+        raise ContinuousEffectStateError(
+            "Continuous-effect state is unavailable"
+        )
+    if any(current.effect_id == effect.effect_id for current in journal):
+        raise ContinuousEffectStateError(
+            "Continuous-effect identity is already committed"
+        )
+    journal.append(effect)
+    return effect
+
+
 def matching_battlefield_objects(
     host: ContinuousEffectStateHost,
     predicate: ObjectQuerySpec,
@@ -206,8 +229,7 @@ def create_resolution_continuous_effect(
         applies=ObjectQuerySpec(zones=("battlefield",)),
         locked_objects=identities,
     )
-    journal.append(effect)
-    return effect
+    return commit_continuous_effect(host.state, effect)
 
 
 def active_resolution_effects(

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "0f0c82ee3c75672776d31799326fe073b538ecc2e5e251233bcc2263f4c55430",
-  "declaration_source_fingerprint": "7dbd19e69310a6c0c7cbaa66468f0b5d008d810b0977f203f40b5212e32c5f58",
+  "registry_fingerprint": "3f19fbf808425cb013b2d5388477f454892aee745e7063ac940d0f9ead18b7d3",
+  "declaration_source_fingerprint": "7009bf6ffa992557fb6e960b206c7b1c0782ec39804ed20e22627d1546e32eb0",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -8233,6 +8233,209 @@
         "commander_review"
       ],
       "applicability_note": "Replay the Proliferate selection and permanent counter-replacement ordering to the identical final authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.riot",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_riot_rules.RiotRuntimeTests.test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "302.6",
+        "613.1f",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.10",
+        "702.10a",
+        "702.10b",
+        "702.10c",
+        "702.10d",
+        "702.136",
+        "702.136a",
+        "702.136b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Route the counter result through quantity replacement while the alternative Haste result uses the existing attack and tap-cost legality owners."
+    },
+    {
+      "capability_id": "counter.producer.riot",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_riot_rules.RiotRuntimeTests.test_riot_choice_is_destination_controller_scoped_private_and_replays",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "302.6",
+        "613.1f",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.10",
+        "702.10a",
+        "702.10b",
+        "702.10c",
+        "702.10d",
+        "702.136",
+        "702.136a",
+        "702.136b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Assign the Riot decision to the prospective controller in a four-player game."
+    },
+    {
+      "capability_id": "counter.producer.riot",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_riot_rules.RiotRuntimeTests.test_riot_runtime_mutations_are_killed",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "302.6",
+        "613.1f",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.10",
+        "702.10a",
+        "702.10b",
+        "702.10c",
+        "702.10d",
+        "702.136",
+        "702.136a",
+        "702.136b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of either the typed Riot replacement or the linked entry-keyword grant commit."
+    },
+    {
+      "capability_id": "counter.producer.riot",
+      "evidence_class": "negative",
+      "test_id": "tests.test_riot_rules.RiotCompilerAndModelTests.test_riot_models_descriptors_and_operations_reject_malformed_values",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "302.6",
+        "613.1f",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.10",
+        "702.10a",
+        "702.10b",
+        "702.10c",
+        "702.10d",
+        "702.136",
+        "702.136a",
+        "702.136b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed amounts, keywords, descriptors, typed operations, grants, and serialized decline results."
+    },
+    {
+      "capability_id": "counter.producer.riot",
+      "evidence_class": "positive",
+      "test_id": "tests.test_riot_rules.RiotRuntimeTests.test_counter_and_haste_choices_are_linked_results",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "302.6",
+        "613.1f",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.10",
+        "702.10a",
+        "702.10b",
+        "702.10c",
+        "702.10d",
+        "702.136",
+        "702.136a",
+        "702.136b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Choose exactly one linked result: a replacement-aware +1/+1 counter or persistent Haste for the entering zone object."
+    },
+    {
+      "capability_id": "counter.producer.riot",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_riot_rules.RiotRuntimeTests.test_riot_choice_is_destination_controller_scoped_private_and_replays",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "302.6",
+        "613.1f",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.10",
+        "702.10a",
+        "702.10b",
+        "702.10c",
+        "702.10d",
+        "702.136",
+        "702.136a",
+        "702.136b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose the linked entry decision only to the prospective controller without authoritative object identity."
+    },
+    {
+      "capability_id": "counter.producer.riot",
+      "evidence_class": "replay",
+      "test_id": "tests.test_riot_rules.RiotRuntimeTests.test_riot_choice_is_destination_controller_scoped_private_and_replays",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "302.6",
+        "613.1f",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.10",
+        "702.10a",
+        "702.10b",
+        "702.10c",
+        "702.10d",
+        "702.136",
+        "702.136a",
+        "702.136b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the seat-scoped Haste result to the identical layer-6 effect and authoritative state hash."
     },
     {
       "capability_id": "counter.producer.support",
@@ -17875,5 +18078,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "baafa404020068b4a613fa7ea242155408cf27d411f7b9a35eedfd47bb24457d"
+  "fingerprint": "cdf83488f4ce26b6a21e0f2e3577b876f17b7370c0493d7799a8d64132cc1635"
 }

@@ -2,7 +2,7 @@
 title: "Platform readiness"
 status: "generated"
 authoritative_source: "platform/readiness-source.json"
-verified: "07747fe1fb3eabaa2fe70357aa001c81faf71ffae99eadc9a56bd0f16e71f861"
+verified: "27f7d4ae08d60687780c905861d1f1b8ba18af6296bde21efdef1a49aaea03f5"
 audience: "maintainers, operators, and contributors"
 maintenance: "generated"
 generated_source: "coverage/platform-readiness.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_platform_status.p
 
 # Platform readiness
 
-Source fingerprint: `07747fe1fb3eabaa2fe70357aa001c81faf71ffae99eadc9a56bd0f16e71f861`
+Source fingerprint: `27f7d4ae08d60687780c905861d1f1b8ba18af6296bde21efdef1a49aaea03f5`
 
 ## Current top-level state
 
@@ -28,7 +28,7 @@ Source fingerprint: `07747fe1fb3eabaa2fe70357aa001c81faf71ffae99eadc9a56bd0f16e7
 
 ## Top blockers
 
-- ordinary printed Unleash now compiles into two source-spanned typed abilities: an optional affected-object battlefield-entry +1/+1 counter replacement inside the canonical nested counter transaction, and a current-counter block prohibition shared by advertised and accepted declarations; Riot, nonkeyword equivalents, and unrepresented granted, copied, lost, or face-down ability behavior remain explicit residuals, so the aggregate mechanic is not trusted
+- ordinary printed Unleash compiles into two source-spanned typed abilities: an optional affected-object battlefield-entry +1/+1 counter replacement inside the canonical nested counter transaction, and a current-counter block prohibition shared by advertised and accepted declarations; ordinary printed Riot now compiles each instance into one linked prospective-controller choice between the same replacement-aware +1/+1 counter path and an identity-pinned layer-6 Haste grant consumed by existing attack and tap-cost legality owners; nonkeyword equivalents and unrepresented granted, copied, lost, or face-down ability behavior remain explicit residuals, so neither aggregate mechanic is trusted
 - mandatory fixed additional-token replacements now compile to one immutable typed event transformation with source-spanned descriptors, same-event card-type and subtype rediscovery, APNAP choice, rollback, privacy, replay, and authoritative one-batch token commitment; ordinary positive-integer Fabricate, single-permanent Explore, ordinary single-instruction Proliferate, one fixed positive ordinary-mana Cumulative Upkeep instance, mandatory fixed source/direct-permanent, fixed player-counter, closed affected-set, bounded direct target-set, fixed positive Support N with exact source context, fixed placement on typed enchanted/equipped/fortified permanents with current-or-LKI identity, and represented intrinsic entry-counter clauses now use typed transactions; Cumulative Upkeep commits the replacement-aware age-counter placement before pricing the optional payment from the actual counter count; exact permanent-counter removal owns the represented stun-counter untap replacement and CR 704.5q/limited CR 704.5r state actions; alternative, snow, hybrid, Phyrexian, zero, variable, nonmana, copied, granted, or multiple-instance Cumulative Upkeep, Support X or zero, copied or granted Support, optional, variable, distributed, dynamic, multiple-counter, combat-qualified, subtype-qualified, conditional, modal, compound, repeated or variable Proliferate, attachment creation or movement, loyalty costs, general effect or player removal, player-counter replacement or prevention, arbitrary maximum-counter grammar, and other rule-generated counter producers still require migration, so aggregate CR 115, CR 122, CR 614/616, CR 701.34, CR 701.41, CR 701.44, CR 702.24, CR 702.123, and CR 704.5r remain blocked
 - fixed simultaneous affected-set damage now snapshots represented public player and permanent groups through the canonical effective-characteristic query and commits one APNAP-ordered, logical-identity-deduplicated damage batch; divided or variable amounts, negative keyword or subtype predicates, multiple independent damage clauses, unpreventable wording, linked life/draw/scry/conditional riders, and broader source-LKI producers remain explicit blockers, so aggregate mass-damage coverage is not trusted
 - mandatory direct-target stack counters now share one source-spanned compiler grammar, current public stack targeting, exact resolution-time revalidation, and a typed stack-removal owner; exact intrinsic 'This spell can't be countered' declarations are pinned from current trusted CardPrograms, while conditional-payment, optional, modal, mass, multi-target, linked-result, alternate-destination, qualified-target, dynamic prohibition, and broader counter-replacement variants remain explicit residuals, so the aggregate Counter mechanic is not trusted

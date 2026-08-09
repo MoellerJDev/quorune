@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from ..entry_keyword_grants import EntryKeywordGrant
 from ..entry_counters import EffectEntryCounter, IntrinsicEntryCounter
 from ..replacement_effects import (
     ReplaceableEvent,
@@ -245,4 +246,5 @@ class PreparedZoneChange:
     event: ReplaceableEvent | None = None
     effects: tuple[ReplacementEffect, ...] = ()
     counter_events: tuple[ReplaceableEvent, ...] = ()
+    keyword_grants: tuple[EntryKeywordGrant, ...] = ()
     journal: tuple[ReplacementSelection, ...] = ()

@@ -14,6 +14,7 @@ from .replacement import (
     CreateNestedEvent,
     EntryReplacementScope,
     FrozenMap,
+    GrantAffectedObjectKeyword,
     PreventionAllocationChoice,
     MultiplyAmount,
     PreventAmount,

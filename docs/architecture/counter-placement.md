@@ -107,8 +107,8 @@ inactive placing player, non-battlefield destination, or malformed counter
 fails or safely makes an explicitly optional return do nothing before state
 mutation.
 
-Printed Persist and Undying are the first compiler harvest of that generic
-boundary. Oracle IR v59 emits one source-spanned triggered CardProgram per
+Printed Persist and Undying harvest that generic boundary. The compiler emits
+one source-spanned triggered CardProgram per
 printed keyword instance. Trigger discovery evaluates the relevant counter
 from the departed creature's last-known public snapshot, preserves the
 graveyard incarnation and trigger controller, and places simultaneous triggers
@@ -130,10 +130,23 @@ counter snapshot. Each printed instance creates its own apply-or-decline
 replacement, the prospective controller chooses before entry mutation, and an
 accepted counter enters the same nested quantity-replacement tree described
 above. The final counter state feeds the shared block-legality adapter used by
-both projected options and accepted commands. Riot, nonkeyword equivalents,
-and granted, copied, lost, or face-down Unleash outside typed ability
-propagation remain explicit residuals; this slice does not broaden aggregate
-replacement or blocking claims.
+both projected options and accepted commands. Nonkeyword equivalents and
+granted, copied, lost, or face-down Unleash outside typed ability propagation
+remain explicit residuals; this slice does not broaden aggregate replacement
+or blocking claims.
+
+Ordinary printed Riot uses a separate linked entry-choice capability. Each
+printed instance creates one optional affected-object replacement: applying it
+creates a nested replacement-aware +1/+1 counter event, while declining it
+creates an identity-pinned layer 6 Haste grant for that battlefield
+incarnation. Both paths are selected by the prospective controller before the
+zone mutation commits. The Haste result persists through cleanup, ends when
+the object leaves the battlefield, and is consumed by the existing attack and
+tap-or-untap-cost legality owners. Multiple Riot instances remain independent.
+Nonkeyword equivalents, alternative results other than Haste, and granted,
+copied, lost, or face-down Riot outside typed ability propagation remain
+explicit residuals; aggregate entry replacement and continuous-effect claims
+remain bounded.
 
 Oracle IR v54 lowers the closed reusable fixed-placement grammars through the
 typed operation in spell, triggered, and activated contexts. It accepts one
