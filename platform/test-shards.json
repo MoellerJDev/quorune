@@ -56,6 +56,7 @@
       "test_replacement_event_tree",
       "test_replacement_model_hardening",
       "test_return_to_hand_rules",
+      "test_saga_counter_progression",
       "test_single_object_zone_transition",
       "test_support_counter_placement",
       "test_token_creation_replacements",

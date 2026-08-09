@@ -160,7 +160,7 @@ def _card_form_rule_programs(
                 provenance={
                     "source_oracle_hash": oracle_source_hash,
                     "source_rulings_hash": rulings_hash,
-                    "authored_by": "card-form-rule-compiler-v1",
+                    "authored_by": "card-form-rule-compiler-v2",
                     "review_status": (
                         "capability_closure_verified"
                         if trust_level == "trusted"
@@ -182,6 +182,11 @@ def _card_form_rule_programs(
                 coverage=[
                     "generated_card_form_rule",
                     "intrinsic_entry_counter",
+                    *(
+                        ["saga_entry_counter"]
+                        if descriptor["required_type"] == "saga"
+                        else []
+                    ),
                 ],
                 capability_dependencies=list(
                     node.capability_dependencies

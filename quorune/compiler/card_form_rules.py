@@ -14,6 +14,7 @@ from .ir_model import SourceSpan
 
 
 INTRINSIC_ENTRY_COUNTER_CAPABILITY = "counter.producer.intrinsic_entry"
+SAGA_LORE_COUNTER_CAPABILITY = "counter.producer.saga_lore"
 _REASON_FIELD = "rea" + "son"
 
 
@@ -35,7 +36,7 @@ class CardFormRuleNode:
         if self.span.line != 1:
             raise ValueError("Card-form rule source span must use line one")
         if self.capability_dependencies != (
-            INTRINSIC_ENTRY_COUNTER_CAPABILITY,
+            self.entry_counter.capability_id,
         ):
             raise ValueError(
                 "Intrinsic entry nodes require their fine-grained capability"
@@ -69,7 +70,10 @@ def _face_sources(
             (
                 face_id,
                 str(face.get("type_line") or record.type_line),
-                face,
+                {
+                    **face,
+                    "keywords": face.get("keywords") or record.keywords,
+                },
             )
             for face_id, face in zip(
                 compiled_face_ids, record.faces, strict=True
@@ -81,7 +85,11 @@ def _face_sources(
         (
             compiled_face_ids[0],
             record.type_line,
-            {"loyalty": record.loyalty, "defense": record.defense},
+            {
+                "loyalty": record.loyalty,
+                "defense": record.defense,
+                "keywords": record.keywords,
+            },
         ),
     )
 
@@ -99,13 +107,18 @@ def compile_intrinsic_entry_counter_forms(
         record,
         compiled_face_ids=compiled_face_ids,
     ):
-        card_types, _subtypes, _supertypes = type_parts(type_line)
-        if not card_types.intersection({"planeswalker", "battle"}):
+        card_types, subtypes, _supertypes = type_parts(type_line)
+        if not (
+            card_types.intersection({"planeswalker", "battle"})
+            or "saga" in subtypes
+        ):
             continue
         try:
             counters = intrinsic_entry_counters(
                 characteristics,
                 card_types=tuple(sorted(card_types)),
+                card_subtypes=tuple(sorted(subtypes)),
+                keywords=tuple(characteristics.get("keywords") or ()),
             )
         except EntryCounterError as exc:
             span = SourceSpan(start=0, end=len(type_line), line=1)
@@ -118,7 +131,11 @@ def compile_intrinsic_entry_counter_forms(
                     "span": asdict(span),
                     "material": True,
                     _REASON_FIELD: str(exc),
-                    "blockers": [INTRINSIC_ENTRY_COUNTER_CAPABILITY],
+                    "blockers": [
+                        SAGA_LORE_COUNTER_CAPABILITY
+                        if "saga" in subtypes
+                        else INTRINSIC_ENTRY_COUNTER_CAPABILITY
+                    ],
                 }
             )
             continue
@@ -129,9 +146,7 @@ def compile_intrinsic_entry_counter_forms(
                     source_text=type_line,
                     span=SourceSpan(start=0, end=len(type_line), line=1),
                     entry_counter=counter,
-                    capability_dependencies=(
-                        INTRINSIC_ENTRY_COUNTER_CAPABILITY,
-                    ),
+                    capability_dependencies=(counter.capability_id,),
                 )
             )
     return CardFormRuleCompilation(
@@ -144,5 +159,6 @@ __all__ = [
     "CardFormRuleNode",
     "CardFormRuleCompilation",
     "INTRINSIC_ENTRY_COUNTER_CAPABILITY",
+    "SAGA_LORE_COUNTER_CAPABILITY",
     "compile_intrinsic_entry_counter_forms",
 ]

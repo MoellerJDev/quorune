@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "f94ccf26908cefac7289b35dfffc7466bf542ac044c8cd15d70a4c2dc458e612"
+verified: "36e201365d86b6d0c0158e893859cd69f014a68eb5cea5e1c16b47484ed6f109"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -26,7 +26,6 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Elesh Norn // The Argent Etchings | 182 | 20 | 7 | 7 | 11 | 2 | `blocked` |
 | Invasion of Zendikar // Awakened Skyclave | 178 | 20 | 5 | 5 | 6 | 18 | `blocked` |
 | Ojer Axonil, Deepest Might // Temple of Power | 178 | 22 | 7 | 6 | 8 | 6 | `blocked` |
-| Crystal Fragments // Summon: Alexander | 177 | 18 | 6 | 7 | 7 | 8 | `blocked` |
 | Jin-Gitaxias // The Great Synthesis | 177 | 19 | 5 | 7 | 11 | 6 | `blocked` |
 | Urabrask // The Great Work | 176 | 19 | 6 | 7 | 10 | 4 | `blocked` |
 | Invasion of Fiora // Marchesa, Resolute Monarch | 175 | 17 | 5 | 7 | 6 | 17 | `blocked` |
@@ -60,7 +59,8 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Arcee, Sharpshooter // Arcee, Acrobatic Coupe | 151 | 16 | 5 | 5 | 7 | 14 | `blocked` |
 | Curse of Leeches // Leeching Lurker | 151 | 17 | 4 | 6 | 7 | 13 | `blocked` |
 | Garruk Relentless // Garruk, the Veil-Cursed | 151 | 18 | 4 | 6 | 13 | 6 | `blocked` |
-| Huatli, Poet of Unity // Roar of the Fifth People | 151 | 17 | 5 | 7 | 10 | 1 | `blocked` |
 | Kitnap | 151 | 16 | 5 | 4 | 6 | 8 | `blocked` |
 | Primeval Spawn | 151 | 18 | 6 | 3 | 5 | 10 | `blocked` |
+| Invasion of Ergamon // Truga Cliffcharger | 150 | 14 | 5 | 4 | 5 | 16 | `blocked` |
+| Titania, Gaea Incarnate | 150 | 21 | 5 | 4 | 4 | 11 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |
