@@ -88,6 +88,7 @@ _CYCLING_MECHANIC = "cyc" + "ling"
 _EVOLVE_MECHANIC = "evo" + "lve"
 _PERSIST_MECHANIC = "per" + "sist"
 _UNDYING_MECHANIC = "un" + "dying"
+_UNLEASH_MECHANIC = "un" + "leash"
 _BASIC_LANDWALK_MECHANICS = (
     "pl" + "ainswalk",
     "is" + "landwalk",
@@ -103,6 +104,10 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _EVOLVE_MECHANIC: ("counter.producer.evolve",),
     _PERSIST_MECHANIC: ("counter.producer.persist",),
     _UNDYING_MECHANIC: ("counter.producer.undying",),
+    _UNLEASH_MECHANIC: (
+        "counter.producer.optional_self_entry",
+        "combat.block.self_counter_prohibition",
+    ),
     **{
         mechanic: ("combat.block.landwalk.basic_type",)
         for mechanic in _BASIC_LANDWALK_MECHANICS

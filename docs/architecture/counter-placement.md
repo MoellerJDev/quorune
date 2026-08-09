@@ -1,7 +1,7 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/death_return.py, semantic_runtime/counter_replacements.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/death_return.py, quorune/unleash.py, semantic_runtime/counter_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
 verified: "2026-08-08"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -108,7 +108,7 @@ fails or safely makes an explicitly optional return do nothing before state
 mutation.
 
 Printed Persist and Undying are the first compiler harvest of that generic
-boundary. Oracle IR v58 emits one source-spanned triggered CardProgram per
+boundary. Oracle IR v59 emits one source-spanned triggered CardProgram per
 printed keyword instance. Trigger discovery evaluates the relevant counter
 from the departed creature's last-known public snapshot, preserves the
 graveyard incarnation and trigger controller, and places simultaneous triggers
@@ -120,6 +120,20 @@ and replay therefore share existing owners rather than keyword-specific state
 writes. Granted or copied instances outside trusted typed ability fragments,
 Oracle-equivalent prose, and unrepresented replacement families remain
 explicit residuals.
+
+Ordinary printed Unleash now adds a separate optional self-entry producer.
+Oracle IR emits two independent typed programs from the same exact keyword
+span: an all-zone affected-object entry replacement that offers one additional
++1/+1 counter,
+and a battlefield block prohibition that reads the permanent's current public
+counter snapshot. Each printed instance creates its own apply-or-decline
+replacement, the prospective controller chooses before entry mutation, and an
+accepted counter enters the same nested quantity-replacement tree described
+above. The final counter state feeds the shared block-legality adapter used by
+both projected options and accepted commands. Riot, nonkeyword equivalents,
+and granted, copied, lost, or face-down Unleash outside typed ability
+propagation remain explicit residuals; this slice does not broaden aggregate
+replacement or blocking claims.
 
 Oracle IR v54 lowers the closed reusable fixed-placement grammars through the
 typed operation in spell, triggered, and activated contexts. It accepts one

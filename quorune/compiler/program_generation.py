@@ -8,6 +8,7 @@ from typing import Any, Iterable, Mapping
 from ..carddb import CardDatabase, CardRecord
 from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..object_predicate import ObjectQuerySpec
+from ..unleash import UNLEASH_MECHANIC
 from ..rules.capabilities import (
     CapabilityRegistry,
     capability_covered_mechanics,
@@ -160,6 +161,19 @@ def _generated_ability_id(
             return f"{base}:{parts[-2]}:{parts[-1]}"
         return base
     if static_declaration:
+        parts = str(node_id or "").split(":")
+        suffix = parts[-1]
+        if suffix in {"unleash-entry", "unleash-block"}:
+            if (
+                len(parts) >= 3
+                and parts[-2].isdigit()
+                and parts[-3] == UNLEASH_MECHANIC
+            ):
+                return (
+                    f"static:{face_id}:n{line}:{UNLEASH_MECHANIC}:"
+                    f"{parts[-2]}:{suffix}"
+                )
+            return f"static:{face_id}:n{line}:{suffix}"
         if str(node_id or "").endswith(":flash"):
             return f"static:{face_id}:n{line}:flash"
         return f"static:{face_id}:n{line}"

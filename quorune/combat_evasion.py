@@ -34,6 +34,7 @@ _REJECTION_REASONS = frozenset(
         "attacker_has_skulk",
         "blocker_has_shadow",
         "attacker_has_flying",
+        "blocker_has_self_counter_prohibition",
         "attacker_has_plainswalk",
         "attacker_has_islandwalk",
         "attacker_has_swampwalk",

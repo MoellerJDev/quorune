@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_unleash_card_data",
+  "source": "Scryfall-compatible Oracle subset for Unleash tests",
+  "cards": [
+    {
+      "oracle_id": "763a2d27-52a8-43d9-b649-0f6c0cf87a07",
+      "name": "Rakdos Cackler",
+      "mana_cost": "{B/R}",
+      "cmc": 1.0,
+      "type_line": "Creature — Devil",
+      "oracle_text": "Unleash (You may have this creature enter with a +1/+1 counter on it. It can't block as long as it has a +1/+1 counter on it.)",
+      "power": "1",
+      "toughness": "1",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["B", "R"],
+      "color_identity": ["B", "R"],
+      "keywords": ["Unleash"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2012-10-05",
+      "legalities": {"commander": "legal"}
+    }
+  ],
+  "rulings": []
+}

@@ -1,5 +1,5 @@
 {
-  "contract_count": 85,
+  "contract_count": 86,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -485,6 +485,12 @@
       "mechanic_id": "undying",
       "path": "mechanics/contracts/undying.json",
       "sha256": "c7dc31d6c916087e44c868bd37f8da548a2cfbd73c6af4f90ceb7a259ff98e57",
+      "version": 1
+    },
+    {
+      "mechanic_id": "unleash",
+      "path": "mechanics/contracts/unleash.json",
+      "sha256": "6a15c8c947108e4a839a83df4e03a650f8c684968b0e2bbbc14101df103dbfbe",
       "version": 1
     },
     {
@@ -4344,19 +4350,40 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/unleash.json",
+      "contract_sha256": "6a15c8c947108e4a839a83df4e03a650f8c684968b0e2bbbc14101df103dbfbe",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.unleash, quorune.compiler.keyword_nodes.unleash_keyword_nodes, quorune.semantic_runtime.self_entry_counters.SelfEntryCounterHandler, and quorune.semantic_runtime.block_restrictions.SelfCounterBlockRestrictionHandler",
+      "implementation_version": "typed-unleash-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "granted, copied, lost, and face-down Unleash requires trusted typed ability propagation",
+        "Oracle-equivalent nonkeyword wording remains unsupported",
+        "unrepresented zone and counter replacement families remain fail-closed",
+        "aggregate counters, replacement effects, and blocking restrictions remain incomplete"
+      ],
       "mechanic_id": "unleash",
       "official_name": "Unleash",
       "rule_references": [
         "702.98"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_ordinary_unleash_lowers_to_two_source_spanned_typed_programs",
+        "test_unleash_models_and_descriptors_reject_malformed_values",
+        "test_unsupported_unleash_wording_remains_material_residual",
+        "test_unleash_dependencies_fail_closed",
+        "test_apply_or_decline_optional_entry_counter",
+        "test_unleash_counter_uses_canonical_quantity_replacement_order",
+        "test_unleash_counter_prohibition_tracks_current_counter_state",
+        "test_unleash_block_offer_and_command_share_legality_and_rollback",
+        "test_unleash_choice_is_destination_controller_scoped_and_replays",
+        "test_unleash_entry_runtime_mutation_is_killed",
+        "test_unleash_block_runtime_mutation_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {

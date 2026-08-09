@@ -153,7 +153,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 for row in status["semantic_handlers"]
             },
         )
-        self.assertEqual(30, len(status["runtime_components"]))
+        self.assertEqual(32, len(status["runtime_components"]))
         self.assertEqual(
             {
                 "ability.activated.mana.color-set",
@@ -168,6 +168,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.trigger.exalted",
                 "ability.trigger.flanking",
                 "ability.trigger.melee",
+                "combat.block.self-counter-prohibition",
                 "continuous.attached.fixed_characteristics",
                 "continuous.fixed_query_power_toughness_anthem",
                 "continuous.fixed_power_toughness_anthem",
@@ -184,6 +185,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "replacement.fixed_additional_token",
                 "replacement.life.gain.multiplier",
                 "replacement.zone.destination",
+                "replacement.zone.self-entry-counter",
                 "restriction.draw.maximum_per_turn",
             },
             {row["family"] for row in status["runtime_components"]},

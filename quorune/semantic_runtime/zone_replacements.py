@@ -30,6 +30,7 @@ from .context import SemanticNodeError
 from .counter_replacements import (
     collect_counter_placement_replacement_effects,
 )
+from .self_entry_counters import SelfEntryCounterHandler
 from .zone_replacement_model import (
     PreparedZoneChange,
     SUPPORTED_ZONE_DESTINATIONS,
@@ -315,12 +316,32 @@ class ZoneChangeReplacementRegistry(
             component_id=component_id,
         )
 
+    def subject_replacement_effect(
+        self,
+        descriptor: Mapping[str, Any],
+        *,
+        subject: ZoneChangeSubjectSnapshot,
+        component_id: str,
+    ) -> ReplacementEffect:
+        handler = self._handler(descriptor)
+        compiler = getattr(handler, "subject_replacement_effect", None)
+        if compiler is None:
+            raise SemanticNodeError(
+                f"Runtime handler {handler.handler_id} cannot compile an "
+                "affected-object replacement effect"
+            )
+        return compiler(
+            descriptor,
+            subject=subject,
+            component_id=component_id,
+        )
+
 
 @lru_cache(maxsize=1)
 def default_zone_change_replacement_registry(
 ) -> ZoneChangeReplacementRegistry:
     registry = ZoneChangeReplacementRegistry(
-        (ZoneDestinationReplacementHandler(),)
+        (SelfEntryCounterHandler(), ZoneDestinationReplacementHandler())
     )
     registry.require_registered_capabilities(
         load_default_capability_registry()
@@ -578,9 +599,40 @@ def _zone_change_snapshot_effects(
             counters=subject.effect_entry_counters,
         )
     )
+    registry = default_zone_change_replacement_registry()
+    self_entry_effects: list[ReplacementEffect] = []
+    for subject in subjects:
+        if subject.destination != "battlefield":
+            continue
+        card = host.state.cards.get(subject.object_id)
+        if card is None:
+            raise ZoneReplacementError(
+                "Self-entry counter source disappeared during snapshot"
+            )
+        programs = host.semantics.runtime_handler_programs_for_oracle(
+            card.oracle_id,
+            active_zone="all",
+            event="zone.change",
+        )
+        for program in programs:
+            if not host.semantic_program_is_current_trusted(program):
+                continue
+            for descriptor_index, descriptor in enumerate(program.handlers):
+                self_entry_effects.append(
+                    registry.subject_replacement_effect(
+                        descriptor,
+                        subject=subject,
+                        component_id=f"{program.key}:{descriptor_index}",
+                    )
+                )
     return tuple(
         sorted(
-            (*ambient_effects, *intrinsic_effects, *generated_effects),
+            (
+                *ambient_effects,
+                *intrinsic_effects,
+                *generated_effects,
+                *self_entry_effects,
+            ),
             key=lambda effect: effect.effect_id,
         )
     )
@@ -656,7 +708,11 @@ def _snapshot_event(
         affected_object=AffectedObject(
             object_id=subject.object_id,
             owner=subject.owner,
-            controller=subject.controller,
+            controller=(
+                subject.destination_controller
+                if subject.destination == "battlefield"
+                else subject.controller
+            ),
         ),
         payload={
             "origin": subject.origin,

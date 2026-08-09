@@ -23,7 +23,6 @@ from .compiler.corpus_reporting import (
 from .compiler.continuous_templates import (
     controlled_creature_until_end_of_turn_effect,
 )
-from .compiler.counter_templates import is_intrinsically_uncounterable_spell
 from .cycling_abilities import CYCLING_MECHANIC_ID
 from .compiler.activated_mana_nodes import (
     activated_oracle_node,
@@ -50,6 +49,7 @@ from .compiler.keyword_nodes import (
     evolve_keyword_node,
     fabricate_keyword_node,
     keyword_node_plans,
+    unleash_keyword_nodes,
 )
 from .compiler.ir_model import (
     append_residual as _residual,
@@ -58,6 +58,9 @@ from .compiler.ir_model import (
     OracleNode,
     OracleResidual,
     SourceSpan,
+)
+from .compiler.intrinsic_counter_nodes import (
+    intrinsic_counter_prohibition_node,
 )
 from .compiler.prevention_templates import (
     fixed_prevention_effect_template,
@@ -73,11 +76,12 @@ from .declaration_restrictions import parse_declaration_restriction_line
 from .rules.capabilities import CapabilityRegistry
 from .rules.source_references import SourceReferenceSpec
 from .semantics import SemanticProgram, SemanticRegistry
+from .unleash import UNLEASH_MECHANIC
 from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v58"
+ORACLE_COMPILER_VERSION = "oracle-ir-v59"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -657,8 +661,30 @@ def _keyword_nodes(
     if mechanics is None:
         return ()
 
-    return tuple(
-        _keyword_node_for_mechanics(
+    plans = keyword_node_plans(
+        node_id=node_id,
+        line=line,
+        material_line=material_line,
+        span=span,
+        mechanics=mechanics,
+    )
+    nodes: list[OracleNode] = []
+    for plan in plans:
+        if plan.mechanics == (UNLEASH_MECHANIC,):
+            nodes.extend(
+                unleash_keyword_nodes(
+                    node_id=plan.node_id,
+                    line=plan.line,
+                    material_line=plan.material_line,
+                    span=plan.span,
+                    capability_registry=capability_registry,
+                    capability_profile=capability_profile,
+                    residuals=residuals,
+                )
+            )
+            continue
+        nodes.append(
+            _keyword_node_for_mechanics(
             node_id=plan.node_id,
             line=plan.line,
             material_line=plan.material_line,
@@ -668,15 +694,9 @@ def _keyword_nodes(
             capability_registry=capability_registry,
             capability_profile=capability_profile,
             residuals=residuals,
+            )
         )
-        for plan in keyword_node_plans(
-            node_id=node_id,
-            line=line,
-            material_line=material_line,
-            span=span,
-            mechanics=mechanics,
-        )
-    )
+    return tuple(nodes)
 
 
 def _runtime_handler_node(
@@ -723,65 +743,6 @@ def _runtime_handler_node(
         exact=not gate.blockers,
         template_id=template_id,
         handlers=(handler,),
-        residual_ids=residual_ids,
-        capability_dependencies=gate.capabilities,
-        capability_closure=(
-            gate.closure.reachable if gate.closure is not None else ()
-        ),
-        capability_profile=(
-            gate.closure.profile if gate.closure is not None else None
-        ),
-        capability_fingerprint=(
-            gate.closure.fingerprint if gate.closure is not None else None
-        ),
-    )
-
-
-def _intrinsic_counter_prohibition_node(
-    *,
-    node_id: str,
-    line: str,
-    material_line: str,
-    span: SourceSpan,
-    capability_registry: CapabilityRegistry | None,
-    capability_profile: str,
-    residuals: list[OracleResidual],
-) -> OracleNode | None:
-    if not is_intrinsically_uncounterable_spell(material_line):
-        return None
-    gate = _explicit_capability_gate(
-        "stack.counter.prohibition.intrinsic",
-        capability_registry=capability_registry,
-        capability_profile=capability_profile,
-    )
-    residual_ids = (
-        (
-            _residual(
-                residuals,
-                kind="dependency_contract",
-                text=line,
-                span=span,
-                reason=(
-                    "intrinsic counter prohibition lacks a trusted "
-                    "capability closure"
-                ),
-                blockers=gate.blockers,
-            ),
-        )
-        if gate.blockers
-        else ()
-    )
-    return OracleNode(
-        node_id=node_id,
-        kind="static_ability",
-        text=line,
-        span=span,
-        active_zone="stack",
-        event="continuous",
-        lowerable=True,
-        exact=not gate.blockers,
-        template_id="intrinsic-spell-counter-prohibition-v1",
-        mechanics=("counter",),
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,
         capability_closure=(
@@ -1028,7 +989,7 @@ def _compile_face(
             nodes.extend(event_nodes)
             continue
 
-        counter_prohibition = _intrinsic_counter_prohibition_node(
+        counter_prohibition = intrinsic_counter_prohibition_node(
             node_id=node_id,
             line=line,
             material_line=material_line,

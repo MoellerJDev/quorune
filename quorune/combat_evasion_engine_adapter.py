@@ -11,6 +11,7 @@ from .combat_evasion import (
 )
 from .keyword_abilities import normalized_characteristic_keywords
 from .landwalk import BASIC_LAND_TYPES, LandwalkRuleError
+from .semantic_runtime.block_restrictions import current_self_block_prohibitions
 
 if TYPE_CHECKING:
     from .engine import CommanderEngine
@@ -55,6 +56,11 @@ def engine_combat_evasion_verdict(
 ) -> CombatEvasionVerdict:
     """Compose the pure verdict from one narrow authoritative-state query."""
 
+    if current_self_block_prohibitions(engine, blocker):
+        return CombatEvasionVerdict(
+            False,
+            "blocker_has_self_counter_prohibition",
+        )
     return combat_evasion_verdict(
         combatant_evasion_characteristics(engine, attacker),
         combatant_evasion_characteristics(engine, blocker),

@@ -160,6 +160,7 @@ class MechanicContractTests(unittest.TestCase):
                 "melee",
                 "persist",
                 "undying",
+                "unleash",
             },
             {contract["mechanic_id"] for contract in contracts},
         )
