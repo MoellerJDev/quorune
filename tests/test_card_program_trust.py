@@ -153,7 +153,14 @@ class CardProgramTrustTests(unittest.TestCase):
                 for row in status["semantic_handlers"]
             },
         )
-        self.assertEqual(34, len(status["runtime_components"]))
+        self.assertEqual(35, len(status["runtime_components"]))
+        self.assertIn(
+            "replacement.counter.quantity.v2",
+            {
+                row["handler_id"]
+                for row in status["runtime_components"]
+            },
+        )
         self.assertEqual(
             {
                 "ability.activated.mana.color-set",
