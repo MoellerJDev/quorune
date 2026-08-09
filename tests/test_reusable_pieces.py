@@ -149,6 +149,13 @@ def _frontier() -> dict:
 
 
 def _inputs() -> dict:
+    policy = copy.deepcopy(load_reusable_piece_policy(ROOT))
+    policy["ambient_high_risk_piece_pairs"] = [
+        [
+            "capability.combat.block.flying",
+            "residual.effect_clause.unparsed-clause-grammar",
+        ]
+    ]
     return {
         "frontier": _frontier(),
         "capability_registry": {
@@ -232,7 +239,7 @@ def _inputs() -> dict:
                 },
             },
         },
-        "policy": load_reusable_piece_policy(ROOT),
+        "policy": policy,
         "interaction_evidence": {
             "schema_version": 1,
             "declarations": [
@@ -343,6 +350,71 @@ class ReusablePieceInventoryTests(unittest.TestCase):
         )
         self.assertFalse(pair["covered"])
         self.assertEqual([], pair["evidence_test_ids"])
+
+    def test_ambient_cross_card_pair_is_visible_before_and_after_evidence(self) -> None:
+        pair_ids = {
+            "capability.combat.block.flying",
+            "residual.effect_clause.unparsed-clause-grammar",
+        }
+        inputs = _inputs()
+        rows = build_reusable_piece_artifacts(**inputs)["interactions"][
+            "pairs"
+        ]
+        uncovered = next(
+            row for row in rows if set(row["piece_ids"]) == pair_ids
+        )
+        self.assertEqual(0, uncovered["card_count"])
+        self.assertEqual(0, uncovered["ability_count"])
+        self.assertTrue(uncovered["high_risk"])
+        self.assertFalse(uncovered["covered"])
+        self.assertEqual(
+            ["declared_ambient_high_risk"],
+            uncovered["applicability_bases"],
+        )
+
+        inputs["interaction_evidence"]["declarations"].append(
+            {
+                "evidence_class": "interaction",
+                "test_id": "test_flying_reach",
+                "piece_ids": sorted(pair_ids),
+                "capability_ids": ["combat.block.flying"],
+                "interaction_order": 2,
+                "assertion": (
+                    "A synthetic cross-card fixture proves declared ambient "
+                    "pairs become covered only through exact evidence."
+                ),
+            }
+        )
+        covered_rows = build_reusable_piece_artifacts(**inputs)[
+            "interactions"
+        ]["pairs"]
+        covered = next(
+            row for row in covered_rows if set(row["piece_ids"]) == pair_ids
+        )
+        self.assertTrue(covered["covered"])
+        self.assertEqual(["test_flying_reach"], covered["evidence_test_ids"])
+        self.assertEqual(
+            [
+                "declared_ambient_high_risk",
+                "explicit_interaction_evidence",
+            ],
+            covered["applicability_bases"],
+        )
+
+    def test_ambient_pair_policy_rejects_unknown_and_noncanonical_pieces(self) -> None:
+        policy = copy.deepcopy(load_reusable_piece_policy(ROOT))
+        policy["ambient_high_risk_piece_pairs"] = [
+            ["mechanic.flying", "capability.combat.block.flying"]
+        ]
+        with self.assertRaisesRegex(ValueError, "ambient high-risk"):
+            validate_reusable_piece_policy(policy)
+
+        inputs = _inputs()
+        inputs["policy"]["ambient_high_risk_piece_pairs"] = [
+            ["capability.combat.block.flying", "mechanic.unknown"]
+        ]
+        with self.assertRaisesRegex(ValueError, "unknown pieces"):
+            build_reusable_piece_artifacts(**inputs)
 
     def test_baseline_is_snapshot_pinned_and_delta_starts_at_zero(self) -> None:
         artifacts = _artifacts()

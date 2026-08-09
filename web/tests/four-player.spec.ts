@@ -767,7 +767,16 @@ test("@browser-rules @turn-draw an isolated-context duel presents exact turn sta
       await expect(page.getByTestId("exact-step-label")).toHaveText("Upkeep");
     }
 
-    await advanceToActionReady([host, opponent], playSpire, testInfo, 45_000);
+    const gameShell = host.locator(".game-shell");
+    await advanceToActionReady(
+      [host, opponent],
+      playSpire,
+      testInfo,
+      45_000,
+      async () =>
+        (await gameShell.getAttribute("data-active-player")) === "A"
+        && (await gameShell.getAttribute("data-phase")) === "precombat_main",
+    );
     await expect(spire).toHaveAttribute("draggable", "true");
     await expect(host.getByTestId("active-turn-label")).toHaveText("Seat A's Turn · Turn 1");
     await expect(host.getByTestId("priority-label")).toContainText("Priority: Seat A");
@@ -1163,28 +1172,24 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
 
     async function playLand(page: Page, name?: "Swamp" | "Forest") {
       const cards = page.getByTestId("own-hand").locator(".hand-card");
-      const land = name
-        ? cards.filter({ has: page.locator(".card-copy strong", { hasText: new RegExp(`^${name}$`) }) }).first()
-        : cards.first();
       // This natural-winner witness runs after the other durability-heavy
       // journeys in its serial shard. A single accepted command can take more
       // than the shared helper's normal budget while prior records flush.
       // Advancing to this seat's main phase may include that turn's draw.
-      // Pin the physical card rather than total hand size: Auto-pass may
-      // legitimately advance far enough for a later private draw immediately
-      // after this accepted land play.
-      const landRef = await land.getAttribute("data-card-ref");
-      expect(landRef).toBeTruthy();
-      const landName = await land.locator(".card-copy strong").textContent();
-      expect(landName).toBeTruthy();
       const battlefieldCards = page
         .getByTestId("own-battlefield")
         .locator(".card-tile");
       const battlefieldCount = await battlefieldCards.count();
       // This durability soak exercises more than a hundred routine commands.
-      // Use the exact current capability instead of accepting an unrelated
-      // delayed pass revision as evidence that a drag command was submitted.
-      const playAction = page.getByTestId(`action-play-land:${landRef}`);
+      // Resolve the physical card from the exact current capability after
+      // advancing. An intervening mandatory cleanup discard may legally remove
+      // the hand's former first card, so a reference captured before the
+      // destination main phase can become stale even though other lands remain.
+      const playAction = name
+        ? page.getByTestId("decision-panel")
+            .getByRole("button", { name: new RegExp(`^Play ${name}$`) })
+            .first()
+        : page.locator('[data-testid^="action-play-land:"]').first();
       const expectedActiveSeat = page === host ? "A" : "B";
       const table = page.locator(".game-shell");
       await advanceToActionReady(
@@ -1194,6 +1199,15 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
           && (await table.getAttribute("data-phase")) === "precombat_main"
         ),
       );
+      const actionTestId = await playAction.getAttribute("data-testid");
+      expect(actionTestId).toMatch(/^action-play-land:[A-Z][0-9]+$/);
+      const landRef = actionTestId!.slice("action-play-land:".length);
+      const land = page
+        .getByTestId("own-hand")
+        .locator(`.hand-card[data-card-ref="${landRef}"]`);
+      await expect(land).toHaveCount(1);
+      const landName = await land.locator(".card-copy strong").textContent();
+      expect(landName).toBeTruthy();
       await playAction.click();
       const dialog = page.getByTestId("choice-dialog");
       await expect.poll(async () =>

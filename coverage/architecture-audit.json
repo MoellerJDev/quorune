@@ -3808,7 +3808,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 126301,
+      "logical_lines": 126364,
       "methods": {
         "dunder": 337,
         "private": 688,
@@ -3876,8 +3876,8 @@
           "file": "quorune/reusable_pieces/generation.py",
           "functions_and_methods": 41,
           "language": "python",
-          "logical_lines": 1432,
-          "physical_lines": 1527
+          "logical_lines": 1453,
+          "physical_lines": 1548
         },
         {
           "file": "quorune/cli.py",
@@ -4034,18 +4034,18 @@
           "physical_lines": 915
         },
         {
+          "file": "quorune/reusable_pieces/reporting.py",
+          "functions_and_methods": 20,
+          "language": "python",
+          "logical_lines": 843,
+          "physical_lines": 885
+        },
+        {
           "file": "quorune/block_transitions.py",
           "functions_and_methods": 43,
           "language": "python",
           "logical_lines": 831,
           "physical_lines": 912
-        },
-        {
-          "file": "quorune/reusable_pieces/reporting.py",
-          "functions_and_methods": 20,
-          "language": "python",
-          "logical_lines": 827,
-          "physical_lines": 869
         },
         {
           "file": "quorune/rules/casting/commit.py",
@@ -5028,6 +5028,13 @@
           "physical_lines": 231
         },
         {
+          "file": "quorune/reusable_pieces/interactions.py",
+          "functions_and_methods": 2,
+          "language": "python",
+          "logical_lines": 207,
+          "physical_lines": 228
+        },
+        {
           "file": "quorune/card_programs/binding.py",
           "functions_and_methods": 4,
           "language": "python",
@@ -5103,13 +5110,6 @@
           "language": "python",
           "logical_lines": 181,
           "physical_lines": 210
-        },
-        {
-          "file": "quorune/reusable_pieces/interactions.py",
-          "functions_and_methods": 2,
-          "language": "python",
-          "logical_lines": 181,
-          "physical_lines": 195
         },
         {
           "file": "quorune/combat_evasion.py",
@@ -6660,7 +6660,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 138065,
+      "physical_lines": 138135,
       "python_file_count": 334,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -9650,7 +9650,7 @@
         {
           "condition": "operation == \"inventory\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 821,
+          "line": 837,
           "string_literals": [
             "inventory"
           ],
@@ -9659,7 +9659,7 @@
         {
           "condition": "operation == \"coverage\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 832,
+          "line": 848,
           "string_literals": [
             "coverage"
           ],
@@ -9668,7 +9668,7 @@
         {
           "condition": "operation == \"show\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 841,
+          "line": 857,
           "string_literals": [
             "show"
           ],
@@ -9677,7 +9677,7 @@
         {
           "condition": "operation == \"cards\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 845,
+          "line": 861,
           "string_literals": [
             "cards"
           ],
@@ -9686,7 +9686,7 @@
         {
           "condition": "operation == \"blockers\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 849,
+          "line": 865,
           "string_literals": [
             "blockers"
           ],
@@ -9695,7 +9695,7 @@
         {
           "condition": "operation == \"interactions\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 853,
+          "line": 869,
           "string_literals": [
             "interactions"
           ],
@@ -9704,7 +9704,7 @@
         {
           "condition": "operation == \"diff\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 857,
+          "line": 873,
           "string_literals": [
             "diff"
           ],
@@ -9713,7 +9713,7 @@
         {
           "condition": "operation == \"next\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 863,
+          "line": 879,
           "string_literals": [
             "next"
           ],
@@ -9722,7 +9722,7 @@
         {
           "condition": "operation == \"card\"",
           "file": "quorune/reusable_pieces/reporting.py",
-          "line": 865,
+          "line": 881,
           "string_literals": [
             "card"
           ],
@@ -11190,15 +11190,15 @@
           "positive": 209,
           "privacy": 86,
           "property": 11,
-          "replay": 127,
+          "replay": 133,
           "rollback": 21
         },
-        "declaration_count": 1031,
-        "declaration_source_fingerprint": "fff5ea076145a45325bbe23ffc3c1b363dcdec938c1c66c7bc32f731f8ca48ff",
-        "fingerprint": "e0a34e4ce96012e422b44ed2b2dbb1209d459e5853a958171f97efac6c336449",
-        "registry_fingerprint": "b34ad2b3476cd8b5fe336dc22519425de84950303ec0c87ee6f185d37fb4cf0f"
+        "declaration_count": 1037,
+        "declaration_source_fingerprint": "204eece2158fb1e11c67c59151c8147ecc16442bd8d5b830ff6130a81643548b",
+        "fingerprint": "140a88c4214ed4b637714c0e6216807c31e403aad768686942b35e765bb59cd8",
+        "registry_fingerprint": "abd00865b5ac726c44a5a4c17e70648e6ae952ccfbe2940a8636b1971ac07bfb"
       },
-      "fingerprint": "b34ad2b3476cd8b5fe336dc22519425de84950303ec0c87ee6f185d37fb4cf0f",
+      "fingerprint": "abd00865b5ac726c44a5a4c17e70648e6ae952ccfbe2940a8636b1971ac07bfb",
       "implementation_mutation_status_counts": {
         "killed": 104,
         "not_run": 5
@@ -11757,7 +11757,7 @@
           "maintenance": "hand-maintained",
           "status": "current",
           "title": "Interaction coverage",
-          "verified": "2026-08-05"
+          "verified": "2026-08-09"
         },
         "metadata_complete": true,
         "missing_metadata": [],
@@ -12293,8 +12293,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2254,
-      "discovered_total": 5554,
+      "conventional_ast_cases": 2258,
+      "discovered_total": 5558,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 82,
