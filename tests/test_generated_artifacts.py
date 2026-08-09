@@ -40,6 +40,11 @@ from scripts.install_dev_hooks import (
 )
 from scripts.validate_generated_web_types import validate as validate_web_types
 from quorune.oracle_ir import ORACLE_COMPILER_VERSION
+from quorune.compiler.target_effect_corpus_assurance import (
+    SEQUENCE_TEMPLATE_ID,
+    STANDALONE_TEMPLATE_ID,
+    TargetEffectCorpusCollector,
+)
 from quorune.rules.capabilities import load_default_capability_registry
 
 
@@ -60,6 +65,15 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
                 "commander_legal_only": commander_only,
                 "total_oracle_ids": count,
                 "status_counts": {"exact": count},
+                "target_effect_corpus_assurance": (
+                    TargetEffectCorpusCollector().report(
+                        compiler_version=ORACLE_COMPILER_VERSION,
+                        capability_registry=capabilities,
+                        capability_profile="commander_review",
+                        card_data_snapshot=snapshot,
+                        commander_legal_only=commander_only,
+                    )
+                ),
             }
 
         def program(commander_only: bool, count: int) -> dict:
@@ -97,6 +111,43 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             CompilerCorpusCoverageError, "card counts are inconsistent"
         ):
             validate_reports(mismatched)
+
+        stale_assurance = copy.deepcopy(reports)
+        stale_assurance["oracle_commander"][
+            "target_effect_corpus_assurance"
+        ]["grammar_source_fingerprint"] = "0" * 64
+        with self.assertRaisesRegex(
+            CompilerCorpusCoverageError,
+            "fingerprint is stale",
+        ):
+            validate_reports(stale_assurance)
+
+    def test_tracked_target_effect_assurance_is_corpus_derived_and_nonempty(self):
+        report = json.loads(
+            (ROOT / "coverage" / "oracle-coverage-commander.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assurance = report["target_effect_corpus_assurance"]
+        dimensions = assurance["dimensions"]
+
+        self.assertGreater(assurance["total_nodes"], 0)
+        self.assertGreater(assurance["shape_count"], 0)
+        self.assertEqual(
+            {STANDALONE_TEMPLATE_ID, SEQUENCE_TEMPLATE_ID},
+            set(dimensions["templates"]),
+        )
+        self.assertEqual(
+            assurance["total_nodes"],
+            sum(dimensions["templates"].values()),
+        )
+        self.assertEqual(
+            assurance["total_nodes"],
+            sum(shape["count"] for shape in assurance["shapes"]),
+        )
+        self.assertTrue(
+            all(shape["representative_identities"] for shape in assurance["shapes"])
+        )
 
     def test_generated_manifest_has_one_owner_and_dependency_order(self):
         specs = load_manifest()

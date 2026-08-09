@@ -441,6 +441,7 @@ def _string_records(
             # registries; use in card identity or printed-name dispatch still
             # fails below.
             "_KEYWORDS": ordinary_keyword_values,
+            "FIXED_TARGET_CHARACTERISTIC_KEYWORDS": ordinary_keyword_values,
             "_FIXED_TARGET_SEQUENCE_KEYWORDS": ordinary_keyword_values,
             "KEYWORD_COUNTER_MECHANICS": ordinary_keyword_values,
             # Closed predefined token names are CR vocabulary used to build
@@ -1144,6 +1145,33 @@ def _compiler_metrics(
     from quorune.semantics import SemanticRegistry
 
     semantic_card_programs = SemanticRegistry().card_programs()
+
+    def target_effect_assurance_summary(
+        report: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        assurance = report.get("target_effect_corpus_assurance")
+        if not isinstance(assurance, Mapping):
+            return {"present": False}
+        return {
+            "present": True,
+            "fingerprint": assurance.get("fingerprint"),
+            "grammar_source_fingerprint": assurance.get(
+                "grammar_source_fingerprint"
+            ),
+            "identity_fingerprint": assurance.get("identity_fingerprint"),
+            "total_nodes": assurance.get("total_nodes"),
+            "total_cards": assurance.get("total_cards"),
+            "exact_nodes": assurance.get("exact_nodes"),
+            "exact_cards_with_template": assurance.get(
+                "exact_cards_with_template"
+            ),
+            "shape_count": assurance.get("shape_count"),
+            "contract_fingerprint": (
+                assurance.get("synthetic_contract", {}).get("fingerprint")
+                if isinstance(assurance.get("synthetic_contract"), Mapping)
+                else None
+            ),
+        }
     trust_basis_counts = Counter(
         str(program.trust_closure["trust_basis"])
         for program in semantic_card_programs
@@ -1248,6 +1276,11 @@ def _compiler_metrics(
             analyses["quorune/oracle_ir.py"].logical_lines
         ),
         "stages": stages,
+        "target_effect_corpus_assurance": {
+            "full": target_effect_assurance_summary(oracle),
+            "commander": target_effect_assurance_summary(commander),
+            "source": "coverage/oracle-coverage-commander.json",
+        },
         "full_oracle": {
             "snapshot": oracle.get("card_data_snapshot"),
             "total_oracle_ids": oracle.get("total_oracle_ids"),
@@ -2019,6 +2052,9 @@ def render_compact_compiler_status(report: Mapping[str, Any]) -> str:
     compiler = report["compiler"]
     commander = compiler["commander_legal_oracle"]
     capabilities = compiler["rule_capabilities"]
+    target_effect_assurance = compiler["target_effect_corpus_assurance"][
+        "commander"
+    ]
     fingerprint = _machine_report_fingerprint(report)
     command = (
         r".\.venv\Scripts\python.exe scripts\update_architecture_audit.py "
@@ -2071,13 +2107,20 @@ def render_compact_compiler_status(report: Mapping[str, Any]) -> str:
         f"- Commander Oracle objects: `{commander['total_oracle_ids']}`",
         f"- Exact fraction: `{commander['exact_fraction']}`",
         f"- Capability records: `{capabilities['total']}`",
+        (
+            "- Assured fixed-target compiler nodes/shapes: "
+            f"`{target_effect_assurance['total_nodes']}` / "
+            f"`{target_effect_assurance['shape_count']}`"
+        ),
         "",
         "## Top blockers",
         "",
         *(f"- {item}" for item in blockers[:5]),
         "",
         "Complete corpus, residual, stage, capability, and CardProgram inventories are "
-        "in the [machine-readable architecture audit](../coverage/architecture-audit.json).",
+        "in the [machine-readable architecture audit](../coverage/architecture-audit.json). "
+        "The corpus-derived fixed-target grammar shapes and representative identities are "
+        "in the [Commander Oracle census](../coverage/oracle-coverage-commander.json).",
         "",
         "Exact generation command:",
         "",

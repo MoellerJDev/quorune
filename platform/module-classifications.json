@@ -1442,6 +1442,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/target_effect_corpus_assurance.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/token_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -4849,5 +4864,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "70e6fbd46310688237912f3367c05aeb253d8f606c0018573a2e699bb02fa8f3"
+  "fingerprint": "32c472daf7b42493c70a66f393d024beb6f491038a39b21e76f8153a4c83e0ab"
 }
