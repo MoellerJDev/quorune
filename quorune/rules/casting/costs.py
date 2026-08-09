@@ -5,11 +5,14 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Protocol
 
+from ...additional_cost_vocabulary import SACRIFICE_COST_KIND
 from ..action_proposals import CastCostOption
 from ..casting_additional_costs import (
     AdditionalCostError,
     fixed_counter_additional_cost,
     fixed_counter_cost_candidates,
+    fixed_sacrifice_additional_cost,
+    fixed_sacrifice_cost_candidates,
 )
 
 
@@ -432,6 +435,52 @@ def _apply_additional_costs(
                 {
                     "kind": counter_cost.kind,
                     "card": selected,
+                    "cost_position": index,
+                }
+            )
+            continue
+        try:
+            sacrifice_cost = fixed_sacrifice_additional_cost(additional)
+        except AdditionalCostError:
+            return False
+        if sacrifice_cost is not None:
+            if len(mandatory_costs) != 1:
+                return False
+            candidates = list(
+                fixed_sacrifice_cost_candidates(
+                    host,
+                    actor=seat,
+                    cost=sacrifice_cost,
+                )
+            )
+            if not candidates:
+                return False
+            choice_schema[sacrifice_cost.choice_field] = {
+                "type": "object_ref_array",
+                "count": 1,
+                "legal_refs": candidates,
+                "zone": "battlefield",
+                "destination": "graveyard",
+                "payment": SACRIFICE_COST_KIND,
+            }
+            if hint:
+                continue
+            raw_values = response.get(sacrifice_cost.choice_field)
+            if raw_values is None:
+                raw_values = response.get("cost_cards")
+            if not isinstance(raw_values, (list, tuple)):
+                return False
+            values = list(raw_values)
+            if (
+                len(values) != 1
+                or type(values[0]) is not str
+                or values[0] not in candidates
+            ):
+                return False
+            selected_nonmana.append(
+                {
+                    "kind": sacrifice_cost.kind,
+                    "card": values[0],
                     "cost_position": index,
                 }
             )

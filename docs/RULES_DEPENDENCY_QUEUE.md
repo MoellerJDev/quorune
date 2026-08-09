@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "a9ca3c7e2e143342e56861ddd84b91e881f1b074fbcd1a3077ff7750f674e6ed"
+verified: "609a6ca79cd26febfefb7229f72796833b98a63ebe0b447d56c086b81ad80f1b"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,12 +11,12 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `18d64d9d08fe3215ec67161002433a6dfcfc5bcad3a24d9949102bfc72cc0d0c`
+Source fingerprint: `56d8403db7dd42e38d5ca7ef2a56000ae733c01810d7cbc0d31c7ecb5e3cfb34`
 
 ## Current top-level state
 
 - Pinned rules: `3300`
-- Queued rules: `2950`
+- Queued rules: `2948`
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`

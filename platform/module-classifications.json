@@ -76,6 +76,18 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/additional_cost_vocabulary.py",
+      "layer": "domain",
+      "owning_subsystem": "legacy_domain",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/aerial_blocking.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -4837,5 +4849,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "1be7669c9b6afbd5bae0651acfb3a3c87fe94d3bffb310d1a6ebc0a1bc32badf"
+  "fingerprint": "70e6fbd46310688237912f3367c05aeb253d8f606c0018573a2e699bb02fa8f3"
 }

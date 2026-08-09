@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 72,
+  "registry_version": 73,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -207,6 +207,33 @@
       "dependency_fail_closed_rationale": "test_counter_additional_cost_capability_closure_fails_closed blocks the canonical counter-quantity replacement dependency and proves that the combined source-spanned spell node remains inexact.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_counter_additional_cost_compiler_mutant_is_killed removes the closed grammar, while test_counter_cost_provenance_mutant_is_killed changes the placement to effect-generated; exact compiler and replacement-interaction assertions reject both survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "casting.additional_cost.fixed_sacrifice",
+      "version": 1,
+      "official_rules": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Pay one mandatory additional cost by choosing and sacrificing exactly one permanent the caster controls that matches one closed effective card-type union, before the spell is placed on the stack.",
+        "inputs": ["one source-spanned typed additional-cost descriptor", "one public phased-in permanent controlled by the caster", "zero, one, or two canonical permanent card types", "current effective characteristics", "stable replacement-aware zone-change identity"],
+        "outputs": ["one payable cast offer with a seat-scoped object choice", "one replacement-aware battlefield departure as a casting cost", "normalized departure and dies events before cast-event dispatch", "spell stack placement only after the cost is paid", "transactional rollback, private replacement continuation, and exact replay"],
+        "exclusions": ["zero, multiple, optional, variable, or repeatable sacrifices", "supertypes, subtypes, colors, controller relations other than you control, and dynamic or historical qualities", "alternative or composite additional costs", "sacrifice effects rather than casting costs", "nonpermanent objects and phased-out permanents", "multiple simultaneous sacrifice events", "copied spells and alternate casting procedures outside the represented ordinary cast path"]
+      },
+      "dependencies": ["trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
+      "implementation_components": ["quorune.compiler.spell_additional_cost_templates.FixedSacrificeAdditionalCostTemplate", "quorune.compiler.spell_additional_cost_nodes.typed_additional_cost_spell_node", "quorune.rules.casting_additional_costs.FixedSacrificeAdditionalCost", "quorune.rules.casting.costs._apply_additional_costs", "quorune.rules.casting.commit._resolve_fixed_sacrifice_additional_cost", "quorune.mana_payment_continuations.issue_mana_payment_replacement_choice", "quorune.replacement.replay.ReplacementContinuation", "CommanderEngine.move_card"],
+      "positive_tests": ["test_fixed_sacrifice_cost_compiles_source_spanned_v2_program", "test_fixed_sacrifice_cost_commits_and_replays"],
+      "negative_tests": ["test_fixed_sacrifice_cost_grammar_fails_closed", "test_offer_and_submission_share_effective_type_legality"],
+      "interaction_tests": ["test_sacrifice_is_not_destruction_and_uses_owner_graveyard", "test_zone_replacement_suspends_cost_before_mutation_and_replays"],
+      "multiplayer_tests": ["test_zone_replacement_suspends_cost_before_mutation_and_replays"],
+      "privacy_tests": ["test_zone_replacement_suspends_cost_before_mutation_and_replays"],
+      "replay_tests": ["test_fixed_sacrifice_cost_commits_and_replays", "test_zone_replacement_suspends_cost_before_mutation_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "test_fixed_sacrifice_capability_dependency_fails_closed proves the source-spanned spell node remains inexact whenever canonical destination replacement is blocked; normalized zone-change event closure remains a second mandatory dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_fixed_sacrifice_compiler_mutant_is_killed removes the closed sacrifice grammar and the source-spanned exact compiler assertion rejects the survivor.",
       "blockers": [],
       "status": "trusted"
     },

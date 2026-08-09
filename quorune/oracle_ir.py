@@ -75,7 +75,7 @@ from .compiler.static_runtime_nodes import (
     static_runtime_node,
 )
 from .compiler.spell_additional_cost_nodes import (
-    fixed_counter_additional_cost_spell_node,
+    typed_additional_cost_spell_node,
 )
 from .compiler.tap_state_templates import targeted_tap_state_effect_template
 from .declaration_costs import parse_declaration_cost_line
@@ -909,7 +909,7 @@ def _unconditional_enters_tapped_node(
     )
 
 
-def _fixed_counter_cost_face(
+def _typed_additional_cost_face(
     record: CardRecord,
     face_id: str,
     face_name: str,
@@ -921,7 +921,7 @@ def _fixed_counter_cost_face(
     capability_profile: str,
     residuals: list[OracleResidual],
 ) -> OracleFaceIR | None:
-    node = fixed_counter_additional_cost_spell_node(
+    node = typed_additional_cost_spell_node(
         node_id=f"{face_id}:n1",
         rows=material_rows,
         card_name=face_name or record.name,
@@ -972,13 +972,13 @@ def _compile_face(
     )
     material_rows = tuple(_material_source_lines(type_line, oracle_text))
     if spell:
-        counter_cost_face = _fixed_counter_cost_face(
+        additional_cost_face = _typed_additional_cost_face(
             record, face_id, face_name, oracle_text, material_rows,
             contextual_effect_template, trusted_mechanics, capability_registry,
             capability_profile, residuals,
         )
-        if counter_cost_face is not None:
-            return counter_cost_face
+        if additional_cost_face is not None:
+            return additional_cost_face
     for index, row in enumerate(material_rows, 1):
         line, material_line, span = row
         node_id = f"{face_id}:n{index}"

@@ -108,6 +108,7 @@ from enum import Enum
 _EXILE_MECHANIC = "exile"
 _REASON_FIELD = "reason"
 _ZONE_CHANGE_DESTINATIONS = {"library", "hand"}
+SACRIFICE_COST_KIND = "sacrifice"
 class Destination(str, Enum):
     EXILE = "exile"
 def bad(card):
@@ -115,6 +116,7 @@ def bad(card):
         card.printed_name == "Exile"
         or card.printed_name == "Reason"
         or card.printed_name == "Library"
+        or card.printed_name == "Sacrifice"
     )
 """
         )
@@ -147,6 +149,18 @@ def bad(card):
         self.assertEqual(
             [False, True],
             sorted(bool(item["card_specificity_exempt"]) for item in library_words),
+        )
+        sacrifice_words = [
+            item
+            for item in strings
+            if str(item["value"]).casefold() == "sacrifice"
+        ]
+        self.assertEqual(
+            [False, True],
+            sorted(
+                bool(item["card_specificity_exempt"])
+                for item in sacrifice_words
+            ),
         )
 
 

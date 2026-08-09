@@ -435,6 +435,7 @@ def _string_records(
             "_COUNTER_NAME_ANY": {"counters"},
             "_COUNTER_TARGET_GOBLIN": {"goblin"},
             "_COUNTER_TARGET_VEHICLE": {"vehicle"},
+            "SACRIFICE_COST_KIND": {"sacrifice"},
             # Closed rules vocabulary may also coincide with exact printed
             # card names. These exemptions are limited to the typed keyword
             # registries; use in card identity or printed-name dispatch still

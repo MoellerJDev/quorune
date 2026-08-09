@@ -14,6 +14,7 @@ from .ir_model import (
 )
 from .spell_additional_cost_templates import (
     fixed_counter_additional_cost_template,
+    fixed_sacrifice_additional_cost_template,
 )
 from ..rules.capabilities import CapabilityRegistry
 
@@ -72,7 +73,7 @@ def _residual_spell_node(
     )
 
 
-def _fixed_counter_cost_result_node(
+def _additional_cost_result_node(
     *,
     node_id: str,
     rows: Sequence[SourceRow],
@@ -83,6 +84,7 @@ def _fixed_counter_cost_result_node(
     capability_profile: str,
     residuals: list[OracleResidual],
     cost: Any,
+    cost_mechanics: tuple[str, ...],
     text: str,
     span: SourceSpan,
 ) -> OracleNode:
@@ -97,18 +99,13 @@ def _fixed_counter_cost_result_node(
             span=span,
             residuals=residuals,
             kind="spell_effect",
-            reason=(
-                "fixed counter additional cost has no exact generic "
-                "spell-result template"
-            ),
+            reason="typed additional cost has no exact generic spell-result template",
             blockers=("typed spell-result clause",),
             cost=cost.cost_schema,
         )
-    mechanics = tuple(
-        dict.fromkeys(
-            ("cr-601-casting-spells", "cr-122-counters", *effect_mechanics)
-        )
-    )
+    mechanics = tuple(dict.fromkeys(
+        ("cr-601-casting-spells", *cost_mechanics, *effect_mechanics)
+    ))
     gate = dependency_gate(
         mechanics=mechanics,
         effects=effects,
@@ -126,7 +123,7 @@ def _fixed_counter_cost_result_node(
                 text=text,
                 span=span,
                 reason=(
-                    "lowerable counter-cost spell depends on untrusted "
+                    "lowerable additional-cost spell depends on untrusted "
                     "rules dependencies"
                 ),
                 blockers=gate.blockers,
@@ -160,7 +157,7 @@ def _fixed_counter_cost_result_node(
     )
 
 
-def fixed_counter_additional_cost_spell_node(
+def typed_additional_cost_spell_node(
     *,
     node_id: str,
     rows: Sequence[SourceRow],
@@ -171,12 +168,16 @@ def fixed_counter_additional_cost_spell_node(
     capability_profile: str,
     residuals: list[OracleResidual],
 ) -> OracleNode | None:
-    """Compile or fail closed one fixed counter additional-cost spell."""
+    """Compile or fail closed one represented mandatory additional cost."""
 
     if not rows:
         return None
     first_clause = rows[0][1].strip()
     cost = fixed_counter_additional_cost_template(first_clause)
+    cost_mechanics = ("cr-122-counters",)
+    if cost is None:
+        cost = fixed_sacrifice_additional_cost_template(first_clause)
+        cost_mechanics = ()
     if cost is None and not first_clause.casefold().startswith(
         _ADDITIONAL_COST_PREFIX
     ):
@@ -201,7 +202,7 @@ def fixed_counter_additional_cost_spell_node(
             residuals=residuals,
             kind="spell_additional_cost",
             reason=(
-                "fixed counter additional cost requires exactly one "
+                "typed additional cost requires exactly one "
                 "represented spell-result clause"
             ),
             blockers=(
@@ -210,7 +211,7 @@ def fixed_counter_additional_cost_spell_node(
             ),
             cost=cost.cost_schema,
         )
-    return _fixed_counter_cost_result_node(
+    return _additional_cost_result_node(
         node_id=node_id,
         rows=rows,
         card_name=card_name,
@@ -220,9 +221,18 @@ def fixed_counter_additional_cost_spell_node(
         capability_profile=capability_profile,
         residuals=residuals,
         cost=cost,
+        cost_mechanics=cost_mechanics,
         text=text,
         span=span,
     )
 
 
-__all__ = ["fixed_counter_additional_cost_spell_node"]
+# Compatibility component name retained for the already-certified fixed-counter
+# capability record. New compiler routing uses the family-level name above.
+fixed_counter_additional_cost_spell_node = typed_additional_cost_spell_node
+
+
+__all__ = [
+    "fixed_counter_additional_cost_spell_node",
+    "typed_additional_cost_spell_node",
+]

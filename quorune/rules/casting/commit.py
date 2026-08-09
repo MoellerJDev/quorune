@@ -5,6 +5,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Protocol
 
+from ...additional_cost_vocabulary import SACRIFICE_COST_KIND
 from ...counter_placement import (
     CounterPlacementError,
     CounterPlacementRequest,
@@ -21,6 +22,8 @@ from ..casting_additional_costs import (
     AdditionalCostError,
     fixed_counter_additional_cost,
     fixed_counter_cost_candidates,
+    fixed_sacrifice_additional_cost,
+    fixed_sacrifice_cost_candidates,
 )
 from .model import CastProposalError
 
@@ -91,7 +94,9 @@ class CastCommitHost(Protocol):
 
 @dataclass(slots=True)
 class _AdditionalCostCommit:
-    deferred_events: list[tuple[Any, str, str, str, dict[str, Any], list[str]]]
+    deferred_events: list[
+        tuple[Any, str, str, str, dict[str, Any], list[str], str]
+    ]
     source_snapshots: list[Any]
     source_zones: dict[str, str]
     source_characteristics: dict[str, dict[str, Any]]
@@ -318,6 +323,85 @@ def _commit_counter_placement_additional_cost(
     return paid.ref
 
 
+def _resolve_fixed_sacrifice_additional_cost(
+    host: CastCommitHost,
+    proposal: CastProposal,
+    response: Mapping[str, Any],
+    selected_option: Mapping[str, Any],
+    selected: Mapping[str, Any],
+) -> tuple[Any, tuple[str | None | Mapping[str, Any], ...]]:
+    raw_costs = selected_option.get("additional_costs")
+    cost_position = selected.get("cost_position")
+    if (
+        not isinstance(raw_costs, list)
+        or type(cost_position) is not int
+        or cost_position < 0
+        or cost_position >= len(raw_costs)
+        or set(selected) != {"kind", "card", "cost_position"}
+    ):
+        raise CastProposalError(
+            "The sacrifice additional-cost selection is malformed",
+            reason="additional_cost_malformed",
+        )
+    try:
+        cost = fixed_sacrifice_additional_cost(raw_costs[cost_position])
+    except AdditionalCostError as exc:
+        raise CastProposalError(
+            str(exc), reason="additional_cost_malformed"
+        ) from exc
+    if cost is None or len(raw_costs) != 1:
+        raise CastProposalError(
+            "The sacrifice additional cost is outside the represented family",
+            reason="additional_cost_unsupported",
+        )
+    selected_ref = selected.get("card")
+    if (
+        type(selected_ref) is not str
+        or selected_ref
+        not in fixed_sacrifice_cost_candidates(
+            host,
+            actor=proposal.seat,
+            cost=cost,
+        )
+    ):
+        raise CastProposalError(
+            "The selected sacrifice-cost permanent is no longer legal",
+            status="unpayable",
+            reason="sacrifice_cost_unpayable",
+        )
+    paid = host._resolve_object(
+        proposal.seat,
+        selected_ref,
+        zones={"battlefield"},
+        controlled_only=True,
+    )
+    raw_journal = response.get("_mana_replacement_selections") or {}
+    if not isinstance(raw_journal, Mapping) or len(raw_journal) > 1:
+        raise CastProposalError(
+            "The casting replacement journal is malformed",
+            reason="replacement_journal_malformed",
+        )
+    if raw_journal:
+        event_id, selections = next(iter(raw_journal.items()))
+        if (
+            type(event_id) is not str
+            or not event_id.startswith("zone.change:")
+            or not event_id.endswith(f":{paid.ref}")
+        ):
+            raise CastProposalError(
+                "The casting replacement journal is malformed",
+                reason="replacement_journal_malformed",
+            )
+    else:
+        selections = ()
+    if not isinstance(selections, (list, tuple)):
+        raise CastProposalError(
+            "The casting replacement selections are malformed",
+            reason="replacement_journal_malformed",
+        )
+    return paid, tuple(selections)
+
+
 def _commit_additional_costs(
     host: CastCommitHost,
     proposal: CastProposal,
@@ -376,6 +460,33 @@ def _commit_additional_costs(
                 )
             )
             continue
+        if kind == SACRIFICE_COST_KIND and "cost_position" in selected:
+            paid, replacement_selections = (
+                _resolve_fixed_sacrifice_additional_cost(
+                    host,
+                    proposal,
+                    response,
+                    selected_option,
+                    selected,
+                )
+            )
+            changes.append(
+                (
+                    paid,
+                    paid.zone,
+                    paid.controller,
+                    paid.logical_object_id,
+                    copy.deepcopy(host._effective_card_data(paid)),
+                    [
+                        host.state.cards[attachment_id].ref
+                        for attachment_id in paid.attachments
+                        if attachment_id in host.state.cards
+                    ],
+                    kind,
+                    replacement_selections,
+                )
+            )
+            continue
         zone = "hand" if kind == "discard" else "battlefield"
         for ref in selected.get("cards", []):
             paid = host._resolve_object(
@@ -398,18 +509,37 @@ def _commit_additional_costs(
                         if attachment_id in host.state.cards
                     ],
                     kind,
+                    (),
                 )
             )
-    for paid, origin, controller, logical_id, data, attachments, kind in changes:
+    for (
+        paid,
+        origin,
+        controller,
+        logical_id,
+        data,
+        attachments,
+        kind,
+        replacement_selections,
+    ) in changes:
         host.move_card(
             paid.object_id,
             "graveyard",
             reason=f"{card.printed_name} {kind} cost",
             semantic_events=False,
+            replacement_selections=replacement_selections,
         )
         result.paid_refs.append(paid.ref)
         result.deferred_events.append(
-            (paid, origin, controller, logical_id, data, attachments)
+            (
+                paid,
+                origin,
+                controller,
+                logical_id,
+                data,
+                attachments,
+                paid.zone,
+            )
         )
         host._log(
             proposal.seat,
@@ -630,11 +760,19 @@ def _dispatch_cast_events(
     costs: _AdditionalCostCommit,
 ) -> None:
     trigger_batch: list[StackItem] = []
-    for paid, origin, controller, logical_id, data, attachments in costs.deferred_events:
+    for (
+        paid,
+        origin,
+        controller,
+        logical_id,
+        data,
+        attachments,
+        destination,
+    ) in costs.deferred_events:
         host._dispatch_zone_change_events(
             paid,
             origin=origin,
-            destination="graveyard",
+            destination=destination,
             origin_controller=controller,
             origin_logical_object_id=logical_id,
             origin_data=data,

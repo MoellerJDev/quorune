@@ -12,9 +12,28 @@
       "cost_schema": {
         "additional_costs": [
           {
+            "schema_version": 1,
             "kind": "sacrifice",
             "count": 1,
-            "types_any": ["Creature"]
+            "choice_field": "sacrifice_cards",
+            "predicate": {
+              "zones": ["battlefield"],
+              "owner": null,
+              "controller": "$actor",
+              "types_all": [],
+              "types_any": ["creature"],
+              "excluded_types": [],
+              "subtypes_all": [],
+              "supertypes_all": [],
+              "colors_all": [],
+              "colors_any": [],
+              "keywords_all": [],
+              "token": null,
+              "tapped": null,
+              "include_phased_out": false,
+              "known_to_actor": true,
+              "exclude_ref": null
+            }
           }
         ]
       },

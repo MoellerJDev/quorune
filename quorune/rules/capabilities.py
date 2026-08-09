@@ -10,6 +10,7 @@ from typing import Any, Iterable, Mapping, Sequence
 from .component_resolution import implementation_component_resolves
 from .node_capability_shapes import (
     fixed_counter_additional_cost_node_capabilities,
+    fixed_sacrifice_additional_cost_node_capabilities,
     fixed_counter_placement_batch_node_capabilities,
     fixed_counter_placement_node_capabilities,
     fixed_counter_placement_set_node_capabilities,
@@ -837,6 +838,11 @@ def capability_dependencies_for_node(
             cost_schema=cost_schema
         )
     )
+    dependencies.update(
+        fixed_sacrifice_additional_cost_node_capabilities(
+            cost_schema=cost_schema
+        )
+    )
     for mechanic in mechanics:
         if mechanic not in _SHAPE_GATED_MECHANICS:
             dependencies.update(
@@ -985,6 +991,8 @@ def capability_covered_mechanics(
         covered.add("cr-122-counters")
     if "casting.additional_cost.fixed_counter_placement" in supplied:
         covered.update({"cr-601-casting-spells", "cr-122-counters"})
+    if "casting.additional_cost.fixed_sacrifice" in supplied:
+        covered.add("cr-601-casting-spells")
     if "counter.producer.cumulative_upkeep_fixed_mana" in supplied:
         covered.update({"cr-122-counters", "cumulative upkeep"})
     if "keyword_action.explore.single" in supplied:

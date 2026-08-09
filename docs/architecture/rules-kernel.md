@@ -87,6 +87,16 @@ supported Craft reminder grammar. CardPrograms may grant an activated ability
 through a serialized descriptor; historical card-named markers are interpreted
 only by the Game Record v3 compatibility adapter.
 
+Mandatory fixed nonmana casting costs use source-spanned typed descriptors.
+The counter-placement and one-permanent sacrifice families share the ordinary
+cast proposal and commit boundary, but retain distinct mutation owners. Fixed
+sacrifice candidates are phased-in permanents the caster currently controls,
+optionally restricted to a closed union of current effective permanent card
+types. Offer and commit use the same query; commit delegates the physical move
+to the replacement-aware zone owner before the spell is placed on the stack.
+Unsupported cost grammar residualizes the entire spell rather than exposing a
+cost-free result.
+
 ## Extension and event participation
 
 Reusable mechanics belong in focused rules modules and typed semantic
