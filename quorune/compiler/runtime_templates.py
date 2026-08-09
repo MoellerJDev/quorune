@@ -8,6 +8,9 @@ from .continuous_templates import (
     basic_land_type_addition_handler,
     fixed_power_toughness_anthem_handler,
 )
+from .counter_replacement_templates import (
+    static_counter_quantity_replacement_handler,
+)
 from .damage_templates import static_damage_handler
 from .draw_templates import (
     static_draw_reveal_handler,
@@ -32,10 +35,26 @@ def static_runtime_template(
     *,
     source_damageable: bool | None = None,
     source_permanent: bool = True,
+    source_is_class: bool = False,
 ) -> StaticRuntimeTemplate | None:
     """Select one closed static runtime production for an Oracle line."""
 
     if source_permanent:
+        counter_quantity = (
+            None
+            if source_is_class
+            else static_counter_quantity_replacement_handler(text)
+        )
+        if counter_quantity is not None:
+            return StaticRuntimeTemplate(
+                compiled=counter_quantity,
+                kind="replacement_effect",
+                event="counter.place",
+                dependency_reason=(
+                    "generic counter-quantity replacement depends on an "
+                    "untrusted rules capability"
+                ),
+            )
         additional_token = static_additional_token_replacement_handler(text)
         if additional_token is not None:
             return StaticRuntimeTemplate(

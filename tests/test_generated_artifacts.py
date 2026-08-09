@@ -9,6 +9,10 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from scripts.finalize_generated import stabilization_ids, write_until_stable
+from scripts.update_compiler_corpus_coverage import (
+    CompilerCorpusCoverageError,
+    validate_reports,
+)
 from scripts.generated_artifacts import (
     GeneratedArtifactManifestError,
     GeneratorSpec,
@@ -23,9 +27,65 @@ from scripts.install_dev_hooks import (
     check as check_hooks,
     install as install_hooks,
 )
+from quorune.oracle_ir import ORACLE_COMPILER_VERSION
+from quorune.rules.capabilities import load_default_capability_registry
 
 
 class GeneratedArtifactFinalizationTests(unittest.TestCase):
+    def test_compiler_corpus_reports_fail_closed_on_stale_source_or_counts(self):
+        capabilities = load_default_capability_registry()
+        snapshot = {"oracle_source_sha256": "a" * 64}
+
+        def oracle(commander_only: bool, count: int) -> dict:
+            return {
+                "compiler_version": ORACLE_COMPILER_VERSION,
+                "capability_profile": "commander_review",
+                "capability_registry_fingerprint": capabilities.fingerprint,
+                "capability_evidence_fingerprint": (
+                    capabilities.evidence_fingerprint
+                ),
+                "card_data_snapshot": snapshot,
+                "commander_legal_only": commander_only,
+                "total_oracle_ids": count,
+                "status_counts": {"exact": count},
+            }
+
+        def program(commander_only: bool, count: int) -> dict:
+            return {
+                "compiler_version": ORACLE_COMPILER_VERSION,
+                "profile": "commander_review",
+                "capability_registry_fingerprint": capabilities.fingerprint,
+                "capability_evidence_fingerprint": (
+                    capabilities.evidence_fingerprint
+                ),
+                "card_data_snapshot": snapshot,
+                "commander_legal_only": commander_only,
+                "cards_considered": count,
+                "status_counts": {"trusted": count},
+            }
+
+        reports = {
+            "oracle_full": oracle(False, 4),
+            "oracle_commander": oracle(True, 3),
+            "program_full": program(False, 4),
+            "program_commander": program(True, 3),
+        }
+        validate_reports(reports)
+
+        stale = copy.deepcopy(reports)
+        stale["program_commander"]["compiler_version"] = "oracle-ir-stale"
+        with self.assertRaisesRegex(
+            CompilerCorpusCoverageError, "compiler version is stale"
+        ):
+            validate_reports(stale)
+
+        mismatched = copy.deepcopy(reports)
+        mismatched["program_commander"]["cards_considered"] = 2
+        with self.assertRaisesRegex(
+            CompilerCorpusCoverageError, "card counts are inconsistent"
+        ):
+            validate_reports(mismatched)
+
     def test_generated_manifest_has_one_owner_and_dependency_order(self):
         specs = load_manifest()
         ordered = [spec.id for spec in topological_order(specs)]
@@ -38,6 +98,7 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
                 "capability-evidence",
                 "card-unlock-frontier",
                 "ci-escape-report",
+                "compiler-corpus-coverage",
                 "continuous-effect-performance",
                 "module-classifications",
                 "platform-status",
@@ -45,6 +106,14 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
                 "rules-scheduler",
             },
             {spec.id for spec in specs},
+        )
+        self.assertLess(
+            ordered.index("compiler-corpus-coverage"),
+            ordered.index("card-unlock-frontier"),
+        )
+        self.assertLess(
+            ordered.index("compiler-corpus-coverage"),
+            ordered.index("platform-status"),
         )
         self.assertLess(
             ordered.index("platform-status"),
@@ -242,6 +311,7 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         )
         self.assertIn(".venv/bin/python", hook)
         self.assertIn(".venv/Scripts/python.exe", hook)
+        self.assertIn("data/scryfall-current.sqlite3", hook)
         self.assertIn("--write --fail-on-change", hook)
         self.assertNotIn("python scripts/finalize_generated.py", hook)
 

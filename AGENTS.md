@@ -154,6 +154,13 @@ deterministic writers to a fixed point:
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write
 ```
 
+When compiler, capability, CardProgram, or card-support behavior changes, run
+the database-backed census in that same finalization step:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\finalize_generated.py --write --db data\scryfall-current.sqlite3
+```
+
 `platform/generated-artifacts.json` owns the registered deterministic report
 commands, outputs, write policies, and dependency order. It does not replace
 the existing owners for protocol types or pinned rules snapshots. Do not
@@ -161,7 +168,10 @@ hand-order individual platform-status, architecture-audit, or coverage writers.
 `--write` repeats changed owners and their downstream automatic/derived writers
 until a pass changes nothing, then runs every freshness check, documentation
 validation, and diff hygiene. Database-backed corpus writers use `--db <path>`
-or `MTG_CARD_DB`; manual performance baselines are never rewritten implicitly.
+or `MTG_CARD_DB`; omitting the database does not refresh those reports. The
+tracked pre-push hook automatically uses `data/scryfall-current.sqlite3` when
+present and otherwise prints the required database guidance. Manual
+performance baselines are never rewritten implicitly.
 
 Inspect every changed generated output, stage it with the source that caused
 it, and make the final commit only after the command succeeds. Do not defer this

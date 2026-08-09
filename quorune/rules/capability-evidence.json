@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "be39662cf1a4dd0bfa3cbb0c1b244cf6986664f2e1a133a449d157d76f33e3fc",
-  "declaration_source_fingerprint": "130d06e6a9afee7d86ab0dd5884dd80053ac5be6f5d3aa5d8aa57c7f68bd883b",
+  "registry_fingerprint": "16e0e82eed368f035e6e5272fc4d7456865f54d637535a696397debd3df95029",
+  "declaration_source_fingerprint": "77eb68d0420e0a4cc439341931a43beea57db600dc1d90529a3e1db2c90b018f",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -200,6 +200,150 @@
         "commander_review"
       ],
       "applicability_note": "Replay the source-pinned descriptor, payment, discard-cost event, stack object, and private draw exactly."
+    },
+    {
+      "capability_id": "activation.loyalty.positive_counter_cost",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
+      "official_rule_ids": [
+        "606.2",
+        "606.3",
+        "606.4",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Order two applicable all-placement quantity replacements while paying one positive loyalty-symbol cost, then commit the selected result atomically."
+    },
+    {
+      "capability_id": "activation.loyalty.positive_counter_cost",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
+      "official_rule_ids": [
+        "606.2",
+        "606.3",
+        "606.4",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the affected controller's replacement choice seat-scoped in a four-player game."
+    },
+    {
+      "capability_id": "activation.loyalty.positive_counter_cost",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_loyalty_cost_provenance_mutant_is_killed",
+      "official_rule_ids": [
+        "606.2",
+        "606.3",
+        "606.4",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a mutation that mislabels a loyalty-symbol cost as effect-generated and incorrectly enables an effect-only replacement."
+    },
+    {
+      "capability_id": "activation.loyalty.positive_counter_cost",
+      "evidence_class": "negative",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_positive_loyalty_cost_declares_fine_grained_capability",
+      "official_rule_ids": [
+        "606.2",
+        "606.3",
+        "606.4",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Block the canonical counter-quantity dependency and retain a material source-spanned capability residual on the positive loyalty ability."
+    },
+    {
+      "capability_id": "activation.loyalty.positive_counter_cost",
+      "evidence_class": "negative",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_pinned_counter_event_ids_and_internal_fields_fail_closed",
+      "official_rule_ids": [
+        "606.2",
+        "606.3",
+        "606.4",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed event identity and client-forged continuation data before changing loyalty, stack, or payment state."
+    },
+    {
+      "capability_id": "activation.loyalty.positive_counter_cost",
+      "evidence_class": "positive",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_doubling_season_ignores_positive_loyalty_cost_but_doc_applies",
+      "official_rule_ids": [
+        "606.2",
+        "606.3",
+        "606.4",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pay a positive loyalty-symbol cost as a non-effect placement, so all-placement replacement applies while effect-only replacement does not."
+    },
+    {
+      "capability_id": "activation.loyalty.positive_counter_cost",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
+      "official_rule_ids": [
+        "606.2",
+        "606.3",
+        "606.4",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the loyalty-cost replacement choice only to the affected permanent's controller."
+    },
+    {
+      "capability_id": "activation.loyalty.positive_counter_cost",
+      "evidence_class": "replay",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
+      "official_rule_ids": [
+        "606.2",
+        "606.3",
+        "606.4",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay a resumed positive loyalty-symbol cost to the exact authoritative state hash."
     },
     {
       "capability_id": "activation.tap_untap_cost.haste",
@@ -5402,6 +5546,44 @@
     },
     {
       "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_player_counter_choices_follow_four_player_apnap",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Choose competing quantity replacements for simultaneous player-counter events in four-player APNAP order."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_counter_quantity_cost_scope_mutant_is_killed",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a mutation that incorrectly narrows an all-placement counter modifier to effect-generated placements."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
       "evidence_class": "mutation",
       "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_counter_quantity_replacement_mutant_is_killed",
       "official_rule_ids": [
@@ -5456,6 +5638,25 @@
         "commander_review"
       ],
       "applicability_note": "Resolve represented effect-generated counter placements through affected-object ordering before committing the counters."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "positive",
+      "test_id": "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_closed_descriptor_distinguishes_effects_costs_players_and_types",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply the closed v2 quantity descriptor to effect, cost, player, permanent, and represented effective-type scopes without changing nonmatching events."
     },
     {
       "capability_id": "counter.placement.quantity_replacement",
@@ -18964,5 +19165,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "12859a813517c5cbf53a9b0f9b496014fba6b092c213e60e3143207efb05e9ee"
+  "fingerprint": "d169c380d51f444adb92980246d15da5ec43fdcc7de8b84e39d37756518f4609"
 }

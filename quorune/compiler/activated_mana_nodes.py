@@ -21,6 +21,7 @@ from .dependency_gate import (
     DependencyGate,
     dependency_gate,
     explicit_capability_gate,
+    explicit_capabilities_gate,
 )
 from .ir_model import (
     append_residual,
@@ -291,6 +292,37 @@ def _activated_effect_dependency_gate(
     )
 
 
+def _activated_cost_dependency_gate(
+    ability: Any,
+    gate: DependencyGate,
+    *,
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+) -> DependencyGate:
+    """Add closed typed cost ownership without weakening effect blockers."""
+
+    if ability.loyalty_delta is None or ability.loyalty_delta <= 0:
+        return gate
+    cost_gate = explicit_capabilities_gate(
+        (*gate.capabilities, "activation.loyalty.positive_counter_cost"),
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    return DependencyGate(
+        blockers=tuple(sorted(set((*gate.blockers, *cost_gate.blockers)))),
+        capabilities=cost_gate.capabilities,
+        closure=cost_gate.closure,
+    )
+
+
+def _dependency_metadata(
+    gate: DependencyGate,
+) -> tuple[tuple[str, ...], str | None, str | None]:
+    if gate.closure is None:
+        return (), None, None
+    return gate.closure.reachable, gate.closure.profile, gate.closure.fingerprint
+
+
 def _activated_effect_material(ability: Any) -> str:
     material = ability.effect_text
     if not ability.sorcery_speed:
@@ -399,6 +431,12 @@ def activated_oracle_node(
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )
+    gate = _activated_cost_dependency_gate(
+        ability,
+        gate,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
     if lowerable and gate.blockers:
         residual_ids.append(
             append_residual(
@@ -412,6 +450,7 @@ def activated_oracle_node(
                 blockers=gate.blockers,
             )
         )
+    closure, profile, fingerprint = _dependency_metadata(gate)
     return OracleNode(
         node_id=node_id,
         kind=(
@@ -434,21 +473,9 @@ def activated_oracle_node(
         mechanics=mechanics,
         residual_ids=tuple(residual_ids),
         capability_dependencies=gate.capabilities,
-        capability_closure=(
-            gate.closure.reachable
-            if gate.closure is not None
-            else ()
-        ),
-        capability_profile=(
-            gate.closure.profile
-            if gate.closure is not None
-            else None
-        ),
-        capability_fingerprint=(
-            gate.closure.fingerprint
-            if gate.closure is not None
-            else None
-        ),
+        capability_closure=closure,
+        capability_profile=profile,
+        capability_fingerprint=fingerprint,
     )
 
 

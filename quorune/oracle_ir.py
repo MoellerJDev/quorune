@@ -70,7 +70,10 @@ from .compiler.prevention_templates import (
 from .compiler.resolution_effect_templates import (
     typed_resolution_effect_template,
 )
-from .compiler.runtime_templates import StaticRuntimeTemplate, static_runtime_template
+from .compiler.static_runtime_nodes import (
+    runtime_handler_node,
+    static_runtime_node,
+)
 from .compiler.tap_state_templates import targeted_tap_state_effect_template
 from .declaration_costs import parse_declaration_cost_line
 from .declaration_restrictions import parse_declaration_restriction_line
@@ -83,7 +86,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v62"
+ORACLE_COMPILER_VERSION = "oracle-ir-v63"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -167,19 +170,6 @@ def _material_source_lines(
         if _is_ordinary_saga_rules_reminder(type_line, line, material_line):
             continue
         yield line, material_line, span
-
-
-def _static_runtime_for_face(
-    text: str,
-    card_types: frozenset[str],
-) -> StaticRuntimeTemplate | None:
-    return static_runtime_template(
-        text,
-        source_damageable=bool(
-            card_types.intersection({"battle", "creature", "planeswalker"})
-        ),
-        source_permanent=bool(card_types.intersection(_PERMANENT_CARD_TYPES)),
-    )
 
 
 def _face_type_context(
@@ -742,64 +732,6 @@ def _keyword_nodes(
     return tuple(nodes)
 
 
-def _runtime_handler_node(
-    *,
-    node_id: str,
-    line: str,
-    span: SourceSpan,
-    compiled: tuple[str, Mapping[str, Any], str],
-    kind: str,
-    event: str,
-    dependency_reason: str,
-    capability_registry: CapabilityRegistry | None,
-    capability_profile: str,
-    residuals: list[OracleResidual],
-) -> OracleNode:
-    template_id, handler, capability = compiled
-    gate = _explicit_capability_gate(
-        capability,
-        capability_registry=capability_registry,
-        capability_profile=capability_profile,
-    )
-    residual_ids = (
-        (
-            _residual(
-                residuals,
-                kind="dependency_contract",
-                text=line,
-                span=span,
-                reason=dependency_reason,
-                blockers=gate.blockers,
-            ),
-        )
-        if gate.blockers
-        else ()
-    )
-    return OracleNode(
-        node_id=node_id,
-        kind=kind,
-        text=line,
-        span=span,
-        active_zone="battlefield",
-        event=event,
-        lowerable=True,
-        exact=not gate.blockers,
-        template_id=template_id,
-        handlers=(handler,),
-        residual_ids=residual_ids,
-        capability_dependencies=gate.capabilities,
-        capability_closure=(
-            gate.closure.reachable if gate.closure is not None else ()
-        ),
-        capability_profile=(
-            gate.closure.profile if gate.closure is not None else None
-        ),
-        capability_fingerprint=(
-            gate.closure.fingerprint if gate.closure is not None else None
-        ),
-    )
-
-
 def _trigger_node(
     *,
     node_id: str,
@@ -1024,7 +956,7 @@ def _compile_face(
             trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry, capability_profile=capability_profile,
             residuals=residuals,
-            runtime_handler_node=_runtime_handler_node,
+            runtime_handler_node=runtime_handler_node,
             trigger_node=contextual_trigger_node,
             append_residual=_residual,
         )
@@ -1265,22 +1197,20 @@ def _compile_face(
             )
             continue
 
-        runtime_template = _static_runtime_for_face(material_line, card_types)
-        if runtime_template is not None:
-            nodes.append(
-                _runtime_handler_node(
-                    node_id=node_id,
-                    line=line,
-                    span=span,
-                    compiled=runtime_template.compiled,
-                    kind=runtime_template.kind,
-                    event=runtime_template.event,
-                    dependency_reason=runtime_template.dependency_reason,
-                    capability_registry=capability_registry,
-                    capability_profile=capability_profile,
-                    residuals=residuals,
-                )
-            )
+        runtime_node = static_runtime_node(
+            node_id=node_id,
+            line=line,
+            material_line=material_line,
+            span=span,
+            card_types=card_types,
+            permanent_card_types=_PERMANENT_CARD_TYPES,
+            source_is_class=("class" in type_parts(type_line)[1]),
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+            residuals=residuals,
+        )
+        if runtime_node is not None:
+            nodes.append(runtime_node)
             continue
 
         if _REPLACEMENT_MARKERS.search(line):

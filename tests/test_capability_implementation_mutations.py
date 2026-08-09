@@ -26,11 +26,12 @@ from quorune import tap_state
 from quorune import haste as haste_module
 from quorune import trigger_batches as trigger_batches_module
 from quorune import zone_trigger_events as zone_trigger_events_module
+from quorune.rules.activation import commit as activation_commit
 from quorune.rules.activation import resolution as activation_resolution
 from quorune.rules.casting import proposal as casting_proposal
 from quorune.aura import SimpleEnchantSpec
 from quorune.abilities import ActivatedAbility
-from quorune.model import CombatState
+from quorune.model import CardInstance, CombatState
 from quorune import protection as protection_module
 from quorune.ability_fragments import (
     CombatKeywordTriggerKind,
@@ -91,6 +92,7 @@ from quorune.object_query import ObjectQueryError, ObjectQuerySpec
 from quorune.semantic_runtime.counter_replacements import (
     CounterPlacementEventSpec,
     CounterQuantityReplacementHandler,
+    CounterQuantityReplacementV2Handler,
     CounterReplacementSourceContext,
     resolve_counter_placement_replacements,
 )
@@ -2333,6 +2335,151 @@ class CapabilityImplementationMutationTests(unittest.TestCase):
         ):
             with self.assertRaises(AssertionError):
                 assert_quantity_replaced()
+
+    def test_counter_quantity_cost_scope_mutant_is_killed(self):
+        descriptor = {
+            "handler_id": "replacement.counter.quantity.v2",
+            "schema_version": 2,
+            "event": "counter.place",
+            "condition": {
+                "effect_scope": "any",
+                "placing_player_relation": "source_controller",
+                "target_controller_relation": "source_controller",
+                "target_kinds": ["permanent"],
+                "counter_names": [],
+                "target_types_all": [],
+                "target_types_any": [],
+            },
+            "modification": {"multiplier": 1, "additional": 1},
+        }
+        context = CounterReplacementSourceContext(
+            source_ref="doc",
+            source_controller="A",
+        )
+        event = CounterPlacementEventSpec(
+            event_id="loyalty-cost-mutation",
+            subject_kind="permanent",
+            subject_id="walker",
+            owner="A",
+            controller="A",
+            target_zone="battlefield",
+            target_types=("planeswalker",),
+            placing_player="A",
+            counter_name="loyalty",
+            amount=2,
+            source_ref="walker",
+            effect_generated=False,
+        ).event()
+
+        def assert_cost_quantity_replaced() -> None:
+            effect = CounterQuantityReplacementV2Handler().replacement_effect(
+                descriptor,
+                context,
+            )
+            resolution = resolve_counter_placement_replacements(
+                batch_id="loyalty-cost-mutation-batch",
+                events=(event,),
+                effects=(effect,),
+                apnap_order=("A", "B"),
+            )
+            self.assertEqual(
+                3,
+                resolution.batch.events[0].payload["amount"],
+            )
+
+        assert_cost_quantity_replaced()
+        original = CounterQuantityReplacementV2Handler.replacement_effect
+
+        def effect_only_mutant(handler, mapping, source_context):
+            effect = original(handler, mapping, source_context)
+            conditions = dict(effect.conditions)
+            conditions["effect_generated"] = {"eq": True}
+            return replace(effect, conditions=conditions)
+
+        with patch.object(
+            CounterQuantityReplacementV2Handler,
+            "replacement_effect",
+            effect_only_mutant,
+        ):
+            with self.assertRaises(AssertionError):
+                assert_cost_quantity_replaced()
+
+    def test_loyalty_cost_provenance_mutant_is_killed(self):
+        def assert_effect_only_replacement_ignores_cost() -> None:
+            session = make_session(
+                self.db,
+                self.mishra,
+                self.zimone,
+                players=2,
+                seed=6061499,
+                auto_pass_empty=False,
+            )
+            keep_all(session)
+            engine = session.engine
+            engine.state.active_player = "A"
+            engine.state.phase = "precombat_main"
+            engine.state.step = "main"
+            engine.state.stack.clear()
+            daretti = next(
+                card
+                for card in engine.state.cards.values()
+                if card.owner == "A"
+                and card.printed_name == "Daretti, Scrap Savant"
+            )
+            engine.move_card(
+                daretti.object_id,
+                "battlefield",
+                controller="A",
+                log=False,
+            )
+            doubling = self.db.lookup("Doubling Season")
+            source = CardInstance(
+                object_id="fixture:doubling-season-mutation",
+                ref="A-doubling-mutation",
+                oracle_id=doubling.oracle_id,
+                printed_name=doubling.name,
+                owner="A",
+                controller="A",
+                zone="battlefield",
+                zone_timestamp=engine.state.event_sequence + 1,
+                known_to=list(engine.seats),
+                revealed_to=list(engine.seats),
+            )
+            engine.state.cards[source.object_id] = source
+            engine.state.players["A"].zones["battlefield"].append(
+                source.object_id
+            )
+            ability = next(
+                value
+                for value in engine._activated_abilities(daretti)
+                if value.loyalty_delta == 2
+            )
+            before = daretti.counters["loyalty"]
+            engine._activate(
+                "A", {"source": daretti.ref, "ability": ability.ability_id}
+            )
+            self.assertEqual(before + 2, daretti.counters["loyalty"])
+
+        assert_effect_only_replacement_ignores_cost()
+        original = activation_commit.prepare_counter_placements
+
+        def effect_provenance_mutant(host, requests, **kwargs):
+            return original(
+                host,
+                tuple(
+                    replace(request, effect_generated=True)
+                    for request in requests
+                ),
+                **kwargs,
+            )
+
+        with patch.object(
+            activation_commit,
+            "prepare_counter_placements",
+            effect_provenance_mutant,
+        ):
+            with self.assertRaises(AssertionError):
+                assert_effect_only_replacement_ignores_cost()
 
     def test_prevention_aftermath_quantity_mutant_is_killed(self):
         aftermath = GainLifePreventionAftermath(

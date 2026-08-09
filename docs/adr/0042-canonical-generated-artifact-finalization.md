@@ -36,6 +36,12 @@ reusable-piece fingerprints on consecutive exact heads. The current generated
 workflow evidence. The common cause was copied generator lists with no
 executable dependency graph or fixed-point finalization step.
 
+A later compiler-family change exposed one remaining undeclared edge: the
+card-unlock frontier compared its freshly compiled CardProgram states with four
+tracked Oracle/CardProgram census files that had no manifest owner. A compiler
+version could therefore advance without refreshing those inputs, and any real
+status-count change failed only at the final frontier check.
+
 ## Decision
 
 `platform/generated-artifacts.json` is the canonical registry for deterministic
@@ -53,6 +59,13 @@ provide a safe derived-only writer when its corpus inputs do not require the
 database. Manual performance baselines are checked but are never rewritten
 unless explicitly requested.
 
+The manifest also owns the full and Commander-legal Oracle and CardProgram
+censuses as one database-backed generator. That generator precedes the
+card-unlock frontier and platform/architecture consumers. The CardProgram
+reports persist compiler, capability-evidence, capability-registry, and pinned
+card-data fingerprints so check mode rejects stale source even when aggregate
+status counts happen not to change.
+
 The pinned corpus is rebuilt only on the first topological pass. Stabilization
 passes rerun only changed generators and their downstream automatic or safe
 derived-only consumers, because rerunning unrelated writers or an unchanged
@@ -69,6 +82,9 @@ plan selects that one command instead of maintaining another generator list.
 An opt-in repository-owned pre-push hook runs write mode with the worktree-local
 CPython 3.12 environment and aborts when it creates uncommitted outputs. It does
 not amend commits or push generated changes automatically.
+When `MTG_CARD_DB` is unset, the hook uses the worktree's
+`data/scryfall-current.sqlite3` if present and prints explicit database guidance
+otherwise.
 
 Platform readiness fingerprints only its authoritative source and derived
 package, stable test-shard inventory, rules, and CardProgram inputs. Exact

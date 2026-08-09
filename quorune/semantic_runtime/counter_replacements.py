@@ -24,7 +24,22 @@ from .context import SemanticNodeError
 
 
 _QUANTITY_HANDLER_ID = "replacement.counter.quantity.v1"
+_QUANTITY_V2_HANDLER_ID = "replacement.counter.quantity.v2"
 _RELATIONS = {"any", "source_controller", "opponent"}
+_EFFECT_SCOPES = {"any", "effect_only"}
+_TARGET_KINDS = {"permanent", "player"}
+_COUNTER_TARGET_GOBLIN = "goblin"
+_COUNTER_TARGET_VEHICLE = "vehicle"
+_TARGET_TYPE_PREDICATES = {
+    "army",
+    "artifact",
+    "creature",
+    _COUNTER_TARGET_GOBLIN,
+    "orc",
+    "planet",
+    "spacecraft",
+    _COUNTER_TARGET_VEHICLE,
+}
 
 
 class CounterReplacementHost(Protocol):
@@ -44,6 +59,19 @@ class CounterQuantityReplacementNode:
     target_controller_relation: str
     counter_names: tuple[str, ...]
     target_types_all: tuple[str, ...]
+    multiplier: int
+    additional: int
+
+
+@dataclass(frozen=True, slots=True)
+class CounterQuantityReplacementV2Node:
+    effect_scope: str
+    placing_player_relation: str
+    target_controller_relation: str
+    target_kinds: tuple[str, ...]
+    counter_names: tuple[str, ...]
+    target_types_all: tuple[str, ...]
+    target_types_any: tuple[str, ...]
     multiplier: int
     additional: int
 
@@ -374,6 +402,277 @@ class CounterQuantityReplacementHandler:
         return (self.replacement_effect(descriptor, context),)
 
 
+def _validated_v2_condition(
+    condition: Any,
+) -> tuple[
+    str,
+    str,
+    str,
+    tuple[str, ...],
+    tuple[str, ...],
+    tuple[str, ...],
+    tuple[str, ...],
+]:
+    if not isinstance(condition, Mapping):
+        raise SemanticNodeError("Counter replacement condition must be an object")
+    exact_fields(
+        condition,
+        {
+            "effect_scope",
+            "placing_player_relation",
+            "target_controller_relation",
+            "target_kinds",
+            "counter_names",
+            "target_types_all",
+            "target_types_any",
+        },
+        field="counter replacement condition",
+    )
+    effect_scope = str(condition["effect_scope"])
+    if effect_scope not in _EFFECT_SCOPES:
+        raise SemanticNodeError(
+            "Counter replacement effect_scope must be any or effect_only"
+        )
+    placing_relation = str(condition["placing_player_relation"])
+    target_relation = str(condition["target_controller_relation"])
+    if placing_relation not in _RELATIONS or target_relation not in _RELATIONS:
+        raise SemanticNodeError(
+            "Counter replacement relations must be any, source_controller, "
+            "or opponent"
+        )
+    raw_target_kinds = nonempty_strings(
+        condition["target_kinds"], field="condition.target_kinds"
+    )
+    target_kinds = tuple(value.casefold() for value in raw_target_kinds)
+    if (
+        raw_target_kinds != target_kinds
+        or tuple(sorted(set(target_kinds))) != target_kinds
+        or not set(target_kinds).issubset(_TARGET_KINDS)
+    ):
+        raise SemanticNodeError(
+            "condition.target_kinds must contain canonical sorted unique "
+            "permanent/player values"
+        )
+    raw_counter_names = nonempty_strings(
+        condition["counter_names"], field="condition.counter_names"
+    )
+    counter_names = tuple(
+        " ".join(value.casefold().split()) for value in raw_counter_names
+    )
+    raw_target_types_all = nonempty_strings(
+        condition["target_types_all"], field="condition.target_types_all"
+    )
+    target_types_all = tuple(value.casefold() for value in raw_target_types_all)
+    raw_target_types_any = nonempty_strings(
+        condition["target_types_any"], field="condition.target_types_any"
+    )
+    target_types_any = tuple(value.casefold() for value in raw_target_types_any)
+    for field_name, raw_values, values in (
+        ("counter_names", raw_counter_names, counter_names),
+        ("target_types_all", raw_target_types_all, target_types_all),
+        ("target_types_any", raw_target_types_any, target_types_any),
+    ):
+        if raw_values != values or tuple(sorted(set(values))) != values:
+            raise SemanticNodeError(
+                f"condition.{field_name} must contain canonical sorted "
+                "unique values"
+            )
+    all_target_types = set((*target_types_all, *target_types_any))
+    if not all_target_types.issubset(_TARGET_TYPE_PREDICATES):
+        raise SemanticNodeError(
+            "Counter replacement target type predicate is unsupported"
+        )
+    if target_types_all and target_types_any:
+        raise SemanticNodeError(
+            "Counter replacement cannot combine all and any type predicates"
+        )
+    if "player" in target_kinds and all_target_types:
+        raise SemanticNodeError(
+            "Typed counter targets cannot combine player scope with type predicates"
+        )
+    return (
+        effect_scope,
+        placing_relation,
+        target_relation,
+        target_kinds,
+        counter_names,
+        target_types_all,
+        target_types_any,
+    )
+
+
+def _validated_v2_modification(modification: Any) -> tuple[int, int]:
+    if not isinstance(modification, Mapping):
+        raise SemanticNodeError("Counter replacement modification must be an object")
+    exact_fields(
+        modification,
+        {"multiplier", "additional"},
+        field="counter replacement modification",
+    )
+    multiplier = modification["multiplier"]
+    additional = modification["additional"]
+    if type(multiplier) is not int or multiplier < 1:
+        raise SemanticNodeError(
+            "Counter replacement multiplier must be a positive integer"
+        )
+    if type(additional) is not int or additional < 0:
+        raise SemanticNodeError(
+            "Counter replacement additional amount must be nonnegative"
+        )
+    if multiplier == 1 and additional == 0:
+        raise SemanticNodeError("Counter replacement must change the placed amount")
+    return multiplier, additional
+
+
+@dataclass(frozen=True, slots=True)
+class CounterQuantityReplacementV2Handler:
+    """Closed counter-quantity vocabulary for effects, costs, and players."""
+
+    handler_id: str = _QUANTITY_V2_HANDLER_ID
+    schema_version: int = 2
+    family: str = "replacement.counter.quantity"
+    event: str = "counter.place"
+    rule_references: tuple[str, ...] = (
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "counter.placement.quantity_replacement",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> CounterQuantityReplacementV2Node:
+        exact_fields(
+            descriptor,
+            {
+                "handler_id",
+                "schema_version",
+                "event",
+                "condition",
+                "modification",
+            },
+            field="runtime handler",
+        )
+        if descriptor["handler_id"] != self.handler_id:
+            raise SemanticNodeError(
+                "Runtime handler ID does not match registry"
+            )
+        if descriptor["schema_version"] != self.schema_version:
+            raise SemanticNodeError(
+                f"Unsupported {self.handler_id} schema version"
+            )
+        if descriptor["event"] != self.event:
+            raise SemanticNodeError(
+                f"{self.handler_id} must handle {self.event}"
+            )
+        (
+            effect_scope,
+            placing_relation,
+            target_relation,
+            target_kinds,
+            counter_names,
+            target_types_all,
+            target_types_any,
+        ) = _validated_v2_condition(descriptor["condition"])
+        multiplier, additional = _validated_v2_modification(
+            descriptor["modification"]
+        )
+        return CounterQuantityReplacementV2Node(
+            effect_scope=effect_scope,
+            placing_player_relation=placing_relation,
+            target_controller_relation=target_relation,
+            target_kinds=target_kinds,
+            counter_names=counter_names,
+            target_types_all=target_types_all,
+            target_types_any=target_types_any,
+            multiplier=multiplier,
+            additional=additional,
+        )
+
+    @staticmethod
+    def _relation_condition(
+        relation: str, source_controller: str
+    ) -> Mapping[str, Any] | None:
+        return CounterQuantityReplacementHandler._relation_condition(
+            relation, source_controller
+        )
+
+    def replacement_effect(
+        self,
+        descriptor: Mapping[str, Any],
+        context: CounterReplacementSourceContext,
+    ) -> ReplacementEffect:
+        node = self.validate(descriptor)
+        conditions: dict[str, Any] = {
+            "target_kind": {"in": list(node.target_kinds)},
+        }
+        if node.effect_scope == "effect_only":
+            conditions["effect_generated"] = {"eq": True}
+        placing = self._relation_condition(
+            node.placing_player_relation, context.source_controller
+        )
+        if placing is not None:
+            conditions["placing_player"] = placing
+        target = self._relation_condition(
+            node.target_controller_relation, context.source_controller
+        )
+        if target is not None:
+            conditions["target_controller"] = target
+        if node.counter_names:
+            conditions["counter_name"] = {"in": list(node.counter_names)}
+        if node.target_types_all:
+            conditions["target_types"] = {
+                "contains_all": list(node.target_types_all)
+            }
+        if node.target_types_any:
+            conditions["target_types"] = {
+                "contains_any": list(node.target_types_any)
+            }
+        operations: list[Mapping[str, Any]] = []
+        if node.multiplier != 1:
+            operations.append(
+                {
+                    "op": "multiply",
+                    "field": "amount",
+                    "factor": node.multiplier,
+                }
+            )
+        if node.additional:
+            operations.append(
+                {
+                    "op": "add",
+                    "field": "amount",
+                    "amount": node.additional,
+                }
+            )
+        component_id = context.component_id or (
+            f"{node.multiplier}x+{node.additional}"
+        )
+        return ReplacementEffect(
+            effect_id=(
+                f"{self.handler_id}:{context.source_ref}:{component_id}"
+            ),
+            source_id=context.source_ref,
+            event_kind=self.event,
+            replacement_class=ReplacementClass.OTHER,
+            conditions=conditions,
+            operations=tuple(operations),
+            label=f"{context.source_ref}: change the number of counters placed",
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: CounterReplacementSourceContext,
+    ) -> tuple[ReplacementEffect, ...]:
+        return (self.replacement_effect(descriptor, context),)
+
+
 class CounterPlacementReplacementRegistry(
     RuntimeComponentRegistry[
         CounterReplacementSourceContext,
@@ -399,7 +698,10 @@ class CounterPlacementReplacementRegistry(
 def default_counter_placement_replacement_registry(
 ) -> CounterPlacementReplacementRegistry:
     registry = CounterPlacementReplacementRegistry(
-        (CounterQuantityReplacementHandler(),)
+        (
+            CounterQuantityReplacementHandler(),
+            CounterQuantityReplacementV2Handler(),
+        )
     )
     registry.require_registered_capabilities(
         load_default_capability_registry()

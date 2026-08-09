@@ -14613,7 +14613,7 @@
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
         "all as-enters counter instructions are not yet represented by the shared counter-placement transaction",
-        "remaining cost, loyalty, rule-generated, movement, removal, and legacy counter producers are not yet integrated"
+        "remaining non-loyalty cost, rule-generated, movement, removal, prevention, and legacy counter producers are not yet integrated"
       ],
       "case_id": "cr-122.6",
       "case_version": 1,
@@ -14631,15 +14631,17 @@
       "executable_test_ids": [
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_quantity_component_changes_effect_generated_placement",
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_zone_replacement_counter_is_a_nested_precommit_event",
-        "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_replacement_choice_replays_exactly"
+        "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_replacement_choice_replays_exactly",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay"
       ],
       "implementation_components": [
         "counter_placement.prepare_counter_placements",
+        "rules.activation.commit._commit_resource_costs",
         "semantic_runtime.counter_replacements.resolve_counter_placement_replacements",
         "semantic_runtime.zone_replacements.prepare_zone_change_replacement"
       ],
       "notes": [
-        "Represented effect-generated player and permanent counters, including ordinary Proliferate and typed counter children created by a zone replacement, are proposed, replaced, chosen, and journaled before authoritative mutation. Complete entry-counter and producer coverage remains blocked."
+        "Represented effect-generated player and permanent counters, positive loyalty-symbol costs, ordinary Proliferate, and typed counter children created by a zone replacement are proposed, replaced, chosen, and journaled before authoritative mutation. Complete entry-counter and producer coverage remains blocked."
       ],
       "required_scenarios": [
         "positive",
@@ -40205,9 +40207,9 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "loyalty-cost changes are not represented in the generic cost-modification and ordering pipeline",
+        "additional, reduced, and combined loyalty-symbol costs are not represented in the generic cost-modification and ordering pipeline",
         "recognized public loyalty-cost modifiers deliberately make the activation unresolved rather than applying an incorrect base cost",
-        "no exact replay case yet exercises a modified loyalty cost"
+        "typed can't-place-counter effects are not consulted universally before advertising a positive loyalty-symbol cost"
       ],
       "case_id": "cr-606.4",
       "case_version": 1,
@@ -40215,7 +40217,8 @@
       "covered_scenarios": [
         "positive",
         "negative",
-        "interaction"
+        "interaction",
+        "replay"
       ],
       "dependency_rule_ids": [
         "606"
@@ -40224,15 +40227,22 @@
       "executable_test_ids": [
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_loyalty_timing_control_and_once_per_permanent",
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_negative_loyalty_cost_requires_enough_counters",
-        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_loyalty_cost_modifier_fails_closed"
+        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_loyalty_cost_modifier_fails_closed",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_doubling_season_ignores_positive_loyalty_cost_but_doc_applies",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_negative_loyalty_removal_is_not_counter_placement",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_pinned_counter_event_ids_and_internal_fields_fail_closed"
       ],
       "implementation_components": [
-        "CommanderEngine._activate",
+        "rules.activation.commit._commit_resource_costs",
+        "counter_placement.prepare_counter_placements",
+        "mana_payment_continuations.execute_mana_choice_capable_priority_action",
+        "replacement.replay.ReplacementContinuation",
         "CommanderEngine._ability_availability",
         "CommanderEngine._loyalty_cost_modifier_present"
       ],
       "notes": [
-        "Unmodified positive and negative loyalty costs are paid immediately, before resolution. This does not establish the rule's cost-modification clause."
+        "Base positive loyalty-symbol costs now use the canonical non-effect counter-placement transaction, so represented all-placement quantity replacements apply, effect-only replacements do not, competing choices suspend atomically, and command replay is exact. Negative costs remain canonical counter removal. The separate cost-modification clause remains blocked."
       ],
       "required_scenarios": [
         "positive",
@@ -46907,10 +46917,11 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "cumulative upkeep, proliferate, entry, cost, player, rule-generated, and other remaining counter producers are not yet routed through the resumable shared producer boundary",
+        "remaining rule-generated, optional, movement, prevention, and legacy counter producers are not universally routed through the resumable shared producer boundary",
         "optional, multiplying, state-derived, and modified-entry token replacements are not represented",
         "not every replacement or prevention operation that creates counters lowers to a typed nested event",
-        "simultaneous multi-permanent and repeated Explore instructions are not represented"
+        "simultaneous multi-permanent and repeated Explore instructions are not represented",
+        "fractional, halving, dynamic, Class-level-gated, and can't-place counter families remain unsupported"
       ],
       "case_id": "cr-614.16",
       "case_version": 1,
@@ -46940,23 +46951,30 @@
         "tests.test_explore_rules.ExploreEngineTests.test_counter_and_zone_replacements_suspend_before_explore_mutation",
         "tests.test_explore_rules.ExploreEngineTests.test_explore_preparation_replacement_resume_replays_exactly",
         "tests.test_explore_rules.ExploreEngineTests.test_explore_graveyard_zone_replacement_suspends_and_replays",
-        "tests.test_explore_rules.ExploreEngineTests.test_tampered_explore_preparation_identity_rolls_back"
+        "tests.test_explore_rules.ExploreEngineTests.test_tampered_explore_preparation_identity_rolls_back",
+        "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_closed_descriptor_distinguishes_effects_costs_players_and_types",
+        "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_generic_compiler_accepts_closed_family_and_rejects_near_misses",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay"
       ],
       "implementation_components": [
         "replacement_effects.replacement_tree_choice",
         "compiler.token_templates.static_additional_token_replacement_handler",
+        "compiler.counter_replacement_templates.static_counter_quantity_replacement_handler",
         "semantic_runtime.token_replacements.resolve_token_creation_replacements",
         "replacement.operations.CreateAdditionalToken",
+        "semantic_runtime.counter_replacements.CounterQuantityReplacementV2Handler",
         "semantic_runtime.counter_replacements.resolve_counter_placement_replacements",
         "semantic_runtime.zone_replacements.prepare_zone_change_replacement",
         "semantic_choices.preparation_coordination.continue_semantic_preparation",
         "semantic_choices.counter_coordination.continue_semantic_completion",
         "semantic_runtime.explore.ExploreChoiceHandler",
+        "rules.activation.commit._commit_resource_costs",
+        "mana_payment_continuations.execute_mana_choice_capable_priority_action",
         "token_creation.create_tokens",
         "counter_placement.prepare_counter_placements"
       ],
       "notes": [
-        "The closed mandatory fixed additional-token wording family compiles to an immutable typed operation on the same token event. Added token types and subtypes participate in replacement rediscovery, each source applies at most once, and the token owner commits one timestamped batch after ordering completes. Ordinary positive-integer Fabricate and single-permanent Explore now suspend before replaceable counter or zone mutations, resume through immutable intent identities, preserve seat-scoped choices, and replay exactly without repeating predecessor effects. Remaining counter producers and universal lowering keep this aggregate rule blocked."
+        "The closed mandatory fixed additional-token wording family compiles to an immutable typed operation on the same token event. Added token types and subtypes participate in replacement rediscovery, each source applies at most once, and the token owner commits one timestamped batch after ordering completes. Represented effect-generated and all-placement fixed quantity wording now compiles to a typed v2 counter component over bounded permanent/player predicates. Positive loyalty-symbol costs enter the same transaction as non-effect placements, suspend before mutation, and replay exactly. Remaining producer and replacement families keep this aggregate rule blocked."
       ],
       "required_scenarios": [
         "positive",
@@ -47961,7 +47979,7 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "generic engine choice packets are wired only into represented token-creation, semantic zone-change, effect-generated permanent-counter, ordinary combat/semantic damage, and mana-payment damage producers"
+        "generic engine choice packets are wired only into represented token creation, semantic zone change, effect-generated or positive-loyalty-cost counter placement, ordinary combat/semantic damage, and mana-payment damage producers"
       ],
       "case_id": "cr-616.1",
       "case_version": 1,
@@ -47993,7 +48011,9 @@
         "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_semantic_damage_replacement_choice_replays_exactly",
         "tests.test_replacement_event_ordering.ReplacementEventOrderingTests.test_chooser_selects_which_simultaneous_event_uses_next_instance_shield",
         "tests.test_replacement_event_ordering.ReplacementEventOrderingTests.test_combat_event_order_is_seat_scoped_and_replays_exactly",
-        "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_mana_ability_damage_choice_resumes_exact_activation"
+        "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_mana_ability_damage_choice_resumes_exact_activation",
+        "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_player_counter_choices_follow_four_player_apnap",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay"
       ],
       "implementation_components": [
         "replacement_effects.ReplaceableEvent",
@@ -48004,13 +48024,15 @@
         "damage.prepare_damage_batch",
         "replacement_decisions.issue_combat_damage_replacement_choice",
         "replacement.ordering.next_batch_replacement_choice",
-        "mana_payment_continuations.execute_mana_choice_capable_priority_action"
+        "mana_payment_continuations.execute_mana_choice_capable_priority_action",
+        "replacement.replay.ReplacementContinuation",
+        "rules.activation.commit._commit_resource_costs"
       ],
       "notes": [
         "Affected-player and affected-object facts are captured before mutation, and simultaneous different-seat choices traverse APNAP order.",
         "Seat packets expose only visible option labels and IDs; authoritative batch IDs, event paths, payloads, and prior journals remain in the continuation.",
         "The chooser can explicitly order simultaneous same-chooser events when a finite or next-instance effect makes event order material.",
-        "The represented engine producers suspend and replay exact choices, including replacement choices discovered during mana payment, but universal producer coverage remains incomplete."
+        "The represented engine producers suspend and replay exact choices, including replacement choices discovered during mana payment or a positive loyalty-symbol cost, but universal producer coverage remains incomplete."
       ],
       "required_scenarios": [
         "positive",
