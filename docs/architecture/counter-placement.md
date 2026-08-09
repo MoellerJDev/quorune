@@ -158,7 +158,9 @@ power. Resolution revalidates both creatures and their current effective
 powers. If the Mentor source left before resolution, a typed departure snapshot
 provides its immediate predeparture power while preserving the original logical
 source identity; simultaneous departures capture every referenced source before
-any move commits. The result is one +1/+1 counter placed through the canonical
+any move commits. A source that is currently, or immediately before departure,
+a noncreature permanent has no power under CR 208.3; its printed power cannot
+make the target legal. The result is one +1/+1 counter placed through the canonical
 replacement-aware transaction. CR 702.134c's separate “mentors another
 creature” event, granted or copied Mentor outside typed ability propagation,
 prose equivalents, attackers put onto the battlefield outside declaration,

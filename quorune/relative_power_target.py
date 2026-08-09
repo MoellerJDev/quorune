@@ -20,6 +20,12 @@ class RelativePowerDepartureHost(Protocol):
 
     def _numeric_stat(self, object_id: str, stat: str) -> int: ...
 
+    def _effective_card_data(self, card: Any) -> Mapping[str, Any]: ...
+
+    def _type_parts(
+        self, type_line: str
+    ) -> tuple[set[str], set[str], set[str]]: ...
+
 
 def _identity(value: Any, *, field: str) -> str:
     if type(value) is not str or not value:
@@ -32,7 +38,7 @@ class RelativePowerSourceSnapshot:
     object_id: str
     logical_object_id: str
     reference: str
-    last_known_power: int
+    last_known_power: int | None
 
     def __post_init__(self) -> None:
         _identity(self.object_id, field="Relative-power source object ID")
@@ -41,9 +47,11 @@ class RelativePowerSourceSnapshot:
             field="Relative-power source logical identity",
         )
         _identity(self.reference, field="Relative-power source reference")
-        if type(self.last_known_power) is not int:
+        if self.last_known_power is not None and type(
+            self.last_known_power
+        ) is not int:
             raise RelativePowerTargetError(
-                "Relative-power source power must be an exact integer"
+                "Relative-power source power must be an exact integer or null"
             )
 
     def to_dict(self) -> dict[str, Any]:
@@ -75,7 +83,7 @@ class RelativePowerSourceSnapshot:
 class RelativePowerDepartureSnapshot:
     object_id: str
     logical_object_id: str
-    last_known_power: int
+    last_known_power: int | None
 
     def __post_init__(self) -> None:
         _identity(self.object_id, field="Departing source object ID")
@@ -83,9 +91,11 @@ class RelativePowerDepartureSnapshot:
             self.logical_object_id,
             field="Departing source logical identity",
         )
-        if type(self.last_known_power) is not int:
+        if self.last_known_power is not None and type(
+            self.last_known_power
+        ) is not int:
             raise RelativePowerTargetError(
-                "Departing source power must be an exact integer"
+                "Departing source power must be an exact integer or null"
             )
 
 
@@ -141,6 +151,7 @@ class RelativePowerTargetCondition:
         *,
         target_power: int,
         current_source_power: int | None,
+        use_last_known: bool = False,
     ) -> bool:
         if type(target_power) is not int or (
             current_source_power is not None
@@ -149,12 +160,66 @@ class RelativePowerTargetCondition:
             raise RelativePowerTargetError(
                 "Relative-power comparisons require exact integer power"
             )
+        if type(use_last_known) is not bool:
+            raise RelativePowerTargetError(
+                "Relative-power LKI selection must be a boolean"
+            )
         source_power = (
             self.source.last_known_power
-            if current_source_power is None
+            if use_last_known
             else current_source_power
         )
+        if source_power is None:
+            return False
         return target_power < source_power
+
+
+def current_effective_creature_power(
+    host: RelativePowerDepartureHost,
+    card: Any,
+) -> int | None:
+    """Return current effective power, or null when the permanent is not a creature."""
+
+    try:
+        data = host._effective_card_data(card)
+        if not isinstance(data, Mapping):
+            raise RelativePowerTargetError(
+                "Relative-power characteristics must be an object"
+            )
+        type_line = data.get("type_line")
+        if not isinstance(type_line, str) or not type_line.strip():
+            raise RelativePowerTargetError(
+                "Relative-power characteristics require a type line"
+            )
+        parts = host._type_parts(type_line)
+        if not isinstance(parts, tuple) or len(parts) != 3:
+            raise RelativePowerTargetError(
+                "Relative-power type parsing returned malformed data"
+            )
+        card_types = parts[0]
+        if not isinstance(card_types, (set, frozenset)) or any(
+            not isinstance(value, str) or not value.strip()
+            for value in card_types
+        ):
+            raise RelativePowerTargetError(
+                "Relative-power card types are malformed"
+            )
+        if "creature" not in {
+            value.casefold() for value in card_types
+        }:
+            return None
+        power = host._numeric_stat(card.object_id, "power")
+    except RelativePowerTargetError:
+        raise
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        raise RelativePowerTargetError(
+            "Relative-power characteristics could not be evaluated"
+        ) from exc
+    if type(power) is not int:
+        raise RelativePowerTargetError(
+            "Relative-power source power must be an exact integer"
+        )
+    return power
 
 
 def relative_power_source_identities(
@@ -211,7 +276,7 @@ def pin_relative_power_source_departures(
         raise RelativePowerTargetError(
             "Relative-power departure identities must be unique"
         )
-    updated_items = 0
+    prepared_updates: list[tuple[Any, dict[str, Any]]] = []
     for item in stack_items:
         context = getattr(item, "context", None)
         if not isinstance(context, Mapping):
@@ -258,15 +323,16 @@ def pin_relative_power_source_departures(
             changed = True
         if not changed:
             continue
-        item.context = {
+        prepared_updates.append((item, {
             **dict(context),
             "target_schema_override": {
                 **dict(schema),
                 "groups": updated_groups,
             },
-        }
-        updated_items += 1
-    return updated_items
+        }))
+    for item, context in prepared_updates:
+        item.context = context
+    return len(prepared_updates)
 
 
 def pin_host_relative_power_source_departures(
@@ -280,7 +346,7 @@ def pin_host_relative_power_source_departures(
         RelativePowerDepartureSnapshot(
             object_id=card.object_id,
             logical_object_id=card.logical_object_id,
-            last_known_power=host._numeric_stat(card.object_id, "power"),
+            last_known_power=current_effective_creature_power(host, card),
         )
         for card in cards
         if getattr(card, "zone", None) == "battlefield"
@@ -298,6 +364,7 @@ __all__ = [
     "RelativePowerSourceSnapshot",
     "RelativePowerTargetCondition",
     "RelativePowerTargetError",
+    "current_effective_creature_power",
     "pin_relative_power_source_departures",
     "pin_host_relative_power_source_departures",
     "relative_power_source_identities",

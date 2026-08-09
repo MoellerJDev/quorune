@@ -21,6 +21,14 @@ ATTACK_TRIGGER_KINDS = frozenset(
     }
 )
 
+UNTARGETED_ATTACK_TRIGGER_KINDS = frozenset(
+    {
+        CombatKeywordTriggerKind.EXALTED,
+        CombatKeywordTriggerKind.BATTLE_CRY,
+        CombatKeywordTriggerKind.MELEE,
+    }
+)
+
 
 class AttackTransitionError(ValueError):
     """A declaration-time attack transition is malformed or stale."""
@@ -633,8 +641,10 @@ class AttackKeywordTriggerOccurrence:
             raise AttackTransitionError(
                 "Unsupported attack-trigger occurrence schema version"
             )
-        if self.kind not in ATTACK_TRIGGER_KINDS:
-            raise AttackTransitionError("Unsupported attack-trigger kind")
+        if self.kind not in UNTARGETED_ATTACK_TRIGGER_KINDS:
+            raise AttackTransitionError(
+                "Unsupported untargeted attack-trigger kind"
+            )
         _identity(self.controller, field="Attack trigger controller")
         if not isinstance(self.source, AttackObjectIdentity):
             raise AttackTransitionError(
@@ -905,6 +915,7 @@ def derive_attack_keyword_trigger_occurrences(
 
 __all__ = [
     "ATTACK_TRIGGER_KINDS",
+    "UNTARGETED_ATTACK_TRIGGER_KINDS",
     "AttackKeywordTriggerOccurrence",
     "AttackObjectIdentity",
     "AttackRecipient",

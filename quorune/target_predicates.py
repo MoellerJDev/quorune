@@ -8,6 +8,7 @@ from .model import CardInstance, StackItem
 from .relative_power_target import (
     RelativePowerTargetCondition,
     RelativePowerTargetError,
+    current_effective_creature_power,
 )
 from .targets import TargetGroup
 
@@ -20,6 +21,12 @@ class TargetPredicateHost(Protocol):
     state: Any
 
     def _numeric_stat(self, object_id: str, stat: str) -> int: ...
+
+    def _effective_card_data(self, card: Any) -> Mapping[str, Any]: ...
+
+    def _type_parts(
+        self, type_line: str
+    ) -> tuple[set[str], set[str], set[str]]: ...
 
 
 def _relative_power_matches(
@@ -43,17 +50,21 @@ def _relative_power_matches(
             raise TargetPredicateError(
                 "Relative-power source phasing requires a typed LKI transition"
             )
-        current_source_power = (
-            host._numeric_stat(source.object_id, "power")
-            if source is not None
+        source_is_current = bool(
+            source is not None
             and source.zone == "battlefield"
             and not source.phased_out
             and source.logical_object_id == condition.source.logical_object_id
+        )
+        current_source_power = (
+            current_effective_creature_power(host, source)
+            if source_is_current
             else None
         )
         return condition.permits(
             target_power=host._numeric_stat(card.object_id, "power"),
             current_source_power=current_source_power,
+            use_last_known=not source_is_current,
         )
     except RelativePowerTargetError as exc:
         raise TargetPredicateError(str(exc)) from exc

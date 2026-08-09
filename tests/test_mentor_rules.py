@@ -16,6 +16,7 @@ from quorune.ability_fragments import (
     ability_fragment_to_dict,
 )
 from quorune.attack_transition_model import (
+    AttackKeywordTriggerOccurrence,
     AttackRecipient,
     AttackRecipientKind,
     AttackTransitionError,
@@ -45,6 +46,8 @@ from quorune.relative_power_target import (
     RelativePowerSourceSnapshot,
     RelativePowerTargetCondition,
     RelativePowerTargetError,
+    current_effective_creature_power,
+    pin_host_relative_power_source_departures,
     pin_relative_power_source_departures,
 )
 from quorune.target_predicates import (
@@ -172,6 +175,13 @@ class MentorModelAndCompilerTests(unittest.TestCase):
             condition.permits(target_power=2, current_source_power=2)
         )
         self.assertTrue(
+            condition.permits(
+                target_power=2,
+                current_source_power=None,
+                use_last_known=True,
+            )
+        )
+        self.assertFalse(
             condition.permits(target_power=2, current_source_power=None)
         )
         self.assertEqual(
@@ -213,9 +223,21 @@ class MentorModelAndCompilerTests(unittest.TestCase):
             zone="battlefield",
         )
         powers = {"source": 3, "target": 2}
+        source_type_line = {"value": "Creature — Human Soldier"}
         host = SimpleNamespace(
             state=SimpleNamespace(cards={source.object_id: source}),
             _numeric_stat=lambda object_id, _stat: powers[object_id],
+            _effective_card_data=lambda _card: {
+                "type_line": source_type_line["value"]
+            },
+            _type_parts=lambda type_line: (
+                {
+                    value.casefold()
+                    for value in type_line.split(" — ", 1)[0].split()
+                },
+                set(),
+                set(),
+            ),
         )
         condition = RelativePowerTargetCondition(
             source=RelativePowerSourceSnapshot(
@@ -246,6 +268,11 @@ class MentorModelAndCompilerTests(unittest.TestCase):
         self.assertTrue(target_predicate_matches(host, group, row, **arguments))
         powers["source"] = 2
         self.assertFalse(target_predicate_matches(host, group, row, **arguments))
+        powers["source"] = 3
+        source_type_line["value"] = "Artifact — Vehicle"
+        self.assertIsNone(current_effective_creature_power(host, source))
+        self.assertFalse(target_predicate_matches(host, group, row, **arguments))
+        source_type_line["value"] = "Creature — Human Soldier"
         source.phased_out = True
         with self.assertRaises(TargetPredicateError):
             target_predicate_matches(host, group, row, **arguments)
@@ -316,6 +343,108 @@ class MentorModelAndCompilerTests(unittest.TestCase):
                 ),
             )
 
+    def test_relative_power_departure_preparation_is_transactional(self):
+        condition = RelativePowerTargetCondition(
+            source=RelativePowerSourceSnapshot(
+                object_id="source",
+                logical_object_id="source@0",
+                reference="A01",
+                last_known_power=3,
+            )
+        )
+        original = {
+            "target_schema_override": {
+                "groups": [
+                    {
+                        "predicate": "power_less_than_source",
+                        "resolution_condition": condition.to_dict(),
+                    }
+                ]
+            }
+        }
+        valid_item = SimpleNamespace(context=deepcopy(original))
+        malformed_item = SimpleNamespace(
+            context={
+                "target_schema_override": {
+                    "groups": [
+                        {
+                            "predicate": "power_less_than_source",
+                            "resolution_condition": {"malformed": True},
+                        }
+                    ]
+                }
+            }
+        )
+
+        with self.assertRaises(RelativePowerTargetError):
+            pin_relative_power_source_departures(
+                (valid_item, malformed_item),
+                (
+                    RelativePowerDepartureSnapshot(
+                        "source", "source@0", 5
+                    ),
+                ),
+            )
+
+        self.assertEqual(original, valid_item.context)
+
+    def test_noncreature_departure_pins_absent_power(self):
+        condition = RelativePowerTargetCondition(
+            source=RelativePowerSourceSnapshot(
+                object_id="source",
+                logical_object_id="source@0",
+                reference="A01",
+                last_known_power=3,
+            )
+        )
+        item = SimpleNamespace(
+            context={
+                "target_schema_override": {
+                    "groups": [
+                        {
+                            "predicate": "power_less_than_source",
+                            "resolution_condition": condition.to_dict(),
+                        }
+                    ]
+                }
+            }
+        )
+        card = SimpleNamespace(
+            object_id="source",
+            logical_object_id="source@0",
+            zone="battlefield",
+        )
+        host = SimpleNamespace(
+            state=SimpleNamespace(stack=[item]),
+            _effective_card_data=lambda _card: {
+                "type_line": "Artifact — Vehicle"
+            },
+            _type_parts=lambda _type_line: (
+                {"artifact"},
+                {"vehicle"},
+                set(),
+            ),
+            _numeric_stat=lambda _object_id, _stat: 5,
+        )
+
+        self.assertEqual(
+            1,
+            pin_host_relative_power_source_departures(host, (card,)),
+        )
+        pinned = RelativePowerTargetCondition.from_dict(
+            item.context["target_schema_override"]["groups"][0][
+                "resolution_condition"
+            ]
+        )
+        self.assertIsNone(pinned.source.last_known_power)
+        self.assertFalse(
+            pinned.permits(
+                target_power=-1,
+                current_source_power=None,
+                use_last_known=True,
+            )
+        )
+
     def test_mentor_occurrences_preserve_multiplicity_and_identity(self):
         event = _event(mentor_instances=2)
         occurrences = derive_mentor_trigger_occurrences(event)
@@ -336,6 +465,20 @@ class MentorModelAndCompilerTests(unittest.TestCase):
         malformed["source_power"] = True
         with self.assertRaises(AttackTransitionError):
             MentorTriggerOccurrence.from_dict(malformed)
+
+        with self.assertRaisesRegex(
+            AttackTransitionError,
+            "untargeted attack-trigger kind",
+        ):
+            AttackKeywordTriggerOccurrence.create(
+                transition_id=event.transition_id,
+                kind=CombatKeywordTriggerKind.MENTOR,
+                controller=occurrences[0].controller,
+                source=occurrences[0].source,
+                affected=(occurrences[0].source,),
+                amount=1,
+                instance_index=0,
+            )
         malformed = deepcopy(occurrences[0].to_dict())
         malformed["source_power"] = 4
         with self.assertRaises(AttackTransitionError):

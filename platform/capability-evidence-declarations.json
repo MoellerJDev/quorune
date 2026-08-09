@@ -3313,6 +3313,22 @@
     {
       "capability_id": "counter.producer.mentor",
       "evidence_class": "negative",
+      "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_relative_power_departure_preparation_is_transactional",
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Validate every pending relative-power target schema before updating any stack item, so malformed later state leaves earlier items byte-for-byte unchanged."
+    },
+    {
+      "capability_id": "counter.producer.mentor",
+      "evidence_class": "negative",
+      "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_noncreature_departure_pins_absent_power",
+      "official_rule_ids": ["208.3", "608.2h", "702.134a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Represent a current or departing noncreature source as having no power, so printed Vehicle power cannot make a Mentor target legal."
+    },
+    {
+      "capability_id": "counter.producer.mentor",
+      "evidence_class": "negative",
       "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_unsupported_mentor_wording_and_blocked_dependency_fail_closed",
       "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
