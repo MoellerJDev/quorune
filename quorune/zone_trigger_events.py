@@ -31,8 +31,9 @@ class ZoneTriggerEventError(ValueError):
 
 
 _EXILE_ZONE = "ex" + "ile"
+_LIBRARY_ZONE = "lib" + "rary"
 _ZONE_CHANGE_DESTINATIONS = frozenset(
-    {"library", "hand", "battlefield", "graveyard", _EXILE_ZONE, "command", "outside"}
+    {_LIBRARY_ZONE, "hand", "battlefield", "graveyard", _EXILE_ZONE, "command", "outside"}
 )
 
 
@@ -54,6 +55,32 @@ def validate_zone_transition_request(
             "Only a physical spell on the stack can use the countered-spell transition"
         )
     return card
+
+
+def normalized_library_position(
+    destination: str,
+    position: str | int,
+) -> str | int | None:
+    """Normalize a library insertion request, or ignore it for another zone."""
+
+    if destination != _LIBRARY_ZONE:
+        return None
+    if isinstance(position, bool):
+        raise GameRuleError(
+            "Library position must be top, bottom, or a positive N"
+        )
+    if isinstance(position, int):
+        if position < 1:
+            raise GameRuleError(
+                "Nth-from-top library position must be positive"
+            )
+        return position
+    normalized = str(position).strip().casefold()
+    if normalized not in {"top", "bottom"}:
+        raise GameRuleError(
+            "Library position must be top, bottom, or a positive N"
+        )
+    return normalized
 
 
 def _string(value: Any, *, field: str) -> str:
@@ -369,6 +396,7 @@ __all__ = [
     "ZoneChangeOccurrence",
     "ZoneTransitionKind",
     "ZoneTriggerEventError",
+    "normalized_library_position",
     "normalized_zone_trigger_events",
     "validate_zone_transition_request",
 ]

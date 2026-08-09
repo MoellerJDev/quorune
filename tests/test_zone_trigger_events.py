@@ -3,11 +3,13 @@ from __future__ import annotations
 import unittest
 
 from common import keep_all, load_assets, make_session
+from quorune.errors import GameRuleError
 from quorune.semantics import SemanticProgram
 from quorune.zone_trigger_events import (
     ZoneChangeOccurrence,
     ZoneTransitionKind,
     ZoneTriggerEventError,
+    normalized_library_position,
     normalized_zone_trigger_events,
 )
 
@@ -42,6 +44,15 @@ def occurrence(**changes) -> ZoneChangeOccurrence:
 
 
 class ZoneTriggerEventModelTests(unittest.TestCase):
+    def test_library_position_normalization_is_owned_by_zone_transitions(self):
+        self.assertIsNone(normalized_library_position("graveyard", True))
+        self.assertEqual("top", normalized_library_position("library", " TOP "))
+        self.assertEqual("bottom", normalized_library_position("library", "bottom"))
+        self.assertEqual(3, normalized_library_position("library", 3))
+        for malformed in (True, 0, -1, "middle"):
+            with self.subTest(malformed=malformed), self.assertRaises(GameRuleError):
+                normalized_library_position("library", malformed)
+
     def test_derives_exact_enter_and_death_events(self):
         entered = normalized_zone_trigger_events(occurrence())
         self.assertEqual(

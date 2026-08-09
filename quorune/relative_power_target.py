@@ -338,24 +338,31 @@ def pin_relative_power_source_departures(
 def pin_host_relative_power_source_departures(
     host: RelativePowerDepartureHost,
     cards: Sequence[Any],
+    *,
+    error_type: type[Exception] = RelativePowerTargetError,
 ) -> int:
     """Capture all relevant current powers before a host mutates any card."""
 
-    identities = relative_power_source_identities(host.state.stack)
-    departures = tuple(
-        RelativePowerDepartureSnapshot(
-            object_id=card.object_id,
-            logical_object_id=card.logical_object_id,
-            last_known_power=current_effective_creature_power(host, card),
+    try:
+        identities = relative_power_source_identities(host.state.stack)
+        departures = tuple(
+            RelativePowerDepartureSnapshot(
+                object_id=card.object_id,
+                logical_object_id=card.logical_object_id,
+                last_known_power=current_effective_creature_power(host, card),
+            )
+            for card in cards
+            if getattr(card, "zone", None) == "battlefield"
+            and (card.object_id, card.logical_object_id) in identities
         )
-        for card in cards
-        if getattr(card, "zone", None) == "battlefield"
-        and (card.object_id, card.logical_object_id) in identities
-    )
-    return pin_relative_power_source_departures(
-        host.state.stack,
-        departures,
-    )
+        return pin_relative_power_source_departures(
+            host.state.stack,
+            departures,
+        )
+    except RelativePowerTargetError as exc:
+        if error_type is RelativePowerTargetError:
+            raise
+        raise error_type(str(exc)) from exc
 
 
 __all__ = [

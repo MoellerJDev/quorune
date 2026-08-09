@@ -137,6 +137,7 @@ from .trigger_discovery import (
     semantic_event_value,
 )
 from .zone_trigger_events import (
+    normalized_library_position,
     validate_zone_transition_request,
     ZoneChangeOccurrence,
     ZoneTransitionKind,
@@ -326,7 +327,6 @@ from .target_predicates import (
     target_predicate_matches,
 )
 from .relative_power_target import (
-    RelativePowerTargetError,
     pin_host_relative_power_source_departures,
 )
 from .token_creation import TokenCreationError, create_tokens
@@ -1519,17 +1519,6 @@ class CommanderEngine(
             self._queue_siege_defeated_trigger(card)
         return before, after
 
-    def _pin_relative_power_departures(
-        self,
-        cards: Sequence[CardInstance],
-    ) -> int:
-        """Pin typed target LKI before this facade mutates a source."""
-
-        try:
-            return pin_host_relative_power_source_departures(self, cards)
-        except RelativePowerTargetError as exc:
-            raise StateInvariantError(str(exc)) from exc
-
     def move_card(
         self,
         object_id: str,
@@ -1554,9 +1543,8 @@ class CommanderEngine(
         _relative_power_lki_prepared: bool = False,
     ) -> CardInstance:
         card = validate_zone_transition_request(self.state.cards, object_id, destination, transition_kind)
-        requested_destination = destination
-        origin = card.zone
-        library_position = self._library_position(position) if destination == "library" else None
+        requested_destination, origin = destination, card.zone
+        library_position = normalized_library_position(destination, position)
         if (
             origin == requested_destination
             and origin not in {"library", "exile", "command"}
@@ -1678,7 +1666,7 @@ class CommanderEngine(
         )).remain_in_origin: return card
         destination, aura_entry_plan = aura_move.destination, aura_move.entry_plan
         if origin == "battlefield" and not _relative_power_lki_prepared:
-            self._pin_relative_power_departures((card,))
+            pin_host_relative_power_source_departures(self, (card,), error_type=StateInvariantError)
         origin_controller = card.controller
         origin_logical_object_id = card.logical_object_id
         origin_attachments = [
@@ -1876,25 +1864,6 @@ class CommanderEngine(
                 reason=reason, transition_kind=transition_kind,
             )
         return card
-
-    @staticmethod
-    def _library_position(position: str | int) -> str | int:
-        if isinstance(position, bool):
-            raise GameRuleError(
-                "Library position must be top, bottom, or a positive N"
-            )
-        if isinstance(position, int):
-            if position < 1:
-                raise GameRuleError(
-                    "Nth-from-top library position must be positive"
-                )
-            return position
-        normalized = str(position).strip().casefold()
-        if normalized not in {"top", "bottom"}:
-            raise GameRuleError(
-                "Library position must be top, bottom, or a positive N"
-            )
-        return normalized
 
     @staticmethod
     def _library_insertion_index(
@@ -2166,8 +2135,10 @@ class CommanderEngine(
         # CR 704.8 last-known information comes from the state before any
         # object in the batch moves.  Keep discovery and mutation in separate
         # loops so a departing static source cannot change a later snapshot.
-        self._pin_relative_power_departures(
-            tuple(snapshot[0] for snapshot in snapshots)
+        pin_host_relative_power_source_departures(
+            self,
+            tuple(snapshot[0] for snapshot in snapshots),
+            error_type=StateInvariantError,
         )
         destination_timestamp = self._next_zone_timestamp()
         for object_id, destination in changes:
