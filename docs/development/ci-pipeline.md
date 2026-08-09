@@ -89,14 +89,27 @@ navigates the user's browser.
 ## Generated artifact finalization
 
 `platform/generated-artifacts.json` is the canonical ownership and dependency
-manifest for deterministic Python reports enforced by generated/architecture
-CI. It does not replace the existing owners for protocol types, pinned rules
-snapshots, or other separately governed generated assets. It declares each
-registered output, its writer and checker, and whether writing is automatic,
+manifest for every tracked generated artifact. Its versioned discovery policy
+finds artifacts through generated path prefixes, top-level pinned-rules JSON,
+generated-document metadata, explicit binary/report paths, and embedded
+third-party generator markers. The completeness validator rejects unowned
+discovered artifacts, duplicate owners, repository escapes, missing registered
+outputs, and dependency cycles before any writer runs.
+
+The manifest does not replace specialized source authorities. Pinned rules
+snapshots, browser protocol bindings, durable baseline history, and the public
+protocol demo remain deliberate manual or separately generated assets, while
+their paths and checks still have one manifest owner. Deterministic Python
+reports declare their writer and checker and whether writing is automatic,
 database-backed, or a deliberate manual baseline operation. CI and the local
-impact plan invoke the same interface. Run write mode after the coherent
-source/test/documentation worktree is complete and before the final commit;
-inspect and stage its outputs with the source change:
+impact plan invoke the same interface. Adding a file below `coverage/` or
+`demo/`, a top-level `rules/*.json` file, a generated-status Markdown document,
+or a file with a registered generator marker requires adding that output to its
+owner in the same change.
+
+Run write mode after the coherent source/test/documentation worktree is complete
+and before the final commit; inspect and stage its outputs with the source
+change:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write

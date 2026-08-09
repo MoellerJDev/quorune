@@ -19,6 +19,17 @@ from quorune import (
 )
 
 
+EXPECTED_OUTPUT_NAMES = frozenset(
+    {
+        "SMOKE_TEST.md",
+        "pilot-a-after-declaration-delta.json",
+        "pilot-a-bootstrap.json",
+        "pilot-a-unchanged-delta.json",
+        "token-benchmark.json",
+    }
+)
+
+
 def public_fixture_packet(packet: dict) -> dict:
     """Return a documentation-safe packet with bearer capabilities redacted."""
 
@@ -29,17 +40,63 @@ def public_fixture_packet(packet: dict) -> dict:
     return sanitized
 
 
+def _validate_capabilities(value: object, *, path: Path) -> None:
+    if isinstance(value, dict):
+        capability = value.get("cap")
+        if capability is not None and capability != "<redacted-capability>":
+            raise ValueError(
+                f"Protocol demo contains an unredacted capability: {path}"
+            )
+        for child in value.values():
+            _validate_capabilities(child, path=path)
+    elif isinstance(value, list):
+        for child in value:
+            _validate_capabilities(child, path=path)
+
+
+def validate_protocol_output(out: Path) -> dict[str, object]:
+    actual = {path.name for path in out.iterdir() if path.is_file()}
+    if actual != EXPECTED_OUTPUT_NAMES:
+        raise ValueError(
+            "Protocol demo output inventory is stale: "
+            f"missing={sorted(EXPECTED_OUTPUT_NAMES - actual)}, "
+            f"unexpected={sorted(actual - EXPECTED_OUTPUT_NAMES)}"
+        )
+    for name in sorted(EXPECTED_OUTPUT_NAMES - {"SMOKE_TEST.md"}):
+        path = out / name
+        value = json.loads(path.read_text(encoding="utf-8"))
+        _validate_capabilities(value, path=path)
+    smoke = (out / "SMOKE_TEST.md").read_text(encoding="utf-8")
+    if not smoke.startswith("---\n") or 'status: "generated"' not in smoke[:512]:
+        raise ValueError("Protocol demo documentation metadata is missing")
+    benchmark = json.loads(
+        (out / "token-benchmark.json").read_text(encoding="utf-8")
+    )
+    return {
+        "ok": True,
+        "outputs": sorted(EXPECTED_OUTPUT_NAMES),
+        "protocol": benchmark["protocol"],
+        "players": benchmark["players"],
+        "seed": benchmark["seed"],
+        "raw_capabilities": "absent",
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--db", default="data/scryfall-20260728-compact.sqlite3")
     parser.add_argument("--out", default="demo")
     parser.add_argument("--seed", type=int, default=20260728)
+    parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 
     root = ROOT
     out = Path(args.out)
     if not out.is_absolute():
         out = root / out
+    if args.check:
+        print(json.dumps(validate_protocol_output(out), indent=2, sort_keys=True))
+        return 0
     out.mkdir(parents=True, exist_ok=True)
 
     db_path = Path(args.db)
