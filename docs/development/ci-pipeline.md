@@ -133,10 +133,12 @@ Install the tracked pre-push hook once in each worktree:
 
 The installer sets the local `core.hooksPath` to `.githooks` and refuses to
 overwrite another hook policy. The hook is a backstop that uses the
-worktree-local Python, automatically uses `data/scryfall-current.sqlite3` when
-present (or `MTG_CARD_DB` when set), runs write mode, and rejects the push when
-generated outputs need a commit. It never amends a commit. Git hooks can be
-pull-request CI remains check-only and authoritative.
+worktree-local Python. It first runs `scripts/test_shards.py validate`, because
+an unassigned discovered test module makes PR planning fail before any matrix
+job can run. It then automatically uses `data/scryfall-current.sqlite3` when
+present (or `MTG_CARD_DB` when set), runs generated write mode, and rejects the
+push when generated outputs need a commit. It never amends a commit.
+Pull-request CI remains check-only and authoritative.
 
 The full `scripts/local_merge_gate.py` is not a default development step. Run a
 broad local gate only when the user explicitly asks or while diagnosing a
@@ -295,7 +297,8 @@ Every `tests/test_*.py` module belongs to exactly one primary shard in
 `platform/test-shards.json`. Overlay suites such as `main-smoke`,
 `windows-compat`, and `nightly-property` may intentionally reuse modules.
 
-Validate ownership after adding, renaming, or deleting a test module:
+Before the final commit and push, validate ownership after adding, renaming, or
+deleting a test module:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/test_shards.py validate

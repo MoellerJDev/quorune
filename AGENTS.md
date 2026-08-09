@@ -186,10 +186,13 @@ Install the repository-owned pre-push hook once per worktree:
 ```
 
 The hook is a backstop, not the normal finalization point. It uses only the
-worktree-local CPython 3.12 environment. It may write missing generated
-outputs, but it aborts the push so they can be inspected and committed; it
-never amends or pushes a commit itself. Hooks are advisory, so public exact-head
-CI remains mandatory. Also execute every other applicable
+worktree-local CPython 3.12 environment. Before the corpus finalizer, it
+validates that every discovered `tests/test_*.py` module has exactly one
+primary shard, because a missing assignment prevents CI planning and skips the
+entire matrix. It may write missing generated outputs, but it aborts the push
+so they can be inspected and committed; it never amends or pushes a commit
+itself. Hooks are advisory, so public exact-head CI remains mandatory. Also
+execute every other applicable
 non-behavioral command identified by the plan, including changed-module
 compilation, JSON/schema parsing, architecture or repository validators, and
 diff hygiene. Resolve every omission before pushing the coherent head.

@@ -188,6 +188,7 @@
       "test_explore_compiler",
       "test_fabricate_compiler",
       "test_fixed_damage_effect_clauses",
+      "test_fixed_target_effect_sequences",
       "test_mentor_rules",
       "test_oracle_ir",
       "test_persist_undying_rules",

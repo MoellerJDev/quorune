@@ -12,6 +12,10 @@ else
     exit 1
 fi
 
+# CI planning cannot construct its matrix when a discovered test module lacks
+# exactly one primary shard. Fail quickly before the expensive corpus census.
+"$PYTHON" "$ROOT/scripts/test_shards.py" validate
+
 if [ -n "${MTG_CARD_DB:-}" ]; then
     "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
         --write --fail-on-change --db "$MTG_CARD_DB"
