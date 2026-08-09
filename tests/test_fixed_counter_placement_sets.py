@@ -55,6 +55,22 @@ from scripts.build_test_database import build_fixture_database
 REGISTRY_PATH = ROOT / "quorune" / "rules" / "capability-registry.json"
 
 
+def _projected_string_values(value: object) -> set[str]:
+    if isinstance(value, str):
+        return {value}
+    if isinstance(value, dict):
+        return {
+            item
+            for child in value.values()
+            for item in _projected_string_values(child)
+        }
+    if isinstance(value, (list, tuple)):
+        return {
+            item for child in value for item in _projected_string_values(child)
+        }
+    return set()
+
+
 def focused_card_database(directory: str) -> CardDatabase:
     database = Path(directory) / "fixed-counter-placement-sets.sqlite3"
     build_fixture_database(
@@ -110,6 +126,12 @@ def _row(
 
 
 class FixedCounterPlacementSetModelTests(unittest.TestCase):
+    def test_projection_privacy_comparison_uses_exact_values(self):
+        projected = {"cap": "opaque-B11-suffix", "legal_refs": ["A", "B"]}
+        self.assertNotIn("B11", _projected_string_values(projected))
+        projected["private_ref"] = "B11"
+        self.assertIn("B11", _projected_string_values(projected))
+
     def test_snapshot_is_immutable_canonical_and_source_excluding(self):
         spec = AffectedPermanentSetSpec(
             query=ObjectQuerySpec(
@@ -777,8 +799,8 @@ class FixedCounterPlacementSetRuntimeTests(unittest.TestCase):
             for seat in ("B", "C", "D")
             for object_id in engine.state.players[seat].zones["hand"]
         }
-        packet = json.dumps(decision, sort_keys=True)
-        self.assertTrue(all(ref not in packet for ref in hidden_refs))
+        projected_values = _projected_string_values(decision)
+        self.assertTrue(hidden_refs.isdisjoint(projected_values))
         session.initial_checkpoint = checkpoint_envelope(engine.state)
         session.commands.clear()
         session.decisions.clear()
