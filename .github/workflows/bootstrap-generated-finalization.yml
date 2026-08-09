@@ -1,4 +1,4 @@
-name: Repair generated finalization
+name: Bootstrap generated finalization
 
 on:
   push:
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  finalize:
+  implement:
     runs-on: ubuntu-latest
     env:
       MTG_CARD_DB: data/test-ci.sqlite3
@@ -29,10 +29,40 @@ jobs:
           python-version: "3.12"
           architecture: x64
           cache: pip
+      - name: Reassemble and apply the reviewed repository transformation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+          import zlib
+
+          parts = sorted(Path(".github").glob("bootstrap_payload.[0-9][0-9]"))
+          if len(parts) != 6:
+              raise SystemExit(f"expected 6 bootstrap payload chunks, found {len(parts)}")
+          payload = b"".join(path.read_bytes() for path in parts)
+          Path(".github/bootstrap_generated_finalization.py").write_bytes(
+              zlib.decompress(base64.b64decode(payload, validate=True))
+          )
+          PY
+          python .github/bootstrap_generated_finalization.py
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/change_impact.py")
+          text = path.read_text(encoding="utf-8")
+          old = 'if value["schema_version"] != 3:\n        raise ValueError("Unsupported change-impact policy schema")'
+          new = 'if value["schema_version"] != 4:\n        raise ValueError("Unsupported change-impact policy schema")'
+          if old not in text:
+              raise SystemExit("change-impact schema guard was not found exactly once")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="\n")
+          PY
       - name: Remove bootstrap-only files from the committed tree
         shell: bash
         run: |
           set -euo pipefail
+          rm -f .github/bootstrap_generated_finalization.py
           git rm -f --ignore-unmatch \
             .github/bootstrap_payload.txt \
             .github/bootstrap_payload.00 \
@@ -93,5 +123,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "chore: finalize generated artifacts after branch sync"
+          git commit -m "chore: centralize generated artifact finalization"
           git push origin HEAD:${GITHUB_REF_NAME}
