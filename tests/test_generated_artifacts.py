@@ -312,6 +312,7 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         self.assertIn(".venv/bin/python", hook)
         self.assertIn(".venv/Scripts/python.exe", hook)
         self.assertIn("data/scryfall-current.sqlite3", hook)
+        self.assertIn('"$ROOT/scripts/test_shards.py" validate', hook)
         self.assertIn("--write --fail-on-change", hook)
         self.assertNotIn("python scripts/finalize_generated.py", hook)
 

@@ -275,7 +275,27 @@ def _activated_effect_dependency_gate(
             "untap",
         }
     )
-    if capability_shaped_effect and capability_registry is not None:
+    closed_target_sequence = (
+        "fixed-target-effect-sequence" in mechanics
+        or (
+            len(effects) >= 1
+            and all(
+                str(effect.get("op") or "")
+                in {
+                    "grant_keyword_until_end_of_turn",
+                    "modify_stats_until_end_of_turn",
+                }
+                for effect in effects
+            )
+            and {
+                "cr-115-targets",
+                "cr-611-continuous-effects",
+            }.issubset(mechanics)
+        )
+    )
+    if (
+        capability_shaped_effect or closed_target_sequence
+    ) and capability_registry is not None:
         return dependency_gate(
             mechanics=mechanics,
             effects=effects,

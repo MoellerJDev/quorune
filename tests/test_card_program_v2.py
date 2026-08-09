@@ -26,7 +26,7 @@ from quorune.card_programs.adapters import (
 )
 from quorune.carddb import CardDatabase, CardRecord
 from quorune.cli import main as cli_main
-from quorune.oracle_ir import register_generated_programs
+from quorune.oracle_ir import ORACLE_COMPILER_VERSION, register_generated_programs
 from quorune.rules.capabilities import (
     load_default_capability_registry,
 )
@@ -312,7 +312,7 @@ class CardProgramV2Tests(unittest.TestCase):
             trust_level="trusted",
         )
 
-        self.assertEqual("oracle-ir-v63", current.compiler_version)
+        self.assertEqual(ORACLE_COMPILER_VERSION, current.compiler_version)
         self.assertEqual(
             "capability_closed", current.trust_closure["trust_basis"]
         )
@@ -367,7 +367,7 @@ class CardProgramV2Tests(unittest.TestCase):
             capability_profile="commander_review",
             trust_level="trusted",
         )
-        self.assertEqual("oracle-ir-v63", current.compiler_version)
+        self.assertEqual(ORACLE_COMPILER_VERSION, current.compiler_version)
         self.assertEqual("capability_closed", current.trust_closure["trust_basis"])
         self.assertEqual(
             ["choose_damage_source", "life"],
@@ -988,7 +988,7 @@ class CardProgramV2Tests(unittest.TestCase):
             )
 
         self.assertEqual(2, result["cards_considered"])
-        self.assertEqual("oracle-ir-v63", result["compiler_version"])
+        self.assertEqual(ORACLE_COMPILER_VERSION, result["compiler_version"])
         self.assertEqual(
             self.capabilities.fingerprint,
             result["capability_registry_fingerprint"],

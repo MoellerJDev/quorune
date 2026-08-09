@@ -16,8 +16,8 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "357bd46c98f68a44fd735cdc220610303d3b25278f1f5b5809f9d614c31c5952",
-      "version": 8
+      "sha256": "453bd043dee0c9335a2874385170336b75bc9e82822e762ee7c006e38569f2f0",
+      "version": 9
     },
     {
       "mechanic_id": "cr-111-tokens",
@@ -418,8 +418,8 @@
     {
       "mechanic_id": "cr-608-resolving-spells-and-abilities",
       "path": "mechanics/contracts/resolving-spells-and-abilities.json",
-      "sha256": "bf19236ce84713dbba2a84c73b9cefaafa302c57dca08a6c0dbb100df7b4bc96",
-      "version": 1
+      "sha256": "51f213b026e3801e7cb4a3a83727a8901b862347793ff6bff439312e9c9a3367",
+      "version": 2
     },
     {
       "mechanic_id": "riot",
@@ -436,8 +436,8 @@
     {
       "mechanic_id": "cr-611-continuous-effects",
       "path": "mechanics/contracts/simple-until-end-of-turn.json",
-      "sha256": "7a0747f0f5dd88a44bfa58746dad611b2db8ed4c7eb5e0aebeada351054aa2c9",
-      "version": 1
+      "sha256": "b51b7f26327c7c55f0e930e3c46f744bd96be25f0e81fdc14343e1c72ebce671",
+      "version": 2
     },
     {
       "mechanic_id": "skulk",
@@ -6400,12 +6400,12 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "357bd46c98f68a44fd735cdc220610303d3b25278f1f5b5809f9d614c31c5952",
-      "contract_version": 8,
+      "contract_sha256": "453bd043dee0c9335a2874385170336b75bc9e82822e762ee7c006e38569f2f0",
+      "contract_version": 9,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "closed fixed-counter single-target, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v9",
+      "implementation_component": "closed fixed-counter single-target, fixed target counter-and-characteristic sequence, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
+      "implementation_version": "counter-placement-transaction-v10",
       "kind": "rules_section",
       "known_blockers": [
         "Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with optional, variable, distributed, multi-counter, dynamic, subtype-qualified, combat-qualified, modal, conditional, and compound general target-set instructions",
@@ -6501,7 +6501,13 @@
         "test_stale_saga_snapshot_rolls_back_without_partial_mutation",
         "test_four_player_precombat_lore_only_advances_active_players_sagas",
         "test_saga_entry_replacement_choice_replays_exactly",
-        "test_precombat_saga_progression_replays_exactly"
+        "test_precombat_saga_progression_replays_exactly",
+        "test_spell_trigger_and_activated_contexts_share_target_threaded_sequence_lowering",
+        "test_unsupported_target_threaded_variants_remain_material_residuals",
+        "test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+        "test_four_player_sequence_choice_is_seat_scoped_and_replays",
+        "test_keyword_counter_vocabulary_is_closed_and_strict",
+        "test_keyword_counter_characteristic_mutant_is_killed"
       ],
       "trust_level": "untrusted"
     },
@@ -8337,15 +8343,15 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/resolving-spells-and-abilities.json",
-      "contract_sha256": "bf19236ce84713dbba2a84c73b9cefaafa302c57dca08a6c0dbb100df7b4bc96",
-      "contract_version": 1,
+      "contract_sha256": "51f213b026e3801e7cb4a3a83727a8901b862347793ff6bff439312e9c9a3367",
+      "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "CommanderEngine._pass_priority, _prepare_stack_resolution, _begin_resolve_item, and _continue_resolution",
-      "implementation_version": "resolution-pipeline-v1",
+      "implementation_component": "CommanderEngine._pass_priority, _prepare_stack_resolution, _begin_resolve_item, and _continue_resolution; compiler.fixed_target_effect_sequences; semantic counter and continuous-effect mutation owners",
+      "implementation_version": "resolution-pipeline-v2",
       "kind": "rules_section",
       "known_blockers": [
-        "intervening-if, target, choice, distribution, and instruction grammar are not complete across the Oracle corpus",
+        "intervening-if, target, choice, distribution, and instruction grammar are not complete across the Oracle corpus; only the represented mandatory fixed counter-and-characteristic target sequence is closed generically",
         "resolution-time APNAP and nonsimultaneous multi-object ordering are implemented only for selected operations",
         "mana activation and arbitrary instructed casting during resolution are not generic",
         "current, last-known, and look-back information do not use one universal typed query model",
@@ -8368,7 +8374,9 @@
         "test_target_that_leaves_and_returns_is_a_new_illegal_object",
         "test_padeem_hexproof_and_intervening_upkeep_condition",
         "test_permanent_spell_copy_becomes_the_same_token_object",
-        "test_spell_copy_cessation_replays_exactly"
+        "test_spell_copy_cessation_replays_exactly",
+        "test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+        "test_stale_target_rolls_back_before_sequence_mutation"
       ],
       "trust_level": "untrusted"
     },
@@ -8429,12 +8437,12 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/simple-until-end-of-turn.json",
-      "contract_sha256": "7a0747f0f5dd88a44bfa58746dad611b2db8ed4c7eb5e0aebeada351054aa2c9",
-      "contract_version": 1,
+      "contract_sha256": "b51b7f26327c7c55f0e930e3c46f744bd96be25f0e81fdc14343e1c72ebce671",
+      "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "oracle_ir._effect_template and CommanderEngine._apply_layered_characteristic_annotations",
-      "implementation_version": "simple-until-eot-v1",
+      "implementation_component": "compiler.fixed_target_effect_sequences, rules.node_capability_shapes, continuous_effect_state, and the typed semantic continuous-effect sink",
+      "implementation_version": "simple-until-eot-v2",
       "kind": "rules_section",
       "known_blockers": [
         "dynamic values, effect dependencies, and player/game-rule continuous effects remain residual",
@@ -8448,7 +8456,10 @@
       ],
       "test_ids": [
         "test_self_pump_and_basic_token_creation_lower_generically",
-        "test_power_toughness_sublayers_set_modify_then_switch"
+        "test_power_toughness_sublayers_set_modify_then_switch",
+        "test_standalone_target_characteristics_are_target_revalidated",
+        "test_target_threaded_sequence_preserves_printed_effect_order",
+        "test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly"
       ],
       "trust_level": "untrusted"
     },

@@ -12,6 +12,8 @@ from .node_capability_shapes import (
     fixed_counter_placement_node_capabilities,
     fixed_counter_placement_set_node_capabilities,
     fixed_counter_placement_target_set_node_capabilities,
+    fixed_target_effect_sequence_node_capabilities,
+    fixed_target_characteristics_node_capabilities,
     fixed_player_counter_placement_node_capabilities,
     fixed_damage_node_capabilities,
     mass_destruction_node_capabilities,
@@ -101,6 +103,7 @@ _BASIC_LANDWALK_MECHANICS = (
 _FIRST_STRIKE_MECHANIC = "first" + " strike"
 _DOUBLE_STRIKE_MECHANIC = "double" + " strike"
 _EXILE_MECHANIC = "ex" + "ile"
+_FIXED_TARGET_SEQUENCE_MECHANIC = "fixed-target-effect-sequence"
 MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _CYCLING_MECHANIC: ("activation.cycling.hand",),
     _EVOLVE_MECHANIC: ("counter.producer.evolve",),
@@ -156,6 +159,9 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     "trigger-event-normalized-zone-change": (
         "trigger.event.normalized_zone_change",
     ),
+    _FIXED_TARGET_SEQUENCE_MECHANIC: (
+        "resolution.effect_sequence.fixed_target",
+    ),
 }
 _SHAPE_GATED_MECHANICS = frozenset(
     {
@@ -164,6 +170,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         "destroy",
         _EXILE_MECHANIC,
         "return-to-owner-hand",
+        _FIXED_TARGET_SEQUENCE_MECHANIC,
     }
 )
 _CAPABILITY_ID = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$")
@@ -740,6 +747,8 @@ def _targeted_effect_capabilities(
         fixed_counter_placement_set_node_capabilities,
         fixed_counter_placement_target_set_node_capabilities,
         fixed_player_counter_placement_node_capabilities,
+        fixed_target_characteristics_node_capabilities,
+        fixed_target_effect_sequence_node_capabilities,
         fixed_damage_node_capabilities,
         mass_destruction_node_capabilities,
         fixed_draw_node_capabilities,

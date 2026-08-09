@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 1,
+  "contract_version": 2,
   "mechanic_id": "cr-608-resolving-spells-and-abilities",
   "official_name": "Resolving Spells and Abilities",
   "effective_date": "2026-06-19",
@@ -69,6 +69,7 @@
       "target revalidation",
       "ordered instruction",
       "resolution-time choice",
+      "replacement-suspended fixed target instruction sequence",
       "finish resolution",
       "spell or ability resolves"
     ],
@@ -172,14 +173,16 @@
     "test_target_that_leaves_and_returns_is_a_new_illegal_object",
     "test_padeem_hexproof_and_intervening_upkeep_condition",
     "test_permanent_spell_copy_becomes_the_same_token_object",
-    "test_spell_copy_cessation_replays_exactly"
+    "test_spell_copy_cessation_replays_exactly",
+    "test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+    "test_stale_target_rolls_back_before_sequence_mutation"
   ],
   "implementation": {
-    "component": "CommanderEngine._pass_priority, _prepare_stack_resolution, _begin_resolve_item, and _continue_resolution",
-    "version": "resolution-pipeline-v1"
+    "component": "CommanderEngine._pass_priority, _prepare_stack_resolution, _begin_resolve_item, and _continue_resolution; compiler.fixed_target_effect_sequences; semantic counter and continuous-effect mutation owners",
+    "version": "resolution-pipeline-v2"
   },
   "known_blockers": [
-    "intervening-if, target, choice, distribution, and instruction grammar are not complete across the Oracle corpus",
+    "intervening-if, target, choice, distribution, and instruction grammar are not complete across the Oracle corpus; only the represented mandatory fixed counter-and-characteristic target sequence is closed generically",
     "resolution-time APNAP and nonsimultaneous multi-object ordering are implemented only for selected operations",
     "mana activation and arbitrary instructed casting during resolution are not generic",
     "current, last-known, and look-back information do not use one universal typed query model",

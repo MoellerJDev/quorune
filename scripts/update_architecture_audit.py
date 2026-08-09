@@ -407,6 +407,23 @@ def _string_records(
     parents: Mapping[ast.AST, ast.AST],
 ) -> tuple[tuple[dict[str, Any], ...], tuple[dict[str, Any], ...]]:
     def specificity_exempt(node: ast.Constant) -> bool:
+        ordinary_keyword_values = {
+            "deathtouch",
+            "decayed",
+            "double strike",
+            "exalted",
+            "first strike",
+            "flying",
+            "haste",
+            "hexproof",
+            "indestructible",
+            "lifelink",
+            "menace",
+            "reach",
+            "shadow",
+            "trample",
+            "vigilance",
+        }
         structural_values = {
             "_EXILE_MECHANIC": {"exile"},
             "_EXILE_ZONE": {"exile"},
@@ -418,6 +435,13 @@ def _string_records(
             "_COUNTER_NAME_ANY": {"counters"},
             "_COUNTER_TARGET_GOBLIN": {"goblin"},
             "_COUNTER_TARGET_VEHICLE": {"vehicle"},
+            # Closed rules vocabulary may also coincide with exact printed
+            # card names. These exemptions are limited to the typed keyword
+            # registries; use in card identity or printed-name dispatch still
+            # fails below.
+            "_KEYWORDS": ordinary_keyword_values,
+            "_FIXED_TARGET_SEQUENCE_KEYWORDS": ordinary_keyword_values,
+            "KEYWORD_COUNTER_MECHANICS": ordinary_keyword_values,
             # Closed predefined token names are CR vocabulary used to build
             # token characteristics.  The structural exemption is limited to
             # these named constants and still fails if a value participates

@@ -13,6 +13,7 @@ from .continuous_effects import (
     evaluate_continuous_effects,
 )
 from .model import CardInstance
+from .keyword_counters import keyword_counter_abilities
 from .util import unique_preserving_order
 from .ability_fragments import (
     ability_fragment_to_dict,
@@ -241,6 +242,22 @@ def _legacy_annotation_effects(
                 duration=ContinuousEffectDuration.UNTIL_END_OF_TURN,
             )
         )
+    counter_abilities = keyword_counter_abilities(card.counters)
+    if counter_abilities:
+        effects.append(
+            ContinuousEffect(
+                effect_id=f"{card.object_id}:keyword-counters",
+                source_id=card.object_id,
+                layer=Layer.ABILITY,
+                sublayer="6",
+                timestamp=card.zone_timestamp,
+                operations=tuple(
+                    ContinuousOperation("add_ability", keyword)
+                    for keyword in counter_abilities
+                ),
+                duration=ContinuousEffectDuration.ZONE_OBJECT,
+            )
+        )
     return effects
 
 
@@ -335,6 +352,7 @@ def evaluate_card_characteristics(
         or added_types
         or added_subtypes
         or card.temporary_keywords
+        or keyword_counter_abilities(card.counters)
         or card.annotations.get("bestowed")
         or runtime_effects
     )

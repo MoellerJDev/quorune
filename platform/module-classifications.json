@@ -1190,6 +1190,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/fixed_target_effect_sequences.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/intrinsic_counter_nodes.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -2215,6 +2230,20 @@
       "file": "quorune/keyword_abilities.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/keyword_counters.py",
+      "layer": "rules",
+      "owning_subsystem": "counter_placement",
       "allowed_dependency_layers": [
         "domain",
         "rules",
@@ -4735,5 +4764,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "188be769847b1c3ea47233c666ff095a87802b47cb22db837509ca4a54d2e8cd"
+  "fingerprint": "2a6547d07266e6951bfacf4e086f42b5fca6bde3b31de5fb065febd53d0c10a9"
 }

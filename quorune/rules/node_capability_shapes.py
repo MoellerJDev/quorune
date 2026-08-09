@@ -14,6 +14,7 @@ from ..compiler.counter_placement_templates import (
     fixed_counter_set_spec_is_closed,
 )
 from ..compiler.creature_subtypes import canonical_creature_subtype
+from ..keyword_counters import keyword_counter_mechanic
 from ..affected_permanents import (
     AffectedPermanentSetError,
     AffectedPermanentSetSpec,
@@ -175,6 +176,23 @@ _TARGETED_EXPLORE_SCHEMA = {
     "controller_relation": "you",
     "count": 1,
 }
+_FIXED_TARGET_SEQUENCE_MECHANIC = "fixed-target-effect-sequence"
+_FIXED_TARGET_SEQUENCE_KEYWORDS = frozenset(
+    {
+        "Deathtouch",
+        "Double Strike",
+        "First Strike",
+        "Flying",
+        "Haste",
+        "Hexproof",
+        "Indestructible",
+        "Lifelink",
+        "Menace",
+        "Reach",
+        "Trample",
+        "Vigilance",
+    }
+)
 _TARGETED_COUNTER_SCHEMAS: tuple[Mapping[str, Any], ...] = (
     _COUNTER_STACK_BASE,
     {**_COUNTER_STACK_BASE, "types_none": ["creature"]},
@@ -739,14 +757,25 @@ def fixed_counter_placement_node_capabilities(
         or effect.get("source") != "$source"
     ):
         return ()
+    counter_mechanic = keyword_counter_mechanic(effect.get("counter"))
+    if counter_mechanic is not None and counter_mechanic not in mechanics:
+        return ()
+    characteristic_capabilities = (
+        ("counter.characteristic.keyword",)
+        if counter_mechanic is not None
+        else ()
+    )
     if target_schema is None and effect.get("card") == "$source":
-        return ("counter.producer.fixed_effect",)
+        return ("counter.producer.fixed_effect", *characteristic_capabilities)
     if target_schema is None and isinstance(effect.get("card"), Mapping):
         try:
             AttachmentReferenceSpec.from_dict(effect["card"])
         except (AttachmentReferenceError, TypeError):
             return ()
-        return ("counter.producer.fixed_attached_effect",)
+        return (
+            "counter.producer.fixed_attached_effect",
+            *characteristic_capabilities,
+        )
     if (
         "cr-115-targets" in mechanics
         and effect.get("card") == "$target.0"
@@ -754,9 +783,148 @@ def fixed_counter_placement_node_capabilities(
     ):
         return (
             "counter.producer.fixed_effect",
+            *characteristic_capabilities,
             "target.revalidate_resolution",
         )
     return ()
+
+
+def fixed_target_effect_sequence_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return ownership for one closed target-threaded counter sequence."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if not {
+        _FIXED_TARGET_SEQUENCE_MECHANIC,
+        "cr-115-targets",
+        "cr-122-counters",
+        "cr-611-continuous-effects",
+    }.issubset(mechanics) or not 2 <= len(effects) <= 4:
+        return ()
+    schema = dict(target_schema or {})
+    relation = schema.pop("controller_relation", "any")
+    if relation not in {"any", "you", "opponent"} or schema != {
+        "zones": ["battlefield"],
+        "categories": ["permanent"],
+        "types_any": ["creature"],
+        "count": 1,
+    }:
+        return ()
+    counter_count = 0
+    keyword_counter = False
+    characteristic_count = 0
+    granted_keywords: set[str] = set()
+    for effect in effects:
+        operation = effect.get("op")
+        if operation == "place_counters":
+            if (
+                set(effect) != {"op", "card", "counter", "amount", "source"}
+                or effect.get("card") != "$target.0"
+                or type(effect.get("counter")) is not str
+                or not effect.get("counter")
+                or type(effect.get("amount")) is not int
+                or effect.get("amount", 0) <= 0
+                or effect.get("source") != "$source"
+            ):
+                return ()
+            counter_mechanic = keyword_counter_mechanic(effect.get("counter"))
+            if counter_mechanic is not None:
+                if counter_mechanic not in mechanics:
+                    return ()
+                keyword_counter = True
+            counter_count += 1
+            continue
+        if operation == "modify_stats_until_end_of_turn":
+            if (
+                set(effect) != {"op", "card", "power", "toughness"}
+                or effect.get("card") != "$target.0"
+                or type(effect.get("power")) is not int
+                or type(effect.get("toughness")) is not int
+                or (effect.get("power") == 0 and effect.get("toughness") == 0)
+            ):
+                return ()
+            characteristic_count += 1
+            continue
+        if operation == "grant_keyword_until_end_of_turn":
+            keyword = effect.get("keyword")
+            if (
+                set(effect) != {"op", "card", "keyword"}
+                or effect.get("card") != "$target.0"
+                or keyword not in _FIXED_TARGET_SEQUENCE_KEYWORDS
+                or keyword in granted_keywords
+            ):
+                return ()
+            granted_keywords.add(keyword)
+            characteristic_count += 1
+            continue
+        return ()
+    if counter_count != 1 or characteristic_count < 1:
+        return ()
+    return (
+        "continuous.resolution.fixed_characteristics_until_end_of_turn",
+        *(("counter.characteristic.keyword",) if keyword_counter else ()),
+        "counter.producer.fixed_effect",
+        "resolution.effect_sequence.fixed_target",
+        "target.revalidate_resolution",
+    )
+
+
+def fixed_target_characteristics_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return ownership for one closed targeted fixed characteristic effect."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if not {
+        "cr-115-targets",
+        "cr-611-continuous-effects",
+    }.issubset(mechanics) or not 1 <= len(effects) <= 3:
+        return ()
+    schema = dict(target_schema or {})
+    relation = schema.pop("controller_relation", "any")
+    if relation not in {"any", "you", "opponent"} or schema != {
+        "zones": ["battlefield"],
+        "categories": ["permanent"],
+        "types_any": ["creature"],
+        "count": 1,
+    }:
+        return ()
+    granted_keywords: set[str] = set()
+    for effect in effects:
+        operation = effect.get("op")
+        if operation == "modify_stats_until_end_of_turn":
+            if (
+                set(effect) != {"op", "card", "power", "toughness"}
+                or effect.get("card") != "$target.0"
+                or type(effect.get("power")) is not int
+                or type(effect.get("toughness")) is not int
+                or (effect.get("power") == 0 and effect.get("toughness") == 0)
+            ):
+                return ()
+            continue
+        if operation == "grant_keyword_until_end_of_turn":
+            keyword = effect.get("keyword")
+            if (
+                set(effect) != {"op", "card", "keyword"}
+                or effect.get("card") != "$target.0"
+                or keyword not in _FIXED_TARGET_SEQUENCE_KEYWORDS
+                or keyword in granted_keywords
+            ):
+                return ()
+            granted_keywords.add(keyword)
+            continue
+        return ()
+    return (
+        "continuous.resolution.fixed_characteristics_until_end_of_turn",
+        "target.revalidate_resolution",
+    )
 
 
 def fixed_counter_placement_set_node_capabilities(
@@ -781,6 +949,14 @@ def fixed_counter_placement_set_node_capabilities(
         or effect.get("amount", 0) <= 0
     ):
         return ()
+    counter_mechanic = keyword_counter_mechanic(effect.get("counter"))
+    if counter_mechanic is not None and counter_mechanic not in mechanics:
+        return ()
+    characteristic_capabilities = (
+        ("counter.characteristic.keyword",)
+        if counter_mechanic is not None
+        else ()
+    )
     try:
         spec = AffectedPermanentSetSpec.from_dict(effect.get("set"))
     except (AffectedPermanentSetError, TypeError):
@@ -809,11 +985,15 @@ def fixed_counter_placement_set_node_capabilities(
             return ()
         return (
             "counter.producer.fixed_permanent_set_effect",
+            *characteristic_capabilities,
             "target.revalidate_resolution",
         )
     if target_schema is not None:
         return ()
-    return ("counter.producer.fixed_permanent_set_effect",)
+    return (
+        "counter.producer.fixed_permanent_set_effect",
+        *characteristic_capabilities,
+    )
 
 
 def fixed_counter_placement_target_set_node_capabilities(
@@ -853,6 +1033,14 @@ def fixed_counter_placement_target_set_node_capabilities(
         or effect.get("amount", 0) <= 0
     ):
         return ()
+    counter_mechanic = keyword_counter_mechanic(effect.get("counter"))
+    if counter_mechanic is not None and counter_mechanic not in mechanics:
+        return ()
+    characteristic_capabilities = (
+        ("counter.characteristic.keyword",)
+        if counter_mechanic is not None
+        else ()
+    )
     schema = dict(target_schema or {})
     allowed_schema_fields = {
         "zones",
@@ -923,6 +1111,7 @@ def fixed_counter_placement_target_set_node_capabilities(
         return ()
     return (
         "counter.producer.fixed_permanent_target_set_effect",
+        *characteristic_capabilities,
         "target.revalidate_resolution",
     )
 
@@ -1032,6 +1221,8 @@ __all__ = [
     "mass_destruction_node_capabilities",
     "fixed_draw_node_capabilities",
     "fixed_counter_placement_node_capabilities",
+    "fixed_target_effect_sequence_node_capabilities",
+    "fixed_target_characteristics_node_capabilities",
     "fixed_counter_placement_set_node_capabilities",
     "fixed_counter_placement_target_set_node_capabilities",
     "fixed_player_counter_placement_node_capabilities",
