@@ -88,11 +88,7 @@ jobs:
           tests/test_change_impact.py
           tests/test_ci_pipeline.py
           quorune/reusable_pieces/generation.py
-      - name: Finalize all generated artifacts to a fixed point
-        run: python scripts/finalize_generated.py --write
-      - name: Inspect deterministic impact plan
-        run: python scripts/quick_gate.py --dry-run
-      - name: Build compact validation database
+      - name: Build compact generator and validation database
         run: >-
           python scripts/build_test_database.py build
           --fixture tests/fixtures/scryfall-exact-lists.json
@@ -102,6 +98,10 @@ jobs:
           --fixture tests/fixtures/counter-replacement-cards.json
           --fixture tests/fixtures/explore-cards.json
           --output data/test-ci.sqlite3
+      - name: Finalize all generated artifacts to a fixed point
+        run: python scripts/finalize_generated.py --write
+      - name: Inspect deterministic impact plan
+        run: python scripts/quick_gate.py --dry-run
       - name: Run generated conformance and governance tests
         run: |
           python scripts/test_shards.py validate
