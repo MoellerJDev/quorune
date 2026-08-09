@@ -31,13 +31,21 @@ payload, object identifier, replacement batch, and prior journal remain in the
 authoritative continuation. Exact replay reconstructs and validates the path,
 chooser, and selected effect.
 
-`replacement.counter.quantity.v1` is the current bounded component. It applies
-fixed positive integral multiplication or fixed nonnegative addition to an
-effect-generated placement on a battlefield permanent. The descriptor may
-restrict the placing player, permanent controller, counter name, and effective
-permanent type. The reviewed source-pinned witnesses are Doubling Season and
-Doc Samson, Super Psychiatrist. Cost-generated counters and inactive sources
-do not match.
+`replacement.counter.quantity.v2` is the current bounded component. It applies
+fixed positive integral multiplication or fixed nonnegative addition to a
+represented placement on a player or battlefield permanent. Its closed
+descriptor distinguishes effect-only wording from all-placement wording and
+may restrict the placing player, affected player/permanent relation, counter
+name, and a small validated set of effective card-type or subtype predicates.
+`replacement.counter.quantity.v1` remains registered only for replay and
+reviewed-pack compatibility; new compiler output uses v2.
+
+The generic compiler lowers exact ordinary "an effect would put," "you would
+put," and passive "would be put" quantity-replacement sentences. It rejects
+fractional, halving, dynamic, optional, team, opponent, "another," and
+Class-level-gated variants as material residuals. Doubling Season's
+effect-only wording therefore does not change a positive loyalty-symbol cost,
+while represented all-placement wording such as Doc Samson's does.
 
 Zone-destination replacements use the closed
 `CreateAffectedObjectCounter` operation to derive a typed child from the
@@ -69,12 +77,18 @@ APNAP controller and logical object identity, and delegate the complete batch
 to `counter_placement.py`. Neither module owns authoritative state mutation.
 `semantic_runtime/counter_replacements.py` validates source descriptors and
 returns immutable effects; architecture policy prohibits it from importing the
-engine, `GameState`, transport, persistence, or projection code.
+engine, `GameState`, transport, persistence, or projection code. Positive
+loyalty-symbol costs enter this same transaction through the typed activation
+commit owner with `effect_generated=false`. A stable private cost-event ID and
+strict priority-action continuation allow competing replacements to suspend
+before any cost or stack mutation and resume with exact replay. Client commands
+cannot supply those internal continuation fields.
 
 The engine retains compatibility facades and supplies the host protocol. New
 positive fixed counter operations must enter the transaction instead of adding
-another direct engine write. Removal, payment, and rule actions remain distinct
-until their ordering and continuation semantics are modeled.
+another direct engine write. Counter removal, effects that prohibit placement,
+combined or modified loyalty-symbol costs, and other unrepresented rule actions
+remain distinct and fail closed until their ordering semantics are modeled.
 
 ## Current producer inventory
 

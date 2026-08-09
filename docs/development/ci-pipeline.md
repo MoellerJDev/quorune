@@ -102,6 +102,13 @@ inspect and stage its outputs with the source change:
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write
 ```
 
+Compiler, capability, CardProgram, and card-support changes require the pinned
+database census in the same finalization run:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\finalize_generated.py --write --db data\scryfall-current.sqlite3
+```
+
 Write mode runs generators in topological order and repeats only changed
 generators and their downstream automatic or derived-only consumers until a
 bounded pass changes nothing. A requested database-backed corpus rebuild occurs
@@ -109,8 +116,11 @@ only on the first pass because the DAG already orders all of its consumers
 afterward. It then runs all freshness checks, documentation validation, and
 diff hygiene. Pass `--db <path>` or set
 `MTG_CARD_DB` when a card-data-backed frontier or full reusable-piece rebuild is
-required. The reusable-piece writer can refresh architecture-derived delta
-metadata without rebuilding the pinned corpus. Performance baselines remain
+required. The manifest owns the full/Commander Oracle and CardProgram census
+before the card-unlock frontier, so the frontier cannot compare current source
+against stale status counts. The reusable-piece writer can refresh
+architecture-derived delta metadata without rebuilding the pinned corpus.
+Performance baselines remain
 manual because observed latency is review evidence, not an automatic rewrite.
 Use `--check` for read-only diagnosis and in CI; a successful `--write` already
 performs that verification, so do not run both commands consecutively.
@@ -123,8 +133,9 @@ Install the tracked pre-push hook once in each worktree:
 
 The installer sets the local `core.hooksPath` to `.githooks` and refuses to
 overwrite another hook policy. The hook is a backstop that uses the
-worktree-local Python, runs write mode, and rejects the push when generated
-outputs need a commit. It never amends a commit. Git hooks can be bypassed, so
+worktree-local Python, automatically uses `data/scryfall-current.sqlite3` when
+present (or `MTG_CARD_DB` when set), runs write mode, and rejects the push when
+generated outputs need a commit. It never amends a commit. Git hooks can be
 pull-request CI remains check-only and authoritative.
 
 The full `scripts/local_merge_gate.py` is not a default development step. Run a

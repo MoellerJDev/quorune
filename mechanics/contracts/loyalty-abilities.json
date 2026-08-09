@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 1,
+  "contract_version": 2,
   "mechanic_id": "cr-606-loyalty-abilities",
   "official_name": "Loyalty Abilities",
   "effective_date": "2026-06-19",
@@ -46,7 +46,8 @@
       "stack emptiness",
       "loyalty activations of this permanent this turn",
       "loyalty counters",
-      "applicable cost modifiers"
+      "applicable cost modifiers",
+      "active typed counter-quantity replacements"
     ],
     "state_writes": [
       "loyalty counters",
@@ -66,13 +67,18 @@
       "no loyalty ability of that permanent previously activated this turn"
     ],
     "targets": [],
-    "choices": [],
+    "choices": [
+      "the affected permanent's controller orders competing counter-quantity replacements while a positive loyalty-symbol cost is paid"
+    ],
     "hidden_information": [],
     "apnap": [],
     "layers": [
       "continuous effects may grant a loyalty ability to a nonplaneswalker permanent"
     ],
-    "replacement_effects": [],
+    "replacement_effects": [
+      "positive loyalty-symbol costs use a non-effect counter.place event so all-placement replacements apply while effect-only replacements do not",
+      "negative loyalty-symbol costs remove counters and are not counter-placement events"
+    ],
     "copy": [
       "copiable loyalty ability text is identified by its loyalty-symbol cost"
     ],
@@ -91,6 +97,7 @@
     "loyalty ability on another permanent type",
     "positive loyalty cost",
     "negative loyalty cost",
+    "fixed quantity replacement on a positive loyalty cost",
     "multiple loyalty-symbol costs",
     "additional loyalty cost modifier",
     "insufficient loyalty",
@@ -105,12 +112,16 @@
     "test_negative_loyalty_cost_requires_enough_counters",
     "test_visible_loyalty_cost_modifier_fails_closed",
     "test_multiple_loyalty_costs_fail_closed_until_combined",
+    "test_doubling_season_ignores_positive_loyalty_cost_but_doc_applies",
+    "test_negative_loyalty_removal_is_not_counter_placement",
+    "test_competing_cost_replacements_suspend_before_mutation_and_replay",
+    "test_pinned_counter_event_ids_and_internal_fields_fail_closed",
     "test_tyvar_initializes_loyalty_grants_activation_haste_and_resolves_both_abilities",
     "test_daretti_loyalty_exchange_and_emblem_return"
   ],
   "implementation": {
-    "component": "ActivatedAbility loyalty costs and CommanderEngine activation availability/payment",
-    "version": "loyalty-ability-foundation-v1"
+    "component": "ActivatedAbility loyalty costs, typed activation proposal/commit, counter-placement transaction, strict priority-action cost continuation, and CommanderEngine availability facade",
+    "version": "loyalty-ability-foundation-v2"
   },
   "known_blockers": [
     "generic loyalty-cost modification and ordering are not represented",

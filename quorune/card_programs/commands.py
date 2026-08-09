@@ -337,6 +337,8 @@ def card_program_coverage(
     commander_legal_only: bool,
     limit: int | None,
 ) -> dict[str, Any]:
+    from ..oracle_ir import ORACLE_COMPILER_VERSION
+
     capabilities = load_default_capability_registry()
     statuses: Counter[str] = Counter()
     trust_bases: Counter[str] = Counter()
@@ -376,10 +378,29 @@ def card_program_coverage(
         else:
             statuses["untrusted"] += 1
     total = sum(statuses.values())
+    metadata = db.metadata()
     return {
         "schema_version": 1,
         "card_program_schema_version": 2,
+        "compiler_version": ORACLE_COMPILER_VERSION,
         "profile": profile,
+        "capability_registry_fingerprint": capabilities.fingerprint,
+        "capability_evidence_fingerprint": (
+            capabilities.evidence_fingerprint
+        ),
+        "card_data_snapshot": {
+            key: metadata.get(key)
+            for key in (
+                "schema_version",
+                "card_count",
+                "ruling_count",
+                "oracle_source_sha256",
+                "rulings_source_sha256",
+                "scryfall_oracle_updated_at",
+                "scryfall_rulings_updated_at",
+            )
+            if metadata.get(key) is not None
+        },
         "commander_legal_only": commander_legal_only,
         "limited": limit is not None,
         "cards_considered": total,

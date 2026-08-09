@@ -412,6 +412,12 @@ def _string_records(
             "_EXILE_ZONE": {"exile"},
             "_REASON_FIELD": {"reason"},
             "PLAYER_COUNTERS_FIELD": {"counters"},
+            # Closed rules/compiler vocabulary can coincide with short card
+            # names. The exemption applies only to these assigned constants;
+            # any use in printed-name or card-identity dispatch still fails.
+            "_COUNTER_NAME_ANY": {"counters"},
+            "_COUNTER_TARGET_GOBLIN": {"goblin"},
+            "_COUNTER_TARGET_VEHICLE": {"vehicle"},
             # Closed predefined token names are CR vocabulary used to build
             # token characteristics.  The structural exemption is limited to
             # these named constants and still fails if a value participates

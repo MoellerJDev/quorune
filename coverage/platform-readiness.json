@@ -33,7 +33,7 @@
     "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "3cc1abefcc4c0365d9bde3fb36fccfaa28e2e892ec1bcda758f4100e573ec5eb",
+    "evaluated_input_fingerprint": "227ff0ba5f279adf0eef5323375773fda062122ae3aaf43c098c85ec28dcc0dc",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -480,11 +480,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 46855,
+      "material_residuals": 46671,
       "status_counts": {
-        "exact": 2381,
-        "partial": 13261,
-        "unresolved": 15981
+        "exact": 2386,
+        "partial": 13271,
+        "unresolved": 15966
       },
       "total": 31623
     },
@@ -502,11 +502,11 @@
       "trusted": 5
     },
     "oracle": {
-      "material_residuals": 54493,
+      "material_residuals": 54293,
       "status_counts": {
-        "exact": 5346,
-        "partial": 14415,
-        "unresolved": 18862
+        "exact": 5351,
+        "partial": 14425,
+        "unresolved": 18847
       },
       "total": 38623
     },
@@ -543,7 +543,7 @@
     "generated_validation_modules": 23,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 220,
+    "primary_test_modules": 221,
     "primary_test_shards": 11,
     "schema_files": 18,
     "server_files": 5,
@@ -553,31 +553,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 46858,
+        "material_residuals": 46684,
         "status_counts": {
-          "residual": 29242,
-          "trusted": 2381
+          "residual": 29237,
+          "trusted": 2386
         },
         "trust_basis_counts": {
-          "capability_closed": 2376,
+          "capability_closed": 2381,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 29242
+          "unresolved": 29237
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 54495,
+        "material_residuals": 54305,
         "status_counts": {
           "failed": 2248,
-          "residual": 33274,
-          "trusted": 3101
+          "residual": 33269,
+          "trusted": 3106
         },
         "trust_basis_counts": {
-          "capability_closed": 3096,
+          "capability_closed": 3101,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 33274
+          "unresolved": 33269
         }
       }
     },

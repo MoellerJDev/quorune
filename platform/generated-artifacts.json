@@ -19,9 +19,33 @@
       "write_policy": "automatic"
     },
     {
-      "id": "card-unlock-frontier",
+      "id": "compiler-corpus-coverage",
       "depends_on": [
         "capability-evidence"
+      ],
+      "outputs": [
+        "coverage/oracle-coverage.json",
+        "coverage/oracle-coverage-commander.json",
+        "coverage/card-program-coverage.json",
+        "coverage/card-program-coverage-commander.json"
+      ],
+      "check": [
+        "scripts/update_compiler_corpus_coverage.py",
+        "--check"
+      ],
+      "write": null,
+      "write_with_database": [
+        "scripts/update_compiler_corpus_coverage.py",
+        "--write",
+        "--db",
+        "{db}"
+      ],
+      "write_policy": "database"
+    },
+    {
+      "id": "card-unlock-frontier",
+      "depends_on": [
+        "compiler-corpus-coverage"
       ],
       "outputs": [
         "coverage/card-unlock-frontier.json.gz",
@@ -112,7 +136,9 @@
     },
     {
       "id": "platform-status",
-      "depends_on": [],
+      "depends_on": [
+        "compiler-corpus-coverage"
+      ],
       "outputs": [
         "coverage/platform-readiness.json",
         "coverage/platform-readiness.md",
@@ -133,6 +159,7 @@
       "id": "architecture-audit",
       "depends_on": [
         "capability-evidence",
+        "compiler-corpus-coverage",
         "continuous-effect-performance",
         "platform-status"
       ],

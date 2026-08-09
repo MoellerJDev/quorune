@@ -116,14 +116,21 @@
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
       "implementation_components": [
-        "CommanderEngine._activate",
+        "rules.activation.commit._commit_resource_costs",
+        "counter_placement.prepare_counter_placements",
+        "mana_payment_continuations.execute_mana_choice_capable_priority_action",
+        "replacement.replay.ReplacementContinuation",
         "CommanderEngine._ability_availability",
         "CommanderEngine._loyalty_cost_modifier_present"
       ],
       "executable_test_ids": [
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_loyalty_timing_control_and_once_per_permanent",
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_negative_loyalty_cost_requires_enough_counters",
-        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_loyalty_cost_modifier_fails_closed"
+        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_loyalty_cost_modifier_fails_closed",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_doubling_season_ignores_positive_loyalty_cost_but_doc_applies",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_negative_loyalty_removal_is_not_counter_placement",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_pinned_counter_event_ids_and_internal_fields_fail_closed"
       ],
       "required_scenarios": [
         "positive",
@@ -134,15 +141,16 @@
       "covered_scenarios": [
         "positive",
         "negative",
-        "interaction"
+        "interaction",
+        "replay"
       ],
       "blockers": [
-        "loyalty-cost changes are not represented in the generic cost-modification and ordering pipeline",
+        "additional, reduced, and combined loyalty-symbol costs are not represented in the generic cost-modification and ordering pipeline",
         "recognized public loyalty-cost modifiers deliberately make the activation unresolved rather than applying an incorrect base cost",
-        "no exact replay case yet exercises a modified loyalty cost"
+        "typed can't-place-counter effects are not consulted universally before advertising a positive loyalty-symbol cost"
       ],
       "notes": [
-        "Unmodified positive and negative loyalty costs are paid immediately, before resolution. This does not establish the rule's cost-modification clause."
+        "Base positive loyalty-symbol costs now use the canonical non-effect counter-placement transaction, so represented all-placement quantity replacements apply, effect-only replacements do not, competing choices suspend atomically, and command replay is exact. Negative costs remain canonical counter removal. The separate cost-modification clause remains blocked."
       ]
     },
     {

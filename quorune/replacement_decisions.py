@@ -183,6 +183,19 @@ def _mana_damage_event_id(batch: ReplacementEventBatch) -> str:
     return next(iter(origins))
 
 
+def _priority_action_cost_event_id(batch: ReplacementEventBatch) -> str:
+    if len(batch.events) != 1:
+        raise ReplacementEffectError(
+            "Priority-action cost continuation must identify one event"
+        )
+    event = batch.events[0]
+    if event.kind not in {"counter.place"} or not event.event_id:
+        raise ReplacementEffectError(
+            "Priority-action cost continuation has an unsupported event"
+        )
+    return event.event_id
+
+
 def _validate_mana_payment_frame(
     host: ReplacementDecisionHost,
     frame: Mapping[str, Any],
@@ -347,7 +360,11 @@ def _resume_mana_replacement(
     try:
         _validate_mana_payment_frame(host, restored.thaw_priority_frame())
         response = restored.thaw_priority_response()
-        event_id = _mana_damage_event_id(restored.batch)
+        event_id = (
+            _mana_damage_event_id(restored.batch)
+            if restored.resume_kind == "mana_payment"
+            else _priority_action_cost_event_id(restored.batch)
+        )
     except ReplacementEffectError as exc:
         raise error_type(str(exc)) from exc
     raw_journal = response.get("_mana_replacement_selections") or {}
@@ -438,7 +455,7 @@ def complete_replacement_order_choice(
     if restored.resume_kind == "combat_damage":
         _resume_combat_replacement(host, restored, selection)
         return
-    if restored.resume_kind == "mana_payment":
+    if restored.resume_kind in {"mana_payment", "priority_action_cost"}:
         _resume_mana_replacement(
             host, restored, selection, error_type=error_type
         )

@@ -226,10 +226,30 @@ def prepare_counter_placements(
     selections: Sequence[str | None | Mapping[str, Any]] = (),
     sources: Sequence[Any] | None = None,
     source_zones: Mapping[str, str] | None = None,
+    event_ids: Sequence[str] | None = None,
 ) -> PreparedCounterPlacements:
     """Resolve one simultaneous counter-placement batch before mutation."""
 
     nonzero = tuple(request for request in requests if request.amount > 0)
+    if event_ids is not None and (
+        isinstance(event_ids, (str, bytes, bytearray))
+        or not isinstance(event_ids, Sequence)
+    ):
+        raise CounterPlacementError(
+            "Pinned counter-placement event IDs must be a sequence"
+        )
+    pinned_event_ids = tuple(event_ids or ())
+    if event_ids is not None and (
+        len(pinned_event_ids) != len(nonzero)
+        or any(
+            type(value) is not str or not value or value != value.strip()
+            for value in pinned_event_ids
+        )
+        or len(pinned_event_ids) != len(set(pinned_event_ids))
+    ):
+        raise CounterPlacementError(
+            "Pinned counter-placement event IDs must be nonempty and unique"
+        )
     if not nonzero:
         if selections:
             raise CounterPlacementError(
@@ -241,9 +261,13 @@ def prepare_counter_placements(
             host,
             request,
             event_id=(
-                f"counter.place:{host.state.revision}:"
-                f"{host.state.event_sequence + 1}:{index}:"
-                f"{_event_subject_label(host, request)}"
+                pinned_event_ids[index]
+                if event_ids is not None
+                else (
+                    f"counter.place:{host.state.revision}:"
+                    f"{host.state.event_sequence + 1}:{index}:"
+                    f"{_event_subject_label(host, request)}"
+                )
             ),
         ).event()
         for index, request in enumerate(nonzero)

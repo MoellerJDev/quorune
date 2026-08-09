@@ -41,6 +41,7 @@ _MANA_FIELDS = {
     "replacement_batch",
     "replacement_effects",
 }
+_PRIORITY_ACTION_COST_FIELDS = frozenset(_MANA_FIELDS)
 _SEMANTIC_COUNTER_COMPLETION_FIELDS = {
     "replacement_resume_kind",
     "semantic_choice_continuation",
@@ -129,8 +130,14 @@ class ReplacementContinuation:
         batch, effects = _decode_batch_and_effects(value)
         if resume_kind == "combat_damage":
             return _decode_combat_continuation(cls, value, batch, effects)
-        if resume_kind == "mana_payment":
-            return _decode_mana_continuation(cls, value, batch, effects)
+        if resume_kind in {"mana_payment", "priority_action_cost"}:
+            return _decode_mana_continuation(
+                cls,
+                value,
+                batch,
+                effects,
+                resume_kind=resume_kind,
+            )
         if resume_kind == "semantic_counter_completion":
             return _decode_semantic_counter_completion(
                 cls, value, batch, effects
@@ -217,6 +224,10 @@ def _validate_continuation_shape(value: Mapping[str, Any]) -> str:
         "combat_damage": (_COMBAT_FIELDS, "combat continuation"),
         "semantic": (_SEMANTIC_FIELDS, "semantic continuation"),
         "mana_payment": (_MANA_FIELDS, "mana-payment continuation"),
+        "priority_action_cost": (
+            _PRIORITY_ACTION_COST_FIELDS,
+            "priority-action cost continuation",
+        ),
         "semantic_counter_completion": (
             _SEMANTIC_COUNTER_COMPLETION_FIELDS,
             "semantic counter-completion continuation",
@@ -395,11 +406,80 @@ def _validate_priority_response(
         )
 
 
+def _validate_replacement_journal(
+    response: Mapping[str, Any],
+    *,
+    event_ids: set[str],
+    allow_typed_selections: bool,
+) -> None:
+    raw = response.get("_mana_replacement_selections")
+    if raw is None:
+        return
+    if not isinstance(raw, Mapping):
+        raise ReplacementEffectError(
+            "Priority-action replacement journal is malformed"
+        )
+    for event_id, selections in raw.items():
+        if (
+            type(event_id) is not str
+            or event_id not in event_ids
+            or not isinstance(selections, (list, tuple))
+            or not selections
+        ):
+            raise ReplacementEffectError(
+                "Priority-action replacement journal is malformed"
+            )
+        for selection in selections:
+            if type(selection) is str and bool(selection):
+                continue
+            if not allow_typed_selections or not isinstance(
+                selection, Mapping
+            ):
+                raise ReplacementEffectError(
+                    "Priority-action replacement journal is malformed"
+                )
+            fields = set(selection)
+            if fields not in (
+                {"effect_id", "allocation"},
+                {"effect_id", "event_id"},
+                {"effect_id", "allocation", "event_id"},
+            ):
+                raise ReplacementEffectError(
+                    "Priority-action replacement journal is malformed"
+                )
+            if type(selection["effect_id"]) is not str or not selection[
+                "effect_id"
+            ]:
+                raise ReplacementEffectError(
+                    "Priority-action replacement journal is malformed"
+                )
+            selected_event = selection.get("event_id")
+            if selected_event is not None and selected_event not in event_ids:
+                raise ReplacementEffectError(
+                    "Priority-action replacement journal is malformed"
+                )
+            allocation = selection.get("allocation")
+            if allocation is not None and (
+                not isinstance(allocation, Mapping)
+                or not allocation
+                or set(allocation) - event_ids
+                or any(
+                    type(amount) is not int or amount < 0
+                    for amount in allocation.values()
+                )
+            ):
+                raise ReplacementEffectError(
+                    "Priority-action replacement journal is malformed"
+                )
+
+
 def _decode_mana_continuation(
     continuation_type: type[ReplacementContinuation],
     value: Mapping[str, Any],
     batch: ReplacementEventBatch,
     effects: tuple[ReplacementEffect, ...],
+    *,
+    resume_kind: str = "mana_payment",
 ) -> ReplacementContinuation:
     seat = value["priority_seat"]
     action = value["priority_action"]
@@ -421,10 +501,41 @@ def _decode_mana_continuation(
         )
     _validate_mana_frame(frame, seat)
     _validate_priority_response(action, response)
+    if resume_kind == "priority_action_cost":
+        if action != "activate" or len(batch.events) != 1:
+            raise ReplacementEffectError(
+                "Priority-action cost continuation is malformed"
+            )
+        event = batch.events[0]
+        payload = event.payload
+        if (
+            event.kind != "counter.place"
+            or payload.get("counter_name") != "loyalty"
+            or payload.get("effect_generated") is not False
+            or payload.get("placing_player") != seat
+            or payload.get("target_kind") != "permanent"
+        ):
+            raise ReplacementEffectError(
+                "Priority-action cost continuation event is malformed"
+            )
+        event_ids = {event.event_id}
+    else:
+        event_ids = {
+            event.event_id for event in batch.events if event.kind == "damage"
+        }
+        if not event_ids or len(event_ids) != len(batch.events):
+            raise ReplacementEffectError(
+                "Mana-payment continuation event batch is malformed"
+            )
+    _validate_replacement_journal(
+        response,
+        event_ids=event_ids,
+        allow_typed_selections=(resume_kind == "mana_payment"),
+    )
     return continuation_type(
         batch=batch,
         effects=effects,
-        resume_kind="mana_payment",
+        resume_kind=resume_kind,
         priority_seat=seat,
         priority_action=action,
         priority_response=FrozenMap(response),

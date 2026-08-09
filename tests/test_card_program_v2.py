@@ -312,7 +312,7 @@ class CardProgramV2Tests(unittest.TestCase):
             trust_level="trusted",
         )
 
-        self.assertEqual("oracle-ir-v62", current.compiler_version)
+        self.assertEqual("oracle-ir-v63", current.compiler_version)
         self.assertEqual(
             "capability_closed", current.trust_closure["trust_basis"]
         )
@@ -367,7 +367,7 @@ class CardProgramV2Tests(unittest.TestCase):
             capability_profile="commander_review",
             trust_level="trusted",
         )
-        self.assertEqual("oracle-ir-v62", current.compiler_version)
+        self.assertEqual("oracle-ir-v63", current.compiler_version)
         self.assertEqual("capability_closed", current.trust_closure["trust_basis"])
         self.assertEqual(
             ["choose_damage_source", "life"],
@@ -896,7 +896,7 @@ class CardProgramV2Tests(unittest.TestCase):
                 "prevention.damage.fixed.v1": [
                     "damage.prevention.static_fixed"
                 ],
-                "replacement.counter.quantity.v1": [
+                "replacement.counter.quantity.v2": [
                     "counter.placement.quantity_replacement"
                 ],
                 "replacement.damage.quantity.v1": [
@@ -961,6 +961,12 @@ class CardProgramV2Tests(unittest.TestCase):
             def iter_cards(self, **_kwargs):
                 return iter((_bolt(), _bolt()))
 
+            def metadata(self):
+                return {
+                    "schema_version": "2",
+                    "oracle_source_sha256": "a" * 64,
+                }
+
         with (
             patch(
                 "quorune.card_programs.commands."
@@ -982,6 +988,11 @@ class CardProgramV2Tests(unittest.TestCase):
             )
 
         self.assertEqual(2, result["cards_considered"])
+        self.assertEqual("oracle-ir-v63", result["compiler_version"])
+        self.assertEqual(
+            self.capabilities.fingerprint,
+            result["capability_registry_fingerprint"],
+        )
         load_capabilities.assert_called_once_with()
         self.assertEqual(2, compile_best.call_count)
         self.assertTrue(

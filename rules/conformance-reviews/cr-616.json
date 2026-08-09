@@ -40,7 +40,9 @@
         "damage.prepare_damage_batch",
         "replacement_decisions.issue_combat_damage_replacement_choice",
         "replacement.ordering.next_batch_replacement_choice",
-        "mana_payment_continuations.execute_mana_choice_capable_priority_action"
+        "mana_payment_continuations.execute_mana_choice_capable_priority_action",
+        "replacement.replay.ReplacementContinuation",
+        "rules.activation.commit._commit_resource_costs"
       ],
       "executable_test_ids": [
         "tests.test_replacement_event_tree.ReplacementAffectedSubjectTests.test_affected_object_controller_chooses_before_owner",
@@ -58,7 +60,9 @@
         "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_semantic_damage_replacement_choice_replays_exactly",
         "tests.test_replacement_event_ordering.ReplacementEventOrderingTests.test_chooser_selects_which_simultaneous_event_uses_next_instance_shield",
         "tests.test_replacement_event_ordering.ReplacementEventOrderingTests.test_combat_event_order_is_seat_scoped_and_replays_exactly",
-        "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_mana_ability_damage_choice_resumes_exact_activation"
+        "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_mana_ability_damage_choice_resumes_exact_activation",
+        "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_player_counter_choices_follow_four_player_apnap",
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay"
       ],
       "required_scenarios": [
         "positive",
@@ -75,13 +79,13 @@
         "replay"
       ],
       "blockers": [
-        "generic engine choice packets are wired only into represented token-creation, semantic zone-change, effect-generated permanent-counter, ordinary combat/semantic damage, and mana-payment damage producers"
+        "generic engine choice packets are wired only into represented token creation, semantic zone change, effect-generated or positive-loyalty-cost counter placement, ordinary combat/semantic damage, and mana-payment damage producers"
       ],
       "notes": [
         "Affected-player and affected-object facts are captured before mutation, and simultaneous different-seat choices traverse APNAP order.",
         "Seat packets expose only visible option labels and IDs; authoritative batch IDs, event paths, payloads, and prior journals remain in the continuation.",
         "The chooser can explicitly order simultaneous same-chooser events when a finite or next-instance effect makes event order material.",
-        "The represented engine producers suspend and replay exact choices, including replacement choices discovered during mana payment, but universal producer coverage remains incomplete."
+        "The represented engine producers suspend and replay exact choices, including replacement choices discovered during mana payment or a positive loyalty-symbol cost, but universal producer coverage remains incomplete."
       ]
     },
     {

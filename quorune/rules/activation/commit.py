@@ -14,6 +14,12 @@ from ...counter_state import (
     commit_counter_changes,
     plan_counter_changes,
 )
+from ...counter_placement import (
+    commit_prepared_counter_placements,
+    CounterPlacementError,
+    CounterPlacementRequest,
+    prepare_counter_placements,
+)
 from ...life_state import LifeStateError, pay_life_cost
 from ...mana_activation import complete_mana_activation
 from ...mana_undo import clear_mana_undo_stack
@@ -137,7 +143,51 @@ def _commit_resource_costs(
     proposal: ActivationProposal,
     source: Any,
     ability: ActivatedAbility,
+    response: Mapping[str, Any],
 ) -> None:
+    loyalty_prepared = None
+    loyalty_event_id = ""
+    if ability.loyalty_delta is not None and ability.loyalty_delta > 0:
+        payment_id = str(
+            response.get("_mana_payment_id") or proposal.fingerprint
+        )
+        loyalty_event_id = (
+            f"counter.cost:{payment_id}:{proposal.source_ref}:"
+            f"{proposal.ability_id}:loyalty"
+        )
+        raw_journal = response.get("_mana_replacement_selections") or {}
+        if not isinstance(raw_journal, Mapping):
+            raise ActivationProposalError(
+                "Activation replacement journal is malformed",
+                reason="replacement_journal_malformed",
+            )
+        selections = raw_journal.get(loyalty_event_id) or ()
+        if not isinstance(selections, (list, tuple)):
+            raise ActivationProposalError(
+                "Activation replacement selections are malformed",
+                reason="replacement_journal_malformed",
+            )
+        try:
+            loyalty_prepared = prepare_counter_placements(
+                host,
+                (
+                    CounterPlacementRequest(
+                        subject_kind="permanent",
+                        subject_id=source.object_id,
+                        counter_name="loyalty",
+                        amount=ability.loyalty_delta,
+                        placing_player=proposal.seat,
+                        source_ref=source.ref,
+                        effect_generated=False,
+                    ),
+                ),
+                selections=tuple(selections),
+                event_ids=(loyalty_event_id,),
+            )
+        except CounterPlacementError as exc:
+            raise ActivationProposalError(
+                str(exc), reason="loyalty_cost_placement"
+            ) from exc
     if ability.life_payment:
         try:
             pay_life_cost(host, proposal.seat, ability.life_payment)
@@ -154,7 +204,7 @@ def _commit_resource_costs(
                 "player", proposal.seat, "energy", -ability.energy_payment
             )
         )
-    if ability.loyalty_delta is not None:
+    if ability.loyalty_delta is not None and ability.loyalty_delta <= 0:
         counter_changes.append(
             CounterChange(
                 "permanent",
@@ -165,29 +215,48 @@ def _commit_resource_costs(
                 expected_logical_object_id=source.logical_object_id,
             )
         )
-    if not counter_changes:
-        return
-    plans = plan_counter_changes(host, counter_changes)
-    for transition in plans.transitions:
-        if transition.after != transition.before + transition.requested_delta:
-            resource = transition.counter_name
-            raise ActivationProposalError(
-                f"The source no longer has enough {resource}",
-                status="unpayable",
-                reason=f"{resource}_cost_unpayable",
+    if counter_changes:
+        plans = plan_counter_changes(host, counter_changes)
+        for transition in plans.transitions:
+            if transition.after != transition.before + transition.requested_delta:
+                resource = transition.counter_name
+                raise ActivationProposalError(
+                    f"The source no longer has enough {resource}",
+                    status="unpayable",
+                    reason=f"{resource}_cost_unpayable",
+                )
+        commit_counter_changes(host, plans)
+    loyalty_applied_delta = 0
+    if ability.loyalty_delta is not None and ability.loyalty_delta <= 0:
+        loyalty_applied_delta = ability.loyalty_delta
+    if loyalty_prepared is not None:
+        try:
+            result = commit_prepared_counter_placements(
+                host,
+                loyalty_prepared,
+                reason="loyalty activation cost",
+                log=False,
             )
-    commit_counter_changes(host, plans)
+        except CounterPlacementError as exc:
+            raise ActivationProposalError(
+                str(exc), reason="loyalty_cost_placement"
+            ) from exc
+        loyalty_applied_delta = result[0].placed
     if ability.loyalty_delta is not None:
         source.annotations["loyalty_initialized"] = True
         source.annotations["loyalty_activated_turn_sequence"] = host.state.turn_sequence
         host._log(
             proposal.seat,
             "cost.loyalty",
-            f"{proposal.seat} changed {source.ref}'s loyalty by {ability.loyalty_delta}.",
+            f"{proposal.seat} paid {source.ref}'s loyalty cost.",
             {
                 "source": source.ref,
-                "delta": ability.loyalty_delta,
+                "requested_delta": ability.loyalty_delta,
+                "applied_delta": loyalty_applied_delta,
+                "placed": max(0, loyalty_applied_delta),
+                "removed": max(0, -loyalty_applied_delta),
                 "loyalty": source.counters.get("loyalty", 0),
+                "replacement_event": loyalty_event_id or None,
             },
             importance=1,
             changed_objects=[source.object_id],
@@ -353,7 +422,7 @@ def commit_activation(
     paid_objects, activations, spent = _pay_object_and_mana_costs(
         host, proposal, source, ability, response
     )
-    _commit_resource_costs(host, proposal, source, ability)
+    _commit_resource_costs(host, proposal, source, ability, response)
     if "only once each turn" in ability.effect_text.casefold():
         once = dict(source.annotations.get("once_per_turn_activations", {}))
         once[ability.ability_id] = host.state.turn_sequence

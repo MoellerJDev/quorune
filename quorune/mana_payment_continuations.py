@@ -35,7 +35,7 @@ def issue_mana_payment_replacement_choice(
     response: Mapping[str, Any],
     required: ReplacementChoiceRequired,
 ) -> None:
-    """Suspend a rolled-back cast/activation payment at a CR 616 choice."""
+    """Suspend a rolled-back cast/activation cost at a CR 616 choice."""
 
     if action not in {"cast", "activate"}:
         raise ReplacementEffectError(
@@ -44,7 +44,16 @@ def issue_mana_payment_replacement_choice(
     pending = required.pending
     if pending.choice.chooser != seat:
         raise ReplacementEffectError(
-            "Mana-payment damage must be chosen by the affected paying player"
+            "Priority-action cost replacement must be chosen by the affected player"
+        )
+    event_kinds = tuple(event.kind for event in required.batch.events)
+    if event_kinds and all(kind == "damage" for kind in event_kinds):
+        resume_kind = "mana_payment"
+    elif event_kinds == ("counter.place",) and action == "activate":
+        resume_kind = "priority_action_cost"
+    else:
+        raise ReplacementEffectError(
+            "Priority-action cost replacement event is unsupported"
         )
     context = replacement_choice_payload(pending, required.effects)
     host.permissions.issue(
@@ -54,7 +63,7 @@ def issue_mana_payment_replacement_choice(
         allowed_actions=["choose"],
         payload_by_actor={seat: context},
         continuation={
-            "replacement_resume_kind": "mana_payment",
+            "replacement_resume_kind": resume_kind,
             "priority_seat": seat,
             "priority_action": action,
             "priority_response": copy.deepcopy(dict(response)),
@@ -82,11 +91,20 @@ def execute_mana_choice_capable_priority_action(
     action: str,
     response: Mapping[str, Any],
     payment_id: str,
+    trusted_resume: bool = False,
 ) -> bool:
     """Run one payment atomically or replace it with a strict continuation."""
 
     if action not in {"cast", "activate"}:
         raise ValueError("Only casts and activations may suspend mana payment")
+    internal_fields = {
+        "_mana_payment_id",
+        "_mana_replacement_selections",
+    }
+    if not trusted_resume and internal_fields.intersection(response):
+        raise GameRuleError(
+            "Internal payment-continuation fields cannot be submitted"
+        )
     payload = dict(response)
     payload.setdefault("_mana_payment_id", str(payment_id))
     try:
@@ -137,6 +155,7 @@ def resume_mana_choice_capable_priority_action(
         action=action,
         response=resumed_response,
         payment_id=payment_id,
+        trusted_resume=True,
     )
 
 
