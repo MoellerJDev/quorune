@@ -58,6 +58,16 @@ jobs:
             git push origin HEAD:${GITHUB_REF_NAME}
             exit "$status"
           fi
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("scripts/change_impact.py")
+          text = path.read_text(encoding="utf-8")
+          old = 'if value["schema_version"] != 3:\n        raise ValueError("Unsupported change-impact policy schema")'
+          new = 'if value["schema_version"] != 4:\n        raise ValueError("Unsupported change-impact policy schema")'
+          if old not in text:
+              raise SystemExit("change-impact schema guard was not found exactly once")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="\n")
+          PY
       - name: Remove one-time bootstrap files before generation
         run: |
           rm -f .github/bootstrap_payload.txt .github/bootstrap_payload.[0-9][0-9]
