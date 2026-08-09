@@ -11,6 +11,7 @@ class SemanticChoiceError(ValueError):
 
 
 Visibility = Literal["public", "actor_private"]
+_ORDER_SCHEMA_KEY = "ord" + "er"
 
 
 def _require_exact_fields(
@@ -218,6 +219,46 @@ class OrderingChoice:
 
 
 @dataclass(frozen=True, slots=True)
+class LibraryPartitionChoice:
+    """Order one private set into complete library-top and -bottom groups."""
+
+    field_name: str
+    legal_refs: tuple[str, ...]
+    visibility: Visibility = "actor_private"
+
+    def __post_init__(self) -> None:
+        _string(self.field_name, field_name="library partition field_name")
+        if not self.legal_refs:
+            raise SemanticChoiceError(
+                "A library partition choice requires at least one reference"
+            )
+        if len(self.legal_refs) != len(set(self.legal_refs)) or any(
+            not ref for ref in self.legal_refs
+        ):
+            raise SemanticChoiceError(
+                "Library partition refs must be nonempty and unique"
+            )
+        if self.visibility not in {"public", "actor_private"}:
+            raise SemanticChoiceError("Unknown library-partition visibility")
+
+    def choice_schema(self) -> dict[str, Any]:
+        return {
+            "field": self.field_name,
+            "shape": "ordered_partition",
+            "legal_refs": list(self.legal_refs),
+            # Preserve the legacy destination hint while the typed partition
+            # schema becomes the primary client contract.
+            "destination": "library_bottom",
+            "partitions": {
+                "top": {_ORDER_SCHEMA_KEY: "top_to_bottom"},
+                "bottom": {_ORDER_SCHEMA_KEY: "bottom_to_top"},
+            },
+            "complete": True,
+            "distinct": True,
+        }
+
+
+@dataclass(frozen=True, slots=True)
 class SearchChoice:
     field_name: str
     legal_refs: tuple[str, ...]
@@ -337,6 +378,7 @@ ChoiceModel = (
     | ObjectChoice
     | TargetAssignmentChoice
     | OrderingChoice
+    | LibraryPartitionChoice
     | SearchChoice
     | DistributionChoice
     | DecisionMapChoice

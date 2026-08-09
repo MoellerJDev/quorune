@@ -3325,6 +3325,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/library_scry.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/node_capability_shapes.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -3727,6 +3741,21 @@
     },
     {
       "file": "quorune/semantic_choices/scalar.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_choices",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/semantic_choices/scry.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_choices",
       "allowed_dependency_layers": [
@@ -4808,5 +4837,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "f1531c1ecaf6cceb74ff7b86a241e2bd1d42534e2afceb4d774bcfe105b97240"
+  "fingerprint": "1be7669c9b6afbd5bae0651acfb3a3c87fe94d3bffb310d1a6ebc0a1bc32badf"
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 71,
+  "registry_version": 72,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -369,6 +369,33 @@
       "dependency_fail_closed_rationale": "The bounded draw owner uses the shared replacement substrate directly and has no optional capability dependency.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_draw_commit_mutant_is_killed removes the ordinary draw commit, test_draw_restriction_mutant_is_killed removes live prohibition collection, and test_fixed_activated_draw_capability_gate_mutant_is_killed removes capability-shaped fixed-draw lowering; authoritative state and compiler-closure assertions reject all survivors. The 2,000-event coordinator regressions also kill recursive per-card and per-instruction control-flow survivors through the normal Python recursion limit.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "library.scry.fixed_controller",
+      "version": 1,
+      "official_rules": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Resolve one positive fixed-count instruction for the controller to Scry through a private complete partition and independent ordering of the top and bottom groups.",
+        "inputs": ["one capability-shaped fixed controller Scry effect", "current private library top", "complete top-to-bottom and bottom-to-top response orderings", "stable semantic-choice continuation"],
+        "outputs": ["one private looked-at set", "one exact top group order", "one exact bottom group order", "one atomic authoritative library arrangement", "one replay-stable Scry event"],
+        "exclusions": ["Scry 0 as an event", "multiple players instructed to Scry simultaneously", "dynamic or variable Scry counts", "effects that add cards to a Scry instruction", "Scry-trigger compilation", "Surveil, fateseal, and non-Scry library ordering"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.rules.node_capability_shapes.fixed_scry_node_capabilities", "quorune.semantic_choices.scry.ScryChoiceHandler", "quorune.semantic_choices.model.LibraryPartitionChoice", "quorune.rules.library_scry.ScryArrangement", "quorune.rules.library_scry.commit_scry_arrangement", "quorune.semantic_runtime.intents.ScryLibraryIntent"],
+      "positive_tests": ["test_fixed_scry_compiles_capability_closed", "test_scry_orders_top_and_bottom_and_replays_exactly"],
+      "negative_tests": ["test_scry_zero_and_empty_library_create_no_event", "test_scry_response_and_stale_library_fail_before_mutation"],
+      "interaction_tests": ["test_scry_more_than_library_uses_every_card"],
+      "multiplayer_tests": ["test_four_player_scry_is_private_and_seat_scoped"],
+      "privacy_tests": ["test_four_player_scry_is_private_and_seat_scoped"],
+      "replay_tests": ["test_scry_orders_top_and_bottom_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded Scry owner consumes one exact current private library and has no optional capability dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_scry_capability_gate_mutant_is_killed removes the closed node-shape mapping and the exact CardProgram closure assertion rejects the survivor.",
       "blockers": [],
       "status": "trusted"
     },

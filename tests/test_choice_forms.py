@@ -10,6 +10,48 @@ from quorune.choice_forms import (
 
 
 class ChoiceFormTests(unittest.TestCase):
+    def test_ordered_partition_preserves_private_scry_groups(self):
+        action = {
+            "id": "choose",
+            "action": "choose",
+            "choice_schema": {
+                "field": "cards",
+                "shape": "ordered_partition",
+                "legal_refs": ["A01", "A02"],
+                "partitions": {
+                    "top": {"order": "top_to_bottom"},
+                    "bottom": {"order": "bottom_to_top"},
+                },
+                "complete": True,
+                "distinct": True,
+            },
+        }
+        form = build_action_form(
+            action,
+            decision_kind="semantic.choice",
+            context={
+                "objects": [
+                    {"id": "A01", "name": "First"},
+                    {"id": "A02", "name": "Second"},
+                ]
+            },
+        )
+
+        field = form["fields"][0]
+        self.assertEqual("ordered_partition", field["control"])
+        self.assertEqual(
+            ["A01", "A02"],
+            [option["value"] for option in field["options"]],
+        )
+        self.assertEqual(
+            {"cards"},
+            delegated_choice_fields(
+                action,
+                decision_kind="semantic.choice",
+                context={},
+            ),
+        )
+
     def test_simple_private_ref_array_is_normalized(self):
         action = {
             "id": "choose",

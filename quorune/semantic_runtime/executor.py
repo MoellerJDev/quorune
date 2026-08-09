@@ -31,6 +31,7 @@ from .intents import (
     LifeChangeIntent,
     MoveObjectsSimultaneouslyIntent,
     MoveLibraryCardsToBottomIntent,
+    ScryLibraryIntent,
     PayManaCostIntent,
     PayLifeIntent,
     PlaceCounterBatchIntent,
@@ -121,6 +122,11 @@ class SemanticIntentSink(
     def move_library_cards_to_bottom_intent(
         self,
         intent: MoveLibraryCardsToBottomIntent,
+    ) -> tuple[str, ...]: ...
+
+    def scry_library_intent(
+        self,
+        intent: ScryLibraryIntent,
     ) -> tuple[str, ...]: ...
 
     def reorder_library_top_intent(
@@ -325,6 +331,46 @@ def _execute_recording_intent(
     return intent.explorer_ref, None
 
 
+LibraryIntent = (
+    ChooseOneRestBottomRandomIntent
+    | ShuffleLibraryIntent
+    | ReturnCardsToLibraryTopIntent
+    | RevealLibraryCardsIntent
+    | MoveLibraryCardsToBottomIntent
+    | ScryLibraryIntent
+    | ReorderLibraryTopIntent
+)
+LIBRARY_INTENT_TYPES = (
+    ChooseOneRestBottomRandomIntent,
+    ShuffleLibraryIntent,
+    ReturnCardsToLibraryTopIntent,
+    RevealLibraryCardsIntent,
+    MoveLibraryCardsToBottomIntent,
+    ScryLibraryIntent,
+    ReorderLibraryTopIntent,
+)
+
+
+def _execute_library_intent(
+    sink: SemanticIntentSink,
+    intent: LibraryIntent,
+) -> tuple[str, object]:
+    if isinstance(intent, ChooseOneRestBottomRandomIntent):
+        return intent.player, sink.choose_one_rest_bottom_random_intent(intent)
+    if isinstance(intent, ShuffleLibraryIntent):
+        sink.shuffle_library_intent(intent)
+        return intent.player, None
+    if isinstance(intent, ReturnCardsToLibraryTopIntent):
+        return intent.player, sink.return_cards_to_library_top_intent(intent)
+    if isinstance(intent, RevealLibraryCardsIntent):
+        return intent.player, sink.reveal_library_cards_intent(intent)
+    if isinstance(intent, MoveLibraryCardsToBottomIntent):
+        return intent.player, sink.move_library_cards_to_bottom_intent(intent)
+    if isinstance(intent, ScryLibraryIntent):
+        return intent.player, sink.scry_library_intent(intent)
+    return intent.player, sink.reorder_library_top_intent(intent)
+
+
 CounterPlacementIntent = (
     PlaceCounterBatchIntent
     | PlaceCountersIntent
@@ -412,17 +458,8 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
             result = sink.move_objects_simultaneously_intent(intent)
             results.append((intent.actor, result))
             continue
-        if isinstance(intent, ChooseOneRestBottomRandomIntent):
-            result = sink.choose_one_rest_bottom_random_intent(intent)
-            results.append((intent.player, result))
-            continue
-        if isinstance(intent, ShuffleLibraryIntent):
-            sink.shuffle_library_intent(intent)
-            results.append((intent.player, None))
-            continue
-        if isinstance(intent, ReturnCardsToLibraryTopIntent):
-            result = sink.return_cards_to_library_top_intent(intent)
-            results.append((intent.player, result))
+        if isinstance(intent, LIBRARY_INTENT_TYPES):
+            results.append(_execute_library_intent(sink, intent))
             continue
         if isinstance(intent, RecordZoneMoveIntent):
             sink.record_zone_move_intent(intent)
@@ -434,18 +471,6 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
             continue
         if isinstance(intent, PayLifeIntent):
             result = sink.pay_life_intent(intent)
-            results.append((intent.player, result))
-            continue
-        if isinstance(intent, RevealLibraryCardsIntent):
-            result = sink.reveal_library_cards_intent(intent)
-            results.append((intent.player, result))
-            continue
-        if isinstance(intent, MoveLibraryCardsToBottomIntent):
-            result = sink.move_library_cards_to_bottom_intent(intent)
-            results.append((intent.player, result))
-            continue
-        if isinstance(intent, ReorderLibraryTopIntent):
-            result = sink.reorder_library_top_intent(intent)
             results.append((intent.player, result))
             continue
         if isinstance(intent, PayManaCostIntent):

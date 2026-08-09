@@ -24,6 +24,7 @@
     "traditional and Commander format-wide capabilities are not yet inventoried in the fine-grained registry, so capability-only strict match readiness fails closed",
     "most reviewed semantic-pack abilities remain legacy_reviewed compatibility rather than capability_closed, and many registered capabilities/components remain tested or blocked rather than trusted",
     "represented continuous effects distinguish locked resolution-created sets, live source-bound static membership, and exact relation-bound attached fixed characteristics; simple battlefield-object Auras now cast, revalidate, enter, attach, and fail closed generically, but player/graveyard/quality/subtype/compound/multiple Enchant grammar, Aura creatures, complete phasing, exotic Equip costs, dynamic attached values, player/rules/control-changing effects, broader durations, full dependencies/CDAs, and wider action/combat/copy invalidation remain incomplete; the structural benchmark still records latency observationally",
+    "one positive fixed-count Scry instruction for its controller now uses a private complete ordered partition, exact current-library-top revalidation, one atomic hidden library mutation, exact replay, and a historical bottom-subset compatibility adapter; simultaneous multi-player Scry, dynamic counts, added-card modifiers, Scry triggers, Surveil, fateseal, and broader library ordering remain explicit blockers",
     "represented draws now use one immutable replacement-aware transaction and iterative coordinator for turn, resolution, conditional, optional-follow-up, and APNAP producers, with generic Dredge, fixed draw CardPrograms, fixed per-turn limits, optional-draw legality, large-count suspension/resume, typed CR 121.7 replacement-result draws, one closed CR 121.6c public-reveal/discard-unless-land action family, and typed CR 121.9 first-draw reveal policies with physical source-linked basic-land or creature draw riders; dynamic limits, complete draw-as-cost production, shared-team turns, broader drawn-card actions, casting-process face-down draws, wider reveal qualities and riders, hidden-zone type-changing effects, and the wider replacement corpus remain incomplete",
     "a fresh full-database manual/browser journey created after a clean current-server restart is still required as broader current-snapshot evidence; compact trusted-only browser evidence now covers target/response handling, combat, concession, natural completion, exact replay, and restart persistence",
     "saved customizable board tabs and denser public-zone dashboard preferences remain incomplete; this is recorded product work, not part of the current architecture audit",
@@ -33,7 +34,7 @@
     "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "6b8dc9681cf5a14e84c23822d0c29b058d884a11d6597d007ace7d8538b05610",
+    "evaluated_input_fingerprint": "3c5eb3d0ad473e07a9f162fe7e82f8015cc73d4bcc3c548ec7bb961a8b298d70",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -431,6 +432,12 @@
       "status": "implemented_on_current_source_tree"
     },
     {
+      "evidence": "One positive fixed-count Scry instruction for its controller now compiles to a source-spanned capability-closed CardProgram node. A private ordered-partition choice represents every looked-at card exactly once, independently orders the top and bottom groups, revalidates the exact current library top, and commits one atomic hidden library arrangement with rollback, four-player seat projection, exact replay, and historical Game Record v3 bottom-subset response compatibility. Scry 0 and an empty library create no Scry event. Simultaneous multi-player Scry, dynamic counts, added-card modifiers, Scry triggers, Surveil, fateseal, and broader library ordering remain blocked, so aggregate Scry is not trusted.",
+      "id": "fixed_scry_resolution",
+      "name": "Typed fixed-controller Scry resolution",
+      "status": "implemented_on_current_source_tree"
+    },
+    {
       "evidence": "The versioned 2026-06-19 corpus, reviewed CR 400-408 and CR 500-514 families, focused CR 725 and CR 508-509/608 current-turn history slices, the reviewed partial CR 121 draw contract, the typed bounded CR 614.16 token-replacement slice, and the exact CR 704.5q opposing-counter state action are represented. Broader rules and Oracle completeness remain explicitly unclaimed.",
       "id": "rules_snapshot",
       "name": "Active Comprehensive Rules snapshot",
@@ -464,7 +471,7 @@
     "reusable_piece_inventory": "implemented_versioned_generated_matrix_card_index_interaction_index_complex_card_benchmark_durable_baseline_delta_and_cli_with_zero_unclassified_material_spans",
     "rooms_and_lobbies": "implemented_invite_only_two_or_four_seat_remove_leave_replace_and_watch",
     "security": "guest_hash_csrf_origin_capability_and_projection_baseline",
-    "semantic_handlers": "implemented_registered read-only typed-intent handlers plus bounded runtime components and closed effect-runtime families with strict binding and focused tap token counter fixed_counter_placement fixed_counter_placement_set fixed_counter_placement_target_set fixed_player_counter_placement entry_counter optional_self_entry_counter counter_removal stack_counter destruction permanent_exile return_to_hand damage fixed_damage_set combat_damage_snapshot combat_damage_assignment combat_damage_sequence damage_result life player_counter continuous_effect attachment aura_entry draw typed_ability_fragment haste_eligibility aerial_block_legality defender_attack_restriction menace_block_restriction landwalk_restriction combat_evasion_restriction self_counter_block_restriction block_transition_keyword_trigger attack_transition_keyword_trigger fixed_mana_ability color_set_mana_ability ordinary_cycling_ability and cast_permission owners",
+    "semantic_handlers": "implemented_registered read-only typed-intent handlers plus bounded runtime components and closed effect-runtime families with strict binding and focused tap token counter fixed_counter_placement fixed_counter_placement_set fixed_counter_placement_target_set fixed_player_counter_placement entry_counter optional_self_entry_counter counter_removal stack_counter destruction permanent_exile return_to_hand damage fixed_damage_set combat_damage_snapshot combat_damage_assignment combat_damage_sequence damage_result life player_counter continuous_effect attachment aura_entry draw scry typed_ability_fragment haste_eligibility aerial_block_legality defender_attack_restriction menace_block_restriction landwalk_restriction combat_evasion_restriction self_counter_block_restriction block_transition_keyword_trigger attack_transition_keyword_trigger fixed_mana_ability color_set_mana_ability ordinary_cycling_ability and cast_permission owners",
     "single_writer_game_actor": "implemented_single_process",
     "transport_neutral_service": "implemented_strict_protocol_3"
   },
@@ -480,10 +487,10 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 46039,
+      "material_residuals": 45965,
       "status_counts": {
-        "exact": 2637,
-        "partial": 13136,
+        "exact": 2667,
+        "partial": 13106,
         "unresolved": 15850
       },
       "total": 31623
@@ -493,29 +500,29 @@
     "manifest_present": true,
     "mechanics": {
       "status_counts": {
-        "partial": 60,
+        "partial": 61,
         "tested": 23,
         "trusted": 5,
-        "unclassified": 337
+        "unclassified": 336
       },
       "total": 425,
       "trusted": 5
     },
     "oracle": {
-      "material_residuals": 53636,
+      "material_residuals": 53560,
       "status_counts": {
-        "exact": 5614,
-        "partial": 14285,
+        "exact": 5646,
+        "partial": 14253,
         "unresolved": 18724
       },
       "total": 38623
     },
     "rules": {
-      "blocked": 397,
-      "definition_only": 132,
-      "passing": 215,
+      "blocked": 398,
+      "definition_only": 133,
+      "passing": 217,
       "total": 3300,
-      "unreviewed": 2556
+      "unreviewed": 2552
     },
     "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
   },
@@ -543,7 +550,7 @@
     "generated_validation_modules": 23,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 224,
+    "primary_test_modules": 225,
     "primary_test_shards": 11,
     "schema_files": 18,
     "server_files": 5,
@@ -553,31 +560,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 46052,
+        "material_residuals": 45978,
         "status_counts": {
-          "residual": 28986,
-          "trusted": 2637
+          "residual": 28956,
+          "trusted": 2667
         },
         "trust_basis_counts": {
-          "capability_closed": 2632,
+          "capability_closed": 2662,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 28986
+          "unresolved": 28956
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 53648,
+        "material_residuals": 53572,
         "status_counts": {
           "failed": 2248,
-          "residual": 33006,
-          "trusted": 3369
+          "residual": 32974,
+          "trusted": 3401
         },
         "trust_basis_counts": {
-          "capability_closed": 3364,
+          "capability_closed": 3396,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 33006
+          "unresolved": 32974
         }
       }
     },

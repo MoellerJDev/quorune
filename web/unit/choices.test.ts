@@ -177,6 +177,37 @@ test("fully ordered server choices initialize in projected order", () => {
   assert.deepEqual(validateChoices(triggers, choices), []);
 });
 
+test("ordered library partitions require every legal card exactly once", () => {
+  const scry = form([
+    {
+      name: "cards",
+      label: "Cards",
+      control: "ordered_partition",
+      required: true,
+      options: [
+        { value: "A01", label: "First" },
+        { value: "A02", label: "Second" },
+        { value: "A03", label: "Third" },
+      ],
+    },
+  ]);
+  const choices = initialChoices(scry);
+  assert.deepEqual(choices.cards, {
+    top: ["A01", "A02", "A03"],
+    bottom: [],
+  });
+  assert.deepEqual(validateChoices(scry, choices), []);
+
+  choices.cards = { top: ["A03", "A01"], bottom: ["A02"] };
+  assert.deepEqual(validateChoices(scry, choices), []);
+  assert.deepEqual(executableChoices(scry, choices), {
+    cards: { top: ["A03", "A01"], bottom: ["A02"] },
+  });
+
+  choices.cards = { top: ["A01"], bottom: ["A01"] };
+  assert.match(validateChoices(scry, choices).join(" "), /every card|same card/);
+});
+
 test("mana modes preserve an exact server-issued bundle", () => {
   const mana = form([
     {
