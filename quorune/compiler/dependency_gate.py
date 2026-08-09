@@ -30,12 +30,14 @@ def dependency_gate(
     trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
+    cost_schema: Mapping[str, Any] | None = None,
 ) -> DependencyGate:
     mechanic_ids = tuple(str(value).casefold() for value in mechanics)
     capabilities = capability_dependencies_for_node(
         effects=effects,
         target_schema=target_schema,
         mechanic_ids=mechanic_ids,
+        cost_schema=cost_schema,
     )
     if capability_registry is not None and capabilities:
         closure = capability_registry.closure(

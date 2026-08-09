@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "a8433ed136c00defc534e68b83631642dda86840e6ccb2a31f0da2bc6d9b972d",
-  "declaration_source_fingerprint": "05e9b37d9ff94232df27ae67b1748ec8246dd1bb7046ca5bf32e132af915d183",
+  "registry_fingerprint": "15858f782d942ce41d8a17bb047381d6a757a951b8090608b5739baa7a5ec74c",
+  "declaration_source_fingerprint": "5b12a8555dbd1b31af19aa927eeabd2126c2613d4b930e8873b697b05d24279d",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -1155,6 +1155,206 @@
         "commander_review"
       ],
       "applicability_note": "Replay the source-departure checkpoint and pinned last-known attachment result to the identical state hash."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Order two applicable all-placement quantity replacements while paying one mandatory counter-placement casting cost, then commit the selected result atomically before stack placement."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the affected caster's replacement-order decision seat-scoped in a four-player game."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostCompilerTests.test_counter_additional_cost_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a compiler mutant that removes the closed mandatory counter-cost grammar and would otherwise preserve a false exact spell promotion."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_cost_provenance_mutant_is_killed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a mutation that mislabels casting-cost counter placement as effect-generated and incorrectly enables an effect-only replacement."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostCompilerTests.test_counter_additional_cost_fails_closed_for_unsupported_grammar",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep optional, variable, alternate, compound, noncreature, and multi-result additional costs outside the closed grammar without compiling a cost-free result clause."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_offer_revalidates_effective_creature",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Exclude noncreatures and phased-out choices, then reject a stale selected permanent transactionally before mana, counters, or stack state changes."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostCompilerTests.test_counter_additional_cost_compiles_exact_source_spanned_node",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one mandatory fixed creature-counter cost and one supported result clause into one exact source-spanned CardProgram with typed cost data."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_compiles_and_casts",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose one controlled effective creature choice, pay the fixed counter placement, then move the represented spell to the stack."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the replacement-order decision only to the affected caster and omit the private continuation from every opposing seat."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_counter_placement",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the suspended cast-cost replacement choice, counter result, mana payment, and stack placement to the identical authoritative state hash."
     },
     {
       "capability_id": "combat.attack.defender",
@@ -19680,5 +19880,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "77a82413cbe4249ab4b70e9fd846a3f5209f7afabcd33d221e61a9bbd272fccb"
+  "fingerprint": "bde23d38d71fc6c781940a223ce512c522d54d5d1fcfdc9e024ef26c6d4b7feb"
 }

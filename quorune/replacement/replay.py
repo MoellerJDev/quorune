@@ -502,19 +502,41 @@ def _decode_mana_continuation(
     _validate_mana_frame(frame, seat)
     _validate_priority_response(action, response)
     if resume_kind == "priority_action_cost":
-        if action != "activate" or len(batch.events) != 1:
+        if action not in {"cast", "activate"} or len(batch.events) != 1:
             raise ReplacementEffectError(
                 "Priority-action cost continuation is malformed"
             )
         event = batch.events[0]
         payload = event.payload
-        if (
-            event.kind != "counter.place"
-            or payload.get("counter_name") != "loyalty"
-            or payload.get("effect_generated") is not False
-            or payload.get("placing_player") != seat
-            or payload.get("target_kind") != "permanent"
-        ):
+        common_valid = (
+            event.kind == "counter.place"
+            and payload.get("effect_generated") is False
+            and payload.get("placing_player") == seat
+            and payload.get("target_kind") == "permanent"
+            and type(payload.get("counter_name")) is str
+            and bool(payload.get("counter_name"))
+            and type(payload.get("amount")) is int
+            and payload.get("amount", 0) > 0
+        )
+        action_valid = False
+        if action == "activate":
+            action_valid = payload.get("counter_name") == "loyalty"
+        else:
+            payment_id = response.get("_mana_payment_id")
+            card_ref = response.get("card")
+            prefix = f"counter.cost:{payment_id}:{card_ref}:additional:"
+            suffix = event.event_id.removeprefix(prefix)
+            action_valid = (
+                type(payment_id) is str
+                and bool(payment_id)
+                and type(card_ref) is str
+                and bool(card_ref)
+                and event.event_id.startswith(prefix)
+                and suffix.isdecimal()
+                and str(int(suffix)) == suffix
+                and payload.get("source") == card_ref
+            )
+        if not common_valid or not action_valid:
             raise ReplacementEffectError(
                 "Priority-action cost continuation event is malformed"
             )

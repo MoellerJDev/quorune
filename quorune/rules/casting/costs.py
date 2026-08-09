@@ -6,6 +6,11 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 
 from ..action_proposals import CastCostOption
+from ..casting_additional_costs import (
+    AdditionalCostError,
+    fixed_counter_additional_cost,
+    fixed_counter_cost_candidates,
+)
 
 
 class CastCostHost(Protocol):
@@ -394,6 +399,43 @@ def _apply_additional_costs(
     for index, raw in enumerate(mandatory_costs):
         additional = dict(raw)
         kind = str(additional.get("kind") or "")
+        try:
+            counter_cost = fixed_counter_additional_cost(additional)
+        except AdditionalCostError:
+            return False
+        if counter_cost is not None:
+            if len(mandatory_costs) != 1:
+                return False
+            candidates = list(
+                fixed_counter_cost_candidates(
+                    host,
+                    actor=seat,
+                    cost=counter_cost,
+                )
+            )
+            if not candidates:
+                return False
+            choice_schema[counter_cost.choice_field] = {
+                "type": "object_ref",
+                "legal_refs": candidates,
+                "zone": "battlefield",
+                "payment": "counter_placement",
+                "counter": counter_cost.counter_name,
+                "amount": counter_cost.amount,
+            }
+            if hint:
+                continue
+            selected = response.get(counter_cost.choice_field)
+            if type(selected) is not str or selected not in candidates:
+                return False
+            selected_nonmana.append(
+                {
+                    "kind": counter_cost.kind,
+                    "card": selected,
+                    "cost_position": index,
+                }
+            )
+            continue
         if kind == "life_x":
             selected_x = int(response["x"]) if response.get("x") is not None else 0
             minimum = int(additional.get("minimum", 0))

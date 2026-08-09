@@ -74,6 +74,7 @@
       "test_color_set_mana_abilities",
       "test_exact_land_families",
       "test_exact_mana_families",
+      "test_fixed_counter_additional_costs",
       "test_fixed_mana_abilities",
       "test_flash_cast_timing",
       "test_loyalty_abilities",

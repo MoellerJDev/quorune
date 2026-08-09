@@ -314,10 +314,26 @@ sacrifice only while that player still controls the permanent. Alternative,
 snow, hybrid, Phyrexian, zero, variable, nonmana, copied, granted, and
 multiple-instance forms remain precise residuals.
 
+The compiler also owns one bounded mandatory casting-cost family: “As an
+additional cost to cast this spell, put [fixed number] [counter kind]
+counter(s) on a creature you control,” followed by exactly one represented
+instant or sorcery result clause. The entire two-clause spell lowers to one
+source-spanned CardProgram node with an immutable cost descriptor. Cast offers
+query current effective creature characteristics and expose only the caster's
+public, phased-in candidates. Commit revalidates that same predicate, marks the
+placement as a cost rather than an effect, and routes it through the canonical
+counter replacement transaction before stack placement. A replacement-order
+choice suspends and resumes the complete cast atomically; mana, counters, and
+stack state remain unchanged while the choice is pending. Unsupported cost
+grammar blocks the whole spell so a following result clause cannot be compiled
+as a cost-free action.
+
 The following producers and wordings remain deliberately outside this slice:
 
 - Read Ahead, nonordinary Saga progression, and stun-counter removal;
 - negative loyalty counter-removal costs and damage-counter removal;
+- optional, variable, alternate, compound, multiple, noncreature, and
+  non-counter casting costs outside the bounded fixed creature-counter family;
 - cumulative-upkeep forms outside the fixed positive ordinary mana family;
 - Support X or zero and conditional, optional, repeated, copied, granted,
   modal, or compound Support instructions, plus variable, distributed, dynamic,
