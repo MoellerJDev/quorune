@@ -210,10 +210,7 @@ test("@browser-rules @scry @privacy @persistence ordered Scry is accessible, pri
 
     await driveUntil(
       pages,
-      async () =>
-        (await host.getByTestId("decision-panel").textContent())?.includes(
-          "Order the looked-at cards",
-        ) ?? false,
+      () => actionIsReady(host, "action-choose"),
       testInfo,
       { label: "resolve the commander and expose its private Scry choice" },
     );
@@ -239,6 +236,7 @@ test("@browser-rules @scry @privacy @persistence ordered Scry is accessible, pri
     await host.getByTestId("action-choose").click();
     const dialog = host.getByTestId("choice-dialog");
     await expect(dialog).toBeVisible();
+    await expect(dialog).toContainText("Order the looked-at cards");
     const destinations = dialog.locator('select[data-testid^="choice-cards-"]');
     await expect(destinations).toHaveCount(4);
     const refs: string[] = [];
