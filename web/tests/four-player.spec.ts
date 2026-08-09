@@ -767,7 +767,16 @@ test("@browser-rules @turn-draw an isolated-context duel presents exact turn sta
       await expect(page.getByTestId("exact-step-label")).toHaveText("Upkeep");
     }
 
-    await advanceToActionReady([host, opponent], playSpire, testInfo, 45_000);
+    const gameShell = host.locator(".game-shell");
+    await advanceToActionReady(
+      [host, opponent],
+      playSpire,
+      testInfo,
+      45_000,
+      async () =>
+        (await gameShell.getAttribute("data-active-player")) === "A"
+        && (await gameShell.getAttribute("data-phase")) === "precombat_main",
+    );
     await expect(spire).toHaveAttribute("draggable", "true");
     await expect(host.getByTestId("active-turn-label")).toHaveText("Seat A's Turn · Turn 1");
     await expect(host.getByTestId("priority-label")).toContainText("Priority: Seat A");
@@ -1193,7 +1202,9 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
       const actionTestId = await playAction.getAttribute("data-testid");
       expect(actionTestId).toMatch(/^action-play-land:[A-Z][0-9]+$/);
       const landRef = actionTestId!.slice("action-play-land:".length);
-      const land = cards.locator(`[data-card-ref="${landRef}"]`);
+      const land = page
+        .getByTestId("own-hand")
+        .locator(`.hand-card[data-card-ref="${landRef}"]`);
       await expect(land).toHaveCount(1);
       const landName = await land.locator(".card-copy strong").textContent();
       expect(landName).toBeTruthy();
