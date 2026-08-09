@@ -83,7 +83,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v61"
+ORACLE_COMPILER_VERSION = "oracle-ir-v62"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -91,6 +91,11 @@ _TRIGGER_PREFIX = re.compile(
 )
 _REPLACEMENT_MARKERS = re.compile(
     r"\b(instead|as .+ enters|enters .+ with|skip)\b",
+    re.IGNORECASE,
+)
+_ORDINARY_SAGA_RULES_REMINDER = re.compile(
+    r"\(As this Saga enters and after your draw step, add a lore counter\. "
+    r"Sacrifice after [IVXLCDM]+\.\)",
     re.IGNORECASE,
 )
 _ABILITY_WORD = re.compile(
@@ -139,6 +144,29 @@ def _without_parenthetical_reminder(text: str) -> str:
         if depth == 0:
             result.append(character)
     return "".join(result).strip()
+
+
+def _is_ordinary_saga_rules_reminder(
+    type_line: str,
+    line: str,
+    material_line: str,
+) -> bool:
+    return (
+        "saga" in type_parts(type_line)[1]
+        and not material_line
+        and _ORDINARY_SAGA_RULES_REMINDER.fullmatch(line) is not None
+    )
+
+
+def _material_source_lines(
+    type_line: str,
+    oracle_text: str,
+) -> Iterable[tuple[str, str, SourceSpan]]:
+    for line, span in _source_lines(oracle_text):
+        material_line = _without_parenthetical_reminder(line)
+        if _is_ordinary_saga_rules_reminder(type_line, line, material_line):
+            continue
+        yield line, material_line, span
 
 
 def _static_runtime_for_face(
@@ -959,9 +987,9 @@ def _compile_face(
         _trigger_node,
         effect_template=contextual_effect_template,
     )
-    for index, (line, span) in enumerate(_source_lines(oracle_text), 1):
+    for index, row in enumerate(_material_source_lines(type_line, oracle_text), 1):
+        line, material_line, span = row
         node_id = f"{face_id}:n{index}"
-        material_line = _without_parenthetical_reminder(line)
         keyword_nodes = _keyword_nodes(
             node_id=node_id,
             line=line,

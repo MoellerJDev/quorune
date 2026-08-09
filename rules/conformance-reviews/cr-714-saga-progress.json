@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 714.3 — Saga Progress",
+  "cases": [
+    {
+      "rule_id": "714.3",
+      "rule_text_sha256": "008d88d5a57d57ea924b044c75fbeda7e9d4f774472637fb6ad222cbbf056960",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.entry_counter_model.IntrinsicEntryCounter"],
+      "executable_test_ids": ["tests.test_saga_counter_progression.SagaCounterProgressionTests.test_ordinary_saga_card_form_is_source_spanned_and_closed"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Section heading; CR 714.3a-c define the entry and turn-based lore-counter behavior."]
+    },
+    {
+      "rule_id": "714.3a",
+      "rule_text_sha256": "e735cee8e82b2ac42b2a3b1143336823a1d658f3dd1526d6d15c1f5985cbe9be",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.entry_counter_model.intrinsic_entry_counters", "quorune.compiler.card_form_rules.compile_intrinsic_entry_counter_forms", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.saga_progression.dispatch_saga_entry_chapters"],
+      "executable_test_ids": ["tests.test_saga_counter_progression.SagaCounterProgressionTests.test_entry_and_precombat_lore_use_distinct_counter_paths", "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_counter_uses_quantity_replacement_but_turn_action_does_not", "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_competing_saga_entry_replacements_order_to_three_or_four", "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_destination_redirect_retargets_nested_saga_counter", "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_replacement_choice_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["Saga token entry with an applicable counter replacement cannot yet suspend and resume", "copy face and continuous subtype interactions are not comprehensively closed"],
+      "notes": ["The bounded ordinary non-Read-Ahead card form creates its lore counter as a mandatory self-replacement inside the canonical zone-change tree. Destination and quantity replacements, chooser scope, rollback, and replay are covered without claiming every way an object can acquire the Saga subtype."]
+    },
+    {
+      "rule_id": "714.3b",
+      "rule_text_sha256": "aa36981271255cba96958f8bb93426bb787b309faa93e22f95ddd98b995265eb",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.entry_counter_model.intrinsic_entry_counters", "quorune.compiler.card_form_rules.compile_intrinsic_entry_counter_forms"],
+      "executable_test_ids": ["tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_and_untrusted_chapters_fail_closed"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["negative"],
+      "blockers": ["Read Ahead chapter-number choice and linked entry-counter amount are not implemented", "final chapter number is not yet derived through the complete effective-ability layer system"],
+      "notes": ["Read Ahead remains a precise material CardProgram residual and cannot enter through the ordinary Saga self-replacement path."]
+    },
+    {
+      "rule_id": "714.3c",
+      "rule_text_sha256": "32514603da0d2eb64b37b42899191f6c1ceb8d5dfac4255722962073ce3c85ba",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.saga_progression.SagaLoreTurnAction", "quorune.saga_progression.capture_saga_lore_turn_action", "quorune.saga_progression.commit_saga_lore_turn_action", "quorune.counter_state.commit_counter_changes", "quorune.saga_progression.dispatch_saga_chapters"],
+      "executable_test_ids": ["tests.test_saga_counter_progression.SagaCounterProgressionTests.test_multiple_sagas_commit_lore_before_any_chapter_dispatch", "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_four_player_precombat_lore_only_advances_active_players_sagas", "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_counter_uses_quantity_replacement_but_turn_action_does_not", "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_stale_saga_snapshot_rolls_back_without_partial_mutation", "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_precombat_saga_progression_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "blockers": ["copied gained removed and layer-modified chapter abilities are not comprehensively represented", "untrusted chapter programs intentionally stop progression before mutation"],
+      "notes": ["The represented turn-based action snapshots only the active player's qualifying Sagas, commits all lore counters simultaneously through the typed counter owner, does not apply effect-qualified quantity replacements, and dispatches crossed trusted chapters only after the full batch commits."]
+    }
+  ]
+}

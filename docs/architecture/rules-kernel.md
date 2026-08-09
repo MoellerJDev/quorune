@@ -1,8 +1,8 @@
 ---
 title: "Rules kernel"
 status: "current"
-authoritative_source: "quorune engine and rules modules, including quorune/mentor.py, quorune/relative_power_target.py, and quorune/target_predicates.py"
-verified: "2026-08-07"
+authoritative_source: "quorune engine and rules modules, including quorune/saga_progression.py, quorune/mentor.py, quorune/relative_power_target.py, and quorune/target_predicates.py"
+verified: "2026-08-09"
 audience: "rules and engine contributors"
 maintenance: "hand-maintained"
 ---
@@ -39,6 +39,10 @@ approved mutation boundary. Typed semantic handlers receive
 an immutable rules query and emit intents; they cannot import the engine or
 state model. The intent executor calls existing canonical engine methods or
 the focused tap-state port.
+`saga_progression.py` owns the immutable ordinary Saga precombat snapshot and
+chapter-dispatch sequence while `counter_state.py` owns the simultaneous lore
+write. Entry lore remains inside the zone-replacement transaction; the later
+turn-based action deliberately bypasses effect-qualified counter replacement.
 Typed direct-target destruction, permanent-exile, return-to-owner-hand, and
 stack-counter handlers likewise commit only through their focused
 transactions. The aggregate mechanics remain untrusted where regeneration,

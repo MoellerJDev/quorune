@@ -384,6 +384,8 @@ def _preflight_aura_token_specs(
             counters = intrinsic_entry_counters(
                 data,
                 card_types=tuple(sorted(card_types)),
+                card_subtypes=tuple(sorted(subtypes)),
+                keywords=tuple(data.get("keywords") or ()),
             )
             spec["battle_protector"] = validate_battle_entry_protector(
                 card_types=tuple(sorted(card_types)),
@@ -515,7 +517,7 @@ def _commit_token_object(
             card,
             printed_entry_characteristics=True,
         )
-        card_types, _, _ = host._type_parts(
+        card_types, subtypes, _supertypes = host._type_parts(
             str(data.get("type_line") or "")
         )
         commit_unreplaced_intrinsic_entry_counters(
@@ -525,6 +527,8 @@ def _commit_token_object(
             counters=intrinsic_entry_counters(
                 data,
                 card_types=tuple(sorted(card_types)),
+                card_subtypes=tuple(sorted(subtypes)),
+                keywords=tuple(data.get("keywords") or ()),
             ),
         )
         mark_intrinsic_entry_counters_initialized(

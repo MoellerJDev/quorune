@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 from .model import CardInstance, StackItem
+from .saga_progression import dispatch_saga_entry_chapters
 from .trigger_processing import enqueue_trigger_batch
 from .zone_trigger_events import (
     ZoneChangeOccurrence,
@@ -49,15 +50,6 @@ class ZoneTriggerProcessingHost(Protocol):
         object_incarnation: str,
         types: set[str],
     ) -> None: ...
-
-    def _add_saga_lore(
-        self,
-        saga: CardInstance,
-        *,
-        trigger_batch: list[StackItem] | None = None,
-        reason: str,
-    ) -> int: ...
-
 
 @dataclass(frozen=True, slots=True)
 class DepartureTriggerSnapshot:
@@ -177,10 +169,10 @@ def dispatch_zone_change_occurrence(
         and "saga" in event.context.get("subtypes", ())
         for event in events
     ):
-        host._add_saga_lore(
+        dispatch_saga_entry_chapters(
+            host,
             card,
             trigger_batch=pending,
-            reason="Saga entered",
         )
     if owns_trigger_batch:
         enqueue_trigger_batch(host, pending)

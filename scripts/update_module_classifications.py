@@ -186,6 +186,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/rule_conformance.py",
         "quorune/rules_corpus.py",
         "quorune/rules_scheduler.py",
+        "quorune/saga_progression.py",
         "quorune/shortcuts.py",
         "quorune/stack_counter.py",
         "quorune/stack_resolution.py",
@@ -331,6 +332,7 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/entry_counter_model.py",
         "quorune/evolve.py",
         "quorune/death_return.py",
+        "quorune/saga_progression.py",
     }:
         return "counter_placement"
     if relative == "quorune/cumulative_upkeep.py":

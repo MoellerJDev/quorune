@@ -98,13 +98,13 @@
     ],
     "apnap": [
       "ordinary priority rotates from the active player",
-      "complete simultaneous Saga-trigger ordering remains a triggered-ability dependency"
+      "represented simultaneous Saga chapter triggers use the canonical APNAP trigger batch"
     ],
     "layers": [
       "effective Saga subtype and chapter-ability state are not completely derived"
     ],
     "replacement_effects": [
-      "simultaneous lore-counter replacement ordering remains incomplete"
+      "the rule-generated precombat lore action is not an effect and is not modified by effect-qualified counter replacements"
     ],
     "copy": [
       "effective copied Saga characteristics are consulted only through the partial characteristic pipeline"
@@ -151,21 +151,24 @@
     "test_main_phase_ends_only_after_empty_stack_passes_and_replays",
     "test_resolving_stack_does_not_end_main_phase",
     "test_saga_lore_precedes_main_phase_priority",
+    "test_multiple_sagas_commit_lore_before_any_chapter_dispatch",
+    "test_four_player_precombat_lore_only_advances_active_players_sagas",
+    "test_precombat_saga_progression_replays_exactly",
     "test_active_player_gets_main_priority_and_sorcery_timing_is_exact",
     "test_land_play_is_stackless_atomic_and_uses_allowance",
     "test_land_play_command_stabilizes_enter_trigger_before_priority",
     "test_land_hints_require_the_actual_active_main_phase"
   ],
   "implementation": {
-    "component": "TURN_STEPS and CommanderEngine main-phase entry, Saga, priority, casting, land-play, action-hint, and phase-advance paths",
-    "version": "main-phase-v1"
+    "component": "TURN_STEPS, the CommanderEngine main-phase facade, quorune.saga_progression, priority, casting, land-play, action-hint, and phase-advance paths",
+    "version": "main-phase-v2"
   },
   "known_blockers": [
     "skipped combat and generic additional combat/main phase scheduling are not implemented",
     "main-phase ordinal identity within a turn is not serialized",
     "Archenemy scheme decks and set-in-motion actions are not implemented",
     "Attractions and visit rolls are not implemented",
-    "Saga qualification by current chapter abilities and simultaneous lore-counter replacement ordering are incomplete",
+    "Saga qualification by copied, gained, removed, and layer-modified chapter abilities remains incomplete",
     "generic effects that increase or relocate land-play permissions are incomplete",
     "the complete continuous-effect, replacement, trigger, multiplayer, and replay interaction matrix remains incomplete"
   ],

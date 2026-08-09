@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 66,
+  "registry_version": 67,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -747,6 +747,33 @@
       "dependency_fail_closed_rationale": "The card-form compiler refuses trusted promotion when the canonical counter-placement quantity replacement dependency is blocked.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "The focused mutation removes intrinsic entry-counter effect generation and the ordinary Planeswalker entry assertion rejects the surviving zero-counter result.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.saga_lore",
+      "version": 1,
+      "official_rules": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and execute ordinary non-Read-Ahead Saga lore progression: one self-replacement entry counter inside the canonical zone-change tree, then one simultaneous rule-generated lore counter on each represented Saga after its controller's draw step.",
+        "inputs": ["Saga card-form subtype", "absence of Read Ahead", "prospective battlefield identity and controller", "trusted typed chapter-event declarations", "active-player precombat-main boundary"],
+        "outputs": ["source-spanned Saga card-form declaration", "replacement-aware entry lore counter", "simultaneous typed precombat lore-counter transaction", "chapter events after all counters commit", "APNAP trigger placement and exact replay"],
+        "exclusions": ["Read Ahead and its chapter-number choice", "Sagas lacking trusted typed chapter programs", "copied or gained chapter abilities outside typed ability propagation", "effects adding, moving, or removing lore counters", "final-chapter sacrifice beyond the existing reviewed runtime boundary", "unrepresented copy, face, layer, phasing, or replacement interactions"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement", "trigger.placement.apnap", "zone.change.destination_replacement"],
+      "implementation_components": ["quorune.entry_counter_model.intrinsic_entry_counters", "quorune.compiler.card_form_rules.compile_intrinsic_entry_counter_forms", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.saga_progression.capture_saga_lore_turn_action", "quorune.saga_progression.commit_saga_lore_turn_action", "quorune.saga_progression.dispatch_saga_chapters", "quorune.trigger_processing.enqueue_trigger_batch"],
+      "positive_tests": ["test_ordinary_saga_card_form_is_source_spanned_and_closed", "test_entry_and_precombat_lore_use_distinct_counter_paths", "test_multiple_sagas_commit_lore_before_any_chapter_dispatch"],
+      "negative_tests": ["test_read_ahead_and_untrusted_chapters_fail_closed", "test_stale_saga_snapshot_rolls_back_without_partial_mutation"],
+      "interaction_tests": ["test_saga_entry_counter_uses_quantity_replacement_but_turn_action_does_not", "test_destination_redirect_retargets_nested_saga_counter"],
+      "multiplayer_tests": ["test_four_player_precombat_lore_only_advances_active_players_sagas", "test_four_player_saga_entry_replacement_choices_follow_apnap"],
+      "privacy_tests": ["test_saga_entry_replacement_choice_replays_exactly"],
+      "replay_tests": ["test_precombat_saga_progression_replays_exactly", "test_saga_entry_replacement_choice_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The Saga card-form declaration cannot become trusted when quantity replacement, destination replacement, or APNAP trigger placement is unavailable; runtime also rejects a Saga without trusted typed chapter declarations before turn-action mutation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused mutations remove Saga intrinsic entry-counter generation or bypass the simultaneous lore coordinator, and the entry/progression assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

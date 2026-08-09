@@ -147,6 +147,7 @@ from .zone_trigger_processing import (
     dispatch_zone_change_occurrence,
     semantic_event_sources,
 )
+from .saga_progression import saga_step_batch
 from .life_state import (
     pay_life_cost,
 )
@@ -2014,61 +2015,6 @@ class CommanderEngine(
         if owns_trigger_batch:
             enqueue_trigger_batch(self, event_triggers)
 
-    def _add_saga_lore(
-        self,
-        saga: CardInstance,
-        *,
-        trigger_batch: list[StackItem] | None = None,
-        reason: str,
-    ) -> int:
-        if saga.zone != "battlefield" or saga.phased_out:
-            return int(saga.counters.get("lore", 0))
-        _, subtypes, _ = self._type_parts(
-            str(self._effective_card_data(saga).get("type_line") or "")
-        )
-        if "saga" not in subtypes:
-            return int(saga.counters.get("lore", 0))
-        chapter = int(saga.counters.get("lore", 0)) + 1
-        saga.counters["lore"] = chapter
-        self._log(
-            saga.controller,
-            "saga.lore",
-            f"{saga.ref} received lore counter {chapter}.",
-            {
-                "source": saga.ref,
-                "chapter": chapter,
-                "reason": reason,
-            },
-            importance=1,
-            changed_objects=[saga.object_id],
-            changed_players=[saga.controller],
-        )
-        self._dispatch_semantic_event(
-            f"saga.chapter.{chapter}",
-            {
-                "card": saga.ref,
-                "controller": saga.controller,
-                "chapter": chapter,
-            },
-            trigger_batch=trigger_batch,
-        )
-        return chapter
-
-    def _advance_active_player_sagas(self, seat: str) -> None:
-        trigger_batch: list[StackItem] = []
-        for object_id in list(
-            self.state.players[seat].zones["battlefield"]
-        ):
-            saga = self.state.cards[object_id]
-            if saga.controller != seat:
-                continue
-            self._add_saga_lore(
-                saga,
-                trigger_batch=trigger_batch,
-                reason="precombat main phase began",
-            )
-        enqueue_trigger_batch(self, trigger_batch)
-
     def _move_cards_simultaneously(
         self,
         changes: Sequence[tuple[str, str]],
@@ -3010,8 +2956,7 @@ class CommanderEngine(
             self._advance_step(held_triggers=waiting_triggers)
             return
 
-        if phase == "precombat_main" and step == "main":
-            self._advance_active_player_sagas(active)
+        waiting_at_priority = saga_step_batch(self, active, phase, step, held_triggers)
 
         if step == "cleanup":
             # Abilities can trigger at the beginning of cleanup, but CR
@@ -3143,6 +3088,7 @@ class CommanderEngine(
             self,
             "step.begin",
             context,
+            held_triggers=waiting_at_priority,
         )
         if self._semantic_pause_annotation() is not None:
             return

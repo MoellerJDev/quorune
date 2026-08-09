@@ -533,6 +533,8 @@ def _zone_change_snapshot_subjects(
                     intrinsic_entry_counters=intrinsic_entry_counters(
                         characteristics,
                         card_types=tuple(sorted(card_types)),
+                        card_subtypes=tuple(sorted(subtypes)),
+                        keywords=tuple(characteristics.get("keywords") or ()),
                     ),
                     effect_entry_counters=tuple(
                         effect_entry_counters.get(card.object_id, ())

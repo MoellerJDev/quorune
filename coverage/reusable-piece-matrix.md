@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "20838635285c777cdb96d6ae49f05853c0f7e15bb244e8a14c6554cf29c347a6"
+verified: "b1c6d25b408f3badcc7934cf263800de104cda730f58dc2f124b4593c2c7dc80"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,11 +17,11 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,158
+- Pieces: 1,159
 - Cards indexed: 31,623
-- Material abilities classified: 59,982
+- Material abilities classified: 59,817
 - Unclassified material spans: 0
-- Mapped pinned rules: 716 / 3,300
+- Mapped pinned rules: 720 / 3,300
 - Applicable piece pairs: 23,845
 - Covered piece pairs: 126
 
@@ -36,7 +36,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `compiler_cardprogram` — Compiler and CardProgram pieces | 310 |
 | `continuous_effects` — Static abilities and continuous effects | 16 |
 | `costs_mana` — Costs and mana | 7 |
-| `events_mutations` — Typed events and mutations | 82 |
+| `events_mutations` — Typed events and mutations | 83 |
 | `keyword_mechanics` — Keyword actions and keyword abilities | 548 |
 | `multiplayer_commander` — Multiplayer, Commander, and profile pieces | 1 |
 | `object_identity` — Object identity and lifetime | 26 |
@@ -61,13 +61,13 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `replacement_prevention` | `inventoried` | 15 | 3 |
 | `state_turn_loops_stabilization` | `inventoried` | 0 | 0 |
 | `targets_modes_searches_references_choices` | `inventoried` | 8 | 6 |
-| `typed_transactions_events_mutations` | `inventoried` | 186 | 58 |
+| `typed_transactions_events_mutations` | `inventoried` | 187 | 58 |
 
 ## Highest current blocker leverage
 
 | Piece | Class | Residuals | Sole blockers | Expected cards | Runtime | Assurance |
 |---|---|---:|---:|---:|---|---|
-| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 9,561 | 3,370 | 3,370 | `absent` | `untested` |
+| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 9,561 | 3,525 | 3,525 | `absent` | `untested` |
 | `residual.activated_effect.unparsed-clause-grammar` | `one_shot_effects` | 2,689 | 765 | 765 | `absent` | `untested` |
 | `residual.effect_clause.unparsed-clause-grammar` | `one_shot_effects` | 2,790 | 480 | 480 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-611-continuous-effects` | `keyword_mechanics` | 567 | 192 | 192 | `absent` | `untested` |

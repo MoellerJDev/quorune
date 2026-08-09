@@ -41,6 +41,12 @@ class IntrinsicEntryCounter:
         object.__setattr__(self, "required_type", required_type)
         object.__setattr__(self, "rule_id", rule_id)
 
+    @property
+    def capability_id(self) -> str:
+        if self.required_type == "saga":
+            return "counter.producer.saga_lore"
+        return "counter.producer.intrinsic_entry"
+
 
 @dataclass(frozen=True, slots=True)
 class EffectEntryCounter:
@@ -133,14 +139,22 @@ def intrinsic_entry_counters(
     characteristics: Mapping[str, Any],
     *,
     card_types: Sequence[str],
+    card_subtypes: Sequence[str] = (),
+    keywords: Sequence[str] = (),
 ) -> tuple[IntrinsicEntryCounter, ...]:
-    """Return the closed CR 306.5b/310.4b entry-counter instructions."""
+    """Return closed rules-derived battlefield entry-counter instructions."""
 
     if not isinstance(characteristics, Mapping):
         raise EntryCounterError(
             "Entry counter characteristics must be a mapping"
         )
     types = {" ".join(str(value).casefold().split()) for value in card_types}
+    subtypes = {
+        " ".join(str(value).casefold().split()) for value in card_subtypes
+    }
+    normalized_keywords = {
+        " ".join(str(value).casefold().split()) for value in keywords
+    }
     counters: list[IntrinsicEntryCounter] = []
     if "planeswalker" in types:
         counters.append(
@@ -164,6 +178,20 @@ def intrinsic_entry_counters(
                 ),
                 required_type="battle",
                 rule_id="310.4b",
+            )
+        )
+    if "saga" in subtypes:
+        if "read ahead" in normalized_keywords:
+            raise EntryCounterError(
+                "Read Ahead Saga entry requires its unrepresented chapter "
+                "number choice"
+            )
+        counters.append(
+            IntrinsicEntryCounter(
+                counter_name="lore",
+                amount=1,
+                required_type="saga",
+                rule_id="714.3a",
             )
         )
     return tuple(counters)
