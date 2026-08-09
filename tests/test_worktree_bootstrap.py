@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -59,10 +60,7 @@ def _write_launcher(root: Path) -> Path:
     )
     launcher = root / relative
     launcher.parent.mkdir(parents=True)
-    try:
-        os.link(sys.executable, launcher)
-    except OSError:
-        launcher.symlink_to(Path(sys.executable))
+    shutil.copy2(sys.executable, launcher)
     return launcher
 
 
