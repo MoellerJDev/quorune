@@ -6,6 +6,7 @@ from common import advance_fixture_turn, keep_all, load_assets, make_session
 from quorune.model import StackItem, TurnEntry
 from quorune.preflight import card_semantic_status
 from quorune.projection import ProjectionCursor, StateProjector
+from quorune.saga_progression import advance_active_player_sagas
 
 
 class ExactMishraClosureTests(unittest.TestCase):
@@ -1581,7 +1582,7 @@ class ExactMishraClosureTests(unittest.TestCase):
             },
         )
 
-        engine._add_saga_lore(saga, reason="test chapter II")
+        advance_active_player_sagas(engine, "A")
         self.assertFalse(engine._stabilize())
         self.resolve_top(engine)
         self.assertTrue(
@@ -1615,7 +1616,7 @@ class ExactMishraClosureTests(unittest.TestCase):
             )
         )
 
-        engine._add_saga_lore(saga, reason="test chapter III")
+        advance_active_player_sagas(engine, "A")
         self.assertFalse(engine._stabilize())
         self.resolve_top(engine)
         self.assertEqual("semantic.search", engine.state.pending_decision.kind)
