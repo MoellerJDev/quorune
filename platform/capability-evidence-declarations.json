@@ -3266,7 +3266,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "interaction",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_departed_mentor_source_uses_public_last_known_power",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Use the sealed public source power as last-known information only after the original Mentor source logical object leaves the battlefield."
     },
@@ -3274,7 +3274,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "interaction",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_departure_pins_power_after_trigger_creation",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Refresh the pending relative-power condition from the source's immediate predeparture effective power when that value changed after the attack trigger was created."
     },
@@ -3282,7 +3282,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "interaction",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_places_replacement_aware_counter_after_target_revalidation",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Compose resolution-time relative-power target legality with the canonical Doubling Season counter-quantity replacement path."
     },
@@ -3290,7 +3290,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_offers_only_attacking_creatures_with_lesser_power",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Choose the target from the complete four-player public attack declaration while only the Mentor controller receives a decision."
     },
@@ -3298,15 +3298,23 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "mutation",
       "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_mentor_compiler_mutant_is_killed",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Kill a compiler mutant that removes the typed Mentor ability fragment from the source-spanned CardProgram."
     },
     {
       "capability_id": "counter.producer.mentor",
       "evidence_class": "negative",
+      "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_noncreature_departure_pins_absent_power",
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Represent a current or departing noncreature source as having no power, so printed Vehicle power cannot make a Mentor target legal."
+    },
+    {
+      "capability_id": "counter.producer.mentor",
+      "evidence_class": "negative",
       "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_relative_power_condition_is_strict_and_uses_lki_only_on_departure",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject malformed or boolean-valued source snapshots and require a strict, not equal, current-or-last-known power comparison."
     },
@@ -3314,23 +3322,15 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "negative",
       "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_relative_power_departure_preparation_is_transactional",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Validate every pending relative-power target schema before updating any stack item, so malformed later state leaves earlier items byte-for-byte unchanged."
     },
     {
       "capability_id": "counter.producer.mentor",
       "evidence_class": "negative",
-      "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_noncreature_departure_pins_absent_power",
-      "official_rule_ids": ["208.3", "608.2h", "702.134a"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Represent a current or departing noncreature source as having no power, so printed Vehicle power cannot make a Mentor target legal."
-    },
-    {
-      "capability_id": "counter.producer.mentor",
-      "evidence_class": "negative",
       "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_unsupported_mentor_wording_and_blocked_dependency_fail_closed",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Keep nonkeyword-equivalent wording and a blocked target-revalidation dependency outside exact Mentor CardPrograms."
     },
@@ -3338,7 +3338,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "negative",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_current_power_change_can_make_mentor_target_illegal",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Counter the Mentor trigger by the rules when the target no longer has strictly lesser current power at resolution."
     },
@@ -3346,7 +3346,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "negative",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_illegal_mentor_target_rejects_without_mutation",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject an attacking-creature target outside the current legal lesser-power set and roll back the command without changing the pending decision or authoritative state hash."
     },
@@ -3354,7 +3354,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "negative",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_no_lesser_attacker_removes_mandatory_target_trigger",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Remove a mandatory-target Mentor trigger before priority when the completed declaration contains no legal lesser-power attacker."
     },
@@ -3362,7 +3362,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "positive",
       "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_mentor_compiles_with_precise_spans_and_capability_closure",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Lower each ordinary printed Mentor instance with an exact source span and fine-grained capability closure."
     },
@@ -3370,7 +3370,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "positive",
       "test_id": "tests.test_mentor_rules.MentorModelAndCompilerTests.test_mentor_occurrences_preserve_multiplicity_and_identity",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Create one immutable, independently identified Mentor occurrence for each represented ability instance."
     },
@@ -3378,7 +3378,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "positive",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_offers_only_attacking_creatures_with_lesser_power",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Offer exactly current declared attacking creatures whose effective power is strictly less than the Mentor source."
     },
@@ -3386,7 +3386,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "positive",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_places_replacement_aware_counter_after_target_revalidation",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Resolve one legal Mentor target through the canonical replacement-aware +1/+1 counter transaction."
     },
@@ -3394,7 +3394,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "privacy",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_offers_only_attacking_creatures_with_lesser_power",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Expose only public card references to the Mentor controller and omit physical and logical object identities from every seat packet."
     },
@@ -3402,7 +3402,7 @@
       "capability_id": "counter.producer.mentor",
       "evidence_class": "replay",
       "test_id": "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_target_choice_and_counter_replay_exactly",
-      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "official_rule_ids": ["115.1", "115.3", "122.1", "122.1a", "122.6", "208.3", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the attack transition, target choice, target revalidation, and counter placement to the identical authoritative hash."
     },

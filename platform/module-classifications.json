@@ -2365,6 +2365,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/mentor.py",
+      "layer": "rules",
+      "owning_subsystem": "combat_transitions",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/model.py",
       "layer": "domain",
       "owning_subsystem": "legacy_domain",
@@ -2642,6 +2656,20 @@
       "card_specificity_policy": "generic_no_growth",
       "visibility_sensitivity": "authoritative_internal",
       "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/relative_power_target.py",
+      "layer": "rules",
+      "owning_subsystem": "targeting",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "mutable_owner",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
     },
     {
       "file": "quorune/replacement/__init__.py",
@@ -4401,9 +4429,23 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/target_predicates.py",
+      "layer": "rules",
+      "owning_subsystem": "targeting",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "read_only",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/targets.py",
       "layer": "rules",
-      "owning_subsystem": "legacy_rules",
+      "owning_subsystem": "targeting",
       "allowed_dependency_layers": [
         "domain",
         "rules",
@@ -4649,5 +4691,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "ba3525d51dfdf35855aed4ffeb559a02a4fe5214f7dc835580b41934d7be524e"
+  "fingerprint": "8abaa0d46ddbc5406bfc41bfb0ca34a7804a7935e88bf8d6bc44cf7f5e4827c1"
 }

@@ -1519,6 +1519,17 @@ class CommanderEngine(
             self._queue_siege_defeated_trigger(card)
         return before, after
 
+    def _pin_relative_power_departures(
+        self,
+        cards: Sequence[CardInstance],
+    ) -> int:
+        """Pin typed target LKI before this facade mutates a source."""
+
+        try:
+            return pin_host_relative_power_source_departures(self, cards)
+        except RelativePowerTargetError as exc:
+            raise StateInvariantError(str(exc)) from exc
+
     def move_card(
         self,
         object_id: str,
@@ -1545,9 +1556,7 @@ class CommanderEngine(
         card = validate_zone_transition_request(self.state.cards, object_id, destination, transition_kind)
         requested_destination = destination
         origin = card.zone
-        library_position: str | int | None = None
-        if destination == "library":
-            library_position = self._library_position(position)
+        library_position = self._library_position(position) if destination == "library" else None
         if (
             origin == requested_destination
             and origin not in {"library", "exile", "command"}
@@ -1669,10 +1678,7 @@ class CommanderEngine(
         )).remain_in_origin: return card
         destination, aura_entry_plan = aura_move.destination, aura_move.entry_plan
         if origin == "battlefield" and not _relative_power_lki_prepared:
-            try:
-                pin_host_relative_power_source_departures(self, (card,))
-            except RelativePowerTargetError as exc:
-                raise StateInvariantError(str(exc)) from exc
+            self._pin_relative_power_departures((card,))
         origin_controller = card.controller
         origin_logical_object_id = card.logical_object_id
         origin_attachments = [
@@ -2160,13 +2166,9 @@ class CommanderEngine(
         # CR 704.8 last-known information comes from the state before any
         # object in the batch moves.  Keep discovery and mutation in separate
         # loops so a departing static source cannot change a later snapshot.
-        try:
-            pin_host_relative_power_source_departures(
-                self,
-                tuple(snapshot[0] for snapshot in snapshots),
-            )
-        except RelativePowerTargetError as exc:
-            raise StateInvariantError(str(exc)) from exc
+        self._pin_relative_power_departures(
+            tuple(snapshot[0] for snapshot in snapshots)
+        )
         destination_timestamp = self._next_zone_timestamp()
         for object_id, destination in changes:
             self.move_card(

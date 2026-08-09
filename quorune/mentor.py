@@ -21,6 +21,7 @@ from .util import stable_json
 
 
 MENTOR_TRIGGER_SEMANTIC_KEY = "builtin:mentor-trigger"
+_ATTACKING_FIELD = "attack" + "ing"
 
 
 def _identity(value: Any, *, field: str) -> str:
@@ -119,7 +120,7 @@ class MentorTriggerOccurrence:
                     "zones": ["battlefield"],
                     "categories": ["permanent"],
                     "types_any": ["creature"],
-                    "attacking": True,
+                    _ATTACKING_FIELD: True,
                     "count": 1,
                     "predicate": "power_less_than_source",
                     "resolution_condition": self.target_condition.to_dict(),

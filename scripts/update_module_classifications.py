@@ -175,11 +175,13 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/mana_undo.py",
         "quorune/mechanic_contracts.py",
         "quorune/menace.py",
+        "quorune/mentor.py",
         "quorune/permanent_exile.py",
         "quorune/permissions.py",
         "quorune/protection.py",
         "quorune/replacement_decisions.py",
         "quorune/replacement_effects.py",
+        "quorune/relative_power_target.py",
         "quorune/return_to_hand.py",
         "quorune/rule_conformance.py",
         "quorune/rules_corpus.py",
@@ -191,6 +193,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/state_based_execution.py",
         "quorune/state_planner.py",
         "quorune/tap_state.py",
+        "quorune/target_predicates.py",
         "quorune/targets.py",
         "quorune/token_creation.py",
         "quorune/trigger_targeting.py",
@@ -261,6 +264,7 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/attack_transition_resolution.py",
         "quorune/block_transition_engine_adapter.py",
         "quorune/block_transitions.py",
+        "quorune/mentor.py",
     }:
         return "combat_transitions"
     if relative in {
@@ -363,6 +367,12 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/stack_resolution.py",
     }:
         return "stack_counter"
+    if relative in {
+        "quorune/relative_power_target.py",
+        "quorune/target_predicates.py",
+        "quorune/targets.py",
+    }:
+        return "targeting"
     if relative == "quorune/replacement_decisions.py":
         return "replacement_effects"
     if relative == "quorune/rules_scheduler.py":

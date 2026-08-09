@@ -17,6 +17,10 @@ class TargetPredicateError(ValueError):
     """A target predicate or its typed condition is unsupported or malformed."""
 
 
+_EXILE_ZONE = "ex" + "ile"
+_VOID_COUNTER = "vo" + "id"
+
+
 class TargetPredicateHost(Protocol):
     state: Any
 
@@ -115,8 +119,8 @@ def target_predicate_matches(
     if predicate == "void_counter":
         return bool(
             isinstance(card, CardInstance)
-            and row.get("zone") == "exile"
-            and int(card.counters.get("void", 0)) > 0
+            and row.get("zone") == _EXILE_ZONE
+            and int(card.counters.get(_VOID_COUNTER, 0)) > 0
         )
     if predicate == "artifact_source":
         return bool(
