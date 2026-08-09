@@ -30,8 +30,6 @@ export type BrowserProgress = {
   server: ServerProgress | null;
 };
 
-const submittedPassDecision = new WeakMap<Page, string>();
-
 function numeric(value: string | undefined): number | null {
   if (value === undefined || value === "") return null;
   const parsed = Number(value);
@@ -69,7 +67,6 @@ export async function submitAuthorizedPass(
   const decisionId = await currentDecisionId(page);
   if (
     !decisionId ||
-    submittedPassDecision.get(page) === decisionId ||
     !(await actionIsReady(page))
   ) {
     return "unavailable";
@@ -83,14 +80,12 @@ export async function submitAuthorizedPass(
     while (Date.now() < transitionDeadline) {
       if (await dialog.isVisible().catch(() => false)) {
         await page.getByTestId("submit-choice").click({ timeout: 2_000 });
-        submittedPassDecision.set(page, decisionId);
         return "submitted";
       }
       if (
         (await viewRevision(page)) > revision ||
         !(await actionIsReady(page))
       ) {
-        submittedPassDecision.set(page, decisionId);
         return "submitted";
       }
       await new Promise((resolve) => setTimeout(resolve, 25));
@@ -99,7 +94,6 @@ export async function submitAuthorizedPass(
   } catch (error) {
     if (await actionIsReady(page)) throw error;
     if ((await viewRevision(page)) > revision) {
-      submittedPassDecision.set(page, decisionId);
       return "submitted";
     }
     return "raced";

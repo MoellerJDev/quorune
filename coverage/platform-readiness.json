@@ -33,7 +33,7 @@
     "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete"
   ],
   "generated": {
-    "evaluated_source_tree_hash": "5a48a8e5fe0e6f412617c2c20582097b78c693e5534e351967c6ad03967a0382",
+    "evaluated_source_tree_hash": "11420e0e5a37056efb533c24a9ad226ca9bfad4d86d8abc145b0bd2a49fc3a20",
     "generator": "scripts/update_platform_status.py",
     "source": "platform/readiness-source.json",
     "source_tree_fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3",

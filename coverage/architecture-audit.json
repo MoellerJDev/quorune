@@ -1622,11 +1622,6 @@
         {
           "fan_in": 19,
           "fan_out": 1,
-          "module": "quorune.replacement_effects"
-        },
-        {
-          "fan_in": 19,
-          "fan_out": 1,
           "module": "quorune.semantic_choices.model"
         },
         {
@@ -3811,13 +3806,6 @@
           "physical_lines": 1561
         },
         {
-          "file": "quorune/oracle_ir.py",
-          "functions_and_methods": 15,
-          "language": "python",
-          "logical_lines": 1459,
-          "physical_lines": 1512
-        },
-        {
           "file": "quorune/reusable_pieces/generation.py",
           "functions_and_methods": 41,
           "language": "python",
@@ -3907,13 +3895,6 @@
           "language": "python",
           "logical_lines": 986,
           "physical_lines": 1046
-        },
-        {
-          "file": "quorune/semantic_runtime/zone_replacements.py",
-          "functions_and_methods": 30,
-          "language": "python",
-          "logical_lines": 978,
-          "physical_lines": 1044
         },
         {
           "file": "quorune/drawing/coordinator.py",
@@ -4334,13 +4315,6 @@
           "language": "python",
           "logical_lines": 486,
           "physical_lines": 542
-        },
-        {
-          "file": "quorune/compiler/keyword_nodes.py",
-          "functions_and_methods": 7,
-          "language": "python",
-          "logical_lines": 485,
-          "physical_lines": 513
         },
         {
           "file": "quorune/drawing/transaction.py",
@@ -11533,7 +11507,7 @@
           "maintenance": "generated",
           "status": "generated",
           "title": "Platform implementation status",
-          "verified": "27f7d4ae08d60687780c905861d1f1b8ba18af6296bde21efdef1a49aaea03f5"
+          "verified": "6ef1015e639f94619bb0da72cdf5b577f6e393bf19a2c540df78efb6b4c1272b"
         },
         "metadata_complete": true,
         "missing_metadata": [],
