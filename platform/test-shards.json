@@ -96,6 +96,7 @@
       "test_interactions_v070",
       "test_linked_abilities",
       "test_optional_draw_choices",
+      "test_scry_rules",
       "test_semantic_choice_characterization",
       "test_semantic_choice_model",
       "test_semantic_counter_replacement_continuations",

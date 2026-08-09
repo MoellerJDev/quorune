@@ -53,6 +53,7 @@ belongs in the changelog or `docs/history/`.
 - [Damage transaction](architecture/damage.md)
 - [Damage prevention](architecture/prevention.md)
 - [Drawing](architecture/drawing.md)
+- [Library inspection and ordering](architecture/library-ordering.md)
 - [Trust closure](architecture/trust-closure.md)
 - [Server runtime](architecture/server-runtime.md)
 - [Replay](architecture/replay.md)

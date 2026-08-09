@@ -6648,6 +6648,78 @@
       "applicability_note": "Replay the suspended counter replacement and following Explore choice to the identical authoritative state hash."
     },
     {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_scry_rules.ScryRuntimeTests.test_scry_more_than_library_uses_every_card",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Clamp the looked-at set to the current library while preserving a complete, independently ordered top and bottom partition."
+    },
+    {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_scry_rules.ScryRuntimeTests.test_four_player_scry_is_private_and_seat_scoped",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Issue the private Scry choice only to the instructed seat in a four-player game without projecting looked-at identities to opponents."
+    },
+    {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_scry_rules.ScryCompilerTests.test_scry_capability_gate_mutant_is_killed",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the closed fixed-controller Scry node-to-capability lowering before the CardProgram can become capability-closed."
+    },
+    {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_scry_rules.ScryCompilerTests.test_fixed_scry_shape_is_closed",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject zero, boolean, targeted, and widened Scry node shapes rather than granting the bounded capability."
+    },
+    {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_scry_rules.ScryRuntimeTests.test_scry_response_and_stale_library_fail_before_mutation",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed partitions and stale looked-at identities transactionally before changing library order."
+    },
+    {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "positive",
+      "test_id": "tests.test_scry_rules.ScryCompilerTests.test_fixed_scry_compiles_capability_closed",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower one positive fixed-controller Scry instruction to an exact capability-closed CardProgram node."
+    },
+    {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "positive",
+      "test_id": "tests.test_scry_rules.ScryRuntimeTests.test_scry_orders_top_and_bottom_and_replays_exactly",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply one complete private Scry partition with independent top and bottom orderings through the typed runtime owner."
+    },
+    {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_scry_rules.ScryRuntimeTests.test_four_player_scry_is_private_and_seat_scoped",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep looked-at identities, the partition response, and the resulting hidden library order private to the instructed player."
+    },
+    {
+      "capability_id": "library.scry.fixed_controller",
+      "evidence_class": "replay",
+      "test_id": "tests.test_scry_rules.ScryRuntimeTests.test_scry_orders_top_and_bottom_and_replays_exactly",
+      "official_rule_ids": ["401.4", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the exact private partition response to the same authoritative library order and final state hash."
+    },
+    {
       "capability_id": "life.change.effect",
       "evidence_class": "interaction",
       "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_drain_log_reports_final_replacement_adjusted_values",

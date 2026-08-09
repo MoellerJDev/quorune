@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+"""Closed Scry choice preparation and completion."""
+
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any
 
 from ..replacement.immutable import FrozenMap
-from ..semantic_runtime.intents import ReorderLibraryTopIntent, RevealLibraryCardsIntent
+from ..rules.library_scry import ScryArrangement, ScryError
+from ..semantic_runtime.intents import RevealLibraryCardsIntent, ScryLibraryIntent
 from .context import SemanticChoiceContext, SemanticChoiceQuery
 from .model import (
     AutoContinue,
-    OrderingChoice,
+    LibraryPartitionChoice,
     SemanticChoiceCompletion,
     SemanticChoiceContinuation,
     SemanticChoiceError,
@@ -17,13 +21,22 @@ from .model import (
 )
 
 
+_LIBRARY_ZONE = "lib" + "rary"
+
+
 @dataclass(frozen=True, slots=True)
-class LibraryOrderingHandler:
-    operation: str
-    handler_id: str
+class ScryChoiceHandler:
+    operation: str = "scry"
+    handler_id: str = "choice.library.scry.v1"
     schema_version: int = 1
-    rule_references: tuple[str, ...] = ("CR 401.2", "CR 401.4")
-    capability_dependencies: tuple[str, ...] = ()
+    rule_references: tuple[str, ...] = (
+        "CR 701.22",
+        "CR 701.22a",
+        "CR 701.22b",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "library.scry.fixed_controller",
+    )
     continuation_fields: tuple[str, ...] = (
         "count",
         "player",
@@ -34,41 +47,46 @@ class LibraryOrderingHandler:
     private_data: tuple[str, ...] = ("actor library top",)
     projected_fields: tuple[str, ...] = (
         "prompt",
-        "objects or cards",
+        "objects",
         "legal_actions.choice_schema.legal_refs",
     )
     mutation_path: tuple[str, ...] = (
         "RevealLibraryCardsIntent",
-        "ReorderLibraryTopIntent",
+        "ScryLibraryIntent",
     )
-    replay_fixture: str = "semantic-choice-library-ordering"
-    test_modules: tuple[str, ...] = (
-        "tests.test_semantic_choice_characterization",
-        "tests.test_exact_zimone_closure",
-    )
+    replay_fixture: str = "semantic-choice-scry-partition"
+    test_modules: tuple[str, ...] = ("tests.test_scry_rules",)
 
     def prepare(
         self,
         effect: Mapping[str, Any],
         context: SemanticChoiceContext,
     ) -> SemanticChoicePreparation:
-        count = max(0, int(effect.get("count", 1)))
+        if set(effect) != {"op", "player", "count"}:
+            raise SemanticChoiceError("Scry effects have a closed field set")
+        count = effect["count"]
+        if type(count) is not int or count < 0:
+            raise SemanticChoiceError(
+                "Scry count must be an exact nonnegative integer"
+            )
         refs = context.query.library_refs(context.actor, top_first=True)[:count]
-        if not refs:
+        if count == 0 or not refs:
             return SemanticChoicePreparation(
                 request=None,
                 continuation_effect=FrozenMap(effect),
-                auto_continue=AutoContinue(reason="no library cards to inspect"),
+                auto_continue=AutoContinue(
+                    reason="Scry 0 or an empty library creates no Scry event"
+                ),
             )
         rows = []
         for ref in refs:
-            row = context.query.object(ref, zones=("library",))
+            row = context.query.object(ref, zones=(_LIBRARY_ZONE,))
             if row is None:
                 raise SemanticChoiceError(
                     "A looked-at card is absent from the actor query"
                 )
             rows.append(row)
-        continuation_effect = FrozenMap(
+        continuation = FrozenMap(
             {
                 **dict(effect),
                 "_choice_actor": context.actor,
@@ -76,29 +94,29 @@ class LibraryOrderingHandler:
                 "_stack_label": context.stack_label,
             }
         )
-        choice = OrderingChoice(
-            field_name="cards",
-            legal_refs=refs,
-            visibility="actor_private",
-            schema_extras=FrozenMap({"order": "top_to_bottom"}),
-        )
-        prompt = "Put the looked-at cards back in top-to-bottom order."
         return SemanticChoicePreparation(
             request=SemanticChoiceRequest(
-                prompt=prompt,
-                choice=choice,
+                prompt=(
+                    "Order the looked-at cards on top and on the bottom "
+                    "of your library."
+                ),
+                choice=LibraryPartitionChoice(
+                    field_name="cards",
+                    legal_refs=refs,
+                    visibility="actor_private",
+                ),
                 public_context=FrozenMap(
                     {
                         "stack": context.stack_ref,
                         "operation": self.operation,
-                        "cards": [
+                        "objects": [
                             {"id": row.ref, "name": row.printed_name}
                             for row in rows
                         ],
                     }
                 ),
             ),
-            continuation_effect=continuation_effect,
+            continuation_effect=continuation,
             preparation_intents=(
                 RevealLibraryCardsIntent(
                     actor=context.stack_controller,
@@ -116,37 +134,28 @@ class LibraryOrderingHandler:
         response: Mapping[str, Any],
         query: SemanticChoiceQuery,
     ) -> SemanticChoiceCompletion:
+        del query
         expected = tuple(
-            str(value)
-            for value in continuation.effect.get("_looked_refs", ())
+            str(value) for value in continuation.effect.get("_looked_refs", ())
         )
         actor = str(continuation.effect["_choice_actor"])
-        selected = tuple(
-            str(value)
-            for value in response.get("cards", response.get("order", ()))
-        )
-        if len(selected) != len(set(selected)) or sorted(selected) != sorted(
-            expected
-        ):
-            raise SemanticChoiceError(
-                "Top-card order must contain every looked-at card exactly once"
-            )
+        try:
+            arrangement = ScryArrangement.from_response(expected, response)
+        except ScryError as exc:
+            raise SemanticChoiceError(str(exc)) from exc
         return SemanticChoiceCompletion(
             intents=(
-                ReorderLibraryTopIntent(
+                ScryLibraryIntent(
                     actor=actor,
                     player=actor,
-                    viewer=actor,
-                    refs_top_first=selected,
+                    arrangement=arrangement,
                     reason=str(continuation.effect["_stack_label"]),
                 ),
             )
         )
 
 
-ORDERING_CHOICE_HANDLERS = (
-    LibraryOrderingHandler(
-        operation="look_reorder_top",
-        handler_id="choice.ordering.library-top.v1",
-    ),
-)
+SCRY_CHOICE_HANDLERS = (ScryChoiceHandler(),)
+
+
+__all__ = ["SCRY_CHOICE_HANDLERS", "ScryChoiceHandler"]

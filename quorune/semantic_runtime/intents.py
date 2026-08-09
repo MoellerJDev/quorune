@@ -12,6 +12,7 @@ from ..drawing.model import (
 from ..fixed_damage_set_model import FixedDamageSetSpec
 from ..entry_counter_model import EffectEntryCounter
 from ..replacement.immutable import FrozenMap, freeze_value
+from ..rules.library_scry import ScryArrangement
 
 
 _EXPLORE_LABEL = "Ex" + "plore"
@@ -469,6 +470,18 @@ class MoveLibraryCardsToBottomIntent:
     refs: tuple[str, ...]
     looked_count: int
     reason: str
+
+
+@dataclass(frozen=True, slots=True)
+class ScryLibraryIntent:
+    actor: str
+    player: str
+    arrangement: ScryArrangement
+    reason: str
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.arrangement, ScryArrangement):
+            raise TypeError("Scry intents require an immutable arrangement")
 
 
 @dataclass(frozen=True, slots=True)
@@ -988,6 +1001,7 @@ SemanticIntent: TypeAlias = (
     | PayLifeIntent
     | RevealLibraryCardsIntent
     | MoveLibraryCardsToBottomIntent
+    | ScryLibraryIntent
     | ReorderLibraryTopIntent
     | PayManaCostIntent
     | PlaceCountersIntent

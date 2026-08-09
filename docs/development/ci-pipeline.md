@@ -147,6 +147,14 @@ present (or `MTG_CARD_DB` when set), runs generated write mode, and rejects the
 push when generated outputs need a commit. It never amends a commit.
 Pull-request CI remains check-only and authoritative.
 
+Keep generated-governance tests tied to identities from the canonical manifest
+or registry rather than separately maintained totals or copied identifier sets.
+Those literals turn every legitimate promotion into an unrelated CI repair.
+Compiler-only tests should construct their input `CardRecord` directly; only
+runtime integration tests should require the compact CI card database. When a
+database-backed fixture is genuinely required, identify every workflow and
+local-gate database builder that consumes it before publishing the branch.
+
 The full `scripts/local_merge_gate.py` is not a default development step. Run a
 broad local gate only when the user explicitly asks or while diagnosing a
 CI-only/release-critical persistence, replay, privacy, or packaging failure.

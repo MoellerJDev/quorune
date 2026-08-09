@@ -62,15 +62,26 @@ class RulesSchedulerTests(unittest.TestCase):
             for subsystem in self.queue["subsystems"]
             for rule in subsystem["rules"]
         ]
-        self.assertEqual(2953, len(queued))
+        self.assertEqual(len(expected), len(queued))
         self.assertEqual(len(queued), len(set(queued)))
         self.assertEqual(expected, set(queued))
+        reviewed_blocked = sum(
+            case["status"] == "blocked"
+            and case["classification"] == "behavioral"
+            for case in self.conformance["cases"]
+        )
+        review_required = sum(
+            case["status"] == "unreviewed"
+            and case["classification"]
+            in {"behavioral", "unclassified"}
+            for case in self.conformance["cases"]
+        )
         self.assertEqual(
-            397,
+            reviewed_blocked,
             self.queue["summary"]["reviewed_behavioral_blocked"],
         )
         self.assertEqual(
-            2556,
+            review_required,
             self.queue["summary"]["behavioral_review_required"],
         )
 

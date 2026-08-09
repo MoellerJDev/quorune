@@ -51950,23 +51950,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-701.22",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "701"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_scry_rules.ScryCompilerTests.test_fixed_scry_compiles_capability_closed"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword-action heading; library.scry.fixed_controller owns the bounded one-player fixed-count process."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "701.22",
       "rule_text_sha256": "5756243f423e6d39a42fc50fd4c0e094c2381a8d31dfc36003dbc46975f40cbc",
       "schema_version": 1,
@@ -51975,26 +51979,50 @@
         "end_line": 3454,
         "start_line": 3453
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-701.22a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "701.22"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_scry_rules.ScryRuntimeTests.test_scry_orders_top_and_bottom_and_replays_exactly",
+        "tests.test_scry_rules.ScryRuntimeTests.test_scry_response_and_stale_library_fail_before_mutation",
+        "tests.test_scry_rules.ScryRuntimeTests.test_scry_more_than_library_uses_every_card",
+        "tests.test_scry_rules.ScryRuntimeTests.test_four_player_scry_is_private_and_seat_scoped"
+      ],
+      "implementation_components": [
+        "quorune.semantic_choices.scry.ScryChoiceHandler",
+        "quorune.semantic_choices.model.LibraryPartitionChoice",
+        "quorune.rules.library_scry.ScryArrangement",
+        "quorune.rules.library_scry.commit_scry_arrangement"
+      ],
+      "notes": [
+        "A complete private partition independently orders the top and bottom groups, revalidates the exact current library top, and commits one atomic hidden library order."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "701.22a",
       "rule_text_sha256": "b7115e9dd69167e14fc9dd59641661dc9e51bdc87fd31fadf92a7db39490f4c6",
       "schema_version": 1,
@@ -52003,26 +52031,38 @@
         "end_line": 3456,
         "start_line": 3455
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-701.22b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "701.22"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_scry_rules.ScryRuntimeTests.test_scry_zero_and_empty_library_create_no_event"
+      ],
+      "implementation_components": [
+        "quorune.semantic_choices.scry.ScryChoiceHandler"
+      ],
+      "notes": [
+        "Scry 0 auto-continues without a Scry event or player task; an empty library likewise creates no physical choice."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.22b",
       "rule_text_sha256": "c5a130cc5849a5aa0bf9b61143e21491ffad9c5fd0f5293401e25c70e3a49c32",
       "schema_version": 1,
@@ -52031,26 +52071,38 @@
         "end_line": 3458,
         "start_line": 3457
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "one instruction making multiple players Scry simultaneously is not lowered",
+        "the APNAP decision order and simultaneous library commit have no typed coordinator"
       ],
       "case_id": "cr-701.22c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "701.22"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_scry_rules.ScryCompilerTests.test_fixed_scry_shape_is_closed"
+      ],
+      "implementation_components": [
+        "quorune.rules.node_capability_shapes.fixed_scry_node_capabilities"
+      ],
+      "notes": [
+        "Normal four-player resolution for one instructed player is covered; simultaneous multi-player Scry is deliberately outside this capability."
+      ],
+      "required_scenarios": [
+        "negative",
+        "multiplayer"
+      ],
+      "reviewed": true,
       "rule_id": "701.22c",
       "rule_text_sha256": "c52278310a91bf7ebd03e4686a7476e581befccf50924c61663e9919e07b75bd",
       "schema_version": 1,
@@ -52059,7 +52111,7 @@
         "end_line": 3460,
         "start_line": 3459
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

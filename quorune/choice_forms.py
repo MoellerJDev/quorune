@@ -52,6 +52,42 @@ def _options(
     ]
 
 
+def _object_map_field(
+    name: str,
+    value: Mapping[str, Any],
+    context: Mapping[str, Any],
+) -> dict[str, Any]:
+    field: dict[str, Any] = {
+        "name": name,
+        "label": str(value.get("label") or _title(name)),
+        "required": bool(value.get("required", True)),
+        "control": "object_map",
+        "keys": list(value.get("legal_refs") or []),
+        "options": _options(list(value.get("legal_values") or []), context),
+    }
+    required_count = value.get("required")
+    if isinstance(required_count, int) and not isinstance(required_count, bool):
+        field["minimum"] = required_count
+    return field
+
+
+def _ordered_partition_field(
+    name: str,
+    value: Mapping[str, Any],
+    context: Mapping[str, Any],
+) -> dict[str, Any]:
+    return {
+        "name": name,
+        "label": str(value.get("label") or _title(name)),
+        "required": bool(value.get("required", True)),
+        "control": "ordered_partition",
+        "options": _options(list(value.get("legal_refs") or []), context),
+        "partitions": copy.deepcopy(dict(value.get("partitions") or {})),
+        "complete": bool(value.get("complete", True)),
+        "distinct": bool(value.get("distinct", True)),
+    }
+
+
 def _field(
     name: str,
     descriptor: Any,
@@ -86,21 +122,9 @@ def _field(
     legal_values = value.get("legal_values")
     legal_refs = value.get("legal_refs")
     if shape == "object_map":
-        field.update(
-            {
-                "control": "object_map",
-                "keys": list(value.get("legal_refs") or []),
-                "options": _options(
-                    list(value.get("legal_values") or []), context
-                ),
-            }
-        )
-        required_count = value.get("required")
-        if isinstance(required_count, int) and not isinstance(
-            required_count, bool
-        ):
-            field["minimum"] = required_count
-        return field
+        return _object_map_field(name, value, context)
+    if shape == "ordered_partition":
+        return _ordered_partition_field(name, value, context)
     if name == "copy_targets" and value.get("copy_count") is not None:
         field.update(
             {

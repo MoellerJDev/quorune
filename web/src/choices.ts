@@ -37,6 +37,14 @@ function initialField(field: ChoiceField): JsonValue | undefined {
     ) return options;
     return [];
   }
+  if (control === "ordered_partition") {
+    return {
+      top: list(field.options).map((option) =>
+        stringValue(record(option).value),
+      ),
+      bottom: [],
+    };
+  }
   if (control === "copy_targets") {
     return list(field.copies).map((copy) =>
       structuredClone(record(copy).default_targets ?? []),
@@ -217,6 +225,24 @@ function fieldErrors(field: ChoiceField, values: ChoiceValues): string[] {
     const legal = new Set(legalValues.map(stringValue));
     if (selected.some((ref) => !legal.has(ref))) {
       errors.push(`${label} contains a selection that is no longer available.`);
+    }
+  } else if (control === "ordered_partition") {
+    const partition = record(value);
+    const top = list(partition.top).map(String);
+    const bottom = list(partition.bottom).map(String);
+    const selected = [...top, ...bottom];
+    const legal = list(field.options).map((option) =>
+      stringValue(record(option).value),
+    );
+    if (selected.length !== legal.length) {
+      errors.push(`${label} must place every card on top or bottom.`);
+    }
+    if (new Set(selected).size !== selected.length) {
+      errors.push(`${label} cannot place the same card twice.`);
+    }
+    const legalSet = new Set(legal);
+    if (selected.some((ref) => !legalSet.has(ref))) {
+      errors.push(`${label} contains a card that is no longer available.`);
     }
   } else if (control === "object_map") {
     const count = Object.keys(record(value)).length;

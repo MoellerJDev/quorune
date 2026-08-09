@@ -93,6 +93,91 @@ function RefOptions({
   );
 }
 
+function OrderedPartition({
+  field,
+  value,
+  onValue,
+  labelFor,
+}: {
+  field: ChoiceField;
+  value: JsonValue | undefined;
+  onValue: (value: JsonValue) => void;
+  labelFor: (value: string) => string;
+}) {
+  const partition = record(value);
+  const top = list(partition.top).map(String);
+  const bottom = list(partition.bottom).map(String);
+  const options = list(field.options).map(record);
+
+  function moveBetween(ref: string, destination: "top" | "bottom") {
+    const nextTop = top.filter((candidate) => candidate !== ref);
+    const nextBottom = bottom.filter((candidate) => candidate !== ref);
+    if (destination === "top") nextTop.push(ref);
+    else nextBottom.push(ref);
+    onValue({ top: nextTop, bottom: nextBottom });
+  }
+
+  function reorder(group: "top" | "bottom", index: number, offset: number) {
+    const values = group === "top" ? [...top] : [...bottom];
+    const target = index + offset;
+    if (target < 0 || target >= values.length) return;
+    [values[index], values[target]] = [values[target], values[index]];
+    onValue(group === "top" ? { top: values, bottom } : { top, bottom: values });
+  }
+
+  function orderedGroup(
+    group: "top" | "bottom",
+    refs: string[],
+    orderLabel: string,
+  ) {
+    return (
+      <div className="choice-partition-group">
+        <strong>{group === "top" ? "Top of library" : "Bottom of library"}</strong>
+        <span className="choice-help">{orderLabel}</span>
+        <ol className="choice-order">
+          {refs.map((ref, index) => (
+            <li key={ref}>
+              <span>{labelFor(ref)}</span>
+              <button type="button" onClick={() => reorder(group, index, -1)} disabled={index === 0}>↑</button>
+              <button type="button" onClick={() => reorder(group, index, 1)} disabled={index === refs.length - 1}>↓</button>
+            </li>
+          ))}
+        </ol>
+      </div>
+    );
+  }
+
+  return (
+    <fieldset className="choice-field choice-partition">
+      <legend><FieldLabel field={field} /></legend>
+      <div className="choice-options">
+        {options.map((option) => {
+          const ref = text(option.value);
+          return (
+            <label key={ref} className="choice-option">
+              <span>{text(option.label) || labelFor(ref)}</span>
+              <select
+                data-testid={`choice-${text(field.name)}-${testValue(ref)}`}
+                value={bottom.includes(ref) ? "bottom" : "top"}
+                onChange={(event) =>
+                  moveBetween(ref, event.target.value as "top" | "bottom")
+                }
+              >
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+              </select>
+            </label>
+          );
+        })}
+      </div>
+      <div className="choice-partition-orders">
+        {orderedGroup("top", top, "First row is the new top card.")}
+        {orderedGroup("bottom", bottom, "First row is the new bottom card.")}
+      </div>
+    </fieldset>
+  );
+}
+
 function ManaModes({
   field,
   value,
@@ -456,6 +541,7 @@ function ChoiceControl({
   const set = (next: JsonValue) => onChange({ ...values, [name]: next });
   if (control === "mana_modes") return <ManaModes field={field} value={value} onValue={set} />;
   if (control === "refs") return <RefOptions field={field} value={value} onValue={set} labelFor={labelFor} />;
+  if (control === "ordered_partition") return <OrderedPartition field={field} value={value} onValue={set} labelFor={labelFor} />;
   if (control === "targets") return <TargetControl field={field} values={values} onChange={onChange} labelFor={labelFor} />;
   if (control === "assignment_map") return <AssignmentMap field={field} value={value} onValue={set} labelFor={labelFor} />;
   if (control === "damage_assignments") return <DamageAssignments field={field} value={value} onValue={set} labelFor={labelFor} />;

@@ -7,6 +7,7 @@ from .artifact_exchange import ARTIFACT_EXCHANGE_CHOICE_HANDLERS
 from .object_selection import OBJECT_SELECTION_HANDLERS
 from .library_and_hand import LIBRARY_AND_HAND_CHOICE_HANDLERS
 from .ordering import ORDERING_CHOICE_HANDLERS
+from .scry import SCRY_CHOICE_HANDLERS
 from .payments import PAYMENT_CHOICE_HANDLERS
 from .public_selection import PUBLIC_SELECTION_CHOICE_HANDLERS
 from .scalar import SCALAR_CHOICE_HANDLERS
@@ -27,6 +28,7 @@ def default_semantic_choice_registry() -> SemanticChoiceRegistry:
             *OBJECT_SELECTION_HANDLERS,
             *LIBRARY_AND_HAND_CHOICE_HANDLERS,
             *ORDERING_CHOICE_HANDLERS,
+            *SCRY_CHOICE_HANDLERS,
             *PAYMENT_CHOICE_HANDLERS,
             *PUBLIC_SELECTION_CHOICE_HANDLERS,
             *STACK_TARGET_CHOICE_HANDLERS,

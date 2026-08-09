@@ -20,6 +20,7 @@ from .node_capability_shapes import (
     fixed_damage_node_capabilities,
     mass_destruction_node_capabilities,
     fixed_draw_node_capabilities,
+    fixed_scry_node_capabilities,
     single_explore_node_capabilities,
     single_proliferate_node_capabilities,
     targeted_counter_node_capabilities,
@@ -154,6 +155,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _VIGILANCE_MECHANIC: ("combat.attack.vigilance",),
     "cr-119-life": ("life.change.effect",),
     "cr-121-drawing-a-card": ("zone.draw.library_to_hand",),
+    "scry": ("library.scry.fixed_controller",),
     "infect": ("damage.result.infect",),
     _LIFELINK_MECHANIC: ("damage.result.lifelink",),
     _TOXIC_MECHANIC: ("damage.result.toxic",),
@@ -168,6 +170,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
 _SHAPE_GATED_MECHANICS = frozenset(
     {
         "cr-121-drawing-a-card",
+        "scry",
         "counter",
         "destroy",
         _EXILE_MECHANIC,
@@ -755,6 +758,7 @@ def _targeted_effect_capabilities(
         fixed_damage_node_capabilities,
         mass_destruction_node_capabilities,
         fixed_draw_node_capabilities,
+        fixed_scry_node_capabilities,
         single_explore_node_capabilities,
         single_proliferate_node_capabilities,
         targeted_counter_node_capabilities,

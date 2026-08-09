@@ -1,5 +1,5 @@
 {
-  "contract_count": 88,
+  "contract_count": 89,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -425,6 +425,12 @@
       "mechanic_id": "riot",
       "path": "mechanics/contracts/riot.json",
       "sha256": "2aaa5431c014a9d854da9ec9665a4f3cbf855e45a6d292fd94f15cfc04283d3f",
+      "version": 1
+    },
+    {
+      "mechanic_id": "scry",
+      "path": "mechanics/contracts/scry.json",
+      "sha256": "7558a67654d85a5e08d7df62b2816e2000b331b8c5175405e1d1bdf4875c28ff",
       "version": 1
     },
     {
@@ -5634,19 +5640,39 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/scry.json",
+      "contract_sha256": "7558a67654d85a5e08d7df62b2816e2000b331b8c5175405e1d1bdf4875c28ff",
+      "contract_version": 1,
+      "coverage_status": "partial",
       "dependencies": [
         "701"
       ],
-      "implementation_component": null,
+      "implementation_component": "ScryChoiceHandler, LibraryPartitionChoice, ScryArrangement, ScryLibraryIntent, and commit_scry_arrangement",
+      "implementation_version": "typed-fixed-controller-scry-v1",
       "kind": "keyword_action",
+      "known_blockers": [
+        "multiple players instructed to Scry simultaneously require an APNAP decision coordinator and simultaneous commit",
+        "dynamic and variable Scry counts remain residual",
+        "effects that add cards while Scrying remain residual",
+        "Scry-trigger compilation remains residual",
+        "Surveil, fateseal, and non-Scry library ordering are separate capabilities"
+      ],
       "mechanic_id": "scry",
       "official_name": "Scry",
       "rule_references": [
         "701.22"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_scry_compiles_capability_closed",
+        "test_fixed_scry_shape_is_closed",
+        "test_scry_capability_gate_mutant_is_killed",
+        "test_scry_orders_top_and_bottom_and_replays_exactly",
+        "test_scry_zero_and_empty_library_create_no_event",
+        "test_scry_response_and_stale_library_fail_before_mutation",
+        "test_scry_more_than_library_uses_every_card",
+        "test_four_player_scry_is_private_and_seat_scoped",
+        "test_legacy_subset_response_preserves_historical_behavior"
+      ],
       "trust_level": "untrusted"
     },
     {

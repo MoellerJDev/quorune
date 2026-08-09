@@ -456,6 +456,29 @@ def fixed_draw_node_capabilities(
     return ()
 
 
+def fixed_scry_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return the Scry capability only for one fixed controller instruction."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if "scry" not in mechanics or len(effects) != 1:
+        return ()
+    effect = effects[0]
+    if (
+        target_schema is None
+        and set(effect) == {"op", "player", "count"}
+        and effect.get("op") == "scry"
+        and effect.get("player") == "$controller"
+        and _positive_int(effect.get("count"))
+    ):
+        return ("library.scry.fixed_controller",)
+    return ()
+
+
 def single_explore_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],

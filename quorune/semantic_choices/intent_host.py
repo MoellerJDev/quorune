@@ -35,6 +35,7 @@ from ..life_state import (
     commit_life_changes,
     plan_life_changes,
 )
+from ..rules.library_scry import ScryError, commit_scry_arrangement
 from ..replacement.immutable import thaw_value
 from ..semantic_runtime import (
     AddManaIntent,
@@ -52,6 +53,7 @@ from ..semantic_runtime import (
     ExploreCompletedIntent,
     LifeChangeIntent,
     MoveLibraryCardsToBottomIntent,
+    ScryLibraryIntent,
     MoveObjectsSimultaneouslyIntent,
     PayLifeIntent,
     PayManaCostIntent,
@@ -615,6 +617,21 @@ class SemanticChoiceIntentHostMixin:
             changed_objects=object_ids,
         )
         return intent.refs
+
+    def scry_library_intent(
+        self,
+        intent: ScryLibraryIntent,
+    ) -> tuple[str, ...]:
+        try:
+            return commit_scry_arrangement(
+                self,
+                actor=intent.actor,
+                player=intent.player,
+                arrangement=intent.arrangement,
+                reason=intent.reason,
+            )
+        except ScryError as exc:
+            raise GameRuleError(str(exc)) from exc
 
     def reorder_library_top_intent(
         self,
