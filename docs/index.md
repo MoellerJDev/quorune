@@ -2,7 +2,7 @@
 title: "Documentation map and standard"
 status: "current"
 authoritative_source: "platform/documentation-policy.json and the maintained documentation set"
-verified: "2026-08-07"
+verified: "2026-08-08"
 audience: "users, operators, contributors, and coding agents"
 maintenance: "hand-maintained"
 ---
@@ -117,6 +117,7 @@ define rules authority or become a production runtime dependency.
 
 - [Changelog](../CHANGELOG.md)
 - [Architecture decision records](adr/index.md)
+- [Generated-artifact finalization decision](adr/0042-canonical-generated-artifact-finalization.md)
 - [Semantic-pack compatibility](history/semantic-packs.md)
 
 ## Maintenance rules
@@ -131,4 +132,5 @@ define rules authority or become a production runtime dependency.
 - Delete superseded guidance in the same change as its replacement.
 - Add an ADR only for a durable decision with meaningful alternatives and
   consequences.
-- Run `scripts/validate_documentation.py --check` before committing.
+- Run `scripts/finalize_generated.py --write` before the final commit; it also
+  validates documentation and generated freshness.

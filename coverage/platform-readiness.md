@@ -23,6 +23,8 @@ Source fingerprint: `08e974992895afd013b239572d8a19b13e1c17cb197228689e6e23c3605
 - Exact command replay: `implemented_command_replay_with_additive_card_program_trust_and_exact_runtime_binding_provenance`
 - Hidden-information projection: `implemented_projected_protocol`
 - Core AI dependency: `none_for_core_tests_or_runtime`
+- Primary test modules: `218`
+- Primary test shards: `11`
 - Rules snapshot integrated: yes
 - Rules snapshot complete: no
 

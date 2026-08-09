@@ -1,0 +1,325 @@
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+from typing import Callable, Mapping, Sequence
+
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.generated_artifacts import (
+    GeneratorSpec,
+    all_outputs,
+    check_command,
+    load_manifest,
+    topological_order,
+    write_command,
+)
+from scripts.validate_python_runtime import require_supported_python
+
+
+class GeneratedFinalizationError(RuntimeError):
+    """Raised when generated outputs cannot be finalized deterministically."""
+
+
+CommandRunner = Callable[[str, Sequence[str]], int]
+POST_CHECKS = (
+    ("documentation-policy", ("scripts/validate_documentation.py", "--check")),
+    ("diff-hygiene", ("git", "diff", "--check")),
+)
+
+
+def _display(command: Sequence[str]) -> str:
+    return " ".join(command)
+
+
+def _run_command(generator_id: str, command: Sequence[str]) -> int:
+    print(f"[{generator_id}] {_display(command)}", flush=True)
+    return subprocess.run(command, cwd=ROOT).returncode
+
+
+def output_snapshot(
+    specs: Sequence[GeneratorSpec], *, root: Path = ROOT
+) -> dict[str, str | None]:
+    snapshot: dict[str, str | None] = {}
+    for relative in all_outputs(specs):
+        path = root / relative
+        snapshot[relative] = (
+            hashlib.sha256(path.read_bytes()).hexdigest()
+            if path.is_file()
+            else None
+        )
+    return snapshot
+
+
+def _write_pass(
+    specs: Sequence[GeneratorSpec],
+    *,
+    database: Path | None,
+    include_manual: bool,
+    selected_ids: frozenset[str] | None,
+    runner: CommandRunner,
+) -> tuple[str, ...]:
+    executed: list[str] = []
+    for spec in topological_order(specs):
+        if selected_ids is not None and spec.id not in selected_ids:
+            continue
+        command = write_command(
+            spec,
+            database=database,
+            include_manual=include_manual,
+        )
+        if command is None:
+            print(
+                f"[{spec.id}] write skipped ({spec.write_policy})",
+                flush=True,
+            )
+            continue
+        returncode = runner(spec.id, command)
+        if returncode:
+            raise GeneratedFinalizationError(
+                f"generated writer failed: {spec.id} ({returncode})"
+            )
+        executed.append(spec.id)
+    return tuple(executed)
+
+
+def stabilization_ids(
+    specs: Sequence[GeneratorSpec], changed_outputs: Sequence[str]
+) -> frozenset[str]:
+    owner = {
+        output: spec.id
+        for spec in specs
+        for output in spec.outputs
+    }
+    selected = {
+        owner[output]
+        for output in changed_outputs
+        if output in owner
+    }
+    changed = True
+    while changed:
+        changed = False
+        for spec in specs:
+            if spec.id in selected or not selected.intersection(spec.depends_on):
+                continue
+            selected.add(spec.id)
+            changed = True
+    return frozenset(selected)
+
+
+def write_until_stable(
+    specs: Sequence[GeneratorSpec],
+    *,
+    database: Path | None,
+    include_manual: bool,
+    max_passes: int,
+    root: Path = ROOT,
+    runner: CommandRunner = _run_command,
+) -> dict[str, object]:
+    if max_passes < 1:
+        raise ValueError("max_passes must be positive")
+    before = output_snapshot(specs, root=root)
+    changed_by_pass: list[tuple[str, ...]] = []
+    executed_by_pass: list[tuple[str, ...]] = []
+    selected_ids: frozenset[str] | None = None
+    for pass_number in range(1, max_passes + 1):
+        # A topological first pass already places every database-backed corpus
+        # output before its declared consumers. Rebuilding the full corpus on
+        # a stabilization pass adds minutes without improving dependency
+        # closure. Later passes therefore rerun only changed owners and their
+        # descendants, using each database generator's safe derived-only
+        # writer when it has one.
+        pass_database = database if pass_number == 1 else None
+        executed = _write_pass(
+            specs,
+            database=pass_database,
+            include_manual=include_manual,
+            selected_ids=selected_ids,
+            runner=runner,
+        )
+        after = output_snapshot(specs, root=root)
+        changed = tuple(
+            relative
+            for relative in all_outputs(specs)
+            if before.get(relative) != after.get(relative)
+        )
+        executed_by_pass.append(executed)
+        changed_by_pass.append(changed)
+        print(
+            json.dumps(
+                {
+                    "generated_pass": pass_number,
+                    "changed_outputs": list(changed),
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        if not changed:
+            return {
+                "passes": pass_number,
+                "changed_by_pass": tuple(changed_by_pass),
+                "executed_by_pass": tuple(executed_by_pass),
+            }
+        before = after
+        selected_ids = stabilization_ids(specs, changed)
+    raise GeneratedFinalizationError(
+        "generated outputs did not reach a fixed point within "
+        f"{max_passes} passes"
+    )
+
+
+def check_all(
+    specs: Sequence[GeneratorSpec],
+    *,
+    runner: CommandRunner = _run_command,
+) -> tuple[dict[str, object], ...]:
+    failures: list[dict[str, object]] = []
+    for spec in topological_order(specs):
+        command = check_command(spec)
+        returncode = runner(spec.id, command)
+        if returncode:
+            failures.append(
+                {
+                    "check": spec.id,
+                    "command": list(command),
+                    "returncode": returncode,
+                }
+            )
+    for check_id, arguments in POST_CHECKS:
+        command = (
+            (str(Path(sys.executable).resolve()), *arguments)
+            if arguments[0] != "git"
+            else arguments
+        )
+        returncode = runner(check_id, command)
+        if returncode:
+            failures.append(
+                {
+                    "check": check_id,
+                    "command": list(command),
+                    "returncode": returncode,
+                }
+            )
+    return tuple(failures)
+
+
+def changed_generated_outputs(
+    specs: Sequence[GeneratorSpec], *, root: Path = ROOT
+) -> tuple[str, ...]:
+    outputs = all_outputs(specs)
+    if not outputs:
+        return ()
+    result = subprocess.run(
+        [
+            "git",
+            "status",
+            "--porcelain=v1",
+            "--untracked-files=all",
+            "--",
+            *outputs,
+        ],
+        cwd=root,
+        text=True,
+        encoding="utf-8",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode:
+        raise GeneratedFinalizationError(
+            "unable to inspect generated-output Git state: "
+            + result.stderr.strip()
+        )
+    changed: list[str] = []
+    for line in result.stdout.splitlines():
+        if not line:
+            continue
+        relative = line[3:]
+        if " -> " in relative:
+            relative = relative.split(" -> ", 1)[1]
+        changed.append(relative)
+    return tuple(changed)
+
+
+def _database(argument: str | None) -> Path | None:
+    raw = argument or os.environ.get("MTG_CARD_DB")
+    if not raw:
+        return None
+    path = Path(raw)
+    return path if path.is_absolute() else ROOT / path
+
+
+def main() -> int:
+    require_supported_python()
+    parser = argparse.ArgumentParser(
+        description=(
+            "Write or verify the registered deterministic generated-artifact "
+            "set from one dependency-ordered manifest"
+        )
+    )
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--write", action="store_true")
+    mode.add_argument("--check", action="store_true")
+    parser.add_argument("--db")
+    parser.add_argument("--include-manual", action="store_true")
+    parser.add_argument("--max-passes", type=int, default=3)
+    parser.add_argument(
+        "--fail-on-change",
+        action="store_true",
+        help=(
+            "After writing, fail when generated outputs differ from the Git "
+            "index so a pre-push hook cannot silently omit them."
+        ),
+    )
+    args = parser.parse_args()
+    specs = load_manifest()
+    database = _database(args.db)
+    result: dict[str, object] = {
+        "ok": False,
+        "mode": "write" if args.write else "check",
+        "manifest": "platform/generated-artifacts.json",
+        "generator_count": len(specs),
+        "database": str(database) if database is not None else None,
+    }
+    try:
+        if args.write:
+            result["write"] = write_until_stable(
+                specs,
+                database=database,
+                include_manual=args.include_manual,
+                max_passes=args.max_passes,
+            )
+        failures = check_all(specs)
+        if failures:
+            result["failures"] = failures
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 1
+        changed = changed_generated_outputs(specs) if args.fail_on_change else ()
+        if changed:
+            result["changed_generated_outputs"] = changed
+            print(json.dumps(result, indent=2, sort_keys=True))
+            print(
+                "Generated outputs changed during finalization. Inspect and "
+                "commit them, then retry the push.",
+                file=sys.stderr,
+            )
+            return 1
+    except (GeneratedFinalizationError, OSError, ValueError) as exc:
+        result["error"] = str(exc)
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 1
+    result["ok"] = True
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

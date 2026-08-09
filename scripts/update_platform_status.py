@@ -8,23 +8,16 @@ import json
 from pathlib import Path
 import sys
 import tomllib
-import unittest
 
 try:
     from scripts.certification_receipt import RECEIPT_SCHEMA_VERSION
     from scripts.source_tree_fingerprint import (
         SOURCE_TREE_FINGERPRINT_ALGORITHM,
-        canonical_tracked_blob_oids,
-        is_generated_report,
-        tracked_worktree_source_fingerprint,
     )
 except ModuleNotFoundError:  # Direct execution from scripts/.
     from certification_receipt import RECEIPT_SCHEMA_VERSION  # type: ignore[no-redef]
     from source_tree_fingerprint import (  # type: ignore[no-redef]
         SOURCE_TREE_FINGERPRINT_ALGORITHM,
-        canonical_tracked_blob_oids,
-        is_generated_report,
-        tracked_worktree_source_fingerprint,
     )
 
 
@@ -33,6 +26,10 @@ SOURCE = ROOT / "platform" / "readiness-source.json"
 JSON_OUTPUT = ROOT / "coverage" / "platform-readiness.json"
 MARKDOWN_OUTPUT = ROOT / "coverage" / "platform-readiness.md"
 STATUS_OUTPUT = ROOT / "docs" / "PLATFORM_IMPLEMENTATION_STATUS.md"
+TEST_SHARDS = ROOT / "platform" / "test-shards.json"
+PLATFORM_INPUT_FINGERPRINT_ALGORITHM = (
+    "platform-readiness-derived-inputs-sha256-v1"
+)
 
 
 def _load_json(path: Path) -> dict:
@@ -40,18 +37,6 @@ def _load_json(path: Path) -> dict:
     if not isinstance(value, dict):
         raise ValueError(f"{path} must contain a JSON object")
     return value
-
-
-def _tracked_source_tree_hash() -> str:
-    return tracked_worktree_source_fingerprint(ROOT)
-
-
-def _canonical_tracked_blob_oids(relative_paths: list[str]) -> list[str]:
-    return canonical_tracked_blob_oids(ROOT, relative_paths)
-
-
-def _is_generated_report(relative: str, path: Path) -> bool:
-    return is_generated_report(relative, path)
 
 
 def _validate_provenance(source: dict) -> None:
@@ -112,15 +97,39 @@ def _project_metadata() -> dict:
     return project["project"]
 
 
-def _test_count() -> int:
-    root_text = str(ROOT)
-    if root_text not in sys.path:
-        sys.path.insert(0, root_text)
-    suite = unittest.defaultTestLoader.discover(
-        str(ROOT / "tests"),
-        pattern="test_*.py",
-    )
-    return suite.countTestCases()
+def _test_inventory() -> dict:
+    manifest = _load_json(TEST_SHARDS)
+    primary = manifest.get("primary_shards")
+    overlays = manifest.get("overlay_suites")
+    if not isinstance(primary, dict) or not isinstance(overlays, dict):
+        raise ValueError("platform/test-shards.json has invalid suite maps")
+    modules = [
+        str(module)
+        for suite_modules in primary.values()
+        for module in suite_modules
+    ]
+    if len(modules) != len(set(modules)):
+        raise ValueError("primary test-shard modules must be uniquely owned")
+    generated = primary.get("generated-validation")
+    if not isinstance(generated, list):
+        raise ValueError("generated-validation must be a primary test shard")
+    return {
+        "primary_test_modules": len(modules),
+        "primary_test_shards": len(primary),
+        "generated_validation_modules": len(generated),
+        "overlay_test_suites": len(overlays),
+    }
+
+
+def _input_fingerprint(value: dict) -> str:
+    payload = {
+        "algorithm": PLATFORM_INPUT_FINGERPRINT_ALGORITHM,
+        "inputs": value,
+    }
+    serialized = json.dumps(
+        payload, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(serialized).hexdigest()
 
 
 def _file_count(relative: str) -> int:
@@ -212,30 +221,45 @@ def build_report() -> dict:
     if source.get("schema_version") != 3:
         raise ValueError("Unsupported platform readiness source schema")
     _validate_provenance(source)
-    report = copy.deepcopy(source)
-    report["generated"] = {
-        "generator": "scripts/update_platform_status.py",
-        "source": "platform/readiness-source.json",
-        "stale_check": "python scripts/update_platform_status.py --check",
-        "evaluated_source_tree_hash": _tracked_source_tree_hash(),
-        "source_tree_fingerprint_algorithm": SOURCE_TREE_FINGERPRINT_ALGORITHM,
-    }
     project = _project_metadata()
-    report["package"] = {
+    package = {
         "name": str(project["name"]),
         "version": str(project["version"]),
         "python": str(project["requires-python"]),
     }
-    report["tests"] = {
-        "deterministic_cases_discovered": _test_count(),
+    tests = {
+        **_test_inventory(),
         "schema_files": _file_count("schemas")
         + _file_count("quorune/schemas"),
         "server_files": _file_count("server"),
         "web_files": _file_count("web"),
         "migration_files": _file_count("migrations"),
     }
-    report["rules_coverage"] = _rules_metrics()
-    report["validation"]["card_program_census"] = _card_program_metrics()
+    rules_coverage = _rules_metrics()
+    card_program_census = _card_program_metrics()
+    input_fingerprint = _input_fingerprint(
+        {
+            "source": source,
+            "package": package,
+            "tests": tests,
+            "rules_coverage": rules_coverage,
+            "card_program_census": card_program_census,
+        }
+    )
+    report = copy.deepcopy(source)
+    report["generated"] = {
+        "generator": "scripts/update_platform_status.py",
+        "source": "platform/readiness-source.json",
+        "stale_check": "python scripts/update_platform_status.py --check",
+        "evaluated_input_fingerprint": input_fingerprint,
+        "input_fingerprint_algorithm": (
+            PLATFORM_INPUT_FINGERPRINT_ALGORITHM
+        ),
+    }
+    report["package"] = package
+    report["tests"] = tests
+    report["rules_coverage"] = rules_coverage
+    report["validation"]["card_program_census"] = card_program_census
     return report
 
 
@@ -279,6 +303,8 @@ def render_readiness(report: dict) -> str:
         f"- Exact command replay: `{report['platform']['replay']}`",
         f"- Hidden-information projection: `{report['platform']['hidden_information']}`",
         f"- Core AI dependency: `{report['platform']['ai_dependency']}`",
+        f"- Primary test modules: `{report['tests']['primary_test_modules']}`",
+        f"- Primary test shards: `{report['tests']['primary_test_shards']}`",
         f"- Rules snapshot integrated: {_value(report['rules_coverage']['manifest_present'])}",
         f"- Rules snapshot complete: {_value(report['rules_coverage']['current_snapshot_complete'])}",
     ]
@@ -334,6 +360,8 @@ def render_status(report: dict) -> str:
         f"- Exact replay: `{report['platform']['replay']}`",
         f"- Hidden-information projection: `{report['platform']['hidden_information']}`",
         f"- Core AI dependency: `{report['platform']['ai_dependency']}`",
+        f"- Primary test modules: `{report['tests']['primary_test_modules']}`",
+        f"- Primary test shards: `{report['tests']['primary_test_shards']}`",
         f"- Rules snapshot integrated: {_value(rules['manifest_present'])}",
         f"- Rules snapshot complete: {_value(rules['current_snapshot_complete'])}",
             "",

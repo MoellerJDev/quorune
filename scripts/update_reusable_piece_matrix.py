@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
 from quorune.card_programs.commands import runtime_component_status
 from quorune.reusable_pieces import (
     build_reusable_piece_artifacts,
+    build_reusable_piece_delta,
     load_json,
     load_reusable_piece_policy,
     render_complex_card_benchmark_markdown,
@@ -139,6 +140,18 @@ def _load_tracked() -> dict[str, dict]:
     }
 
 
+def _expected_delta(artifacts: dict[str, dict]) -> dict:
+    return build_reusable_piece_delta(
+        artifacts["matrix"],
+        artifacts["interactions"],
+        artifacts["baseline"],
+        oracle_coverage=load_json(ORACLE_INPUT),
+        program_coverage=load_json(PROGRAM_INPUT),
+        architecture_audit=load_json(ARCHITECTURE_INPUT),
+        policy=load_reusable_piece_policy(ROOT),
+    )
+
+
 def _write_json(path: Path, value: dict) -> None:
     path.write_bytes(_canonical_json_bytes(value))
 
@@ -216,7 +229,9 @@ def _check_canonical(artifacts: dict[str, dict]) -> None:
             raise ValueError(f"Reusable-piece Markdown is stale: {path}")
 
 
-def _check_freshness(artifacts: dict[str, dict]) -> None:
+def _check_freshness(
+    artifacts: dict[str, dict], *, check_derived: bool = True
+) -> None:
     matrix = artifacts["matrix"]
     inputs = matrix["input_fingerprints"]
     frontier = load_json(FRONTIER_INPUT)
@@ -255,38 +270,8 @@ def _check_freshness(artifacts: dict[str, dict]) -> None:
         "cards_considered"
     ]:
         raise ValueError("Reusable-piece card index corpus count is stale")
-    oracle = load_json(ORACLE_INPUT)
-    programs = load_json(PROGRAM_INPUT)
-    delta_metrics = artifacts["delta"]["metrics"]
-    expected_metrics = {
-        "generic_exact_commander_cards": int(
-            oracle["status_counts"].get("exact", 0)
-        ),
-        "capability_closed_commander_card_programs": int(
-            programs["trust_basis_counts"].get("capability_closed", 0)
-        ),
-        "material_residuals": int(programs["material_residuals"]),
-        "hard_construction_failures": len(programs.get("failures", ())),
-    }
-    if delta_metrics != expected_metrics:
-        raise ValueError("Reusable-piece delta corpus metrics are stale")
-    architecture = load_json(ARCHITECTURE_INPUT)
-    dimensions = (
-        architecture.get("architecture", {})
-        .get("debt_trend", {})
-        .get("dimensions", {})
-    )
-    baseline_debt = artifacts["baseline"]["counts"]["architecture_debt"]
-    expected_architecture_delta = {
-        str(key): int(value.get("current") or 0)
-        - int(baseline_debt.get(key, 0))
-        for key, value in sorted(dimensions.items())
-        if isinstance(value, dict)
-    }
-    if artifacts["delta"]["architecture_deltas"] != (
-        expected_architecture_delta
-    ):
-        raise ValueError("Reusable-piece architecture delta is stale")
+    if check_derived and artifacts["delta"] != _expected_delta(artifacts):
+        raise ValueError("Reusable-piece delta is stale")
 
 
 def main() -> int:
@@ -297,8 +282,21 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    mode.add_argument("--refresh-derived", action="store_true")
     parser.add_argument("--db", type=Path)
     args = parser.parse_args()
+    if args.refresh_derived:
+        artifacts = _load_tracked()
+        _check_canonical(artifacts)
+        _check_freshness(artifacts, check_derived=False)
+        delta = _expected_delta(artifacts)
+        _write_json(DELTA_OUTPUT, delta)
+        DELTA_MARKDOWN.write_text(
+            render_reusable_piece_delta_markdown(delta),
+            encoding="utf-8",
+            newline="\n",
+        )
+        return 0
     if args.write:
         if args.db is None:
             parser.error("--write requires --db for official-ruling counts")

@@ -1112,10 +1112,12 @@ def build_program_baseline(
         "schema_version": PROGRAM_BASELINE_SCHEMA_VERSION,
         "baseline_kind": "accelerator_adoption",
         "source_tree_fingerprint": generated.get(
-            "evaluated_source_tree_hash"
+            "evaluated_input_fingerprint",
+            generated.get("evaluated_source_tree_hash"),
         ),
         "source_tree_fingerprint_algorithm": generated.get(
-            "source_tree_fingerprint_algorithm"
+            "input_fingerprint_algorithm",
+            generated.get("source_tree_fingerprint_algorithm"),
         ),
         "rules_fingerprint": snapshot["comprehensive_rules"]["sha256"],
         "oracle_fingerprint": snapshot["oracle"]["sha256"],

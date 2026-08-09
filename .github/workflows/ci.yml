@@ -108,19 +108,10 @@ jobs:
         run: |
           python scripts/validate_python_runtime.py
           python -m compileall -q quorune server tests scripts simctl.py
+      - name: Verify generated outputs
+        run: python scripts/finalize_generated.py --check
       - name: Run generated conformance and governance tests
         run: python scripts/test_shards.py run generated-validation
-      - name: Verify generated outputs
-        run: |
-          python scripts/update_capability_evidence.py --check
-          python scripts/update_card_unlock_frontier.py --check
-          python scripts/update_reusable_piece_matrix.py --check
-          python scripts/update_ci_escape_report.py --check
-          python scripts/update_rules_scheduler.py --check
-          python scripts/update_module_classifications.py --check
-          python scripts/benchmark_continuous_effects.py --check
-          python scripts/update_platform_status.py --check
-          python scripts/update_architecture_audit.py --check
       - name: Verify rules, architecture, documentation, and repository policy
         run: |
           python simctl.py rules verify --root .

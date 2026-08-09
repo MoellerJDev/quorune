@@ -1,0 +1,21 @@
+#!/bin/sh
+# quorune-generated-finalization-hook
+set -eu
+
+ROOT=$(git rev-parse --show-toplevel)
+if [ -x "$ROOT/.venv/bin/python" ]; then
+    PYTHON="$ROOT/.venv/bin/python"
+elif [ -x "$ROOT/.venv/Scripts/python.exe" ]; then
+    PYTHON="$ROOT/.venv/Scripts/python.exe"
+else
+    echo "Quorune pre-push: create the worktree-local .venv with CPython 3.12 first." >&2
+    exit 1
+fi
+
+if [ -n "${MTG_CARD_DB:-}" ]; then
+    "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
+        --write --fail-on-change --db "$MTG_CARD_DB"
+else
+    "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
+        --write --fail-on-change
+fi

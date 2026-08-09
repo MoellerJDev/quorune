@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import json
 import unittest
+from unittest import mock
 
 from scripts.update_architecture_audit import (
     CARD_BASELINE,
+    GENERATED_VERIFIED_SENTINEL,
     ROOT,
     _check_outputs,
+    _discover_test_case_count,
     build_report,
 )
 
@@ -116,6 +119,20 @@ class ArchitectureAuditTests(unittest.TestCase):
             + tests["python"]["generated_rule_conformance_cases"],
         )
 
+    def test_architecture_test_discovery_fails_closed_on_loader_errors(self):
+        class BrokenLoader:
+            errors = ["broken test import"]
+
+            def discover(self, *_args, **_kwargs):
+                return unittest.TestSuite()
+
+        with mock.patch(
+            "scripts.update_architecture_audit.unittest.TestLoader",
+            return_value=BrokenLoader(),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "broken test import"):
+                _discover_test_case_count()
+
     def test_report_tracks_pinned_compiler_semantics_and_document_drift(self):
         compiler = self.report["compiler"]
         oracle = _json("coverage/oracle-coverage.json")
@@ -145,6 +162,19 @@ class ArchitectureAuditTests(unittest.TestCase):
         )
         self.assertEqual(documents["required_count"], documents["present_count"])
         self.assertEqual(0, documents["missing_count"])
+        generated_documents = [
+            row
+            for row in documents["documents"]
+            if row["metadata"].get("status") == "generated"
+        ]
+        self.assertTrue(generated_documents)
+        self.assertTrue(
+            all(
+                row["metadata"]["verified"]
+                == GENERATED_VERIFIED_SENTINEL
+                for row in generated_documents
+            )
+        )
         self.assertTrue(documents["policy"]["metadata_enforced"])
         self.assertTrue(documents["policy"]["internal_links_enforced"])
         self.assertTrue(documents["policy"]["stale_claims_enforced"])

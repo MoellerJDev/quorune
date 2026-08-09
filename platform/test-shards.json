@@ -227,6 +227,7 @@
       "test_ci_pipeline",
       "test_continuous_effect_performance",
       "test_documentation_policy",
+      "test_generated_artifacts",
       "test_local_merge_gate",
       "test_platform_status",
       "test_property_budget",
