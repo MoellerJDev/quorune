@@ -102,11 +102,26 @@ jobs:
           --fixture tests/fixtures/explore-cards.json
           --output data/test-ci.sqlite3
       - name: Run directly relevant governance tests
+        shell: bash
         env:
           MTG_CARD_DB: data/test-ci.sqlite3
         run: |
-          python scripts/test_shards.py validate
-          python scripts/test_shards.py run generated-validation
+          set -uo pipefail
+          set +e
+          python scripts/test_shards.py validate 2>&1 | tee /tmp/generated-validation.log
+          validate_status=${PIPESTATUS[0]}
+          python scripts/test_shards.py run generated-validation 2>&1 | tee -a /tmp/generated-validation.log
+          shard_status=${PIPESTATUS[0]}
+          set -e
+          if [ "$validate_status" -ne 0 ] || [ "$shard_status" -ne 0 ]; then
+            cp /tmp/generated-validation.log .github/generated_validation_error.txt
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .github/generated_validation_error.txt
+            git commit -m "chore: capture generated validation failure"
+            git push origin HEAD:${GITHUB_REF_NAME}
+            exit 1
+          fi
       - name: Run final policy and hygiene checks
         run: |
           python scripts/finalize_generated.py --check
