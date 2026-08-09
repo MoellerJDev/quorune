@@ -21614,7 +21614,6 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "token Planeswalker entry with an applicable counter-quantity replacement remains fail closed until token creation can suspend atomically",
         "complete face-down, copy-layer, and dynamic continuous-characteristic entry interactions are not implemented"
       ],
       "case_id": "cr-306.5b",
@@ -21640,7 +21639,10 @@
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_competing_entry_counter_replacements_order_to_nine_or_ten",
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_simultaneous_entry_choices_follow_four_player_apnap",
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_resolving_entry_choice_is_private_and_replays_exactly",
-        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_intrinsic_entry_counter_generation_mutant_is_killed"
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_intrinsic_entry_counter_generation_mutant_is_killed",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_planeswalker_entry_uses_counter_replacement_owner",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_entry_counter_owner_mutant_is_killed"
       ],
       "implementation_components": [
         "quorune.entry_counter_model.intrinsic_entry_counters",
@@ -21648,11 +21650,15 @@
         "quorune.entry_counters.intrinsic_entry_counter_effects",
         "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot",
         "quorune.entry_counter_coordination.issue_resolving_entry_replacement_choice",
-        "quorune.counter_placement.commit_counter_placement_plan"
+        "quorune.counter_placement.commit_counter_placement_plan",
+        "quorune.token_creation.PreparedTokenObject",
+        "quorune.token_creation._token_entry_counter_specs",
+        "quorune.counter_placement.prepare_counter_placement_specs"
       ],
       "notes": [
         "Ordinary printed nonnegative integral loyalty is compiled from the canonical Planeswalker card type and enters through a mandatory self-replacement and nested counter event.",
-        "Represented competing quantity replacements use affected-controller ordering; simultaneous entries prepare in APNAP order and a resolving permanent can suspend and replay exactly."
+        "Represented competing quantity replacements use affected-controller ordering; simultaneous entries prepare in APNAP order and a resolving permanent can suspend and replay exactly.",
+        "A represented Planeswalker token reserves prospective identity, exhausts additional-token replacements, then resolves one simultaneous intrinsic-counter batch before either result mutates state."
       ],
       "required_scenarios": [
         "positive",
@@ -22844,7 +22850,6 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "token Battle entry with an applicable counter-quantity replacement remains fail closed until token creation can suspend atomically",
         "complete face-down, copy-layer, and dynamic continuous-characteristic entry interactions are not implemented"
       ],
       "case_id": "cr-310.4b",
@@ -22867,7 +22872,9 @@
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_ordinary_planeswalker_and_battle_entry_use_counter_owner",
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_competing_entry_counter_replacements_order_to_nine_or_ten",
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_simultaneous_entry_choices_follow_four_player_apnap",
-        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_resolving_entry_choice_is_private_and_replays_exactly"
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_resolving_entry_choice_is_private_and_replays_exactly",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_battle_entry_doubles_defense_and_pins_protector",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay"
       ],
       "implementation_components": [
         "quorune.entry_counter_model.intrinsic_entry_counters",
@@ -22875,11 +22882,15 @@
         "quorune.entry_counters.intrinsic_entry_counter_effects",
         "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot",
         "quorune.entry_counter_coordination.issue_resolving_entry_replacement_choice",
-        "quorune.counter_placement.commit_counter_placement_plan"
+        "quorune.counter_placement.commit_counter_placement_plan",
+        "quorune.token_creation.PreparedTokenObject",
+        "quorune.token_creation._token_entry_counter_specs",
+        "quorune.counter_placement.prepare_counter_placement_specs"
       ],
       "notes": [
         "The card-form compiler and entry transaction read printed entry characteristics, so reduced battlefield defense is not copied as the next object's entry count.",
-        "Intrinsic defense is a mandatory self-replacement whose nested counter event participates in affected-controller quantity-replacement ordering and exact replay."
+        "Intrinsic defense is a mandatory self-replacement whose nested counter event participates in affected-controller quantity-replacement ordering and exact replay.",
+        "A represented Battle token reserves prospective identity and protector, then resolves its intrinsic defense-counter batch after every represented additional-token replacement and before mutation."
       ],
       "required_scenarios": [
         "positive",
@@ -46974,6 +46985,9 @@
         "tests.test_token_creation_replacements.TokenCreationReplacementTests.test_resolution_suspends_for_seat_scoped_replacement_order",
         "tests.test_token_creation_replacements.TokenCreationReplacementTests.test_additional_token_component_replays_exactly",
         "tests.test_token_creation_replacements.TokenCreationReplacementTests.test_generic_additional_token_program_replays_exactly",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_planeswalker_entry_uses_counter_replacement_owner",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_battle_entry_doubles_defense_and_pins_protector",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay",
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_zone_replacement_counter_is_a_nested_precommit_event",
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_replacement_choice_replays_exactly",
         "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_fabricate_suspends_before_mutation_and_projection_is_seat_scoped",
@@ -47004,10 +47018,13 @@
         "mana_payment_continuations.execute_mana_choice_capable_priority_action",
         "replacement.replay.ReplacementContinuation",
         "token_creation.create_tokens",
-        "counter_placement.prepare_counter_placements"
+        "token_creation.PreparedTokenObject",
+        "token_creation._token_entry_counter_specs",
+        "counter_placement.prepare_counter_placements",
+        "counter_placement.prepare_counter_placement_specs"
       ],
       "notes": [
-        "The closed mandatory fixed additional-token wording family compiles to an immutable typed operation on the same token event. Added token types and subtypes participate in replacement rediscovery, each source applies at most once, and the token owner commits one timestamped batch after ordering completes. Represented effect-generated and all-placement fixed quantity wording now compiles to a typed v2 counter component over bounded permanent/player predicates. Positive loyalty-symbol costs and bounded fixed creature-counter casting costs enter the same transaction as non-effect placements, suspend before mutation, and replay exactly. Remaining producer and replacement families keep this aggregate rule blocked."
+        "The closed mandatory fixed additional-token wording family compiles to an immutable typed operation on the same token event. Added token types and subtypes participate in replacement rediscovery, each source applies at most once, and the token owner commits one timestamped batch after ordering completes. Prospective Planeswalker and Battle tokens now exhaust those token replacements before resolving one simultaneous intrinsic-counter batch against reserved identity; sequential affected-controller choices suspend without mutation and replay exactly. Represented effect-generated and all-placement fixed quantity wording compiles to a typed v2 counter component over bounded permanent/player predicates. Positive loyalty-symbol costs and bounded fixed creature-counter casting costs enter the same transaction as non-effect placements, suspend before mutation, and replay exactly. Remaining producer and replacement families keep this aggregate rule blocked."
       ],
       "required_scenarios": [
         "positive",

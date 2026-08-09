@@ -16,8 +16,8 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "453bd043dee0c9335a2874385170336b75bc9e82822e762ee7c006e38569f2f0",
-      "version": 9
+      "sha256": "9ce5c077110a787c80ec066f784dba8b72bfbd04c44673654d0659b1e64967ef",
+      "version": 10
     },
     {
       "mechanic_id": "cr-111-tokens",
@@ -40,8 +40,8 @@
     {
       "mechanic_id": "cr-310-battles",
       "path": "mechanics/contracts/battles.json",
-      "sha256": "91045fed2aae908bfb02560b7526676a8be70e7c55091f807c54edf523e1b1a7",
-      "version": 4
+      "sha256": "31d42363c0d39e53cfa6d1e87033693162e2c916eb79ef4bc1e72dca1cfe734c",
+      "version": 5
     },
     {
       "mechanic_id": "cr-507-beginning-of-combat-step",
@@ -6454,17 +6454,17 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "453bd043dee0c9335a2874385170336b75bc9e82822e762ee7c006e38569f2f0",
-      "contract_version": 9,
+      "contract_sha256": "9ce5c077110a787c80ec066f784dba8b72bfbd04c44673654d0659b1e64967ef",
+      "contract_version": 10,
       "coverage_status": "partial",
       "dependencies": [],
       "implementation_component": "closed fixed-counter single-target, fixed target counter-and-characteristic sequence, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v10",
+      "implementation_version": "counter-placement-transaction-v11",
       "kind": "rules_section",
       "known_blockers": [
         "Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with optional, variable, distributed, multi-counter, dynamic, subtype-qualified, combat-qualified, modal, conditional, and compound general target-set instructions",
         "alternative, snow, hybrid, Phyrexian, zero, variable, nonmana, multiple-instance, copied, and granted cumulative upkeep remain residual; combined or modified loyalty costs and other rule-action counter producers are not yet migrated to the shared transaction",
-        "token Planeswalker or Battle entry with an applicable quantity replacement remains fail closed until token creation can suspend atomically",
+        "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Planeswalker or Battle token entry remains outside the prospective-token boundary",
         "Read Ahead and effective copied, gained, removed, or layer-modified Saga chapter abilities remain unsupported",
         "fractional, halving, dynamic-quantity, optional, Class-level-gated, movement, removal, prevention, and other enters-with-counter replacement families remain unsupported",
         "counter type rules beyond existing power/toughness and loyalty consumers are incomplete"
@@ -6545,7 +6545,10 @@
         "test_simultaneous_entry_choices_follow_four_player_apnap",
         "test_resolving_entry_choice_is_private_and_replays_exactly",
         "test_counter_child_tracks_a_later_destination_replacement",
-        "test_token_compatibility_path_fails_before_unsupported_replacement",
+        "test_token_planeswalker_entry_uses_counter_replacement_owner",
+        "test_token_battle_entry_doubles_defense_and_pins_protector",
+        "test_token_and_counter_replacements_resume_sequentially_and_replay",
+        "test_token_entry_counter_owner_mutant_is_killed",
         "test_battle_protector_validation_is_closed",
         "test_ordinary_saga_card_form_is_source_spanned_and_closed",
         "test_entry_and_precombat_lore_use_distinct_counter_paths",
@@ -6958,16 +6961,16 @@
     {
       "category": "card_types",
       "contract_path": "mechanics/contracts/battles.json",
-      "contract_sha256": "91045fed2aae908bfb02560b7526676a8be70e7c55091f807c54edf523e1b1a7",
-      "contract_version": 4,
+      "contract_sha256": "31d42363c0d39e53cfa6d1e87033693162e2c916eb79ef4bc1e72dca1cfe734c",
+      "contract_version": 5,
       "coverage_status": "partial",
       "dependencies": [],
       "implementation_component": "typed card-form entry and counter-replacement transactions plus CommanderEngine Battle combat, trigger, damage, and protector facades",
-      "implementation_version": "battles-v4",
+      "implementation_version": "battles-v5",
       "kind": "rules_section",
       "known_blockers": [
         "nonspell Battle entry still requires a trusted caller to supply any required Siege protector choice",
-        "token Battle entry with an applicable counter-quantity replacement fails closed until token creation can suspend atomically",
+        "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Battle token entry remains outside the prospective-token boundary",
         "attacking or blocking creatures becoming Battles and Battles changing controller during combat are not yet removed from combat by every continuous-effect path",
         "future Battle subtypes are rejected until their protector predicates are present in a pinned Comprehensive Rules snapshot",
         "complete simultaneous/APNAP protector choices and all Battle-targeting interactions are not implemented",
@@ -7013,6 +7016,8 @@
         "test_competing_entry_counter_replacements_order_to_nine_or_ten",
         "test_simultaneous_entry_choices_follow_four_player_apnap",
         "test_resolving_entry_choice_is_private_and_replays_exactly",
+        "test_token_battle_entry_doubles_defense_and_pins_protector",
+        "test_token_and_counter_replacements_resume_sequentially_and_replay",
         "test_battle_protector_validation_is_closed"
       ],
       "trust_level": "untrusted"

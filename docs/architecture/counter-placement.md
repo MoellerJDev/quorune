@@ -1,7 +1,7 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/compiler/fixed_target_effect_sequences.py, semantic_runtime/counter_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/compiler/fixed_target_effect_sequences.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
 verified: "2026-08-09"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -110,6 +110,15 @@ the ordinary affected-controller quantity-replacement ordering. A resolving
 permanent can suspend through `resolving_entry` and resume without replaying
 earlier spell effects. Simultaneous entries prepare in APNAP order without
 mutation.
+
+Planeswalker and Battle tokens reserve immutable prospective refs, physical
+object IDs, logical identities, and a shared entry timestamp before mutation.
+The token owner first exhausts represented additional-token replacements, then
+prepares one simultaneous intrinsic-counter batch against those prospective
+objects. A later quantity-replacement choice suspends through the same strict
+selection journal. Commit allocates the exact reserved identities, creates the
+tokens, and applies the prepared counters; the former replacement-free token
+counter bypass has been removed.
 
 Ordinary non-Read-Ahead Saga lore uses two deliberately distinct typed paths.
 The card-form compiler emits `counter.producer.saga_lore` from the parsed Saga
@@ -344,9 +353,9 @@ The following producers and wordings remain deliberately outside this slice:
 - attachment-relative players, cards outside the battlefield, dynamic or
   compound attached-object predicates, and attachment creation or movement;
 - Fabricate counter choices now suspend and resume through the typed semantic-completion continuation, while zero, variable, copied, and granted Fabricate variants remain explicit compiler residuals;
-- Planeswalker or Battle token entry with an applicable quantity replacement
-  remains fail closed until token creation has an identity-pinned resumable
-  continuation; replacement-free token entry uses the canonical counter owner;
+- optional, variable, state-derived, copied, face-down, or dynamically
+  characteristic-modified Planeswalker and Battle token entry remains outside
+  the represented prospective-token boundary;
 - unsupported Battle subtype protector procedures and unrepresented
   copy-layer, face-down, or dynamic entry-characteristic interactions;
 - counter removal and movement, state-based removals, and card-specific

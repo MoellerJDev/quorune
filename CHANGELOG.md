@@ -2,7 +2,7 @@
 title: "Changelog"
 status: "historical"
 authoritative_source: "merged repository history"
-verified: "2026-08-07"
+verified: "2026-08-09"
 audience: "users and maintainers"
 maintenance: "hand-maintained"
 ---
@@ -10,6 +10,17 @@ maintenance: "hand-maintained"
 # Changelog
 
 ## Unreleased
+
+### Replacement-aware intrinsic counters on tokens
+
+- Planeswalker and Battle tokens now reserve immutable prospective identity,
+  resolve represented additional-token and counter-quantity replacements
+  before mutation, and commit loyalty or defense through the canonical counter
+  owner.
+- Sequential replacement choices preserve one strict journal, affected-seat
+  privacy, transactional rollback, multiplayer ordering, and exact replay.
+  Optional, variable, state-derived, copied, face-down, and broader
+  continuous-characteristic token variants remain explicit limitations.
 
 ### Typed fixed sacrifice casting costs
 

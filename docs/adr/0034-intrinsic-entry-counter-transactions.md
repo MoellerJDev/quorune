@@ -2,7 +2,7 @@
 title: "ADR 0034: intrinsic entry counters use the replacement tree"
 status: "ADR"
 authoritative_source: "this decision record and intrinsic entry-counter implementation"
-verified: "2026-08-08"
+verified: "2026-08-09"
 audience: "rules, compiler, replay, and architecture contributors"
 maintenance: "hand-maintained"
 adr_id: "0034"
@@ -37,6 +37,15 @@ ordering, suspension, commit, projection, and replay. Resolution stores a
 strict `resolving_entry` continuation and resumes the same stack item without
 reapplying already completed effects.
 
+Tokens are created directly on the battlefield rather than moved there. The
+token owner therefore reserves immutable prospective token refs, object IDs,
+logical identities, and one entry timestamp before mutation. It resolves the
+complete additional-token replacement prefix and then one simultaneous typed
+intrinsic-counter batch against those prospective objects. Any second
+replacement choice suspends through the same strict effect selection journal.
+Only after both replacement families finish does the owner allocate the exact
+reserved identities, commit the tokens, and apply the prepared counters.
+
 The engine remains the high-level transaction facade. It does not own a second
 counter write or a second replacement implementation.
 
@@ -57,12 +66,13 @@ counter write or a second replacement implementation.
   data before mutation.
 - Siege protector selection remains a separate entry choice. Unsupported
   Battle subtypes fail closed.
-- Replacement-free Planeswalker and Battle tokens use the canonical counter
-  write plan. Token creation with an applicable counter replacement remains
-  fail closed until token creation can suspend and resume atomically.
+- Planeswalker and Battle tokens use the same counter-placement replacement
+  owner. Additional-token and counter-quantity choices resume sequentially
+  without duplicating either transformation or exposing the continuation to
+  another seat.
 - Loyalty costs, counter removal or movement, Saga lore actions, and broader
-  copy, face-down, and continuous-characteristic interactions remain outside
-  this decision.
+  optional, variable, state-derived token creation, copy, face-down, and
+  continuous-characteristic interactions remain outside this decision.
 - Game Record v3 and public protocol schemas remain unchanged; compiler,
   capability, and continuation fingerprints advance.
 

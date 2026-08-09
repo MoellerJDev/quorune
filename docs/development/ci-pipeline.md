@@ -120,6 +120,12 @@ required. The manifest owns the full/Commander Oracle and CardProgram census
 before the card-unlock frontier, so the frontier cannot compare current source
 against stale status counts. The reusable-piece writer can refresh
 architecture-derived delta metadata without rebuilding the pinned corpus.
+The automatic `rules-derived` owner rebuilds conformance cases, pinned manifest
+hashes, the mechanic registry, and rules/mechanics coverage from authoritative
+review overlays and mechanic contracts without downloading or reparsing the
+Comprehensive Rules. The rules scheduler and platform status explicitly depend
+on that owner, so a rules review or contract edit cannot leave their inputs
+stale while the finalizer still reports success.
 Performance baselines remain
 manual because observed latency is review evidence, not an automatic rewrite.
 Use `--check` for read-only diagnosis and in CI; a successful `--write` already

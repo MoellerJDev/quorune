@@ -172,6 +172,11 @@ the database-backed census in that same finalization step:
 commands, outputs, write policies, and dependency order. It does not replace
 the existing owners for protocol types or pinned rules snapshots. Do not
 hand-order individual platform-status, architecture-audit, or coverage writers.
+The registered `rules-derived` owner rebuilds conformance cases, the rules
+manifest hashes, the mechanic registry, and their coverage documents whenever
+an authoritative conformance review or mechanic contract changes. Do not run
+`simctl rules sync`, hand-edit those outputs, or wait for `rules verify` in CI
+to discover that drift; the ordinary finalizer command owns it.
 `--write` repeats changed owners and their downstream automatic/derived writers
 until a pass changes nothing, then runs every freshness check, documentation
 validation, and diff hygiene. Database-backed corpus writers use `--db <path>`

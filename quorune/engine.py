@@ -12742,7 +12742,7 @@ class CommanderEngine(
         temporary_keywords: Sequence[str] = (),
         aura_target_ref: str | None = None,
         reason: str = "token effect",
-        replacement_selections: Sequence[str | None] = (),
+        replacement_selections: Sequence[str | None | Mapping[str, Any]] = (),
     ) -> list[str]:
         try:
             return create_tokens(

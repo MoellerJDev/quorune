@@ -17,7 +17,10 @@
         "quorune.entry_counters.intrinsic_entry_counter_effects",
         "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot",
         "quorune.entry_counter_coordination.issue_resolving_entry_replacement_choice",
-        "quorune.counter_placement.commit_counter_placement_plan"
+        "quorune.counter_placement.commit_counter_placement_plan",
+        "quorune.token_creation.PreparedTokenObject",
+        "quorune.token_creation._token_entry_counter_specs",
+        "quorune.counter_placement.prepare_counter_placement_specs"
       ],
       "executable_test_ids": [
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_intrinsic_card_form_compiler_declares_exact_typed_capability",
@@ -27,7 +30,10 @@
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_competing_entry_counter_replacements_order_to_nine_or_ten",
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_simultaneous_entry_choices_follow_four_player_apnap",
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_resolving_entry_choice_is_private_and_replays_exactly",
-        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_intrinsic_entry_counter_generation_mutant_is_killed"
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_intrinsic_entry_counter_generation_mutant_is_killed",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_planeswalker_entry_uses_counter_replacement_owner",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_entry_counter_owner_mutant_is_killed"
       ],
       "required_scenarios": [
         "positive",
@@ -46,12 +52,12 @@
         "replay"
       ],
       "blockers": [
-        "token Planeswalker entry with an applicable counter-quantity replacement remains fail closed until token creation can suspend atomically",
         "complete face-down, copy-layer, and dynamic continuous-characteristic entry interactions are not implemented"
       ],
       "notes": [
         "Ordinary printed nonnegative integral loyalty is compiled from the canonical Planeswalker card type and enters through a mandatory self-replacement and nested counter event.",
-        "Represented competing quantity replacements use affected-controller ordering; simultaneous entries prepare in APNAP order and a resolving permanent can suspend and replay exactly."
+        "Represented competing quantity replacements use affected-controller ordering; simultaneous entries prepare in APNAP order and a resolving permanent can suspend and replay exactly.",
+        "A represented Planeswalker token reserves prospective identity, exhausts additional-token replacements, then resolves one simultaneous intrinsic-counter batch before either result mutates state."
       ]
     }
   ]

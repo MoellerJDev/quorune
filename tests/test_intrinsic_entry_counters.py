@@ -12,6 +12,7 @@ from scripts.build_test_database import build_fixture_database
 from quorune.card_programs import CardProgram
 from quorune.card_programs.adapters import compile_card_program
 from quorune.carddb import CardDatabase, CardRecord
+from quorune.counter_placement import PreparedCounterPlacements
 from quorune.deck import DeckLoader
 from quorune.engine import GameRuleError
 from quorune.entry_counters import (
@@ -42,6 +43,7 @@ from quorune.rules.capabilities import (
     load_default_capability_registry,
 )
 from quorune.semantic_runtime import prepare_zone_change_replacement_batch
+from quorune.semantics import SemanticProgram
 
 
 class IntrinsicEntryCounterTests(unittest.TestCase):
@@ -634,7 +636,7 @@ class IntrinsicEntryCounterTests(unittest.TestCase):
             redirected.children[0].payload["target_controller"]
         )
 
-    def test_token_compatibility_path_fails_before_unsupported_replacement(self):
+    def test_token_planeswalker_entry_uses_counter_replacement_owner(self):
         session = self.session(3065006)
         engine = session.engine
         walker_ref = engine.create_token(
@@ -656,19 +658,205 @@ class IntrinsicEntryCounterTests(unittest.TestCase):
             name="Doubling Season",
             ref="a-token-doubling",
         )
-        before = authoritative_state_hash(engine.state)
-        with self.assertRaisesRegex(
-            GameRuleError, "applicable counter replacement"
+        doubled_ref = engine.create_token(
+            "A",
+            name="Replacement Token Walker",
+            characteristics={
+                "type_line": "Token Planeswalker — Test",
+                "loyalty": "3",
+            },
+        )[0]
+        doubled = next(
+            card
+            for card in engine.state.cards.values()
+            if card.ref == doubled_ref
+        )
+        self.assertEqual(6, doubled.counters["loyalty"])
+        self.assertTrue(doubled.annotations["loyalty_initialized"])
+
+    def test_token_battle_entry_doubles_defense_and_pins_protector(self):
+        session = self.session(3065009, players=4)
+        engine = session.engine
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doubling Season",
+            ref="a-battle-doubling",
+        )
+
+        battle_ref = engine.create_token(
+            "A",
+            name="Token Siege",
+            characteristics={
+                "type_line": "Token Battle — Siege",
+                "defense": "4",
+            },
+            battle_protector="B",
+        )[0]
+        battle = next(
+            card
+            for card in engine.state.cards.values()
+            if card.ref == battle_ref
+        )
+        self.assertEqual(8, battle.counters["defense"])
+        self.assertEqual("B", battle.battle_protector)
+
+    def test_token_and_counter_replacements_resume_sequentially_and_replay(self):
+        session = self.session(3065010, players=4)
+        engine = session.engine
+        self.stage_competing_sources(engine, seat="A")
+        for name, ref in (
+            ("Stridehangar Automaton", "a-stridehangar"),
+            ("Worldwalker Helm", "a-worldwalker"),
         ):
+            self.add_permanent(engine, seat="A", name=name, ref=ref)
+
+        before = authoritative_state_hash(engine.state)
+        with self.assertRaises(ReplacementChoiceRequired) as raised:
             engine.create_token(
                 "A",
-                name="Unsupported Token Walker",
+                name="Artifact Token Walker",
+                characteristics={
+                    "type_line": "Token Artifact Planeswalker — Test",
+                    "loyalty": "4",
+                },
+            )
+        self.assertEqual("token.create", raised.exception.batch.events[0].kind)
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+
+        program = SemanticProgram(
+            key="test:token-entry-counter-replacements",
+            label="Create an artifact planeswalker token",
+            effects=[
+                {
+                    "op": "create_token",
+                    "controller": "A",
+                    "name": "Artifact Token Walker",
+                    "characteristics": {
+                        "type_line": (
+                            "Token Artifact Planeswalker — Test"
+                        ),
+                        "loyalty": "4",
+                    },
+                }
+            ],
+            trust_level="provisional",
+        )
+        engine.semantics.put(program)
+        item = StackItem(
+            stack_id="token-entry-counter-replacements",
+            ref="S-token-entry-counter-replacements",
+            kind="triggered_ability",
+            controller="A",
+            label=program.label,
+            semantic_key=program.key,
+            visibility=list(engine.seats),
+        )
+        engine.state.stack.append(item)
+        engine._continue_resolution(
+            stack_ref=item.ref,
+            effects=[dict(value) for value in program.effects],
+            destination=None,
+            note="token entry counter replacement replay",
+        )
+
+        self.assertEqual(
+            "token.create",
+            engine.state.pending_decision.continuation[
+                "replacement_batch"
+            ]["events"][0]["kind"],
+        )
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        projector = StateProjector(self.db, engine.state)
+        first = projector._decision("pilot:A")
+        self.assertIsNotNone(first)
+        for seat in ("B", "C", "D"):
+            self.assertIsNone(projector._decision(f"pilot:{seat}"))
+        first_selection = first["ctx"]["options"][0]["id"]
+        result = session.act(
+            "pilot:A",
+            {
+                "action_id": "choose",
+                "choices": {"replacement": first_selection},
+            },
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual(
+            "counter.place",
+            engine.state.pending_decision.continuation[
+                "replacement_batch"
+            ]["events"][0]["kind"],
+        )
+        second = StateProjector(self.db, engine.state)._decision("pilot:A")
+        second_selection = second["ctx"]["options"][0]["id"]
+        result = session.act(
+            "pilot:A",
+            {
+                "action_id": "choose",
+                "choices": {"replacement": second_selection},
+            },
+        )
+        self.assertTrue(result.ok, result.summary)
+        walkers = [
+            card
+            for card in engine.state.cards.values()
+            if card.is_token
+            and card.zone == "battlefield"
+            and "planeswalker"
+            in engine._type_parts(
+                str(engine._effective_card_data(card).get("type_line") or "")
+            )[0]
+        ]
+        self.assertEqual(1, len(walkers))
+        self.assertIn(walkers[0].counters["loyalty"], {9, 10})
+        self.assertEqual(
+            3,
+            sum(
+                card.is_token and card.zone == "battlefield"
+                for card in engine.state.cards.values()
+            ),
+        )
+        expected_hash = authoritative_state_hash(engine.state)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "token-entry-counter-record"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_token_entry_counter_owner_mutant_is_killed(self):
+        def assert_doubled(seed: int) -> None:
+            session = self.session(seed)
+            engine = session.engine
+            self.add_permanent(
+                engine,
+                seat="A",
+                name="Doubling Season",
+                ref=f"a-token-mutation-{seed}",
+            )
+            ref = engine.create_token(
+                "A",
+                name="Mutation Token Walker",
                 characteristics={
                     "type_line": "Token Planeswalker — Test",
                     "loyalty": "3",
                 },
+            )[0]
+            walker = next(
+                card for card in engine.state.cards.values() if card.ref == ref
             )
-        self.assertEqual(before, authoritative_state_hash(engine.state))
+            self.assertEqual(6, walker.counters.get("loyalty", 0))
+
+        assert_doubled(3065011)
+        with patch(
+            "quorune.token_creation.prepare_counter_placement_specs",
+            return_value=PreparedCounterPlacements((), (), ()),
+        ):
+            with self.assertRaises(AssertionError):
+                assert_doubled(3065012)
 
     def test_battle_protector_validation_is_closed(self):
         self.assertEqual(

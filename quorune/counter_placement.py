@@ -256,7 +256,7 @@ def prepare_counter_placements(
                 "Replacement selections were supplied without counters"
             )
         return PreparedCounterPlacements(events=(), effects=(), journal=())
-    events = tuple(
+    specs = tuple(
         _event_spec(
             host,
             request,
@@ -269,9 +269,64 @@ def prepare_counter_placements(
                     f"{_event_subject_label(host, request)}"
                 )
             ),
-        ).event()
+        )
         for index, request in enumerate(nonzero)
     )
+    return prepare_counter_placement_specs(
+        host,
+        specs,
+        selections=selections,
+        sources=sources,
+        source_zones=source_zones,
+        batch_id=(
+            f"replacement:counter.place:{host.state.revision}:"
+            f"{host.state.event_sequence + 1}"
+        ),
+    )
+
+
+def prepare_counter_placement_specs(
+    host: CounterPlacementHost,
+    specs: Sequence[CounterPlacementEventSpec],
+    *,
+    selections: Sequence[str | None | Mapping[str, Any]] = (),
+    sources: Sequence[Any] | None = None,
+    source_zones: Mapping[str, str] | None = None,
+    batch_id: str,
+) -> PreparedCounterPlacements:
+    """Resolve typed placement specs whose subjects may be prospective.
+
+    Replacement discovery and ordering remain pure. Commit later requires the
+    exact subject and logical identity encoded by every event to exist in its
+    declared zone.
+    """
+
+    if type(batch_id) is not str or not batch_id or batch_id != batch_id.strip():
+        raise CounterPlacementError(
+            "Counter-placement batches require a stable nonempty ID"
+        )
+    if isinstance(specs, (str, bytes, bytearray)) or not isinstance(
+        specs, Sequence
+    ):
+        raise CounterPlacementError(
+            "Counter-placement specs must be a sequence"
+        )
+    if any(not isinstance(spec, CounterPlacementEventSpec) for spec in specs):
+        raise CounterPlacementError(
+            "Counter-placement specs must be typed"
+        )
+    events = tuple(spec.event() for spec in specs)
+    event_ids = tuple(event.event_id for event in events)
+    if len(event_ids) != len(set(event_ids)):
+        raise CounterPlacementError(
+            "Counter-placement event IDs must be unique"
+        )
+    if not events:
+        if selections:
+            raise CounterPlacementError(
+                "Replacement selections were supplied without counters"
+            )
+        return PreparedCounterPlacements(events=(), effects=(), journal=())
     effects = collect_counter_placement_replacement_effects(
         host,
         sources=sources,
@@ -289,10 +344,7 @@ def prepare_counter_placements(
             journal=(),
         )
     resolution = resolve_counter_placement_replacements(
-        batch_id=(
-            f"replacement:counter.place:{host.state.revision}:"
-            f"{host.state.event_sequence + 1}"
-        ),
+        batch_id=batch_id,
         events=events,
         effects=effects,
         apnap_order=host.apnap_order(),

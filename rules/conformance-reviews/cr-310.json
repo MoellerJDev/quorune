@@ -169,7 +169,10 @@
         "quorune.entry_counters.intrinsic_entry_counter_effects",
         "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot",
         "quorune.entry_counter_coordination.issue_resolving_entry_replacement_choice",
-        "quorune.counter_placement.commit_counter_placement_plan"
+        "quorune.counter_placement.commit_counter_placement_plan",
+        "quorune.token_creation.PreparedTokenObject",
+        "quorune.token_creation._token_entry_counter_specs",
+        "quorune.counter_placement.prepare_counter_placement_specs"
       ],
       "executable_test_ids": [
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_enters_with_printed_defense_and_copies_reset_it",
@@ -179,7 +182,9 @@
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_ordinary_planeswalker_and_battle_entry_use_counter_owner",
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_competing_entry_counter_replacements_order_to_nine_or_ten",
         "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_simultaneous_entry_choices_follow_four_player_apnap",
-        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_resolving_entry_choice_is_private_and_replays_exactly"
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_resolving_entry_choice_is_private_and_replays_exactly",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_battle_entry_doubles_defense_and_pins_protector",
+        "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay"
       ],
       "required_scenarios": [
         "positive",
@@ -192,12 +197,12 @@
         "replay"
       ],
       "blockers": [
-        "token Battle entry with an applicable counter-quantity replacement remains fail closed until token creation can suspend atomically",
         "complete face-down, copy-layer, and dynamic continuous-characteristic entry interactions are not implemented"
       ],
       "notes": [
         "The card-form compiler and entry transaction read printed entry characteristics, so reduced battlefield defense is not copied as the next object's entry count.",
-        "Intrinsic defense is a mandatory self-replacement whose nested counter event participates in affected-controller quantity-replacement ordering and exact replay."
+        "Intrinsic defense is a mandatory self-replacement whose nested counter event participates in affected-controller quantity-replacement ordering and exact replay.",
+        "A represented Battle token reserves prospective identity and protector, then resolves its intrinsic defense-counter batch after every represented additional-token replacement and before mutation."
       ]
     },
     {
