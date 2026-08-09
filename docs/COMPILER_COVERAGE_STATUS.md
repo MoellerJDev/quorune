@@ -2,7 +2,7 @@
 title: "Compiler coverage status"
 status: "generated"
 authoritative_source: "coverage/architecture-audit.json"
-verified: "8a0a2946bcbd6730ad6f3f1af39aa23109ddf2475beb9fb4f20c4946e7c9924d"
+verified: "58fb7c7f5a4ecfb928665ba7d840f378119e674c1584089a6dd8079d1a5955e8"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 generated_source: "coverage/architecture-audit.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_architecture_audi
 
 # Compiler coverage status
 
-Source fingerprint: `8a0a2946bcbd6730ad6f3f1af39aa23109ddf2475beb9fb4f20c4946e7c9924d`
+Source fingerprint: `58fb7c7f5a4ecfb928665ba7d840f378119e674c1584089a6dd8079d1a5955e8`
 
 ## Current top-level state
 
@@ -21,6 +21,7 @@ Source fingerprint: `8a0a2946bcbd6730ad6f3f1af39aa23109ddf2475beb9fb4f20c4946e7c
 - Commander Oracle objects: `31623`
 - Exact fraction: `0.08516`
 - Capability records: `109`
+- Assured fixed-target compiler nodes/shapes: `568` / `101`
 
 ## Top blockers
 
@@ -29,7 +30,7 @@ Source fingerprint: `8a0a2946bcbd6730ad6f3f1af39aa23109ddf2475beb9fb4f20c4946e7c
 - Blocked capability records remain: `4`.
 - Configured evidence is incomplete for: `lexing`, `binding`.
 
-Complete corpus, residual, stage, capability, and CardProgram inventories are in the [machine-readable architecture audit](../coverage/architecture-audit.json).
+Complete corpus, residual, stage, capability, and CardProgram inventories are in the [machine-readable architecture audit](../coverage/architecture-audit.json). The corpus-derived fixed-target grammar shapes and representative identities are in the [Commander Oracle census](../coverage/oracle-coverage-commander.json).
 
 Exact generation command:
 

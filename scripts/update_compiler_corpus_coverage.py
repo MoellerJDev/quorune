@@ -13,6 +13,10 @@ if str(ROOT) not in sys.path:
 
 from quorune.card_programs.commands import execute_card_operation
 from quorune.compiler.corpus_reporting import execute_oracle_operation
+from quorune.compiler.target_effect_corpus_assurance import (
+    TargetEffectAssuranceError,
+    validate_target_effect_assurance,
+)
 from quorune.oracle_ir import ORACLE_COMPILER_VERSION
 from quorune.rules.capabilities import load_default_capability_registry
 from quorune.util import stable_json
@@ -152,6 +156,22 @@ def validate_reports(reports: Mapping[str, Mapping[str, Any]]) -> None:
             raise CompilerCorpusCoverageError(
                 "Compiler corpus coverage card snapshots disagree"
             )
+        assurance = oracle.get("target_effect_corpus_assurance")
+        if not isinstance(assurance, Mapping):
+            raise CompilerCorpusCoverageError(
+                "Compiler corpus target-effect assurance is missing"
+            )
+        try:
+            validate_target_effect_assurance(
+                assurance,
+                compiler_version=ORACLE_COMPILER_VERSION,
+                capability_registry=capabilities,
+                capability_profile="commander_review",
+                card_data_snapshot=oracle["card_data_snapshot"],
+                commander_legal_only=commander_only,
+            )
+        except TargetEffectAssuranceError as exc:
+            raise CompilerCorpusCoverageError(str(exc)) from exc
         snapshots.append(oracle["card_data_snapshot"])
     if snapshots[0] != snapshots[1]:
         raise CompilerCorpusCoverageError(

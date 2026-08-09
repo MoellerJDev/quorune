@@ -41,6 +41,19 @@ establishes direct creature target zero, later clauses use the exact pronoun
 “it,” and printed operation order is retained. The runtime consumes only the
 resulting typed node and never reparses those Oracle sentences.
 
+`compiler/target_effect_corpus_assurance.py` independently reconstructs the
+resolution body for every promoted standalone or sequenced fixed-target node,
+then requires the source grammar, emitted effects, target relation, closed
+capability shape, and declared capability closure to agree. The normal pinned
+compiler census derives grammatical shapes and representative identities from
+the complete corpus; it does not maintain a card list. Its synthetic contract
+also covers every accepted keyword, spell/trigger/activation context,
+two-/three-clause and target-/counter-first sequence, controller relation, and
+the adjacent optional, modal, variable, compound, repeated, and multi-target
+forms that must remain residual. The generated assurance lives in the Oracle
+coverage reports and contains hashes and public identities rather than Oracle
+prose.
+
 `compiler/counter_placement_templates.py` separately owns the closed
 single-sentence multi-kind counter grammar. It preserves two or three printed
 fixed placements on one shared source or direct permanent target as one typed
