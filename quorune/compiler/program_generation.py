@@ -8,6 +8,7 @@ from typing import Any, Iterable, Mapping
 from ..carddb import CardDatabase, CardRecord
 from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..object_predicate import ObjectQuerySpec
+from ..riot import RIOT_MECHANIC
 from ..unleash import UNLEASH_MECHANIC
 from ..rules.capabilities import (
     CapabilityRegistry,
@@ -174,6 +175,15 @@ def _generated_ability_id(
                     f"{parts[-2]}:{suffix}"
                 )
             return f"static:{face_id}:n{line}:{suffix}"
+        if (
+            len(parts) >= 2
+            and parts[-1].isdigit()
+            and parts[-2] == RIOT_MECHANIC
+        ):
+            return (
+                f"static:{face_id}:n{line}:{RIOT_MECHANIC}:"
+                f"{parts[-1]}"
+            )
         if str(node_id or "").endswith(":flash"):
             return f"static:{face_id}:n{line}:flash"
         return f"static:{face_id}:n{line}"

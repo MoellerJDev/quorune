@@ -12,8 +12,8 @@ maintenance: "hand-maintained"
 Every mechanic must receive a versioned contract before the generated registry
 may mark it trusted.
 
-The integrated source tree currently contains 61 partial contracts, one tested
-contract, four trusted contracts, and 359 unclassified mechanics. Vigilance
+The integrated source tree currently contains 61 partial contracts, two tested
+contracts, four trusted contracts, and 358 unclassified mechanics. Vigilance
 and Haste use current represented effective keywords for their bounded attack,
 tap-cost, and activation behavior. Flying and Reach share the typed aerial
 block-legality owner while retaining separate dependency-closed capabilities.

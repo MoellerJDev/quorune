@@ -74433,23 +74433,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.136",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_riot_rules.RiotCompilerAndModelTests.test_ordinary_riot_lowers_to_linked_source_spanned_programs"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/riot.json"
+      ],
+      "notes": [
+        "Keyword heading; the bounded ordinary printed family is represented by one linked entry-choice capability per instance."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.136",
       "rule_text_sha256": "745a63f85dde910a64e1d5bf7f8f613fc64c357478b93910162edb23e4377adc",
       "schema_version": 1,
@@ -74458,26 +74462,56 @@
         "end_line": 4995,
         "start_line": 4994
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "granted, copied, lost, and face-down Riot outside trusted typed ability propagation is not compiled",
+        "Oracle-equivalent nonkeyword wording remains outside the closed grammar",
+        "unrepresented zone, counter, continuous-effect, and Haste interactions remain fail-closed"
       ],
       "case_id": "cr-702.136a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.136"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_riot_rules.RiotRuntimeTests.test_counter_and_haste_choices_are_linked_results",
+        "tests.test_riot_rules.RiotRuntimeTests.test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
+        "tests.test_riot_rules.RiotRuntimeTests.test_riot_choice_is_destination_controller_scoped_private_and_replays",
+        "tests.test_riot_rules.RiotRuntimeTests.test_riot_commit_failure_rolls_back_without_mutation"
+      ],
+      "implementation_components": [
+        "quorune.compiler.keyword_nodes.riot_keyword_node",
+        "quorune.semantic_runtime.entry_choices.RiotEntryChoiceHandler",
+        "quorune.replacement.operations.GrantAffectedObjectKeyword",
+        "quorune.entry_keyword_grants.commit_entry_keyword_grants",
+        "quorune.entry_results.commit_prepared_entry_results",
+        "quorune.continuous_effect_state.commit_continuous_effect"
+      ],
+      "notes": [
+        "Applying the represented replacement creates a nested +1/+1 counter event; its canonical decline branch instead grants identity-pinned layer-6 Haste to the entering battlefield incarnation."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.136a",
       "rule_text_sha256": "6ecc5f3d8607cb541b10e1a666479e5c81cebe23fa4d3808160f4a1625512c5d",
       "schema_version": 1,
@@ -74486,26 +74520,46 @@
         "end_line": 4997,
         "start_line": 4996
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "multiple granted or copied Riot instances outside trusted typed ability propagation remain unsupported",
+        "the aggregate ability-copy and face-change interaction matrix remains incomplete"
       ],
       "case_id": "cr-702.136b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.136"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_riot_rules.RiotCompilerAndModelTests.test_ordinary_riot_lowers_to_linked_source_spanned_programs",
+        "tests.test_riot_rules.RiotRuntimeTests.test_multiple_riot_instances_are_independent"
+      ],
+      "implementation_components": [
+        "quorune.compiler.keyword_nodes.keyword_node_plans",
+        "quorune.compiler.program_generation._generated_ability_id",
+        "quorune.semantic_runtime.entry_choices.RiotEntryChoiceHandler"
+      ],
+      "notes": [
+        "Each represented printed instance has a distinct source-spanned program and replacement identity, so its counter-or-Haste choice is independent."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.136b",
       "rule_text_sha256": "7296f9239f346a61a9fab465003ffdc2180014db8fdd896c95c38aa2f8151d4a",
       "schema_version": 1,
@@ -74514,7 +74568,7 @@
         "end_line": 4999,
         "start_line": 4998
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

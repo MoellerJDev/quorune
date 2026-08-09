@@ -1,5 +1,5 @@
 {
-  "contract_count": 86,
+  "contract_count": 87,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -413,6 +413,12 @@
       "mechanic_id": "cr-608-resolving-spells-and-abilities",
       "path": "mechanics/contracts/resolving-spells-and-abilities.json",
       "sha256": "bf19236ce84713dbba2a84c73b9cefaafa302c57dca08a6c0dbb100df7b4bc96",
+      "version": 1
+    },
+    {
+      "mechanic_id": "riot",
+      "path": "mechanics/contracts/riot.json",
+      "sha256": "2aaa5431c014a9d854da9ec9665a4f3cbf855e45a6d292fd94f15cfc04283d3f",
       "version": 1
     },
     {
@@ -3668,19 +3674,40 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/riot.json",
+      "contract_sha256": "2aaa5431c014a9d854da9ec9665a4f3cbf855e45a6d292fd94f15cfc04283d3f",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.riot, quorune.compiler.keyword_nodes.riot_keyword_node, quorune.semantic_runtime.entry_choices.RiotEntryChoiceHandler, quorune.replacement.operations.GrantAffectedObjectKeyword, quorune.entry_keyword_grants.commit_entry_keyword_grants, quorune.entry_results.commit_prepared_entry_results, and quorune.continuous_effect_state.commit_continuous_effect",
+      "implementation_version": "typed-riot-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "granted, copied, lost, and face-down Riot requires trusted typed ability propagation",
+        "Oracle-equivalent nonkeyword wording remains unsupported",
+        "alternatives other than Haste remain unsupported",
+        "unrepresented zone, counter, continuous-effect, and Haste interactions remain fail-closed",
+        "aggregate counters, replacement effects, continuous effects, and Haste remain incomplete"
+      ],
       "mechanic_id": "riot",
       "official_name": "Riot",
       "rule_references": [
         "702.136"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_ordinary_riot_lowers_to_linked_source_spanned_programs",
+        "test_riot_models_descriptors_and_operations_reject_malformed_values",
+        "test_unsupported_riot_wording_remains_material_residual",
+        "test_riot_dependencies_fail_closed",
+        "test_counter_and_haste_choices_are_linked_results",
+        "test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
+        "test_multiple_riot_instances_are_independent",
+        "test_riot_choice_is_destination_controller_scoped_private_and_replays",
+        "test_riot_commit_failure_rolls_back_without_mutation",
+        "test_riot_runtime_mutations_are_killed"
+      ],
       "trust_level": "untrusted"
     },
     {

@@ -339,6 +339,39 @@ class CreateAffectedObjectCounter:
 
 
 @dataclass(frozen=True, slots=True)
+class GrantAffectedObjectKeyword:
+    """Grant one closed keyword to the affected entering zone object."""
+
+    keyword: str
+    sequence: int = 0
+    schema_version: int = OPERATION_SCHEMA_VERSION
+
+    def __post_init__(self) -> None:
+        if type(self.keyword) is not str:
+            raise ReplacementOperationError(
+                "Affected-object keyword must be a string"
+            )
+        keyword = " ".join(self.keyword.casefold().split())
+        if keyword not in {"haste"}:
+            raise ReplacementOperationError(
+                "Affected-object keyword is outside the represented vocabulary"
+            )
+        object.__setattr__(self, "keyword", keyword)
+        _integer(
+            self.sequence,
+            field="affected-object keyword sequence",
+            minimum=0,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "op": "grant_affected_object_keyword",
+            "keyword": self.keyword,
+            "sequence": self.sequence,
+        }
+
+
+@dataclass(frozen=True, slots=True)
 class CreateAdditionalToken:
     """Add one fixed token specification to a token-creation event.
 
@@ -525,6 +558,7 @@ ReplacementOperation: TypeAlias = (
     | UnionValues
     | CreateNestedEvent
     | CreateAffectedObjectCounter
+    | GrantAffectedObjectKeyword
     | CreateAdditionalToken
     | ReserveZoneChange
     | CapResultLifeLoss
@@ -545,6 +579,7 @@ _TYPED_OPERATION_TYPES = (
     UnionValues,
     CreateNestedEvent,
     CreateAffectedObjectCounter,
+    GrantAffectedObjectKeyword,
     CreateAdditionalToken,
     ReserveZoneChange,
     CapResultLifeLoss,
@@ -630,6 +665,26 @@ def _affected_object_counter_from_dict(
     )
 
 
+def _affected_object_keyword_from_dict(
+    value: Mapping[str, Any],
+    *,
+    operation: str,
+) -> GrantAffectedObjectKeyword:
+    _exact_fields(
+        value,
+        {"op", "keyword", "sequence"},
+        operation=operation,
+    )
+    return GrantAffectedObjectKeyword(
+        keyword=value["keyword"],
+        sequence=_integer(
+            value["sequence"],
+            field="affected-object keyword sequence",
+            minimum=0,
+        ),
+    )
+
+
 def _additional_token_from_dict(
     value: Mapping[str, Any],
     *,
@@ -674,6 +729,58 @@ def _additional_token_from_dict(
         subtypes=tuple(subtypes),
         handler_id=value["handler_id"],
         source_ref=value["source_ref"],
+    )
+
+
+def _redirect_damage_from_dict(
+    value: Mapping[str, Any],
+    *,
+    operation: str,
+) -> RedirectDamage:
+    _exact_fields(
+        value,
+        {
+            "op",
+            "target",
+            "target_kind",
+            "target_controller",
+            "target_object_id",
+            "target_logical_object_id",
+            "target_owner",
+            "target_types",
+            "target_subtypes",
+        },
+        operation=operation,
+    )
+    target_types = value["target_types"]
+    target_subtypes = value["target_subtypes"]
+    if not isinstance(target_types, (list, tuple)) or not isinstance(
+        target_subtypes, (list, tuple)
+    ):
+        raise ReplacementOperationError(
+            "Damage redirection type fields must be arrays"
+        )
+    return RedirectDamage(
+        target=str(value["target"] or ""),
+        target_kind=str(value["target_kind"] or ""),
+        target_controller=str(value["target_controller"] or ""),
+        target_object_id=(
+            str(value["target_object_id"])
+            if value["target_object_id"] is not None
+            else None
+        ),
+        target_logical_object_id=(
+            str(value["target_logical_object_id"])
+            if value["target_logical_object_id"] is not None
+            else None
+        ),
+        target_owner=(
+            str(value["target_owner"])
+            if value["target_owner"] is not None
+            else None
+        ),
+        target_types=tuple(str(item) for item in target_types),
+        target_subtypes=tuple(str(item) for item in target_subtypes),
     )
 
 
@@ -729,51 +836,7 @@ def operation_from_dict(value: Mapping[str, Any]) -> ReplacementOperation:
             consume_on_application=value["consume_on_application"],
         )
     if op == "redirect_damage":
-        _exact_fields(
-            value,
-            {
-                "op",
-                "target",
-                "target_kind",
-                "target_controller",
-                "target_object_id",
-                "target_logical_object_id",
-                "target_owner",
-                "target_types",
-                "target_subtypes",
-            },
-            operation=op,
-        )
-        target_types = value["target_types"]
-        target_subtypes = value["target_subtypes"]
-        if not isinstance(target_types, (list, tuple)) or not isinstance(
-            target_subtypes, (list, tuple)
-        ):
-            raise ReplacementOperationError(
-                "Damage redirection type fields must be arrays"
-            )
-        return RedirectDamage(
-            target=str(value["target"] or ""),
-            target_kind=str(value["target_kind"] or ""),
-            target_controller=str(value["target_controller"] or ""),
-            target_object_id=(
-                str(value["target_object_id"])
-                if value["target_object_id"] is not None
-                else None
-            ),
-            target_logical_object_id=(
-                str(value["target_logical_object_id"])
-                if value["target_logical_object_id"] is not None
-                else None
-            ),
-            target_owner=(
-                str(value["target_owner"])
-                if value["target_owner"] is not None
-                else None
-            ),
-            target_types=tuple(str(item) for item in target_types),
-            target_subtypes=tuple(str(item) for item in target_subtypes),
-        )
+        return _redirect_damage_from_dict(value, operation=op)
     if op in {"append", "union"}:
         _exact_fields(value, {"op", "field", "values"}, operation=op)
         values = value["values"]
@@ -795,6 +858,8 @@ def operation_from_dict(value: Mapping[str, Any]) -> ReplacementOperation:
         return CreateNestedEvent(FrozenMap(event))
     if op == "create_affected_object_counter":
         return _affected_object_counter_from_dict(value, operation=op)
+    if op == "grant_affected_object_keyword":
+        return _affected_object_keyword_from_dict(value, operation=op)
     if op == "create_additional_token":
         return _additional_token_from_dict(value, operation=op)
     if op == "reserve_zone_change":

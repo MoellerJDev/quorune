@@ -66,11 +66,11 @@ from .continuous_effect_state import (
     expire_end_of_turn_continuous_effects,
 )
 from .counter_placement import (
-    commit_counter_events_from_resolution,
     CounterPlacementError,
     place_counters_on_controlled_subtype,
     place_counters_on_refs,
 )
+from .entry_results import commit_prepared_entry_results
 from .counter_state import (
     CounterChange,
     CounterStateError,
@@ -1836,7 +1836,7 @@ class CommanderEngine(
             requested_destination=requested_destination,
             error_type=StateInvariantError,
         )
-        commit_counter_events_from_resolution(self, prepared_replacement, reason=reason, log=log, error_type=StateInvariantError)
+        commit_prepared_entry_results(self, prepared_replacement, card, reason=reason, log=log, error_type=StateInvariantError)
         mark_intrinsic_entry_counters_initialized(card, destination=card.zone, destination_type_line=destination_type_line)
         if semantic_events:
             self._dispatch_zone_change_events(

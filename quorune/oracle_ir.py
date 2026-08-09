@@ -49,6 +49,7 @@ from .compiler.keyword_nodes import (
     evolve_keyword_node,
     fabricate_keyword_node,
     keyword_node_plans,
+    riot_keyword_node,
     unleash_keyword_nodes,
 )
 from .compiler.ir_model import (
@@ -75,13 +76,14 @@ from .declaration_costs import parse_declaration_cost_line
 from .declaration_restrictions import parse_declaration_restriction_line
 from .rules.capabilities import CapabilityRegistry
 from .rules.source_references import SourceReferenceSpec
+from .riot import RIOT_MECHANIC
 from .semantics import SemanticProgram, SemanticRegistry
 from .unleash import UNLEASH_MECHANIC
 from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v59"
+ORACLE_COMPILER_VERSION = "oracle-ir-v60"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -670,6 +672,19 @@ def _keyword_nodes(
     )
     nodes: list[OracleNode] = []
     for plan in plans:
+        if plan.mechanics == (RIOT_MECHANIC,):
+            nodes.append(
+                riot_keyword_node(
+                    node_id=plan.node_id,
+                    line=plan.line,
+                    material_line=plan.material_line,
+                    span=plan.span,
+                    capability_registry=capability_registry,
+                    capability_profile=capability_profile,
+                    residuals=residuals,
+                )
+            )
+            continue
         if plan.mechanics == (UNLEASH_MECHANIC,):
             nodes.extend(
                 unleash_keyword_nodes(
