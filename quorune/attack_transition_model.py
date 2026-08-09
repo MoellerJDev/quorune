@@ -17,6 +17,7 @@ ATTACK_TRIGGER_KINDS = frozenset(
         CombatKeywordTriggerKind.EXALTED,
         CombatKeywordTriggerKind.BATTLE_CRY,
         CombatKeywordTriggerKind.MELEE,
+        CombatKeywordTriggerKind.MENTOR,
     }
 )
 
@@ -89,6 +90,7 @@ class AttackTransitionParticipant:
     controller: str
     is_creature: bool
     trigger_specs: tuple[CombatKeywordTriggerSpec, ...] = ()
+    power: int | None = None
 
     def __post_init__(self) -> None:
         _identity(self.object_id, field="Attack participant physical identity")
@@ -101,6 +103,10 @@ class AttackTransitionParticipant:
         if type(self.is_creature) is not bool:
             raise AttackTransitionError(
                 "Attack participant is_creature must be a boolean"
+            )
+        if self.power is not None and type(self.power) is not int:
+            raise AttackTransitionError(
+                "Attack participant power must be an exact integer or null"
             )
         specs = tuple(self.trigger_specs)
         if any(
@@ -128,29 +134,34 @@ class AttackTransitionParticipant:
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             **self.identity.to_dict(),
             "controller": self.controller,
             "is_creature": self.is_creature,
             "trigger_specs": [spec.to_dict() for spec in self.trigger_specs],
         }
+        if self.power is not None:
+            result["power"] = self.power
+        return result
 
     @classmethod
     def from_dict(
         cls, value: Mapping[str, Any]
     ) -> "AttackTransitionParticipant":
-        data = _exact_mapping(
-            value,
-            {
-                "object_id",
-                "logical_object_id",
-                "reference",
-                "controller",
-                "is_creature",
-                "trigger_specs",
-            },
-            field="Attack transition participant",
-        )
+        fields = set(value) if isinstance(value, Mapping) else set()
+        expected = {
+            "object_id",
+            "logical_object_id",
+            "reference",
+            "controller",
+            "is_creature",
+            "trigger_specs",
+        }
+        if fields not in {frozenset(expected), frozenset({*expected, "power"})}:
+            raise AttackTransitionError(
+                "Attack transition participant has a closed field set"
+            )
+        data = value
         raw_specs = data["trigger_specs"]
         if not isinstance(raw_specs, (list, tuple)):
             raise AttackTransitionError(
@@ -166,6 +177,7 @@ class AttackTransitionParticipant:
                 CombatKeywordTriggerSpec.from_dict(spec)
                 for spec in raw_specs
             ),
+            power=data.get("power"),
         )
 
 

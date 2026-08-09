@@ -913,6 +913,33 @@
       "status": "trusted"
     },
     {
+      "id": "counter.producer.mentor",
+      "version": 1,
+      "official_rules": ["115.1", "115.3", "122.1", "122.1a", "122.6", "603.2c", "603.3", "603.3d", "608.2b", "608.2h", "614.16", "616.1", "702.134", "702.134a", "702.134b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile each ordinary printed Mentor instance as an independent attack trigger, choose one current attacking creature with power less than the source's current-or-last-known power, and place one +1/+1 counter through the canonical replacement-aware counter transaction.",
+        "inputs": ["one ordinary printed Mentor instance", "one immutable completed attack transition", "current effective Mentor source power with public last-known fallback", "one legal public attacking creature target", "source and target logical identity"],
+        "outputs": ["one trigger per Mentor instance", "seat-scoped mandatory target selection before priority", "resolution-time logical identity and relative-power revalidation", "replacement-aware +1/+1 counter placement", "exact replay"],
+        "exclusions": ["the CR 702.134c mentors-another-creature event and listeners", "granted, copied, lost, or face-down Mentor outside trusted typed fragments", "Oracle-equivalent nonkeyword wording", "put-onto-the-battlefield-attacking effects outside the canonical declared-attacker transition", "source phasing until a typed phasing transition captures immediate pre-phase-out power", "unsupported effective power characteristic families", "trigger doubling policies beyond ordinary represented trigger placement"]
+      },
+      "dependencies": ["counter.producer.fixed_effect", "target.revalidate_resolution", "trigger.placement.apnap"],
+      "implementation_components": ["quorune.mentor.MentorTriggerOccurrence", "quorune.mentor.derive_mentor_trigger_occurrences", "quorune.relative_power_target.RelativePowerTargetCondition", "quorune.relative_power_target.pin_relative_power_source_departures", "quorune.target_predicates.target_predicate_matches", "quorune.semantic_runtime.ability_fragments.MentorAbilityFragmentHandler", "quorune.counter_placement.place_counters_on_refs"],
+      "positive_tests": ["test_mentor_compiles_with_precise_spans_and_capability_closure", "test_mentor_offers_only_attacking_creatures_with_lesser_power", "test_mentor_places_replacement_aware_counter_after_target_revalidation", "test_mentor_occurrences_preserve_multiplicity_and_identity"],
+      "negative_tests": ["test_relative_power_condition_is_strict_and_uses_lki_only_on_departure", "test_current_power_change_can_make_mentor_target_illegal", "test_illegal_mentor_target_rejects_without_mutation", "test_no_lesser_attacker_removes_mandatory_target_trigger", "test_unsupported_mentor_wording_and_blocked_dependency_fail_closed"],
+      "interaction_tests": ["test_mentor_places_replacement_aware_counter_after_target_revalidation", "test_departed_mentor_source_uses_public_last_known_power", "test_departure_pins_power_after_trigger_creation"],
+      "multiplayer_tests": ["test_mentor_offers_only_attacking_creatures_with_lesser_power"],
+      "privacy_tests": ["test_mentor_offers_only_attacking_creatures_with_lesser_power"],
+      "replay_tests": ["test_mentor_target_choice_and_counter_replay_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Mentor CardPrograms remain partial whenever ordinary trigger placement, resolution-time target revalidation, or the canonical replacement-aware fixed counter result is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_mentor_compiler_mutant_is_killed removes the typed Mentor fragment lowering and proves the source-spanned runtime handler disappears.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "counter.producer.fabricate",
       "version": 1,
       "official_rules": ["122.1", "122.6", "603.3", "603.6a", "702.123", "702.123a", "702.123b"],

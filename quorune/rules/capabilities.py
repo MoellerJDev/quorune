@@ -84,6 +84,7 @@ _BUSHIDO_MECHANIC = "bu" + "shido"
 _EXALTED_MECHANIC = "ex" + "alted"
 _BATTLE_CRY_MECHANIC = "battle" + " cry"
 _MELEE_MECHANIC = "me" + "lee"
+_MENTOR_MECHANIC = "men" + "tor"
 _CYCLING_MECHANIC = "cyc" + "ling"
 _EVOLVE_MECHANIC = "evo" + "lve"
 _PERSIST_MECHANIC = "per" + "sist"
@@ -126,6 +127,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _EXALTED_MECHANIC: ("combat.trigger.exalted",),
     _BATTLE_CRY_MECHANIC: ("combat.trigger.battle_cry",),
     _MELEE_MECHANIC: ("combat.trigger.melee",),
+    _MENTOR_MECHANIC: ("counter.producer.mentor",),
     _DEATHTOUCH_MECHANIC: (
         "combat.damage.assignment.deathtouch",
         "damage.result.deathtouch",

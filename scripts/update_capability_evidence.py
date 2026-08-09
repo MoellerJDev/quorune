@@ -63,6 +63,11 @@ MUTATION_TESTS = {
         "EvolveCompilerTests."
         "test_evolve_compiler_mutant_is_killed"
     ),
+    "counter.producer.mentor": (
+        "tests.test_mentor_rules."
+        "MentorModelAndCompilerTests."
+        "test_mentor_compiler_mutant_is_killed"
+    ),
     "counter.producer.intrinsic_entry": (
         "tests.test_intrinsic_entry_counters."
         "IntrinsicEntryCounterTests."
