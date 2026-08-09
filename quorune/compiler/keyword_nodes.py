@@ -15,6 +15,7 @@ from ..unleash import (
     unleash_block_handler_descriptor,
     unleash_entry_handler_descriptor,
 )
+from ..riot import RIOT_MECHANIC, riot_entry_handler_descriptor
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
 from .cycling_nodes import ordinary_cycling_keyword_node
 from .dependency_gate import DependencyGate, explicit_capability_gate
@@ -33,6 +34,7 @@ _FABRICATE_MECHANIC = "fabri" + "cate"
 _PERSIST_MECHANIC = PERSIST_KEYWORD
 _UNDYING_MECHANIC = UNDYING_KEYWORD
 _UNLEASH_MECHANIC = UNLEASH_MECHANIC
+_RIOT_MECHANIC = RIOT_MECHANIC
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,7 +70,12 @@ def keyword_node_plans(
         mechanic
         for mechanic in mechanics
         if mechanic
-        in {_PERSIST_MECHANIC, _UNDYING_MECHANIC, _UNLEASH_MECHANIC}
+        in {
+            _PERSIST_MECHANIC,
+            _RIOT_MECHANIC,
+            _UNDYING_MECHANIC,
+            _UNLEASH_MECHANIC,
+        }
     )
     if not split_mechanics:
         return (
@@ -93,6 +100,7 @@ def keyword_node_plans(
         for mechanic in (
             _EVOLVE_MECHANIC,
             _PERSIST_MECHANIC,
+            _RIOT_MECHANIC,
             _UNDYING_MECHANIC,
             _UNLEASH_MECHANIC,
         )
@@ -135,6 +143,7 @@ def keyword_node_plans(
             _FABRICATE_MECHANIC,
             _EVOLVE_MECHANIC,
             _PERSIST_MECHANIC,
+            _RIOT_MECHANIC,
             _UNDYING_MECHANIC,
             _UNLEASH_MECHANIC,
         }
@@ -396,6 +405,76 @@ def unleash_keyword_nodes(
     return tuple(result)
 
 
+def riot_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleNode:
+    """Lower ordinary Riot as one linked entry-result choice."""
+
+    ordinary = material_line.strip().rstrip(".").casefold() == RIOT_MECHANIC
+    gate = explicit_capability_gate(
+        "counter.producer.riot",
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    blockers = (
+        gate.blockers
+        if ordinary
+        else ("mechanic:riot-unsupported-wording",)
+    )
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind=(
+                    "dependency_contract" if ordinary else "keyword_grammar"
+                ),
+                text=line,
+                span=span,
+                reason=(
+                    "Riot depends on a blocked typed capability"
+                    if ordinary
+                    else "Riot wording is outside the ordinary keyword grammar"
+                ),
+                blockers=blockers,
+            ),
+        )
+        if blockers
+        else ()
+    )
+    return OracleNode(
+        node_id=node_id,
+        kind="static_ability",
+        text=line,
+        span=span,
+        active_zone="all",
+        event="zone.change",
+        lowerable=ordinary,
+        exact=ordinary and not blockers,
+        template_id="riot-linked-entry-choice-v1" if ordinary else None,
+        handlers=(riot_entry_handler_descriptor(),) if ordinary else (),
+        runtime_coverage=("linked_entry_counter_or_haste",) if ordinary else (),
+        mechanics=(RIOT_MECHANIC,),
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        capability_profile=(
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    )
+
+
 def fabricate_keyword_node(
     *,
     node_id: str,
@@ -509,5 +588,6 @@ __all__ = [
     "evolve_keyword_node",
     "fabricate_keyword_node",
     "keyword_node_plans",
+    "riot_keyword_node",
     "unleash_keyword_nodes",
 ]

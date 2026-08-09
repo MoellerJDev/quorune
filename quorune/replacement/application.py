@@ -23,6 +23,7 @@ from .operations import (
     CreateResultDraws,
     CreateNestedEvent,
     DredgeDraw,
+    GrantAffectedObjectKeyword,
     MultiplyAmount,
     PreventAmount,
     PreventDraw,
@@ -455,6 +456,33 @@ def _apply_additional_token(
     )
 
 
+def _apply_affected_object_keyword(
+    event: ReplaceableEvent,
+    payload: dict[str, Any],
+    operation: GrantAffectedObjectKeyword,
+    *,
+    effect_id: str,
+) -> None:
+    if (
+        event.kind != "zone.change"
+        or payload.get("destination") != "battlefield"
+    ):
+        raise ReplacementEffectError(
+            "Affected-object keyword grants require battlefield entry"
+        )
+    grants = payload.get("entry_keyword_grants", ())
+    if not isinstance(grants, Sequence) or isinstance(grants, (str, bytes)):
+        raise ReplacementEffectError("Entry keyword grants must be an array")
+    payload["entry_keyword_grants"] = [
+        *list(grants),
+        {
+            "effect_id": effect_id,
+            "keyword": operation.keyword,
+            "sequence": operation.sequence,
+        },
+    ]
+
+
 def _apply_operation(
     event: ReplaceableEvent,
     payload: dict[str, Any],
@@ -529,6 +557,14 @@ def _apply_operation(
             event,
             payload,
             children,
+            operation,
+            effect_id=effect_id,
+        )
+        return entry_scope
+    if isinstance(operation, GrantAffectedObjectKeyword):
+        _apply_affected_object_keyword(
+            event,
+            payload,
             operation,
             effect_id=effect_id,
         )
@@ -611,36 +647,19 @@ def canonical_replacement_selection(
     return selected_effect_id
 
 
-def apply_replacement(
-    choice: ReplacementChoice,
-    effects: Iterable[ReplacementEffect],
-    selected_effect_id: str | None,
+def _apply_effect_operations(
+    event: ReplaceableEvent,
+    effect: ReplacementEffect,
+    operations: Sequence[Any],
 ) -> ReplaceableEvent:
-    all_effects = canonical_effects(effects)
-    by_id = {effect.effect_id: effect for effect in all_effects}
-    selection = canonical_replacement_selection(choice, selected_effect_id)
-    if selection.startswith("decline:"):
-        declined = selection.removeprefix("decline:")
-        if declined not in choice.options or declined not in choice.optional_options:
-            raise ReplacementEffectError(
-                "Selected replacement cannot currently be declined"
-            )
-        return choice.event.with_payload(
-            choice.event.payload, applied_effect=declined
-        )
-    if selection not in choice.options:
-        raise ReplacementEffectError(
-            "Selected replacement is not currently applicable"
-        )
-    effect = by_id[selection]
-    payload = thaw_value(choice.event.payload)
-    children = list(choice.event.children)
-    entry_scope = choice.event.entry_scope
-    affected_player = choice.event.affected_player
-    affected_object = choice.event.affected_object
-    for operation in effect.operations:
+    payload = thaw_value(event.payload)
+    children = list(event.children)
+    entry_scope = event.entry_scope
+    affected_player = event.affected_player
+    affected_object = event.affected_object
+    for operation in operations:
         if isinstance(operation, RedirectDamage):
-            if choice.event.kind != "damage":
+            if event.kind != "damage":
                 raise ReplacementEffectError(
                     "Damage redirection can apply only to a damage event"
                 )
@@ -676,7 +695,7 @@ def apply_replacement(
             continue
         prevented_before = int(payload.get("prevented", 0))
         entry_scope = _apply_operation(
-            choice.event,
+            event,
             payload,
             children,
             entry_scope,
@@ -691,18 +710,50 @@ def apply_replacement(
             )
             payload["prevention_applied"] = by_effect
     chooser_history = dict(payload.get("replacement_choosers") or {})
-    chooser_history[effect.effect_id] = choice.event.chooser
+    chooser_history[effect.effect_id] = event.chooser
     payload["replacement_choosers"] = chooser_history
     return ReplaceableEvent(
-        event_id=choice.event.event_id,
-        kind=choice.event.kind,
+        event_id=event.event_id,
+        kind=event.kind,
         affected_player=affected_player,
         affected_object=affected_object,
         payload=payload,
-        applied_effects=(*choice.event.applied_effects, effect.effect_id),
+        applied_effects=(*event.applied_effects, effect.effect_id),
         children=tuple(children),
         entry_scope=entry_scope,
     )
+
+
+def apply_replacement(
+    choice: ReplacementChoice,
+    effects: Iterable[ReplacementEffect],
+    selected_effect_id: str | None,
+) -> ReplaceableEvent:
+    all_effects = canonical_effects(effects)
+    by_id = {effect.effect_id: effect for effect in all_effects}
+    selection = canonical_replacement_selection(choice, selected_effect_id)
+    if selection.startswith("decline:"):
+        declined = selection.removeprefix("decline:")
+        if declined not in choice.options or declined not in choice.optional_options:
+            raise ReplacementEffectError(
+                "Selected replacement cannot currently be declined"
+            )
+        effect = by_id[declined]
+        if effect.decline_operations:
+            return _apply_effect_operations(
+                choice.event,
+                effect,
+                effect.decline_operations,
+            )
+        return choice.event.with_payload(
+            choice.event.payload, applied_effect=declined
+        )
+    if selection not in choice.options:
+        raise ReplacementEffectError(
+            "Selected replacement is not currently applicable"
+        )
+    effect = by_id[selection]
+    return _apply_effect_operations(choice.event, effect, effect.operations)
 
 
 def resolve_replacements(

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 64,
+  "registry_version": 65,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -801,6 +801,33 @@
       "dependency_fail_closed_rationale": "The generated optional entry-counter program cannot become trusted when canonical counter-quantity replacement is blocked.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_unleash_entry_runtime_mutation_is_killed removes the self-entry replacement effect and the accepted apply choice no longer produces its required counter.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.riot",
+      "version": 1,
+      "official_rules": ["122.1", "122.6", "302.6", "613.1f", "614.1c", "614.12", "614.16", "616.1", "702.10", "702.10a", "702.10b", "702.10c", "702.10d", "702.136", "702.136a", "702.136b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve each ordinary Riot instance as one affected-object replacement choice between a replacement-aware +1/+1 entry counter and a persistent layer-6 Haste grant to the entering zone object.",
+        "inputs": ["one source-spanned ordinary Riot keyword instance", "same physical card proposing battlefield entry", "prospective battlefield controller", "complete represented zone and counter replacement set", "current logical object identity"],
+        "outputs": ["one independent affected-controller replacement choice per Riot instance", "nested replacement-aware +1/+1 counter placement when applied", "identity-pinned layer-6 Haste grant when declined", "canonical replacement journal", "exact replay"],
+        "exclusions": ["variable or nonpositive counter amounts", "alternatives other than Haste", "granted or copied Riot outside trusted typed ability fragments", "Oracle-equivalent nonkeyword wording", "unrepresented zone, counter, continuous-effect, or Haste interactions"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement", "combat.attack.haste", "activation.tap_untap_cost.haste"],
+      "implementation_components": ["quorune.riot.riot_entry_handler_descriptor", "quorune.compiler.keyword_nodes.riot_keyword_node", "quorune.semantic_runtime.entry_choices.RiotEntryChoiceHandler", "quorune.replacement.operations.GrantAffectedObjectKeyword", "quorune.entry_keyword_grants.commit_entry_keyword_grants", "quorune.entry_results.commit_prepared_entry_results", "quorune.continuous_effect_state.commit_continuous_effect", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot"],
+      "positive_tests": ["test_ordinary_riot_lowers_to_linked_source_spanned_programs", "test_counter_and_haste_choices_are_linked_results"],
+      "negative_tests": ["test_riot_models_descriptors_and_operations_reject_malformed_values", "test_unsupported_riot_wording_remains_material_residual"],
+      "interaction_tests": ["test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules"],
+      "multiplayer_tests": ["test_riot_choice_is_destination_controller_scoped_private_and_replays"],
+      "privacy_tests": ["test_riot_choice_is_destination_controller_scoped_private_and_replays"],
+      "replay_tests": ["test_riot_choice_is_destination_controller_scoped_private_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Generated Riot programs cannot become trusted when counter quantity replacement or either represented Haste legality owner is blocked.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused mutations remove the Riot replacement or its decline-result keyword commit; the accepted result then lacks the required counter or Haste and the runtime assertions fail.",
       "blockers": [],
       "status": "trusted"
     },

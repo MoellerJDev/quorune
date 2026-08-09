@@ -394,6 +394,9 @@ class ReplacementEffect:
     replacement_class: ReplacementClass
     conditions: Mapping[str, Any] = field(default_factory=dict)
     operations: tuple[ReplacementOperation | Mapping[str, Any], ...] = ()
+    decline_operations: tuple[
+        ReplacementOperation | Mapping[str, Any], ...
+    ] = ()
     optional: bool = False
     chooser: str = "affected_player"
     label: str = ""
@@ -426,6 +429,9 @@ class ReplacementEffect:
         try:
             object.__setattr__(self, "conditions", FrozenMap(self.conditions))
             lowered = tuple(lower_operation(value) for value in self.operations)
+            lowered_decline = tuple(
+                lower_operation(value) for value in self.decline_operations
+            )
         except (ImmutableValueError, ReplacementOperationError) as exc:
             raise _translate_error(exc) from exc
         if not lowered:
@@ -433,9 +439,14 @@ class ReplacementEffect:
                 "Replacement effects require operations"
             )
         object.__setattr__(self, "operations", lowered)
+        if lowered_decline and not self.optional:
+            raise ReplacementEffectError(
+                "Only optional replacements may define decline operations"
+            )
+        object.__setattr__(self, "decline_operations", lowered_decline)
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "effect_id": self.effect_id,
             "source_id": self.source_id,
             "event_kind": self.event_kind,
@@ -446,12 +457,16 @@ class ReplacementEffect:
             "chooser": self.chooser,
             "label": self.label,
         }
+        if self.decline_operations:
+            result["decline_operations"] = [
+                operation_to_dict(value)
+                for value in self.decline_operations
+            ]
+        return result
 
     @classmethod
     def from_dict(cls, value: Mapping[str, Any]) -> "ReplacementEffect":
-        exact_fields(
-            value,
-            {
+        required = {
                 "effect_id",
                 "source_id",
                 "event_kind",
@@ -461,9 +476,19 @@ class ReplacementEffect:
                 "optional",
                 "chooser",
                 "label",
-            },
-            field_name="effect",
-        )
+        }
+        actual = set(value)
+        missing = sorted(required - actual)
+        unknown = sorted(actual - required - {"decline_operations"})
+        if missing or unknown:
+            details: list[str] = []
+            if missing:
+                details.append("missing " + ", ".join(missing))
+            if unknown:
+                details.append("unknown " + ", ".join(unknown))
+            raise ReplacementEffectError(
+                f"Replacement effect fields: {'; '.join(details)}"
+            )
         conditions = value["conditions"]
         if not isinstance(conditions, Mapping):
             raise ReplacementEffectError(
@@ -490,6 +515,12 @@ class ReplacementEffect:
             operations=tuple(
                 mapping_sequence(
                     value["operations"], field_name="effect operations"
+                )
+            ),
+            decline_operations=tuple(
+                mapping_sequence(
+                    value.get("decline_operations", ()),
+                    field_name="effect decline operations",
                 )
             ),
             optional=value["optional"],

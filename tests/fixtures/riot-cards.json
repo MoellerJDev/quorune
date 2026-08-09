@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_riot_card_data",
+  "source": "Scryfall-compatible Oracle subset for Riot tests",
+  "cards": [
+    {
+      "oracle_id": "1003304f-af01-4235-af82-6ef901bd00bf",
+      "name": "Zhur-Taa Goblin",
+      "mana_cost": "{R}{G}",
+      "cmc": 2.0,
+      "type_line": "Creature — Goblin Berserker",
+      "oracle_text": "Riot (This creature enters with your choice of a +1/+1 counter or haste.)",
+      "power": "2",
+      "toughness": "2",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["G", "R"],
+      "color_identity": ["G", "R"],
+      "keywords": ["Riot"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2019-01-25",
+      "legalities": {"commander": "legal"}
+    }
+  ],
+  "rulings": []
+}

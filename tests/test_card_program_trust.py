@@ -153,7 +153,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 for row in status["semantic_handlers"]
             },
         )
-        self.assertEqual(32, len(status["runtime_components"]))
+        self.assertEqual(33, len(status["runtime_components"]))
         self.assertEqual(
             {
                 "ability.activated.mana.color-set",
@@ -185,6 +185,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "replacement.fixed_additional_token",
                 "replacement.life.gain.multiplier",
                 "replacement.zone.destination",
+                "replacement.zone.riot-entry-choice",
                 "replacement.zone.self-entry-counter",
                 "restriction.draw.maximum_per_turn",
             },

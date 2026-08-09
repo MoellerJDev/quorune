@@ -190,6 +190,7 @@
       "test_persist_undying_rules",
       "test_preflight_v080",
       "test_proliferate_compiler",
+      "test_riot_rules",
       "test_rule_capabilities",
       "test_source_references",
       "test_targeted_counter_effect_clauses",

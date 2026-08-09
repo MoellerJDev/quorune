@@ -31,6 +31,7 @@ class ContinuousEffectOrigin(str, Enum):
     """The CR 611 rule that determines an effect's affected-object set."""
 
     OBJECT = "object"
+    REPLACEMENT = "replacement"
     RESOLUTION = "resolution"
     STATIC_ABILITY = "static_ability"
 
@@ -372,6 +373,57 @@ class ContinuousObjectIdentity:
         )
 
 
+def _validate_continuous_effect_identity_scope(
+    effect: "ContinuousEffect",
+    locked: tuple[ContinuousObjectIdentity, ...],
+) -> None:
+    locked_origins = {
+        ContinuousEffectOrigin.REPLACEMENT,
+        ContinuousEffectOrigin.RESOLUTION,
+    }
+    if effect.origin in locked_origins and not locked:
+        raise ContinuousEffectError(
+            "Generated continuous effects require a locked object set"
+        )
+    if (
+        effect.origin in locked_origins
+        and effect.duration is ContinuousEffectDuration.WHILE_SOURCE_PRESENT
+    ):
+        raise ContinuousEffectError(
+            "Generated continuous effects require an explicit duration"
+        )
+    if effect.origin not in locked_origins and locked:
+        raise ContinuousEffectError(
+            "Only generated continuous effects may lock objects"
+        )
+    if (
+        effect.origin is ContinuousEffectOrigin.STATIC_ABILITY
+        and effect.duration
+        is not ContinuousEffectDuration.WHILE_SOURCE_PRESENT
+    ):
+        raise ContinuousEffectError(
+            "Static-ability continuous effects require source presence"
+        )
+    if effect.relation is ContinuousEffectRelation.NONE:
+        if effect.related_object is not None:
+            raise ContinuousEffectError(
+                "Unrelated continuous effects cannot name a related object"
+            )
+        return
+    if not isinstance(effect.related_object, ContinuousObjectIdentity):
+        raise ContinuousEffectError(
+            "Attached continuous effects require a typed related object"
+        )
+    if effect.origin is not ContinuousEffectOrigin.STATIC_ABILITY:
+        raise ContinuousEffectError(
+            "Live attachment relations require a static-ability effect"
+        )
+    if effect.duration is not ContinuousEffectDuration.WHILE_SOURCE_PRESENT:
+        raise ContinuousEffectError(
+            "Live attachment relations require source presence"
+        )
+
+
 @dataclass(frozen=True, slots=True)
 class ContinuousEffect:
     effect_id: str
@@ -495,52 +547,7 @@ class ContinuousEffect:
                 "Continuous-effect locked identities must be unique typed values"
             )
         object.__setattr__(self, "locked_objects", locked)
-        if self.origin is ContinuousEffectOrigin.RESOLUTION and not locked:
-            raise ContinuousEffectError(
-                "Resolution-created continuous effects require a locked object set"
-            )
-        if (
-            self.origin is ContinuousEffectOrigin.RESOLUTION
-            and self.duration is ContinuousEffectDuration.WHILE_SOURCE_PRESENT
-        ):
-            raise ContinuousEffectError(
-                "Resolution-created continuous effects require an explicit duration"
-            )
-        if self.origin is not ContinuousEffectOrigin.RESOLUTION and locked:
-            raise ContinuousEffectError(
-                "Only resolution-created continuous effects may lock objects"
-            )
-        if (
-            self.origin is ContinuousEffectOrigin.STATIC_ABILITY
-            and self.duration
-            is not ContinuousEffectDuration.WHILE_SOURCE_PRESENT
-        ):
-            raise ContinuousEffectError(
-                "Static-ability continuous effects require source presence"
-            )
-        if self.relation is ContinuousEffectRelation.NONE:
-            if self.related_object is not None:
-                raise ContinuousEffectError(
-                    "Unrelated continuous effects cannot name a related object"
-                )
-        else:
-            if not isinstance(
-                self.related_object, ContinuousObjectIdentity
-            ):
-                raise ContinuousEffectError(
-                    "Attached continuous effects require a typed related object"
-                )
-            if self.origin is not ContinuousEffectOrigin.STATIC_ABILITY:
-                raise ContinuousEffectError(
-                    "Live attachment relations require a static-ability effect"
-                )
-            if (
-                self.duration
-                is not ContinuousEffectDuration.WHILE_SOURCE_PRESENT
-            ):
-                raise ContinuousEffectError(
-                    "Live attachment relations require source presence"
-                )
+        _validate_continuous_effect_identity_scope(self, locked)
 
     def to_dict(self) -> dict[str, Any]:
         payload = {

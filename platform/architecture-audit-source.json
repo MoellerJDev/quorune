@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "audit": {
-    "baseline_main_commit": "8fda2112510ef5bb8ee7211a8b7ef01d8d56b77b",
+    "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-08",
-    "phase": "harvested_unleash_entry_and_block_restriction",
-    "scope_note": "The evaluated source tree includes the typed counter-placement, replacement-aware entry, and combat block-legality foundations through Persist and Undying. This branch adds ordinary printed Unleash as two independent source-spanned CardProgram V2 abilities: an optional affected-object battlefield-entry counter replacement and a current-counter block prohibition. The entry choice reuses the immutable zone-change and nested counter-placement tree; advertised and accepted block declarations share one typed legality query. Riot, nonkeyword equivalents, and unrepresented granted, copied, lost, or face-down ability behavior remain explicit residuals. Oracle IR v59 adds no runtime Oracle parsing, direct GameState writes, or card-identity branches."
+    "phase": "harvested_riot_linked_entry_choice",
+    "scope_note": "The evaluated source tree includes the typed counter-placement, replacement-aware entry, combat block-legality, and Haste foundations through Unleash. This branch adds ordinary printed Riot as independently source-spanned CardProgram V2 linked entry choices: each instance either creates a replacement-aware +1/+1 counter placement or grants a zone-object-scoped layer-6 Haste effect. Both outcomes reuse existing canonical mutation owners, and prospective-controller choice projection remains principal-scoped. Nonkeyword equivalents and unrepresented granted, copied, lost, or face-down ability behavior remain explicit residuals. Oracle IR v60 adds no runtime Oracle parsing, direct GameState writes, or card-identity branches."
   },
   "ci": {
     "workflow": "PR",

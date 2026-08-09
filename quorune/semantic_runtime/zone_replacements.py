@@ -11,6 +11,9 @@ from ..entry_counters import (
     intrinsic_entry_counter_effects,
     intrinsic_entry_counters,
 )
+from ..entry_keyword_grants import (
+    EntryKeywordGrant,
+)
 from ..replacement_effects import (
     AffectedObject,
     CreateAffectedObjectCounter,
@@ -31,6 +34,7 @@ from .counter_replacements import (
     collect_counter_placement_replacement_effects,
 )
 from .self_entry_counters import SelfEntryCounterHandler
+from .entry_choices import RiotEntryChoiceHandler
 from .zone_replacement_model import (
     PreparedZoneChange,
     SUPPORTED_ZONE_DESTINATIONS,
@@ -341,7 +345,11 @@ class ZoneChangeReplacementRegistry(
 def default_zone_change_replacement_registry(
 ) -> ZoneChangeReplacementRegistry:
     registry = ZoneChangeReplacementRegistry(
-        (SelfEntryCounterHandler(), ZoneDestinationReplacementHandler())
+        (
+            RiotEntryChoiceHandler(),
+            SelfEntryCounterHandler(),
+            ZoneDestinationReplacementHandler(),
+        )
     )
     registry.require_registered_capabilities(
         load_default_capability_registry()
@@ -743,6 +751,26 @@ def _prepared_from_event(
             visit(child)
 
     visit(event)
+    raw_grants = event.payload.get("entry_keyword_grants", ())
+    if not isinstance(raw_grants, (list, tuple)):
+        raise ZoneReplacementError("Entry keyword grants must be an array")
+    keyword_grants: list[EntryKeywordGrant] = []
+    for value in raw_grants:
+        if not isinstance(value, Mapping) or set(value) != {
+            "effect_id",
+            "keyword",
+            "sequence",
+        }:
+            raise ZoneReplacementError(
+                "Entry keyword grants require exact typed fields"
+            )
+        keyword_grants.append(
+            EntryKeywordGrant(
+                effect_id=value["effect_id"],
+                keyword=value["keyword"],
+                sequence=value["sequence"],
+            )
+        )
     return PreparedZoneChange(
         object_id=subject.object_id,
         logical_object_id=subject.logical_object_id,
@@ -752,6 +780,7 @@ def _prepared_from_event(
         event=event,
         effects=effects,
         counter_events=tuple(counter_events),
+        keyword_grants=tuple(sorted(keyword_grants)),
         journal=journal,
     )
 

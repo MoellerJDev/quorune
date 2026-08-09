@@ -11,6 +11,17 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Typed ordinary Riot entry choices
+
+- Added one linked affected-object replacement choice per ordinary printed
+  Riot instance. Applying the replacement places a +1/+1 counter through the
+  canonical nested counter transaction; declining it grants Haste in layer 6
+  to the entering battlefield incarnation.
+- Reused the existing Haste attack and tap-or-untap-cost legality owners,
+  preserved independent repeated Riot choices, prospective-controller privacy,
+  transactional rollback, and exact replay. Unsupported nonkeyword, granted,
+  copied, lost, face-down, and non-Haste variants remain explicit residuals.
+
 ### Quorune public identity
 
 - Renamed the public product and repository to Quorune with the tagline

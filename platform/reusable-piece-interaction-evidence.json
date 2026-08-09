@@ -658,6 +658,38 @@
       "capability_ids": ["combat.block.self_counter_prohibition", "counter.producer.optional_self_entry"],
       "interaction_order": 2,
       "assertion": "The public counter state committed by the optional entry producer is consumed by the shared blocker-legality prohibition without a second Oracle interpreter."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_ordinary_riot_lowers_to_linked_source_spanned_programs",
+      "piece_ids": ["capability.counter.producer.riot", "mechanic.riot"],
+      "capability_ids": ["counter.producer.riot"],
+      "interaction_order": 2,
+      "assertion": "Each exact printed Riot instance lowers to one independent capability-closed typed linked entry-choice program."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.riot"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.riot"],
+      "interaction_order": 2,
+      "assertion": "The counter result of Riot becomes a nested canonical counter event and consumes represented quantity replacement before entry commits."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
+      "piece_ids": ["capability.combat.attack.haste", "capability.counter.producer.riot"],
+      "capability_ids": ["combat.attack.haste", "counter.producer.riot"],
+      "interaction_order": 2,
+      "assertion": "The alternative Riot result grants typed layer-6 Haste that the existing attack legality owner consumes for the current zone object."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
+      "piece_ids": ["capability.activation.tap_untap_cost.haste", "capability.counter.producer.riot"],
+      "capability_ids": ["activation.tap_untap_cost.haste", "counter.producer.riot"],
+      "interaction_order": 2,
+      "assertion": "The alternative Riot result grants typed layer-6 Haste that the existing tap and untap cost legality owner consumes for the current zone object."
     }
   ]
 }

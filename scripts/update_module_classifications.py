@@ -61,6 +61,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/object_predicate.py",
         "quorune/prevention_triggers.py",
         "quorune/replacement/immutable.py",
+        "quorune/riot.py",
         "quorune/trigger_batches.py",
         "quorune/unleash.py",
     }:
@@ -158,6 +159,8 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/engine.py",
         "quorune/entry_counter_coordination.py",
         "quorune/entry_counters.py",
+        "quorune/entry_keyword_grants.py",
+        "quorune/entry_results.py",
         "quorune/errors.py",
         "quorune/enchant_spec.py",
         "quorune/life_change.py",
@@ -242,7 +245,7 @@ def _owner(relative: str, layer: str) -> str:
         return "cast_timing"
     if relative == "quorune/enchant_spec.py":
         return "aura_rules"
-    if relative == "quorune/unleash.py":
+    if relative in {"quorune/riot.py", "quorune/unleash.py"}:
         return "keyword_abilities"
     if relative == "quorune/protection.py":
         return "protection"
@@ -319,6 +322,8 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/counter_placement_sets.py",
         "quorune/entry_counter_coordination.py",
         "quorune/entry_counters.py",
+        "quorune/entry_keyword_grants.py",
+        "quorune/entry_results.py",
         "quorune/entry_counter_model.py",
         "quorune/evolve.py",
         "quorune/death_return.py",
