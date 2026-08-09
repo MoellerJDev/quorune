@@ -216,6 +216,13 @@ consume the same source unless the repository proves that they do. Prefer one
 canonical manifest or machine-readable source. When duplicated consumer lists
 must remain, add or preserve a deterministic completeness check.
 
+Compiler-only tests must construct a minimal `CardRecord` directly instead of
+depending on an incidental card in the local or compact CI database. Tests of
+generated inventories must compare identities against their authoritative
+machine-readable inventory; never pin a volatile queue, capability, contract,
+card, or residual total as an independent expected literal. Stable pinned-source
+totals are allowed only when the count itself is the contract being tested.
+
 Push the coherent exact head and let public pull-request CI run the broad
 Python, generated, package, platform and headless-browser checks. Use that CI
 window for independent Slot B work instead of repeating the same suite

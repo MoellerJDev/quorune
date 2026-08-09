@@ -7,8 +7,8 @@ import unittest
 import uuid
 from unittest.mock import patch
 
-from common import DB_PATH, keep_all, load_assets, make_session
-from quorune.carddb import CardDatabase
+from common import keep_all, load_assets, make_session
+from quorune.carddb import CardRecord
 from quorune.model import StackItem
 from quorune.oracle_ir import compile_oracle_card
 from quorune.record import (
@@ -28,13 +28,28 @@ SCRY_CAPABILITY = "library.scry.fixed_controller"
 class ScryCompilerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.db = CardDatabase(DB_PATH)
         cls.capabilities = load_default_capability_registry()
-        cls.base = cls.db.lookup("Preordain")
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        cls.db.close()
+        cls.base = CardRecord(
+            oracle_id="fixture:fixed-scry-base",
+            name="Fixed Scry Base",
+            mana_cost="{U}",
+            mana_value=1.0,
+            type_line="Sorcery",
+            oracle_text="Scry 1.",
+            power=None,
+            toughness=None,
+            loyalty=None,
+            defense=None,
+            colors=("U",),
+            color_identity=("U",),
+            keywords=(),
+            produced_mana=(),
+            layout="normal",
+            released_at="2026-01-01",
+            legalities={"commander": "legal"},
+            faces=(),
+            raw={},
+        )
 
     def fixture(self, text: str = "Scry 3."):
         return replace(
