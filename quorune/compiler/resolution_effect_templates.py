@@ -4,6 +4,7 @@ from typing import Any, Mapping
 
 from ..attachment_references import AttachmentReferenceKind
 from .counter_placement_templates import (
+    fixed_counter_placement_batch_effect_template,
     fixed_counter_placement_effect_template,
     fixed_counter_placement_set_effect_template,
     fixed_counter_placement_target_set_effect_template,
@@ -67,6 +68,13 @@ def typed_resolution_effect_template(
     )
     if fixed_counter_placement_set is not None:
         return fixed_counter_placement_set.compiled()
+    fixed_counter_placement_batch = fixed_counter_placement_batch_effect_template(
+        text,
+        card_name=card_name,
+        source_attachment_relation=source_attachment_relation,
+    )
+    if fixed_counter_placement_batch is not None:
+        return fixed_counter_placement_batch.compiled()
     fixed_counter_placement = fixed_counter_placement_effect_template(
         text,
         card_name=card_name,

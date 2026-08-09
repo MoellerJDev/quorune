@@ -789,6 +789,69 @@ def fixed_counter_placement_node_capabilities(
     return ()
 
 
+def fixed_counter_placement_batch_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return ownership for one closed fixed multi-kind counter batch."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if "cr-122-counters" not in mechanics or len(effects) != 1:
+        return ()
+    effect = effects[0]
+    if (
+        set(effect) != {"op", "card", "placements", "source"}
+        or effect.get("op") != "place_counter_batch"
+        or effect.get("source") != "$source"
+    ):
+        return ()
+    placements = effect.get("placements")
+    if not isinstance(placements, (list, tuple)) or not 2 <= len(
+        placements
+    ) <= 3:
+        return ()
+    names: set[str] = set()
+    keyword_counter = False
+    for placement in placements:
+        if not isinstance(placement, Mapping) or set(placement) != {
+            "counter",
+            "amount",
+        }:
+            return ()
+        counter_name = placement.get("counter")
+        amount = placement.get("amount")
+        if (
+            type(counter_name) is not str
+            or not counter_name
+            or counter_name != " ".join(counter_name.casefold().split())
+            or counter_name in names
+            or type(amount) is not int
+            or amount <= 0
+        ):
+            return ()
+        names.add(counter_name)
+        counter_mechanic = keyword_counter_mechanic(counter_name)
+        if counter_mechanic is not None:
+            if counter_mechanic not in mechanics:
+                return ()
+            keyword_counter = True
+    result = (
+        "counter.producer.fixed_multikind_effect",
+        *(("counter.characteristic.keyword",) if keyword_counter else ()),
+    )
+    if target_schema is None and effect.get("card") == "$source":
+        return result
+    if (
+        "cr-115-targets" in mechanics
+        and effect.get("card") == "$target.0"
+        and _fixed_counter_target_schema_is_closed(target_schema)
+    ):
+        return (*result, "target.revalidate_resolution")
+    return ()
+
+
 def fixed_target_effect_sequence_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -1221,6 +1284,7 @@ __all__ = [
     "mass_destruction_node_capabilities",
     "fixed_draw_node_capabilities",
     "fixed_counter_placement_node_capabilities",
+    "fixed_counter_placement_batch_node_capabilities",
     "fixed_target_effect_sequence_node_capabilities",
     "fixed_target_characteristics_node_capabilities",
     "fixed_counter_placement_set_node_capabilities",

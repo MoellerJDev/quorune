@@ -247,7 +247,6 @@ class FixedCounterPlacementCompilerTests(unittest.TestCase):
         texts = (
             "Put up to one +1/+1 counter on target creature.",
             "Put X charge counters on target artifact.",
-            "Put a +1/+1 counter and a flying counter on target creature.",
             "Put a poison counter on target player.",
             "Put a +1/+1 counter on target modified creature.",
             "Move a +1/+1 counter onto target creature.",

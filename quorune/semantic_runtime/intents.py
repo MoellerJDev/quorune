@@ -524,6 +524,67 @@ class PlaceCountersIntent:
 
 
 @dataclass(frozen=True, slots=True)
+class CounterPlacementAmount:
+    counter_name: str
+    amount: int
+
+    def __post_init__(self) -> None:
+        normalized = (
+            " ".join(self.counter_name.casefold().split())
+            if type(self.counter_name) is str
+            else ""
+        )
+        if not normalized or type(self.amount) is not int or self.amount <= 0:
+            raise ValueError(
+                "Counter batch entries require a name and positive exact amount"
+            )
+        object.__setattr__(self, "counter_name", normalized)
+
+
+@dataclass(frozen=True, slots=True)
+class PlaceCounterBatchIntent:
+    actor: str
+    object_ref: str
+    placements: tuple[CounterPlacementAmount, ...]
+    reason: str
+    source_ref: str | None = None
+    replacement_selections: tuple[str | FrozenMap, ...] = ()
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.object_ref, self.reason)
+        ):
+            raise ValueError(
+                "Counter batch intents require actor, object, and reason"
+            )
+        if self.source_ref is not None and (
+            type(self.source_ref) is not str or not self.source_ref
+        ):
+            raise ValueError("Counter batch source must be a nonempty reference")
+        placements = tuple(self.placements)
+        if not 2 <= len(placements) <= 3 or any(
+            not isinstance(value, CounterPlacementAmount)
+            for value in placements
+        ):
+            raise ValueError(
+                "Counter batch intents require two or three typed placements"
+            )
+        names = [value.counter_name for value in placements]
+        if len(names) != len(set(names)):
+            raise ValueError("Counter batch kinds must be distinct")
+        object.__setattr__(self, "placements", placements)
+        object.__setattr__(
+            self,
+            "replacement_selections",
+            _freeze_replacement_selections(
+                tuple(self.replacement_selections),
+                family="Counter batch placement",
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class PlaceCountersOnSetIntent:
     actor: str
     spec: AffectedPermanentSetSpec
@@ -930,6 +991,7 @@ SemanticIntent: TypeAlias = (
     | ReorderLibraryTopIntent
     | PayManaCostIntent
     | PlaceCountersIntent
+    | PlaceCounterBatchIntent
     | PlaceCountersOnSetIntent
     | PlaceCountersOnTargetsIntent
     | PlacePlayerCountersIntent

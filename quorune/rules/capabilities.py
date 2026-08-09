@@ -9,6 +9,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from .component_resolution import implementation_component_resolves
 from .node_capability_shapes import (
+    fixed_counter_placement_batch_node_capabilities,
     fixed_counter_placement_node_capabilities,
     fixed_counter_placement_set_node_capabilities,
     fixed_counter_placement_target_set_node_capabilities,
@@ -743,6 +744,7 @@ def _targeted_effect_capabilities(
 ) -> set[str]:
     dependencies: set[str] = set()
     for resolver in (
+        fixed_counter_placement_batch_node_capabilities,
         fixed_counter_placement_node_capabilities,
         fixed_counter_placement_set_node_capabilities,
         fixed_counter_placement_target_set_node_capabilities,
@@ -957,6 +959,8 @@ def capability_covered_mechanics(
     if "counter.placement.quantity_replacement" in supplied:
         covered.add("cr-122-counters")
     if "counter.producer.fixed_effect" in supplied:
+        covered.add("cr-122-counters")
+    if "counter.producer.fixed_multikind_effect" in supplied:
         covered.add("cr-122-counters")
     if "counter.producer.fixed_attached_effect" in supplied:
         covered.add("cr-122-counters")

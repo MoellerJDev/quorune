@@ -55,6 +55,7 @@ from ..semantic_runtime import (
     MoveObjectsSimultaneouslyIntent,
     PayLifeIntent,
     PayManaCostIntent,
+    PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
@@ -698,6 +699,40 @@ class SemanticChoiceIntentHostMixin:
             raise GameRuleError(str(exc)) from exc
         return tuple(
             self.state.cards[result.object_id].ref for result in results
+        )
+
+    def place_counter_batch_intent(
+        self,
+        intent: PlaceCounterBatchIntent,
+    ) -> tuple[str, ...]:
+        try:
+            card = self._resolve_object(
+                intent.actor,
+                intent.object_ref,
+                zones={"battlefield"},
+            )
+            results = place_counters(
+                self,
+                tuple(
+                    CounterPlacementRequest(
+                        subject_kind="permanent",
+                        subject_id=card.object_id,
+                        counter_name=placement.counter_name,
+                        amount=placement.amount,
+                        placing_player=intent.actor,
+                        source_ref=intent.source_ref,
+                    )
+                    for placement in intent.placements
+                ),
+                selections=intent.replacement_selections,
+                reason=intent.reason,
+            )
+        except CounterPlacementError as exc:
+            raise GameRuleError(str(exc)) from exc
+        return tuple(
+            unique_preserving_order(
+                self.state.cards[result.object_id].ref for result in results
+            )
         )
 
     def place_counters_on_set_intent(

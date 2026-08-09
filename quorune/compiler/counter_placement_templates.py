@@ -203,6 +203,88 @@ class FixedCounterPlacementTemplate:
 
 
 @dataclass(frozen=True, slots=True)
+class FixedCounterPlacementBatchTemplate:
+    """Two or three fixed counter kinds placed on one shared subject."""
+
+    placements: tuple[tuple[str, int], ...]
+    subject_template: FixedCounterPlacementTemplate
+
+    def __post_init__(self) -> None:
+        placements = tuple(self.placements)
+        if not 2 <= len(placements) <= 3:
+            raise ValueError("Counter batches require two or three placements")
+        normalized: list[tuple[str, int]] = []
+        names: set[str] = set()
+        for counter_name, amount in placements:
+            name = (
+                " ".join(counter_name.casefold().split())
+                if type(counter_name) is str
+                else ""
+            )
+            if not name or type(amount) is not int or amount <= 0:
+                raise ValueError(
+                    "Counter batch entries require a name and positive amount"
+                )
+            if name in names:
+                raise ValueError("Counter batch kinds must be distinct")
+            names.add(name)
+            normalized.append((name, amount))
+        if not isinstance(self.subject_template, FixedCounterPlacementTemplate):
+            raise ValueError("Counter batches require one closed subject")
+        object.__setattr__(self, "placements", tuple(normalized))
+
+    @property
+    def template_id(self) -> str:
+        return (
+            "place-fixed-counter-batch-"
+            f"{len(self.placements)}-"
+            f"{self.subject_template.template_id.removesuffix('-v1')}-v1"
+        )
+
+    @property
+    def effects(self) -> tuple[Mapping[str, Any], ...]:
+        return (
+            {
+                "op": "place_counter_batch",
+                "card": self.subject_template._card_reference,
+                "placements": [
+                    {"counter": counter_name, "amount": amount}
+                    for counter_name, amount in self.placements
+                ],
+                "source": "$source",
+            },
+        )
+
+    @property
+    def target_schema(self) -> Mapping[str, Any] | None:
+        return self.subject_template.target_schema
+
+    @property
+    def mechanics(self) -> tuple[str, ...]:
+        mechanics = list(self.subject_template.mechanics)
+        for counter_name, _amount in self.placements:
+            keyword = keyword_counter_mechanic(counter_name)
+            if keyword is not None and keyword not in mechanics:
+                mechanics.append(keyword)
+        return tuple(mechanics)
+
+    def compiled(
+        self,
+    ) -> tuple[
+        str,
+        tuple[Mapping[str, Any], ...],
+        Mapping[str, Any] | None,
+        tuple[str, ...],
+    ]:
+        return (
+            self.template_id,
+            self.effects,
+            self.target_schema,
+            self.mechanics,
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class ExistingTargetCounterPlacementTemplate:
     """One fixed placement on the already-declared target at index zero."""
 
@@ -717,6 +799,70 @@ def fixed_counter_placement_effect_template(
         creature_subtype=creature_subtype,
         controller_relation=relation,
         exclude_source=exclude_source,
+    )
+
+
+def fixed_counter_placement_batch_effect_template(
+    text: str,
+    *,
+    card_name: str,
+    source_attachment_relation: AttachmentReferenceKind | None = None,
+) -> FixedCounterPlacementBatchTemplate | None:
+    """Parse one closed simultaneous placement of distinct fixed counters."""
+
+    normalized = text.strip()
+    if normalized.endswith("."):
+        normalized = normalized[:-1]
+    match = re.fullmatch(
+        r"put (?P<placements>.+?) on (?P<subject>.+)",
+        normalized,
+        re.IGNORECASE,
+    )
+    if match is None:
+        return None
+    raw_entries = re.split(
+        r",\s*(?:and\s+)?|\s+and\s+",
+        match.group("placements"),
+        flags=re.IGNORECASE,
+    )
+    if not 2 <= len(raw_entries) <= 3:
+        return None
+    entry_pattern = re.compile(
+        rf"(?P<count>{_COUNT}) (?P<counter>{_COUNTER_NAME}) "
+        r"(?P<plural>counter|counters)",
+        re.IGNORECASE,
+    )
+    placements: list[tuple[str, int]] = []
+    for raw_entry in raw_entries:
+        entry = entry_pattern.fullmatch(raw_entry.strip())
+        if entry is None:
+            return None
+        count = fixed_number(entry.group("count"))
+        if count <= 0 or (entry.group("plural").casefold() == "counter") != (
+            count == 1
+        ):
+            return None
+        placements.append(
+            (" ".join(entry.group("counter").casefold().split()), count)
+        )
+    if len({name for name, _amount in placements}) != len(placements):
+        return None
+    first_name = placements[0][0]
+    subject_template = fixed_counter_placement_effect_template(
+        f"Put a {first_name} counter on {match.group('subject')}.",
+        card_name=card_name,
+        source_attachment_relation=source_attachment_relation,
+    )
+    if subject_template is None:
+        return None
+    if subject_template.subject not in {
+        CounterPlacementSubject.SOURCE,
+        CounterPlacementSubject.TARGET,
+    }:
+        return None
+    return FixedCounterPlacementBatchTemplate(
+        placements=tuple(placements),
+        subject_template=subject_template,
     )
 
 
@@ -1238,12 +1384,14 @@ __all__ = [
     "ExistingTargetCounterPlacementTemplate",
     "FIXED_COUNTER_SET_KEYWORDS",
     "FixedCounterPlacementTemplate",
+    "FixedCounterPlacementBatchTemplate",
     "FixedCounterPlacementSetTemplate",
     "FixedCounterPlacementTargetSetTemplate",
     "SupportCounterPlacementTemplate",
     "FixedPlayerCounterPlacementTemplate",
     "PlayerCounterPlacementSubject",
     "fixed_counter_placement_effect_template",
+    "fixed_counter_placement_batch_effect_template",
     "existing_target_counter_placement_effect_template",
     "fixed_counter_placement_set_effect_template",
     "fixed_counter_placement_target_set_effect_template",

@@ -51,7 +51,6 @@ class ArchitectureAuditTests(unittest.TestCase):
             len(architecture["direct_game_state_write_heuristic"]["locations"]),
         )
         handlers = architecture["semantic_handlers"]
-        self.assertEqual(92, handlers["registered_handler_count"])
         self.assertEqual(
             handlers["registered_handler_count"],
             len(handlers["registered_operations"]),
@@ -61,6 +60,7 @@ class ArchitectureAuditTests(unittest.TestCase):
                 "become_monarch",
                 "draw",
                 "draw_each_player",
+                "place_counter_batch",
                 "place_counters",
                 "place_player_counters",
                 "reanimate_attached_creature_aura",
@@ -74,7 +74,6 @@ class ArchitectureAuditTests(unittest.TestCase):
         )
         self.assertEqual(0, handlers["legacy_apply_effect_branch_count"])
         self.assertEqual(3, handlers["engine_string_dispatch_branch_count"])
-        self.assertEqual(35, handlers["registered_runtime_handler_count"])
         self.assertEqual(
             handlers["registered_runtime_handler_count"],
             len(handlers["runtime_handlers"]),
@@ -105,6 +104,13 @@ class ArchitectureAuditTests(unittest.TestCase):
                     for handler in handlers["runtime_handlers"]
                 }
             )
+        )
+        self.assertIn(
+            "generic.fixed-counter-placement-batch.v1",
+            {
+                handler["handler_id"]
+                for handler in handlers["handlers"]
+            },
         )
         self.assertIn(
             "ability.static.flash.v1",

@@ -21,6 +21,7 @@ VALID_EFFECT_OPERATIONS = {
     "amass",
     "add_counter_selected",
     "place_counters",
+    "place_counter_batch",
     "place_counters_on_set",
     "place_counters_on_targets",
     "place_player_counters",

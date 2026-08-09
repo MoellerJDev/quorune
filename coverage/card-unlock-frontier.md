@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "97d40092748041f2ce457edaacfc62db2be008cc9236571cb7b64328116f03bb"
+verified: "ec91d64200fa99786dd85fa92d1c3c57cbbafe793161d9048f525b8dbc3eeb21"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -14,10 +14,10 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 ## Snapshot
 
 - Cards considered: 31,623
-- Oracle states: `{"exact":2631,"partial":13213,"unresolved":15779}`
-- CardProgram states: `{"residual":28992,"trusted":2631}`
+- Oracle states: `{"exact":2635,"partial":13210,"unresolved":15778}`
+- CardProgram states: `{"residual":28988,"trusted":2635}`
 - Hard construction failures: 0
-- Frontier fingerprint: `97d40092748041f2ce457edaacfc62db2be008cc9236571cb7b64328116f03bb`
+- Frontier fingerprint: `ec91d64200fa99786dd85fa92d1c3c57cbbafe793161d9048f525b8dbc3eeb21`
 
 ## Highest-leverage single families
 
@@ -44,9 +44,9 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `effect_clause:create-token` | 723 | 706 | 43 | 158 | missing_lowering | high |
 | `effect_clause:sacrifice` | 387 | 383 | 42 | 131 | missing_lowering | high |
 | `activated_effect:destroy-target` | 151 | 150 | 42 | 60 | missing_lowering | high |
-| `activated_effect:put-counter` | 353 | 341 | 40 | 114 | missing_lowering | high |
 | `mechanic_dependency:scry` | 107 | 107 | 40 | 107 | missing_contract | high |
 | `mechanic_dependency:cr-508-declare-attackers-step` | 135 | 135 | 39 | 99 | partial | high |
+| `activated_effect:put-counter` | 347 | 335 | 36 | 108 | missing_lowering | high |
 | `effect_clause:unparsed-until-end-of` | 68 | 68 | 36 | 48 | missing_lowering | high |
 
 ## Highest-leverage bounded bundles
