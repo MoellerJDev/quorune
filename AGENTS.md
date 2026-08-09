@@ -2,7 +2,7 @@
 title: "Codex project instructions"
 status: "current"
 authoritative_source: "repository contribution, architecture, and documentation policy"
-verified: "2026-08-07"
+verified: "2026-08-08"
 audience: "Codex agents and contributors"
 maintenance: "hand-maintained"
 ---
@@ -145,19 +145,44 @@ deterministic impact plan without executing the broad gate:
 ```
 
 The dry-run output is a required change-impact inventory, not proof that the
-identified work ran. Before pushing, execute every applicable non-behavioral
-command identified by the plan or by the owning repository documentation,
-including:
+identified work ran. Its `generated-finalization` step is the canonical
+generated-output obligation. After source, tests, and documentation form a
+coherent worktree—and **before the final commit**—run the automatic
+deterministic writers to a fixed point:
 
-- changed-module compilation;
-- JSON and schema parsing;
-- deterministic generators;
-- generated-output freshness checks;
-- applicable documentation fitness functions;
-- repository and diff hygiene.
+```powershell
+.\.venv\Scripts\python.exe scripts\finalize_generated.py --write
+```
 
-Resolve every omitted command, stale tracked output, or inconsistent generated
-artifact before pushing the coherent head.
+`platform/generated-artifacts.json` owns the registered deterministic report
+commands, outputs, write policies, and dependency order. It does not replace
+the existing owners for protocol types or pinned rules snapshots. Do not
+hand-order individual platform-status, architecture-audit, or coverage writers.
+`--write` repeats changed owners and their downstream automatic/derived writers
+until a pass changes nothing, then runs every freshness check, documentation
+validation, and diff hygiene. Database-backed corpus writers use `--db <path>`
+or `MTG_CARD_DB`; manual performance baselines are never rewritten implicitly.
+
+Inspect every changed generated output, stage it with the source that caused
+it, and make the final commit only after the command succeeds. Do not defer this
+step until CI and do not repair platform status, architecture audit, and
+reusable-piece fingerprints in separate follow-up commits. Use `--check` for
+read-only diagnosis; do not run it immediately after a successful `--write`.
+
+Install the repository-owned pre-push hook once per worktree:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\install_dev_hooks.py
+```
+
+The hook is a backstop, not the normal finalization point. It uses only the
+worktree-local CPython 3.12 environment. It may write missing generated
+outputs, but it aborts the push so they can be inspected and committed; it
+never amends or pushes a commit itself. Hooks are advisory, so public exact-head
+CI remains mandatory. Also execute every other applicable
+non-behavioral command identified by the plan, including changed-module
+compilation, JSON/schema parsing, architecture or repository validators, and
+diff hygiene. Resolve every omission before pushing the coherent head.
 
 This does not authorize routine local behavioral tests, broad gates, historical
 regression journeys, package or operating-system matrices, or browser
@@ -223,8 +248,9 @@ For a deterministic omission:
    correction. Do not patch only the first failed job.
 3. Run only the directly relevant local diagnostic permitted by the development
    policy above.
-4. Rerun the applicable compilation, parsing, generator, freshness,
-   documentation, and diff-hygiene commands.
+4. Rerun applicable compilation and parsing, then use
+   `scripts/finalize_generated.py --write`; run any remaining architecture,
+   repository, or platform-specific validators.
 5. When the dry-run impact map or an existing validator reasonably should have
    identified the obligation, update that map or validator in the same branch.
 6. When duplicated lists, copied workflow arguments, or independently maintained
@@ -275,9 +301,9 @@ document, not from the absence of an edited Markdown file.
 
 Documentation fitness functions validate the documentation and generated
 artifacts that exist. They do not by themselves prove that a required
-documentation update was not omitted. Run the applicable platform-status and
-architecture-audit freshness checks whenever their code or machine-readable
-inputs may have changed, even when no hand-maintained Markdown was edited.
+documentation update was not omitted. The generated finalizer owns downstream
+status and audit ordering whenever code, documentation, or machine-readable
+inputs may have changed.
 
 Living documentation must:
 
@@ -300,10 +326,8 @@ Run the documentation fitness functions after any Markdown change:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\validate_documentation.py --check
-.\.venv\Scripts\python.exe scripts\update_platform_status.py --check
-.\.venv\Scripts\python.exe scripts\update_architecture_audit.py --check
+.\.venv\Scripts\python.exe scripts\finalize_generated.py --check
 ```
 
 If a document disagrees with code or generated evidence, fix or remove the
 document. Never preserve a stale statement for continuity.
-

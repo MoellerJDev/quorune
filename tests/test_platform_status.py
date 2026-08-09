@@ -4,13 +4,12 @@ import json
 import subprocess
 import sys
 import unittest
+from unittest import mock
 
 from scripts.certification_receipt import RECEIPT_SCHEMA_VERSION
-from scripts.source_tree_fingerprint import SOURCE_TREE_FINGERPRINT_ALGORITHM
 from scripts.update_platform_status import (
+    PLATFORM_INPUT_FINGERPRINT_ALGORITHM,
     ROOT,
-    _canonical_tracked_blob_oids,
-    _is_generated_report,
     _serialize_json,
     _validate_provenance,
     build_report,
@@ -30,7 +29,12 @@ class PlatformStatusTests(unittest.TestCase):
     def test_report_derives_durable_package_test_and_subsystem_state(self):
         report = build_report()
         self.assertEqual("0.9.0", report["package"]["version"])
-        self.assertGreaterEqual(report["tests"]["deterministic_cases_discovered"], 286)
+        self.assertGreaterEqual(report["tests"]["primary_test_modules"], 150)
+        self.assertGreaterEqual(report["tests"]["primary_test_shards"], 11)
+        self.assertGreaterEqual(
+            report["tests"]["generated_validation_modules"], 20
+        )
+        self.assertNotIn("deterministic_cases_discovered", report["tests"])
         self.assertGreaterEqual(report["tests"]["server_files"], 4)
         self.assertGreaterEqual(report["tests"]["web_files"], 10)
         self.assertGreaterEqual(report["tests"]["migration_files"], 1)
@@ -38,10 +42,16 @@ class PlatformStatusTests(unittest.TestCase):
         self.assertNotIn("integration", report)
         self.assertNotIn("next_task", report)
         self.assertEqual(
-            SOURCE_TREE_FINGERPRINT_ALGORITHM,
-            report["generated"]["source_tree_fingerprint_algorithm"],
+            PLATFORM_INPUT_FINGERPRINT_ALGORITHM,
+            report["generated"]["input_fingerprint_algorithm"],
         )
-        self.assertEqual(64, len(report["generated"]["evaluated_source_tree_hash"]))
+        self.assertEqual(
+            64, len(report["generated"]["evaluated_input_fingerprint"])
+        )
+        self.assertNotIn("evaluated_source_tree_hash", report["generated"])
+        self.assertNotIn(
+            "source_tree_fingerprint_algorithm", report["generated"]
+        )
         self.assertNotIn("current_runtime_git_sha", report["generated"])
         self.assertNotIn("current_merged_main_git_sha", report["generated"])
         persisted = json.loads(_serialize_json(report))
@@ -60,30 +70,13 @@ class PlatformStatusTests(unittest.TestCase):
         self.assertIn("coverage/platform-readiness.json", status)
         self.assertIn("scripts\\update_platform_status.py --write", status)
 
-    def test_source_tree_fingerprint_excludes_generated_reports_only(self):
-        self.assertTrue(
-            _is_generated_report(
-                "coverage/example.json", ROOT / "coverage" / "example.json"
-            )
-        )
-        self.assertTrue(
-            _is_generated_report(
-                "docs/PLATFORM_IMPLEMENTATION_STATUS.md",
-                ROOT / "docs" / "PLATFORM_IMPLEMENTATION_STATUS.md",
-            )
-        )
-        self.assertFalse(_is_generated_report("README.md", ROOT / "README.md"))
-
-    def test_source_tree_fingerprint_uses_git_clean_blobs(self):
-        expected = subprocess.check_output(
-            ["git", "rev-parse", "HEAD:.gitattributes"],
-            cwd=ROOT,
-            text=True,
-        ).strip()
-        self.assertEqual(
-            [expected],
-            _canonical_tracked_blob_oids([".gitattributes"]),
-        )
+    def test_platform_status_does_not_import_discover_test_modules(self):
+        with mock.patch(
+            "unittest.TestLoader.discover",
+            side_effect=AssertionError("platform status must not discover tests"),
+        ):
+            report = build_report()
+        self.assertGreater(report["tests"]["primary_test_modules"], 0)
 
     def test_durable_provenance_has_no_execution_coordinates(self):
         source = self.source()

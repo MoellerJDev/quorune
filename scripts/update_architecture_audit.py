@@ -83,6 +83,7 @@ DOC_METADATA_KEYS = {
     "audience",
     "maintenance",
 }
+GENERATED_VERIFIED_SENTINEL = "validated-by-owning-generator"
 VIRTUAL_GENERATED_DOCS = {
     "docs/ARCHITECTURE_DEBT_STATUS.md": {
         "title": "Architecture debt status",
@@ -1302,6 +1303,8 @@ def _documentation_metrics(source: Mapping[str, Any]) -> dict[str, Any]:
         metadata = dict(virtual or _front_matter(path))
         if virtual:
             metadata["verified"] = str(source["audit"]["baseline_main_commit"])
+        if metadata.get("status") == "generated" and metadata.get("verified"):
+            metadata["verified"] = GENERATED_VERIFIED_SENTINEL
         missing_metadata = sorted(DOC_METADATA_KEYS - set(metadata)) if present else []
         rows.append(
             {
@@ -1369,15 +1372,24 @@ def _regex_test_count(directory: Path, pattern: str) -> int:
     )
 
 
+def _discover_test_case_count() -> int:
+    loader = unittest.TestLoader()
+    suite = loader.discover(str(ROOT / "tests"), pattern="test_*.py")
+    if loader.errors:
+        raise RuntimeError(
+            "Test discovery failed while generating architecture evidence:\n\n"
+            + "\n\n".join(loader.errors)
+        )
+    return suite.countTestCases()
+
+
 def _test_metrics() -> dict[str, Any]:
     tests = sorted((ROOT / "tests").glob("test_*.py"))
     conventional, categories = _count_test_functions(tests)
     root_text = str(ROOT)
     if root_text not in sys.path:
         sys.path.insert(0, root_text)
-    discovered = unittest.defaultTestLoader.discover(
-        str(ROOT / "tests"), pattern="test_*.py"
-    ).countTestCases()
+    discovered = _discover_test_case_count()
     rules = _load_json(ROOT / "coverage" / "rules-conformance.json")
     generated_rules = int(rules.get("total_cases") or 0)
     requirements = (ROOT / "requirements-dev.txt").read_text(encoding="utf-8").casefold()

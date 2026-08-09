@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-06T12:06:17Z",
+  "observed_at": "2026-08-09T01:23:15Z",
   "repository": "MoellerJDev/quorune",
   "escapes": [
     {
@@ -183,6 +183,22 @@
       "regressions": ["four-player.spec.ts: natural commander-damage winner"],
       "impact_edge_status": "not_applicable",
       "resolution": "The journey now arms the defender's stop before each preceding turn-transition command, advances only intervening responses, and holds a seat-qualified precombat main phase while its exact land action settles instead of submitting the pass under observation."
+    },
+    {
+      "id": "ci-20260809-14",
+      "run_id": 31260380655,
+      "head_sha": "7785c61cd5f0eaecbfbd62d5ae8bb670397ad5e2",
+      "category": "generated_artifact_drift",
+      "deterministic": true,
+      "summary": "Generated status dependencies were maintained as copied command lists, so refreshing platform readiness exposed stale architecture outputs and then stale reusable-piece fingerprints on consecutive exact heads.",
+      "failed_surfaces": ["generated-validation"],
+      "regressions": [
+        "test_platform_status",
+        "test_architecture_audit",
+        "update_reusable_piece_matrix"
+      ],
+      "impact_edge_status": "added",
+      "resolution": "A strict ownership manifest now orders all tracked generators, one finalizer writes them to a bounded fixed point, AGENTS.md requires that command before the final commit, and a repository pre-push hook rejects omitted generated changes."
     }
   ],
   "recent_pull_requests": [

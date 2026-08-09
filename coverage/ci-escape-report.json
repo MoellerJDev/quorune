@@ -222,6 +222,24 @@
       "resolution": "The journey now arms the defender's stop before each preceding turn-transition command, advances only intervening responses, and holds a seat-qualified precombat main phase while its exact land action settles instead of submitting the pass under observation.",
       "run_id": 31132735817,
       "summary": "The natural-winner journey armed Full Control only after a preceding command could auto-advance through the defender's next precombat main phase, so the test driver searched for an opportunity that had already passed."
+    },
+    {
+      "category": "generated_artifact_drift",
+      "deterministic": true,
+      "failed_surfaces": [
+        "generated-validation"
+      ],
+      "head_sha": "7785c61cd5f0eaecbfbd62d5ae8bb670397ad5e2",
+      "id": "ci-20260809-14",
+      "impact_edge_status": "added",
+      "regressions": [
+        "test_platform_status",
+        "test_architecture_audit",
+        "update_reusable_piece_matrix"
+      ],
+      "resolution": "A strict ownership manifest now orders all tracked generators, one finalizer writes them to a bounded fixed point, AGENTS.md requires that command before the final commit, and a repository pre-push hook rejects omitted generated changes.",
+      "run_id": 31260380655,
+      "summary": "Generated status dependencies were maintained as copied command lists, so refreshing platform readiness exposed stale architecture outputs and then stale reusable-piece fingerprints on consecutive exact heads."
     }
   ],
   "known_flaky_tests": [],
@@ -229,7 +247,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-06T12:06:17Z",
+  "observed_at": "2026-08-09T01:23:15Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -274,7 +292,7 @@
   ],
   "repository": "MoellerJDev/quorune",
   "schema_version": 1,
-  "source_fingerprint": "d09299ad7467caba335749334711ad33f680a0b124d4542171cbcb2e2e040901",
+  "source_fingerprint": "9440f06121f4077d9aabd6c7a71f1449bc4e8e695486f14c06cdffad4c78846d",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -282,18 +300,19 @@
     "category_counts": {
       "browser_integration": 1,
       "flaky_test": 6,
-      "generated_artifact_drift": 1,
+      "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 2,
       "source_correctness": 2
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 8,
-    "escape_count": 13,
+    "deterministic_escape_count": 9,
+    "escape_count": 14,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [
       "flaky_test",
+      "generated_artifact_drift",
       "missing_affected_test",
       "source_correctness"
     ]

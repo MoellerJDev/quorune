@@ -32,6 +32,20 @@ class QuickStep:
     command: tuple[str, ...]
 
 
+_GENERATED_CHECK_ALIASES = frozenset(
+    {
+        "capability-evidence",
+        "card-unlock-frontier",
+        "ci-escape-report",
+        "documentation",
+        "module-classifications",
+        "platform-status",
+        "reusable-pieces",
+        "rules-scheduler",
+    }
+)
+
+
 def _python() -> str:
     return str(Path(sys.executable).resolve())
 
@@ -105,6 +119,11 @@ def build_plan(
         )
     check_commands = {
         "architecture": (python, "scripts/validate_architecture.py", "--check"),
+        "generated-finalization": (
+            python,
+            "scripts/finalize_generated.py",
+            "--check",
+        ),
         "capability-evidence": (
             python,
             "scripts/update_capability_evidence.py",
@@ -145,7 +164,10 @@ def build_plan(
         ),
         "test-shards": (python, "scripts/test_shards.py", "validate"),
     }
+    finalizer_selected = "generated-finalization" in impact.checks
     for check in impact.checks:
+        if finalizer_selected and check in _GENERATED_CHECK_ALIASES:
+            continue
         command = check_commands.get(check)
         if command is not None:
             steps.append(QuickStep(check, command))

@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "generators": [
+    {
+      "id": "capability-evidence",
+      "depends_on": [],
+      "outputs": [
+        "quorune/rules/capability-evidence.json"
+      ],
+      "check": [
+        "scripts/update_capability_evidence.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_capability_evidence.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "automatic"
+    },
+    {
+      "id": "card-unlock-frontier",
+      "depends_on": [
+        "capability-evidence"
+      ],
+      "outputs": [
+        "coverage/card-unlock-frontier.json.gz",
+        "coverage/card-unlock-frontier.md"
+      ],
+      "check": [
+        "scripts/update_card_unlock_frontier.py",
+        "--check"
+      ],
+      "write": null,
+      "write_with_database": [
+        "scripts/update_card_unlock_frontier.py",
+        "--write",
+        "--db",
+        "{db}"
+      ],
+      "write_policy": "database"
+    },
+    {
+      "id": "ci-escape-report",
+      "depends_on": [],
+      "outputs": [
+        "coverage/ci-escape-report.json",
+        "coverage/ci-escape-report.md"
+      ],
+      "check": [
+        "scripts/update_ci_escape_report.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_ci_escape_report.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "automatic"
+    },
+    {
+      "id": "rules-scheduler",
+      "depends_on": [],
+      "outputs": [
+        "coverage/rules-dependency-queue.json",
+        "docs/RULES_DEPENDENCY_QUEUE.md"
+      ],
+      "check": [
+        "scripts/update_rules_scheduler.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_rules_scheduler.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "automatic"
+    },
+    {
+      "id": "module-classifications",
+      "depends_on": [],
+      "outputs": [
+        "platform/module-classifications.json"
+      ],
+      "check": [
+        "scripts/update_module_classifications.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_module_classifications.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "automatic"
+    },
+    {
+      "id": "continuous-effect-performance",
+      "depends_on": [],
+      "outputs": [
+        "platform/continuous-effect-performance-baseline.json"
+      ],
+      "check": [
+        "scripts/benchmark_continuous_effects.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/benchmark_continuous_effects.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "manual"
+    },
+    {
+      "id": "platform-status",
+      "depends_on": [],
+      "outputs": [
+        "coverage/platform-readiness.json",
+        "coverage/platform-readiness.md",
+        "docs/PLATFORM_IMPLEMENTATION_STATUS.md"
+      ],
+      "check": [
+        "scripts/update_platform_status.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_platform_status.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "automatic"
+    },
+    {
+      "id": "architecture-audit",
+      "depends_on": [
+        "capability-evidence",
+        "continuous-effect-performance",
+        "platform-status"
+      ],
+      "outputs": [
+        "coverage/architecture-audit.json",
+        "docs/ARCHITECTURE_DEBT_STATUS.md",
+        "docs/COMPILER_COVERAGE_STATUS.md"
+      ],
+      "check": [
+        "scripts/update_architecture_audit.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_architecture_audit.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "automatic"
+    },
+    {
+      "id": "reusable-pieces",
+      "depends_on": [
+        "architecture-audit",
+        "card-unlock-frontier",
+        "capability-evidence",
+        "platform-status"
+      ],
+      "outputs": [
+        "coverage/reusable-piece-matrix.json.gz",
+        "coverage/reusable-piece-matrix.md",
+        "coverage/reusable-piece-card-index.json.gz",
+        "coverage/reusable-piece-interactions.json.gz",
+        "coverage/reusable-piece-delta.json",
+        "coverage/reusable-piece-delta.md",
+        "coverage/complex-card-composition.json",
+        "coverage/complex-card-composition.md",
+        "coverage/program-baseline.json"
+      ],
+      "check": [
+        "scripts/update_reusable_piece_matrix.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_reusable_piece_matrix.py",
+        "--refresh-derived"
+      ],
+      "write_with_database": [
+        "scripts/update_reusable_piece_matrix.py",
+        "--write",
+        "--db",
+        "{db}"
+      ],
+      "write_policy": "database"
+    }
+  ]
+}

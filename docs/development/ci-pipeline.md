@@ -2,7 +2,7 @@
 title: "CI pipeline and two-slot development"
 status: "current"
 authoritative_source: "GitHub workflows, platform/test-shards.json, and local gate scripts"
-verified: "2026-08-07"
+verified: "2026-08-08"
 audience: "contributors and maintainers"
 maintenance: "hand-maintained"
 ---
@@ -86,6 +86,47 @@ gets generated-type, typecheck, and production-build checks locally; isolated
 headless Chromium belongs to CI. Never add a command that opens, focuses, or
 navigates the user's browser.
 
+## Generated artifact finalization
+
+`platform/generated-artifacts.json` is the canonical ownership and dependency
+manifest for deterministic Python reports enforced by generated/architecture
+CI. It does not replace the existing owners for protocol types, pinned rules
+snapshots, or other separately governed generated assets. It declares each
+registered output, its writer and checker, and whether writing is automatic,
+database-backed, or a deliberate manual baseline operation. CI and the local
+impact plan invoke the same interface. Run write mode after the coherent
+source/test/documentation worktree is complete and before the final commit;
+inspect and stage its outputs with the source change:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\finalize_generated.py --write
+```
+
+Write mode runs generators in topological order and repeats only changed
+generators and their downstream automatic or derived-only consumers until a
+bounded pass changes nothing. A requested database-backed corpus rebuild occurs
+only on the first pass because the DAG already orders all of its consumers
+afterward. It then runs all freshness checks, documentation validation, and
+diff hygiene. Pass `--db <path>` or set
+`MTG_CARD_DB` when a card-data-backed frontier or full reusable-piece rebuild is
+required. The reusable-piece writer can refresh architecture-derived delta
+metadata without rebuilding the pinned corpus. Performance baselines remain
+manual because observed latency is review evidence, not an automatic rewrite.
+Use `--check` for read-only diagnosis and in CI; a successful `--write` already
+performs that verification, so do not run both commands consecutively.
+
+Install the tracked pre-push hook once in each worktree:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\install_dev_hooks.py
+```
+
+The installer sets the local `core.hooksPath` to `.githooks` and refuses to
+overwrite another hook policy. The hook is a backstop that uses the
+worktree-local Python, runs write mode, and rejects the push when generated
+outputs need a commit. It never amends a commit. Git hooks can be bypassed, so
+pull-request CI remains check-only and authoritative.
+
 The full `scripts/local_merge_gate.py` is not a default development step. Run a
 broad local gate only when the user explicitly asks or while diagnosing a
 CI-only/release-critical persistence, replay, privacy, or packaging failure.
@@ -97,7 +138,8 @@ Slot B work.
 `.github/workflows/ci.yml` runs these independent jobs:
 
 - ten balanced Ubuntu functional shards;
-- generated inventory, rules, documentation, repository, and architecture
+- canonical generated-artifact finalization checks from the ownership
+  manifest, followed by rules, documentation, repository, and architecture
   validation;
 - wheel build and clean-install verification;
 - a focused Windows compatibility overlay for ordinary changes;
@@ -172,10 +214,11 @@ remain derived and are generated only for paused or terminal records.
 `platform/readiness-source.json` contains durable product and certification
 policy only. Pull-request numbers, exact heads, workflow runs, merge SHAs,
 runtime branches, and transient integration chronology belong to GitHub and the
-untracked certification receipt. The generated readiness report records the
-evaluated source-tree fingerprint, while current test counts and CardProgram
-census values are derived from the authoritative test inventory and coverage
-artifacts rather than copied into the source.
+untracked certification receipt. The generated readiness report fingerprints
+its actual source, package, stable test-shard inventory, rules, and CardProgram
+inputs. Exact tracked-source equivalence belongs only to the certification
+receipt and main-smoke verification. Environment-sensitive executed-test totals
+remain CI metrics rather than tracked readiness state.
 
 Deterministic failures that escape the quick gate are recorded in
 `platform/ci-escape-source.json`. The generated
