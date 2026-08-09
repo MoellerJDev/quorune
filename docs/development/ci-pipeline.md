@@ -190,6 +190,20 @@ runtime integration tests should require the compact CI card database. When a
 database-backed fixture is genuinely required, identify every workflow and
 local-gate database builder that consumes it before publishing the branch.
 
+`tests/fixtures/compact-ci-fixtures.json` is the single machine-readable input
+set for the shared compact CI database. Every Linux, Windows, generated,
+browser, main-smoke, nightly, quick-gate, and local-gate build invokes:
+
+```text
+python scripts/build_test_database.py build-ci --output <job-specific-path>
+```
+
+`python scripts/build_test_database.py validate-ci` fails when the manifest is
+malformed, contains duplicate, missing, escaping, or noncanonical paths, or a
+registered consumer reintroduces its own `--fixture` list. Add a required
+fixture once to the manifest; all consumers retain isolated output paths while
+receiving the same composed card set automatically.
+
 The full `scripts/local_merge_gate.py` is not a default development step. Run a
 broad local gate only when the user explicitly asks or while diagnosing a
 CI-only/release-critical persistence, replay, privacy, or packaging failure.

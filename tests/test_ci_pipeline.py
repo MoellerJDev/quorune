@@ -296,7 +296,8 @@ class CiPipelineTests(unittest.TestCase):
         package = pr.split("\n  package:", 1)[1].split("\n  windows_compatibility:", 1)[0]
         windows_full = pr.split("\n  windows_full:", 1)[1].split("\n  windows_package:", 1)[0]
         self.assertIn("MTG_CARD_DB: data/test-ci.sqlite3", generated)
-        self.assertIn("scripts/build_test_database.py build", generated)
+        self.assertIn("scripts/build_test_database.py build-ci", generated)
+        self.assertIn("scripts/build_test_database.py validate-ci", generated)
         self.assertIn("scripts/finalize_generated.py --check", generated)
         self.assertNotIn(
             "scripts/update_reusable_piece_matrix.py --check", generated
@@ -315,6 +316,14 @@ class CiPipelineTests(unittest.TestCase):
         self.assertIn("schedule:", nightly)
         self.assertIn("MTG_PROPERTY_TRANSITIONS: \"33334\"", nightly)
         self.assertIn("test_*.py", nightly)
+        combined = "\n".join((pr, main, nightly))
+        self.assertNotIn("--fixture tests/fixtures/", combined)
+        for line in combined.splitlines():
+            if (
+                "scripts/build_test_database.py" in line
+                and "validate-ci" not in line
+            ):
+                self.assertIn("build-ci", line)
 
     def test_browser_smoke_is_headless_and_never_opens_report(self):
         package = json.loads((ROOT / "web/package.json").read_text(encoding="utf-8"))

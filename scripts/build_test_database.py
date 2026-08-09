@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 import tempfile
 import sys
 
@@ -13,6 +13,123 @@ if str(ROOT) not in sys.path:
 from quorune.carddb import CardDatabase, CardRecord, build_card_database
 from quorune.deck import DeckLoader
 from quorune.util import stable_json
+
+
+COMPACT_CI_FIXTURE_MANIFEST = (
+    ROOT / "tests" / "fixtures" / "compact-ci-fixtures.json"
+)
+COMPACT_CI_SCRIPT_CONSUMERS = (
+    "scripts/local_merge_gate.py",
+    "scripts/quick_gate.py",
+)
+
+
+def compact_ci_fixture_paths(
+    manifest_path: Path | None = None,
+    *,
+    root: Path = ROOT,
+) -> tuple[Path, ...]:
+    """Load the one canonical compact-CI fixture set, failing closed."""
+
+    if manifest_path is None:
+        manifest_path = root / "tests" / "fixtures" / "compact-ci-fixtures.json"
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict) or set(payload) != {
+        "schema_version",
+        "fixture_kind",
+        "fixtures",
+    }:
+        raise ValueError(
+            "Compact CI fixture manifest has unknown or missing fields"
+        )
+    if payload["schema_version"] != 1:
+        raise ValueError("Unsupported compact CI fixture manifest schema")
+    if payload["fixture_kind"] != "compact_ci_card_database_inputs":
+        raise ValueError("Unexpected compact CI fixture manifest kind")
+    entries = payload["fixtures"]
+    if (
+        not isinstance(entries, list)
+        or not entries
+        or not all(isinstance(entry, str) and entry for entry in entries)
+    ):
+        raise ValueError("Compact CI fixtures must be a nonempty string list")
+    if len(entries) != len(set(entries)):
+        raise ValueError("Compact CI fixture manifest contains duplicates")
+
+    root_resolved = root.resolve()
+    fixtures: list[Path] = []
+    for entry in entries:
+        canonical = PurePosixPath(entry)
+        if (
+            "\\" in entry
+            or canonical.is_absolute()
+            or PureWindowsPath(entry).is_absolute()
+            or ".." in canonical.parts
+            or canonical.as_posix() != entry
+        ):
+            raise ValueError(
+                "Compact CI fixture must be a canonical repository-relative "
+                f"POSIX path: {entry}"
+            )
+        fixture = (root / entry).resolve(strict=False)
+        try:
+            fixture.relative_to(root_resolved)
+        except ValueError as exc:
+            raise ValueError(
+                f"Compact CI fixture resolves outside the repository: {entry}"
+            ) from exc
+        if not fixture.is_file():
+            raise ValueError(f"Compact CI fixture does not exist: {entry}")
+        fixtures.append(fixture)
+    return tuple(fixtures)
+
+
+def validate_compact_ci_consumers(*, root: Path = ROOT) -> dict[str, object]:
+    """Prove every compact database consumer uses the manifest-backed command."""
+
+    workflow_root = root / ".github" / "workflows"
+    workflow_consumers = tuple(
+        sorted(
+            path.relative_to(root).as_posix()
+            for pattern in ("*.yml", "*.yaml")
+            for path in workflow_root.glob(pattern)
+            if "scripts/build_test_database.py"
+            in path.read_text(encoding="utf-8")
+        )
+    )
+    consumers = (*workflow_consumers, *COMPACT_CI_SCRIPT_CONSUMERS)
+    invocation_count = 0
+    for relative in consumers:
+        path = root / relative
+        text = path.read_text(encoding="utf-8")
+        build_text = "\n".join(
+            line
+            for line in text.splitlines()
+            if not (
+                "scripts/build_test_database.py" in line
+                and "validate-ci" in line
+            )
+        )
+        invocations = build_text.count("scripts/build_test_database.py")
+        canonical = text.count("build-ci")
+        if not invocations:
+            raise ValueError(f"Compact CI consumer has no database build: {relative}")
+        if canonical != invocations or "--fixture" in text:
+            raise ValueError(
+                "Compact CI consumer maintains an independent fixture list: "
+                f"{relative}"
+            )
+        invocation_count += invocations
+    fixtures = compact_ci_fixture_paths(root=root)
+    return {
+        "ok": True,
+        "manifest": (
+            root / "tests" / "fixtures" / "compact-ci-fixtures.json"
+        ).relative_to(root).as_posix(),
+        "fixtures": [path.relative_to(root).as_posix() for path in fixtures],
+        "consumers": list(consumers),
+        "invocations": invocation_count,
+    }
 
 
 def _card_payload(card: CardRecord) -> dict:
@@ -183,6 +300,11 @@ def main() -> int:
     )
     build.add_argument("--output", required=True, type=Path)
 
+    build_ci = subparsers.add_parser("build-ci")
+    build_ci.add_argument("--output", required=True, type=Path)
+
+    subparsers.add_parser("validate-ci")
+
     args = parser.parse_args()
     if args.command == "export":
         deck_paths = args.deck or [
@@ -195,8 +317,18 @@ def main() -> int:
             deck_paths,
             args.extra_card,
         )
-    else:
+    elif args.command == "build":
         result = build_fixture_database(args.fixture, args.output)
+    elif args.command == "build-ci":
+        result = build_fixture_database(
+            list(compact_ci_fixture_paths()),
+            args.output,
+        )
+        result["fixture_manifest"] = (
+            COMPACT_CI_FIXTURE_MANIFEST.relative_to(ROOT).as_posix()
+        )
+    else:
+        result = validate_compact_ci_consumers()
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 
