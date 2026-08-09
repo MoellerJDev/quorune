@@ -722,6 +722,14 @@
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.intrinsic_entry", "token.creation.additional_replacement"],
       "interaction_order": 3,
       "assertion": "One prospective token batch resumes an additional-token choice and then an intrinsic-entry counter-quantity choice without duplicating either replacement or exposing either continuation to another seat."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
+      "piece_ids": ["capability.continuous.resolution.fixed_keyword_zone_object", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_target", "mechanic.cr-122-counters", "mechanic.cr-611-continuous-effects"],
+      "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_target"],
+      "interaction_order": 5,
+      "assertion": "One source-spanned target sequence commits its fixed counter through the canonical counter owner, then commits a separate typed layer-6 grant that survives cleanup and source departure but stops applying after the target changes logical identity."
     }
   ]
 }

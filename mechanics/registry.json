@@ -16,8 +16,8 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "9ce5c077110a787c80ec066f784dba8b72bfbd04c44673654d0659b1e64967ef",
-      "version": 10
+      "sha256": "02b6a03e1c180e61fef9c0a79dfb74f43380a512cafacac0ad8236c952e6d4a9",
+      "version": 11
     },
     {
       "mechanic_id": "cr-111-tokens",
@@ -448,8 +448,8 @@
     {
       "mechanic_id": "cr-611-continuous-effects",
       "path": "mechanics/contracts/simple-until-end-of-turn.json",
-      "sha256": "b51b7f26327c7c55f0e930e3c46f744bd96be25f0e81fdc14343e1c72ebce671",
-      "version": 2
+      "sha256": "1c8bded1566a754b7c067c358735e063f57fce27117693c5868de7b50b9d8df7",
+      "version": 3
     },
     {
       "mechanic_id": "skulk",
@@ -6454,12 +6454,12 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "9ce5c077110a787c80ec066f784dba8b72bfbd04c44673654d0659b1e64967ef",
-      "contract_version": 10,
+      "contract_sha256": "02b6a03e1c180e61fef9c0a79dfb74f43380a512cafacac0ad8236c952e6d4a9",
+      "contract_version": 11,
       "coverage_status": "partial",
       "dependencies": [],
       "implementation_component": "closed fixed-counter single-target, fixed target counter-and-characteristic sequence, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v11",
+      "implementation_version": "counter-placement-transaction-v12",
       "kind": "rules_section",
       "known_blockers": [
         "Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with optional, variable, distributed, multi-counter, dynamic, subtype-qualified, combat-qualified, modal, conditional, and compound general target-set instructions",
@@ -6564,7 +6564,11 @@
         "test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
         "test_four_player_sequence_choice_is_seat_scoped_and_replays",
         "test_keyword_counter_vocabulary_is_closed_and_strict",
-        "test_keyword_counter_characteristic_mutant_is_killed"
+        "test_keyword_counter_characteristic_mutant_is_killed",
+        "test_indefinite_keyword_sequence_compiles_the_closed_family",
+        "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
+        "test_four_player_zone_object_keyword_sequence_is_private_and_replays",
+        "test_zone_object_keyword_commit_mutant_is_killed"
       ],
       "trust_level": "untrusted"
     },
@@ -8496,12 +8500,12 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/simple-until-end-of-turn.json",
-      "contract_sha256": "b51b7f26327c7c55f0e930e3c46f744bd96be25f0e81fdc14343e1c72ebce671",
-      "contract_version": 2,
+      "contract_sha256": "1c8bded1566a754b7c067c358735e063f57fce27117693c5868de7b50b9d8df7",
+      "contract_version": 3,
       "coverage_status": "partial",
       "dependencies": [],
       "implementation_component": "compiler.fixed_target_effect_sequences, rules.node_capability_shapes, continuous_effect_state, and the typed semantic continuous-effect sink",
-      "implementation_version": "simple-until-eot-v2",
+      "implementation_version": "continuous-resolution-duration-v3",
       "kind": "rules_section",
       "known_blockers": [
         "dynamic values, effect dependencies, and player/game-rule continuous effects remain residual",
@@ -8518,7 +8522,11 @@
         "test_power_toughness_sublayers_set_modify_then_switch",
         "test_standalone_target_characteristics_are_target_revalidated",
         "test_target_threaded_sequence_preserves_printed_effect_order",
-        "test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly"
+        "test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+        "test_indefinite_keyword_sequence_compiles_the_closed_family",
+        "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
+        "test_four_player_zone_object_keyword_sequence_is_private_and_replays",
+        "test_zone_object_keyword_commit_mutant_is_killed"
       ],
       "trust_level": "untrusted"
     },

@@ -927,6 +927,51 @@ def fixed_target_effect_sequence_node_capabilities(
     """Return ownership for one closed target-threaded counter sequence."""
 
     mechanics = {str(value).casefold() for value in mechanic_ids}
+    if any(
+        effect.get("op") == "grant_zone_object_keyword"
+        for effect in effects
+    ):
+        if not {
+            _FIXED_TARGET_SEQUENCE_MECHANIC,
+            "cr-115-targets",
+            "cr-122-counters",
+            "cr-611-continuous-effects",
+        }.issubset(mechanics) or len(effects) != 2:
+            return ()
+        counter, grant = effects
+        if (
+            set(counter) != {"op", "card", "counter", "amount", "source"}
+            or counter.get("op") != "place_counters"
+            or counter.get("card") != "$target.0"
+            or type(counter.get("counter")) is not str
+            or not counter.get("counter")
+            or type(counter.get("amount")) is not int
+            or counter.get("amount", 0) <= 0
+            or counter.get("source") != "$source"
+            or not _fixed_counter_target_schema_is_closed(target_schema)
+        ):
+            return ()
+        keyword = grant.get("keyword")
+        keyword_mechanic = keyword_counter_mechanic(keyword)
+        if (
+            set(grant) != {"op", "card", "keyword"}
+            or grant.get("op") != "grant_zone_object_keyword"
+            or grant.get("card") != "$target.0"
+            or keyword not in _FIXED_TARGET_SEQUENCE_KEYWORDS
+            or keyword_mechanic is None
+            or keyword_mechanic not in mechanics
+        ):
+            return ()
+        counter_mechanic = keyword_counter_mechanic(counter.get("counter"))
+        if counter_mechanic is not None and counter_mechanic not in mechanics:
+            return ()
+        return (
+            "continuous.resolution.fixed_keyword_zone_object",
+            *(("counter.characteristic.keyword",) if counter_mechanic else ()),
+            "counter.producer.fixed_effect",
+            "resolution.effect_sequence.fixed_target",
+            "target.revalidate_resolution",
+        )
     if not {
         _FIXED_TARGET_SEQUENCE_MECHANIC,
         "cr-115-targets",

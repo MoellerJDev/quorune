@@ -61,3 +61,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0044 — typed fixed counter-placement casting costs](0044-typed-fixed-counter-casting-costs.md)
 - [ADR 0045 — typed fixed Scry resolution](0045-typed-fixed-scry-resolution.md)
 - [ADR 0046 — typed fixed sacrifice casting costs](0046-typed-fixed-sacrifice-casting-costs.md)
+- [ADR 0047 — typed zone-object keyword results](0047-typed-zone-object-keyword-results.md)

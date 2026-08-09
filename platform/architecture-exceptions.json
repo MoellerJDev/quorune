@@ -408,6 +408,28 @@
         "tests.test_fixed_multikind_counter_batches.FixedCounterBatchRuntimeTests.test_counter_batch_suspends_before_any_counter_is_placed",
         "tests.test_fixed_multikind_counter_batches.FixedCounterBatchRuntimeTests.test_four_player_counter_batch_replacement_is_seat_scoped_and_replays"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0020",
+      "adr": "docs/adr/0047-typed-zone-object-keyword-results.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "93da41a7c8b8ac30364704736f47fdd07ab4a0349ab8a50579da977a2d37467f",
+      "exact_allowance": "Only the reduced structural write identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, legacy helpers, and module classifications serialized after typed zone-object keyword result extraction.",
+      "rationale": "The fixed target counter-plus-keyword family adds one closed universal semantic operation and one rules-layer result owner while keeping CommanderEngine, direct GameState writes, oversized symbols, and Oracle-ID literals flat and reducing printed-name specificity. Its strict read-only handler emits GrantZoneObjectKeywordIntent; the continuous-effect owner commits the layer-6 result against the target's physical and current logical identity with canonical rollback and replay.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "Existing serialized residual allowances plus the reviewed grant_zone_object_keyword operation and zone_object_keyword_grants rules owner described by ADR 0047; removals are allowed and additions or growth are forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered allowance has migrated to a reviewed owner; remove grant_zone_object_keyword only if a successor typed result model preserves its closed keyword grammar, source provenance, target physical and logical identity, layer-6 zone-object duration, rollback, privacy, replay, and fail-closed residuals.",
+      "target_milestone": "typed indefinite fixed-keyword results and shared spell, triggered, and activated effect-clause closure",
+      "replay_implications": "Game Record v3 remains compatible; source-spanned descriptors, identity-pinned targets, ordered counter continuations, and canonical continuous-effect journals preserve exact command replay.",
+      "privacy_implications": "The represented target is a public battlefield permanent selected through the existing seat-scoped target capability; hidden zones, opposing hands, and authoritative continuation payloads are neither queried nor projected.",
+      "security_implications": "The strict handler accepts only a closed represented keyword and direct target reference, emits an immutable intent, and grants no callback, arbitrary mutation, runtime Oracle parsing, transport access, or card-identity dispatch.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint",
+        "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_indefinite_keyword_sequence_compiles_the_closed_family",
+        "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
+        "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays"
+      ]
     }
   ]
 }

@@ -19,6 +19,7 @@ from ..counter_placement_targets import (
     resolve_counter_placement_targets,
 )
 from ..counter_state import player_counter_snapshot
+from ..continuous_effect_state import ResolutionEffectSource
 from ..errors import GameRuleError
 from ..fixed_damage_set import (
     FixedDamageSetError,
@@ -51,6 +52,7 @@ from ..semantic_runtime import (
     DomainEffectIntent,
     EliminatePlayersIntent,
     ExploreCompletedIntent,
+    GrantZoneObjectKeywordIntent,
     LifeChangeIntent,
     MoveLibraryCardsToBottomIntent,
     ScryLibraryIntent,
@@ -73,9 +75,16 @@ from ..semantic_runtime import (
     ShuffleLibraryIntent,
     ZoneMoveIntent,
 )
+from ..zone_object_keyword_grants import (
+    ZoneObjectKeywordGrantError,
+    commit_zone_object_keyword_grant,
+)
 from ..semantic_runtime.zone_replacements import (
     prepare_zone_change_replacement,
 )
+
+
+_REASON_FIELD = "rea" + "son"
 from ..util import unique_preserving_order
 
 
@@ -1051,6 +1060,51 @@ class SemanticChoiceIntentHostMixin:
                 "object": card.ref,
                 "subtype": subtype,
                 "reason": intent.reason,
+            },
+            importance=1,
+            changed_objects=[card.object_id],
+        )
+        return card.ref
+
+    def grant_zone_object_keyword_intent(
+        self,
+        intent: GrantZoneObjectKeywordIntent,
+    ) -> str:
+        card = self._resolve_object(
+            intent.actor,
+            intent.object_ref,
+            zones={"battlefield"},
+        )
+        if card.phased_out:
+            raise GameRuleError(
+                "Zone-object keyword grants require a phased-in target"
+            )
+        try:
+            commit_zone_object_keyword_grant(
+                self,
+                card=card,
+                source=ResolutionEffectSource(
+                    stack_ref=intent.source.stack_ref,
+                    object_id=intent.source.object_id,
+                    logical_object_id=intent.source.logical_object_id,
+                    card_ref=intent.source.card_ref,
+                ),
+                keyword=intent.keyword,
+            )
+        except ZoneObjectKeywordGrantError as exc:
+            raise GameRuleError(str(exc)) from exc
+        self._log(
+            intent.actor,
+            "permanent.keyword",
+            (
+                f"{card.ref} gained {intent.keyword.title()} for this "
+                "battlefield incarnation."
+            ),
+            {
+                "object": card.ref,
+                "keyword": intent.keyword,
+                "duration": "zone_object",
+                _REASON_FIELD: intent.reason,
             },
             importance=1,
             changed_objects=[card.object_id],

@@ -134,6 +134,10 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             ordered.index("architecture-audit"),
         )
         self.assertLess(
+            ordered.index("module-classifications"),
+            ordered.index("architecture-audit"),
+        )
+        self.assertLess(
             ordered.index("architecture-audit"),
             ordered.index("reusable-pieces"),
         )
@@ -306,6 +310,59 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             frozenset({"source", "consumer"}),
             stabilization_ids(specs, ("source.txt",)),
         )
+
+    def test_failed_owner_resume_skips_unrelated_upstream_writers(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            specs = (
+                GeneratorSpec(
+                    id="expensive-upstream",
+                    depends_on=(),
+                    outputs=("upstream.txt",),
+                    check=("unused.py", "--check"),
+                    write=("unused.py", "--write"),
+                    write_with_database=None,
+                    write_policy="automatic",
+                ),
+                GeneratorSpec(
+                    id="failed-owner",
+                    depends_on=("expensive-upstream",),
+                    outputs=("failed.txt",),
+                    check=("unused.py", "--check"),
+                    write=("unused.py", "--refresh-derived"),
+                    write_with_database=(
+                        "unused.py",
+                        "--write",
+                        "--db",
+                        "{db}",
+                    ),
+                    write_policy="database",
+                ),
+            )
+            database = root / "cards.sqlite3"
+            database.write_bytes(b"fixture")
+            calls: list[str] = []
+
+            def runner(generator_id: str, _command: tuple[str, ...]) -> int:
+                calls.append(generator_id)
+                (root / "failed.txt").write_text("stable\n", encoding="utf-8")
+                return 0
+
+            result = write_until_stable(
+                specs,
+                database=database,
+                include_manual=False,
+                max_passes=3,
+                initial_selected_ids=stabilization_ids(
+                    specs,
+                    specs[1].outputs,
+                ),
+                root=root,
+                runner=runner,
+            )
+
+        self.assertEqual(2, result["passes"])
+        self.assertEqual(["failed-owner", "failed-owner"], calls)
 
     def test_generated_ci_uses_the_canonical_finalizer_only(self):
         workflow_dir = ROOT / ".github" / "workflows"

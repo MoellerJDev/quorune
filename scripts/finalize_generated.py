@@ -122,6 +122,7 @@ def write_until_stable(
     database: Path | None,
     include_manual: bool,
     max_passes: int,
+    initial_selected_ids: frozenset[str] | None = None,
     root: Path = ROOT,
     runner: CommandRunner = _run_command,
 ) -> dict[str, object]:
@@ -130,7 +131,7 @@ def write_until_stable(
     before = output_snapshot(specs, root=root)
     changed_by_pass: list[tuple[str, ...]] = []
     executed_by_pass: list[tuple[str, ...]] = []
-    selected_ids: frozenset[str] | None = None
+    selected_ids = initial_selected_ids
     for pass_number in range(1, max_passes + 1):
         # A topological first pass already places every database-backed corpus
         # output before its declared consumers. Rebuilding the full corpus on
@@ -273,6 +274,14 @@ def main() -> int:
     parser.add_argument("--include-manual", action="store_true")
     parser.add_argument("--max-passes", type=int, default=3)
     parser.add_argument(
+        "--resume-from",
+        metavar="GENERATOR_ID",
+        help=(
+            "After a failed write, rerun one registered generator and its "
+            "descendants; every freshness and policy check still runs"
+        ),
+    )
+    parser.add_argument(
         "--fail-on-change",
         action="store_true",
         help=(
@@ -281,6 +290,8 @@ def main() -> int:
         ),
     )
     args = parser.parse_args()
+    if args.resume_from and not args.write:
+        parser.error("--resume-from requires --write")
     specs = load_manifest()
     database = _database(args.db)
     result: dict[str, object] = {
@@ -291,12 +302,25 @@ def main() -> int:
         "database": str(database) if database is not None else None,
     }
     try:
+        selected_ids: frozenset[str] | None = None
+        if args.resume_from:
+            resumed = next(
+                (spec for spec in specs if spec.id == args.resume_from),
+                None,
+            )
+            if resumed is None:
+                raise ValueError(
+                    f"Unknown generated-artifact owner: {args.resume_from}"
+                )
+            selected_ids = stabilization_ids(specs, resumed.outputs)
+            result["resume_from"] = args.resume_from
         if args.write:
             result["write"] = write_until_stable(
                 specs,
                 database=database,
                 include_manual=args.include_manual,
                 max_passes=args.max_passes,
+                initial_selected_ids=selected_ids,
             )
         failures = check_all(specs)
         if failures:

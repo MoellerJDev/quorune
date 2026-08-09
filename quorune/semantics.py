@@ -91,6 +91,7 @@ VALID_EFFECT_OPERATIONS = {
     "exile_opponent_graveyards",
     "extra_turn",
     "grant_ability_marker",
+    "grant_zone_object_keyword",
     "fomori_vault",
     "life",
     "lose_life",

@@ -191,11 +191,33 @@ step until CI and do not repair platform status, architecture audit, and
 reusable-piece fingerprints in separate follow-up commits. Use `--check` for
 read-only diagnosis; do not run it immediately after a successful `--write`.
 
+If a database-backed finalizer run reaches a later owner and fails, fix the
+source error first. When that correction cannot affect earlier owners, resume
+through the same canonical coordinator instead of rerunning the expensive
+upstream corpus or hand-ordering generators:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\finalize_generated.py --write `
+  --db data\scryfall-current.sqlite3 --resume-from <generator-id>
+```
+
+Resume mode runs the named manifest owner and every descendant, then still
+runs all registered freshness, architecture, documentation, and diff checks.
+The ordinary first finalization and the pre-push hook always run the complete
+manifest.
+
 Install the repository-owned pre-push hook once per worktree:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\install_dev_hooks.py
 ```
+
+The repository intentionally uses a pre-push backstop instead of a pre-commit
+writer: generated changes must be inspected and staged in the same deliberate
+commit as their source, and some database-backed censuses are too expensive to
+run on every intermediate commit. The command above and the required
+pre-final-commit finalizer are therefore both part of worktree setup; do not
+publish from a worktree whose `core.hooksPath` is not `.githooks`.
 
 The hook is a backstop, not the normal finalization point. It uses only the
 worktree-local CPython 3.12 environment. Before the corpus finalizer, it

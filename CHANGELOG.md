@@ -11,6 +11,19 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Typed zone-object keyword results
+
+- Added one closed target-threaded sequence for placing a fixed counter and
+  granting Flying, First strike, Trample, or Vigilance to that target for its
+  current battlefield incarnation. The compiler emits a source-spanned
+  CardProgram node and the runtime lowers it to a typed immutable layer-6
+  continuous effect without parsing Oracle text.
+- Counter replacement, printed result order, target revalidation, cleanup,
+  source departure, target reentry, transactional rollback, four-player
+  projection, exact replay, and killed mutation evidence use the existing
+  canonical owners. Optional, variable, compound, chosen, temporary, and
+  arbitrary granted-ability variants remain explicit residuals.
+
 ### Replacement-aware intrinsic counters on tokens
 
 - Planeswalker and Battle tokens now reserve immutable prospective identity,
