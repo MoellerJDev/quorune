@@ -508,20 +508,21 @@ def _decode_mana_continuation(
             )
         event = batch.events[0]
         payload = event.payload
-        common_valid = (
-            event.kind == "counter.place"
-            and payload.get("effect_generated") is False
-            and payload.get("placing_player") == seat
-            and payload.get("target_kind") == "permanent"
-            and type(payload.get("counter_name")) is str
-            and bool(payload.get("counter_name"))
-            and type(payload.get("amount")) is int
-            and payload.get("amount", 0) > 0
-        )
         action_valid = False
-        if action == "activate":
+        common_valid = False
+        if event.kind == "counter.place":
+            common_valid = (
+                payload.get("effect_generated") is False
+                and payload.get("placing_player") == seat
+                and payload.get("target_kind") == "permanent"
+                and type(payload.get("counter_name")) is str
+                and bool(payload.get("counter_name"))
+                and type(payload.get("amount")) is int
+                and payload.get("amount", 0) > 0
+            )
+        if event.kind == "counter.place" and action == "activate":
             action_valid = payload.get("counter_name") == "loyalty"
-        else:
+        elif event.kind == "counter.place" and action == "cast":
             payment_id = response.get("_mana_payment_id")
             card_ref = response.get("card")
             prefix = f"counter.cost:{payment_id}:{card_ref}:additional:"
@@ -535,6 +536,30 @@ def _decode_mana_continuation(
                 and suffix.isdecimal()
                 and str(int(suffix)) == suffix
                 and payload.get("source") == card_ref
+            )
+        elif event.kind == "zone.change" and action == "cast":
+            raw_refs = response.get("sacrifice_cards")
+            if raw_refs is None:
+                raw_refs = response.get("cost_cards")
+            selected_ref = (
+                raw_refs[0]
+                if isinstance(raw_refs, (list, tuple))
+                and len(raw_refs) == 1
+                and type(raw_refs[0]) is str
+                else None
+            )
+            affected = event.affected_object
+            common_valid = (
+                selected_ref is not None
+                and payload.get("origin") == "battlefield"
+                and payload.get("destination") == "graveyard"
+                and payload.get("object_ref") == selected_ref
+                and affected is not None
+                and affected.controller == seat
+            )
+            action_valid = (
+                event.event_id.startswith("zone.change:")
+                and event.event_id.endswith(f":{selected_ref}")
             )
         if not common_valid or not action_valid:
             raise ReplacementEffectError(

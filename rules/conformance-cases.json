@@ -35542,17 +35542,21 @@
         "tests.test_preflight_v080.NormalizedZoneEventTests.test_hybrid_cast_cost_exposes_only_payable_variants",
         "tests.test_exact_zimone_closure.ExactZimoneClosureTests.test_endurance_evoke_exiles_green_card_shuffles_target_and_sacrifices",
         "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostCompilerTests.test_counter_additional_cost_compiles_exact_source_spanned_node",
-        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostCompilerTests.test_counter_additional_cost_fails_closed_for_unsupported_grammar"
+        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostCompilerTests.test_counter_additional_cost_fails_closed_for_unsupported_grammar",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_cost_compiles_source_spanned_v2_program",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_cost_grammar_fails_closed"
       ],
       "implementation_components": [
         "CommanderEngine._cast_cost_options",
         "CommanderEngine._compiled_printed_cost_options",
         "mana.auto_plan_payment",
         "casting_additional_costs.FixedCounterPlacementAdditionalCost",
+        "casting_additional_costs.FixedSacrificeAdditionalCost",
+        "compiler.spell_additional_cost_nodes.typed_additional_cost_spell_node",
         "rules.casting.costs._apply_additional_costs"
       ],
       "notes": [
-        "Selected normal, alternate, additional, commander-tax, hybrid, affinity, convoke, and improvise costs are compiled. The bounded fixed counter-placement additional-cost family is source-spanned and fails closed as one whole spell when its cost grammar or result is unsupported, but these slices do not establish the complete total-cost algorithm."
+        "Selected normal, alternate, additional, commander-tax, hybrid, affinity, convoke, and improvise costs are compiled. Bounded fixed counter-placement and one-permanent sacrifice additional-cost families are source-spanned and fail closed as one whole spell when their cost grammar or result is unsupported, but these slices do not establish the complete total-cost algorithm."
       ],
       "required_scenarios": [
         "positive",
@@ -35635,17 +35639,20 @@
       "executable_test_ids": [
         "tests.test_casting_spells_rules.CastingSpellRuleTests.test_failed_cast_submission_restores_every_partial_payment",
         "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_offer_revalidates_effective_creature",
-        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"
+        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_offer_and_submission_share_effective_type_legality",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_zone_replacement_suspends_cost_before_mutation_and_replays"
       ],
       "implementation_components": [
         "CommanderEngine._pay_for_cost",
         "CommanderEngine._cast",
         "CommanderEngine.transaction",
         "rules.casting.commit._commit_counter_placement_additional_cost",
+        "rules.casting.commit._resolve_fixed_sacrifice_additional_cost",
         "mana_payment_continuations.execute_mana_choice_capable_priority_action"
       ],
       "notes": [
-        "Represented costs are authoritative and an unpayable submission rolls back. A bounded mandatory fixed counter placement can suspend for replacement ordering before any mana, counter, or stack mutation and resume to exact replay, but complete payment-order choice is missing."
+        "Represented costs are authoritative and an unpayable submission rolls back. Bounded mandatory fixed counter placement and one-permanent sacrifice costs can suspend for replacement ordering before mana, cost, or stack mutation and resume to exact replay, but complete payment-order choice is missing."
       ],
       "required_scenarios": [
         "positive",
@@ -35688,13 +35695,15 @@
         "tests.test_casting_spells_rules.CastingSpellRuleTests.test_cast_trigger_is_queued_above_spell_before_priority_returns",
         "tests.test_exact_artifact_engines.ExactArtifactEngineTests.test_sai_cast_trigger_and_two_artifact_draw_cost",
         "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_compiles_and_casts",
-        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"
+        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_fixed_sacrifice_cost_commits_and_replays"
       ],
       "implementation_components": [
         "CommanderEngine._cast",
         "CommanderEngine._dispatch_semantic_event",
         "CommanderEngine._stabilize",
-        "rules.casting.commit.commit_cast"
+        "rules.casting.commit.commit_cast",
+        "rules.casting.commit._resolve_fixed_sacrifice_additional_cost"
       ],
       "notes": [
         "For represented casts, the spell is on the stack before cast triggers are queued above it and stabilization precedes priority returning to the caster."
@@ -51894,23 +51903,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-701.21",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "701"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_cost_compiles_source_spanned_v2_program"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword-action heading; casting.additional_cost.fixed_sacrifice owns the bounded mandatory casting-cost producer."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "701.21",
       "rule_text_sha256": "33403d8f77f3caa9aa8f59a1a0290c3e349fe6a5893c3b812340601ac4a0629a",
       "schema_version": 1,
@@ -51919,26 +51932,46 @@
         "end_line": 3450,
         "start_line": 3449
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-701.21a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "701.21"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_fixed_sacrifice_cost_commits_and_replays",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_sacrifice_is_not_destruction_and_uses_owner_graveyard",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_zone_replacement_suspends_cost_before_mutation_and_replays"
+      ],
+      "implementation_components": [
+        "quorune.rules.casting_additional_costs.FixedSacrificeAdditionalCost",
+        "quorune.rules.casting.commit._resolve_fixed_sacrifice_additional_cost",
+        "CommanderEngine.move_card"
+      ],
+      "notes": [
+        "The bounded producer chooses only a phased-in permanent the payer currently controls, moves it through the canonical battlefield-departure transaction toward its owner's graveyard, permits destination replacement, and does not consult destruction or Indestructible legality. Broader sacrifice producers remain outside this capability rather than alternate implementations of the keyword action."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.21a",
       "rule_text_sha256": "fac1fbc15d2af334b84e7404127c8b137e2afabee5ef6a2b08259e2a963427b5",
       "schema_version": 1,
@@ -51947,7 +51980,7 @@
         "end_line": 3452,
         "start_line": 3451
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
       "assertion_kind": "static_traceability",

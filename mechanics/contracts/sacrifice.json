@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "sacrifice",
+  "official_name": "Sacrifice",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": [
+    "601.2f",
+    "601.2h",
+    "701.21",
+    "701.21a"
+  ],
+  "glossary_references": [
+    "sacrifice"
+  ],
+  "dependencies": [
+    "casting-spells",
+    "battlefield",
+    "graveyard"
+  ],
+  "coverage_status": "partial",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": [
+      "battlefield",
+      "owner graveyard or replacement destination",
+      "stack for the spell whose cost is paid"
+    ],
+    "objects": [
+      "one phased-in permanent controlled by the caster",
+      "the stable physical object selected for the cost"
+    ],
+    "events": [
+      "one casting-cost battlefield departure",
+      "normalized zone-change and represented dies occurrences",
+      "cast occurrence only after the cost is paid"
+    ],
+    "state_reads": [
+      "current controller",
+      "current effective permanent card types",
+      "owner graveyard",
+      "applicable destination replacements"
+    ],
+    "state_writes": [
+      "one replacement-aware permanent zone change",
+      "spell stack placement after successful payment"
+    ],
+    "costs": [
+      "exactly one mandatory additional casting-cost sacrifice"
+    ],
+    "timing": [
+      "during CR 601 casting-cost payment before the spell becomes cast"
+    ],
+    "targets": [],
+    "choices": [
+      "one currently legal controlled permanent",
+      "affected-player ordering for competing destination replacements"
+    ],
+    "hidden_information": [
+      "all represented sacrifice candidates are public battlefield objects",
+      "a suspended replacement continuation remains seat-scoped"
+    ],
+    "apnap": [
+      "ordinary one-player cost choice has no APNAP batch",
+      "four-player replacement ordering uses the affected caster"
+    ],
+    "layers": [
+      "candidate legality consumes current effective card types and controller"
+    ],
+    "replacement_effects": [
+      "destination replacements may replace the graveyard move",
+      "destruction replacement and Indestructible do not prevent sacrifice"
+    ],
+    "copy": [
+      "copied-spell and alternate-casting sacrifice costs remain blocked"
+    ],
+    "control_change": [
+      "only the current controller may sacrifice the permanent",
+      "the permanent still moves toward its owner's graveyard"
+    ],
+    "zone_change": [
+      "the chosen physical object must remain a legal battlefield permanent through payment"
+    ],
+    "source_leaves": [
+      "the spell remains in its casting origin until the complete cost transaction succeeds"
+    ]
+  },
+  "variants": [
+    "one permanent",
+    "one permanent of one canonical permanent card type",
+    "one permanent matching either of two canonical permanent card types"
+  ],
+  "witness_cards": [
+    {
+      "name": "Village Rites",
+      "oracle_id": "365548fb-5acc-4a8a-b20b-26d28b7d029f"
+    },
+    {
+      "name": "Costly Plunder",
+      "oracle_id": "8cdfd9df-4783-4138-a286-828a97f516aa"
+    }
+  ],
+  "rulings": [],
+  "test_ids": [
+    "test_fixed_sacrifice_cost_compiles_source_spanned_v2_program",
+    "test_fixed_sacrifice_cost_grammar_fails_closed",
+    "test_fixed_sacrifice_descriptor_is_closed_and_isolated",
+    "test_fixed_sacrifice_capability_dependency_fails_closed",
+    "test_fixed_sacrifice_compiler_mutant_is_killed",
+    "test_fixed_sacrifice_template_is_canonical",
+    "test_offer_and_submission_share_effective_type_legality",
+    "test_fixed_sacrifice_cost_commits_and_replays",
+    "test_sacrifice_is_not_destruction_and_uses_owner_graveyard",
+    "test_zone_replacement_suspends_cost_before_mutation_and_replays"
+  ],
+  "implementation": {
+    "component": "FixedSacrificeAdditionalCostTemplate, FixedSacrificeAdditionalCost, typed additional-cost spell lowering, and replacement-aware casting commit",
+    "version": "typed-fixed-sacrifice-casting-cost-v1",
+    "capability_ids": [
+      "casting.additional_cost.fixed_sacrifice"
+    ],
+    "supported_slice": "One mandatory additional casting-cost sacrifice of one controlled phased-in permanent matching zero, one, or two canonical permanent card types."
+  },
+  "known_blockers": [
+    "optional, variable, repeated, multiple, qualified, subtype, color, and historical-quality sacrifice costs remain residual",
+    "alternative and composite sacrifice costs remain residual",
+    "sacrifice effects, activated costs, triggered costs, and rule-generated sacrifices are separate producers",
+    "simultaneous multi-player sacrifice selection and commit require an APNAP batch",
+    "Casualty, Exploit, Forage, Offering, Emerge, and other keyword-specific sacrifice structures require separate capability closure",
+    "regeneration mechanics remain unsupported even though represented sacrifice does not invoke destruction"
+  ],
+  "review_status": "reviewed"
+}

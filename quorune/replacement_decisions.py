@@ -189,7 +189,7 @@ def _priority_action_cost_event_id(batch: ReplacementEventBatch) -> str:
             "Priority-action cost continuation must identify one event"
         )
     event = batch.events[0]
-    if event.kind not in {"counter.place"} or not event.event_id:
+    if event.kind not in {"counter.place", "zone.change"} or not event.event_id:
         raise ReplacementEffectError(
             "Priority-action cost continuation has an unsupported event"
         )

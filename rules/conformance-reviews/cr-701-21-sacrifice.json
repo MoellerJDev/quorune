@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 701.21 — Sacrifice",
+  "cases": [
+    {
+      "rule_id": "701.21",
+      "rule_text_sha256": "33403d8f77f3caa9aa8f59a1a0290c3e349fe6a5893c3b812340601ac4a0629a",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "executable_test_ids": [
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_cost_compiles_source_spanned_v2_program"
+      ],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": [
+        "Keyword-action heading; casting.additional_cost.fixed_sacrifice owns the bounded mandatory casting-cost producer."
+      ]
+    },
+    {
+      "rule_id": "701.21a",
+      "rule_text_sha256": "fac1fbc15d2af334b84e7404127c8b137e2afabee5ef6a2b08259e2a963427b5",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": [
+        "quorune.rules.casting_additional_costs.FixedSacrificeAdditionalCost",
+        "quorune.rules.casting.commit._resolve_fixed_sacrifice_additional_cost",
+        "CommanderEngine.move_card"
+      ],
+      "executable_test_ids": [
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_fixed_sacrifice_cost_commits_and_replays",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_sacrifice_is_not_destruction_and_uses_owner_graveyard",
+        "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_zone_replacement_suspends_cost_before_mutation_and_replays"
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "blockers": [],
+      "notes": [
+        "The bounded producer chooses only a phased-in permanent the payer currently controls, moves it through the canonical battlefield-departure transaction toward its owner's graveyard, permits destination replacement, and does not consult destruction or Indestructible legality. Broader sacrifice producers remain outside this capability rather than alternate implementations of the keyword action."
+      ]
+    }
+  ]
+}

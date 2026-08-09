@@ -469,34 +469,6 @@
       }
     },
     {
-      "key": "038519b9-bca8-4b27-b5ac-2409595469d0:spell:front",
-      "label": "Diabolic Intent",
-      "oracle_id": "038519b9-bca8-4b27-b5ac-2409595469d0",
-      "effects": [
-        {
-          "op": "search",
-          "searching_player": "$controller",
-          "zone": "library",
-          "selector": {},
-          "count": {"minimum": 1, "maximum": 1},
-          "destination": "hand",
-          "reveal": false,
-          "shuffle_after": true
-        }
-      ],
-      "destination": "graveyard",
-      "cost_schema": {
-        "additional_costs": [
-          {"kind": "sacrifice", "count": 1, "types_any": ["Creature"]}
-        ]
-      },
-      "trust_level": "provisional",
-      "coverage": ["additional_cost", "private_library_search"],
-      "notes": "Exactly one controlled creature is selected and sacrificed before the spell becomes available to opponents.",
-      "tests": ["test_sacrifice_additional_cost_is_required_and_paid", "test_diabolic_intent_unrestricted_search"],
-      "provenance": {"authored_by": "generic-search-v2", "review_status": "provisional"}
-    },
-    {
       "key": "42a3855d-25ab-45b3-9e5d-9a0f3da35a05:spell:front",
       "label": "Reshape",
       "oracle_id": "42a3855d-25ab-45b3-9e5d-9a0f3da35a05",

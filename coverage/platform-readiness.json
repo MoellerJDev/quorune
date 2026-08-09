@@ -34,7 +34,7 @@
     "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "3c5eb3d0ad473e07a9f162fe7e82f8015cc73d4bcc3c548ec7bb961a8b298d70",
+    "evaluated_input_fingerprint": "0a55438d3458a50dd46f3a3909357ee9778e02a68842f3443fe01ef28f822ceb",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -487,11 +487,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 45965,
+      "material_residuals": 45939,
       "status_counts": {
-        "exact": 2667,
-        "partial": 13106,
-        "unresolved": 15850
+        "exact": 2693,
+        "partial": 13107,
+        "unresolved": 15823
       },
       "total": 31623
     },
@@ -500,29 +500,29 @@
     "manifest_present": true,
     "mechanics": {
       "status_counts": {
-        "partial": 61,
+        "partial": 62,
         "tested": 23,
         "trusted": 5,
-        "unclassified": 336
+        "unclassified": 335
       },
       "total": 425,
       "trusted": 5
     },
     "oracle": {
-      "material_residuals": 53560,
+      "material_residuals": 53533,
       "status_counts": {
-        "exact": 5646,
-        "partial": 14253,
-        "unresolved": 18724
+        "exact": 5672,
+        "partial": 14255,
+        "unresolved": 18696
       },
       "total": 38623
     },
     "rules": {
       "blocked": 398,
-      "definition_only": 133,
-      "passing": 217,
+      "definition_only": 134,
+      "passing": 218,
       "total": 3300,
-      "unreviewed": 2552
+      "unreviewed": 2550
     },
     "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
   },
@@ -550,7 +550,7 @@
     "generated_validation_modules": 23,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 225,
+    "primary_test_modules": 226,
     "primary_test_shards": 11,
     "schema_files": 18,
     "server_files": 5,
@@ -560,31 +560,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 45978,
+        "material_residuals": 45952,
         "status_counts": {
-          "residual": 28956,
-          "trusted": 2667
+          "residual": 28930,
+          "trusted": 2693
         },
         "trust_basis_counts": {
-          "capability_closed": 2662,
+          "capability_closed": 2688,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 28956
+          "unresolved": 28930
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 53572,
+        "material_residuals": 53545,
         "status_counts": {
           "failed": 2248,
-          "residual": 32974,
-          "trusted": 3401
+          "residual": 32948,
+          "trusted": 3427
         },
         "trust_basis_counts": {
-          "capability_closed": 3396,
+          "capability_closed": 3422,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 32974
+          "unresolved": 32948
         }
       }
     },

@@ -49,6 +49,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
     if relative.startswith("server/") or relative == "simctl.py":
         return "transport"
     if relative in {
+        "quorune/additional_cost_vocabulary.py",
         "quorune/ability_fragments.py",
         "quorune/damage_source.py",
         "quorune/damage_modifier_state.py",

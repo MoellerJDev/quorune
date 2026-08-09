@@ -11,6 +11,18 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Typed fixed sacrifice casting costs
+
+- Added a closed source-spanned grammar for one mandatory additional-cost
+  sacrifice of a controlled permanent, optionally restricted to one or two
+  canonical permanent card types.
+- Offer and commit now share the current effective-object query, while the
+  replacement-aware zone owner preserves the permanent owner's graveyard,
+  destination replacement, rollback, seat privacy, and exact replay.
+  Indestructible does not prevent sacrifice; optional, variable, repeated,
+  qualified, alternate, effect, activated, and simultaneous variants remain
+  explicit residuals.
+
 ### Typed fixed multi-kind counter batches
 
 - Added one closed source-spanned grammar for placing two or three distinct

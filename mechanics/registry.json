@@ -1,5 +1,5 @@
 {
-  "contract_count": 89,
+  "contract_count": 90,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -425,6 +425,12 @@
       "mechanic_id": "riot",
       "path": "mechanics/contracts/riot.json",
       "sha256": "2aaa5431c014a9d854da9ec9665a4f3cbf855e45a6d292fd94f15cfc04283d3f",
+      "version": 1
+    },
+    {
+      "mechanic_id": "sacrifice",
+      "path": "mechanics/contracts/sacrifice.json",
+      "sha256": "6c34d88d5107faf6c140dae02446a16ced331967ab81bd45b399129e157607d1",
       "version": 1
     },
     {
@@ -5623,19 +5629,41 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/sacrifice.json",
+      "contract_sha256": "6c34d88d5107faf6c140dae02446a16ced331967ab81bd45b399129e157607d1",
+      "contract_version": 1,
+      "coverage_status": "partial",
       "dependencies": [
         "701"
       ],
-      "implementation_component": null,
+      "implementation_component": "FixedSacrificeAdditionalCostTemplate, FixedSacrificeAdditionalCost, typed additional-cost spell lowering, and replacement-aware casting commit",
+      "implementation_version": "typed-fixed-sacrifice-casting-cost-v1",
       "kind": "keyword_action",
+      "known_blockers": [
+        "optional, variable, repeated, multiple, qualified, subtype, color, and historical-quality sacrifice costs remain residual",
+        "alternative and composite sacrifice costs remain residual",
+        "sacrifice effects, activated costs, triggered costs, and rule-generated sacrifices are separate producers",
+        "simultaneous multi-player sacrifice selection and commit require an APNAP batch",
+        "Casualty, Exploit, Forage, Offering, Emerge, and other keyword-specific sacrifice structures require separate capability closure",
+        "regeneration mechanics remain unsupported even though represented sacrifice does not invoke destruction"
+      ],
       "mechanic_id": "sacrifice",
       "official_name": "Sacrifice",
       "rule_references": [
         "701.21"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_sacrifice_cost_compiles_source_spanned_v2_program",
+        "test_fixed_sacrifice_cost_grammar_fails_closed",
+        "test_fixed_sacrifice_descriptor_is_closed_and_isolated",
+        "test_fixed_sacrifice_capability_dependency_fails_closed",
+        "test_fixed_sacrifice_compiler_mutant_is_killed",
+        "test_fixed_sacrifice_template_is_canonical",
+        "test_offer_and_submission_share_effective_type_legality",
+        "test_fixed_sacrifice_cost_commits_and_replays",
+        "test_sacrifice_is_not_destruction_and_uses_owner_graveyard",
+        "test_zone_replacement_suspends_cost_before_mutation_and_replays"
+      ],
       "trust_level": "untrusted"
     },
     {

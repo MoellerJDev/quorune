@@ -76,6 +76,7 @@
       "test_exact_mana_families",
       "test_fixed_counter_additional_costs",
       "test_fixed_mana_abilities",
+      "test_fixed_sacrifice_additional_costs",
       "test_flash_cast_timing",
       "test_loyalty_abilities",
       "test_loyalty_counter_cost_replacements",

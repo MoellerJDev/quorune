@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "5584856b0b1e18cd60546e9bbf730debf10eda3e9b8c12a48fc5f8f4e9fb7a75",
-  "declaration_source_fingerprint": "3b7849f6fc458da8aa0baa626f23ae83ff9211c6784da2c702dc14e9a5a213a5",
+  "registry_fingerprint": "0816babc299722447401613eaab03cfa10f1e9bac3f54707745101075c2b538a",
+  "declaration_source_fingerprint": "5a1468a0188f34e865961883454ab687e782fe5eb065ed49b56c3334833664b8",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -1355,6 +1355,266 @@
         "commander_review"
       ],
       "applicability_note": "Replay the suspended cast-cost replacement choice, counter result, mana payment, and stack placement to the identical authoritative state hash."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_sacrifice_is_not_destruction_and_uses_owner_graveyard",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Sacrifice a controlled Indestructible permanent directly toward its owner's graveyard without invoking destruction prevention."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_zone_replacement_suspends_cost_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suspend one mandatory sacrifice while two destination replacements compete, roll the complete casting transaction back, and resume the exact cost before stack placement."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_zone_replacement_suspends_cost_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the affected caster's replacement order within four-player APNAP state without exposing or mutating another seat's private state."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the closed fixed-sacrifice compiler production rather than retaining a false exact spell promotion."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_cost_grammar_fails_closed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Leave optional, variable, multiple, alternate, qualified, subtype, and compound sacrifice wording as precise material residuals."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_offer_and_submission_share_effective_type_legality",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate current effective card types and reject a stale sacrifice choice before mana, zone, stack, or journal mutation."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_cost_compiles_source_spanned_v2_program",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower every represented zero-, one-, and two-type union to one exact source-spanned CardProgram V2 cost descriptor."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_fixed_sacrifice_cost_commits_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Advertise and accept one effective controlled creature, sacrifice it, and place the represented spell on the stack through the shared casting path."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_zone_replacement_suspends_cost_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the cost replacement-order choice only to the affected caster and omit its continuation from all opposing seats."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "property",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_template_is_canonical",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Equivalent represented wording lowers to the same sorted immutable permanent-type union and descriptor identity."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_fixed_sacrifice_cost_commits_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the ordinary sacrifice payment, mana payment, departure events, and stack placement to the identical authoritative hash."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_zone_replacement_suspends_cost_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay a suspended four-player destination-replacement selection and resumed sacrifice cost to the identical authoritative hash."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_offer_and_submission_share_effective_type_legality",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "614.1",
+        "616.1",
+        "701.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a stale effective-type selection with identical authoritative state before mana, zone, stack, or journal mutation."
     },
     {
       "capability_id": "combat.attack.defender",
@@ -20033,5 +20293,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "ab2a76e8ac85c8ad2c974eaa3d8443337927ca07122bd3149c6de032584dd05b"
+  "fingerprint": "06e8a607449ee53813c66adc033357e65a40badaaa6f476e11b2d68d121efabb"
 }

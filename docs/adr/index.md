@@ -60,3 +60,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0043 — typed fixed multi-kind counter batches](0043-typed-fixed-multikind-counter-batches.md)
 - [ADR 0044 — typed fixed counter-placement casting costs](0044-typed-fixed-counter-casting-costs.md)
 - [ADR 0045 — typed fixed Scry resolution](0045-typed-fixed-scry-resolution.md)
+- [ADR 0046 — typed fixed sacrifice casting costs](0046-typed-fixed-sacrifice-casting-costs.md)
