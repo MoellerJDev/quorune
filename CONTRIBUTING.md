@@ -2,7 +2,7 @@
 title: "Contributing"
 status: "current"
 authoritative_source: "repository contribution, architecture, test, and review policy"
-verified: "2026-08-08"
+verified: "2026-08-09"
 audience: "human contributors"
 maintenance: "hand-maintained"
 concern: "contributor-contract"
@@ -72,8 +72,8 @@ directly:
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e . -r requirements-dev.txt
-.\.venv\Scripts\python.exe scripts\validate_python_runtime.py
-.\.venv\Scripts\python.exe scripts\install_dev_hooks.py
+.\.venv\Scripts\python.exe scripts\worktree_bootstrap.py --install-hook `
+  --db "C:\path\to\the\pinned\scryfall-current.sqlite3"
 .\.venv\Scripts\python.exe scripts\build_test_database.py build `
   --fixture tests/fixtures/scryfall-exact-lists.json `
   --output data/test-ci.sqlite3
@@ -83,9 +83,18 @@ npm run typecheck --prefix web
 npm run build --prefix web
 ```
 
-Set `MTG_CARD_DB=data/test-ci.sqlite3` for focused tests that require card data.
-Keep environments, databases, downloaded snapshots, caches, and build output in
-ignored paths.
+Set `MTG_CARD_DB=data/test-ci.sqlite3` only while running focused tests that
+require compact card data. Restore the pinned database value or remove that
+environment override before generated finalization and push. Keep environments,
+databases, downloaded snapshots, caches, and build output in ignored paths.
+
+The readiness command accepts the database explicitly with `--db`, from
+`MTG_CARD_DB`, or at `data/scryfall-current.sqlite3`. It fails differently for
+a missing database, an unreadable database, and a database whose metadata does
+not match the tracked compiler-corpus snapshot. It also verifies test-shard
+ownership and prints the correct generated-finalization command. The compact
+test database created above is intentionally not accepted as the pinned corpus
+database.
 
 ## Test the change
 

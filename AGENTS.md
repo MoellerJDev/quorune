@@ -2,7 +2,7 @@
 title: "Codex project instructions"
 status: "current"
 authoritative_source: "repository contribution, architecture, and documentation policy"
-verified: "2026-08-08"
+verified: "2026-08-09"
 audience: "Codex agents and contributors"
 maintenance: "hand-maintained"
 ---
@@ -132,6 +132,23 @@ Use the worktree-local CPython 3.12 environment, never a global `python` alias.
 Keep one substantive branch under certification and at most one independent
 next-batch worktree. Do not mix their changes.
 
+After creating or entering a worktree, run its repository-owned readiness
+command. `--install-hook` may update only this repository's local Git hook
+configuration and refuses to replace a foreign hook policy:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\worktree_bootstrap.py --install-hook
+```
+
+The command verifies the exact CPython runtime, tracked pre-push hook, primary
+test-shard ownership, and the pinned card database selected by `--db`,
+`MTG_CARD_DB`, or `data/scryfall-current.sqlite3`, in that order. It compares
+database metadata with the tracked compiler-corpus snapshot, reports missing,
+stale, and invalid databases separately, and prints the exact standard and
+database-backed finalizer arguments for the detected environment. Run it
+without `--install-hook` for a read-only recheck. A compact test database is
+not a substitute for the pinned corpus database.
+
 As the default development policy, do not run behavioral tests, broad suites,
 gates, or historical regression journeys locally. During implementation, run
 changed-module compilation, JSON/schema parsing, applicable deterministic
@@ -213,7 +230,8 @@ runs all registered freshness, architecture, documentation, and diff checks.
 The ordinary first finalization and the pre-push hook always run the complete
 manifest.
 
-Install the repository-owned pre-push hook once per worktree:
+The worktree readiness command installs the repository-owned pre-push hook.
+The lower-level hook-only command remains available for repair:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\install_dev_hooks.py

@@ -2,7 +2,7 @@
 title: "CI pipeline and two-slot development"
 status: "current"
 authoritative_source: "GitHub workflows, platform/test-shards.json, and local gate scripts"
-verified: "2026-08-08"
+verified: "2026-08-09"
 audience: "contributors and maintainers"
 maintenance: "hand-maintained"
 ---
@@ -28,7 +28,18 @@ git worktree add ..\quorune-next -b <next-branch> origin/main
 Set-Location ..\quorune-next
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e . -r requirements-dev.txt
+.\.venv\Scripts\python.exe scripts\worktree_bootstrap.py --install-hook `
+  --db "C:\path\to\the\pinned\scryfall-current.sqlite3"
 ```
+
+The readiness command is read-only except for the explicit hook-install mode,
+which changes only repository-local Git configuration and refuses to overwrite
+a foreign hook policy. Database lookup uses `--db`, `MTG_CARD_DB`, then the
+worktree-local `data/scryfall-current.sqlite3`. The command compares that
+database with the tracked compiler-corpus snapshot, distinguishes missing,
+stale, and invalid inputs, validates primary test-shard ownership, and prints
+the exact finalizer command for the detected platform. Run it without
+`--install-hook` to recheck an existing worktree.
 
 Never rebase or rewrite Slot A while its exact head is being certified. If its
 CI fails, preserve coherent Slot B work, fix Slot A in its own worktree, push a
@@ -159,7 +170,8 @@ had not been added to the reviewed architecture baseline. Run write mode before
 the final commit; the pre-push hook repeats it and blocks publication on either
 generated drift or architecture-policy failure.
 
-Install the tracked pre-push hook once in each worktree:
+The worktree readiness command installs and verifies the tracked pre-push hook.
+The hook-only installer remains available when repairing an existing setup:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\install_dev_hooks.py
