@@ -55,6 +55,12 @@ Versioned generic forms render server-issued modes, targets, ordering,
 assignments, private selections, and confirmations. Unknown forms remain
 unavailable rather than being guessed.
 
+The ordered Scry form labels every looked-at card from the seat-private
+projection. It separates top and bottom groups, states which end of each list
+is nearest the top or bottom of the library, and provides card-specific native
+buttons for keyboard and screen-reader reordering. Other seats never receive
+the looked-at identities or partition.
+
 ## Mana, priority, and turn controls
 
 Automatic mana selects from authoritative mana abilities and routine payment;

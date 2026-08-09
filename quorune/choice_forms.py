@@ -22,6 +22,7 @@ def _labels(context: Mapping[str, Any]) -> dict[str, str]:
     for key in (
         "hand",
         "candidates",
+        "objects",
         "search_cards",
         "options",
         "triggers",

@@ -4,6 +4,7 @@
   "fixtures": [
     "tests/fixtures/scryfall-exact-lists.json",
     "tests/fixtures/browser-lifecycle-cards.json",
+    "tests/fixtures/browser-ordered-scry-cards.json",
     "tests/fixtures/damage-result-cards.json",
     "tests/fixtures/draw-rules-cards.json",
     "tests/fixtures/counter-replacement-cards.json",
