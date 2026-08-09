@@ -29,7 +29,9 @@ jobs:
           architecture: x64
           cache: pip
       - name: Reassemble and apply the reviewed repository transformation
+        shell: bash
         run: |
+          set -uo pipefail
           python - <<'PY'
           import base64
           from pathlib import Path
@@ -39,7 +41,19 @@ jobs:
               zlib.decompress(base64.b64decode(payload))
           )
           PY
-          python .github/bootstrap_generated_finalization.py
+          set +e
+          python .github/bootstrap_generated_finalization.py 2>&1 | tee /tmp/bootstrap.log
+          status=${PIPESTATUS[0]}
+          set -e
+          if [ "$status" -ne 0 ]; then
+            python - <<'PY'
+          from pathlib import Path
+          text = Path("/tmp/bootstrap.log").read_text(encoding="utf-8", errors="replace")[-6000:]
+          text = text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=Bootstrap transform failed::{text}")
+          PY
+            exit "$status"
+          fi
       - name: Remove one-time bootstrap files before generation
         run: |
           rm .github/bootstrap_payload.txt
