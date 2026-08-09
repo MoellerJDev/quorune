@@ -284,7 +284,7 @@ def load_impact_policy(path: Path = POLICY_PATH) -> tuple[dict, str]:
         "forced_labels",
     }:
         raise ValueError("Change-impact policy has unknown or missing fields")
-    if value["schema_version"] != 3:
+    if value["schema_version"] != 4:
         raise ValueError("Unsupported change-impact policy schema")
     _string_tuple(value["default_checks"], field="default_checks")
     browser_focuses = value["browser_focuses"]

@@ -148,6 +148,21 @@ async function actionIsReady(action: Locator): Promise<boolean> {
   return action.isEnabled({ timeout: 250 }).catch(() => false);
 }
 
+async function submitSingleCleanupDiscard(
+  pages: readonly Page[],
+): Promise<boolean> {
+  for (const page of pages) {
+    const discard = page.getByTestId("action-discard");
+    if (!(await actionIsReady(discard))) continue;
+    await discard.click();
+    await expect(page.getByTestId("choice-dialog")).toBeVisible();
+    await page.locator('[data-testid^="choice-cards-"]').first().check();
+    await submitOpenChoice(page);
+    return true;
+  }
+  return false;
+}
+
 async function advanceToDecision(
   pages: readonly Page[],
   decisionPage: Page,
@@ -241,6 +256,10 @@ async function advanceToActionReady(
     noProgressMs: durabilityTimeout,
     advance: async () => {
       await new Promise((resolve) => setTimeout(resolve, 200));
+      // Auto-pass cannot answer the mandatory cleanup discard that follows a
+      // turn where this durability witness retained eight cards. Resolve that
+      // scripted single-card choice before searching for the next land offer.
+      if (await submitSingleCleanupDiscard(pages)) return true;
       if (await action.count()) return true;
       if (holdWindow && await holdWindow()) return true;
       for (const page of pages) {
@@ -810,18 +829,7 @@ test("@browser-rules @turn-draw an isolated-context duel presents exact turn sta
         {
           label: `advance to Seat ${active}, turn ${turn}, ${step}`,
           noProgressMs: 90_000,
-          advance: async () => {
-            for (const page of [host, opponent]) {
-              const discard = page.getByTestId("action-discard");
-              if (!(await actionIsReady(discard))) continue;
-              await discard.click();
-              await expect(page.getByTestId("choice-dialog")).toBeVisible();
-              await page.locator('[data-testid^="choice-cards-"]').first().check();
-              await submitOpenChoice(page);
-              return true;
-            }
-            return false;
-          },
+          advance: () => submitSingleCleanupDiscard([host, opponent]),
         },
       );
     }

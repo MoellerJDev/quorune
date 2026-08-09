@@ -23,10 +23,12 @@ class ChangeImpactTests(unittest.TestCase):
         self.assertIn("card-unlock-frontier", plan.checks)
         self.assertIn("reusable-pieces", plan.checks)
         self.assertFalse(plan.browser_full)
+        self.assertIn("generated-finalization", plan.checks)
 
     def test_policy_is_versioned_and_fingerprinted(self):
         policy, fingerprint = load_impact_policy()
-        self.assertEqual(3, policy["schema_version"])
+        self.assertEqual(4, policy["schema_version"])
+        self.assertIn("generated-finalization", policy["default_checks"])
         self.assertEqual(64, len(fingerprint))
 
     def test_changed_test_module_is_run_exactly(self):

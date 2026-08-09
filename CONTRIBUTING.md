@@ -2,7 +2,7 @@
 title: "Contributing"
 status: "current"
 authoritative_source: "repository contribution, architecture, test, and review policy"
-verified: "2026-08-07"
+verified: "2026-08-08"
 audience: "human contributors"
 maintenance: "hand-maintained"
 concern: "contributor-contract"
@@ -73,6 +73,7 @@ directly:
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e . -r requirements-dev.txt
 .\.venv\Scripts\python.exe scripts\validate_python_runtime.py
+.\.venv\Scripts\python.exe scripts\install_dev_hooks.py
 .\.venv\Scripts\python.exe scripts\build_test_database.py build `
   --fixture tests/fixtures/scryfall-exact-lists.json `
   --output data/test-ci.sqlite3
@@ -158,11 +159,25 @@ Machine-readable policy and source manifests own changing facts. Generator
 scripts own generated Markdown, JSON, compressed JSON, schemas, and browser
 types. Never hand-edit an output to make a check pass.
 
-When source changes affect generated artifacts, run the owning generator once
-at the final exact head, inspect every output, and commit the source and outputs
-together. Use each generator's `--check` mode to prove freshness. If ownership
-is unclear, find the file in the generated status or architecture checks before
-editing it. A documentation-only change must not refresh unrelated metrics.
+`platform/generated-artifacts.json` is the ownership and dependency manifest
+for the deterministic Python reports enforced by generated/architecture CI.
+Protocol types, pinned rules snapshots, and other separately governed generated
+assets retain their existing owners. Do not guess individual report-generator
+order. After source, tests, and documentation form a coherent worktree, and
+before the final commit, run:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\finalize_generated.py --write
+```
+
+The writer repeats changed generators and downstream consumers to a fixed
+point, then verifies every tracked output, documentation policy, and diff
+hygiene. Pass `--db <path>` or set
+`MTG_CARD_DB` when compiler or corpus changes require the pinned card database.
+Manual benchmark baselines remain explicit. Inspect and stage every resulting
+output with its source before the final commit. The repository-owned pre-push
+hook is a backstop: it performs the same finalization and aborts when it creates
+uncommitted files; it never changes commit history automatically.
 
 ## Update documentation deliberately
 
@@ -179,9 +194,7 @@ only in ADRs, [CHANGELOG.md](CHANGELOG.md), and `docs/history/`.
 Documentation changes must pass:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\validate_documentation.py --check
-.\.venv\Scripts\python.exe scripts\update_platform_status.py --check
-.\.venv\Scripts\python.exe scripts\update_architecture_audit.py --check
+.\.venv\Scripts\python.exe scripts\finalize_generated.py --write
 ```
 
 ## Respect content, privacy, and security boundaries

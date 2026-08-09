@@ -60,8 +60,7 @@ jobs:
         run: python scripts/test_shards.py run main-smoke
       - name: Verify generated integration state and rules
         run: |
-          python scripts/update_platform_status.py --check
-          python scripts/update_architecture_audit.py --check
+          python scripts/finalize_generated.py --check
           python simctl.py rules verify --root .
       - name: Verify wheel metadata and browser production build
         run: |

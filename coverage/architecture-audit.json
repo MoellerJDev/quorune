@@ -3741,7 +3741,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 121391,
+      "logical_lines": 121393,
       "methods": {
         "dunder": 319,
         "private": 678,
@@ -3809,8 +3809,8 @@
           "file": "quorune/reusable_pieces/generation.py",
           "functions_and_methods": 41,
           "language": "python",
-          "logical_lines": 1430,
-          "physical_lines": 1525
+          "logical_lines": 1432,
+          "physical_lines": 1527
         },
         {
           "file": "quorune/cli.py",
@@ -6506,7 +6506,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 132678,
+      "physical_lines": 132680,
       "python_file_count": 320,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -11112,7 +11112,7 @@
           "maintenance": "hand-maintained",
           "status": "current",
           "title": "Documentation map and standard",
-          "verified": "2026-08-07"
+          "verified": "2026-08-08"
         },
         "metadata_complete": true,
         "missing_metadata": [],
@@ -11507,7 +11507,7 @@
           "maintenance": "generated",
           "status": "generated",
           "title": "Platform implementation status",
-          "verified": "27f7d4ae08d60687780c905861d1f1b8ba18af6296bde21efdef1a49aaea03f5"
+          "verified": "validated-by-owning-generator"
         },
         "metadata_complete": true,
         "missing_metadata": [],
@@ -11535,7 +11535,7 @@
           "maintenance": "generated",
           "status": "generated",
           "title": "Compiler coverage status",
-          "verified": "d416230850dd68f7ddbb71e8978eb22f0bfce15d"
+          "verified": "validated-by-owning-generator"
         },
         "metadata_complete": true,
         "missing_metadata": [],
@@ -11549,7 +11549,7 @@
           "maintenance": "generated",
           "status": "generated",
           "title": "Architecture debt status",
-          "verified": "d416230850dd68f7ddbb71e8978eb22f0bfce15d"
+          "verified": "validated-by-owning-generator"
         },
         "metadata_complete": true,
         "missing_metadata": [],
@@ -11932,8 +11932,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2130,
-      "discovered_total": 5430,
+      "conventional_ast_cases": 2139,
+      "discovered_total": 5439,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 74,
@@ -11943,7 +11943,7 @@
         "server_named": 26
       },
       "reconciles": true,
-      "test_files": 217
+      "test_files": 218
     }
   }
 }

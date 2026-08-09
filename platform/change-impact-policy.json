@@ -1,9 +1,10 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "default_checks": [
     "compile",
     "python-runtime",
-    "repository"
+    "repository",
+    "generated-finalization"
   ],
   "browser_focuses": {
     "combat": "@combat",
@@ -13,18 +14,33 @@
   "path_rules": [
     {
       "id": "changed-python-test",
-      "patterns": ["tests/test_*.py"],
+      "patterns": [
+        "tests/test_*.py"
+      ],
       "collect_test_module": true
     },
     {
       "id": "python-architecture-sources",
-      "patterns": ["quorune/**", "server/**", "scripts/**"],
-      "checks": ["architecture", "module-classifications"]
+      "patterns": [
+        "quorune/**",
+        "server/**",
+        "scripts/**"
+      ],
+      "checks": [
+        "architecture",
+        "module-classifications"
+      ]
     },
     {
       "id": "documentation-sources",
-      "patterns": ["docs/**", "README.md", "AGENTS.md"],
-      "checks": ["documentation"]
+      "patterns": [
+        "docs/**",
+        "README.md",
+        "AGENTS.md"
+      ],
+      "checks": [
+        "documentation"
+      ]
     },
     {
       "id": "rules-sources",
@@ -36,11 +52,17 @@
         "quorune/rules_scheduler.py",
         "scripts/update_rules_scheduler.py"
       ],
-      "checks": ["rules", "rules-scheduler"]
+      "checks": [
+        "rules",
+        "rules-scheduler"
+      ]
     },
     {
       "id": "generated-coverage-sources",
-      "patterns": ["coverage/**", "platform/readiness-source.json"],
+      "patterns": [
+        "coverage/**",
+        "platform/readiness-source.json"
+      ],
       "checks": [
         "architecture",
         "card-unlock-frontier",
@@ -80,7 +102,10 @@
     },
     {
       "id": "platform-and-workflow-sources",
-      "patterns": ["platform/**", ".github/**"],
+      "patterns": [
+        "platform/**",
+        ".github/**"
+      ],
       "checks": [
         "architecture",
         "ci-escape-report",
@@ -108,7 +133,9 @@
         "quorune/semantic_runtime/cycling_abilities.py",
         "quorune/semantic_runtime/mana_abilities.py"
       ],
-      "test_suites": ["compiler-cardprogram"],
+      "test_suites": [
+        "compiler-cardprogram"
+      ],
       "checks": [
         "capability-evidence",
         "card-unlock-frontier",
@@ -117,8 +144,12 @@
     },
     {
       "id": "card-unlock-frontier-generator",
-      "patterns": ["scripts/update_card_unlock_frontier.py"],
-      "checks": ["card-unlock-frontier"]
+      "patterns": [
+        "scripts/update_card_unlock_frontier.py"
+      ],
+      "checks": [
+        "card-unlock-frontier"
+      ]
     },
     {
       "id": "reusable-piece-inventory",
@@ -131,8 +162,12 @@
         "rules/rule-index.json",
         "rules/mechanic-index.json"
       ],
-      "test_suites": ["generated-validation"],
-      "checks": ["reusable-pieces"]
+      "test_suites": [
+        "generated-validation"
+      ],
+      "checks": [
+        "reusable-pieces"
+      ]
     },
     {
       "id": "rules-events-replacements-suite",
@@ -152,7 +187,9 @@
         "quorune/semantic_runtime/*replacement*.py",
         "quorune/prevention_triggers.py"
       ],
-      "test_suites": ["rules-events-replacements"]
+      "test_suites": [
+        "rules-events-replacements"
+      ]
     },
     {
       "id": "protection-and-attachment-interactions",
@@ -190,8 +227,12 @@
         "quorune/permissions.py",
         "quorune/stack*.py"
       ],
-      "test_suites": ["casting-costs-mana"],
-      "browser_focuses": ["mana-action"]
+      "test_suites": [
+        "casting-costs-mana"
+      ],
+      "browser_focuses": [
+        "mana-action"
+      ]
     },
     {
       "id": "targets-choices-continuations-suite",
@@ -204,7 +245,9 @@
         "quorune/rules/action_catalog.py",
         "quorune/rules/action_explanations.py"
       ],
-      "test_suites": ["targets-choices-continuations"]
+      "test_suites": [
+        "targets-choices-continuations"
+      ]
     },
     {
       "id": "triggers-turns-suite",
@@ -214,12 +257,18 @@
         "quorune/zone_trigger*.py",
         "quorune/drawing/coordinator.py"
       ],
-      "test_suites": ["triggers-turns-exact-decks"]
+      "test_suites": [
+        "triggers-turns-exact-decks"
+      ]
     },
     {
       "id": "draw-browser-journey",
-      "patterns": ["quorune/drawing/**"],
-      "browser_focuses": ["turn-draw"]
+      "patterns": [
+        "quorune/drawing/**"
+      ],
+      "browser_focuses": [
+        "turn-draw"
+      ]
     },
     {
       "id": "combat-declarations-suite",
@@ -227,8 +276,12 @@
         "quorune/declaration_*.py",
         "quorune/combat_constraints.py"
       ],
-      "test_suites": ["combat-declarations"],
-      "browser_focuses": ["combat"]
+      "test_suites": [
+        "combat-declarations"
+      ],
+      "browser_focuses": [
+        "combat"
+      ]
     },
     {
       "id": "state-actions-damage-suite",
@@ -251,8 +304,12 @@
         "quorune/state_based_actions.py",
         "quorune/state_planner.py"
       ],
-      "test_suites": ["state-actions-damage"],
-      "browser_focuses": ["combat"]
+      "test_suites": [
+        "state-actions-damage"
+      ],
+      "browser_focuses": [
+        "combat"
+      ]
     },
     {
       "id": "natural-winner-critical-path",
@@ -283,7 +340,9 @@
         "quorune/arena.py",
         "quorune/profiles.py"
       ],
-      "test_suites": ["multiplayer-commander"]
+      "test_suites": [
+        "multiplayer-commander"
+      ]
     },
     {
       "id": "server-replay-privacy-suite",
@@ -298,23 +357,39 @@
         "quorune/client.py",
         "quorune/persistence.py"
       ],
-      "test_suites": ["server-replay-privacy"]
+      "test_suites": [
+        "server-replay-privacy"
+      ]
     },
     {
       "id": "generated-validation-suite",
-      "patterns": ["scripts/**", ".github/workflows/**", "platform/**"],
-      "test_suites": ["generated-validation"]
+      "patterns": [
+        "scripts/**",
+        ".github/workflows/**",
+        "platform/**"
+      ],
+      "test_suites": [
+        "generated-validation"
+      ]
     },
     {
       "id": "browser-build",
-      "patterns": ["web/**"],
-      "test_suites": ["server-replay-privacy"],
-      "checks": ["browser-build"],
+      "patterns": [
+        "web/**"
+      ],
+      "test_suites": [
+        "server-replay-privacy"
+      ],
+      "checks": [
+        "browser-build"
+      ],
       "browser_full": true
     },
     {
       "id": "browser-facing-server",
-      "patterns": ["server/**"],
+      "patterns": [
+        "server/**"
+      ],
       "browser_full": true
     },
     {
@@ -342,7 +417,9 @@
     },
     {
       "id": "workflow-platform-gates",
-      "patterns": [".github/workflows/**"],
+      "patterns": [
+        ".github/workflows/**"
+      ],
       "browser_full": true,
       "windows_full": true
     },
@@ -364,7 +441,9 @@
   "symbol_rules": [
     {
       "id": "browser-facing-priority-and-yield",
-      "patterns": ["quorune/engine.py"],
+      "patterns": [
+        "quorune/engine.py"
+      ],
       "symbols": [
         "CommanderEngine._yield_change_epoch",
         "CommanderEngine._increment_yield_change_epoch",
@@ -387,7 +466,9 @@
   "fallback_test_suites": [
     {
       "id": "unclassified-python-core",
-      "patterns": ["quorune/**"],
+      "patterns": [
+        "quorune/**"
+      ],
       "test_suite": "core-domain"
     }
   ],

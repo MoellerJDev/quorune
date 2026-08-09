@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "d09299ad7467caba335749334711ad33f680a0b124d4542171cbcb2e2e040901"
+verified: "9440f06121f4077d9aabd6c7a71f1449bc4e8e695486f14c06cdffad4c78846d"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 13
-- Deterministic escapes: 8
+- Escapes: 14
+- Deterministic escapes: 9
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -39,6 +39,7 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260805-11` | [30987626101](https://github.com/MoellerJDev/quorune/actions/runs/30987626101) | `infrastructure` | `not_applicable` | The provenance-validating nightly mutation-and-soak job now fetches complete history, and the workflow policy test ratchets that exact job boundary. |
 | `ci-20260806-12` | [31099433278](https://github.com/MoellerJDev/quorune/actions/runs/31099433278) | `flaky_test` | `not_applicable` | The seat-opportunity helper now anchors the expected active seat and exact projected phase while its strategic offer settles, preventing the test driver from consuming the opportunity under observation or matching the next player's same-named main phase. |
 | `ci-20260806-13` | [31132735817](https://github.com/MoellerJDev/quorune/actions/runs/31132735817) | `flaky_test` | `not_applicable` | The journey now arms the defender's stop before each preceding turn-transition command, advances only intervening responses, and holds a seat-qualified precombat main phase while its exact land action settles instead of submitting the pass under observation. |
+| `ci-20260809-14` | [31260380655](https://github.com/MoellerJDev/quorune/actions/runs/31260380655) | `generated_artifact_drift` | `added` | A strict ownership manifest now orders all tracked generators, one finalizer writes them to a bounded fixed point, AGENTS.md requires that command before the final commit, and a repository pre-push hook rejects omitted generated changes. |
 
 ## Measurement limitations
 
