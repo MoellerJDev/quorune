@@ -1,0 +1,228 @@
+from __future__ import annotations
+
+"""Closed spell nodes whose mandatory additional cost is separately typed."""
+
+from collections.abc import Callable, Mapping, Sequence
+from typing import Any
+
+from .dependency_gate import dependency_gate
+from .ir_model import (
+    OracleNode,
+    OracleResidual,
+    SourceSpan,
+    append_residual,
+)
+from .spell_additional_cost_templates import (
+    fixed_counter_additional_cost_template,
+)
+from ..rules.capabilities import CapabilityRegistry
+
+
+EffectTemplate = Callable[
+    ...,
+    tuple[
+        str | None,
+        tuple[Mapping[str, Any], ...],
+        Mapping[str, Any] | None,
+        tuple[str, ...],
+    ],
+]
+SourceRow = tuple[str, str, SourceSpan]
+_ADDITIONAL_COST_PREFIX = "as an additional cost to cast this spell,"
+
+
+def _combined_span(rows: Sequence[SourceRow]) -> SourceSpan:
+    return SourceSpan(
+        start=rows[0][2].start,
+        end=rows[-1][2].end,
+        line=rows[0][2].line,
+    )
+
+
+def _residual_spell_node(
+    *,
+    node_id: str,
+    text: str,
+    span: SourceSpan,
+    residuals: list[OracleResidual],
+    kind: str,
+    reason: str,
+    blockers: tuple[str, ...],
+    cost: Mapping[str, Any] | None = None,
+) -> OracleNode:
+    residual_id = append_residual(
+        residuals,
+        kind=kind,
+        text=text,
+        span=span,
+        reason=reason,
+        blockers=blockers,
+    )
+    return OracleNode(
+        node_id=node_id,
+        kind="spell_ability",
+        text=text,
+        span=span,
+        active_zone="stack",
+        event="resolve",
+        lowerable=False,
+        exact=False,
+        cost=cost,
+        residual_ids=(residual_id,),
+    )
+
+
+def _fixed_counter_cost_result_node(
+    *,
+    node_id: str,
+    rows: Sequence[SourceRow],
+    card_name: str,
+    effect_template: EffectTemplate,
+    trusted_mechanics: frozenset[str],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+    cost: Any,
+    text: str,
+    span: SourceSpan,
+) -> OracleNode:
+    template, effects, target_schema, effect_mechanics = effect_template(
+        rows[1][1],
+        card_name=card_name,
+    )
+    if template is None:
+        return _residual_spell_node(
+            node_id=node_id,
+            text=text,
+            span=span,
+            residuals=residuals,
+            kind="spell_effect",
+            reason=(
+                "fixed counter additional cost has no exact generic "
+                "spell-result template"
+            ),
+            blockers=("typed spell-result clause",),
+            cost=cost.cost_schema,
+        )
+    mechanics = tuple(
+        dict.fromkeys(
+            ("cr-601-casting-spells", "cr-122-counters", *effect_mechanics)
+        )
+    )
+    gate = dependency_gate(
+        mechanics=mechanics,
+        effects=effects,
+        target_schema=target_schema,
+        trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+        cost_schema=cost.cost_schema,
+    )
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind="dependency_contract",
+                text=text,
+                span=span,
+                reason=(
+                    "lowerable counter-cost spell depends on untrusted "
+                    "rules dependencies"
+                ),
+                blockers=gate.blockers,
+            ),
+        )
+        if gate.blockers
+        else ()
+    )
+    closure = gate.closure
+    return OracleNode(
+        node_id=node_id,
+        kind="spell_ability",
+        text=text,
+        span=span,
+        active_zone="stack",
+        event="resolve",
+        lowerable=True,
+        exact=not gate.blockers,
+        template_id=f"{cost.template_id}+{template}",
+        cost=cost.cost_schema,
+        effects=effects,
+        target_schema=target_schema,
+        mechanics=mechanics,
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(gate.closure.reachable if gate.closure else ()),
+        capability_profile=(gate.closure.profile if gate.closure else None),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure else None
+        ),
+    )
+
+
+def fixed_counter_additional_cost_spell_node(
+    *,
+    node_id: str,
+    rows: Sequence[SourceRow],
+    card_name: str,
+    effect_template: EffectTemplate,
+    trusted_mechanics: frozenset[str],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleNode | None:
+    """Compile or fail closed one fixed counter additional-cost spell."""
+
+    if not rows:
+        return None
+    first_clause = rows[0][1].strip()
+    cost = fixed_counter_additional_cost_template(first_clause)
+    if cost is None and not first_clause.casefold().startswith(
+        _ADDITIONAL_COST_PREFIX
+    ):
+        return None
+    text = "\n".join(row[0] for row in rows)
+    span = _combined_span(rows)
+    if cost is None:
+        return _residual_spell_node(
+            node_id=node_id,
+            text=text,
+            span=span,
+            residuals=residuals,
+            kind="spell_additional_cost",
+            reason="spell additional-cost grammar is outside the closed family",
+            blockers=("typed spell additional-cost clause",),
+        )
+    if len(rows) != 2:
+        return _residual_spell_node(
+            node_id=node_id,
+            text=text,
+            span=span,
+            residuals=residuals,
+            kind="spell_additional_cost",
+            reason=(
+                "fixed counter additional cost requires exactly one "
+                "represented spell-result clause"
+            ),
+            blockers=(
+                "additional-cost composition",
+                "ordered multi-clause spell resolution",
+            ),
+            cost=cost.cost_schema,
+        )
+    return _fixed_counter_cost_result_node(
+        node_id=node_id,
+        rows=rows,
+        card_name=card_name,
+        effect_template=effect_template,
+        trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+        residuals=residuals,
+        cost=cost,
+        text=text,
+        span=span,
+    )
+
+
+__all__ = ["fixed_counter_additional_cost_spell_node"]

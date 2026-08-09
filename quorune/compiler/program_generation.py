@@ -815,6 +815,7 @@ def generated_programs(
                     },
                     tests=[f"oracle_template:{node.template_id}"],
                     target_schema=_copy_mapping(node.target_schema),
+                    cost_schema=_copy_mapping(node.cost),
                     event_condition=_copy_mapping(node.event_condition),
                     coverage=[
                         "generated_oracle_ir",

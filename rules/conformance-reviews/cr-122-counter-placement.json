@@ -38,6 +38,8 @@
       "implementation_components": [
         "counter_placement.prepare_counter_placements",
         "rules.activation.commit._commit_resource_costs",
+        "rules.casting.commit._commit_counter_placement_additional_cost",
+        "casting_additional_costs.FixedCounterPlacementAdditionalCost",
         "semantic_runtime.counter_replacements.resolve_counter_placement_replacements",
         "semantic_runtime.zone_replacements.prepare_zone_change_replacement"
       ],
@@ -45,7 +47,9 @@
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_quantity_component_changes_effect_generated_placement",
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_zone_replacement_counter_is_a_nested_precommit_event",
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_replacement_choice_replays_exactly",
-        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay"
+        "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
+        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_compiles_and_casts",
+        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"
       ],
       "required_scenarios": [
         "positive",
@@ -61,10 +65,10 @@
       ],
       "blockers": [
         "all as-enters counter instructions are not yet represented by the shared counter-placement transaction",
-        "remaining non-loyalty cost, rule-generated, movement, removal, prevention, and legacy counter producers are not yet integrated"
+        "remaining variable, optional, alternate, multi-cost, rule-generated, movement, removal, prevention, and legacy counter producers are not yet integrated"
       ],
       "notes": [
-        "Represented effect-generated player and permanent counters, positive loyalty-symbol costs, ordinary Proliferate, and typed counter children created by a zone replacement are proposed, replaced, chosen, and journaled before authoritative mutation. Complete entry-counter and producer coverage remains blocked."
+        "Represented effect-generated player and permanent counters, positive loyalty-symbol costs, bounded mandatory fixed creature-counter casting costs, ordinary Proliferate, and typed counter children created by a zone replacement are proposed, replaced, chosen, and journaled before authoritative mutation. Complete entry-counter and producer coverage remains blocked."
       ]
     },
     {

@@ -1370,6 +1370,36 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/spell_additional_cost_nodes.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/compiler/spell_additional_cost_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/static_runtime_nodes.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -3253,6 +3283,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/casting_additional_costs.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/component_resolution.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -4764,5 +4808,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "2a6547d07266e6951bfacf4e086f42b5fca6bde3b31de5fb065febd53d0c10a9"
+  "fingerprint": "f1531c1ecaf6cceb74ff7b86a241e2bd1d42534e2afceb4d774bcfe105b97240"
 }

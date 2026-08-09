@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 70,
+  "registry_version": 71,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -180,6 +180,33 @@
       "dependency_fail_closed_rationale": "test_positive_loyalty_cost_declares_fine_grained_capability blocks the canonical quantity-replacement dependency and proves the source-spanned positive loyalty ability remains inexact.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_loyalty_cost_provenance_mutant_is_killed changes the cost event to effect-generated, causing an effect-only replacement to alter the cost and the exact behavioral assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "casting.additional_cost.fixed_counter_placement",
+      "version": 1,
+      "official_rules": ["601.2f", "601.2g", "601.2h", "601.2i", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Pay one mandatory fixed counter-placement additional cost while casting a represented spell by choosing one creature the caster currently controls, resolving quantity replacements as a non-effect placement, and committing the cost before stack placement.",
+        "inputs": ["one source-spanned typed additional-cost descriptor", "one public controlled creature chosen through the cast capability", "one positive fixed counter amount and kind", "current effective creature characteristics", "stable private cost-event identity"],
+        "outputs": ["one payable cast offer with a seat-scoped object choice", "replacement-resolved counters placed as a casting cost", "spell stack placement only after the cost is paid", "transactional rollback on stale or rejected payment", "exact private continuation and replay"],
+        "exclusions": ["multiple or optional additional costs", "variable counter amounts", "counter removal or movement", "placing counters on players or noncreature objects", "choice among paying counters and another cost", "cost modification or prohibition", "effects that prohibit counter placement", "copied spells and alternate casting procedures outside the represented ordinary cast path"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.compiler.spell_additional_cost_templates.FixedCounterAdditionalCostTemplate", "quorune.compiler.spell_additional_cost_nodes.fixed_counter_additional_cost_spell_node", "quorune.rules.casting_additional_costs.FixedCounterPlacementAdditionalCost", "quorune.rules.casting.costs._apply_additional_costs", "quorune.rules.casting.commit._commit_counter_placement_additional_cost", "quorune.counter_placement.prepare_counter_placements", "quorune.mana_payment_continuations.issue_mana_payment_replacement_choice", "quorune.replacement.replay.ReplacementContinuation"],
+      "positive_tests": ["test_counter_additional_cost_compiles_exact_source_spanned_node", "test_counter_additional_cost_compiles_and_casts"],
+      "negative_tests": ["test_counter_additional_cost_fails_closed_for_unsupported_grammar", "test_counter_additional_cost_offer_revalidates_effective_creature"],
+      "interaction_tests": ["test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"],
+      "multiplayer_tests": ["test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"],
+      "privacy_tests": ["test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"],
+      "replay_tests": ["test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "test_counter_additional_cost_capability_closure_fails_closed blocks the canonical counter-quantity replacement dependency and proves that the combined source-spanned spell node remains inexact.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_counter_additional_cost_compiler_mutant_is_killed removes the closed grammar, while test_counter_cost_provenance_mutant_is_killed changes the placement to effect-generated; exact compiler and replacement-interaction assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

@@ -58,3 +58,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0041 — effect entry counters and identity-pinned death return](0041-effect-entry-counters-and-death-return.md)
 - [ADR 0042 — canonical generated-artifact finalization](0042-canonical-generated-artifact-finalization.md)
 - [ADR 0043 — typed fixed multi-kind counter batches](0043-typed-fixed-multikind-counter-batches.md)
+- [ADR 0044 — typed fixed counter-placement casting costs](0044-typed-fixed-counter-casting-costs.md)

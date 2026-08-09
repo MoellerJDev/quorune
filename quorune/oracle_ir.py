@@ -74,6 +74,9 @@ from .compiler.static_runtime_nodes import (
     runtime_handler_node,
     static_runtime_node,
 )
+from .compiler.spell_additional_cost_nodes import (
+    fixed_counter_additional_cost_spell_node,
+)
 from .compiler.tap_state_templates import targeted_tap_state_effect_template
 from .declaration_costs import parse_declaration_cost_line
 from .declaration_restrictions import parse_declaration_restriction_line
@@ -86,7 +89,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v65"
+ORACLE_COMPILER_VERSION = "oracle-ir-v66"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -861,6 +864,84 @@ def _is_unconditional_enters_tapped(line: str, source_name: str) -> bool:
     )
 
 
+def _unconditional_enters_tapped_node(
+    *,
+    node_id: str,
+    line: str,
+    span: SourceSpan,
+    source_name: str,
+    trusted_mechanics: frozenset[str],
+    residuals: list[OracleResidual],
+) -> OracleNode | None:
+    if not _is_unconditional_enters_tapped(line, source_name):
+        return None
+    dependencies = ("cr-614-replacement-effects",)
+    missing = sorted(set(dependencies) - trusted_mechanics)
+    residual_ids = (
+        (
+            _residual(
+                residuals,
+                kind="dependency_contract",
+                text=line,
+                span=span,
+                reason=(
+                    "lowerable entry replacement depends on an "
+                    "untrusted mechanic contract"
+                ),
+                blockers=tuple(f"mechanic:{mechanic}" for mechanic in missing),
+            ),
+        )
+        if missing
+        else ()
+    )
+    return OracleNode(
+        node_id=node_id,
+        kind="replacement_effect",
+        text=line,
+        span=span,
+        active_zone="all",
+        event="permanent.enter.self",
+        lowerable=True,
+        exact=not missing,
+        template_id="enters-tapped-self-v1",
+        mechanics=dependencies,
+        residual_ids=residual_ids,
+    )
+
+
+def _fixed_counter_cost_face(
+    record: CardRecord,
+    face_id: str,
+    face_name: str,
+    oracle_text: str,
+    material_rows: Sequence[tuple[str, str, SourceSpan]],
+    effect_template: Any,
+    trusted_mechanics: frozenset[str],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleFaceIR | None:
+    node = fixed_counter_additional_cost_spell_node(
+        node_id=f"{face_id}:n1",
+        rows=material_rows,
+        card_name=face_name or record.name,
+        effect_template=effect_template,
+        trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+        residuals=residuals,
+    )
+    if node is None:
+        return None
+    return OracleFaceIR(
+        face_id=face_id,
+        face_name=face_name,
+        oracle_text=oracle_text,
+        nodes=(node,),
+        residuals=tuple(residuals),
+    )
+
+
 def _compile_face(
     record: CardRecord,
     *,
@@ -883,15 +964,22 @@ def _compile_face(
         source_attachment_relation,
     ) = _face_type_context(type_line)
     contextual_effect_template = partial(
-        _reviewed_effect_template,
-        source_is_permanent=support_source_is_permanent,
+        _reviewed_effect_template, source_is_permanent=support_source_is_permanent,
         source_attachment_relation=source_attachment_relation,
     )
     contextual_trigger_node = partial(
-        _trigger_node,
-        effect_template=contextual_effect_template,
+        _trigger_node, effect_template=contextual_effect_template
     )
-    for index, row in enumerate(_material_source_lines(type_line, oracle_text), 1):
+    material_rows = tuple(_material_source_lines(type_line, oracle_text))
+    if spell:
+        counter_cost_face = _fixed_counter_cost_face(
+            record, face_id, face_name, oracle_text, material_rows,
+            contextual_effect_template, trusted_mechanics, capability_registry,
+            capability_profile, residuals,
+        )
+        if counter_cost_face is not None:
+            return counter_cost_face
+    for index, row in enumerate(material_rows, 1):
         line, material_line, span = row
         node_id = f"{face_id}:n{index}"
         keyword_nodes = _keyword_nodes(
@@ -949,47 +1037,13 @@ def _compile_face(
             nodes.append(counter_prohibition)
             continue
 
-        enters_tapped = _is_unconditional_enters_tapped(
-            line, face_name or record.name
+        enters_tapped = _unconditional_enters_tapped_node(
+            node_id=node_id, line=line, span=span,
+            source_name=face_name or record.name,
+            trusted_mechanics=trusted_mechanics, residuals=residuals,
         )
-        if enters_tapped:
-            dependencies = ("cr-614-replacement-effects",)
-            missing = sorted(set(dependencies) - trusted_mechanics)
-            residual_ids = (
-                (
-                    _residual(
-                        residuals,
-                        kind="dependency_contract",
-                        text=line,
-                        span=span,
-                        reason=(
-                            "lowerable entry replacement depends on an "
-                            "untrusted mechanic contract"
-                        ),
-                        blockers=tuple(
-                            f"mechanic:{mechanic}"
-                            for mechanic in missing
-                        ),
-                    ),
-                )
-                if missing
-                else ()
-            )
-            nodes.append(
-                OracleNode(
-                    node_id=node_id,
-                    kind="replacement_effect",
-                    text=line,
-                    span=span,
-                    active_zone="all",
-                    event="permanent.enter.self",
-                    lowerable=True,
-                    exact=not missing,
-                    template_id="enters-tapped-self-v1",
-                    mechanics=dependencies,
-                    residual_ids=residual_ids,
-                )
-            )
+        if enters_tapped is not None:
+            nodes.append(enters_tapped)
             continue
 
         declaration_cost = parse_declaration_cost_line(

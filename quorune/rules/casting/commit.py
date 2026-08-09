@@ -5,12 +5,23 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Protocol
 
+from ...counter_placement import (
+    CounterPlacementError,
+    CounterPlacementRequest,
+    commit_prepared_counter_placements,
+    prepare_counter_placements,
+)
 from ...life_state import LifeStateError, pay_life_cost
 from ...model import StackItem, YieldPolicy
 from ...stack_counter import oracle_has_intrinsic_counter_prohibition
 from ...tap_state import set_permanent_tapped
 from ...trigger_processing import enqueue_trigger_batch
 from ..action_proposals import CastProposal, thaw_json
+from ..casting_additional_costs import (
+    AdditionalCostError,
+    fixed_counter_additional_cost,
+    fixed_counter_cost_candidates,
+)
 from .model import CastProposalError
 
 
@@ -178,6 +189,135 @@ def _pay_life_additional_cost(
     )
 
 
+def _commit_counter_placement_additional_cost(
+    host: CastCommitHost,
+    proposal: CastProposal,
+    response: Mapping[str, Any],
+    card: Any,
+    selected_option: Mapping[str, Any],
+    selected: Mapping[str, Any],
+) -> str:
+    raw_costs = selected_option.get("additional_costs")
+    cost_position = selected.get("cost_position")
+    if (
+        not isinstance(raw_costs, list)
+        or type(cost_position) is not int
+        or cost_position < 0
+        or cost_position >= len(raw_costs)
+        or set(selected) != {"kind", "card", "cost_position"}
+    ):
+        raise CastProposalError(
+            "The counter additional-cost selection is malformed",
+            reason="additional_cost_malformed",
+        )
+    try:
+        cost = fixed_counter_additional_cost(raw_costs[cost_position])
+    except AdditionalCostError as exc:
+        raise CastProposalError(
+            str(exc), reason="additional_cost_malformed"
+        ) from exc
+    if cost is None or len(raw_costs) != 1:
+        raise CastProposalError(
+            "The counter additional cost is outside the represented family",
+            reason="additional_cost_unsupported",
+        )
+    selected_ref = selected.get("card")
+    if (
+        type(selected_ref) is not str
+        or selected_ref
+        not in fixed_counter_cost_candidates(
+            host,
+            actor=proposal.seat,
+            cost=cost,
+        )
+    ):
+        raise CastProposalError(
+            "The selected counter-cost creature is no longer legal",
+            status="unpayable",
+            reason="counter_cost_unpayable",
+        )
+    paid = host._resolve_object(
+        proposal.seat,
+        selected_ref,
+        zones={"battlefield"},
+        controlled_only=True,
+    )
+    payment_id = str(
+        response.get("_mana_payment_id") or proposal.fingerprint
+    )
+    event_id = (
+        f"counter.cost:{payment_id}:{proposal.card_ref}:additional:{cost_position}"
+    )
+    raw_journal = response.get("_mana_replacement_selections") or {}
+    if (
+        not isinstance(raw_journal, Mapping)
+        or set(raw_journal) - {event_id}
+    ):
+        raise CastProposalError(
+            "The casting replacement journal is malformed",
+            reason="replacement_journal_malformed",
+        )
+    selections = raw_journal.get(event_id) or ()
+    if not isinstance(selections, (list, tuple)):
+        raise CastProposalError(
+            "The casting replacement selections are malformed",
+            reason="replacement_journal_malformed",
+        )
+    try:
+        prepared = prepare_counter_placements(
+            host,
+            (
+                CounterPlacementRequest(
+                    subject_kind="permanent",
+                    subject_id=paid.object_id,
+                    counter_name=cost.counter_name,
+                    amount=cost.amount,
+                    placing_player=proposal.seat,
+                    source_ref=card.ref,
+                    effect_generated=False,
+                ),
+            ),
+            selections=tuple(selections),
+            event_ids=(event_id,),
+        )
+        results = commit_prepared_counter_placements(
+            host,
+            prepared,
+            reason=f"{card.printed_name} additional casting cost",
+            log=False,
+        )
+    except CounterPlacementError as exc:
+        raise CastProposalError(
+            str(exc),
+            status="unpayable",
+            reason="counter_cost_placement",
+        ) from exc
+    if len(results) != 1:
+        raise CastProposalError(
+            "The counter additional cost did not produce one result",
+            reason="counter_cost_placement",
+        )
+    result = results[0]
+    host._log(
+        proposal.seat,
+        "cost.counter_placement",
+        f"{proposal.seat} put {result.placed} {result.counter_name} "
+        f"counter(s) on {paid.ref} to cast {card.printed_name}.",
+        {
+            "spell": card.ref,
+            "object": paid.ref,
+            "counter": result.counter_name,
+            "requested": result.requested,
+            "placed": result.placed,
+            "replacement_event": event_id,
+        },
+        importance=1,
+        changed_objects=[paid.object_id],
+        changed_players=[proposal.seat],
+    )
+    return paid.ref
+
+
 def _commit_additional_costs(
     host: CastCommitHost,
     proposal: CastProposal,
@@ -224,6 +364,18 @@ def _commit_additional_costs(
     changes = []
     for selected in selections:
         kind = str(selected["kind"])
+        if kind == "counter_placement":
+            result.paid_refs.append(
+                _commit_counter_placement_additional_cost(
+                    host,
+                    proposal,
+                    response,
+                    card,
+                    selected_option,
+                    selected,
+                )
+            )
+            continue
         zone = "hand" if kind == "discard" else "battlefield"
         for ref in selected.get("cards", []):
             paid = host._resolve_object(

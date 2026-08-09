@@ -5,6 +5,10 @@ from __future__ import annotations
 from typing import Any, Iterable, Mapping, Sequence
 
 from ..fixed_mana_abilities import MANA_COST_KEYS
+from .casting_additional_costs import (
+    AdditionalCostError,
+    FixedCounterPlacementAdditionalCost,
+)
 
 from ..attachment_references import (
     AttachmentReferenceError,
@@ -29,6 +33,25 @@ from ..fixed_damage_set_model import (
 )
 
 _EXILE_MECHANIC = "exile"
+
+
+def fixed_counter_additional_cost_node_capabilities(
+    *, cost_schema: Mapping[str, Any] | None
+) -> tuple[str, ...]:
+    """Recognize exactly one mandatory fixed counter casting cost."""
+
+    if not isinstance(cost_schema, Mapping) or set(cost_schema) != {
+        "additional_costs"
+    }:
+        return ()
+    raw_costs = cost_schema.get("additional_costs")
+    if not isinstance(raw_costs, list) or len(raw_costs) != 1:
+        return ()
+    try:
+        FixedCounterPlacementAdditionalCost.from_descriptor(raw_costs[0])
+    except (AdditionalCostError, TypeError):
+        return ()
+    return ("casting.additional_cost.fixed_counter_placement",)
 
 
 _FIXED_DAMAGE_TARGET_SCHEMAS: dict[str, Mapping[str, Any]] = {
@@ -1280,6 +1303,7 @@ def fixed_mana_cumulative_upkeep_node_capabilities(
 
 
 __all__ = [
+    "fixed_counter_additional_cost_node_capabilities",
     "fixed_damage_node_capabilities",
     "mass_destruction_node_capabilities",
     "fixed_draw_node_capabilities",
