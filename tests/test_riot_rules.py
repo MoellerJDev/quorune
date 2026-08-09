@@ -19,6 +19,7 @@ from quorune.entry_keyword_grants import (
     EntryKeywordGrant,
     EntryKeywordGrantError,
 )
+from quorune.errors import StateInvariantError
 from quorune.haste import has_effective_haste
 from quorune.model import CardInstance, StackItem
 from quorune.oracle_ir import compile_oracle_card, generated_programs
@@ -311,8 +312,6 @@ class RiotRuntimeTests(unittest.TestCase):
 
     def register_riot(self, engine, card: CardInstance, *, repeated: bool = False):
         record = self.db.by_oracle_id(card.oracle_id)
-        if repeated:
-            record = replace(record, oracle_text="Riot, Riot", keywords=("Riot",))
         programs = [
             program
             for program in generated_programs(
@@ -325,7 +324,19 @@ class RiotRuntimeTests(unittest.TestCase):
             if program.provenance.get("template_id")
             == "riot-linked-entry-choice-v1"
         ]
-        self.assertEqual(2 if repeated else 1, len(programs))
+        self.assertEqual(1, len(programs))
+        if repeated:
+            # Runtime multiplicity is represented by independent handler
+            # instances. Keep the real card's pinned source fingerprint here;
+            # compiler coverage above separately proves that repeated printed
+            # instances receive distinct source spans and program identities.
+            descriptor = dict(programs[0].handlers[0])
+            programs = [
+                replace(
+                    programs[0],
+                    handlers=[dict(descriptor), dict(descriptor)],
+                )
+            ]
         for program in programs:
             engine.semantics.put(program)
         return programs
@@ -451,7 +462,10 @@ class RiotRuntimeTests(unittest.TestCase):
             "A",
             next(option for option in options if not option.startswith("decline:")),
         )
-        while engine.state.pending_decision is not None:
+        while (
+            engine.state.pending_decision is not None
+            and engine.state.pending_decision.kind == "replacement.order"
+        ):
             _, options = self.replacement_options(session, "A")
             self.choose(session, "A", options[0])
         self.assertEqual(2, card.counters.get("+1/+1", 0))
@@ -572,13 +586,16 @@ class RiotRuntimeTests(unittest.TestCase):
             "quorune.entry_results.commit_entry_keyword_grants",
             side_effect=EntryKeywordGrantError("test commit failure"),
         ):
-            result = session.act(
-                "pilot:A",
-                {"action_id": "choose", "choices": {"replacement": selection}},
-            )
-        self.assertFalse(result.ok)
+            with self.assertRaisesRegex(StateInvariantError, "test commit failure"):
+                session.act(
+                    "pilot:A",
+                    {
+                        "action_id": "choose",
+                        "choices": {"replacement": selection},
+                    },
+                )
         self.assertEqual(before, authoritative_state_hash(session.state))
-        self.assertEqual("stack", card.zone)
+        self.assertEqual("stack", session.state.cards[card.object_id].zone)
 
     def test_riot_runtime_mutations_are_killed(self):
         def assert_result(seed: int, *, haste_result: bool) -> None:

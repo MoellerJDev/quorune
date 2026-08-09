@@ -159,6 +159,7 @@ class MechanicContractTests(unittest.TestCase):
                 "evolve",
                 "melee",
                 "persist",
+                "riot",
                 "undying",
                 "unleash",
             },
