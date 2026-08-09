@@ -15,6 +15,7 @@ from quorune.carddb import CardDatabase, CardRecord
 from quorune.rules.capabilities import (
     load_default_capability_registry,
 )
+from quorune.semantic_runtime import default_semantic_handler_registry
 from quorune.semantics import SemanticRegistry
 
 
@@ -138,7 +139,17 @@ class CardProgramTrustTests(unittest.TestCase):
 
     def test_global_handler_and_component_inventory_is_capability_bound(self):
         status = runtime_component_status("commander_review")
-        self.assertEqual(92, len(status["semantic_handlers"]))
+        self.assertEqual(
+            default_semantic_handler_registry().inventory(),
+            [
+                {
+                    key: value
+                    for key, value in row.items()
+                    if key != "capability_closure"
+                }
+                for row in status["semantic_handlers"]
+            ],
+        )
         self.assertIn(
             "generic.fixed-player-counter-placement.v1",
             {

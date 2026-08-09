@@ -33,6 +33,7 @@ from .intents import (
     MoveLibraryCardsToBottomIntent,
     PayManaCostIntent,
     PayLifeIntent,
+    PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
@@ -132,6 +133,11 @@ class SemanticIntentSink(
     def place_counters_intent(
         self,
         intent: PlaceCountersIntent,
+    ) -> tuple[str, ...]: ...
+
+    def place_counter_batch_intent(
+        self,
+        intent: PlaceCounterBatchIntent,
     ) -> tuple[str, ...]: ...
 
     def place_counters_on_set_intent(
@@ -320,12 +326,14 @@ def _execute_recording_intent(
 
 
 CounterPlacementIntent = (
-    PlaceCountersIntent
+    PlaceCounterBatchIntent
+    | PlaceCountersIntent
     | PlaceCountersOnSetIntent
     | PlaceCountersOnTargetsIntent
     | PlacePlayerCountersIntent
 )
 COUNTER_PLACEMENT_INTENT_TYPES = (
+    PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
@@ -338,6 +346,8 @@ def _execute_counter_placement_intent(
     sink: SemanticIntentSink,
     intent: CounterPlacementIntent,
 ) -> tuple[str, object]:
+    if isinstance(intent, PlaceCounterBatchIntent):
+        return _COUNTER_RESULT_KEY, sink.place_counter_batch_intent(intent)
     if isinstance(intent, PlaceCountersIntent):
         return _COUNTER_RESULT_KEY, sink.place_counters_intent(intent)
     if isinstance(intent, PlaceCountersOnSetIntent):

@@ -13,7 +13,9 @@ from ..affected_permanents import (
 from .context import ReadOnlyHandlerContext, SemanticNodeError
 from .direct_target_fields import validate_direct_target_effect
 from .intents import (
+    CounterPlacementAmount,
     IntentPlan,
+    PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
@@ -83,6 +85,85 @@ class FixedCounterPlacementHandler:
                     replacement_selections=fields.replacement_selections,
                 ),
             ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class FixedCounterPlacementBatchHandler:
+    handler_id: str = "generic.fixed-counter-placement-batch.v1"
+    schema_version: int = 1
+    family: str = "effect.counter-placement-batch"
+    operation: str = "place_counter_batch"
+    rule_references: tuple[str, ...] = (
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2c",
+        "608.2h",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "counter.producer.fixed_multikind_effect",
+    )
+
+    def lower(
+        self,
+        effect: Mapping[str, Any],
+        context: ReadOnlyHandlerContext,
+    ) -> IntentPlan:
+        fields = validate_direct_target_effect(
+            effect,
+            context,
+            operation=self.operation,
+            reference_field="card",
+            family_label="Counter batch placement",
+            allow_replacement_selections=True,
+            additional_allowed_fields=("placements", "source"),
+        )
+        raw_placements = effect.get("placements")
+        if not isinstance(raw_placements, (list, tuple)) or not 2 <= len(
+            raw_placements
+        ) <= 3:
+            raise SemanticNodeError(
+                "Counter batch placement requires two or three entries"
+            )
+        placements: list[CounterPlacementAmount] = []
+        for index, raw in enumerate(raw_placements):
+            if not isinstance(raw, Mapping) or set(raw) != {
+                "counter",
+                "amount",
+            }:
+                raise SemanticNodeError(
+                    f"Counter batch placement entry {index} is malformed"
+                )
+            try:
+                placements.append(
+                    CounterPlacementAmount(
+                        counter_name=raw.get("counter"),
+                        amount=raw.get("amount"),
+                    )
+                )
+            except (TypeError, ValueError) as exc:
+                raise SemanticNodeError(str(exc)) from exc
+        source_ref = effect.get("source")
+        if type(source_ref) is not str or not source_ref:
+            raise SemanticNodeError(
+                "Counter batch placement requires one nonempty source reference"
+            )
+        try:
+            intent = PlaceCounterBatchIntent(
+                actor=context.actor,
+                object_ref=fields.object_ref,
+                placements=tuple(placements),
+                reason=fields.reason,
+                source_ref=source_ref,
+                replacement_selections=fields.replacement_selections,
+            )
+        except (TypeError, ValueError) as exc:
+            raise SemanticNodeError(str(exc)) from exc
+        return IntentPlan(
+            operation=self.operation,
+            handler_id=self.handler_id,
+            intents=(intent,),
         )
 
 
@@ -432,6 +513,7 @@ class FixedPlayerCounterPlacementHandler:
 
 COUNTER_PLACEMENT_HANDLERS = (
     FixedCounterPlacementHandler(),
+    FixedCounterPlacementBatchHandler(),
     FixedCounterPlacementSetHandler(),
     FixedCounterPlacementTargetSetHandler(),
     FixedPlayerCounterPlacementHandler(),
@@ -441,6 +523,7 @@ COUNTER_PLACEMENT_HANDLERS = (
 __all__ = [
     "COUNTER_PLACEMENT_HANDLERS",
     "FixedCounterPlacementHandler",
+    "FixedCounterPlacementBatchHandler",
     "FixedCounterPlacementSetHandler",
     "FixedCounterPlacementTargetSetHandler",
     "FixedPlayerCounterPlacementHandler",

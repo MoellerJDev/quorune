@@ -10,6 +10,8 @@ from ..affected_permanents import (
 from ..entry_counter_model import EntryCounterError, EffectEntryCounter
 from ..replacement.immutable import FrozenMap, thaw_value
 from ..semantic_runtime import (
+    CounterPlacementAmount,
+    PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
@@ -30,6 +32,14 @@ _COUNTER_INTENT_FIELDS = {
     _REASON_FIELD,
     "source_ref",
 }
+_COUNTER_BATCH_INTENT_FIELDS = {
+    "actor",
+    "object_ref",
+    "placements",
+    _REASON_FIELD,
+    "source_ref",
+}
+_COUNTER_BATCH_ENTRY_FIELDS = {"counter", "amount"}
 _COUNTER_SET_INTENT_FIELDS = {
     "actor",
     "spec",
@@ -153,6 +163,23 @@ def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
 
     if isinstance(intent, PlaceCountersIntent):
         return "place_counters", counter_intent_identity(intent)
+    if isinstance(intent, PlaceCounterBatchIntent):
+        return (
+            "place_counter_batch",
+            {
+                "actor": intent.actor,
+                "object_ref": intent.object_ref,
+                "placements": [
+                    {
+                        "counter": placement.counter_name,
+                        "amount": placement.amount,
+                    }
+                    for placement in intent.placements
+                ],
+                _REASON_FIELD: intent.reason,
+                "source_ref": intent.source_ref,
+            },
+        )
     if isinstance(intent, PlaceCountersOnSetIntent):
         return (
             "place_counters_on_set",
@@ -424,6 +451,8 @@ def validate_semantic_intent_identity(
 ) -> dict[str, Any]:
     if kind == "place_counters":
         return validate_counter_intent_identity(value)
+    if kind == "place_counter_batch":
+        return _validate_counter_batch_intent_identity(value)
     if kind == "place_counters_on_set":
         return _validate_counter_set_intent_identity(value)
     if kind == "place_counters_on_targets":
@@ -543,6 +572,53 @@ def validate_semantic_intent_identity(
     return result
 
 
+def _validate_counter_batch_intent_identity(
+    value: Mapping[str, Any],
+) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or set(value) != _COUNTER_BATCH_INTENT_FIELDS:
+        raise SemanticChoiceError(
+            "Counter batch intent identity fields are malformed"
+        )
+    raw_placements = value["placements"]
+    if not isinstance(raw_placements, (list, tuple)):
+        raise SemanticChoiceError(
+            "Counter batch intent placements must be an array"
+        )
+    try:
+        placements = tuple(
+            CounterPlacementAmount(
+                counter_name=raw["counter"],
+                amount=raw["amount"],
+            )
+            for raw in raw_placements
+            if isinstance(raw, Mapping)
+            and set(raw) == _COUNTER_BATCH_ENTRY_FIELDS
+        )
+        if len(placements) != len(raw_placements):
+            raise ValueError("Malformed counter batch entry")
+        intent = PlaceCounterBatchIntent(
+            actor=value["actor"],
+            object_ref=value["object_ref"],
+            placements=placements,
+            reason=value[_REASON_FIELD],
+            source_ref=value["source_ref"],
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        raise SemanticChoiceError(
+            "Counter batch intent identity is malformed"
+        ) from exc
+    return {
+        "actor": intent.actor,
+        "object_ref": intent.object_ref,
+        "placements": [
+            {"counter": row.counter_name, "amount": row.amount}
+            for row in intent.placements
+        ],
+        _REASON_FIELD: intent.reason,
+        "source_ref": intent.source_ref,
+    }
+
+
 def _validate_proliferate_intent_identity(
     value: Mapping[str, Any],
 ) -> dict[str, Any]:
@@ -626,6 +702,7 @@ def with_replacement_selections(
     selections: Sequence[str | FrozenMap | Mapping[str, Any]],
 ) -> (
     PlaceCountersIntent
+    | PlaceCounterBatchIntent
     | PlaceCountersOnSetIntent
     | PlaceCountersOnTargetsIntent
     | PlacePlayerCountersIntent
@@ -636,6 +713,7 @@ def with_replacement_selections(
         intent,
         (
             PlaceCountersIntent,
+            PlaceCounterBatchIntent,
             PlaceCountersOnSetIntent,
             PlaceCountersOnTargetsIntent,
             PlacePlayerCountersIntent,

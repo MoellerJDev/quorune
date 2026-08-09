@@ -386,6 +386,28 @@
         "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_zone_and_counter_replacements_complete_before_return_mutates",
         "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0019",
+      "adr": "docs/adr/0043-typed-fixed-multikind-counter-batches.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "26d0d174f6da879d1ec5f7e27e32e3c8161314a8e6fe9ffda39af3cd03e7d2cd",
+      "exact_allowance": "Only the reduced structural write identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, and legacy helpers serialized after typed fixed multi-kind counter-batch extraction.",
+      "rationale": "The fixed multi-kind counter family adds one closed universal semantic operation while keeping CommanderEngine, direct GameState writes, oversized symbols, Oracle-ID literals, and card-specificity flat. Its strict read-only handler emits PlaceCounterBatchIntent and leaves replacement ordering, suspension, rollback, replay, and mutation with the existing canonical counter transaction.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "Existing serialized residual allowances plus the reviewed place_counter_batch operation described by ADR 0043; removals are allowed and additions or growth are forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered allowance has migrated to a reviewed owner; remove place_counter_batch only if a successor typed result model preserves its closed grammar, one-subject simultaneous batch, immutable source-spanned descriptor, replacement ordering, rollback, privacy, replay, and fail-closed residuals.",
+      "target_milestone": "typed fixed multi-kind counter effects and shared spell, triggered, and activated effect-clause closure",
+      "replay_implications": "Game Record v3 remains compatible; source-spanned descriptors, printed counter order, identity-pinned subjects, replacement continuations, and one canonical counter journal preserve exact command replay.",
+      "privacy_implications": "The represented subjects are the source permanent or one public battlefield target; replacement choices remain affected-principal scoped and hidden zones are neither queried nor projected.",
+      "security_implications": "The strict handler accepts only a closed fixed counter-batch descriptor, emits an immutable typed intent, and grants no callback, arbitrary mutation, runtime Oracle parsing, transport access, or card-identity dispatch.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint",
+        "tests.test_fixed_multikind_counter_batches.FixedCounterBatchCompilerTests.test_spell_trigger_and_activated_contexts_share_fixed_counter_batch_lowering",
+        "tests.test_fixed_multikind_counter_batches.FixedCounterBatchRuntimeTests.test_counter_batch_suspends_before_any_counter_is_placed",
+        "tests.test_fixed_multikind_counter_batches.FixedCounterBatchRuntimeTests.test_four_player_counter_batch_replacement_is_seat_scoped_and_replays"
+      ]
     }
   ]
 }

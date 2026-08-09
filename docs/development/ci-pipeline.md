@@ -125,6 +125,13 @@ manual because observed latency is review evidence, not an automatic rewrite.
 Use `--check` for read-only diagnosis and in CI; a successful `--write` already
 performs that verification, so do not run both commands consecutively.
 
+The final verification phase includes the architecture policy validator, not
+only generated-file freshness. This closes the failure mode where every report
+was current but a new semantic operation, direct write, or oversized boundary
+had not been added to the reviewed architecture baseline. Run write mode before
+the final commit; the pre-push hook repeats it and blocks publication on either
+generated drift or architecture-policy failure.
+
 Install the tracked pre-push hook once in each worktree:
 
 ```powershell

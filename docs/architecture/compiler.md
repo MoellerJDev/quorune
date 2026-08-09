@@ -41,6 +41,11 @@ establishes direct creature target zero, later clauses use the exact pronoun
 “it,” and printed operation order is retained. The runtime consumes only the
 resulting typed node and never reparses those Oracle sentences.
 
+`compiler/counter_placement_templates.py` separately owns the closed
+single-sentence multi-kind counter grammar. It preserves two or three printed
+fixed placements on one shared source or direct permanent target as one typed
+batch node; runtime code receives that node and never reparses Oracle text.
+
 ## Invariants
 
 - Every lowered node retains its exact source provenance.

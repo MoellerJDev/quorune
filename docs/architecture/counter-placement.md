@@ -224,6 +224,18 @@ specific Flying, Haste, Trample, Hexproof, Indestructible, or other mechanic
 capability. Parameterized keyword variants and same-layer dependency cases
 outside the current continuous-effect model fail closed.
 
+Oracle IR v65 lowers one mandatory instruction that places two or three
+distinct fixed counter kinds on the source permanent or one direct permanent
+target. The compiler preserves printed counter order and emits one
+`PlaceCounterBatchIntent`; the runtime resolves the shared recipient once and
+submits every placement as one simultaneous request sequence to the canonical
+counter transaction. Replacement ordering therefore completes for the whole
+instruction before any counter changes. Keyword counters additionally require
+their typed layer 6 characteristic capability and the independent runtime
+capability for the granted keyword. Optional, variable, repeated, duplicate,
+distributed, multi-subject, player, entry, and affected-set variants remain
+material residuals.
+
 The attachment-relative fixed-placement family adds one typed semantic
 reference for the object a source enchants, equips, or fortifies. The compiler
 requires the exact parsed Aura, Equipment, or Fortification source subtype and
@@ -263,7 +275,7 @@ counter names; ordinary named poison, rad, energy, ticket, and experience
 counters use the same typed `PlacePlayerCountersIntent`. Simultaneous subjects
 are APNAP-canonical, direct targets are revalidated immediately before commit,
 and every write remains owned by `counter_state.py`. Variable quantities,
-linked subjects, multiple counter kinds, and player-counter quantity
+linked subjects, multiple player-counter kinds, and player-counter quantity
 replacement or prevention wording remain residual and fail closed.
 
 The bounded Proliferate family compiles an unmodified `Proliferate.` clause in

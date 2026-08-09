@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 69,
+  "registry_version": 70,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -720,6 +720,33 @@
       "dependency_fail_closed_rationale": "The compiler dependency mutation blocks exact fixed counter-placement CardPrograms whenever the canonical counter-placement replacement owner is unavailable.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "The focused compiler mutation removes the fixed counter template and proves that the previously exact source-spanned node becomes a material residual.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.fixed_multikind_effect",
+      "version": 1,
+      "official_rules": ["115.1", "608.2b", "608.2c", "608.2h", "122.1", "122.1a", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one mandatory simultaneous placement of two or three distinct fixed counter kinds on the source permanent or one direct permanent target.",
+        "inputs": ["one closed fixed multi-kind Oracle instruction", "source or one legal public permanent target", "two or three distinct canonical counter names", "positive exact integral amounts", "stable source provenance reference"],
+        "outputs": ["source-spanned CardProgram node", "strict immutable batch intent", "resolution-time target revalidation where targeted", "one replacement-aware simultaneous counter-placement transaction", "exact continuation replay"],
+        "exclusions": ["player counters", "entry counters", "counter costs, movement, or removal", "variable, optional, distributed, repeated, linked, modal, or conditional placements", "duplicate counter kinds", "multiple subjects", "affected permanent sets", "unsupported target predicates", "keyword behavior whose separate mechanic capability is untrusted"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.compiler.counter_placement_templates.FixedCounterPlacementBatchTemplate", "quorune.rules.node_capability_shapes.fixed_counter_placement_batch_node_capabilities", "quorune.semantic_runtime.counter_placement_handlers.FixedCounterPlacementBatchHandler", "quorune.semantic_runtime.intents.PlaceCounterBatchIntent", "quorune.semantic_choices.intent_replacement.validate_semantic_intent_identity", "quorune.replacement.replay.ReplacementContinuation", "quorune.counter_placement.place_counters"],
+      "positive_tests": ["test_spell_trigger_and_activated_contexts_share_fixed_counter_batch_lowering", "test_runtime_commits_fixed_counter_batch_atomically", "test_counter_batch_result_does_not_require_source_to_remain"],
+      "negative_tests": ["test_unsupported_fixed_counter_batch_variants_remain_material_residuals", "test_typed_counter_batch_rejects_malformed_entries_without_mutation", "test_stale_counter_batch_target_fails_before_mutation"],
+      "interaction_tests": ["test_counter_batch_suspends_before_any_counter_is_placed"],
+      "multiplayer_tests": ["test_four_player_counter_batch_replacement_is_seat_scoped_and_replays"],
+      "privacy_tests": ["test_four_player_counter_batch_replacement_is_seat_scoped_and_replays"],
+      "replay_tests": ["test_four_player_counter_batch_replacement_is_seat_scoped_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "CardProgram closure removes exact support when the canonical counter quantity replacement owner or any represented keyword-counter characteristic dependency is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "A focused compiler mutation removing the batch template makes the representative multi-kind instruction a material residual, while splitting the runtime batch changes the asserted replacement and rollback trace.",
       "blockers": [],
       "status": "trusted"
     },

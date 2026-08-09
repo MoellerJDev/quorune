@@ -11,6 +11,7 @@ from ..replacement_effects import (
 )
 from ..semantic_runtime import (
     IntentPlan,
+    PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
@@ -119,6 +120,7 @@ def _issue_semantic_intent_replacement_choice(
     response: Mapping[str, Any],
     intent: (
         PlaceCountersOnSetIntent
+        | PlaceCounterBatchIntent
         | PlaceCountersOnTargetsIntent
         | PlacePlayerCountersIntent
         | ProliferateIntent
@@ -240,6 +242,7 @@ def continue_semantic_completion(
                 intent,
                 (
                     PlaceCountersOnSetIntent,
+                    PlaceCounterBatchIntent,
                     PlaceCountersOnTargetsIntent,
                     PlacePlayerCountersIntent,
                     ProliferateIntent,

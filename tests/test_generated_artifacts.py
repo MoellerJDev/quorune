@@ -8,7 +8,12 @@ import subprocess
 from tempfile import TemporaryDirectory
 import unittest
 
-from scripts.finalize_generated import stabilization_ids, write_until_stable
+from scripts.finalize_generated import (
+    POST_CHECKS,
+    check_all,
+    stabilization_ids,
+    write_until_stable,
+)
 from scripts.update_compiler_corpus_coverage import (
     CompilerCorpusCoverageError,
     validate_reports,
@@ -315,6 +320,28 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         self.assertIn('"$ROOT/scripts/test_shards.py" validate', hook)
         self.assertIn("--write --fail-on-change", hook)
         self.assertNotIn("python scripts/finalize_generated.py", hook)
+
+    def test_finalizer_checks_the_architecture_policy_before_publication(self):
+        self.assertIn(
+            (
+                "architecture-policy",
+                ("scripts/validate_architecture.py", "--check"),
+            ),
+            POST_CHECKS,
+        )
+
+        observed: list[tuple[str, tuple[str, ...]]] = []
+
+        def runner(check_id, command):
+            observed.append((check_id, tuple(command)))
+            return 1 if check_id == "architecture-policy" else 0
+
+        failures = check_all((), runner=runner)
+        self.assertIn("architecture-policy", {row[0] for row in observed})
+        self.assertEqual(
+            ["architecture-policy"],
+            [str(row["check"]) for row in failures],
+        )
 
     def test_generated_hook_installer_is_idempotent_and_preserves_foreign_policy(self):
         with TemporaryDirectory() as raw:

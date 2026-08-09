@@ -11,6 +11,16 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Typed fixed multi-kind counter batches
+
+- Added one closed source-spanned grammar for placing two or three distinct
+  fixed counter kinds on one source permanent or direct permanent target.
+- Lowered the instruction to one immutable replacement-aware batch, preserving
+  printed order, resolution-time target revalidation, all-or-nothing mutation,
+  seat-scoped replacement choices, privacy, and exact replay. Optional,
+  variable, duplicate, distributed, multi-subject, player, entry, and set
+  variants remain explicit residuals.
+
 ### Typed ordinary Riot entry choices
 
 - Added one linked affected-object replacement choice per ordinary printed

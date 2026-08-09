@@ -14,6 +14,8 @@ fi
 
 # CI planning cannot construct its matrix when a discovered test module lacks
 # exactly one primary shard. Fail quickly before the expensive corpus census.
+# The finalizer also validates the reviewed architecture baseline after every
+# generated writer/check, so a new typed operation cannot first fail in CI.
 "$PYTHON" "$ROOT/scripts/test_shards.py" validate
 
 if [ -n "${MTG_CARD_DB:-}" ]; then

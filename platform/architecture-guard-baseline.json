@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "ee4fb061376d5e87a81614a1831cc9e27b235087",
+  "baseline_commit": "0a280f4c70f9f19075b11323f89ef9593b1e3f57",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -723,7 +723,7 @@
     "quorune/record.py": 11
   },
   "engine": {
-    "logical_lines": 12211,
+    "logical_lines": 12094,
     "methods": [
       {
         "kind": "method",
@@ -777,17 +777,7 @@
       },
       {
         "kind": "method",
-        "name": "_add_saga_lore",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_additional_cost_candidates",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_advance_active_player_sagas",
         "visibility": "private"
       },
       {
@@ -1478,11 +1468,6 @@
       {
         "kind": "method",
         "name": "_library_insertion_index",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_library_position",
         "visibility": "private"
       },
       {
@@ -2256,12 +2241,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 12927
+    "physical_lines": 12807
   },
   "exception_binding": {
-    "adr": "docs/adr/0041-effect-entry-counters-and-death-return.md",
-    "allowance_fingerprint": "6bd684c8e0eed7e7cda7d5ac23bea077189b2eda5cbb224e83cfe344e6063913",
-    "exception_id": "ARCH-EXC-0018"
+    "adr": "docs/adr/0043-typed-fixed-multikind-counter-batches.md",
+    "allowance_fingerprint": "26d0d174f6da879d1ec5f7e27e32e3c8161314a8e6fe9ffda39af3cd03e7d2cd",
+    "exception_id": "ARCH-EXC-0019"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2410,7 +2395,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 235,
+      "logical_lines": 174,
       "symbol": "CommanderEngine._target_row_matches"
     },
     {
@@ -2430,12 +2415,12 @@
     },
     {
       "file": "quorune/oracle_ir.py",
-      "logical_lines": 450,
+      "logical_lines": 448,
       "symbol": "_compile_face"
     },
     {
       "file": "quorune/oracle_ir.py",
-      "logical_lines": 275,
+      "logical_lines": 247,
       "symbol": "_effect_template"
     },
     {
@@ -2496,7 +2481,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 12211
+      "logical_lines": 12094
     },
     {
       "file": "quorune/record.py",
@@ -2609,6 +2594,7 @@
     "note",
     "offer_draw",
     "pay_or_lose",
+    "place_counter_batch",
     "place_counters",
     "place_counters_on_set",
     "place_counters_on_targets",

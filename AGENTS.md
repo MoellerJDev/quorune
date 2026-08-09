@@ -154,6 +154,13 @@ deterministic writers to a fixed point:
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write
 ```
 
+This is also the required focused architecture check before the final commit.
+The finalizer runs `scripts/validate_architecture.py --check` after generation,
+so reviewed operation inventories, architecture exceptions, direct-write
+ratchets, and module boundaries cannot be deferred to CI. Do not make the final
+commit when this command fails. The tracked pre-push hook invokes the same
+finalizer as an automatic publication backstop.
+
 When compiler, capability, CardProgram, or card-support behavior changes, run
 the database-backed census in that same finalization step:
 
