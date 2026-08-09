@@ -11,6 +11,7 @@ import unittest
 from scripts.finalize_generated import (
     POST_CHECKS,
     check_all,
+    changed_generated_outputs,
     stabilization_ids,
     write_until_stable,
 )
@@ -134,6 +135,10 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             ordered.index("architecture-audit"),
         )
         self.assertLess(
+            ordered.index("module-classifications"),
+            ordered.index("architecture-audit"),
+        )
+        self.assertLess(
             ordered.index("architecture-audit"),
             ordered.index("reusable-pieces"),
         )
@@ -178,6 +183,94 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             "repository-relative POSIX path",
         ):
             parse_manifest(escaped)
+
+    def test_generated_change_detection_uses_git_visible_content(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Generated Test"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "core.autocrlf", "true"],
+                cwd=root,
+                check=True,
+            )
+            output = root / "generated.json"
+            output.write_bytes(b'{"ok": true}\n')
+            subprocess.run(["git", "add", "generated.json"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "fixture"],
+                cwd=root,
+                check=True,
+            )
+            output.write_bytes(b'{"ok": true}\r\n')
+            spec = GeneratorSpec(
+                id="generated",
+                depends_on=(),
+                outputs=("generated.json",),
+                check=("unused.py", "--check"),
+                write=("unused.py", "--write"),
+                write_with_database=None,
+                write_policy="automatic",
+            )
+
+            self.assertEqual((), changed_generated_outputs((spec,), root=root))
+
+    def test_generated_change_detection_includes_worktree_index_and_untracked(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Generated Test"],
+                cwd=root,
+                check=True,
+            )
+            for name in ("worktree.json", "staged.json"):
+                (root / name).write_text("old\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "fixture"],
+                cwd=root,
+                check=True,
+            )
+            (root / "worktree.json").write_text("new\n", encoding="utf-8")
+            (root / "staged.json").write_text("new\n", encoding="utf-8")
+            (root / "untracked.json").write_text("new\n", encoding="utf-8")
+            subprocess.run(["git", "add", "staged.json"], cwd=root, check=True)
+            specs = tuple(
+                GeneratorSpec(
+                    id=name.removesuffix(".json"),
+                    depends_on=(),
+                    outputs=(name,),
+                    check=("unused.py", "--check"),
+                    write=("unused.py", "--write"),
+                    write_with_database=None,
+                    write_policy="automatic",
+                )
+                for name in (
+                    "worktree.json",
+                    "staged.json",
+                    "untracked.json",
+                )
+            )
+
+            self.assertEqual(
+                ("staged.json", "untracked.json", "worktree.json"),
+                changed_generated_outputs(specs, root=root),
+            )
 
     def test_generated_finalizer_reaches_a_bounded_fixed_point(self):
         with TemporaryDirectory() as raw:
@@ -306,6 +399,59 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             frozenset({"source", "consumer"}),
             stabilization_ids(specs, ("source.txt",)),
         )
+
+    def test_failed_owner_resume_skips_unrelated_upstream_writers(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            specs = (
+                GeneratorSpec(
+                    id="expensive-upstream",
+                    depends_on=(),
+                    outputs=("upstream.txt",),
+                    check=("unused.py", "--check"),
+                    write=("unused.py", "--write"),
+                    write_with_database=None,
+                    write_policy="automatic",
+                ),
+                GeneratorSpec(
+                    id="failed-owner",
+                    depends_on=("expensive-upstream",),
+                    outputs=("failed.txt",),
+                    check=("unused.py", "--check"),
+                    write=("unused.py", "--refresh-derived"),
+                    write_with_database=(
+                        "unused.py",
+                        "--write",
+                        "--db",
+                        "{db}",
+                    ),
+                    write_policy="database",
+                ),
+            )
+            database = root / "cards.sqlite3"
+            database.write_bytes(b"fixture")
+            calls: list[str] = []
+
+            def runner(generator_id: str, _command: tuple[str, ...]) -> int:
+                calls.append(generator_id)
+                (root / "failed.txt").write_text("stable\n", encoding="utf-8")
+                return 0
+
+            result = write_until_stable(
+                specs,
+                database=database,
+                include_manual=False,
+                max_passes=3,
+                initial_selected_ids=stabilization_ids(
+                    specs,
+                    specs[1].outputs,
+                ),
+                root=root,
+                runner=runner,
+            )
+
+        self.assertEqual(2, result["passes"])
+        self.assertEqual(["failed-owner", "failed-owner"], calls)
 
     def test_generated_ci_uses_the_canonical_finalizer_only(self):
         workflow_dir = ROOT / ".github" / "workflows"

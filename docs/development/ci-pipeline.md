@@ -131,6 +131,14 @@ manual because observed latency is review evidence, not an automatic rewrite.
 Use `--check` for read-only diagnosis and in CI; a successful `--write` already
 performs that verification, so do not run both commands consecutively.
 
+If a full database-backed write fails at a later registered owner, correct the
+source problem and use `--resume-from <generator-id>` only when the correction
+cannot affect earlier owners. The canonical coordinator reruns that owner and
+all descendants, then performs every normal freshness and policy check. This
+avoids repeating the expensive corpus while preserving dependency and final
+verification guarantees; do not invoke individual writers by hand. The normal
+first run and pre-push hook never use resume mode.
+
 The final verification phase includes the architecture policy validator, not
 only generated-file freshness. This closes the failure mode where every report
 was current but a new semantic operation, direct write, or oversized boundary
@@ -143,6 +151,14 @@ Install the tracked pre-push hook once in each worktree:
 ```powershell
 .\.venv\Scripts\python.exe scripts\install_dev_hooks.py
 ```
+
+This is deliberately a pre-push hook, not a pre-commit generator. Derived
+changes must be reviewed and committed with their authoritative source, while
+database-backed corpus generation is too expensive for every checkpoint
+commit. Maintainers and coding agents run the finalizer before the final commit;
+the hook repeats it with `--fail-on-change` and rejects publication if any
+writer still changes the tree. A configured worktree reports `.githooks` from
+`git config --get core.hooksPath`.
 
 The installer sets the local `core.hooksPath` to `.githooks` and refuses to
 overwrite another hook policy. The hook is a backstop that uses the

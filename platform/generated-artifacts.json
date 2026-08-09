@@ -189,6 +189,7 @@
         "capability-evidence",
         "compiler-corpus-coverage",
         "continuous-effect-performance",
+        "module-classifications",
         "platform-status"
       ],
       "outputs": [
