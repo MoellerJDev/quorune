@@ -11,7 +11,11 @@ from quorune.carddb import CardDatabase
 from quorune.compiler.explore_templates import (
     single_explore_effect_template,
 )
-from quorune.oracle_ir import compile_oracle_card, generated_programs
+from quorune.oracle_ir import (
+    ORACLE_COMPILER_VERSION,
+    compile_oracle_card,
+    generated_programs,
+)
 from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
@@ -158,7 +162,7 @@ class ExploreCompilerTests(unittest.TestCase):
             self.assertEqual("trusted", program.trust_level)
             self.assertTrue(program.capability_closure["trusted"])
             self.assertEqual(
-                "oracle-ir-v63", program.provenance["authored_by"]
+                ORACLE_COMPILER_VERSION, program.provenance["authored_by"]
             )
             self.assertIn(
                 "keyword_action.explore.single",

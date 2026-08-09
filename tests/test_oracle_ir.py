@@ -527,8 +527,8 @@ class OracleIRTests(unittest.TestCase):
                 "Fixture Target Pump",
                 "Instant",
                 "Target creature gets +2/+0 until end of turn.",
-                "modify-target-creature-stats-eot-v1",
-                "partial",
+                "fixed-target-characteristics-until-end-of-turn-v1",
+                "exact",
             ),
         )
         for name, type_line, text, template, status in fixtures:

@@ -7,6 +7,7 @@ import unittest
 from common import DB_PATH, keep_all, load_assets, make_session
 from quorune.carddb import CardDatabase, CardRecord
 from quorune.oracle_ir import (
+    ORACLE_COMPILER_VERSION,
     compile_oracle_card,
     generated_programs,
 )
@@ -236,7 +237,10 @@ class GeneratedFabricateRuntimeTests(unittest.TestCase):
 
         self.assertTrue(result.ok, result.summary)
         self.assertEqual(1, apprentice.counters["+1/+1"])
-        self.assertEqual("oracle-ir-v63", program.provenance["authored_by"])
+        self.assertEqual(
+            ORACLE_COMPILER_VERSION,
+            program.provenance["authored_by"],
+        )
 
     def test_four_player_fabricate_choice_uses_one_persistent_affected_seat(self):
         session, apprentice, _program = self.session(players=4, seed=70212302)
