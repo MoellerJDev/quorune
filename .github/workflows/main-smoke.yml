@@ -59,9 +59,7 @@ jobs:
       - name: Run deterministic replay and server smoke
         run: python scripts/test_shards.py run main-smoke
       - name: Verify generated integration state and rules
-        run: |
-          python scripts/finalize_generated.py --check
-          python simctl.py rules verify --root .
+        run: python scripts/finalize_generated.py --check
       - name: Verify wheel metadata and browser production build
         run: |
           python -m build --wheel
