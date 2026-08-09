@@ -621,6 +621,30 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_mentor_places_replacement_aware_counter_after_target_revalidation",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.mentor", "mechanic.mentor"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.mentor"],
+      "interaction_order": 3,
+      "assertion": "A resolved ordinary Mentor trigger delegates its +1/+1 result to the canonical counter transaction, which applies the represented quantity replacement before commit."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_current_power_change_can_make_mentor_target_illegal",
+      "piece_ids": ["capability.counter.producer.mentor", "capability.target.revalidate_resolution", "mechanic.mentor"],
+      "capability_ids": ["counter.producer.mentor", "target.revalidate_resolution"],
+      "interaction_order": 3,
+      "assertion": "Mentor revalidates current source and target power through the shared resolution target boundary before the counter producer can commit."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_departure_pins_power_after_trigger_creation",
+      "piece_ids": ["capability.counter.producer.mentor", "mechanic.cr-400-general", "mechanic.mentor"],
+      "capability_ids": ["counter.producer.mentor"],
+      "interaction_order": 3,
+      "assertion": "A battlefield departure refreshes Mentor's pending relative-power condition from the source's immediate predeparture characteristics before CR 400 creates a new logical object."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_target_set_suspends_for_quantity_replacement_and_replays",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_permanent_target_set_effect"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_permanent_target_set_effect"],

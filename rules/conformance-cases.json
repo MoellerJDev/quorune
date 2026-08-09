@@ -74237,23 +74237,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.134",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_mentor_rules.MentorModelAndCompilerTests.test_mentor_compiles_with_precise_spans_and_capability_closure"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/mentor.json"
+      ],
+      "notes": [
+        "Keyword heading; ordinary printed triggering, targeting, and counter placement are owned by counter.producer.mentor while the aggregate remains incomplete because CR 702.134c listeners are unsupported."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.134",
       "rule_text_sha256": "e067bc30342c315020426ad37e48e02262cc7c80b257774ec69f3e13971e0522",
       "schema_version": 1,
@@ -74262,26 +74266,58 @@
         "end_line": 4981,
         "start_line": 4980
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.134a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.134"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_mentor_rules.MentorModelAndCompilerTests.test_relative_power_departure_preparation_is_transactional",
+        "tests.test_mentor_rules.MentorModelAndCompilerTests.test_noncreature_departure_pins_absent_power",
+        "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_offers_only_attacking_creatures_with_lesser_power",
+        "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_places_replacement_aware_counter_after_target_revalidation",
+        "tests.test_mentor_rules.MentorRuntimeTests.test_current_power_change_can_make_mentor_target_illegal",
+        "tests.test_mentor_rules.MentorRuntimeTests.test_illegal_mentor_target_rejects_without_mutation",
+        "tests.test_mentor_rules.MentorRuntimeTests.test_departed_mentor_source_uses_public_last_known_power",
+        "tests.test_mentor_rules.MentorRuntimeTests.test_departure_pins_power_after_trigger_creation",
+        "tests.test_mentor_rules.MentorRuntimeTests.test_no_lesser_attacker_removes_mandatory_target_trigger",
+        "tests.test_mentor_rules.MentorRuntimeTests.test_mentor_target_choice_and_counter_replay_exactly"
+      ],
+      "implementation_components": [
+        "quorune.mentor.MentorTriggerOccurrence",
+        "quorune.mentor.derive_mentor_trigger_occurrences",
+        "quorune.relative_power_target.RelativePowerTargetCondition",
+        "quorune.relative_power_target.pin_relative_power_source_departures",
+        "quorune.trigger_targeting.begin_pending_trigger_target_selection",
+        "quorune.counter_placement.place_counters_on_refs"
+      ],
+      "notes": [
+        "The bounded ordinary printed ability derives after one sealed declaration, chooses only a current lesser-power attacker, revalidates identity, attacking status, and current-or-LKI power, then uses the canonical replacement-aware permanent-counter owner."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.134a",
       "rule_text_sha256": "33eb25d1221c203602090a3d92166a03d6e939da9dfd2816c6f99f03ec35c3a9",
       "schema_version": 1,
@@ -74290,26 +74326,38 @@
         "end_line": 4983,
         "start_line": 4982
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.134b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.134"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_mentor_rules.MentorModelAndCompilerTests.test_mentor_occurrences_preserve_multiplicity_and_identity",
+        "tests.test_mentor_rules.MentorModelAndCompilerTests.test_mentor_compiles_with_precise_spans_and_capability_closure"
+      ],
+      "implementation_components": [
+        "quorune.ability_fragments.CombatKeywordTriggerSpec",
+        "quorune.mentor.derive_mentor_trigger_occurrences"
+      ],
+      "notes": [
+        "Each represented typed Mentor fragment receives a distinct source span, instance index, immutable occurrence identity, and independently targeted trigger."
+      ],
+      "required_scenarios": [
+        "positive",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.134b",
       "rule_text_sha256": "cfab3bd593e341757709b56085d53d7393d759c063c23e7a17b7fe80ca572c44",
       "schema_version": 1,
@@ -74318,26 +74366,43 @@
         "end_line": 4985,
         "start_line": 4984
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "successful Mentor resolution does not yet emit a typed mentors-another-creature occurrence",
+        "generic listeners for the exact Mentor source and target pair are not compiled",
+        "simultaneous listener placement, copy, control-change, and exact replay evidence are absent"
       ],
       "case_id": "cr-702.134c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.134"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_mentor_rules.MentorModelAndCompilerTests.test_unsupported_mentor_wording_and_blocked_dependency_fail_closed"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/mentor.json"
+      ],
+      "notes": [
+        "The ordinary Mentor counter result is implemented, but no downstream ability is told that one creature mentored another; such listeners remain material residuals."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.134c",
       "rule_text_sha256": "5662a756ec3cea1eb93dd5b9dabdb1078409b4dc054f14cb6a730060916e608a",
       "schema_version": 1,
@@ -74346,7 +74411,7 @@
         "end_line": 4987,
         "start_line": 4986
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

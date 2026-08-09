@@ -3,6 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Mapping, Sequence
 
+from .relative_power_target import (
+    RelativePowerTargetCondition,
+    RelativePowerTargetError,
+)
+
 
 PUBLIC_TARGET_ZONES = {
     "battlefield",
@@ -155,6 +160,18 @@ class TargetGroup:
             raise ValueError(f"Unknown owner relation {owner!r}")
         if player_relation not in {"any", "you", "opponent"}:
             raise ValueError(f"Unknown player relation {player_relation!r}")
+        predicate = str(raw.get("predicate") or "")
+        raw_condition = raw.get("resolution_condition") or {}
+        if not isinstance(raw_condition, Mapping):
+            raise ValueError("Target resolution_condition must be an object")
+        resolution_condition = dict(raw_condition)
+        if predicate == "power_less_than_source":
+            try:
+                resolution_condition = RelativePowerTargetCondition.from_dict(
+                    resolution_condition
+                ).to_dict()
+            except RelativePowerTargetError as exc:
+                raise ValueError(str(exc)) from exc
         return cls(
             group_id=str(raw.get("id") or raw.get("group") or default_id),
             zones=zones,
@@ -216,8 +233,8 @@ class TargetGroup:
             distinct=bool(raw.get("distinct", True)),
             allow_reuse=bool(raw.get("allow_reuse", False)),
             different_from_groups=_strings(raw.get("different_from_groups")),
-            predicate=str(raw.get("predicate") or ""),
-            resolution_condition=dict(raw.get("resolution_condition") or {}),
+            predicate=predicate,
+            resolution_condition=resolution_condition,
         )
 
     def public_dict(self, legal_refs: Sequence[str]) -> dict[str, Any]:

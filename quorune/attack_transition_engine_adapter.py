@@ -5,6 +5,7 @@ from typing import Any
 
 from .ability_fragments import (
     AbilityFragmentError,
+    CombatKeywordTriggerKind,
     canonical_ability_fragments,
     combat_keyword_trigger_specs,
 )
@@ -30,6 +31,13 @@ from .combat_relationship_state import (
     commit_attack_declaration,
 )
 from .errors import StateInvariantError
+from .mentor import (
+    MENTOR_TRIGGER_SEMANTIC_KEY,
+    MentorTriggerOccurrence,
+    derive_mentor_trigger_occurrences,
+    mentor_counter_effect,
+    mentor_trigger_stack_item,
+)
 
 
 class EngineAttackTransitionQuery(AttackTransitionQuery):
@@ -96,6 +104,14 @@ class EngineAttackTransitionQuery(AttackTransitionQuery):
                 spec
                 for spec in combat_keyword_trigger_specs(fragments)
                 if spec.kind in ATTACK_TRIGGER_KINDS
+            ),
+            power=(
+                self._engine._numeric_stat(card.object_id, "power")
+                if any(
+                    spec.kind is CombatKeywordTriggerKind.MENTOR
+                    for spec in combat_keyword_trigger_specs(fragments)
+                )
+                else None
             ),
         )
 
@@ -165,11 +181,22 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
         if event is None:
             return ()
         occurrences = derive_attack_keyword_trigger_occurrences(event)
+        mentor_occurrences = derive_mentor_trigger_occurrences(event)
         stack_items = []
         for occurrence in occurrences:
             ref = engine._next_ref("S")
             stack_items.append(
                 attack_keyword_trigger_stack_item(
+                    occurrence,
+                    ref=ref,
+                    stack_id=engine._stable_runtime_id("stack", ref),
+                    visibility=engine.seats,
+                )
+            )
+        for occurrence in mentor_occurrences:
+            ref = engine._next_ref("S")
+            stack_items.append(
+                mentor_trigger_stack_item(
                     occurrence,
                     ref=ref,
                     stack_id=engine._stable_runtime_id("stack", ref),
@@ -183,12 +210,18 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
         "combat.attack_transition",
         (
             f"Completed {len(event.assignments)} attack declaration(s) and "
-            f"created {len(occurrences)} represented trigger(s)."
+            "created "
+            f"{len(occurrences) + len(mentor_occurrences)} represented "
+            "trigger(s)."
         ),
         {
             "transition": event.to_dict(),
             "trigger_occurrences": [
                 occurrence.occurrence_id for occurrence in occurrences
+            ]
+            + [
+                occurrence.occurrence_id
+                for occurrence in mentor_occurrences
             ],
         },
         importance=2,
@@ -205,6 +238,34 @@ def prepare_attack_keyword_trigger_resolution(
 ) -> bool:
     """Resolve one typed attack occurrence through the engine facade."""
 
+    if item.semantic_key == MENTOR_TRIGGER_SEMANTIC_KEY:
+        context = item.context
+        if not isinstance(context, Mapping) or context.get("event") != (
+            "combat.attack_transition"
+        ):
+            raise StateInvariantError(
+                "A Mentor trigger has malformed event context"
+            )
+        try:
+            occurrence = MentorTriggerOccurrence.from_dict(
+                context.get("mentor_trigger")
+            )
+        except (TypeError, AttackTransitionError) as exc:
+            raise StateInvariantError(str(exc)) from exc
+        if (
+            occurrence.controller != item.controller
+            or occurrence.source.object_id != item.source_object_id
+        ):
+            raise StateInvariantError(
+                "A Mentor trigger no longer matches its stack identity"
+            )
+        engine._begin_resolve_item(
+            item,
+            [mentor_counter_effect()],
+            item.default_destination,
+            note="Resolved typed Mentor occurrence",
+        )
+        return True
     if item.semantic_key != ATTACK_KEYWORD_TRIGGER_SEMANTIC_KEY:
         return False
     context = item.context

@@ -1,7 +1,7 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/death_return.py, quorune/unleash.py, semantic_runtime/counter_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, semantic_runtime/counter_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
 verified: "2026-08-08"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -148,6 +148,24 @@ copied, lost, or face-down Riot outside typed ability propagation remain
 explicit residuals; aggregate entry replacement and continuous-effect claims
 remain bounded.
 
+Ordinary printed Mentor uses the same counter transaction without acquiring a
+keyword-specific mutation path. The compiler emits one source-spanned typed
+ability fragment per printed Mentor instance. A completed attack declaration
+captures the source's effective power, creates independently identified
+targeted triggers in the shared APNAP batch, and offers only current attacking
+creatures with strictly lesser power. Resolution revalidates both creatures and their current effective
+powers. If the Mentor source left before resolution, a typed departure snapshot
+provides its immediate predeparture power while preserving the original logical
+source identity; simultaneous departures capture every referenced source before
+any move commits. A source that is currently, or immediately before departure,
+a noncreature permanent has no power under CR 208.3; its printed power cannot
+make the target legal. The result is one +1/+1 counter placed through the
+canonical replacement-aware transaction. CR 702.134c's separate “mentors another
+creature” event, granted or copied Mentor outside typed ability propagation,
+prose equivalents, attackers put onto the battlefield outside declaration,
+source phasing without a typed phase-out snapshot, unsupported characteristic
+families, and trigger-doubling policies remain explicit residuals.
+
 Oracle IR v54 lowers the closed reusable fixed-placement grammars through the
 typed operation in spell, triggered, and activated contexts. It accepts one
 positive exact quantity of one named counter on the source, the exact named
@@ -276,7 +294,9 @@ in `test_intrinsic_entry_counters.py`, Support coverage in
 `test_support_counter_placement.py`, attachment-relative result coverage in
 `test_attached_counter_placement.py`, shared event-order coverage in
 `test_replacement_event_tree.py`, and focused mutation evidence in
-`test_capability_implementation_mutations.py`.
+`test_capability_implementation_mutations.py`. Mentor compiler, targeting,
+last-known-information, replacement, rollback, multiplayer, and exact-replay
+evidence is isolated in `test_mentor_rules.py`.
 
 Current aggregate corpus counts and remaining blockers are generated in
 [`docs/COMPILER_COVERAGE_STATUS.md`](../COMPILER_COVERAGE_STATUS.md). They

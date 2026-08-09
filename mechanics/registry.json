@@ -1,5 +1,5 @@
 {
-  "contract_count": 87,
+  "contract_count": 88,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -360,6 +360,12 @@
       "path": "mechanics/contracts/menace.json",
       "sha256": "4921c3920c6cda1b2944b655390d29422d922d8825ee5c41a086d9f78e18a0d5",
       "version": 2
+    },
+    {
+      "mechanic_id": "mentor",
+      "path": "mechanics/contracts/mentor.json",
+      "sha256": "bdfc66dc01344c95bffb7a5fbef6fc05f2da287f232116c0de65ae0a6defebb7",
+      "version": 1
     },
     {
       "mechanic_id": "cr-725-the-monarch",
@@ -3003,19 +3009,49 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/mentor.json",
+      "contract_sha256": "bdfc66dc01344c95bffb7a5fbef6fc05f2da287f232116c0de65ae0a6defebb7",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.mentor, quorune.relative_power_target, quorune.attack_transition_engine_adapter, and the canonical counter-placement transaction",
+      "implementation_version": "typed-mentor-counter-placement-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "CR 702.134c mentors-another-creature event emission and listeners remain unsupported",
+        "granted, copied, lost, and face-down Mentor requires trusted typed ability propagation",
+        "Oracle-equivalent nonkeyword wording remains unsupported",
+        "put-onto-the-battlefield-attacking effects outside the completed declaration transition remain unsupported",
+        "source phasing remains unsupported until a typed phasing transition captures immediate pre-phase-out power",
+        "trigger-doubling policies remain outside this bounded capability",
+        "aggregate counter placement, target predicates, continuous effects, and triggered abilities remain incomplete"
+      ],
       "mechanic_id": "mentor",
       "official_name": "Mentor",
       "rule_references": [
         "702.134"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_relative_power_condition_is_strict_and_uses_lki_only_on_departure",
+        "test_relative_power_target_predicate_is_an_independent_closed_owner",
+        "test_relative_power_departure_replaces_only_matching_lki_snapshot",
+        "test_relative_power_departure_preparation_is_transactional",
+        "test_noncreature_departure_pins_absent_power",
+        "test_mentor_occurrences_preserve_multiplicity_and_identity",
+        "test_mentor_compiles_with_precise_spans_and_capability_closure",
+        "test_unsupported_mentor_wording_and_blocked_dependency_fail_closed",
+        "test_mentor_compiler_mutant_is_killed",
+        "test_mentor_offers_only_attacking_creatures_with_lesser_power",
+        "test_mentor_places_replacement_aware_counter_after_target_revalidation",
+        "test_current_power_change_can_make_mentor_target_illegal",
+        "test_illegal_mentor_target_rejects_without_mutation",
+        "test_departed_mentor_source_uses_public_last_known_power",
+        "test_departure_pins_power_after_trigger_creation",
+        "test_no_lesser_attacker_removes_mandatory_target_trigger",
+        "test_mentor_target_choice_and_counter_replay_exactly"
+      ],
       "trust_level": "untrusted"
     },
     {

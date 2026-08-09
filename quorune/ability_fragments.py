@@ -33,6 +33,7 @@ class CombatKeywordTriggerKind(str, Enum):
     EXALTED = "exalted"
     BATTLE_CRY = "battle_cry"
     MELEE = "melee"
+    MENTOR = "mentor"
 
 
 _COLOR_NAMES = {

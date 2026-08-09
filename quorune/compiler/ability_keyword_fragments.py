@@ -179,6 +179,11 @@ def _lower_combat_keyword_fragments(
             CombatKeywordTriggerKind.MELEE,
             "ability.trigger.melee.v1",
         ),
+        (
+            "mentor",
+            CombatKeywordTriggerKind.MENTOR,
+            "ability.trigger.mentor.v1",
+        ),
     )
     for mechanic, kind, handler_id in ordinary_attack_keywords:
         keyword = mechanic

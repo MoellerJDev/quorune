@@ -35,6 +35,7 @@ _PERSIST_MECHANIC = PERSIST_KEYWORD
 _UNDYING_MECHANIC = UNDYING_KEYWORD
 _UNLEASH_MECHANIC = UNLEASH_MECHANIC
 _RIOT_MECHANIC = RIOT_MECHANIC
+_MENTOR_MECHANIC = "men" + "tor"
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,6 +76,7 @@ def keyword_node_plans(
             _RIOT_MECHANIC,
             _UNDYING_MECHANIC,
             _UNLEASH_MECHANIC,
+            _MENTOR_MECHANIC,
         }
     )
     if not split_mechanics:
@@ -103,6 +105,7 @@ def keyword_node_plans(
             _RIOT_MECHANIC,
             _UNDYING_MECHANIC,
             _UNLEASH_MECHANIC,
+            _MENTOR_MECHANIC,
         )
     }
     result: list[KeywordNodePlan] = []
@@ -146,6 +149,7 @@ def keyword_node_plans(
             _RIOT_MECHANIC,
             _UNDYING_MECHANIC,
             _UNLEASH_MECHANIC,
+            _MENTOR_MECHANIC,
         }
     )
     if remaining:

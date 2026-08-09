@@ -29,6 +29,7 @@ BUSHIDO_FRAGMENT_HANDLER_ID = "ability.trigger.bushido.v1"
 EXALTED_FRAGMENT_HANDLER_ID = "ability.trigger.exalted.v1"
 BATTLE_CRY_FRAGMENT_HANDLER_ID = "ability.trigger.battle_cry.v1"
 MELEE_FRAGMENT_HANDLER_ID = "ability.trigger.melee.v1"
+MENTOR_FRAGMENT_HANDLER_ID = "ability.trigger.mentor.v1"
 
 
 def _fragment(
@@ -330,6 +331,39 @@ class MeleeAbilityFragmentHandler:
         return (self.validate(descriptor),)
 
 
+@dataclass(frozen=True, slots=True)
+class MentorAbilityFragmentHandler:
+    handler_id: str = MENTOR_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.trigger.mentor"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("702.134", "702.134a", "702.134b")
+    capability_dependencies: tuple[str, ...] = ("counter.producer.mentor",)
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> CombatKeywordTriggerSpec:
+        fragment = _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=CombatKeywordTriggerSpec,
+        )
+        if fragment.kind is not CombatKeywordTriggerKind.MENTOR:
+            raise SemanticNodeError(
+                "The Mentor runtime handler requires a Mentor fragment"
+            )
+        return fragment
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
 class AbilityFragmentRegistry(
     RuntimeComponentRegistry[object, StaticAbilityFragment]
 ):
@@ -347,6 +381,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             FlankingAbilityFragmentHandler(),
             LinkedGraveyardEnchantFragmentHandler(),
             MeleeAbilityFragmentHandler(),
+            MentorAbilityFragmentHandler(),
             ProtectionAbilityFragmentHandler(),
         )
     )
@@ -377,6 +412,7 @@ __all__ = [
     "LINKED_GRAVEYARD_ENCHANT_HANDLER_ID",
     "PROTECTION_FRAGMENT_HANDLER_ID",
     "MELEE_FRAGMENT_HANDLER_ID",
+    "MENTOR_FRAGMENT_HANDLER_ID",
     "EnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
@@ -384,6 +420,7 @@ __all__ = [
     "FlankingAbilityFragmentHandler",
     "LinkedGraveyardEnchantFragmentHandler",
     "MeleeAbilityFragmentHandler",
+    "MentorAbilityFragmentHandler",
     "ProtectionAbilityFragmentHandler",
     "AbilityFragmentRegistry",
     "default_ability_fragment_registry",

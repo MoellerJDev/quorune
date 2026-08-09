@@ -137,6 +137,7 @@ from .trigger_discovery import (
     semantic_event_value,
 )
 from .zone_trigger_events import (
+    normalized_library_position,
     validate_zone_transition_request,
     ZoneChangeOccurrence,
     ZoneTransitionKind,
@@ -320,6 +321,13 @@ from .targets import (
     available_modes,
     mode_effects,
     target_plan,
+)
+from .target_predicates import (
+    TargetPredicateError,
+    target_predicate_matches,
+)
+from .relative_power_target import (
+    pin_host_relative_power_source_departures,
 )
 from .token_creation import TokenCreationError, create_tokens
 from .util import (
@@ -1532,13 +1540,11 @@ class CommanderEngine(
         replacement_selections: Sequence[str | None | Mapping[str, Any]] = (),
         prepared_replacement: PreparedZoneChange | None = None,
         transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY,
+        _relative_power_lki_prepared: bool = False,
     ) -> CardInstance:
         card = validate_zone_transition_request(self.state.cards, object_id, destination, transition_kind)
-        requested_destination = destination
-        origin = card.zone
-        library_position: str | int | None = None
-        if destination == "library":
-            library_position = self._library_position(position)
+        requested_destination, origin = destination, card.zone
+        library_position = normalized_library_position(destination, position)
         if (
             origin == requested_destination
             and origin not in {"library", "exile", "command"}
@@ -1659,6 +1665,8 @@ class CommanderEngine(
             self, card, destination=destination, requested_destination=requested_destination, destination_type_line=destination_type_line, enter_face=enter_face, enchant_spec=aura_enchant_spec, controller=controller, target_ref=aura_target_ref, resolving_as_spell=resolving_as_aura_spell, origin=origin, log=log, error_type=GameRuleError,
         )).remain_in_origin: return card
         destination, aura_entry_plan = aura_move.destination, aura_move.entry_plan
+        if origin == "battlefield" and not _relative_power_lki_prepared:
+            pin_host_relative_power_source_departures(self, (card,), error_type=StateInvariantError)
         origin_controller = card.controller
         origin_logical_object_id = card.logical_object_id
         origin_attachments = [
@@ -1856,25 +1864,6 @@ class CommanderEngine(
                 reason=reason, transition_kind=transition_kind,
             )
         return card
-
-    @staticmethod
-    def _library_position(position: str | int) -> str | int:
-        if isinstance(position, bool):
-            raise GameRuleError(
-                "Library position must be top, bottom, or a positive N"
-            )
-        if isinstance(position, int):
-            if position < 1:
-                raise GameRuleError(
-                    "Nth-from-top library position must be positive"
-                )
-            return position
-        normalized = str(position).strip().casefold()
-        if normalized not in {"top", "bottom"}:
-            raise GameRuleError(
-                "Library position must be top, bottom, or a positive N"
-            )
-        return normalized
 
     @staticmethod
     def _library_insertion_index(
@@ -2146,6 +2135,11 @@ class CommanderEngine(
         # CR 704.8 last-known information comes from the state before any
         # object in the batch moves.  Keep discovery and mutation in separate
         # loops so a departing static source cannot change a later snapshot.
+        pin_host_relative_power_source_departures(
+            self,
+            tuple(snapshot[0] for snapshot in snapshots),
+            error_type=StateInvariantError,
+        )
         destination_timestamp = self._next_zone_timestamp()
         for object_id, destination in changes:
             self.move_card(
@@ -2156,6 +2150,7 @@ class CommanderEngine(
                 log=log,
                 semantic_events=False,
                 prepared_replacement=prepared_replacements[object_id],
+                _relative_power_lki_prepared=True,
             )
         trigger_batch: list[StackItem] = []
         for (
@@ -6427,80 +6422,19 @@ class CommanderEngine(
             for name in ("land", "creature", "artifact", "enchantment")
         }
         derived["permanent"] = row["category"] == "permanent"
-        if group.predicate:
-            if group.predicate == "artifact_or_enchantment_or_nonbasic_land":
-                if not (
-                    derived["artifact"]
-                    or derived["enchantment"]
-                    or (
-                        derived["land"]
-                        and "basic" not in supertypes
-                    )
-                ):
-                    return False
-            elif group.predicate == "permanent_card":
-                if not types.intersection(
-                    {
-                        "artifact",
-                        "battle",
-                        "creature",
-                        "enchantment",
-                        "land",
-                        "planeswalker",
-                    }
-                ):
-                    return False
-            elif group.predicate == "damageable":
-                if (
-                    row["category"] != "player"
-                    and not types.intersection(
-                        {"battle", "creature", "planeswalker"}
-                    )
-                ):
-                    return False
-            elif group.predicate == "player_or_planeswalker":
-                if (
-                    row["category"] != "player"
-                    and "planeswalker" not in types
-                ):
-                    return False
-            elif group.predicate == "void_counter":
-                if (
-                    not isinstance(card, CardInstance)
-                    or row.get("zone") != "exile"
-                    or int(card.counters.get("void", 0)) <= 0
-                ):
-                    return False
-            elif group.predicate == "artifact_source":
-                if (
-                    row.get("zone") != "stack"
-                    or "artifact"
-                    not in set(
-                        row.get("stack_source_types") or ()
-                    )
-                ):
-                    return False
-            elif group.predicate == "triggered_ability":
-                stack_item = row.get("stack_item")
-                if (
-                    not isinstance(stack_item, StackItem)
-                    or stack_item.kind != "triggered_ability"
-                ):
-                    return False
-            elif group.predicate == "activated_ability":
-                stack_item = row.get("stack_item")
-                if (
-                    not isinstance(stack_item, StackItem)
-                    or stack_item.kind != "activated_ability"
-                ):
-                    return False
-            elif group.predicate == "nonblue_spell":
-                if row.get("category") != "spell" or "U" in colors:
-                    return False
-            else:
-                raise GameRuleError(
-                    f"Unsupported target predicate {group.predicate!r}"
-                )
+        try:
+            if not target_predicate_matches(
+                self,
+                group,
+                row,
+                types=types,
+                supertypes=supertypes,
+                colors=colors,
+                derived=derived,
+            ):
+                return False
+        except TargetPredicateError as exc:
+            raise GameRuleError(str(exc)) from exc
         for name in (
             "land",
             "creature",

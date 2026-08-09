@@ -143,6 +143,7 @@ class MechanicContractTests(unittest.TestCase):
                 "landwalk",
                 "lifelink",
                 "menace",
+                "mentor",
                 "protection",
                 "reach",
                 "shadow",
