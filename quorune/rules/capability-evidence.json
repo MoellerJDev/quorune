@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "b34ad2b3476cd8b5fe336dc22519425de84950303ec0c87ee6f185d37fb4cf0f",
-  "declaration_source_fingerprint": "fff5ea076145a45325bbe23ffc3c1b363dcdec938c1c66c7bc32f731f8ca48ff",
+  "registry_fingerprint": "abd00865b5ac726c44a5a4c17e70648e6ae952ccfbe2940a8636b1971ac07bfb",
+  "declaration_source_fingerprint": "204eece2158fb1e11c67c59151c8147ecc16442bd8d5b830ff6130a81643548b",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -6262,6 +6262,44 @@
       "applicability_note": "Resolve represented effect-generated counter placements through affected-object ordering before committing the counters."
     },
     {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload a pending Persist or Undying counter-quantity ordering continuation, keep it seat scoped, commit it once, and replay the restarted record to the same hash."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload a pending Saga entry counter-quantity ordering continuation, keep it seat scoped, commit it once, and replay the restarted record to the same hash."
+    },
+    {
       "capability_id": "counter.producer.cumulative_upkeep_fixed_mana",
       "evidence_class": "interaction",
       "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_intervening_source_identity_and_control_change_are_respected",
@@ -6622,6 +6660,26 @@
         "commander_review"
       ],
       "applicability_note": "Project public death-return objects without exposing opposing hands or authoritative zone-incarnation counters."
+    },
+    {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "400.6",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Persist and reload the identity-pinned effect-entry counter continuation before completing its canonical replacement-aware zone move."
     },
     {
       "capability_id": "counter.producer.effect_entry",
@@ -9711,6 +9769,28 @@
     {
       "capability_id": "counter.producer.persist",
       "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "400.7",
+        "603.4",
+        "603.6c",
+        "603.10a",
+        "603.10e",
+        "702.79",
+        "702.79a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload a suspended Persist return and counter-quantity replacement choice, preserve its physical identity and chooser, then replay the completed record exactly."
+    },
+    {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "replay",
       "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly",
       "official_rule_ids": [
         "122.1",
@@ -10458,6 +10538,32 @@
       "applicability_note": "Replay the selected Saga entry replacement order, lore result, and crossed chapter events to the same authoritative hash."
     },
     {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload the seat-scoped Saga entry replacement continuation before selection, commit its lore result once, and replay the restarted record exactly."
+    },
+    {
       "capability_id": "counter.producer.support",
       "evidence_class": "interaction",
       "test_id": "tests.test_support_counter_placement.SupportCounterPlacementRuntimeTests.test_support_partial_target_revalidation_and_quantity_replacement_replay",
@@ -10813,6 +10919,28 @@
         "commander_review"
       ],
       "applicability_note": "Expose public Undying triggers without projecting unrelated opposing hand cards or authoritative incarnation counters."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "400.7",
+        "603.4",
+        "603.6c",
+        "603.10a",
+        "603.10e",
+        "702.93",
+        "702.93a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload a suspended Undying return and counter-quantity replacement choice, preserve its physical identity and chooser, then replay the completed record exactly."
     },
     {
       "capability_id": "counter.producer.undying",
@@ -20419,5 +20547,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "e0a34e4ce96012e422b44ed2b2dbb1209d459e5853a958171f97efac6c336449"
+  "fingerprint": "140a88c4214ed4b637714c0e6216807c31e403aad768686942b35e765bb59cd8"
 }

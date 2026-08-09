@@ -16,6 +16,7 @@
     "runtime_family_classes",
     "universal_system_classes",
     "high_risk_class_pairs",
+    "ambient_high_risk_piece_pairs",
     "complex_card_weights",
     "complex_card_sentinels"
   ],
@@ -71,6 +72,20 @@
       "items": {
         "type": "array",
         "prefixItems": [{"type": "string"}, {"type": "string"}],
+        "items": false,
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "ambient_high_risk_piece_pairs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          {"type": "string", "pattern": "^[a-z][a-z0-9._:-]*$"},
+          {"type": "string", "pattern": "^[a-z][a-z0-9._:-]*$"}
+        ],
         "items": false,
         "minItems": 2,
         "maxItems": 2
