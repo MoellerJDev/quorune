@@ -8,7 +8,7 @@
       }
     ],
     "debt_trend": {
-      "baseline_commit": "ee4fb061376d5e87a81614a1831cc9e27b235087",
+      "baseline_commit": "0a280f4c70f9f19075b11323f89ef9593b1e3f57",
       "dimensions": {
         "card_named_helpers": {
           "baseline": 1,
@@ -21,9 +21,9 @@
           "delta": 0
         },
         "engine_logical_lines": {
-          "baseline": 12211,
+          "baseline": 12094,
           "current": 12094,
-          "delta": -117
+          "delta": 0
         },
         "legacy_card_specific_operations": {
           "baseline": 5,
@@ -12207,8 +12207,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2211,
-      "discovered_total": 5511,
+      "conventional_ast_cases": 2212,
+      "discovered_total": 5512,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 80,

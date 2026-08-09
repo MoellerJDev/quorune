@@ -18,6 +18,7 @@ from quorune.record import (
 from quorune.semantic_runtime import (
     DRAW_INSTRUCTION_MULTIPLIER_HANDLER_ID,
     DRAW_MAXIMUM_HANDLER_ID,
+    default_semantic_handler_registry,
     runtime_component_inventory,
 )
 from quorune.session import CommanderSession
@@ -148,7 +149,10 @@ class GameRecordV3Tests(unittest.TestCase):
             semantic_inventory = manifest["runtime_trust"][
                 "semantic_handler_inventory"
             ]
-            self.assertEqual(92, len(semantic_inventory))
+            self.assertEqual(
+                default_semantic_handler_registry().inventory(),
+                semantic_inventory,
+            )
             self.assertTrue(
                 {
                     "effect.zone-attachment.reanimate_attached_creature_aura.v1",

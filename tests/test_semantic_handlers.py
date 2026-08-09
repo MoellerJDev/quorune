@@ -44,7 +44,7 @@ from quorune.semantic_runtime.tap_state_handlers import (
     UntapAllCreaturesHandler,
     UntapPermanentHandler,
 )
-from quorune.semantics import SemanticProgram
+from quorune.semantics import SemanticProgram, VALID_EFFECT_OPERATIONS
 
 
 class TypedSemanticHandlerTests(unittest.TestCase):
@@ -104,16 +104,14 @@ class TypedSemanticHandlerTests(unittest.TestCase):
             len(inventory),
             len({row["operation"] for row in inventory}),
         )
-        self.assertEqual(
-            85,
-            len(
-                [
-                    row
-                    for row in inventory
-                    if str(row["family"]).startswith("effect.")
-                ]
-            ),
-        )
+        effect_operations = {
+            row["operation"]
+            for row in inventory
+            if str(row["family"]).startswith("effect.")
+        }
+        self.assertTrue(effect_operations)
+        self.assertLessEqual(effect_operations, VALID_EFFECT_OPERATIONS)
+        self.assertIn("place_counter_batch", effect_operations)
         with self.assertRaisesRegex(
             SemanticHandlerRegistryError, "Duplicate semantic operation"
         ):

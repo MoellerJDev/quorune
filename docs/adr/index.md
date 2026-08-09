@@ -57,3 +57,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0040 — closed source-self references](0040-closed-source-self-references.md)
 - [ADR 0041 — effect entry counters and identity-pinned death return](0041-effect-entry-counters-and-death-return.md)
 - [ADR 0042 — canonical generated-artifact finalization](0042-canonical-generated-artifact-finalization.md)
+- [ADR 0043 — typed fixed multi-kind counter batches](0043-typed-fixed-multikind-counter-batches.md)

@@ -117,3 +117,10 @@ Database-backed compiler and corpus changes still require a valid pinned card
 database. Manual performance baseline changes remain deliberate review events.
 The pre-push hook is local Git configuration and can be bypassed, so public
 exact-head CI remains the final authority.
+
+The finalizer's post-check phase also runs the reviewed architecture policy
+validator. Generated freshness and architecture authorization are separate
+properties: a branch can have byte-for-byte current reports while adding a new
+unreviewed semantic operation. Keeping the policy validator behind the same
+required pre-commit command and pre-push backstop prevents that distinction
+from becoming another CI-only discovery.

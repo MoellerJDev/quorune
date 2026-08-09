@@ -31,6 +31,7 @@ class GeneratedFinalizationError(RuntimeError):
 
 CommandRunner = Callable[[str, Sequence[str]], int]
 POST_CHECKS = (
+    ("architecture-policy", ("scripts/validate_architecture.py", "--check")),
     ("documentation-policy", ("scripts/validate_documentation.py", "--check")),
     ("diff-hygiene", ("git", "diff", "--check")),
 )
