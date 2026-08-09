@@ -83,8 +83,18 @@ function RefOptions({
           {selected.map((ref, index) => (
             <li key={ref}>
               <span>{labelFor(ref)}</span>
-              <button type="button" onClick={() => move(index, -1)} disabled={index === 0}>↑</button>
-              <button type="button" onClick={() => move(index, 1)} disabled={index === selected.length - 1}>↓</button>
+              <button
+                type="button"
+                aria-label={`Move ${labelFor(ref)}, item ${index + 1} of ${selected.length}, earlier in ${text(field.label || field.name)}`}
+                onClick={() => move(index, -1)}
+                disabled={index === 0}
+              >↑</button>
+              <button
+                type="button"
+                aria-label={`Move ${labelFor(ref)}, item ${index + 1} of ${selected.length}, later in ${text(field.label || field.name)}`}
+                onClick={() => move(index, 1)}
+                disabled={index === selected.length - 1}
+              >↓</button>
             </li>
           ))}
         </ol>
@@ -108,6 +118,16 @@ function OrderedPartition({
   const top = list(partition.top).map(String);
   const bottom = list(partition.bottom).map(String);
   const options = list(field.options).map(record);
+  const optionLabels = new Map(
+    options.map((option) => [
+      text(option.value),
+      text(option.label) || labelFor(text(option.value)),
+    ]),
+  );
+
+  function cardLabel(ref: string): string {
+    return optionLabels.get(ref) || labelFor(ref);
+  }
 
   function moveBetween(ref: string, destination: "top" | "bottom") {
     const nextTop = top.filter((candidate) => candidate !== ref);
@@ -134,12 +154,25 @@ function OrderedPartition({
       <div className="choice-partition-group">
         <strong>{group === "top" ? "Top of library" : "Bottom of library"}</strong>
         <span className="choice-help">{orderLabel}</span>
-        <ol className="choice-order">
+        <ol
+          className="choice-order"
+          aria-label={`${group === "top" ? "Top" : "Bottom"} group order. ${orderLabel}`}
+        >
           {refs.map((ref, index) => (
-            <li key={ref}>
-              <span>{labelFor(ref)}</span>
-              <button type="button" onClick={() => reorder(group, index, -1)} disabled={index === 0}>↑</button>
-              <button type="button" onClick={() => reorder(group, index, 1)} disabled={index === refs.length - 1}>↓</button>
+            <li key={ref} data-card-ref={ref}>
+              <span>{cardLabel(ref)}</span>
+              <button
+                type="button"
+                aria-label={`Move ${cardLabel(ref)}, item ${index + 1} of ${refs.length}, toward the ${group === "top" ? "top" : "bottom"} of the library`}
+                onClick={() => reorder(group, index, -1)}
+                disabled={index === 0}
+              >↑</button>
+              <button
+                type="button"
+                aria-label={`Move ${cardLabel(ref)}, item ${index + 1} of ${refs.length}, away from the ${group === "top" ? "top" : "bottom"} of the library`}
+                onClick={() => reorder(group, index, 1)}
+                disabled={index === refs.length - 1}
+              >↓</button>
             </li>
           ))}
         </ol>
@@ -151,13 +184,14 @@ function OrderedPartition({
     <fieldset className="choice-field choice-partition">
       <legend><FieldLabel field={field} /></legend>
       <div className="choice-options">
-        {options.map((option) => {
+        {options.map((option, optionIndex) => {
           const ref = text(option.value);
           return (
             <label key={ref} className="choice-option">
-              <span>{text(option.label) || labelFor(ref)}</span>
+              <span>{cardLabel(ref)}</span>
               <select
                 data-testid={`choice-${text(field.name)}-${testValue(ref)}`}
+                aria-label={`Choose a Scry destination for ${cardLabel(ref)}, looked-at card ${optionIndex + 1} of ${options.length}`}
                 value={bottom.includes(ref) ? "bottom" : "top"}
                 onChange={(event) =>
                   moveBetween(ref, event.target.value as "top" | "bottom")
@@ -171,8 +205,16 @@ function OrderedPartition({
         })}
       </div>
       <div className="choice-partition-orders">
-        {orderedGroup("top", top, "First row is the new top card.")}
-        {orderedGroup("bottom", bottom, "First row is the new bottom card.")}
+        {orderedGroup(
+          "top",
+          top,
+          "First row becomes the next card drawn; the last row is deepest in this top group.",
+        )}
+        {orderedGroup(
+          "bottom",
+          bottom,
+          "First row becomes the library's bottom card; the last row is nearest the top of this bottom group.",
+        )}
       </div>
     </fieldset>
   );

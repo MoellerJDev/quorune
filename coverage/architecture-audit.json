@@ -3813,7 +3813,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 127122,
+      "logical_lines": 127164,
       "methods": {
         "dunder": 338,
         "private": 688,
@@ -4207,6 +4207,13 @@
           "physical_lines": 701
         },
         {
+          "file": "web/src/ChoiceForm.tsx",
+          "functions_and_methods": null,
+          "language": "web",
+          "logical_lines": 642,
+          "physical_lines": 661
+        },
+        {
           "file": "quorune/continuous_effect_model.py",
           "functions_and_methods": 15,
           "language": "python",
@@ -4247,13 +4254,6 @@
           "language": "python",
           "logical_lines": 603,
           "physical_lines": 760
-        },
-        {
-          "file": "web/src/ChoiceForm.tsx",
-          "functions_and_methods": null,
-          "language": "web",
-          "logical_lines": 601,
-          "physical_lines": 619
         },
         {
           "file": "quorune/pilot.py",
@@ -4343,8 +4343,8 @@
           "file": "quorune/choice_forms.py",
           "functions_and_methods": 15,
           "language": "python",
-          "logical_lines": 544,
-          "physical_lines": 590
+          "logical_lines": 545,
+          "physical_lines": 591
         },
         {
           "file": "quorune/semantic_choices/public_selection.py",
@@ -6672,7 +6672,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 138953,
+      "physical_lines": 138996,
       "python_file_count": 335,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -12303,7 +12303,7 @@
   "tests": {
     "browser": {
       "node_unit_cases": 23,
-      "playwright_e2e_journeys": 9
+      "playwright_e2e_journeys": 10
     },
     "mutation_testing": {
       "capability_mutation_declarations": 113,

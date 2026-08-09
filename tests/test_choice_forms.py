@@ -44,6 +44,10 @@ class ChoiceFormTests(unittest.TestCase):
             [option["value"] for option in field["options"]],
         )
         self.assertEqual(
+            ["First", "Second"],
+            [option["label"] for option in field["options"]],
+        )
+        self.assertEqual(
             {"cards"},
             delegated_choice_fields(
                 action,
