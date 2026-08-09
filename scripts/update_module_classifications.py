@@ -141,6 +141,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/continuous_effects.py",
         "quorune/counter_placement.py",
         "quorune/counter_placement_sets.py",
+        "quorune/keyword_counters.py",
         "quorune/counter_removal.py",
         "quorune/counter_state.py",
         "quorune/cumulative_upkeep.py",
@@ -325,6 +326,7 @@ def _owner(relative: str, layer: str) -> str:
     if relative in {
         "quorune/counter_placement.py",
         "quorune/counter_placement_sets.py",
+        "quorune/keyword_counters.py",
         "quorune/entry_counter_coordination.py",
         "quorune/entry_counters.py",
         "quorune/entry_keyword_grants.py",

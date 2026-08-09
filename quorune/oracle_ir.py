@@ -86,7 +86,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v63"
+ORACLE_COMPILER_VERSION = "oracle-ir-v64"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -342,34 +342,6 @@ def _effect_template(
             ({"op": "goad", "card": "$target.0"},),
             schema,
             ("goad", "cr-115-targets"),
-        )
-    match = re.fullmatch(
-        r"target creature gets (?P<power>[+-]\d+)/(?P<toughness>[+-]\d+) "
-        r"until end of turn\.?",
-        normalized,
-        re.IGNORECASE,
-    )
-    if match:
-        return (
-            "modify-target-creature-stats-eot-v1",
-            (
-                {
-                    "op": "modify_stats_until_end_of_turn",
-                    "card": "$target.0",
-                    "power": int(match.group("power")),
-                    "toughness": int(match.group("toughness")),
-                },
-            ),
-            {
-                "zones": ["battlefield"],
-                "categories": ["permanent"],
-                "types_any": ["creature"],
-                "count": 1,
-            },
-            (
-                "cr-611-continuous-effects",
-                "cr-115-targets",
-            ),
         )
     match = re.fullmatch(
         r"this (?P<kind>artifact|creature|enchantment|permanent) gets "

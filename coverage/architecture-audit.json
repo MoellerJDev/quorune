@@ -1724,7 +1724,7 @@
           "module": "quorune.compiler.keyword_nodes"
         }
       ],
-      "internal_edges": 1247,
+      "internal_edges": 1253,
       "modules": [
         {
           "fan_in": 2,
@@ -1903,7 +1903,7 @@
         },
         {
           "fan_in": 11,
-          "fan_out": 4,
+          "fan_out": 5,
           "module": "quorune.characteristic_evaluation"
         },
         {
@@ -2062,8 +2062,8 @@
           "module": "quorune.compiler.corpus_reporting"
         },
         {
-          "fan_in": 2,
-          "fan_out": 6,
+          "fan_in": 3,
+          "fan_out": 7,
           "module": "quorune.compiler.counter_placement_templates"
         },
         {
@@ -2133,6 +2133,11 @@
         },
         {
           "fan_in": 1,
+          "fan_out": 2,
+          "module": "quorune.compiler.fixed_target_effect_sequences"
+        },
+        {
+          "fan_in": 1,
           "fan_out": 4,
           "module": "quorune.compiler.intrinsic_counter_nodes"
         },
@@ -2173,7 +2178,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 8,
+          "fan_out": 9,
           "module": "quorune.compiler.resolution_effect_templates"
         },
         {
@@ -2495,6 +2500,11 @@
           "fan_in": 4,
           "fan_out": 0,
           "module": "quorune.keyword_abilities"
+        },
+        {
+          "fan_in": 4,
+          "fan_out": 0,
+          "module": "quorune.keyword_counters"
         },
         {
           "fan_in": 2,
@@ -2858,7 +2868,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 6,
+          "fan_out": 7,
           "module": "quorune.rules.node_capability_shapes"
         },
         {
@@ -3435,7 +3445,7 @@
       "structural_identity": "file, nearest symbol, literal value, conditional use"
     },
     "production": {
-      "file_count": 342,
+      "file_count": 344,
       "largest_functions_and_methods": [
         {
           "end_line": 1645,
@@ -3482,10 +3492,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 1349,
+          "end_line": 1321,
           "file": "quorune/oracle_ir.py",
           "kind": "function",
-          "line": 892,
+          "line": 864,
           "logical_lines": 448,
           "name": "_compile_face",
           "physical_lines": 458,
@@ -3559,17 +3569,6 @@
           "visibility": "private"
         },
         {
-          "end_line": 493,
-          "file": "quorune/oracle_ir.py",
-          "kind": "function",
-          "line": 218,
-          "logical_lines": 275,
-          "name": "_effect_template",
-          "physical_lines": 276,
-          "symbol": "_effect_template",
-          "visibility": "private"
-        },
-        {
           "end_line": 342,
           "file": "quorune/cli.py",
           "kind": "function",
@@ -3611,6 +3610,17 @@
           "name": "_complete_semantic_search",
           "physical_lines": 249,
           "symbol": "CommanderEngine._complete_semantic_search",
+          "visibility": "private"
+        },
+        {
+          "end_line": 465,
+          "file": "quorune/oracle_ir.py",
+          "kind": "function",
+          "line": 218,
+          "logical_lines": 247,
+          "name": "_effect_template",
+          "physical_lines": 248,
+          "symbol": "_effect_template",
           "visibility": "private"
         },
         {
@@ -3768,12 +3778,12 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 123322,
+      "logical_lines": 123979,
       "methods": {
-        "dunder": 325,
+        "dunder": 327,
         "private": 684,
-        "public": 1251,
-        "total": 2260
+        "public": 1257,
+        "total": 2268
       },
       "modules": [
         {
@@ -3826,13 +3836,6 @@
           "physical_lines": 1561
         },
         {
-          "file": "quorune/oracle_ir.py",
-          "functions_and_methods": 15,
-          "language": "python",
-          "logical_lines": 1432,
-          "physical_lines": 1485
-        },
-        {
           "file": "quorune/reusable_pieces/generation.py",
           "functions_and_methods": 41,
           "language": "python",
@@ -3845,6 +3848,13 @@
           "language": "python",
           "logical_lines": 1411,
           "physical_lines": 1478
+        },
+        {
+          "file": "quorune/oracle_ir.py",
+          "functions_and_methods": 15,
+          "language": "python",
+          "logical_lines": 1404,
+          "physical_lines": 1457
         },
         {
           "file": "quorune/damage_results.py",
@@ -3861,6 +3871,13 @@
           "physical_lines": 1349
         },
         {
+          "file": "quorune/rules/node_capability_shapes.py",
+          "functions_and_methods": 19,
+          "language": "python",
+          "logical_lines": 1171,
+          "physical_lines": 1237
+        },
+        {
           "file": "quorune/damage_modifier_state.py",
           "functions_and_methods": 41,
           "language": "python",
@@ -3875,6 +3892,13 @@
           "physical_lines": 1214
         },
         {
+          "file": "quorune/compiler/counter_placement_templates.py",
+          "functions_and_methods": 45,
+          "language": "python",
+          "logical_lines": 1149,
+          "physical_lines": 1253
+        },
+        {
           "file": "quorune/session.py",
           "functions_and_methods": 21,
           "language": "python",
@@ -3887,13 +3911,6 @@
           "language": "python",
           "logical_lines": 1103,
           "physical_lines": 1148
-        },
-        {
-          "file": "quorune/compiler/counter_placement_templates.py",
-          "functions_and_methods": 41,
-          "language": "python",
-          "logical_lines": 1078,
-          "physical_lines": 1173
         },
         {
           "file": "quorune/arena.py",
@@ -3917,13 +3934,6 @@
           "physical_lines": 1075
         },
         {
-          "file": "quorune/rules/node_capability_shapes.py",
-          "functions_and_methods": 17,
-          "language": "python",
-          "logical_lines": 986,
-          "physical_lines": 1046
-        },
-        {
           "file": "quorune/drawing/coordinator.py",
           "functions_and_methods": 30,
           "language": "python",
@@ -3939,10 +3949,17 @@
         },
         {
           "file": "quorune/compiler/program_generation.py",
-          "functions_and_methods": 31,
+          "functions_and_methods": 33,
           "language": "python",
-          "logical_lines": 913,
-          "physical_lines": 1026
+          "logical_lines": 945,
+          "physical_lines": 1064
+        },
+        {
+          "file": "quorune/rules/capabilities.py",
+          "functions_and_methods": 28,
+          "language": "python",
+          "logical_lines": 912,
+          "physical_lines": 981
         },
         {
           "file": "quorune/preflight.py",
@@ -3950,13 +3967,6 @@
           "language": "python",
           "logical_lines": 908,
           "physical_lines": 981
-        },
-        {
-          "file": "quorune/rules/capabilities.py",
-          "functions_and_methods": 28,
-          "language": "python",
-          "logical_lines": 903,
-          "physical_lines": 972
         },
         {
           "file": "quorune/attack_transition_model.py",
@@ -4358,6 +4368,13 @@
           "physical_lines": 528
         },
         {
+          "file": "quorune/compiler/activated_mana_nodes.py",
+          "functions_and_methods": 9,
+          "language": "python",
+          "logical_lines": 481,
+          "physical_lines": 506
+        },
+        {
           "file": "quorune/card_programs/commands.py",
           "functions_and_methods": 13,
           "language": "python",
@@ -4370,13 +4387,6 @@
           "language": "python",
           "logical_lines": 474,
           "physical_lines": 509
-        },
-        {
-          "file": "quorune/compiler/activated_mana_nodes.py",
-          "functions_and_methods": 9,
-          "language": "python",
-          "logical_lines": 461,
-          "physical_lines": 486
         },
         {
           "file": "quorune/runtime.py",
@@ -4491,6 +4501,13 @@
           "physical_lines": 436
         },
         {
+          "file": "quorune/characteristic_evaluation.py",
+          "functions_and_methods": 9,
+          "language": "python",
+          "logical_lines": 390,
+          "physical_lines": 421
+        },
+        {
           "file": "quorune/mana_activation.py",
           "functions_and_methods": 23,
           "language": "python",
@@ -4517,13 +4534,6 @@
           "language": "python",
           "logical_lines": 373,
           "physical_lines": 397
-        },
-        {
-          "file": "quorune/characteristic_evaluation.py",
-          "functions_and_methods": 9,
-          "language": "python",
-          "logical_lines": 372,
-          "physical_lines": 403
         },
         {
           "file": "server/data.py",
@@ -4748,6 +4758,13 @@
           "language": "python",
           "logical_lines": 283,
           "physical_lines": 340
+        },
+        {
+          "file": "quorune/compiler/fixed_target_effect_sequences.py",
+          "functions_and_methods": 10,
+          "language": "python",
+          "logical_lines": 281,
+          "physical_lines": 309
         },
         {
           "file": "quorune/semantic_runtime/attached_continuous.py",
@@ -5604,6 +5621,13 @@
           "physical_lines": 110
         },
         {
+          "file": "quorune/compiler/resolution_effect_templates.py",
+          "functions_and_methods": 1,
+          "language": "python",
+          "logical_lines": 91,
+          "physical_lines": 100
+        },
+        {
           "file": "quorune/compiled_mana_abilities.py",
           "functions_and_methods": 4,
           "language": "python",
@@ -5693,13 +5717,6 @@
           "language": "python",
           "logical_lines": 78,
           "physical_lines": 103
-        },
-        {
-          "file": "quorune/compiler/resolution_effect_templates.py",
-          "functions_and_methods": 1,
-          "language": "python",
-          "logical_lines": 76,
-          "physical_lines": 85
         },
         {
           "file": "quorune/semantic_runtime/explore.py",
@@ -5798,6 +5815,13 @@
           "language": "python",
           "logical_lines": 57,
           "physical_lines": 58
+        },
+        {
+          "file": "quorune/keyword_counters.py",
+          "functions_and_methods": 2,
+          "language": "python",
+          "logical_lines": 54,
+          "physical_lines": 71
         },
         {
           "file": "quorune/reusable_pieces/__init__.py",
@@ -6218,10 +6242,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 1349,
+          "end_line": 1321,
           "file": "quorune/oracle_ir.py",
           "kind": "function",
-          "line": 892,
+          "line": 864,
           "logical_lines": 448,
           "name": "_compile_face",
           "physical_lines": 458,
@@ -6295,17 +6319,6 @@
           "visibility": "private"
         },
         {
-          "end_line": 493,
-          "file": "quorune/oracle_ir.py",
-          "kind": "function",
-          "line": 218,
-          "logical_lines": 275,
-          "name": "_effect_template",
-          "physical_lines": 276,
-          "symbol": "_effect_template",
-          "visibility": "private"
-        },
-        {
           "end_line": 342,
           "file": "quorune/cli.py",
           "kind": "function",
@@ -6347,6 +6360,17 @@
           "name": "_complete_semantic_search",
           "physical_lines": 249,
           "symbol": "CommanderEngine._complete_semantic_search",
+          "visibility": "private"
+        },
+        {
+          "end_line": 465,
+          "file": "quorune/oracle_ir.py",
+          "kind": "function",
+          "line": 218,
+          "logical_lines": 247,
+          "name": "_effect_template",
+          "physical_lines": 248,
+          "symbol": "_effect_template",
           "visibility": "private"
         },
         {
@@ -6575,8 +6599,8 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 134801,
-      "python_file_count": 326,
+      "physical_lines": 135524,
+      "python_file_count": 328,
       "review_thresholds": {
         "function_logical_lines_review": 150,
         "module_logical_lines_review": 1500
@@ -6593,7 +6617,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1643,
+      "top_level_functions": 1655,
       "web_file_count": 16
     },
     "semantic_handlers": {
@@ -8393,7 +8417,7 @@
       "card_specific_operation_branch_occurrences": {
         "remora_tax": 1
       },
-      "count": 207,
+      "count": 217,
       "limitations": "AST heuristic covers if/match conditions whose source names op or operation.",
       "locations": [
         {
@@ -9629,14 +9653,14 @@
         {
           "condition": "isinstance(operation, str) and operation",
           "file": "quorune/rules/capabilities.py",
-          "line": 784,
+          "line": 793,
           "string_literals": [],
           "symbol": "nested_operations"
         },
         {
           "condition": "set(effect) == {\"op\", \"source\", \"amount\", \"groups\"} and effect.get(\"op\") == \"damage_fixed_set\" and effect.get(\"source\") == \"$source\" and _positive_int(effect.get(\"amount\"))",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 246,
+          "line": 264,
           "string_literals": [
             "$source",
             "amount",
@@ -9650,7 +9674,7 @@
         {
           "condition": "target_schema is None and set(effect) == {\"op\", \"source\", \"amount\"} and effect.get(\"op\") == \"damage_each_opponent\" and effect.get(\"source\") == \"$source\" and _positive_int(effect.get(\"amount\"))",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 291,
+          "line": 309,
           "string_literals": [
             "$source",
             "amount",
@@ -9663,7 +9687,7 @@
         {
           "condition": "\"cr-115-targets\" not in mechanics or set(effect) != {\"op\", \"source\", \"target\", \"amount\"} or effect.get(\"op\") != \"damage\" or effect.get(\"source\") != \"$source\" or effect.get(\"target\") != \"$target.0\" or not _positive_int(effect.get(\"amount\"))",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 302,
+          "line": 320,
           "string_literals": [
             "$source",
             "$target.0",
@@ -9679,7 +9703,7 @@
         {
           "condition": "operation == \"draw_with_actions\"",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 348,
+          "line": 366,
           "string_literals": [
             "draw_with_actions"
           ],
@@ -9688,7 +9712,7 @@
         {
           "condition": "target_schema is None and set(effect) == { \"op\", \"player\", \"count\", \"private\", \"post_draw_actions\", } and effect.get(\"player\") == \"$controller\" and effect.get(\"count\") == 1 and type(effect.get(\"count\")) is int and effect.get(\"private\") is T",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 356,
+          "line": 374,
           "string_literals": [
             "$controller",
             "count",
@@ -9702,7 +9726,7 @@
         {
           "condition": "target_schema is None and operation == \"draw_each_player\" and set(effect) == {\"op\", \"count\"} and _positive_int(effect.get(\"count\"))",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 374,
+          "line": 392,
           "string_literals": [
             "count",
             "draw_each_player",
@@ -9713,7 +9737,7 @@
         {
           "condition": "operation not in {\"draw\", \"offer_draw\"}",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 381,
+          "line": 399,
           "string_literals": [
             "draw",
             "offer_draw"
@@ -9723,7 +9747,7 @@
         {
           "condition": "( (operation == \"draw\" and player == \"$target.0\") or (operation == \"offer_draw\" and player == \"$controller\") ) and drawer == \"$target.0\" and dict(target_schema or {}) in _DRAW_TARGET_SCHEMAS and \"cr-115-targets\" in mechanics",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 402,
+          "line": 420,
           "string_literals": [
             "$controller",
             "$target.0",
@@ -9736,7 +9760,7 @@
         {
           "condition": "set(effect) != {\"op\", \"player\", \"card\"} or effect.get(\"op\") != \"ex\" + \"plore\"",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 430,
+          "line": 448,
           "string_literals": [
             "card",
             "ex",
@@ -9749,7 +9773,7 @@
         {
           "condition": "\"proliferate\" not in mechanics or target_schema is not None or len(effects) != 1 or dict(effects[0]) != {\"op\": \"proliferate\"}",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 463,
+          "line": 481,
           "string_literals": [
             "op",
             "proliferate"
@@ -9759,7 +9783,7 @@
         {
           "condition": "set(effect) != {\"op\", \"card\"} or effect.get(\"op\") not in {\"tap\", \"untap\"} or effect.get(\"card\") != \"$target.0\"",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 489,
+          "line": 507,
           "string_literals": [
             "$target.0",
             "card",
@@ -9772,7 +9796,7 @@
         {
           "condition": "set(effect) != {\"op\", \"card\"} or effect.get(\"op\") != \"destroy\" or effect.get(\"card\") != \"$target.0\"",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 521,
+          "line": 539,
           "string_literals": [
             "$target.0",
             "card",
@@ -9784,7 +9808,7 @@
         {
           "condition": "set(effect) != {\"op\", \"source\", \"set\"} or effect.get(\"op\") != \"destroy_all\" or effect.get(\"source\") != \"$source\"",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 545,
+          "line": 563,
           "string_literals": [
             "$source",
             "destroy_all",
@@ -9797,7 +9821,7 @@
         {
           "condition": "set(effect) != {\"op\", \"card\"} or effect.get(\"op\") != \"bounce\" or effect.get(\"card\") != \"$target.0\"",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 601,
+          "line": 619,
           "string_literals": [
             "$target.0",
             "bounce",
@@ -9809,7 +9833,7 @@
         {
           "condition": "set(effect) != {\"op\", \"card\"} or effect.get(\"op\") != \"exile_permanent\" or effect.get(\"card\") != \"$target.0\"",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 629,
+          "line": 647,
           "string_literals": [
             "$target.0",
             "card",
@@ -9821,7 +9845,7 @@
         {
           "condition": "set(effect) != {\"op\", \"stack\"} or effect.get(\"op\") != \"counter_stack_target\" or effect.get(\"stack\") != \"$target.0\"",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 657,
+          "line": 675,
           "string_literals": [
             "$target.0",
             "counter_stack_target",
@@ -9833,7 +9857,7 @@
         {
           "condition": "set(effect) != {\"op\", \"card\", \"counter\", \"amount\", \"source\"} or effect.get(\"op\") != \"place_counters\" or type(effect.get(\"counter\")) is not str or not effect.get(\"counter\") or type(effect.get(\"amount\")) is not int or effect.get(\"amount\", 0) ",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 732,
+          "line": 750,
           "string_literals": [
             "$source",
             "amount",
@@ -9846,9 +9870,119 @@
           "symbol": "fixed_counter_placement_node_capabilities"
         },
         {
+          "condition": "operation == \"place_counters\"",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 823,
+          "string_literals": [
+            "place_counters"
+          ],
+          "symbol": "fixed_target_effect_sequence_node_capabilities"
+        },
+        {
+          "condition": "set(effect) != {\"op\", \"card\", \"counter\", \"amount\", \"source\"} or effect.get(\"card\") != \"$target.0\" or type(effect.get(\"counter\")) is not str or not effect.get(\"counter\") or type(effect.get(\"amount\")) is not int or effect.get(\"amount\", 0) <= ",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 824,
+          "string_literals": [
+            "$source",
+            "$target.0",
+            "amount",
+            "card",
+            "counter",
+            "op",
+            "source"
+          ],
+          "symbol": "fixed_target_effect_sequence_node_capabilities"
+        },
+        {
+          "condition": "operation == \"modify_stats_until_end_of_turn\"",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 841,
+          "string_literals": [
+            "modify_stats_until_end_of_turn"
+          ],
+          "symbol": "fixed_target_effect_sequence_node_capabilities"
+        },
+        {
+          "condition": "set(effect) != {\"op\", \"card\", \"power\", \"toughness\"} or effect.get(\"card\") != \"$target.0\" or type(effect.get(\"power\")) is not int or type(effect.get(\"toughness\")) is not int or (effect.get(\"power\") == 0 and effect.get(\"toughness\") == 0)",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 842,
+          "string_literals": [
+            "$target.0",
+            "card",
+            "op",
+            "power",
+            "toughness"
+          ],
+          "symbol": "fixed_target_effect_sequence_node_capabilities"
+        },
+        {
+          "condition": "operation == \"grant_keyword_until_end_of_turn\"",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 852,
+          "string_literals": [
+            "grant_keyword_until_end_of_turn"
+          ],
+          "symbol": "fixed_target_effect_sequence_node_capabilities"
+        },
+        {
+          "condition": "set(effect) != {\"op\", \"card\", \"keyword\"} or effect.get(\"card\") != \"$target.0\" or keyword not in _FIXED_TARGET_SEQUENCE_KEYWORDS or keyword in granted_keywords",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 854,
+          "string_literals": [
+            "$target.0",
+            "card",
+            "keyword",
+            "op"
+          ],
+          "symbol": "fixed_target_effect_sequence_node_capabilities"
+        },
+        {
+          "condition": "operation == \"modify_stats_until_end_of_turn\"",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 902,
+          "string_literals": [
+            "modify_stats_until_end_of_turn"
+          ],
+          "symbol": "fixed_target_characteristics_node_capabilities"
+        },
+        {
+          "condition": "set(effect) != {\"op\", \"card\", \"power\", \"toughness\"} or effect.get(\"card\") != \"$target.0\" or type(effect.get(\"power\")) is not int or type(effect.get(\"toughness\")) is not int or (effect.get(\"power\") == 0 and effect.get(\"toughness\") == 0)",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 903,
+          "string_literals": [
+            "$target.0",
+            "card",
+            "op",
+            "power",
+            "toughness"
+          ],
+          "symbol": "fixed_target_characteristics_node_capabilities"
+        },
+        {
+          "condition": "operation == \"grant_keyword_until_end_of_turn\"",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 912,
+          "string_literals": [
+            "grant_keyword_until_end_of_turn"
+          ],
+          "symbol": "fixed_target_characteristics_node_capabilities"
+        },
+        {
+          "condition": "set(effect) != {\"op\", \"card\", \"keyword\"} or effect.get(\"card\") != \"$target.0\" or keyword not in _FIXED_TARGET_SEQUENCE_KEYWORDS or keyword in granted_keywords",
+          "file": "quorune/rules/node_capability_shapes.py",
+          "line": 914,
+          "string_literals": [
+            "$target.0",
+            "card",
+            "keyword",
+            "op"
+          ],
+          "symbol": "fixed_target_characteristics_node_capabilities"
+        },
+        {
           "condition": "set(effect) != {\"op\", \"source\", \"set\", \"counter\", \"amount\"} or effect.get(\"op\") != \"place_counters_on_set\" or effect.get(\"source\") != \"$source\" or type(effect.get(\"counter\")) is not str or not str(effect.get(\"counter\") or \"\").strip() or typ",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 774,
+          "line": 942,
           "string_literals": [
             "",
             "$source",
@@ -9864,7 +9998,7 @@
         {
           "condition": "set(effect) != expected_effect_fields or effect.get(\"op\") != \"place_counters_on_targets\" or effect.get(\"cards\") != \"$targets\" or effect.get(\"source\") != \"$source\" or type(maximum) is not int or maximum <= 0 or type(effect.get(\"counter\")) is",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 843,
+          "line": 1023,
           "string_literals": [
             "",
             "$source",
@@ -9881,7 +10015,7 @@
         {
           "condition": "set(effect) != expected_fields or effect.get(\"op\") != \"place_player_counters\" or subject not in {\"controller\", \"target\", \"each-player\", \"each-opponent\"} or type(effect.get(\"counter\")) is not str or not str(effect.get(\"counter\") or \"\").strip",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 947,
+          "line": 1136,
           "string_literals": [
             "",
             "$source",
@@ -9900,7 +10034,7 @@
         {
           "condition": "target_schema is not None or set(effect) != {\"op\", \"player\", \"source\", \"cost_per_counter\"} or effect.get(\"op\") != \"cumulative_upkeep\" or effect.get(\"player\") != \"$controller\" or effect.get(\"source\") != \"$source\" or not isinstance(cost, Mapp",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 1004,
+          "line": 1193,
           "string_literals": [
             "$controller",
             "$source",
@@ -9915,7 +10049,7 @@
         {
           "condition": "dict(event_condition or {}) != { \"all\": [ { \"field\": \"player\", \"op\": \"eq\", \"value\": \"$source.controller\", }, {\"field\": \"step\", \"op\": \"eq\", \"value\": \"upkeep\"}, ] }",
           "file": "quorune/rules/node_capability_shapes.py",
-          "line": 1016,
+          "line": 1205,
           "string_literals": [
             "$source.controller",
             "all",
@@ -10336,9 +10470,9 @@
       "operation_literal_counts": {
         "": 8,
         "$controller": 3,
-        "$source": 9,
+        "$source": 10,
         "$source.controller": 1,
-        "$target.0": 7,
+        "$target.0": 12,
         "$targets": 1,
         "add": 4,
         "add_ability": 2,
@@ -10347,7 +10481,7 @@
         "add_rules_text": 2,
         "add_types": 4,
         "all": 1,
-        "amount": 7,
+        "amount": 8,
         "animate_dead_prepare": 1,
         "animate_dead_reanimate": 1,
         "append": 1,
@@ -10355,7 +10489,7 @@
         "blockers": 2,
         "bounce": 1,
         "cap_result_life_loss": 1,
-        "card": 7,
+        "card": 12,
         "cards": 3,
         "choose_card_name": 1,
         "choose_cards_apnap": 1,
@@ -10370,7 +10504,7 @@
         "copy_values": 2,
         "cost_per_counter": 1,
         "count": 3,
-        "counter": 4,
+        "counter": 5,
         "counter_stack_target": 1,
         "counter_unless_pay": 1,
         "coverage": 4,
@@ -10411,6 +10545,7 @@
         "get-rules": 1,
         "get-task": 1,
         "grant_affected_object_keyword": 1,
+        "grant_keyword_until_end_of_turn": 2,
         "grant_urzas_saga_chapter": 1,
         "groups": 1,
         "gt": 1,
@@ -10418,29 +10553,32 @@
         "in": 1,
         "interactions": 2,
         "inventory": 2,
+        "keyword": 2,
         "lt": 1,
         "lte": 1,
         "modify_power_toughness": 2,
+        "modify_stats_until_end_of_turn": 2,
         "multiply": 2,
         "ne": 1,
         "nested_event": 1,
         "next": 2,
         "not_in": 1,
         "offer_draw": 2,
-        "op": 38,
+        "op": 43,
         "operation": 4,
         "overrides": 1,
         "parse": 1,
         "pay": 2,
         "pay_or_lose": 1,
         "pieces": 1,
-        "place_counters": 1,
+        "place_counters": 2,
         "place_counters_on_set": 1,
         "place_counters_on_targets": 1,
         "place_player_counters": 1,
         "player": 5,
         "plore": 1,
         "post_draw_actions": 1,
+        "power": 2,
         "prevent": 1,
         "prevent_draw": 1,
         "prevent_using_shield": 1,
@@ -10470,7 +10608,7 @@
         "set_power_toughness": 2,
         "set_types": 4,
         "show": 2,
-        "source": 9,
+        "source": 10,
         "stack": 1,
         "stage": 2,
         "status": 1,
@@ -10480,6 +10618,7 @@
         "sync": 1,
         "tap": 1,
         "target": 3,
+        "toughness": 2,
         "toxic_deluge": 1,
         "transmute_artifact": 1,
         "trust-closure": 2,
@@ -10717,19 +10856,19 @@
     "card_program_v2_present": true,
     "commander_legal_oracle": {
       "current_snapshot_complete": false,
-      "exact_fraction": 0.075451,
-      "material_residuals": 46671,
+      "exact_fraction": 0.083199,
+      "material_residuals": 46228,
       "residual_kinds": {
         "cost": 1756,
         "declaration_cost": 10,
         "declaration_restriction": 154,
-        "dependency_contract": 5128,
-        "effect": 6204,
+        "dependency_contract": 4980,
+        "effect": 6104,
         "mana_ability": 671,
         "replacement_effect": 1332,
-        "spell_effect": 8872,
+        "spell_effect": 8721,
         "static_ability": 9561,
-        "trigger": 12774,
+        "trigger": 12730,
         "unsupported_cumulative_upkeep_cost": 6,
         "unsupported_cycling_cost": 11,
         "unsupported_enchant_restriction": 139,
@@ -10745,34 +10884,34 @@
         "scryfall_rulings_updated_at": "2026-08-06T09:00:37.813+00:00"
       },
       "status_counts": {
-        "exact": 2386,
-        "partial": 13271,
-        "unresolved": 15966
+        "exact": 2631,
+        "partial": 13213,
+        "unresolved": 15779
       },
-      "template_count": 302,
+      "template_count": 303,
       "total_faces": 32431,
       "total_oracle_ids": 31623
     },
     "compiler_module": "quorune/oracle_ir.py",
-    "compiler_module_logical_lines": 1432,
-    "compiler_module_physical_lines": 1485,
-    "compiler_version": "oracle-ir-v63",
+    "compiler_module_logical_lines": 1404,
+    "compiler_module_physical_lines": 1457,
+    "compiler_version": "oracle-ir-v64",
     "current_ir": "OracleCardIR lowered to canonical CardProgram V2 with a derived SemanticProgram compatibility index",
     "full_oracle": {
       "current_snapshot_complete": false,
-      "exact_fraction": 0.138544,
-      "material_residuals": 54293,
+      "exact_fraction": 0.145198,
+      "material_residuals": 53832,
       "residual_kinds": {
         "cost": 1988,
         "declaration_cost": 11,
         "declaration_restriction": 170,
-        "dependency_contract": 5523,
-        "effect": 6908,
+        "dependency_contract": 5372,
+        "effect": 6802,
         "mana_ability": 767,
         "replacement_effect": 1555,
-        "spell_effect": 11035,
+        "spell_effect": 10880,
         "static_ability": 11044,
-        "trigger": 15058,
+        "trigger": 15009,
         "unsupported_cumulative_upkeep_cost": 6,
         "unsupported_cycling_cost": 11,
         "unsupported_enchant_restriction": 149,
@@ -10788,11 +10927,11 @@
         "scryfall_rulings_updated_at": "2026-08-06T09:00:37.813+00:00"
       },
       "status_counts": {
-        "exact": 5351,
-        "partial": 14425,
-        "unresolved": 18847
+        "exact": 5608,
+        "partial": 14365,
+        "unresolved": 18650
       },
-      "template_count": 303,
+      "template_count": 304,
       "total_faces": 41840,
       "total_oracle_ids": 38623
     },
@@ -10916,31 +11055,31 @@
         }
       ],
       "dependency_fail_closed_status_counts": {
-        "not_applicable": 38,
+        "not_applicable": 39,
         "not_run": 3,
-        "passed": 62
+        "passed": 63
       },
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 159,
-          "multiplayer": 95,
-          "mutation": 105,
-          "negative": 185,
-          "positive": 196,
-          "privacy": 79,
+          "interaction": 161,
+          "multiplayer": 97,
+          "mutation": 107,
+          "negative": 187,
+          "positive": 198,
+          "privacy": 81,
           "property": 10,
-          "replay": 119,
+          "replay": 121,
           "rollback": 20
         },
-        "declaration_count": 968,
-        "declaration_source_fingerprint": "77eb68d0420e0a4cc439341931a43beea57db600dc1d90529a3e1db2c90b018f",
-        "fingerprint": "d169c380d51f444adb92980246d15da5ec43fdcc7de8b84e39d37756518f4609",
-        "registry_fingerprint": "16e0e82eed368f035e6e5272fc4d7456865f54d637535a696397debd3df95029"
+        "declaration_count": 982,
+        "declaration_source_fingerprint": "71c072e5e72c21dc4219ccd599b521903a4754ac0b0e6e7230ecb54d98e75b20",
+        "fingerprint": "78a9d261a74200cff20f8bf4e3c225a428f04b8d4d99ab7eed39f27c8997e354",
+        "registry_fingerprint": "6084f365bed673d3863a458c123a718013ded55dd239a44b33d962862b786f4d"
       },
-      "fingerprint": "16e0e82eed368f035e6e5272fc4d7456865f54d637535a696397debd3df95029",
+      "fingerprint": "6084f365bed673d3863a458c123a718013ded55dd239a44b33d962862b786f4d",
       "implementation_mutation_status_counts": {
-        "killed": 98,
+        "killed": 100,
         "not_run": 5
       },
       "profiles": [
@@ -10948,15 +11087,15 @@
         "commander_duel",
         "commander_review"
       ],
-      "registry_version": 67,
+      "registry_version": 69,
       "schema_version": 1,
       "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
       "status_counts": {
         "blocked": 4,
         "tested": 2,
-        "trusted": 97
+        "trusted": 99
       },
-      "total": 103
+      "total": 105
     },
     "stages": [
       {
@@ -10982,7 +11121,7 @@
         "current_status": "interleaved",
         "evidence": {
           "_compile_face": [
-            "quorune/oracle_ir.py:892"
+            "quorune/oracle_ir.py:864"
           ],
           "_source_lines": [
             "quorune/oracle_ir.py:120"
@@ -11067,7 +11206,7 @@
         "current_status": "generated_abilities_extracted_and_aggregated_to_card_program_v2",
         "evidence": {
           "_compile_face": [
-            "quorune/oracle_ir.py:892"
+            "quorune/oracle_ir.py:864"
           ],
           "compile_card_program": [
             "quorune/__init__.py:9",
@@ -11076,8 +11215,8 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:626",
-            "quorune/oracle_ir.py:1428"
+            "quorune/compiler/program_generation.py:664",
+            "quorune/oracle_ir.py:1400"
           ]
         },
         "evidence_symbols": [
@@ -11107,7 +11246,7 @@
             "quorune/oracle_ir.py:80",
             "quorune/preflight.py:28",
             "quorune/rules/__init__.py:3",
-            "quorune/rules/capabilities.py:330"
+            "quorune/rules/capabilities.py:337"
           ],
           "explicit_capability_gate": [
             "quorune/compiler/activated_mana_nodes.py:20",
@@ -11120,8 +11259,8 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:626",
-            "quorune/oracle_ir.py:1428"
+            "quorune/compiler/program_generation.py:664",
+            "quorune/oracle_ir.py:1400"
           ]
         },
         "evidence_symbols": [
@@ -11167,8 +11306,8 @@
             "quorune/engine.py:30"
           ],
           "register_generated_programs": [
-            "quorune/compiler/program_generation.py:892",
-            "quorune/oracle_ir.py:1451",
+            "quorune/compiler/program_generation.py:930",
+            "quorune/oracle_ir.py:1423",
             "quorune/preflight.py:16",
             "quorune/session.py:14"
           ]
@@ -11285,7 +11424,7 @@
           "maintenance": "hand-maintained",
           "status": "current",
           "title": "Oracle compiler architecture",
-          "verified": "2026-08-08"
+          "verified": "2026-08-09"
         },
         "metadata_complete": true,
         "missing_metadata": [],
@@ -12007,7 +12146,7 @@
       "playwright_e2e_journeys": 9
     },
     "mutation_testing": {
-      "capability_mutation_declarations": 105,
+      "capability_mutation_declarations": 107,
       "configured_tools": [],
       "focused_executable_suite": true,
       "mutation_score": null
@@ -12035,18 +12174,18 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2184,
-      "discovered_total": 5484,
+      "conventional_ast_cases": 2197,
+      "discovered_total": 5497,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
-        "compiler_named": 78,
+        "compiler_named": 79,
         "fuzz_named": 1,
         "privacy_or_projection_named": 28,
-        "replay_named": 139,
+        "replay_named": 140,
         "server_named": 26
       },
       "reconciles": true,
-      "test_files": 221
+      "test_files": 222
     }
   }
 }

@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "800f5e378b46759567ba6eb5519b3ea69cb3f515f2abeeb1e82c86298730e17e"
+verified: "2c4c4c072059c000ae0b6af99177b4f8d5e92ea51af8f7bf9e571257873385ad"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -43,6 +43,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Ajani, Nacatl Pariah // Ajani, Nacatl Avenger | 163 | 22 | 4 | 5 | 10 | 15 | `blocked` |
 | Gwen Stacy // Ghost-Spider | 163 | 21 | 5 | 5 | 7 | 13 | `blocked` |
 | Invasion of Kaladesh // Aetherwing, Golden-Scale Flagship | 161 | 16 | 4 | 5 | 7 | 17 | `blocked` |
+| Dr. Madison Li | 160 | 21 | 7 | 4 | 5 | 10 | `blocked` |
 | Devoted Grafkeeper // Departed Soulkeeper | 159 | 19 | 5 | 6 | 7 | 7 | `blocked` |
 | Faithbound Judge // Sinner's Judgment | 159 | 21 | 5 | 7 | 8 | 1 | `blocked` |
 | Invasion of Pyrulea // Gargantuan Slabhorn | 159 | 16 | 4 | 4 | 7 | 18 | `blocked` |
@@ -50,6 +51,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Starforged Sword | 157 | 16 | 5 | 4 | 6 | 11 | `blocked` |
 | Chandra, Fire of Kaladesh // Chandra, Roaring Flame | 156 | 19 | 4 | 5 | 7 | 15 | `blocked` |
 | Invasion of Gobakhan // Lightshield Array | 156 | 12 | 5 | 4 | 8 | 19 | `blocked` |
+| Purging Stormbrood // Absorb Essence | 156 | 22 | 6 | 4 | 4 | 10 | `blocked` |
 | Tribute to Horobi // Echo of Death's Wail | 155 | 19 | 5 | 6 | 6 | 6 | `blocked` |
 | Covert Cutpurse // Covetous Geist | 154 | 19 | 6 | 4 | 6 | 7 | `blocked` |
 | Dennick, Pious Apprentice // Dennick, Pious Apparition | 154 | 16 | 5 | 6 | 6 | 10 | `blocked` |
@@ -61,6 +63,4 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time | 152 | 20 | 6 | 6 | 8 | 3 | `blocked` |
 | Arcee, Sharpshooter // Arcee, Acrobatic Coupe | 151 | 16 | 5 | 5 | 7 | 14 | `blocked` |
 | Curse of Leeches // Leeching Lurker | 151 | 17 | 4 | 6 | 7 | 13 | `blocked` |
-| Kitnap | 151 | 16 | 5 | 4 | 6 | 8 | `blocked` |
-| Primeval Spawn | 151 | 18 | 6 | 3 | 5 | 10 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |

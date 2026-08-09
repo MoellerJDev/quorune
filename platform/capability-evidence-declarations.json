@@ -2327,6 +2327,62 @@
       "applicability_note": "Serialize and replay a source-bound resolution-created effect from exact commands."
     },
     {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply the resulting Flying counter through effective layer-6 characteristics after replacement-aware placement commits."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_sequence_choice_is_seat_scoped_and_replays",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve the shared counter sequence in four-player state without changing seat-scoped replacement routing."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_keyword_counter_characteristic_mutant_is_killed",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove keyword-counter projection from characteristic evaluation and prove the effective-keyword assertion rejects the mutant."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_keyword_counter_vocabulary_is_closed_and_strict",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject parameterized variants and malformed boolean, negative, fractional, or textual keyword-counter quantities."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose Flying in the target's effective combat characteristics while one or more Flying counters remain."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_sequence_choice_is_seat_scoped_and_replays",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project only public counter and effective-characteristic state without widening the replacement decision principal."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay replacement-expanded Flying-counter placement to the same authoritative state hash and effective characteristic."
+    },
+    {
       "capability_id": "counter.placement.quantity_replacement",
       "evidence_class": "interaction",
       "test_id": "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_replacements_apply_in_affected_players_chosen_order",
@@ -8026,6 +8082,62 @@
         "commander_review"
       ],
       "applicability_note": "Replay the exact protected-object filtering and selected legal Aura attachment from a pinned continuation."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_target",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+      "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend at the counter replacement boundary after earlier effects, then execute each remaining fixed characteristic effect exactly once."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_target",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_sequence_choice_is_seat_scoped_and_replays",
+      "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve the sequence in a four-player game while routing the affected-object replacement choice only to its controller."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_target",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_target_threaded_sequence_compiler_mutant_is_killed",
+      "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suppress the closed sequence compiler and prove the formerly exact source span returns to a material residual."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_target",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_unsupported_target_threaded_variants_remain_material_residuals",
+      "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject optional, variable, multi-target, choice-bearing, and otherwise open target-threaded wording as material residuals."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_target",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_spell_trigger_and_activated_contexts_share_target_threaded_sequence_lowering",
+      "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower one source-spanned fixed target sequence in spell, trigger, and activated-ability contexts with one shared target identity."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_target",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_sequence_choice_is_seat_scoped_and_replays",
+      "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the replacement decision to seat A only and omit authoritative object identity from the public capability packet."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_target",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
+      "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the ordered suspended sequence to the same authoritative final state hash."
     },
     {
       "capability_id": "stack.counter.effect",

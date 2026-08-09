@@ -2,7 +2,7 @@
 title: "Oracle compiler architecture"
 status: "current"
 authoritative_source: "quorune/oracle_ir.py, quorune/compiler, and quorune/card_programs"
-verified: "2026-08-08"
+verified: "2026-08-09"
 audience: "compiler and rules contributors"
 maintenance: "hand-maintained"
 ---
@@ -33,6 +33,13 @@ programs. `card_programs/adapters.py` combines abilities, face identity,
 source hashes, residuals, and capability closure into the canonical artifact.
 The local card database is a compiler input; the engine does not query it while
 performing a transition.
+
+`compiler/fixed_target_effect_sequences.py` owns the closed cross-sentence
+target-threading grammar. It is the only compiler authority for represented
+fixed counter plus until-end-of-turn characteristic sequences: one clause
+establishes direct creature target zero, later clauses use the exact pronoun
+“it,” and printed operation order is retained. The runtime consumes only the
+resulting typed node and never reparses those Oracle sentences.
 
 ## Invariants
 

@@ -16,6 +16,7 @@ from ..affected_permanents import (
     PermanentControllerRelation,
 )
 from ..object_predicate import ObjectQuerySpec
+from ..keyword_counters import keyword_counter_mechanic
 from ..rules.source_references import SourceReferenceSpec
 from .creature_subtypes import canonical_creature_subtype
 from .fixed_numbers import fixed_number
@@ -164,11 +165,13 @@ class FixedCounterPlacementTemplate:
 
     @property
     def mechanics(self) -> tuple[str, ...]:
-        return (
+        mechanics = (
             ("cr-122-counters",)
             if self.subject is not CounterPlacementSubject.TARGET
             else ("cr-122-counters", "cr-115-targets")
         )
+        keyword = keyword_counter_mechanic(self.counter_name)
+        return mechanics + ((keyword,) if keyword is not None else ())
 
     @property
     def _card_reference(self) -> str | Mapping[str, Any]:
@@ -196,6 +199,55 @@ class FixedCounterPlacementTemplate:
             self.effects,
             self.target_schema,
             self.mechanics,
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class ExistingTargetCounterPlacementTemplate:
+    """One fixed placement on the already-declared target at index zero."""
+
+    count: int
+    counter_name: str
+
+    def __post_init__(self) -> None:
+        if type(self.count) is not int or self.count <= 0:
+            raise ValueError("Counter placement count must be positive")
+        if type(self.counter_name) is not str or not self.counter_name:
+            raise ValueError("Counter placement name must be nonempty")
+
+    @property
+    def effects(self) -> tuple[Mapping[str, Any], ...]:
+        return (
+            {
+                "op": "place_counters",
+                "card": "$target.0",
+                "counter": self.counter_name,
+                "amount": self.count,
+                "source": "$source",
+            },
+        )
+
+    def compiled(
+        self,
+    ) -> tuple[
+        str,
+        tuple[Mapping[str, Any], ...],
+        None,
+        tuple[str, ...],
+    ]:
+        return (
+            "place-fixed-counter-existing-target-v1",
+            self.effects,
+            None,
+            (
+                "cr-122-counters",
+                *(
+                    (keyword,)
+                    if (keyword := keyword_counter_mechanic(self.counter_name))
+                    is not None
+                    else ()
+                ),
+            ),
         )
 
 
@@ -273,7 +325,12 @@ class FixedCounterPlacementTargetSetTemplate:
 
     @property
     def mechanics(self) -> tuple[str, ...]:
-        return ("cr-122-counters", "cr-115-targets")
+        keyword = keyword_counter_mechanic(self.counter_name)
+        return (
+            "cr-122-counters",
+            "cr-115-targets",
+            *((keyword,) if keyword is not None else ()),
+        )
 
     def compiled(
         self,
@@ -516,11 +573,13 @@ class FixedCounterPlacementSetTemplate:
 
     @property
     def mechanics(self) -> tuple[str, ...]:
-        return (
+        mechanics = (
             ("cr-122-counters", "cr-115-targets")
             if self.target_relation is not None
             else ("cr-122-counters",)
         )
+        keyword = keyword_counter_mechanic(self.counter_name)
+        return mechanics + ((keyword,) if keyword is not None else ())
 
     def compiled(
         self,
@@ -658,6 +717,25 @@ def fixed_counter_placement_effect_template(
         creature_subtype=creature_subtype,
         controller_relation=relation,
         exclude_source=exclude_source,
+    )
+
+
+def existing_target_counter_placement_effect_template(
+    text: str,
+) -> ExistingTargetCounterPlacementTemplate | None:
+    """Parse a mandatory fixed placement referring to an established target."""
+
+    match = _PLACEMENT.fullmatch(text.strip())
+    if match is None or match.group("subject").casefold() != "it":
+        return None
+    count = fixed_number(match.group("count"))
+    if count <= 0 or (match.group("plural").casefold() == "counter") != (
+        count == 1
+    ):
+        return None
+    return ExistingTargetCounterPlacementTemplate(
+        count=count,
+        counter_name=" ".join(match.group("counter").casefold().split()),
     )
 
 
@@ -1157,6 +1235,7 @@ def fixed_player_counter_placement_effect_template(
 
 __all__ = [
     "CounterPlacementSubject",
+    "ExistingTargetCounterPlacementTemplate",
     "FIXED_COUNTER_SET_KEYWORDS",
     "FixedCounterPlacementTemplate",
     "FixedCounterPlacementSetTemplate",
@@ -1165,6 +1244,7 @@ __all__ = [
     "FixedPlayerCounterPlacementTemplate",
     "PlayerCounterPlacementSubject",
     "fixed_counter_placement_effect_template",
+    "existing_target_counter_placement_effect_template",
     "fixed_counter_placement_set_effect_template",
     "fixed_counter_placement_target_set_effect_template",
     "support_counter_placement_effect_template",

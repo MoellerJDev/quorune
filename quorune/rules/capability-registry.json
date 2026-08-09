@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 67,
+  "registry_version": 69,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -504,6 +504,33 @@
       "dependency_fail_closed_rationale": "This bounded descriptor has no capability dependencies beyond the shared replacement subsystem.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_zone_replacement_snapshot_mutant_is_killed reverses and then mutates the captured source candidates; canonical equality and state-independent preparation reject source-order and live-source rediscovery mutants.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.characteristic.keyword",
+      "version": 1,
+      "official_rules": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Project one or more positive ordinary keyword counters into the affected object's effective layer-6 ability set while the counters remain on that object.",
+        "inputs": ["one current object", "canonical immutable counter quantities", "one exact ordinary CR 122.1b keyword-counter name"],
+        "outputs": ["one redundant case-insensitive effective keyword", "immediate removal when the final counter is removed", "same result in authoritative and projected characteristic queries"],
+        "exclusions": ["keyword variants with parameters", "non-keyword shield, stun, finality, rad, loyalty, defense, and power/toughness counters", "the gameplay semantics of the granted keyword, which remain separately capability-closed", "unsupported same-layer ability-removal and dependency interactions"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.keyword_counters.keyword_counter_abilities", "quorune.characteristic_evaluation.evaluate_card_characteristics"],
+      "positive_tests": ["test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly"],
+      "negative_tests": ["test_keyword_counter_vocabulary_is_closed_and_strict"],
+      "interaction_tests": ["test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly"],
+      "multiplayer_tests": ["test_four_player_sequence_choice_is_seat_scoped_and_replays"],
+      "privacy_tests": ["test_four_player_sequence_choice_is_seat_scoped_and_replays"],
+      "replay_tests": ["test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "Keyword-counter characteristic projection has no capability dependency; each granted keyword's executable rules remain a separate ambient CardProgram dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_keyword_counter_characteristic_mutant_is_killed removes keyword-counter projection from the shared characteristic evaluator and the effective-keyword assertion rejects the survivor.",
       "blockers": [],
       "status": "trusted"
     },
@@ -2072,6 +2099,33 @@
       "implementation_mutation_rationale": "The focused semantic tap-state mutation test kills an aggregate sink that omits eligible creatures or bypasses individual untap behavior.",
       "blockers": ["Complete effective-characteristic dependencies and untap replacement ordering are not yet represented in ambient match closure."],
       "status": "tested"
+    },
+    {
+      "id": "resolution.effect_sequence.fixed_target",
+      "version": 1,
+      "official_rules": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one closed two- or three-instruction sequence that gives a single direct creature target fixed power, toughness, or keyword changes until end of turn and places one fixed counter kind on that same target in printed order.",
+        "inputs": ["one direct public creature target", "two or three mandatory full instructions", "one positive fixed-count counter placement", "fixed power and toughness modifiers", "up to two represented fixed keyword grants", "stable source and target logical identities"],
+        "outputs": ["one source-spanned CardProgram node", "one target selected and revalidated for the whole sequence", "printed-order resolution", "replacement-aware counter placement", "cleanup-expiring fixed characteristic effects", "resumable exact replay"],
+        "exclusions": ["optional, modal, conditional, repeated, distributed, variable, or linked-result sequences", "more than one direct target or counter instruction", "multiple counter kinds", "pronouns without an established target", "choices, searches, draws, prevention, protection selection, animation, naming, or unsupported characteristic predicates", "continuous-effect dependency interactions beyond the represented fixed operations"]
+      },
+      "dependencies": ["continuous.resolution.fixed_characteristics_until_end_of_turn", "counter.producer.fixed_effect", "target.revalidate_resolution"],
+      "implementation_components": ["quorune.compiler.fixed_target_effect_sequences.FixedTargetEffectSequenceTemplate", "quorune.rules.node_capability_shapes.fixed_target_effect_sequence_node_capabilities", "CommanderEngine._continue_resolution", "quorune.semantic_choices.counter_coordination", "quorune.counter_placement.place_counters_on_refs", "quorune.continuous_effect_state.create_resolution_continuous_effect"],
+      "positive_tests": ["test_spell_trigger_and_activated_contexts_share_target_threaded_sequence_lowering", "test_target_threaded_sequence_preserves_printed_effect_order"],
+      "negative_tests": ["test_unsupported_target_threaded_variants_remain_material_residuals", "test_target_threaded_sequence_shape_mutants_fail_closed", "test_stale_target_rolls_back_before_sequence_mutation"],
+      "interaction_tests": ["test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly"],
+      "multiplayer_tests": ["test_four_player_sequence_choice_is_seat_scoped_and_replays"],
+      "privacy_tests": ["test_four_player_sequence_choice_is_seat_scoped_and_replays"],
+      "replay_tests": ["test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly", "test_four_player_sequence_choice_is_seat_scoped_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Focused registry mutations block exact sequence CardPrograms whenever target revalidation, fixed characteristic duration, or canonical replacement-aware counter placement is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler mutation suppresses the sequence template and proves that the same source span returns to a material residual; shape mutations also reject reordered target identities and malformed exact amounts.",
+      "blockers": [],
+      "status": "trusted"
     },
     {
       "id": "stack.counter.effect",

@@ -1,7 +1,7 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, semantic_runtime/counter_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/compiler/fixed_target_effect_sequences.py, semantic_runtime/counter_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
 verified: "2026-08-09"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -203,6 +203,27 @@ permanent card type or one pinned creature subtype, a fixed controller
 relation, and source exclusion. The strict runtime handler lowers only to
 `PlaceCountersIntent`; it neither parses Oracle text nor mutates state.
 
+Oracle IR v64 adds one closed target-threaded sequence grammar for two or three
+mandatory sentences that share direct creature target zero. Exactly one
+sentence establishes the target; later clauses may refer to it only as “it.”
+The represented sequence must contain one fixed counter placement and at least
+one fixed power/toughness change or ordinary keyword grant until end of turn.
+The compiler preserves printed operation order, emits one source-spanned
+CardProgram node, and declares the counter, targeting, continuous-effect, and
+individual keyword-mechanic dependencies actually used. Optional, modal,
+conditional, variable, repeated, multiple-target, protection-choice, search,
+scry, naming, and animation variants remain material residuals.
+
+Ordinary CR 122.1b keyword counters now feed layer 6 through the typed
+`keyword_counters.py` vocabulary. A positive represented counter grants its
+named ability; removing the final counter removes that contribution. The
+counter owner validates exact nonnegative quantities and has no Oracle-text or
+card-name path. This characteristic projection does not by itself certify the
+runtime behavior of every keyword: CardProgram closure still requires the
+specific Flying, Haste, Trample, Hexproof, Indestructible, or other mechanic
+capability. Parameterized keyword variants and same-layer dependency cases
+outside the current continuous-effect model fail closed.
+
 The attachment-relative fixed-placement family adds one typed semantic
 reference for the object a source enchants, equips, or fortifies. The compiler
 requires the exact parsed Aura, Equipment, or Fortification source subtype and
@@ -284,7 +305,7 @@ multiple-instance forms remain precise residuals.
 The following producers and wordings remain deliberately outside this slice:
 
 - Read Ahead, nonordinary Saga progression, and stun-counter removal;
-- loyalty activation costs and damage-counter removal;
+- negative loyalty counter-removal costs and damage-counter removal;
 - cumulative-upkeep forms outside the fixed positive ordinary mana family;
 - Support X or zero and conditional, optional, repeated, copied, granted,
   modal, or compound Support instructions, plus variable, distributed, dynamic,
@@ -325,7 +346,10 @@ in `test_intrinsic_entry_counters.py`, Support coverage in
 `test_replacement_event_tree.py`, and focused mutation evidence in
 `test_capability_implementation_mutations.py`. Mentor compiler, targeting,
 last-known-information, replacement, rollback, multiplayer, and exact-replay
-evidence is isolated in `test_mentor_rules.py`.
+evidence is isolated in `test_mentor_rules.py`. Target-threaded counter and
+characteristic sequences, strict residuals, replacement suspension, rollback,
+four-player privacy, exact replay, keyword-counter projection, and focused
+mutation evidence are isolated in `test_fixed_target_effect_sequences.py`.
 
 Current aggregate corpus counts and remaining blockers are generated in
 [`docs/COMPILER_COVERAGE_STATUS.md`](../COMPILER_COVERAGE_STATUS.md). They
