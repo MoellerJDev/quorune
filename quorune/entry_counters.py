@@ -4,12 +4,6 @@ import copy
 from typing import Any, Mapping, Protocol, Sequence
 
 from .characteristic_evaluation import type_parts
-from .counter_state import (
-    CounterChange,
-    CounterStateError,
-    commit_counter_changes,
-    plan_counter_changes,
-)
 from .replacement import (
     CreateAffectedObjectCounter,
     ReplacementClass,
@@ -21,10 +15,6 @@ from .entry_counter_model import (
     IntrinsicEntryCounter,
     intrinsic_entry_counters,
 )
-
-
-class EntryCounterCommitHost(Protocol):
-    state: Any
 
 
 class EntryCharacteristicsQuery(Protocol):
@@ -232,42 +222,12 @@ def mark_intrinsic_entry_counters_initialized(
         card.annotations["loyalty_initialized"] = True
 
 
-def commit_unreplaced_intrinsic_entry_counters(
-    host: EntryCounterCommitHost,
-    *,
-    object_id: str,
-    logical_object_id: str,
-    counters: Sequence[IntrinsicEntryCounter],
-) -> None:
-    """Commit a preflight-proven replacement-free token compatibility path."""
-
-    changes = tuple(
-        CounterChange(
-            subject_kind="permanent",
-            subject_id=object_id,
-            counter_name=counter.counter_name,
-            amount=counter.amount,
-            expected_zone="battlefield",
-            expected_logical_object_id=logical_object_id,
-        )
-        for counter in counters
-        if counter.amount
-    )
-    if not changes:
-        return
-    try:
-        commit_counter_changes(host, plan_counter_changes(host, changes))
-    except CounterStateError as exc:
-        raise EntryCounterError(str(exc)) from exc
-
-
 __all__ = [
     "capture_prospective_entry_characteristics",
     "EntryCounterError",
     "EntryCharacteristicsQuery",
     "EffectEntryCounter",
     "IntrinsicEntryCounter",
-    "commit_unreplaced_intrinsic_entry_counters",
     "effect_entry_counter_effects",
     "intrinsic_entry_counter_effects",
     "intrinsic_entry_counters",

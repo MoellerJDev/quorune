@@ -1577,7 +1577,7 @@
           "module": "quorune.util"
         },
         {
-          "fan_in": 52,
+          "fan_in": 53,
           "fan_out": 1,
           "module": "quorune.replacement.immutable"
         },
@@ -1724,7 +1724,7 @@
           "module": "quorune.compiler.keyword_nodes"
         }
       ],
-      "internal_edges": 1278,
+      "internal_edges": 1279,
       "modules": [
         {
           "fan_in": 2,
@@ -2247,7 +2247,7 @@
           "module": "quorune.continuous_effects"
         },
         {
-          "fan_in": 10,
+          "fan_in": 11,
           "fan_out": 3,
           "module": "quorune.counter_placement"
         },
@@ -2267,7 +2267,7 @@
           "module": "quorune.counter_removal"
         },
         {
-          "fan_in": 13,
+          "fan_in": 12,
           "fan_out": 2,
           "module": "quorune.counter_state"
         },
@@ -2468,7 +2468,7 @@
         },
         {
           "fan_in": 4,
-          "fan_out": 4,
+          "fan_out": 3,
           "module": "quorune.entry_counters"
         },
         {
@@ -2702,7 +2702,7 @@
           "module": "quorune.replacement.application"
         },
         {
-          "fan_in": 52,
+          "fan_in": 53,
           "fan_out": 1,
           "module": "quorune.replacement.immutable"
         },
@@ -3318,7 +3318,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 6,
+          "fan_out": 8,
           "module": "quorune.token_creation"
         },
         {
@@ -3808,7 +3808,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 126176,
+      "logical_lines": 126301,
       "methods": {
         "dunder": 337,
         "private": 688,
@@ -4027,6 +4027,13 @@
           "physical_lines": 880
         },
         {
+          "file": "quorune/token_creation.py",
+          "functions_and_methods": 32,
+          "language": "python",
+          "logical_lines": 846,
+          "physical_lines": 915
+        },
+        {
           "file": "quorune/block_transitions.py",
           "functions_and_methods": 43,
           "language": "python",
@@ -4104,13 +4111,6 @@
           "physical_lines": 783
         },
         {
-          "file": "quorune/token_creation.py",
-          "functions_and_methods": 29,
-          "language": "python",
-          "logical_lines": 734,
-          "physical_lines": 792
-        },
-        {
           "file": "quorune/replacement/replay.py",
           "functions_and_methods": 24,
           "language": "python",
@@ -4146,6 +4146,13 @@
           "physical_lines": 755
         },
         {
+          "file": "quorune/counter_placement.py",
+          "functions_and_methods": 26,
+          "language": "python",
+          "logical_lines": 694,
+          "physical_lines": 771
+        },
+        {
           "file": "server/store.py",
           "functions_and_methods": 28,
           "language": "python",
@@ -4179,13 +4186,6 @@
           "language": "python",
           "logical_lines": 651,
           "physical_lines": 683
-        },
-        {
-          "file": "quorune/counter_placement.py",
-          "functions_and_methods": 25,
-          "language": "python",
-          "logical_lines": 650,
-          "physical_lines": 719
         },
         {
           "file": "quorune/compiler/prevention_templates.py",
@@ -4296,8 +4296,8 @@
           "file": "quorune/semantic_runtime/token_replacements.py",
           "functions_and_methods": 17,
           "language": "python",
-          "logical_lines": 571,
-          "physical_lines": 614
+          "logical_lines": 575,
+          "physical_lines": 618
         },
         {
           "file": "quorune/compiler/keyword_nodes.py",
@@ -4853,13 +4853,6 @@
           "physical_lines": 284
         },
         {
-          "file": "quorune/entry_counters.py",
-          "functions_and_methods": 8,
-          "language": "python",
-          "logical_lines": 248,
-          "physical_lines": 277
-        },
-        {
           "file": "quorune/rules/single_object_zone_transition.py",
           "functions_and_methods": 11,
           "language": "python",
@@ -4984,6 +4977,13 @@
           "language": "python",
           "logical_lines": 214,
           "physical_lines": 257
+        },
+        {
+          "file": "quorune/entry_counters.py",
+          "functions_and_methods": 7,
+          "language": "python",
+          "logical_lines": 213,
+          "physical_lines": 237
         },
         {
           "file": "quorune/object_predicate.py",
@@ -6660,7 +6660,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 137926,
+      "physical_lines": 138065,
       "python_file_count": 334,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -6678,7 +6678,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1685,
+      "top_level_functions": 1688,
       "web_file_count": 16
     },
     "semantic_handlers": {
@@ -11183,22 +11183,22 @@
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 166,
-          "multiplayer": 101,
-          "mutation": 112,
-          "negative": 196,
-          "positive": 207,
-          "privacy": 85,
+          "interaction": 167,
+          "multiplayer": 102,
+          "mutation": 113,
+          "negative": 195,
+          "positive": 209,
+          "privacy": 86,
           "property": 11,
-          "replay": 126,
+          "replay": 127,
           "rollback": 21
         },
-        "declaration_count": 1025,
-        "declaration_source_fingerprint": "5a1468a0188f34e865961883454ab687e782fe5eb065ed49b56c3334833664b8",
-        "fingerprint": "06e8a607449ee53813c66adc033357e65a40badaaa6f476e11b2d68d121efabb",
-        "registry_fingerprint": "0816babc299722447401613eaab03cfa10f1e9bac3f54707745101075c2b538a"
+        "declaration_count": 1031,
+        "declaration_source_fingerprint": "fff5ea076145a45325bbe23ffc3c1b363dcdec938c1c66c7bc32f731f8ca48ff",
+        "fingerprint": "e0a34e4ce96012e422b44ed2b2dbb1209d459e5853a958171f97efac6c336449",
+        "registry_fingerprint": "b34ad2b3476cd8b5fe336dc22519425de84950303ec0c87ee6f185d37fb4cf0f"
       },
-      "fingerprint": "0816babc299722447401613eaab03cfa10f1e9bac3f54707745101075c2b538a",
+      "fingerprint": "b34ad2b3476cd8b5fe336dc22519425de84950303ec0c87ee6f185d37fb4cf0f",
       "implementation_mutation_status_counts": {
         "killed": 104,
         "not_run": 5
@@ -12265,7 +12265,7 @@
       "playwright_e2e_journeys": 9
     },
     "mutation_testing": {
-      "capability_mutation_declarations": 112,
+      "capability_mutation_declarations": 113,
       "configured_tools": [],
       "focused_executable_suite": true,
       "mutation_score": null
@@ -12293,14 +12293,14 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2241,
-      "discovered_total": 5541,
+      "conventional_ast_cases": 2244,
+      "discovered_total": 5544,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 82,
         "fuzz_named": 1,
         "privacy_or_projection_named": 28,
-        "replay_named": 145,
+        "replay_named": 146,
         "server_named": 26
       },
       "reconciles": true,

@@ -43,6 +43,31 @@
       "write_policy": "database"
     },
     {
+      "id": "rules-derived",
+      "depends_on": [],
+      "outputs": [
+        "rules/conformance-cases.json",
+        "rules/manifest.json",
+        "mechanics/registry.json",
+        "coverage/mechanics-coverage.json",
+        "coverage/mechanics-coverage.md",
+        "coverage/rules-conformance.json",
+        "coverage/rules-conformance.md",
+        "coverage/rules-coverage.json",
+        "coverage/rules-coverage.md"
+      ],
+      "check": [
+        "scripts/update_rules_derived.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_rules_derived.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "automatic"
+    },
+    {
       "id": "card-unlock-frontier",
       "depends_on": [
         "compiler-corpus-coverage"
@@ -84,7 +109,9 @@
     },
     {
       "id": "rules-scheduler",
-      "depends_on": [],
+      "depends_on": [
+        "rules-derived"
+      ],
       "outputs": [
         "coverage/rules-dependency-queue.json",
         "docs/RULES_DEPENDENCY_QUEUE.md"
@@ -137,7 +164,8 @@
     {
       "id": "platform-status",
       "depends_on": [
-        "compiler-corpus-coverage"
+        "compiler-corpus-coverage",
+        "rules-derived"
       ],
       "outputs": [
         "coverage/platform-readiness.json",

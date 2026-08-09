@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 4,
+  "contract_version": 5,
   "mechanic_id": "cr-310-battles",
   "official_name": "Battles",
   "effective_date": "2026-06-19",
@@ -129,8 +129,8 @@
       "derived card types, subtypes, and copied defense are consulted at every relevant event"
     ],
     "replacement_effects": [
-      "intrinsic defense counters are a mandatory self-replacement inside the battlefield-entry zone event",
-      "represented quantity replacements apply to the nested defense-counter event in the affected controller's chosen order",
+      "intrinsic defense counters are a mandatory self-replacement inside an ordinary battlefield-entry zone event and a prospective counter batch for a Battle token created on the battlefield",
+      "represented quantity replacements apply to the nested or prospective defense-counter event in the affected controller's chosen order",
       "complete replacement ordering for the Siege exile and transformed cast remains blocked"
     ],
     "copy": [
@@ -206,16 +206,18 @@
     "test_competing_entry_counter_replacements_order_to_nine_or_ten",
     "test_simultaneous_entry_choices_follow_four_player_apnap",
     "test_resolving_entry_choice_is_private_and_replays_exactly",
+    "test_token_battle_entry_doubles_defense_and_pins_protector",
+    "test_token_and_counter_replacements_resume_sequentially_and_replay",
     "test_battle_protector_validation_is_closed"
   ],
   "implementation": {
     "component": "typed card-form entry and counter-replacement transactions plus CommanderEngine Battle combat, trigger, damage, and protector facades",
-    "version": "battles-v4",
+    "version": "battles-v5",
     "capability_ids": ["counter.producer.intrinsic_entry"]
   },
   "known_blockers": [
     "nonspell Battle entry still requires a trusted caller to supply any required Siege protector choice",
-    "token Battle entry with an applicable counter-quantity replacement fails closed until token creation can suspend atomically",
+    "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Battle token entry remains outside the prospective-token boundary",
     "attacking or blocking creatures becoming Battles and Battles changing controller during combat are not yet removed from combat by every continuous-effect path",
     "future Battle subtypes are rejected until their protector predicates are present in a pinned Comprehensive Rules snapshot",
     "complete simultaneous/APNAP protector choices and all Battle-targeting interactions are not implemented",

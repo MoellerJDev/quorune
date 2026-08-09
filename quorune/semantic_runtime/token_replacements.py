@@ -174,6 +174,7 @@ class TokenCreationReplacementResolution:
     effects: tuple[ReplacementEffect, ...]
     journal: tuple[ReplacementSelection, ...]
     pending: ReplacementBatchChoice | None
+    consumed_selections: int
 
     @property
     def tokens(self) -> tuple[Mapping[str, Any], ...]:
@@ -193,7 +194,8 @@ def resolve_token_creation_replacements(
     created_subtypes: Sequence[str],
     effects: Sequence[ReplacementEffect],
     apnap_order: Sequence[str],
-    selections: Sequence[str | None] = (),
+    selections: Sequence[str | None | Mapping[str, Any]] = (),
+    require_all_selections: bool = True,
 ) -> TokenCreationReplacementResolution:
     event = ReplaceableEvent(
         event_id=event_id,
@@ -214,6 +216,7 @@ def resolve_token_creation_replacements(
         ),
         tuple(effects),
         selections=tuple(selections),
+        require_all_selections=require_all_selections,
     )
     resolved_event = progress.batch.events[0]
     return TokenCreationReplacementResolution(
@@ -222,6 +225,7 @@ def resolve_token_creation_replacements(
         effects=tuple(effects),
         journal=progress.batch.journal,
         pending=progress.pending,
+        consumed_selections=progress.consumed_selections,
     )
 
 

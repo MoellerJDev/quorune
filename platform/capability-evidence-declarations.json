@@ -3600,6 +3600,14 @@
     },
     {
       "capability_id": "counter.producer.intrinsic_entry",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay",
+      "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resume a token-quantity replacement choice and then a counter-quantity replacement choice from one strict selection journal without duplicating either transformation."
+    },
+    {
+      "capability_id": "counter.producer.intrinsic_entry",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_simultaneous_entry_choices_follow_four_player_apnap",
       "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
@@ -3608,11 +3616,27 @@
     },
     {
       "capability_id": "counter.producer.intrinsic_entry",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay",
+      "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve both affected-controller choices in a four-player game while preserving one authoritative prospective token batch."
+    },
+    {
+      "capability_id": "counter.producer.intrinsic_entry",
       "evidence_class": "mutation",
       "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_intrinsic_entry_counter_generation_mutant_is_killed",
       "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Kill removal of intrinsic self-replacement generation by requiring ordinary Planeswalker entry to produce its printed loyalty counters."
+    },
+    {
+      "capability_id": "counter.producer.intrinsic_entry",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_entry_counter_owner_mutant_is_killed",
+      "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a token-entry coordinator mutant that discards the prepared intrinsic counter batch by requiring doubled loyalty on the created Planeswalker token."
     },
     {
       "capability_id": "counter.producer.intrinsic_entry",
@@ -3629,14 +3653,6 @@
       "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject missing, boolean, fractional, negative, and nonnumeric printed entry values before a replacement event exists."
-    },
-    {
-      "capability_id": "counter.producer.intrinsic_entry",
-      "evidence_class": "negative",
-      "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_compatibility_path_fails_before_unsupported_replacement",
-      "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Reject token entry before creation when an applicable counter replacement would require unsupported suspension."
     },
     {
       "capability_id": "counter.producer.intrinsic_entry",
@@ -3664,6 +3680,22 @@
     },
     {
       "capability_id": "counter.producer.intrinsic_entry",
+      "evidence_class": "positive",
+      "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_battle_entry_doubles_defense_and_pins_protector",
+      "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Create a prospective Siege token with a validated opponent protector and commit its replaced defense-counter amount through the canonical counter owner."
+    },
+    {
+      "capability_id": "counter.producer.intrinsic_entry",
+      "evidence_class": "positive",
+      "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_planeswalker_entry_uses_counter_replacement_owner",
+      "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Create a prospective Planeswalker token, resolve a represented counter-quantity replacement before mutation, and commit the token with its doubled printed loyalty."
+    },
+    {
+      "capability_id": "counter.producer.intrinsic_entry",
       "evidence_class": "privacy",
       "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_resolving_entry_choice_is_private_and_replays_exactly",
       "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
@@ -3672,11 +3704,27 @@
     },
     {
       "capability_id": "counter.producer.intrinsic_entry",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay",
+      "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project each suspended replacement choice only to the affected seat without exposing the continuation to the other three seats."
+    },
+    {
+      "capability_id": "counter.producer.intrinsic_entry",
       "evidence_class": "replay",
       "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_resolving_entry_choice_is_private_and_replays_exactly",
       "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the affected-seat replacement order and resolving permanent entry to the same authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.intrinsic_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_intrinsic_entry_counters.IntrinsicEntryCounterTests.test_token_and_counter_replacements_resume_sequentially_and_replay",
+      "official_rule_ids": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay both sequential replacement choices and the prospective token identities to the identical authoritative hash."
     },
     {
       "capability_id": "counter.producer.mentor",

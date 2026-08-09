@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from dataclasses import dataclass
 from typing import Any, Iterable, Mapping, Protocol, Sequence
 
 from .aura import (
@@ -12,8 +13,13 @@ from .aura import (
     prepare_aura_entry,
 )
 from .model import CardInstance
+from .counter_placement import (
+    commit_prepared_counter_placements,
+    CounterPlacementError,
+    PreparedCounterPlacements,
+    prepare_counter_placement_specs,
+)
 from .entry_counters import (
-    commit_unreplaced_intrinsic_entry_counters,
     EntryCounterError,
     intrinsic_entry_counters,
     mark_intrinsic_entry_counters_initialized,
@@ -21,10 +27,9 @@ from .entry_counters import (
 )
 from .replacement_effects import (
     ReplacementChoiceRequired,
-    replacement_choice,
 )
+from .replacement.immutable import FrozenMap, thaw_value
 from .semantic_runtime import (
-    collect_counter_placement_replacement_effects,
     CounterPlacementEventSpec,
     TokenCreationReplacementContext,
     default_token_creation_replacement_registry,
@@ -124,6 +129,33 @@ _ATTACKING_FIELD = "attack" + "ing"
 _REASON_FIELD = "rea" + "son"
 
 
+@dataclass(frozen=True, slots=True)
+class PreparedTokenObject:
+    """One prospective token identity pinned before counter replacement."""
+
+    ref: str
+    object_id: str
+    oracle_id: str
+    printed_name: str
+    annotations: FrozenMap
+    zone_timestamp: int
+    tapped: bool
+    attacking: str | None
+    battle_protector: str | None
+    temporary_keywords: tuple[str, ...]
+    aura_target_ref: str | None
+    replacement_component: FrozenMap | None
+
+
+@dataclass(frozen=True, slots=True)
+class ResolvedTokenSpecs:
+    specs: tuple[Mapping[str, Any], ...]
+    journal: tuple[Any, ...]
+    remaining_selections: tuple[
+        str | None | Mapping[str, Any], ...
+    ]
+
+
 def _creation_subject(
     host: TokenCreationHost,
     controller: str,
@@ -214,8 +246,10 @@ def _resolved_token_specs(
     created_types: set[str],
     created_subtypes: set[str],
     replacement_effects: Sequence[Any],
-    replacement_selections: Sequence[str | None],
-) -> tuple[tuple[Mapping[str, Any], ...], tuple[Any, ...]]:
+    replacement_selections: Sequence[
+        str | None | Mapping[str, Any]
+    ],
+) -> ResolvedTokenSpecs:
     if quantity > 0 and replacement_effects:
         resolution = resolve_token_creation_replacements(
             event_id=(
@@ -229,6 +263,7 @@ def _resolved_token_specs(
             effects=tuple(replacement_effects),
             apnap_order=host.apnap_order(),
             selections=tuple(replacement_selections),
+            require_all_selections=False,
         )
         if resolution.pending is not None:
             raise ReplacementChoiceRequired(
@@ -236,13 +271,18 @@ def _resolved_token_specs(
                 effects=tuple(replacement_effects),
                 pending=resolution.pending,
             )
-        return resolution.tokens, resolution.journal
-    if replacement_selections:
-        raise TokenCreationError(
-            "Replacement selections were supplied without an applicable "
-            "token replacement"
+        return ResolvedTokenSpecs(
+            specs=resolution.tokens,
+            journal=resolution.journal,
+            remaining_selections=tuple(
+                replacement_selections[resolution.consumed_selections :]
+            ),
         )
-    return token_specs, ()
+    return ResolvedTokenSpecs(
+        specs=token_specs,
+        journal=(),
+        remaining_selections=tuple(replacement_selections),
+    )
 
 
 def _copied_token_identity(
@@ -252,13 +292,13 @@ def _copied_token_identity(
     copy_of: Any,
     name: str,
     characteristics: Mapping[str, Any],
+    ref: str,
 ) -> tuple[str, str, str, dict[str, Any]]:
     original = host._resolve_object(
         controller,
         str(copy_of),
         zones={"battlefield"},
     )
-    ref = host._next_ref("T")
     annotations = copy.deepcopy(original.annotations)
     annotations["copied_from"] = original.object_id
     overrides = dict(annotations.get("copy_overrides") or {})
@@ -279,8 +319,8 @@ def _new_token_identity(
     *,
     name: str,
     characteristics: Mapping[str, Any],
+    ref: str,
 ) -> tuple[str, str, str, dict[str, Any]]:
-    ref = host._next_ref("T")
     try:
         record = host.card_db.lookup(name)
         oracle_id = record.oracle_id
@@ -377,16 +417,10 @@ def _preflight_aura_token_specs(
             continue
         preview = _preview_token_object(host, controller, spec)
         data = host._effective_card_data(preview)
-        card_types, subtypes, supertypes = host._type_parts(
+        card_types, subtypes, _supertypes = host._type_parts(
             str(data.get("type_line") or "")
         )
         try:
-            counters = intrinsic_entry_counters(
-                data,
-                card_types=tuple(sorted(card_types)),
-                card_subtypes=tuple(sorted(subtypes)),
-                keywords=tuple(data.get("keywords") or ()),
-            )
             spec["battle_protector"] = validate_battle_entry_protector(
                 card_types=tuple(sorted(card_types)),
                 subtypes=tuple(sorted(subtypes)),
@@ -398,37 +432,6 @@ def _preflight_aura_token_specs(
                 ),
                 active_seats=host.active_seats,
             )
-            counter_effects = (
-                collect_counter_placement_replacement_effects(host)
-                if any(counter.amount for counter in counters)
-                else ()
-            )
-            for index, counter in enumerate(counters):
-                if counter.amount == 0:
-                    continue
-                event = CounterPlacementEventSpec(
-                    event_id=f"token.entry-counter:{index}",
-                    subject_kind="permanent",
-                    subject_id=preview.object_id,
-                    owner=controller,
-                    controller=controller,
-                    target_zone="battlefield",
-                    target_types=tuple(
-                        sorted({*card_types, *subtypes, *supertypes})
-                    ),
-                    placing_player=controller,
-                    counter_name=counter.counter_name,
-                    amount=counter.amount,
-                    source_ref=f"rule:{counter.rule_id}:{preview.ref}",
-                    effect_generated=True,
-                    logical_object_id=preview.logical_object_id,
-                ).event()
-                if replacement_choice(event, counter_effects) is not None:
-                    raise TokenCreationError(
-                        "Token copies entering with intrinsic counters and "
-                        "an applicable counter replacement are not yet "
-                        "supported"
-                    )
         except EntryCounterError as exc:
             raise TokenCreationError(str(exc)) from exc
         if not is_aura_type_line(str(data.get("type_line") or "")):
@@ -473,92 +476,73 @@ def _preflight_aura_token_specs(
     return tuple(prepared)
 
 
-def _commit_token_object(
+def _card_from_token_plan(
     host: TokenCreationHost,
     controller: str,
-    *,
-    ref: str,
-    oracle_id: str,
-    printed_name: str,
-    annotations: Mapping[str, Any],
-    zone_timestamp: int,
-    tapped: bool,
-    attacking: str | None,
-    battle_protector: str | None,
-    temporary_keywords: Sequence[str],
-) -> str:
-    object_id = host._stable_runtime_id("token-object", ref)
-    card = CardInstance(
-        object_id=object_id,
-        ref=ref,
-        oracle_id=oracle_id,
-        printed_name=printed_name,
+    plan: PreparedTokenObject,
+) -> CardInstance:
+    return CardInstance(
+        object_id=plan.object_id,
+        ref=plan.ref,
+        oracle_id=plan.oracle_id,
+        printed_name=plan.printed_name,
         owner=controller,
         controller=controller,
         zone="battlefield",
         is_token=True,
-        zone_timestamp=zone_timestamp,
-        tapped=tapped,
-        temporary_keywords=list(temporary_keywords),
-        annotations=copy.deepcopy(dict(annotations)),
+        zone_timestamp=plan.zone_timestamp,
+        tapped=plan.tapped,
+        temporary_keywords=list(plan.temporary_keywords),
+        annotations=thaw_value(plan.annotations),
         acquired_control_turn_count=host.state.players[
             controller
         ].turns_begun,
         entered_battlefield_turn_sequence=host.state.turn_sequence,
         known_to=list(host.seats),
         revealed_to=list(host.seats),
-        attacking=attacking,
-        battle_protector=battle_protector,
+        attacking=plan.attacking,
+        battle_protector=plan.battle_protector,
     )
-    host.state.cards[object_id] = card
-    host.state.players[controller].zones["battlefield"].append(object_id)
-    try:
-        data = host._effective_card_data(
-            card,
-            printed_entry_characteristics=True,
+
+
+def _commit_token_object(
+    host: TokenCreationHost,
+    controller: str,
+    plan: PreparedTokenObject,
+) -> str:
+    allocated_ref = host._next_ref("T")
+    if allocated_ref != plan.ref:
+        raise TokenCreationError(
+            "Prospective token identity changed before commit"
         )
-        card_types, subtypes, _supertypes = host._type_parts(
-            str(data.get("type_line") or "")
-        )
-        commit_unreplaced_intrinsic_entry_counters(
-            host,
-            object_id=card.object_id,
-            logical_object_id=card.logical_object_id,
-            counters=intrinsic_entry_counters(
-                data,
-                card_types=tuple(sorted(card_types)),
-                card_subtypes=tuple(sorted(subtypes)),
-                keywords=tuple(data.get("keywords") or ()),
-            ),
-        )
-        mark_intrinsic_entry_counters_initialized(
-            card,
-            destination="battlefield",
-            destination_type_line=str(data.get("type_line") or ""),
-        )
-    except EntryCounterError as exc:
-        raise TokenCreationError(str(exc)) from exc
+    card = _card_from_token_plan(host, controller, plan)
+    host.state.cards[card.object_id] = card
+    host.state.players[controller].zones["battlefield"].append(card.object_id)
     host._refresh_world_supertype_timestamp(
         card,
         gained_at=card.zone_timestamp,
     )
-    if attacking:
-        host.state.combat.attackers[object_id] = attacking
-        target_details = host._attack_target_details(controller, attacking)
+    if plan.attacking:
+        host.state.combat.attackers[card.object_id] = plan.attacking
+        target_details = host._attack_target_details(
+            controller, plan.attacking
+        )
         if target_details is not None:
-            host.state.combat.attack_target_context[object_id] = target_details
-    return object_id
+            host.state.combat.attack_target_context[
+                card.object_id
+            ] = target_details
+    return card.object_id
 
 
-def _commit_token_specs(
+def _prepare_token_objects(
     host: TokenCreationHost,
     controller: str,
     token_specs: Sequence[Mapping[str, Any]],
     *,
     creation_timestamp: int,
-) -> tuple[list[str], list[dict[str, Any]]]:
-    created: list[str] = []
-    applied_components: list[dict[str, Any]] = []
+) -> tuple[PreparedTokenObject, ...]:
+    plans: list[PreparedTokenObject] = []
+    next_token_number = int(host.state.ref_counters.get("T", 0)) + 1
     for token_spec in token_specs:
         spec = dict(token_spec)
         spec_quantity = int(spec.get("quantity", 1))
@@ -572,14 +556,13 @@ def _commit_token_specs(
         name = str(raw_name) if raw_name is not None else ""
         if not copy_of and not name:
             name = "Token"
-        tapped = bool(spec.get("tapped", False))
-        attacking = spec.get(_ATTACKING_FIELD)
-        battle_protector = spec.get("battle_protector")
-        keywords = list(spec.get("temporary_keywords", ()))
         component = spec.get("replacement_component")
-        if isinstance(component, Mapping):
-            applied_components.append(dict(component))
+        frozen_component = (
+            FrozenMap(component) if isinstance(component, Mapping) else None
+        )
         for _ in range(spec_quantity):
+            ref = f"T{next_token_number}"
+            next_token_number += 1
             if copy_of:
                 identity = _copied_token_identity(
                     host,
@@ -587,49 +570,168 @@ def _commit_token_specs(
                     copy_of=copy_of,
                     name=name,
                     characteristics=characteristics,
+                    ref=ref,
                 )
             else:
                 identity = _new_token_identity(
                     host,
                     name=name,
                     characteristics=characteristics,
+                    ref=ref,
                 )
-            object_id = _commit_token_object(
-                host,
-                controller,
-                ref=identity[0],
-                oracle_id=identity[1],
-                printed_name=identity[2],
-                annotations=identity[3],
-                zone_timestamp=creation_timestamp,
-                tapped=tapped,
-                attacking=attacking,
-                battle_protector=battle_protector,
-                temporary_keywords=keywords,
+            plans.append(
+                PreparedTokenObject(
+                    ref=identity[0],
+                    object_id=host._stable_runtime_id(
+                        "token-object", identity[0]
+                    ),
+                    oracle_id=identity[1],
+                    printed_name=identity[2],
+                    annotations=FrozenMap(identity[3]),
+                    zone_timestamp=creation_timestamp,
+                    tapped=bool(spec.get("tapped", False)),
+                    attacking=(
+                        str(spec[_ATTACKING_FIELD])
+                        if spec.get(_ATTACKING_FIELD) is not None
+                        else None
+                    ),
+                    battle_protector=(
+                        str(spec["battle_protector"])
+                        if spec.get("battle_protector") is not None
+                        else None
+                    ),
+                    temporary_keywords=tuple(
+                        str(value)
+                        for value in spec.get("temporary_keywords", ())
+                    ),
+                    aura_target_ref=(
+                        str(spec["aura_target_ref"])
+                        if spec.get("aura_target_ref") is not None
+                        else None
+                    ),
+                    replacement_component=frozen_component,
+                )
             )
-            created.append(object_id)
-            aura_target_ref = spec.get("aura_target_ref")
-            if aura_target_ref is not None:
-                token = host.state.cards[object_id]
-                data = host._effective_card_data(token)
-                try:
-                    enchant_spec = host._compiled_enchant_spec(token)
-                    if enchant_spec is None:
-                        raise AuraRuleError(
-                            "Aura token entry requires one trusted compiled "
-                            "Enchant descriptor"
-                        )
-                    plan = prepare_aura_entry(
-                        host,
-                        token,
-                        spec=enchant_spec,
-                        controller=controller,
-                        target_ref=str(aura_target_ref),
-                        resolving_as_spell=False,
+    return tuple(plans)
+
+
+def _token_entry_counter_specs(
+    host: TokenCreationHost,
+    controller: str,
+    plans: Sequence[PreparedTokenObject],
+) -> tuple[CounterPlacementEventSpec, ...]:
+    specs: list[CounterPlacementEventSpec] = []
+    for plan in plans:
+        card = _card_from_token_plan(host, controller, plan)
+        try:
+            data = host._effective_card_data(
+                card,
+                printed_entry_characteristics=True,
+            )
+            card_types, subtypes, supertypes = host._type_parts(
+                str(data.get("type_line") or "")
+            )
+            counters = intrinsic_entry_counters(
+                data,
+                card_types=tuple(sorted(card_types)),
+                card_subtypes=tuple(sorted(subtypes)),
+                keywords=tuple(data.get("keywords") or ()),
+            )
+        except EntryCounterError as exc:
+            raise TokenCreationError(str(exc)) from exc
+        for index, counter in enumerate(counters):
+            if counter.amount == 0:
+                continue
+            specs.append(
+                CounterPlacementEventSpec(
+                    event_id=(
+                        f"token.entry-counter:{host.state.revision}:"
+                        f"{host.state.event_sequence + 1}:{plan.ref}:"
+                        f"{index}"
+                    ),
+                    subject_kind="permanent",
+                    subject_id=plan.object_id,
+                    owner=controller,
+                    controller=controller,
+                    target_zone="battlefield",
+                    target_types=tuple(
+                        sorted({*card_types, *subtypes, *supertypes})
+                    ),
+                    placing_player=controller,
+                    counter_name=counter.counter_name,
+                    amount=counter.amount,
+                    source_ref=f"rule:{counter.rule_id}:{plan.ref}",
+                    effect_generated=True,
+                    logical_object_id=card.logical_object_id,
+                )
+            )
+    return tuple(specs)
+
+
+def _commit_token_specs(
+    host: TokenCreationHost,
+    controller: str,
+    plans: Sequence[PreparedTokenObject],
+    *,
+    creation_timestamp: int,
+    prepared_counters: PreparedCounterPlacements,
+) -> tuple[list[str], list[dict[str, Any]]]:
+    if plans:
+        allocated_timestamp = host._next_zone_timestamp()
+        if allocated_timestamp != creation_timestamp:
+            raise TokenCreationError(
+                "Prospective token timestamp changed before commit"
+            )
+    created: list[str] = []
+    applied_components: list[dict[str, Any]] = []
+    for plan in plans:
+        object_id = _commit_token_object(host, controller, plan)
+        created.append(object_id)
+        if plan.replacement_component is not None:
+            component = thaw_value(plan.replacement_component)
+            if component not in applied_components:
+                applied_components.append(component)
+        if plan.aura_target_ref is not None:
+            token = host.state.cards[object_id]
+            data = host._effective_card_data(token)
+            try:
+                enchant_spec = host._compiled_enchant_spec(token)
+                if enchant_spec is None:
+                    raise AuraRuleError(
+                        "Aura token entry requires one trusted compiled "
+                        "Enchant descriptor"
                     )
-                    commit_aura_entry_attachment(host, token, plan)
-                except AuraRuleError as exc:
-                    raise TokenCreationError(str(exc)) from exc
+                aura_plan = prepare_aura_entry(
+                    host,
+                    token,
+                    spec=enchant_spec,
+                    controller=controller,
+                    target_ref=plan.aura_target_ref,
+                    resolving_as_spell=False,
+                )
+                commit_aura_entry_attachment(host, token, aura_plan)
+            except AuraRuleError as exc:
+                raise TokenCreationError(str(exc)) from exc
+    try:
+        if prepared_counters.events:
+            commit_prepared_counter_placements(
+                host,
+                prepared_counters,
+                reason="intrinsic token entry counters",
+            )
+        for object_id in created:
+            token = host.state.cards[object_id]
+            data = host._effective_card_data(
+                token,
+                printed_entry_characteristics=True,
+            )
+            mark_intrinsic_entry_counters_initialized(
+                token,
+                destination="battlefield",
+                destination_type_line=str(data.get("type_line") or ""),
+            )
+    except (CounterPlacementError, EntryCounterError) as exc:
+        raise TokenCreationError(str(exc)) from exc
     return created, applied_components
 
 
@@ -719,7 +821,9 @@ def create_tokens(
     temporary_keywords: Sequence[str] = (),
     aura_target_ref: str | None = None,
     reason: str = "token effect",
-    replacement_selections: Sequence[str | None] = (),
+    replacement_selections: Sequence[
+        str | None | Mapping[str, Any]
+    ] = (),
 ) -> list[str]:
     """Resolve creation replacements, commit tokens, and emit enter events."""
 
@@ -741,7 +845,7 @@ def create_tokens(
         created_subtypes,
         sources,
     )
-    token_specs, replacement_journal = _resolved_token_specs(
+    resolved = _resolved_token_specs(
         host,
         controller,
         quantity=quantity,
@@ -768,16 +872,35 @@ def create_tokens(
     token_specs = _preflight_aura_token_specs(
         host,
         controller,
-        token_specs,
+        resolved.specs,
     )
     creation_timestamp = (
-        host._next_zone_timestamp() if token_specs else 0
+        host.state.timestamp_sequence + 1 if token_specs else 0
     )
-    created, applied_components = _commit_token_specs(
+    plans = _prepare_token_objects(
         host,
         controller,
         token_specs,
         creation_timestamp=creation_timestamp,
+    )
+    try:
+        prepared_counters = prepare_counter_placement_specs(
+            host,
+            _token_entry_counter_specs(host, controller, plans),
+            selections=resolved.remaining_selections,
+            batch_id=(
+                f"replacement:token.entry-counter:{host.state.revision}:"
+                f"{host.state.event_sequence + 1}"
+            ),
+        )
+    except CounterPlacementError as exc:
+        raise TokenCreationError(str(exc)) from exc
+    created, applied_components = _commit_token_specs(
+        host,
+        controller,
+        plans,
+        creation_timestamp=creation_timestamp,
+        prepared_counters=prepared_counters,
     )
     _record_and_dispatch_token_creation(
         host,
@@ -786,7 +909,7 @@ def create_tokens(
         name=name,
         base_quantity=quantity,
         replacement_components=applied_components,
-        replacement_journal=replacement_journal,
+        replacement_journal=resolved.journal,
         reason=reason,
     )
     return [host.state.cards[object_id].ref for object_id in created]

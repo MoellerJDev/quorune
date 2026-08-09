@@ -108,9 +108,18 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
                 "module-classifications",
                 "platform-status",
                 "reusable-pieces",
+                "rules-derived",
                 "rules-scheduler",
             },
             {spec.id for spec in specs},
+        )
+        self.assertLess(
+            ordered.index("rules-derived"),
+            ordered.index("rules-scheduler"),
+        )
+        self.assertLess(
+            ordered.index("rules-derived"),
+            ordered.index("platform-status"),
         )
         self.assertLess(
             ordered.index("compiler-corpus-coverage"),
@@ -128,6 +137,10 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             ordered.index("architecture-audit"),
             ordered.index("reusable-pieces"),
         )
+        rules_owner = next(spec for spec in specs if spec.id == "rules-derived")
+        self.assertIn("rules/conformance-cases.json", rules_owner.outputs)
+        self.assertIn("mechanics/registry.json", rules_owner.outputs)
+        self.assertIn("coverage/rules-coverage.md", rules_owner.outputs)
 
     def test_generated_manifest_rejects_duplicate_output_and_cycle(self):
         manifest = json.loads(

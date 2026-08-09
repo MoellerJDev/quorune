@@ -714,6 +714,14 @@
       "capability_ids": ["activation.tap_untap_cost.haste", "counter.producer.riot"],
       "interaction_order": 2,
       "assertion": "The alternative Riot result grants typed layer-6 Haste that the existing tap and untap cost legality owner consumes for the current zone object."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_token_and_counter_replacements_resume_sequentially_and_replay",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.intrinsic_entry", "capability.token.creation.additional_replacement"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.intrinsic_entry", "token.creation.additional_replacement"],
+      "interaction_order": 3,
+      "assertion": "One prospective token batch resumes an additional-token choice and then an intrinsic-entry counter-quantity choice without duplicating either replacement or exposing either continuation to another seat."
     }
   ]
 }
