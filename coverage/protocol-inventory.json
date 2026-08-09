@@ -726,6 +726,7 @@
       "id": "https://example.invalid/mtg-commander-sim/reusable-piece-policy.schema.json",
       "path": "schemas/reusable-piece-policy.schema.json",
       "properties": [
+        "ambient_high_risk_piece_pairs",
         "capability_prefix_classes",
         "classes",
         "complex_card_sentinels",
@@ -752,6 +753,7 @@
         "runtime_family_classes",
         "universal_system_classes",
         "high_risk_class_pairs",
+        "ambient_high_risk_piece_pairs",
         "complex_card_weights",
         "complex_card_sentinels"
       ],
@@ -895,7 +897,7 @@
       "type": "object"
     }
   ],
-  "source_fingerprint": "6e5d78063e064197192bf0e13aa4a70e9fa6a809ee4b6402df432ef9deac5b1c",
+  "source_fingerprint": "f34b66eb749c269f83116206d63bb7f1d991d4e4e01d712d145ccbd5b3698422",
   "top_blockers": [],
   "websocket_routes": [
     "/api/v1/games/{game_id}/stream"
