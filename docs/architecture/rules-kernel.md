@@ -1,7 +1,7 @@
 ---
 title: "Rules kernel"
 status: "current"
-authoritative_source: "quorune engine and rules modules"
+authoritative_source: "quorune engine and rules modules, including quorune/mentor.py, quorune/relative_power_target.py, and quorune/target_predicates.py"
 verified: "2026-08-07"
 audience: "rules and engine contributors"
 maintenance: "hand-maintained"
@@ -119,14 +119,17 @@ Combat declaration relationships commit through
 `combat_relationship_state.py`. After a complete declaration, the engine
 adapts public combat facts into immutable canonical attack or block transition
 values. Typed transition derivation owns ordinary printed Exalted, Battle Cry,
-Melee, Flanking, and positive-integer Bushido occurrences; the shared trigger
+Melee, Mentor, Flanking, and positive-integer Bushido occurrences; the shared trigger
 batch owns APNAP placement, and the continuous-effect journal owns their
-identity-pinned layer 7c results. Transition models have no mutable state or
-engine dependency. Their narrow adapters may read effective characteristics
-and delegate commits to the declared combat, trigger, and continuous-effect
-owners. Conditional or prose-equivalent variants, unsupported granted or
-copied fragments, trigger multiplication, and broader attack/block transition
-triggers remain explicit residuals.
+identity-pinned layer 7c results. Mentor instead emits a typed targeted counter
+result: `relative_power_target.py` owns current and predeparture source-power
+snapshots, `target_predicates.py` owns the shared target-predicate evaluation,
+and the counter transaction owns the write. Transition models have no mutable
+state or engine dependency. Their narrow adapters may read effective
+characteristics and delegate commits to the declared combat, trigger,
+continuous-effect, target, and counter owners. Conditional or prose-equivalent
+variants, unsupported granted or copied fragments, trigger multiplication, and
+broader attack/block transition triggers remain explicit residuals.
 
 `ObjectQuerySpec` is a strict immutable predicate shared by those live effects
 and other represented rules families. Its current schema distinguishes
