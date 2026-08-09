@@ -267,8 +267,8 @@ def main() -> int:
     require_supported_python()
     parser = argparse.ArgumentParser(
         description=(
-            "Write or verify the registered deterministic generated-artifact "
-            "set from one dependency-ordered manifest"
+            "Write or verify the complete discovered and registered "
+            "generated-artifact set from one dependency-ordered manifest"
         )
     )
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -296,16 +296,17 @@ def main() -> int:
     args = parser.parse_args()
     if args.resume_from and not args.write:
         parser.error("--resume-from requires --write")
-    specs = load_manifest()
     database = _database(args.db)
     result: dict[str, object] = {
         "ok": False,
         "mode": "write" if args.write else "check",
         "manifest": "platform/generated-artifacts.json",
-        "generator_count": len(specs),
+        "generator_count": None,
         "database": str(database) if database is not None else None,
     }
     try:
+        specs = load_manifest()
+        result["generator_count"] = len(specs)
         selected_ids: frozenset[str] | None = None
         if args.resume_from:
             resumed = next(

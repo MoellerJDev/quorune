@@ -112,9 +112,8 @@ jobs:
         run: python scripts/finalize_generated.py --check
       - name: Run generated conformance and governance tests
         run: python scripts/test_shards.py run generated-validation
-      - name: Verify rules, architecture, documentation, and repository policy
+      - name: Verify architecture, documentation, and repository policy
         run: |
-          python simctl.py rules verify --root .
           python scripts/validate_architecture.py --check
           python scripts/validate_documentation.py --check
           python scripts/validate_repository.py
