@@ -250,6 +250,14 @@ consume the same source unless the repository proves that they do. Prefer one
 canonical manifest or machine-readable source. When duplicated consumer lists
 must remain, add or preserve a deterministic completeness check.
 
+The compact CI card database is specifically owned by
+`tests/fixtures/compact-ci-fixtures.json`. Linux, Windows, generated, browser,
+main-smoke, nightly, quick-gate, and local-gate consumers must call
+`scripts/build_test_database.py build-ci --output <path>` and must not copy
+`--fixture` arguments. Run `scripts/build_test_database.py validate-ci` after
+changing its manifest, builder, or any consumer. Focused test-only databases may
+continue to pass their narrow fixtures directly to `build_fixture_database`.
+
 Compiler-only tests must construct a minimal `CardRecord` directly instead of
 depending on an incidental card in the local or compact CI database. Tests of
 generated inventories must compare identities against their authoritative

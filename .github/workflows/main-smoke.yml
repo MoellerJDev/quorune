@@ -48,13 +48,7 @@ jobs:
           npm ci --prefix web
       - name: Build compact database
         run: >-
-          python scripts/build_test_database.py build
-          --fixture tests/fixtures/scryfall-exact-lists.json
-          --fixture tests/fixtures/browser-lifecycle-cards.json
-          --fixture tests/fixtures/damage-result-cards.json
-          --fixture tests/fixtures/draw-rules-cards.json
-          --fixture tests/fixtures/counter-replacement-cards.json
-          --fixture tests/fixtures/explore-cards.json
+          python scripts/build_test_database.py build-ci
           --output data/test-ci.sqlite3
       - name: Run deterministic replay and server smoke
         run: python scripts/test_shards.py run main-smoke
