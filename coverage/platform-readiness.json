@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "e1dc518b7b04c66cd7a2abc783093218a9ca3ae04e930d9bb305a068abc61180",
+    "evaluated_input_fingerprint": "ab362b57668afe1915c03062495b3af8f767d3a81ae75804d553dadded0124d4",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -468,6 +468,12 @@
       "id": "fixed_adapt_and_monstrosity_actions",
       "name": "Typed fixed Adapt and Monstrosity keyword actions",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "Explicit high-risk interaction evidence now connects the canonical replacement-aware counter transaction and CR 122.1b layer-6 keyword-counter projection to Flying block legality, Vigilance attack tapping, Double strike combat-damage-step participation, and Lifelink final damage results. The four downstream witnesses use four-player authoritative state, shared offer/command legality where applicable, transactional rejection, and exact replay. The existing affected-seat replacement-continuation witness covers privacy, suspension, restart, and replay before the keyword becomes effective. This certifies only the represented ordinary keyword-counter and downstream capability pairs; unsupported keyword behavior, counter types, same-layer dependency cases, and broader continuous-effect composition remain explicit limitations.",
+      "id": "keyword_counter_composition_assurance",
+      "name": "Keyword-counter composition assurance",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -570,7 +576,7 @@
     "generated_validation_modules": 25,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 230,
+    "primary_test_modules": 231,
     "primary_test_shards": 11,
     "schema_files": 18,
     "server_files": 5,

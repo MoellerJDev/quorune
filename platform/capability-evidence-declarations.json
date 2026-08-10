@@ -2672,6 +2672,38 @@
     },
     {
       "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_double_strike_counter_feeds_both_damage_steps",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Feed a canonically placed Double strike counter through the current effective layer-6 snapshot into first- and second-step combat-damage participation and exact replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_flying_counter_feeds_offer_and_command_block_legality",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Feed a canonically placed Flying counter through the effective layer-6 snapshot into shared advertised and accepted block legality, rollback, four-player projection, and replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_lifelink_counter_feeds_final_damage_result",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Feed a canonically placed Lifelink counter through the combat source snapshot into the canonical final-damage life-gain result and exact replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_vigilance_counter_feeds_four_player_attack_tap_owner",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Feed a canonically placed Vigilance counter through the current effective layer-6 snapshot into the four-player attacker tap owner and exact replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_sequence_choice_is_seat_scoped_and_replays",
       "official_rule_ids": ["122.1b", "613.1f"],

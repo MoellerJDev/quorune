@@ -455,6 +455,12 @@
       "name": "Typed fixed Adapt and Monstrosity keyword actions",
       "status": "implemented_on_current_source_tree",
       "evidence": "Ordinary printed positive-integral Adapt N and Monstrosity N activations lower once into source-spanned CardProgram V2 nodes. Resolution revalidates the source's current battlefield logical identity, Adapt conditionally places +1/+1 counters through the canonical replacement-aware counter transaction, and Monstrosity performs the same counter transaction before assigning one physical-object monstrous designation through a typed owner. The designation survives control changes and phasing, clears on a zone change, is not copied, serializes additively for Game Record v3 compatibility, and participates in exact replay and public projection. The engine delegates object-local zone-change reset to a dedicated typed owner. Zero, variable, compound, copied, granted, removed, and face-down keyword actions, multiple instances, Monstrosity-value consumers, and broader replacement interactions remain explicit residuals; neither aggregate mechanic is trusted."
+    },
+    {
+      "id": "keyword_counter_composition_assurance",
+      "name": "Keyword-counter composition assurance",
+      "status": "implemented_on_current_source_tree",
+      "evidence": "Explicit high-risk interaction evidence now connects the canonical replacement-aware counter transaction and CR 122.1b layer-6 keyword-counter projection to Flying block legality, Vigilance attack tapping, Double strike combat-damage-step participation, and Lifelink final damage results. The four downstream witnesses use four-player authoritative state, shared offer/command legality where applicable, transactional rejection, and exact replay. The existing affected-seat replacement-continuation witness covers privacy, suspension, restart, and replay before the keyword becomes effective. This certifies only the represented ordinary keyword-counter and downstream capability pairs; unsupported keyword behavior, counter types, same-layer dependency cases, and broader continuous-effect composition remain explicit limitations."
     }
   ],
   "platform": {

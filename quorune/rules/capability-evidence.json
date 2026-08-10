@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "registry_fingerprint": "167f84cb1cf35a40a4bda3cb248f5df5d2188be8e35e4e0adee1dce50937e810",
-  "declaration_source_fingerprint": "43d96bd0a406a4263c0fbe705638c6fe77a08a964e1d984a335f5870eafa5cec",
+  "declaration_source_fingerprint": "5449bc1331e528867f9bbe438c1ee474ec8b4377217fb51ea78590196c63e527",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -6311,6 +6311,66 @@
         "commander_review"
       ],
       "applicability_note": "Apply the resulting Flying counter through effective layer-6 characteristics after replacement-aware placement commits."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_double_strike_counter_feeds_both_damage_steps",
+      "official_rule_ids": [
+        "122.1b",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed a canonically placed Double strike counter through the current effective layer-6 snapshot into first- and second-step combat-damage participation and exact replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_flying_counter_feeds_offer_and_command_block_legality",
+      "official_rule_ids": [
+        "122.1b",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed a canonically placed Flying counter through the effective layer-6 snapshot into shared advertised and accepted block legality, rollback, four-player projection, and replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_lifelink_counter_feeds_final_damage_result",
+      "official_rule_ids": [
+        "122.1b",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed a canonically placed Lifelink counter through the combat source snapshot into the canonical final-damage life-gain result and exact replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_vigilance_counter_feeds_four_player_attack_tap_owner",
+      "official_rule_ids": [
+        "122.1b",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed a canonically placed Vigilance counter through the current effective layer-6 snapshot into the four-player attacker tap owner and exact replay."
     },
     {
       "capability_id": "counter.characteristic.keyword",
@@ -21836,5 +21896,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "f708c80a41f2378699587e20a68bfa3cc48e3eb98e2528e3bf4fced86d54df66"
+  "fingerprint": "e278d1dec458c470855f237ef7ed95a27b22eeddac054e7ec133edfc5eeb2602"
 }
