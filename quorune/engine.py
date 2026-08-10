@@ -3472,11 +3472,8 @@ class CommanderEngine(
                 semantic_events=False,
             )
             exiled_cards.append(card.object_id)
-        removed_items = list(self.state.stack)
-        removed_stack = [item.ref for item in removed_items]
+        removed_stack = [item.ref for item in self.state.stack]
         self.state.stack.clear()
-        for item in removed_items:
-            self._maybe_sacrifice_completed_saga(item)
         self.state.pending_trigger_batches.clear()
         self.permissions.invalidate_current()
         self.state.priority_player = None
