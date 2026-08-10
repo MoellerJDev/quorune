@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 import re
 from typing import Any, Iterable, Mapping, Sequence
 
+from .activation_usage import ActivationLimit
 from .replacement.immutable import FrozenMap, thaw_value
 from .color_set_mana_abilities import ColorSetActivatedManaAbilitySpec
 from .fixed_mana_abilities import FixedManaMode
@@ -104,6 +105,7 @@ class ActivatedAbility:
     crew_threshold: int | None = None
     fixed_mana_outputs: tuple[FixedManaMode, ...] = ()
     color_set_mana_output: ColorSetActivatedManaAbilitySpec | None = None
+    activation_limit: ActivationLimit | None = None
 
     def __post_init__(self) -> None:
         if self.target_schema is not None and not isinstance(
@@ -123,6 +125,17 @@ class ActivatedAbility:
             raise ValueError(
                 "color_set_mana_output must be a typed color-set descriptor"
             )
+        if self.activation_limit is not None and not isinstance(
+            self.activation_limit, ActivationLimit
+        ):
+            try:
+                object.__setattr__(
+                    self,
+                    "activation_limit",
+                    ActivationLimit(self.activation_limit),
+                )
+            except (TypeError, ValueError) as exc:
+                raise ValueError("activation_limit is unsupported") from exc
 
     @property
     def compiled_cost(self) -> bool:
@@ -166,6 +179,8 @@ class ActivatedAbility:
             result["target_schema"] = thaw_value(self.target_schema)
         if self.crew_threshold is not None:
             result["crew"] = self.crew_threshold
+        if self.activation_limit is not None:
+            result["activation_limit"] = self.activation_limit.value
         return result
 
 
@@ -560,6 +575,14 @@ def _parse_activated_line(
         return ()
     actual_cost, keyword_prefix = _strip_keyword_prefix(left.strip())
     cost = _parse_cost(actual_cost, card_name)
+    prefix = (keyword_override or keyword_prefix or "").casefold()
+    if prefix == "exhaust":
+        effect_text = re.sub(
+            r"\s*\(activate each exhaust ability only once\.\)\s*$",
+            "",
+            effect_text,
+            flags=re.IGNORECASE,
+        ).strip()
     effect_lower = effect_text.casefold()
     mana_ability = bool(
         cost.loyalty_delta is None
@@ -569,6 +592,15 @@ def _parse_activated_line(
     builtin_semantic_key, target_schema = _builtin_effect_descriptor(effect_text)
     if (keyword_override or keyword_prefix or "").casefold() == "equip":
         builtin_semantic_key, target_schema = _equip_effect_descriptor()
+    activation_limit = (
+        ActivationLimit.EXHAUST_ONCE
+        if prefix == "exhaust"
+        else (
+            ActivationLimit.ONCE_PER_TURN
+            if "activate only once each turn" in effect_lower
+            else None
+        )
+    )
     return (
         ActivatedAbility(
             ability_id=f"ab{line_index + 1}",
@@ -608,6 +640,7 @@ def _parse_activated_line(
             ),
             builtin_semantic_key=builtin_semantic_key,
             target_schema=target_schema,
+            activation_limit=activation_limit,
         ),
     )
 

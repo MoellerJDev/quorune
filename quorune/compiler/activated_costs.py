@@ -8,7 +8,7 @@ from ..abilities import ActivatedAbility
 def activated_ability_cost(ability: ActivatedAbility) -> dict[str, Any]:
     """Serialize the compiler-facing cost facts for one activated ability."""
 
-    return {
+    result = {
         "text": ability.cost_text,
         "mana": dict(ability.mana),
         "complex_symbols": list(ability.complex_symbols),
@@ -23,6 +23,9 @@ def activated_ability_cost(ability: ActivatedAbility) -> dict[str, Any]:
         "choices": [choice.compact() for choice in ability.choices],
         "uncompiled_costs": list(ability.uncompiled_costs),
     }
+    if ability.activation_limit is not None:
+        result["activation_limit"] = ability.activation_limit.value
+    return result
 
 
 __all__ = ["activated_ability_cost"]

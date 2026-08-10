@@ -113,6 +113,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
             "quorune/rules/",
         )
     ) or relative in {
+        "quorune/activation_usage.py",
         "quorune/abilities.py",
         "quorune/affected_permanents.py",
         "quorune/ability_fragments.py",

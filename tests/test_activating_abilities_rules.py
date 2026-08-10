@@ -10,6 +10,7 @@ from quorune.abilities import (
     ActivatedAbility,
     parse_activated_abilities,
 )
+from quorune.activation_usage import ActivationLimit
 
 from common import keep_all, load_assets, make_session
 from quorune.record import checkpoint_envelope, replay_record
@@ -284,18 +285,14 @@ class ActivatingAbilityRuleTests(unittest.TestCase):
             tapped=False,
             log=False,
         )
-        ability = ActivatedAbility(
-            ability_id="ab-once",
-            line_index=0,
-            oracle_line=(
-                "{0}: Draw a card. Activate only once each turn."
-            ),
-            cost_text="{0}",
-            effect_text=(
-                "Draw a card. Activate only once each turn."
-            ),
-            zones=("battlefield",),
-            mana={},
+        ability = parse_activated_abilities(
+            card_name="Once-per-turn fixture",
+            oracle_text="{0}: Draw a card. Activate only once each turn.",
+            keywords=(),
+        )[0]
+        self.assertIs(
+            ActivationLimit.ONCE_PER_TURN,
+            ability.activation_limit,
         )
 
         with patch.object(

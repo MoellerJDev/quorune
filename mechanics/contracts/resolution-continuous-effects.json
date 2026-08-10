@@ -13,7 +13,7 @@
   "behavior": {
     "zones": ["battlefield"],
     "objects": ["source or targeted creature", "one resolved permanent locked by physical and logical battlefield identity"],
-    "events": ["fixed power/toughness modification", "fixed keyword grant", "printed-order fixed target sequence suspended by counter replacement", "fixed represented keyword grant lasting for the target's current battlefield incarnation"],
+    "events": ["fixed power/toughness modification", "fixed keyword grant", "printed-order fixed target or source sequence suspended by counter replacement", "fixed represented keyword grant lasting for the target's current battlefield incarnation"],
     "state_reads": ["current object identity and duration", "typed resolving-source identity", "target physical and logical battlefield identity"],
     "state_writes": ["immutable duration-pinned continuous-effect journal entry"],
     "costs": [],
@@ -29,7 +29,7 @@
     "zone_change": ["new objects do not retain prior turn-scoped or zone-object effects"],
     "source_leaves": ["resolved effects persist for their stated duration"]
   },
-  "variants": ["fixed self power/toughness pump", "fixed self keyword grant", "fixed target power/toughness change", "fixed target keyword grant", "fixed target counter-and-characteristic sequence", "fixed target counter followed by one represented indefinite keyword grant"],
+  "variants": ["fixed self power/toughness pump", "fixed self keyword grant", "fixed target power/toughness change", "fixed target keyword grant", "fixed target counter-and-characteristic sequence", "fixed source counter-and-characteristic sequence", "fixed target counter followed by one represented indefinite keyword grant"],
   "witness_cards": [
     {
       "name": "Whispering Shade",
@@ -46,12 +46,17 @@
     "test_indefinite_keyword_sequence_compiles_the_closed_family",
     "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
     "test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-    "test_zone_object_keyword_commit_mutant_is_killed"
+    "test_zone_object_keyword_commit_mutant_is_killed",
+    "test_fixed_source_sequence_compiles_exact_source_spanned_activated_nodes",
+    "test_fixed_source_sequence_is_reused_by_trigger_context",
+    "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+    "test_source_sequence_replacement_rollback_is_atomic",
+    "test_source_sequence_replacement_continuation_survives_restart"
   ],
   "implementation": {
-    "component": "compiler.fixed_target_effect_sequences, rules.node_capability_shapes, continuous_effect_state, and the typed semantic continuous-effect sink",
-    "version": "continuous-resolution-duration-v3",
-    "capability_ids": ["continuous.resolution.fixed_characteristics_until_end_of_turn", "continuous.resolution.fixed_keyword_zone_object", "resolution.effect_sequence.fixed_target"]
+    "component": "compiler.fixed_target_effect_sequences, compiler.fixed_source_effect_sequences, rules.node_capability_shapes, continuous_effect_state, and the typed semantic continuous-effect sink",
+    "version": "continuous-resolution-duration-v4",
+    "capability_ids": ["continuous.resolution.fixed_characteristics_until_end_of_turn", "continuous.resolution.fixed_keyword_zone_object", "resolution.effect_sequence.fixed_source", "resolution.effect_sequence.fixed_target"]
   },
   "known_blockers": [
     "dynamic values, effect dependencies, and player/game-rule continuous effects remain residual",

@@ -76,6 +76,20 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/activation_usage.py",
+      "layer": "rules",
+      "owning_subsystem": "legacy_rules",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "mutable_owner",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/additional_cost_vocabulary.py",
       "layer": "domain",
       "owning_subsystem": "legacy_domain",
@@ -1188,6 +1202,21 @@
     },
     {
       "file": "quorune/compiler/fixed_numbers.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/compiler/fixed_source_effect_sequences.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
       "allowed_dependency_layers": [
@@ -4921,5 +4950,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "7b22b020e1422cfceec7a7c662447ef1a6d859ce036e071ce1f69a264ff02b47"
+  "fingerprint": "ede50157f01d1a717d893a3215fa818f0ab8677a402216f41e49c4b49a519b9d"
 }

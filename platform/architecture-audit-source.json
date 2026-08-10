@@ -4,8 +4,8 @@
     "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-08",
-    "phase": "ordinary_saga_final_chapter_lifecycle",
-    "scope_note": "The evaluated source tree adds the ordinary non-Read-Ahead Saga final-chapter lifecycle as a separate fine-grained capability. An immutable physical-and-logical-incarnation snapshot defers the CR 704.5s state action while an exact typed chapter occurrence is waiting for APNAP placement or remains on the stack, then routes the current controller's sacrifice through the simultaneous replacement-aware zone-change owner and normalized sacrifice event. The old stack-resolution shortcut is removed, CommanderEngine shrinks, and ordinary Saga CardPrograms now require both lore progression and final-chapter lifecycle closure. Read Ahead, arbitrary lore movement, copied or gained chapter abilities, generic sacrifice-trigger compilation, and overlapping zone-moving state actions remain fail-closed. This correction intentionally produces no full-card promotion from lore progression alone and adds no runtime Oracle parsing, direct GameState writes, or card-identity branches."
+    "phase": "typed_exhaust_and_fixed_source_effect_sequences",
+    "scope_note": "The evaluated source tree adds one typed per-ability Exhaust usage owner and one closed source-threaded fixed-counter then until-end characteristic sequence shared by activated and triggered contexts. Offer and commit use the same incarnation-pinned usage verdict; control changes and phasing preserve a consumed use, zone changes reset it, and usage-limited mana remains explicit and nonreversible. Source sequences preserve printed order, suspend before counter mutation for replacement choices, reject stale source incarnations, and roll back atomically. Oracle compiler v68 and capability registry v75 add two capability-closed Commander CardPrograms and remove eight material residuals without changing CommanderEngine, direct GameState-write counts, card-identity branches, runtime Oracle parsing, or protocol schemas. Effects that grant another Exhaust use, copied or granted Exhaust abilities, reverse-order source sequences, and independently unsupported costs or results remain fail-closed."
   },
   "ci": {
     "workflow": "PR",
@@ -33,6 +33,7 @@
     ],
     "state_owner_modules": [
       "quorune/engine.py",
+      "quorune/activation_usage.py",
       "quorune/permissions.py",
       "quorune/counter_placement.py",
       "quorune/counter_state.py",
@@ -147,6 +148,7 @@
       "status": "typed_proposal_query_and_commit_subsystems_with_engine_facades",
       "owners": [
         "quorune/engine.py",
+        "quorune/activation_usage.py",
         "quorune/abilities.py",
         "quorune/mana.py",
         "quorune/mana_activation.py",

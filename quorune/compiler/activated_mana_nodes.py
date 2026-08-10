@@ -6,6 +6,7 @@ from dataclasses import replace
 import re
 from typing import Any, Callable, Mapping, Sequence
 
+from ..activation_usage import ActivationLimit
 from ..abilities import parse_activated_abilities
 from ..color_set_mana_abilities import (
     color_set_mana_handler_descriptor,
@@ -20,7 +21,6 @@ from .activated_costs import activated_ability_cost
 from .dependency_gate import (
     DependencyGate,
     dependency_gate,
-    explicit_capability_gate,
     explicit_capabilities_gate,
 )
 from .ir_model import (
@@ -56,8 +56,11 @@ def fixed_activated_mana_node(
     )
     if spec is None:
         return ability, None
-    gate = explicit_capability_gate(
-        "mana.activated.fixed_output",
+    capabilities = ["mana.activated.fixed_output"]
+    if ability.activation_limit is ActivationLimit.EXHAUST_ONCE:
+        capabilities.append("activation.exhaust.once_per_object")
+    gate = explicit_capabilities_gate(
+        capabilities,
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )
@@ -90,6 +93,11 @@ def fixed_activated_mana_node(
         template_id="activated-mana-fixed-output-v1",
         cost=activated_ability_cost(ability),
         handlers=(fixed_mana_handler_descriptor(spec),),
+        mechanics=(
+            ("exhaust",)
+            if ability.activation_limit is ActivationLimit.EXHAUST_ONCE
+            else ()
+        ),
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,
         capability_closure=(
@@ -116,8 +124,11 @@ def color_set_activated_mana_node(
     spec = compile_color_set_activated_mana_ability(ability)
     if spec is None:
         return None
-    gate = explicit_capability_gate(
-        "mana.activated.color_set",
+    capabilities = ["mana.activated.color_set"]
+    if ability.activation_limit is ActivationLimit.EXHAUST_ONCE:
+        capabilities.append("activation.exhaust.once_per_object")
+    gate = explicit_capabilities_gate(
+        capabilities,
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )
@@ -150,6 +161,11 @@ def color_set_activated_mana_node(
         template_id="activated-mana-color-set-v1",
         cost=activated_ability_cost(ability),
         handlers=(color_set_mana_handler_descriptor(spec),),
+        mechanics=(
+            ("exhaust",)
+            if ability.activation_limit is ActivationLimit.EXHAUST_ONCE
+            else ()
+        ),
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,
         capability_closure=(
@@ -277,7 +293,12 @@ def _activated_effect_dependency_gate(
         }
     )
     closed_target_sequence = (
-        "fixed-target-effect-sequence" in mechanics
+        bool(
+            {
+                "fixed-target-effect-sequence",
+                "fixed-source-effect-sequence",
+            }.intersection(mechanics)
+        )
         or (
             len(effects) >= 1
             and all(
@@ -322,10 +343,15 @@ def _activated_cost_dependency_gate(
 ) -> DependencyGate:
     """Add closed typed cost ownership without weakening effect blockers."""
 
-    if ability.loyalty_delta is None or ability.loyalty_delta <= 0:
+    additional: list[str] = []
+    if ability.loyalty_delta is not None and ability.loyalty_delta > 0:
+        additional.append("activation.loyalty.positive_counter_cost")
+    if ability.activation_limit is ActivationLimit.EXHAUST_ONCE:
+        additional.append("activation.exhaust.once_per_object")
+    if not additional:
         return gate
     cost_gate = explicit_capabilities_gate(
-        (*gate.capabilities, "activation.loyalty.positive_counter_cost"),
+        (*gate.capabilities, *additional),
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )
@@ -433,6 +459,8 @@ def activated_oracle_node(
         _activated_effect_material(ability),
         card_name=card_name,
     )
+    if ability.activation_limit is ActivationLimit.EXHAUST_ONCE:
+        mechanics = tuple(dict.fromkeys((*mechanics, "exhaust")))
     residual_ids = _activated_effect_residuals(
         ability=ability,
         template=template,

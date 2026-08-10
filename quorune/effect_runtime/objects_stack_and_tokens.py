@@ -39,7 +39,7 @@ def _commit_temporary_characteristic_effect(
     if not operations:
         return True
     try:
-        create_resolution_continuous_effect(
+        created = create_resolution_continuous_effect(
             host,
             source=resolution_effect_source(
                 host, effect, fallback_card=card
@@ -49,6 +49,10 @@ def _commit_temporary_characteristic_effect(
             sublayer=sublayer,
             operations=operations,
         )
+        if created is None:
+            raise ContinuousEffectStateError(
+                "Resolution continuous-effect commit returned no effect"
+            )
     except ContinuousEffectStateError as exc:
         raise GameRuleError(str(exc)) from exc
     return True

@@ -842,6 +842,30 @@
       "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.placement.quantity_replacement", "resolution.effect_sequence.fixed_target", "target.revalidate_resolution"],
       "interaction_order": 4,
       "assertion": "A target that leaves and returns during a synthetic suspended counter replacement no longer matches the pinned logical identity, so the whole sequence fails before partial mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_exhaust_mana_activation_is_explicit_nonreversible_and_replays",
+      "piece_ids": ["capability.activation.exhaust.once_per_object", "capability.mana.activated.fixed_output", "mechanic.exhaust"],
+      "capability_ids": ["activation.exhaust.once_per_object", "mana.activated.fixed_output"],
+      "interaction_order": 3,
+      "assertion": "One printed Exhaust mana ability consumes only its own typed use, commits the selected fixed output explicitly, cannot be reversed through the ordinary tap-mana UI boundary, and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+      "piece_ids": ["capability.activation.exhaust.once_per_object", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_source", "mechanic.cr-122-counters", "mechanic.cr-611-continuous-effects", "mechanic.exhaust"],
+      "capability_ids": ["activation.exhaust.once_per_object", "continuous.resolution.fixed_characteristics_until_end_of_turn", "counter.placement.quantity_replacement", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_source"],
+      "interaction_order": 8,
+      "assertion": "A four-player Exhaust activation commits one per-ability use, suspends its source-counter instruction for affected-object quantity-replacement ordering, resumes the same physical and logical source into one duration-pinned keyword result, preserves seat privacy, and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_source_sequence_rejects_stale_source_identity_without_partial_mutation",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_source", "mechanic.cr-122-counters", "mechanic.cr-400-general"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_source"],
+      "interaction_order": 5,
+      "assertion": "A source that leaves and returns while its counter result is suspended no longer matches the pinned logical identity, so replacement resume rejects before committing either the counter or the later characteristic result."
     }
   ]
 }

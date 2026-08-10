@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 74,
+  "registry_version": 75,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -67,6 +67,12 @@
       "mechanic_id": "explore",
       "capabilities": [
         "keyword_action.explore.single"
+      ]
+    },
+    {
+      "mechanic_id": "exhaust",
+      "capabilities": [
+        "activation.exhaust.once_per_object"
       ]
     },
     {
@@ -153,6 +159,33 @@
       "dependency_fail_closed_rationale": "The compiler and runtime CardProgram closure require both normalized discard-cost zone events and the canonical replacement-aware draw owner; blocking either dependency leaves the ordinary Cycling node partial and prevents trusted runtime discovery.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_ordinary_cycling_compiler_mutant_is_killed removes the typed Cycling lowering and the exact hand-zone activation assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "activation.exhaust.once_per_object",
+      "version": 1,
+      "official_rules": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile each printed Exhaust ability with one typed per-ability activation limit, preserve that use across turns, control changes, and phasing for the same zone object, and reset it only when the physical card becomes a new object after a zone change.",
+        "inputs": ["one source-spanned printed Exhaust ability", "stable physical source and current logical incarnation", "typed activated-ability identity", "authoritative activation proposal and transaction"],
+        "outputs": ["one exact activation-limit descriptor", "payable offer before first use", "transactionally committed per-ability use", "unavailable status after use", "deterministic replay state"],
+        "exclusions": ["effects that permit an Exhaust ability to be activated again", "copied or granted Exhaust abilities outside represented typed ability discovery", "trigger grammar referring to Exhaust activations", "cost modification, copying, or replacement behavior not otherwise capability closed"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.activation_usage.activation_usage_verdict", "quorune.activation_usage.commit_activation_usage", "quorune.abilities.parse_activated_abilities", "quorune.rules.activation.conditions.activation_condition_status", "quorune.rules.activation.commit.commit_activation", "quorune.mana_source_discovery.available_mana_sources"],
+      "positive_tests": ["test_exhaust_parser_and_usage_owner_are_per_ability", "test_exhaust_limit_composes_with_existing_fixed_counter_effect", "test_exhaust_mana_activation_is_explicit_nonreversible_and_replays"],
+      "negative_tests": ["test_exhaust_usage_rejects_malformed_state_and_resets_on_zone_change", "test_exhaust_override_wording_remains_material_residual"],
+      "interaction_tests": ["test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly"],
+      "multiplayer_tests": ["test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly"],
+      "privacy_tests": ["test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly"],
+      "replay_tests": ["test_exhaust_mana_activation_is_explicit_nonreversible_and_replays", "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded base Exhaust activation limit has no capability dependencies; each represented effect and cost independently declares its own closure.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused activation-usage and compiler mutations prove that omitting the typed limit, bypassing the usage owner, or allowing mana undo after use survives neither exact availability nor replay assertions.",
       "blockers": [],
       "status": "trusted"
     },
@@ -2234,6 +2267,33 @@
       "implementation_mutation_rationale": "The focused semantic tap-state mutation test kills an aggregate sink that omits eligible creatures or bypasses individual untap behavior.",
       "blockers": ["Complete effective-characteristic dependencies and untap replacement ordering are not yet represented in ambient match closure."],
       "status": "tested"
+    },
+    {
+      "id": "resolution.effect_sequence.fixed_source",
+      "version": 1,
+      "official_rules": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one closed source-threaded sequence that puts one positive fixed counter kind on the current source zone object and then grants represented fixed characteristics to that same zone object until end of turn, in printed order.",
+        "inputs": ["one permanent source", "two mandatory full instructions", "one positive fixed-count source counter placement", "one represented source-pronoun power/toughness or keyword result", "stable source physical and logical identity"],
+        "outputs": ["one source-spanned CardProgram node", "replacement-aware source counter placement", "suspension before mutation when ordering is required", "typed duration-pinned source characteristic result", "exact continuation replay"],
+        "exclusions": ["targets, choices, optional, modal, conditional, repeated, distributed, variable, linked-result, or more-than-two-instruction sequences", "multiple counter kinds", "indefinite or arbitrary granted rules text", "a source that left or changed logical identity before the applicable instruction", "unsupported characteristic predicates or duration families"]
+      },
+      "dependencies": ["counter.producer.fixed_effect"],
+      "implementation_components": ["quorune.compiler.fixed_source_effect_sequences.FixedSourceEffectSequenceTemplate", "quorune.rules.node_capability_shapes.fixed_source_effect_sequence_node_capabilities", "CommanderEngine._continue_resolution", "quorune.semantic_runtime.values.resolve_semantic_value", "quorune.semantic_choices.counter_coordination", "quorune.counter_placement.place_counters_on_refs", "quorune.continuous_effect_state.create_resolution_continuous_effect"],
+      "positive_tests": ["test_fixed_source_sequence_compiles_exact_source_spanned_activated_nodes", "test_fixed_source_sequence_is_reused_by_trigger_context", "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly"],
+      "negative_tests": ["test_fixed_source_sequence_rejects_open_variants", "test_fixed_source_sequence_shape_and_dependency_mutants_fail_closed", "test_source_sequence_rejects_stale_source_identity_without_partial_mutation"],
+      "interaction_tests": ["test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly", "test_source_sequence_replacement_rollback_is_atomic", "test_source_sequence_replacement_continuation_survives_restart"],
+      "multiplayer_tests": ["test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly"],
+      "privacy_tests": ["test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly"],
+      "replay_tests": ["test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly", "test_source_sequence_replacement_continuation_survives_restart"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The sequence capability requires the canonical replacement-aware fixed-counter producer, while every recognized node separately declares the exact until-end-of-turn characteristic and keyword gameplay capabilities it uses.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and commit mutations remove the closed sequence or its continuous result; exact source-span, rollback, characteristic, and replay assertions reject each survivor.",
+      "blockers": [],
+      "status": "trusted"
     },
     {
       "id": "resolution.effect_sequence.fixed_target",

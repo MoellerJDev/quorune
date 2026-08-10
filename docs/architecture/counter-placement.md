@@ -1,7 +1,7 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/compiler/fixed_target_effect_sequences.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
 verified: "2026-08-09"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -90,14 +90,15 @@ another direct engine write. Counter removal, effects that prohibit placement,
 combined or modified loyalty-symbol costs, and other unrepresented rule actions
 remain distinct and fail closed until their ordering semantics are modeled.
 
-One closed target-threaded sequence may now place a fixed counter and then
-grant Flying, First strike, Trample, or Vigilance for that target's current
-battlefield incarnation. Counter placement still owns replacement suspension
-and mutation;
-the separate continuous-effect owner commits the later layer-6 result in
-printed order. A failed later result rolls the entire resolution transaction
-back. Optional, variable, compound, chosen, multi-target, and arbitrary granted
-ability text remain residuals.
+Closed target- and source-threaded sequences may now place one fixed counter
+and then apply a represented fixed characteristic result in printed order.
+Target sequences pin and revalidate target zero; source sequences resolve the
+exact current source zone object and pin its logical identity before any
+replacement suspension. Counter placement still owns replacement preparation
+and mutation, while the separate continuous-effect owner commits the later
+layer-6 or layer-7c result. A stale target/source or failed later commit rolls
+back the complete resumed transaction. Optional, variable, compound, chosen,
+multi-target, and arbitrary granted-ability text remain residuals.
 
 ## Current producer inventory
 
@@ -258,6 +259,14 @@ their typed layer 6 characteristic capability and the independent runtime
 capability for the granted keyword. Optional, variable, repeated, duplicate,
 distributed, multi-subject, player, entry, and affected-set variants remain
 material residuals.
+
+The source-threaded sequence grammar is deliberately smaller than the target
+grammar. It accepts one positive fixed source counter followed by one fixed
+power/toughness or represented keyword result until end of turn, all against
+`$source.zone_object`. It is used by independently capability-closed activated
+abilities such as the bounded Exhaust harvest; it is not an Exhaust-specific
+runtime path. Effects that allow another Exhaust use, add choices or clauses,
+or refer to a source that has left and returned remain fail-closed.
 
 The attachment-relative fixed-placement family adds one typed semantic
 reference for the object a source enchants, equips, or fortifies. The compiler

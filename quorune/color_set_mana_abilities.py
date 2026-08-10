@@ -12,6 +12,7 @@ from enum import Enum
 import re
 from typing import Any, Mapping
 
+from .activation_usage import ActivationLimit
 from .object_predicate import ObjectQuerySpec
 from .replacement.immutable import FrozenMap, thaw_value
 
@@ -119,6 +120,7 @@ class ColorSetActivatedManaAbilitySpec:
     relation: ColorSetRelation
     selection: ColorSetSelection
     query: ObjectQuerySpec
+    activation_limit: ActivationLimit | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -184,6 +186,19 @@ class ColorSetActivatedManaAbilitySpec:
                     "Color-set mana query must be a typed object query"
                 )
             object.__setattr__(self, "query", ObjectQuerySpec.from_dict(self.query))
+        if self.activation_limit is not None and not isinstance(
+            self.activation_limit, ActivationLimit
+        ):
+            try:
+                object.__setattr__(
+                    self,
+                    "activation_limit",
+                    ActivationLimit(self.activation_limit),
+                )
+            except (TypeError, ValueError) as exc:
+                raise ColorSetManaAbilityError(
+                    "Color-set mana activation limit is unsupported"
+                ) from exc
         self._validate_query()
 
     def _validate_query(self) -> None:
@@ -241,7 +256,7 @@ class ColorSetActivatedManaAbilitySpec:
             )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        value = {
             "ability_id": self.ability_id,
             "line_index": self.line_index,
             "oracle_line": self.oracle_line,
@@ -255,6 +270,9 @@ class ColorSetActivatedManaAbilitySpec:
             "selection": self.selection.value,
             "query": self.query.to_dict(),
         }
+        if self.activation_limit is not None:
+            value["activation_limit"] = self.activation_limit.value
+        return value
 
     @classmethod
     def from_dict(
@@ -274,6 +292,8 @@ class ColorSetActivatedManaAbilitySpec:
             "selection",
             "query",
         }
+        if "activation_limit" in value:
+            expected.add("activation_limit")
         _exact_fields(value, expected, field="color-set mana ability")
         mana_cost = value["mana_cost"]
         query = value["query"]
@@ -303,6 +323,7 @@ class ColorSetActivatedManaAbilitySpec:
             relation=value["relation"],
             selection=value["selection"],
             query=ObjectQuerySpec.from_dict(query),
+            activation_limit=value.get("activation_limit"),
         )
 
     def to_activated_ability(self) -> Any:
@@ -321,6 +342,7 @@ class ColorSetActivatedManaAbilitySpec:
             life_payment=self.life_payment,
             mana_ability=True,
             color_set_mana_output=self,
+            activation_limit=self.activation_limit,
         )
 
 
@@ -411,6 +433,7 @@ def compile_color_set_activated_mana_ability(
         relation=relation,
         selection=selection,
         query=query,
+        activation_limit=ability.activation_limit,
     )
 
 
