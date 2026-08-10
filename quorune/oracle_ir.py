@@ -561,12 +561,8 @@ def _keyword_node_for_mechanics(
         )
     residual_ids = tuple(residual_id_values)
     if bloodthirst := bloodthirst_keyword_node(
-        node_id=node_id,
-        line=line,
-        material_line=material_line,
-        span=span,
-        mechanics=mechanics,
-        gate=gate,
+        node_id=node_id, line=line, material_line=material_line,
+        span=span, mechanics=mechanics, gate=gate,
         residual_ids=residual_ids,
     ):
         return bloodthirst

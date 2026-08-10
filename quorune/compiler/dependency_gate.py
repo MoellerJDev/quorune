@@ -105,6 +105,31 @@ def explicit_capabilities_gate(
     )
 
 
+def _bloodthirst_dependency_gate(
+    mechanics: tuple[str, ...],
+    material_line: str,
+    *,
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+) -> DependencyGate | None:
+    if mechanics != (_BLOODTHIRST_MECHANIC,):
+        return None
+    if re.fullmatch(
+        rf"{re.escape(_BLOODTHIRST_MECHANIC)}\s+[1-9]\d*\.?",
+        material_line,
+        re.IGNORECASE,
+    ):
+        return explicit_capability_gate(
+            "counter.producer.bloodthirst",
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+        )
+    return DependencyGate(
+        blockers=("mechanic:bloodthirst-unsupported-wording",),
+        capabilities=("counter.producer.bloodthirst",),
+    )
+
+
 def keyword_dependency_gate(
     *,
     material_line: str,
@@ -135,21 +160,13 @@ def keyword_dependency_gate(
             capability_registry=capability_registry,
             capability_profile=capability_profile,
         )
-    if mechanics == (_BLOODTHIRST_MECHANIC,):
-        if re.fullmatch(
-            rf"{re.escape(_BLOODTHIRST_MECHANIC)}\s+[1-9]\d*\.?",
-            material_line,
-            re.IGNORECASE,
-        ):
-            return explicit_capability_gate(
-                "counter.producer.bloodthirst",
-                capability_registry=capability_registry,
-                capability_profile=capability_profile,
-            )
-        return DependencyGate(
-            blockers=("mechanic:bloodthirst-unsupported-wording",),
-            capabilities=("counter.producer.bloodthirst",),
-        )
+    if bloodthirst := _bloodthirst_dependency_gate(
+        mechanics,
+        material_line,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    ):
+        return bloodthirst
     if mechanics == (_FABRICATE_MECHANIC,):
         matches = tuple(
             part

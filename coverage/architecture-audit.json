@@ -37,8 +37,8 @@
         },
         "oversized_functions_and_methods": {
           "baseline": 32,
-          "current": 33,
-          "delta": 1
+          "current": 31,
+          "delta": -1
         },
         "oversized_modules": {
           "baseline": 5,
@@ -3632,10 +3632,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 1398,
+          "end_line": 1394,
           "file": "quorune/oracle_ir.py",
           "kind": "function",
-          "line": 968,
+          "line": 964,
           "logical_lines": 421,
           "name": "_compile_face",
           "physical_lines": 431,
@@ -3918,7 +3918,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 132306,
+      "logical_lines": 132317,
       "methods": {
         "dunder": 356,
         "private": 683,
@@ -3972,8 +3972,8 @@
           "file": "quorune/oracle_ir.py",
           "functions_and_methods": 17,
           "language": "python",
-          "logical_lines": 1477,
-          "physical_lines": 1534
+          "logical_lines": 1473,
+          "physical_lines": 1530
         },
         {
           "file": "quorune/rules_corpus.py",
@@ -4956,6 +4956,13 @@
           "physical_lines": 299
         },
         {
+          "file": "quorune/compiler/dependency_gate.py",
+          "functions_and_methods": 5,
+          "language": "python",
+          "logical_lines": 273,
+          "physical_lines": 293
+        },
+        {
           "file": "quorune/mentor.py",
           "functions_and_methods": 13,
           "language": "python",
@@ -4975,13 +4982,6 @@
           "language": "python",
           "logical_lines": 259,
           "physical_lines": 288
-        },
-        {
-          "file": "quorune/compiler/dependency_gate.py",
-          "functions_and_methods": 4,
-          "language": "python",
-          "logical_lines": 258,
-          "physical_lines": 276
         },
         {
           "file": "quorune/enchant_spec.py",
@@ -6538,7 +6538,7 @@
           "physical_lines": 1
         }
       ],
-      "oversized_function_and_method_count": 33,
+      "oversized_function_and_method_count": 31,
       "oversized_functions_and_methods": [
         {
           "end_line": 1645,
@@ -6585,10 +6585,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 1398,
+          "end_line": 1394,
           "file": "quorune/oracle_ir.py",
           "kind": "function",
-          "line": 968,
+          "line": 964,
           "logical_lines": 421,
           "name": "_compile_face",
           "physical_lines": 431,
@@ -6880,28 +6880,6 @@
           "physical_lines": 154,
           "symbol": "build_program_trust_closure",
           "visibility": "public"
-        },
-        {
-          "end_line": 261,
-          "file": "quorune/compiler/dependency_gate.py",
-          "kind": "function",
-          "line": 108,
-          "logical_lines": 153,
-          "name": "keyword_dependency_gate",
-          "physical_lines": 154,
-          "symbol": "keyword_dependency_gate",
-          "visibility": "public"
-        },
-        {
-          "end_line": 655,
-          "file": "quorune/oracle_ir.py",
-          "kind": "function",
-          "line": 503,
-          "logical_lines": 153,
-          "name": "_keyword_node_for_mechanics",
-          "physical_lines": 153,
-          "symbol": "_keyword_node_for_mechanics",
-          "visibility": "private"
         }
       ],
       "oversized_module_count": 5,
@@ -6942,7 +6920,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 144719,
+      "physical_lines": 144732,
       "python_file_count": 357,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -6960,7 +6938,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1776,
+      "top_level_functions": 1777,
       "web_file_count": 16
     },
     "semantic_handlers": {
@@ -11564,8 +11542,8 @@
       "total_oracle_ids": 31623
     },
     "compiler_module": "quorune/oracle_ir.py",
-    "compiler_module_logical_lines": 1477,
-    "compiler_module_physical_lines": 1534,
+    "compiler_module_logical_lines": 1473,
+    "compiler_module_physical_lines": 1530,
     "compiler_version": "oracle-ir-v73",
     "current_ir": "OracleCardIR lowered to canonical CardProgram V2 with a derived SemanticProgram compatibility index",
     "full_oracle": {
@@ -11812,7 +11790,7 @@
         "current_status": "interleaved",
         "evidence": {
           "_compile_face": [
-            "quorune/oracle_ir.py:968"
+            "quorune/oracle_ir.py:964"
           ],
           "_source_lines": [
             "quorune/oracle_ir.py:125"
@@ -11899,7 +11877,7 @@
         "current_status": "generated_abilities_extracted_and_aggregated_to_card_program_v2",
         "evidence": {
           "_compile_face": [
-            "quorune/oracle_ir.py:968"
+            "quorune/oracle_ir.py:964"
           ],
           "compile_card_program": [
             "quorune/__init__.py:9",
@@ -11909,7 +11887,7 @@
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
             "quorune/compiler/program_generation.py:756",
-            "quorune/oracle_ir.py:1477"
+            "quorune/oracle_ir.py:1473"
           ]
         },
         "evidence_symbols": [
@@ -11953,7 +11931,7 @@
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
             "quorune/compiler/program_generation.py:756",
-            "quorune/oracle_ir.py:1477"
+            "quorune/oracle_ir.py:1473"
           ]
         },
         "evidence_symbols": [
@@ -12000,7 +11978,7 @@
           ],
           "register_generated_programs": [
             "quorune/compiler/program_generation.py:1023",
-            "quorune/oracle_ir.py:1500",
+            "quorune/oracle_ir.py:1496",
             "quorune/preflight.py:16",
             "quorune/session.py:14"
           ]
