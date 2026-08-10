@@ -164,7 +164,16 @@ class CardProgramTrustTests(unittest.TestCase):
                 for row in status["semantic_handlers"]
             },
         )
-        self.assertEqual(37, len(status["runtime_components"]))
+        runtime_component_ids = [
+            row["handler_id"] for row in status["runtime_components"]
+        ]
+        self.assertEqual(
+            len(runtime_component_ids), len(set(runtime_component_ids))
+        )
+        self.assertIn(
+            "replacement.zone.conditional-self-entry-counter.v1",
+            runtime_component_ids,
+        )
         self.assertIn(
             "replacement.counter.quantity.v2",
             {
@@ -206,6 +215,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "replacement.fixed_additional_token",
                 "replacement.life.gain.multiplier",
                 "replacement.zone.destination",
+                "replacement.zone.conditional-self-entry-counter",
                 "replacement.zone.riot-entry-choice",
                 "replacement.zone.self-entry-counter",
                 "restriction.draw.maximum_per_turn",

@@ -8,7 +8,11 @@ import unittest
 from unittest.mock import patch
 
 from common import ROOT, keep_all, make_session
-from quorune.bloodthirst import BloodthirstError, BloodthirstSpec
+from quorune.bloodthirst import (
+    BLOODTHIRST_HANDLER_ID,
+    BloodthirstError,
+    BloodthirstSpec,
+)
 from quorune.carddb import CardDatabase
 from quorune.deck import DeckLoader
 from quorune.model import CardInstance, StackItem
@@ -23,7 +27,10 @@ from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
 )
-from quorune.semantic_runtime import zone_replacements
+from quorune.semantic_runtime import (
+    runtime_component_inventory,
+    zone_replacements,
+)
 from quorune.semantic_runtime.zone_replacements import (
     capture_zone_change_replacement_snapshot,
     prepare_zone_change_replacement_snapshot,
@@ -181,6 +188,22 @@ class BloodthirstCompilerAndModelTests(unittest.TestCase):
             )
         with self.assertRaises(ZoneReplacementError):
             replace(subject, opponent_was_dealt_damage_this_turn=1)
+
+    def test_bloodthirst_runtime_component_is_registered_once(self):
+        rows = [
+            row
+            for row in runtime_component_inventory()
+            if row["handler_id"] == BLOODTHIRST_HANDLER_ID
+        ]
+        self.assertEqual(1, len(rows))
+        self.assertEqual(
+            "replacement.zone.conditional-self-entry-counter",
+            rows[0]["family"],
+        )
+        self.assertEqual(
+            ["counter.producer.bloodthirst"],
+            rows[0]["capability_dependencies"],
+        )
 
     def test_multiple_bloodthirst_instances_apply_independently(self):
         subject = ZoneChangeSubjectSnapshot(
