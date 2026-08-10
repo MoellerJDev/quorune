@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
+from ...convoke import ConvokeError
 from ...counter_placement import (
     CounterPlacementError,
     CounterPlacementRequest,
@@ -28,6 +29,7 @@ from ..casting_additional_costs import (
     fixed_zone_change_cost_candidates,
 )
 from .model import CastProposalError
+from .costs import revalidate_convoke_payment
 
 
 class CastCommitHost(Protocol):
@@ -853,6 +855,26 @@ def commit_cast(
     details = dict(thaw_json(proposal.details))
     selected_option = dict(details["selected_cost_option"])
     requirements = dict(thaw_json(proposal.requirements))
+    try:
+        convoke_plan = revalidate_convoke_payment(
+            host,
+            proposal.seat,
+            selected_option,
+        )
+    except ConvokeError as exc:
+        raise CastProposalError(
+            str(exc),
+            status="unpayable",
+            reason="stale_convoke_payment",
+        ) from exc
+    if convoke_plan is not None and tuple(convoke_plan.selected_refs) != tuple(
+        ref for ref in proposal.tap_cost_refs if ref in convoke_plan.selected_refs
+    ):
+        raise CastProposalError(
+            "The Convoke tap plan no longer matches the cast proposal",
+            status="unpayable",
+            reason="stale_convoke_payment",
+        )
     tap_cards = [
         host._resolve_object(
             proposal.seat,

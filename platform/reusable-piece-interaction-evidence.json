@@ -1050,6 +1050,14 @@
       "capability_ids": ["trigger.event.normalized_spell_cast", "trigger.keyword.prowess", "trigger.placement.apnap"],
       "interaction_order": 5,
       "assertion": "Prowess and an independent opponent-cast trigger consume one normalized committed spell event and enter one sealed multi-controller APNAP batch."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_convoke_creature_cannot_also_activate_for_mana",
+      "piece_ids": ["capability.casting.payment.convoke", "capability.mana.activated.fixed_output", "mechanic.convoke"],
+      "capability_ids": ["casting.payment.convoke", "mana.activated.fixed_output"],
+      "interaction_order": 3,
+      "assertion": "A creature selected for Convoke is excluded from the same spell's mana-source plan, while leaving it unselected permits its represented mana ability to pay the remaining cost."
     }
   ]
 }

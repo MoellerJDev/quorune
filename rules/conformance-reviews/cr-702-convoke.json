@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.51 — Convoke",
+  "cases": [
+    {
+      "rule_id": "702.51",
+      "rule_text_sha256": "81698bebb4a54468a43ea7f03cc4b35c70640ae2889dee35e0ed20403b8f90c1",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["compiler.keyword_nodes.ordinary_convoke_keyword_node", "card_programs.adapters.compile_card_program"],
+      "executable_test_ids": ["tests.test_convoke_rules.ConvokeCompilerTests.test_ordinary_convoke_compiles_face_pinned_typed_program"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; payment behavior and redundancy are reviewed in the subrules."]
+    },
+    {
+      "rule_id": "702.51a",
+      "rule_text_sha256": "65aed8dfdb1b50eb868a05bb6e0279a62d3167debf06846dd20b7ce0a11875ed",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["convoke.ConvokePaymentPlan", "compiled_cast_costs.compiled_convoke_specs", "rules.casting.costs._apply_convoke", "rules.casting.commit.commit_cast", "tap_state.set_permanent_tapped"],
+      "executable_test_ids": [
+        "tests.test_convoke_rules.ConvokeModelTests.test_multicolor_creature_uses_the_payable_colored_assignment",
+        "tests.test_convoke_rules.ConvokeModelTests.test_convoke_never_pays_colorless_and_canonicalizes_selection_order",
+        "tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_offer_and_submission_share_whole_vector_payment",
+        "tests.test_convoke_rules.ConvokeRuntimeTests.test_typed_convoke_pays_colored_x_cost_without_using_mana_sources",
+        "tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_creature_cannot_also_activate_for_mana",
+        "tests.test_convoke_rules.ConvokeRuntimeTests.test_stale_convoke_characteristics_roll_back_before_payment",
+        "tests.test_convoke_rules.ConvokeRuntimeTests.test_four_player_convoke_offer_is_controller_scoped",
+        "tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_payment_replays_exactly"
+      ],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "hidden_information", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "hidden_information", "replay"],
+      "blockers": ["Convoke granted or removed by continuous effects is not lowered", "hybrid, Phyrexian, snow, and broader cost-payment replacement or restriction interactions are not represented"],
+      "notes": ["The bounded ordinary printed family uses current effective creature types and colors, searches the complete remaining mana vector, and revalidates physical and logical identity before any mutation."]
+    },
+    {
+      "rule_id": "702.51b",
+      "rule_text_sha256": "520d6e6889b39228ea34e565f9b075054bc77396dac3fb9086c6904c612e3f52",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["rules.casting.costs._apply_static_reductions", "rules.casting.costs._apply_convoke", "rules.casting.costs._maximum_affordable_x_with_mechanics"],
+      "executable_test_ids": ["tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_applies_after_static_cost_reduction", "tests.test_convoke_rules.ConvokeRuntimeTests.test_raw_keyword_without_compiled_convoke_fails_closed"],
+      "required_scenarios": ["positive", "negative", "interaction"],
+      "covered_scenarios": ["positive", "negative", "interaction"],
+      "blockers": ["the complete alternate, additional, increasing, reducing, minimum-cost, restricted-mana, and cost-payment-replacement ordering grammar is not closed"],
+      "notes": ["Represented static generic reductions determine the total cost before Convoke is applied; Convoke remains a payment method rather than an alternate or additional cost."]
+    },
+    {
+      "rule_id": "702.51c",
+      "rule_text_sha256": "3d2d98a9fe76a95afa845e78636fac39445f121e14da00ca437b9d1462de71bb",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["convoke.ConvokePaymentPlan", "rules.casting.commit._commit_tap_costs"],
+      "executable_test_ids": ["tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_offer_and_submission_share_whole_vector_payment"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["The term describes a spell for which at least one creature was tapped to pay a Convoke cost; the immutable plan records that fact without adding separate rules behavior."]
+    },
+    {
+      "rule_id": "702.51d",
+      "rule_text_sha256": "61b3c2ee7bed41a7f35f119812bdbcae9248165c47ec553f145d97c5e955b454",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["compiler.keyword_nodes.keyword_node_plans", "compiled_cast_costs.compiled_convoke_specs"],
+      "executable_test_ids": ["tests.test_convoke_rules.ConvokeCompilerTests.test_multiple_convoke_instances_are_redundant_and_siblings_are_separate"],
+      "required_scenarios": ["positive"],
+      "covered_scenarios": ["positive"],
+      "blockers": [],
+      "notes": ["Equivalent ordinary printed instances canonicalize to one face-pinned payment descriptor."]
+    }
+  ]
+}

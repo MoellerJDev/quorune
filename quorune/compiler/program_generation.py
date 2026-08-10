@@ -200,6 +200,13 @@ def _generated_ability_id(
             )
         if str(node_id or "").endswith(":flash"):
             return f"static:{face_id}:n{line}:flash"
+        node_parts = str(node_id or "").split(":")
+        if str(node_id or "").endswith(":convoke") or (
+            len(node_parts) >= 2
+            and node_parts[-1].isdigit()
+            and node_parts[-2] == "convoke"
+        ):
+            return f"static:{face_id}:n{line}:convoke"
         return f"static:{face_id}:n{line}"
     return None
 

@@ -303,6 +303,11 @@ MUTATION_TESTS = {
         "CapabilityImplementationMutationTests."
         "test_semantic_tap_state_mutants_are_killed"
     ),
+    "casting.payment.convoke": (
+        "tests.test_convoke_rules."
+        "ConvokeCompilerTests."
+        "test_convoke_compiler_mutant_is_killed"
+    ),
 }
 EXTRA_EVIDENCE_TESTS = {
     capability_id: (
@@ -324,6 +329,13 @@ EXTRA_EVIDENCE_TESTS["token.creation.additional_replacement"] = (
         "tests.test_replacement_model_hardening."
         "ReplacementImmutabilityTests."
         "test_additional_token_operation_rejects_wrong_event_without_mutation",
+    ),
+)
+EXTRA_EVIDENCE_TESTS["casting.payment.convoke"] = (
+    (
+        "mutation",
+        "tests.test_convoke_rules.ConvokeModelTests."
+        "test_convoke_planner_mutant_is_killed",
     ),
 )
 

@@ -11,6 +11,20 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Typed ordinary Convoke
+
+- Added a face-pinned ordinary Convoke CardProgram family and immutable payment
+  plan shared by cast offers, submitted-command validation, chosen-X
+  affordability, and transactional commitment. The planner evaluates the whole
+  remaining mana vector, so multicolored creatures contribute the color that
+  makes the announced cost payable rather than the first locally valid color.
+- Selected creatures are revalidated for physical and logical identity,
+  controller, current type and color, tap state, and phasing before mutation,
+  and cannot also activate a mana ability for that spell. Represented static
+  reductions apply before Convoke; unsupported symbol, cost-modification,
+  payment-replacement, granted, removed, and equivalent-rules-text variants
+  remain explicit residuals.
+
 ### Typed fixed single-object zone-change casting costs
 
 - Added one immutable cost descriptor and candidate query shared by fixed

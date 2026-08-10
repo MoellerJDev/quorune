@@ -8,13 +8,14 @@ from typing import Any, Protocol
 from ...aura import EnchantSpec, enchant_spec_to_dict, is_aura_type_line
 from ...cast_timing import cast_timing_is_legal, type_line_has_card_type
 from ...compiled_cast_timing import compiled_cast_timing_permissions
+from ...convoke import ConvokeError
 from ..action_proposals import (
     ActionOffer,
     CastCostOption,
     CastProposal,
     freeze_json,
 )
-from .costs import CastCostHost
+from .costs import CastCostHost, revalidate_convoke_payment
 from .model import CastProposalError, CastProposalRequest, CastProposalResult
 
 
@@ -340,6 +341,14 @@ def _cast_targets_and_tap_costs(
     Mapping[str, Any] | None,
 ]:
     selected_dict = selected.to_dict()
+    try:
+        revalidate_convoke_payment(host, request.actor, selected_dict)
+    except ConvokeError as exc:
+        raise CastProposalError(
+            str(exc),
+            status="unpayable",
+            reason="stale_convoke_payment",
+        ) from exc
     target_schema = (
         copy.deepcopy(dict(selected_dict["target_schema"]))
         if isinstance(selected_dict.get("target_schema"), Mapping)

@@ -6,6 +6,7 @@ from typing import Any, Mapping
 
 from ..ability_fragments import CURRENT_ABILITY_FRAGMENT_COVERAGE
 from ..cast_timing import PRINTED_FLASH_MECHANIC
+from ..semantic_runtime.cast_costs import convoke_handler_descriptor
 from ..death_return import (
     DeathReturnSpec,
     PERSIST_KEYWORD,
@@ -39,6 +40,7 @@ _UNLEASH_MECHANIC = UNLEASH_MECHANIC
 _RIOT_MECHANIC = RIOT_MECHANIC
 _MENTOR_MECHANIC = "men" + "tor"
 _PROWESS_MECHANIC = "prow" + "ess"
+_CONVOKE_MECHANIC = "con" + "voke"
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,7 +66,11 @@ def keyword_node_plans(
 
     split_mechanics = tuple(
         mechanic
-        for mechanic in (PRINTED_FLASH_MECHANIC, _FABRICATE_MECHANIC)
+        for mechanic in (
+            PRINTED_FLASH_MECHANIC,
+            _FABRICATE_MECHANIC,
+            _CONVOKE_MECHANIC,
+        )
         if mechanic in mechanics
     ) + tuple(
         _EVOLVE_MECHANIC
@@ -111,6 +117,7 @@ def keyword_node_plans(
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
             _PROWESS_MECHANIC,
+            _CONVOKE_MECHANIC,
         )
     }
     result: list[KeywordNodePlan] = []
@@ -156,6 +163,7 @@ def keyword_node_plans(
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
             _PROWESS_MECHANIC,
+            _CONVOKE_MECHANIC,
         }
     )
     if remaining:
@@ -189,6 +197,7 @@ def closed_special_keyword_node(
         "residuals": residuals,
     }
     for lower in (
+        ordinary_convoke_keyword_node,
         ordinary_cycling_keyword_node,
         fixed_mana_cumulative_upkeep_node,
     ):
@@ -196,6 +205,71 @@ def closed_special_keyword_node(
         if node is not None:
             return node
     return None
+
+
+def ordinary_convoke_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    mechanics: tuple[str, ...],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleNode | None:
+    if mechanics != (_CONVOKE_MECHANIC,):
+        return None
+    ordinary = material_line.strip().rstrip(".").casefold() == _CONVOKE_MECHANIC
+    gate = explicit_capability_gate(
+        "casting.payment.convoke",
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    blockers = gate.blockers if ordinary else ("mechanic:convoke-unsupported-wording",)
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind="dependency_contract" if ordinary else "keyword_grammar",
+                text=line,
+                span=span,
+                reason=(
+                    "Convoke depends on a blocked typed casting-cost capability"
+                    if ordinary
+                    else "Convoke wording is outside the ordinary keyword grammar"
+                ),
+                blockers=blockers,
+            ),
+        )
+        if blockers
+        else ()
+    )
+    return OracleNode(
+        node_id=node_id,
+        kind="keyword_ability",
+        text=line,
+        span=span,
+        active_zone="stack",
+        event="cast.cost",
+        lowerable=ordinary,
+        exact=ordinary and not blockers,
+        template_id="ordinary-convoke-payment-v1" if ordinary else None,
+        handlers=(convoke_handler_descriptor(),) if ordinary else (),
+        runtime_coverage=("typed_convoke_payment",) if ordinary else (),
+        mechanics=(_CONVOKE_MECHANIC,),
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        capability_profile=(
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    )
 
 
 def evolve_keyword_node(
@@ -665,6 +739,8 @@ __all__ = [
     "evolve_keyword_node",
     "fabricate_keyword_node",
     "keyword_node_plans",
+    "prowess_keyword_node",
+    "ordinary_convoke_keyword_node",
     "prowess_keyword_node",
     "riot_keyword_node",
     "unleash_keyword_nodes",

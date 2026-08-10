@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "convoke",
+  "official_name": "Convoke",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["601.2f", "601.2g", "601.2h", "601.2i", "702.51", "702.51a", "702.51b", "702.51c", "702.51d"],
+  "glossary_references": ["convoke", "convoked"],
+  "dependencies": [],
+  "coverage_status": "trusted",
+  "trust_level": "trusted",
+  "behavior": {
+    "zones": ["the selected card is otherwise authorized to be cast and is represented by a trusted face-pinned CardProgram"],
+    "objects": ["phased-in untapped creatures currently controlled by the spell's caster"],
+    "events": ["cast offer generation", "cast proposal validation", "cast-cost commitment"],
+    "state_reads": ["announced post-modification total cost", "current effective card types and colors", "controller", "tap and phasing state", "physical and logical object identity", "available mana sources and spend restrictions"],
+    "state_writes": ["tap each selected creature transactionally through the canonical tap-state owner"],
+    "costs": ["each selected creature pays one generic mana or one mana of one of that creature's current colors", "Convoke cannot pay a colorless requirement", "Convoke applies while paying the total cost after that total has been determined", "a selected creature cannot also be activated as a mana source for the same spell"],
+    "timing": ["the Convoke selection is made after activating mana abilities and while paying the spell's total cost"],
+    "targets": [],
+    "choices": ["the caster selects zero or more distinct currently eligible creatures", "the server derives a deterministic whole-vector colored or generic contribution plan"],
+    "hidden_information": ["the spell remains visible only to seats legally entitled to see its origin zone until casting makes it public"],
+    "apnap": [],
+    "layers": ["candidate creature status and colors come from the canonical current effective-characteristic query"],
+    "replacement_effects": ["cost-payment replacement effects are outside this bounded family and fail closed"],
+    "copy": ["a copied spell was not cast and does not use Convoke"],
+    "control_change": ["only the caster's currently controlled creatures are eligible at offer, validation, and commitment"],
+    "zone_change": ["changing zone or logical incarnation invalidates a selected candidate before mutation"],
+    "source_leaves": ["the spell and every selected creature are revalidated immediately before payment commitment"]
+  },
+  "variants": ["multiple ordinary printed instances are redundant", "summoning sickness does not prevent a creature from being tapped for Convoke", "hybrid, Phyrexian, snow, and unrepresented cost symbols or cost-modification interactions remain explicit residuals", "Convoke granted or removed after compilation and Convoke-equivalent rules text remain unsupported"],
+  "witness_cards": [
+    {
+      "name": "Chord of Calling",
+      "oracle_id": "6789a170-f2c5-4fc0-8a45-2b2361e67410"
+    }
+  ],
+  "rulings": [],
+  "test_ids": [
+    "test_ordinary_convoke_compiles_face_pinned_typed_program",
+    "test_multiple_convoke_instances_are_redundant_and_siblings_are_separate",
+    "test_unsupported_convoke_variants_remain_precise_residuals",
+    "test_convoke_offer_and_submission_share_whole_vector_payment",
+    "test_typed_convoke_pays_colored_x_cost_without_using_mana_sources",
+    "test_raw_keyword_without_compiled_convoke_fails_closed",
+    "test_convoke_applies_after_static_cost_reduction",
+    "test_multicolor_creature_uses_the_payable_colored_assignment",
+    "test_convoke_creature_cannot_also_activate_for_mana",
+    "test_stale_convoke_characteristics_roll_back_before_payment",
+    "test_four_player_convoke_offer_is_controller_scoped",
+    "test_convoke_payment_replays_exactly",
+    "test_convoke_compiler_mutant_is_killed",
+    "test_convoke_planner_mutant_is_killed"
+  ],
+  "implementation": {
+    "component": "quorune.rules.casting.costs._apply_convoke",
+    "version": "ordinary-convoke-payment-v1"
+  },
+  "known_blockers": [],
+  "review_status": "reviewed"
+}

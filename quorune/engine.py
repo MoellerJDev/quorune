@@ -5437,11 +5437,7 @@ class CommanderEngine(
             candidates.append(card.ref)
         return candidates
 
-    def _payment_mechanic_candidates(
-        self,
-        seat: str,
-        mechanic: str,
-    ) -> list[CardInstance]:
+    def _improvise_candidates(self, seat: str) -> list[CardInstance]:
         candidates: list[CardInstance] = []
         for object_id in self.state.players[seat].zones["battlefield"]:
             card = self.state.cards[object_id]
@@ -5457,76 +5453,19 @@ class CommanderEngine(
                     or ""
                 )
             )
-            if mechanic == "convoke" and "creature" in types:
-                candidates.append(card)
-            elif mechanic == "improvise" and "artifact" in types:
+            if "artifact" in types:
                 candidates.append(card)
         return candidates
 
-    def _convoke_reduction(
-        self,
-        requirements: Mapping[str, int],
-        cards: Sequence[CardInstance],
-    ) -> dict[str, int] | None:
-        remaining = self._mana_vector(requirements)
-        if len(cards) > sum(remaining.values()):
-            return None
-        card_colors = [
-            [
-                str(color).upper()
-                for color in self._effective_card_data(card).get("colors", [])
-                if (
-                    str(color).upper() in "WUBRG"
-                    and len(str(color)) == 1
-                )
-            ]
-            for card in cards
-        ]
-        keys = ("GENERIC", "W", "U", "B", "R", "G", "C")
-
-        def assign(
-            index: int,
-            values: tuple[int, ...],
-        ) -> tuple[int, ...] | None:
-            if index >= len(card_colors):
-                return values
-            state = dict(zip(keys, values))
-            choices = [
-                color
-                for color in card_colors[index]
-                if state[color] > 0
-            ]
-            if state["GENERIC"] > 0:
-                choices.append("GENERIC")
-            for choice in unique_preserving_order(choices):
-                next_state = dict(state)
-                next_state[choice] -= 1
-                result = assign(
-                    index + 1,
-                    tuple(next_state[key] for key in keys),
-                )
-                if result is not None:
-                    return result
-            return None
-
-        result = assign(
-            0,
-            tuple(remaining[key] for key in keys),
-        )
-        if result is None:
-                return None
-        return dict(zip(keys, result))
-
-    def _tap_payment_plan(
+    def _improvise_payment_plan(
         self,
         seat: str,
         requirements: Mapping[str, int],
-        mechanic: str,
         candidates: Sequence[CardInstance],
         *,
         spend_context: str | None = None,
     ) -> tuple[dict[str, int], list[CardInstance]] | None:
-        """Find a payable minimum-card convoke or improvise plan."""
+        """Find a payable minimum-card Improvise plan."""
 
         base = self._mana_vector(requirements)
         best: tuple[dict[str, int], list[CardInstance]] | None = None
@@ -5538,15 +5477,10 @@ class CommanderEngine(
             nonlocal best
             if best is not None and len(selected) >= len(best[1]):
                 return
-            if mechanic == "convoke":
-                reduced = self._convoke_reduction(base, selected)
-            else:
-                reduced = self._mana_vector(base)
-                if len(selected) > reduced["GENERIC"]:
-                    return
-                reduced["GENERIC"] -= len(selected)
-            if reduced is None:
+            reduced = self._mana_vector(base)
+            if len(selected) > reduced["GENERIC"]:
                 return
+            reduced["GENERIC"] -= len(selected)
             excluded = {card.object_id for card in selected}
             if self._cost_is_affordable(
                 seat,
@@ -5584,8 +5518,6 @@ class CommanderEngine(
             str(value).casefold() for value in record.keywords
         }
         oracle = record.oracle_text.casefold()
-        if "convoke" in keyword_values and "convoke" not in declared_kinds:
-            mechanics.append({"kind": "convoke"})
         if "improvise" in keyword_values and "improvise" not in declared_kinds:
             mechanics.append({"kind": "improvise"})
         if (
@@ -5764,93 +5696,6 @@ class CommanderEngine(
                 )
                 for option in options
             ):
-                break
-            maximum = value
-        return maximum
-
-    def _maximum_affordable_x_with_mechanics(
-        self,
-        seat: str,
-        card: CardInstance,
-        mechanics: Sequence[Mapping[str, Any]],
-        *,
-        limit: int = 100,
-    ) -> int:
-        spend_context = self._spell_mana_spend_context(
-            str(
-                self._effective_card_data(card).get("type_line")
-                or ""
-            )
-        )
-        maximum = -1
-        for value in range(limit + 1):
-            options, _ = self._compiled_printed_cost_options(
-                seat,
-                card,
-                x_value=value,
-                hint=False,
-            )
-            value_payable = False
-            for raw_option in options:
-                requirements = self._mana_vector(
-                    raw_option["requirements"]
-                )
-                selected: list[CardInstance] = []
-                valid = True
-                for mechanic in mechanics:
-                    kind = str(
-                        mechanic.get("kind") or ""
-                    ).casefold()
-                    if kind == "affinity":
-                        card_type = str(
-                            mechanic.get("card_type") or "artifact"
-                        ).casefold()
-                        count = sum(
-                            1
-                            for object_id in self.state.players[seat].zones[
-                                "battlefield"
-                            ]
-                            if self.state.cards[object_id].controller == seat
-                            and card_type
-                            in self._type_parts(
-                                str(
-                                    self._effective_card_data(
-                                        self.state.cards[object_id]
-                                    ).get("type_line")
-                                    or ""
-                                )
-                            )[0]
-                        )
-                        requirements["GENERIC"] = max(
-                            0, requirements["GENERIC"] - count
-                        )
-                    elif kind in {"convoke", "improvise"}:
-                        candidates = [
-                            candidate
-                            for candidate in self._payment_mechanic_candidates(
-                                seat, kind
-                            )
-                            if candidate not in selected
-                        ]
-                        plan = self._tap_payment_plan(
-                            seat,
-                            requirements,
-                            kind,
-                            candidates,
-                            spend_context=spend_context,
-                        )
-                        if plan is None:
-                            valid = False
-                            break
-                        requirements, plan_cards = plan
-                        selected.extend(plan_cards)
-                    else:
-                        valid = False
-                        break
-                if valid:
-                    value_payable = True
-                    break
-            if not value_payable:
                 break
             maximum = value
         return maximum
