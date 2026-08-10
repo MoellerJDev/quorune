@@ -54,6 +54,16 @@ def validate_counter_event_subjects(
             expected_logical_id = event.payload.get(
                 "target_logical_object_id"
             )
+            prospective_subject = (
+                event.payload.get("prospective_subject") is True
+            )
+            if card is None and prospective_subject:
+                if (
+                    expected_zone == "battlefield"
+                    and type(expected_logical_id) is str
+                    and bool(expected_logical_id)
+                ):
+                    continue
             if (
                 card is None
                 or type(expected_zone) is not str

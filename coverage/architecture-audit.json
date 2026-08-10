@@ -3832,7 +3832,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 127892,
+      "logical_lines": 127922,
       "methods": {
         "dunder": 340,
         "private": 687,
@@ -4054,8 +4054,8 @@
           "file": "quorune/token_creation.py",
           "functions_and_methods": 32,
           "language": "python",
-          "logical_lines": 846,
-          "physical_lines": 915
+          "logical_lines": 847,
+          "physical_lines": 916
         },
         {
           "file": "quorune/reusable_pieces/reporting.py",
@@ -4091,6 +4091,13 @@
           "language": "python",
           "logical_lines": 776,
           "physical_lines": 848
+        },
+        {
+          "file": "quorune/semantic_runtime/counter_replacements.py",
+          "functions_and_methods": 20,
+          "language": "python",
+          "logical_lines": 754,
+          "physical_lines": 802
         },
         {
           "file": "quorune/replacement/ordering.py",
@@ -4135,18 +4142,11 @@
           "physical_lines": 803
         },
         {
-          "file": "quorune/semantic_runtime/counter_replacements.py",
-          "functions_and_methods": 20,
-          "language": "python",
-          "logical_lines": 735,
-          "physical_lines": 783
-        },
-        {
           "file": "quorune/counter_placement.py",
           "functions_and_methods": 27,
           "language": "python",
-          "logical_lines": 725,
-          "physical_lines": 810
+          "logical_lines": 735,
+          "physical_lines": 820
         },
         {
           "file": "quorune/replacement/replay.py",
@@ -6719,7 +6719,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 139812,
+      "physical_lines": 139842,
       "python_file_count": 339,
       "review_thresholds": {
         "function_logical_lines_review": 150,
