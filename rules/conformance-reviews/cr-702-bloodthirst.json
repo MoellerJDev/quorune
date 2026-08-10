@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.54 — Bloodthirst",
+  "cases": [
+    {
+      "rule_id": "702.54",
+      "rule_text_sha256": "17701dc653fe8799adbc4620bc254bdf2ec6165fafcd91afeae0009aba3cb4f1",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["compiler.keyword_nodes.bloodthirst_keyword_node", "card_programs.adapters.compile_card_program"],
+      "executable_test_ids": ["tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_fixed_bloodthirst_compiles_with_precise_spans"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; fixed-value entry-counter behavior and unsupported variants are reviewed in the subrules."]
+    },
+    {
+      "rule_id": "702.54a",
+      "rule_text_sha256": "577f01dc8bc5877ffd5c512d775c522f24b850ebf855026ff5fae658264282cf",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["bloodthirst.BloodthirstSpec", "turn_history.opponent_was_dealt_damage_this_turn", "semantic_runtime.conditional_entry_counters.ConditionalSelfEntryCounterHandler", "semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot"],
+      "executable_test_ids": [
+        "tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_fixed_bloodthirst_compiles_with_precise_spans",
+        "tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_bloodthirst_models_and_descriptors_reject_malformed_values",
+        "tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_bloodthirst_dependency_and_compiler_mutations_fail_closed",
+        "tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_turn_history_query_is_current_turn_and_positive_damage_only",
+        "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_opponent_damage_creates_mandatory_replacement_aware_entry_counters",
+        "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_direct_nonspell_entry_uses_same_compiled_replacement",
+        "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_self_damage_no_damage_and_prior_turn_damage_do_not_qualify",
+        "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_bloodthirst_counter_uses_canonical_quantity_replacement",
+        "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_four_player_destination_controller_fact_is_scoped_and_replays",
+        "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_bloodthirst_runtime_mutation_is_killed"
+      ],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "hidden_information", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "hidden_information", "replay"],
+      "blockers": ["zero-valued, granted, copied, removed, and face-down keyword instances are outside the compiled typed fragment", "ambient zone-change and counter-replacement families outside the represented typed owners remain unsupported"],
+      "notes": ["The bounded ordinary printed fixed-value family snapshots whether an opponent of the destination controller was dealt positive damage in the current turn, then creates mandatory replacement-aware +1/+1 counter events before battlefield entry."]
+    },
+    {
+      "rule_id": "702.54b",
+      "rule_text_sha256": "3bcdd53ed05c3edc1cd74f597cc0fdb2afd202144b5ec28ebc0835a9183aaf9e",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["compiler.dependency_gate.keyword_dependency_gate", "compiler.keyword_nodes.bloodthirst_keyword_node"],
+      "executable_test_ids": ["tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_bloodthirst_x_and_invalid_values_remain_material_residuals"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["negative"],
+      "blockers": ["the X value equal to total damage dealt to all opponents this turn is not represented as a typed entry-counter quantity"],
+      "notes": ["Bloodthirst X is recognized precisely and remains a material residual rather than being miscompiled as the fixed-value family."]
+    },
+    {
+      "rule_id": "702.54c",
+      "rule_text_sha256": "a7c611ee15eac1bd2e54dcb3a347137b3b7c42f3e2b31273292fc082e45ab727",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["compiler.keyword_nodes.keyword_node_plans", "semantic_runtime.conditional_entry_counters.ConditionalSelfEntryCounterHandler"],
+      "executable_test_ids": ["tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_fixed_bloodthirst_compiles_with_precise_spans", "tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_multiple_bloodthirst_instances_apply_independently"],
+      "required_scenarios": ["positive", "negative", "interaction"],
+      "covered_scenarios": ["positive", "interaction"],
+      "blockers": ["multiple Bloodthirst X instances and granted or copied keyword instances remain outside the typed fragment"],
+      "notes": ["Multiple fixed positive integral printed instances lower to independent immutable programs and create independent counter events."]
+    }
+  ]
+}

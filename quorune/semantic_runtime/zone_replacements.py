@@ -28,12 +28,14 @@ from ..replacement_effects import (
     replacement_choice,
 )
 from ..rules.capabilities import load_default_capability_registry
+from ..turn_history import opponent_was_dealt_damage_this_turn
 from .component_registry import RuntimeComponentRegistry, exact_fields
 from .context import SemanticNodeError
 from .counter_replacements import (
     collect_counter_placement_replacement_effects,
 )
 from .self_entry_counters import SelfEntryCounterHandler
+from .conditional_entry_counters import ConditionalSelfEntryCounterHandler
 from .entry_choices import RiotEntryChoiceHandler
 from .zone_replacement_model import (
     PreparedZoneChange,
@@ -346,6 +348,7 @@ def default_zone_change_replacement_registry(
 ) -> ZoneChangeReplacementRegistry:
     registry = ZoneChangeReplacementRegistry(
         (
+            ConditionalSelfEntryCounterHandler(),
             RiotEntryChoiceHandler(),
             SelfEntryCounterHandler(),
             ZoneDestinationReplacementHandler(),
@@ -530,6 +533,16 @@ def _zone_change_snapshot_subjects(
                     origin=card.zone,
                     destination=destination,
                     destination_controller=destination_controller,
+                    opponent_was_dealt_damage_this_turn=(
+                        opponent_was_dealt_damage_this_turn(
+                            host.state.turn_history,
+                            turn_sequence=host.state.turn_sequence,
+                            player=destination_controller,
+                            active_players=host.active_seats,
+                        )
+                        if destination_controller is not None
+                        else False
+                    ),
                     intrinsic_entry_counters=intrinsic_entry_counters(
                         characteristics,
                         card_types=tuple(sorted(card_types)),
@@ -733,6 +746,9 @@ def _snapshot_event(
             "object_types": list(subject.object_types),
             "logical_object_id": subject.logical_object_id,
             "owner": subject.owner,
+            "opponent_was_dealt_damage_this_turn": (
+                subject.opponent_was_dealt_damage_this_turn
+            ),
         },
     )
 

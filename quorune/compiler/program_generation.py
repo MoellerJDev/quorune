@@ -7,6 +7,7 @@ from typing import Any, Iterable, Mapping
 
 from ..carddb import CardDatabase, CardRecord
 from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
+from ..bloodthirst import BLOODTHIRST_MECHANIC
 from ..object_predicate import ObjectQuerySpec
 from ..riot import RIOT_MECHANIC
 from ..unleash import UNLEASH_MECHANIC
@@ -192,10 +193,10 @@ def _generated_ability_id(
         if (
             len(parts) >= 2
             and parts[-1].isdigit()
-            and parts[-2] == RIOT_MECHANIC
+            and parts[-2] in {RIOT_MECHANIC, BLOODTHIRST_MECHANIC}
         ):
             return (
-                f"static:{face_id}:n{line}:{RIOT_MECHANIC}:"
+                f"static:{face_id}:n{line}:{parts[-2]}:"
                 f"{parts[-1]}"
             )
         if str(node_id or "").endswith(":flash"):

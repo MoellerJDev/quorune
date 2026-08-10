@@ -218,6 +218,7 @@ from .model import (
     TurnHistoryEventKind,
     YieldPolicy,
 )
+from .turn_history import opponent_was_dealt_damage_this_turn
 from .permissions import AuthorizedCommand, CapabilityManager, PermissionDenied
 from .protection import (
     ProtectionSource,
@@ -577,13 +578,6 @@ class CommanderEngine(
         return any(
             event.actor == player
             for event in self._current_turn_history("creature_died")
-        )
-
-    def _opponent_was_dealt_damage_this_turn(self, player: str) -> bool:
-        opponents = set(self.active_seats) - {player}
-        return any(
-            event.target in opponents and event.amount > 0
-            for event in self._current_turn_history("player_damaged")
         )
 
     def _object_attacked_player_this_turn(
@@ -9741,7 +9735,12 @@ class CommanderEngine(
             if condition.fact == "creature_died_under_control":
                 return self._creature_died_under_control_this_turn(player)
             if condition.fact == "opponent_dealt_damage":
-                return self._opponent_was_dealt_damage_this_turn(player)
+                return opponent_was_dealt_damage_this_turn(
+                    self.state.turn_history,
+                    turn_sequence=self.state.turn_sequence,
+                    player=player,
+                    active_players=self.active_seats,
+                )
             return False
         if isinstance(condition, DeclarationSharedSubtypeCondition):
             player = self._declaration_condition_player(

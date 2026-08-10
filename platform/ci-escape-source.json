@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-09T01:23:15Z",
+  "observed_at": "2026-08-10T18:03:45Z",
   "repository": "MoellerJDev/quorune",
   "escapes": [
     {
@@ -199,6 +199,21 @@
       ],
       "impact_edge_status": "added",
       "resolution": "A strict ownership manifest now orders all tracked generators, one finalizer writes them to a bounded fixed point, AGENTS.md requires that command before the final commit, and a repository pre-push hook rejects omitted generated changes."
+    },
+    {
+      "id": "ci-20260810-15",
+      "run_id": 31416024863,
+      "head_sha": "60fe7ee961d5bcb85786670bea6818421005a8b0",
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "summary": "The Bloodthirst family registered a new runtime component, but its focused tests did not assert global registration and a fragile hard-coded component count failed only in the compiler-cardprogram shard.",
+      "failed_surfaces": ["compiler-cardprogram"],
+      "regressions": [
+        "test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_bloodthirst_runtime_component_is_registered_once",
+        "test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound"
+      ],
+      "impact_edge_status": "added",
+      "resolution": "The Bloodthirst-focused module now verifies exact component registration, while the global trust test checks unique handler identities and the complete family set instead of a maintenance-only total count."
     }
   ],
   "recent_pull_requests": [

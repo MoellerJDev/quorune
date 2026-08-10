@@ -328,6 +328,18 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/bloodthirst.py",
+      "layer": "domain",
+      "owning_subsystem": "keyword_abilities",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/bulk.py",
       "layer": "application",
       "owning_subsystem": "legacy_application",
@@ -4121,6 +4133,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/conditional_entry_counters.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/context.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -4929,6 +4956,20 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/turn_history.py",
+      "layer": "rules",
+      "owning_subsystem": "legacy_rules",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/unleash.py",
       "layer": "domain",
       "owning_subsystem": "keyword_abilities",
@@ -5137,5 +5178,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "b52d98f7e60c06c87ad09df53804b6592c8c26fc33b5abb8c50f71419c7c8999"
+  "fingerprint": "1aba2935e0c8339b695cbafa8e46e1757cd89ce7dda394a824802fae4ec2d248"
 }
