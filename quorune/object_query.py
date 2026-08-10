@@ -32,6 +32,7 @@ class ObjectQueryResult:
     known_to_actor: bool = True
     attached_to_ref: str | None = None
     logical_object_id: str = ""
+    monstrous_value: int | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.counters, FrozenMap):
@@ -73,6 +74,7 @@ def object_query_result(
         phased_out=bool(card.phased_out),
         known_to_actor=known_to_actor,
         attached_to_ref=attached_to_ref,
+        monstrous_value=card.monstrous_value,
     )
 
 

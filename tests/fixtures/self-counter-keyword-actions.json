@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_self_counter_keyword_action_card_data",
+  "source": "Scryfall Oracle subset for fixed Adapt and Monstrosity tests",
+  "cards": [
+    {
+      "oracle_id": "a0cd19c1-9125-4627-83ba-d42c489b4e7d",
+      "name": "Aeromunculus",
+      "mana_cost": "{1}{G}{U}",
+      "cmc": 3.0,
+      "type_line": "Creature — Homunculus Mutant",
+      "oracle_text": "Flying\n{2}{G}{U}: Adapt 1. (If this creature has no +1/+1 counters on it, put a +1/+1 counter on it.)",
+      "power": "2",
+      "toughness": "3",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["G", "U"],
+      "color_identity": ["G", "U"],
+      "keywords": ["Flying", "Adapt"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2019-01-25",
+      "legalities": {"commander": "legal", "duel": "legal", "legacy": "legal", "modern": "legal", "vintage": "legal"}
+    },
+    {
+      "oracle_id": "35101c6c-0bcc-4b1f-9cb5-a82e4d2f8220",
+      "name": "Gluttonous Cyclops",
+      "mana_cost": "{5}{R}",
+      "cmc": 6.0,
+      "type_line": "Creature — Cyclops",
+      "oracle_text": "{5}{R}{R}: Monstrosity 3. (If this creature isn't monstrous, put three +1/+1 counters on it and it becomes monstrous.)",
+      "power": "5",
+      "toughness": "4",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["R"],
+      "color_identity": ["R"],
+      "keywords": ["Monstrosity"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2014-05-02",
+      "legalities": {"commander": "legal", "duel": "legal", "legacy": "legal", "modern": "legal", "vintage": "legal"}
+    }
+  ],
+  "rulings": []
+}

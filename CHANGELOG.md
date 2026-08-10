@@ -11,6 +11,19 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Typed fixed Adapt and Monstrosity
+
+- Added one source-spanned fixed positive Adapt/Monstrosity action family that
+  checks its condition only on resolution and routes +1/+1 counters through
+  the canonical replacement-aware transaction.
+- Added the public, noncopiable monstrous designation with stable object
+  identity, control-change and phasing persistence, zone-change cleanup,
+  projection, rollback, and exact replay. Variable, zero, compound, granted,
+  copied, and monstrous-value-consuming variants remain explicit residuals.
+- Extracted object-local CR 400.7 reset state from `CommanderEngine` into a
+  typed zone-object owner shared by counters, combat state, designations,
+  phasing, and retained annotations.
+
 ### Typed zone-object keyword results
 
 - Added one closed target-threaded sequence for placing a fixed counter and

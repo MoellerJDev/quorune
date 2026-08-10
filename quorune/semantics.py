@@ -83,6 +83,7 @@ VALID_EFFECT_OPERATIONS = {
     "end_turn",
     "explore",
     "fabricate",
+    "fixed_self_counter_keyword_action",
     "energy",
     "exile",
     "exile_permanent",

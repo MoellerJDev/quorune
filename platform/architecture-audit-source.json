@@ -4,8 +4,8 @@
     "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-08",
-    "phase": "typed_exhaust_and_fixed_source_effect_sequences",
-    "scope_note": "The evaluated source tree adds one typed per-ability Exhaust usage owner and one closed source-threaded fixed-counter then until-end characteristic sequence shared by activated and triggered contexts. Offer and commit use the same incarnation-pinned usage verdict; control changes and phasing preserve a consumed use, zone changes reset it, and usage-limited mana remains explicit and nonreversible. Source sequences preserve printed order, suspend before counter mutation for replacement choices, reject stale source incarnations, and roll back atomically. Oracle compiler v68 and capability registry v75 add two capability-closed Commander CardPrograms and remove eight material residuals without changing CommanderEngine, direct GameState-write counts, card-identity branches, runtime Oracle parsing, or protocol schemas. Effects that grant another Exhaust use, copied or granted Exhaust abilities, reverse-order source sequences, and independently unsupported costs or results remain fail-closed."
+    "phase": "typed_fixed_adapt_monstrosity_and_permanent_designations",
+    "scope_note": "The evaluated source tree adds one closed fixed self-counter keyword-action operation shared by Adapt and Monstrosity plus one identity-pinned rules-layer owner for the public noncopiable monstrous designation. The read-only handler checks the current source only during resolution, routes every +1/+1 counter through the existing replacement-aware counter transaction, and applies the designation after the final counter result even when replacement leaves zero counters. The designation survives control changes and phasing, does not copy, clears on zone change, projects publicly, and preserves historical Game Record v3 payloads while absent. Compiler v69 and capability registry v76 add bounded trusted capabilities without card-name or Oracle-ID dispatch, runtime Oracle parsing, new direct GameState-write identities, or protocol schemas. Variable or zero values, compound wording, granted or copied abilities, monstrous-matters consumers, and CR 701.37c value-reference compilation remain fail-closed."
   },
   "ci": {
     "workflow": "PR",
@@ -55,6 +55,8 @@
       ,"quorune/rules/casting/commit.py"
       ,"quorune/rules/activation/commit.py"
       ,"quorune/activation_usage.py"
+      ,"quorune/permanent_designations.py"
+      ,"quorune/zone_object_state.py"
     ],
     "state_parameter_modules": [
       "quorune/record.py",

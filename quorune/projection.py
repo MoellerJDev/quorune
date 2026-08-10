@@ -364,6 +364,8 @@ class StateProjector:
             obj["goad"] = sorted(
                 designation.player for designation in card.goaded_by
             )
+        if card.monstrous_value is not None:
+            obj["monstrous"] = card.monstrous_value
         if card.battle_protector:
             obj["protect"] = card.battle_protector
         return obj

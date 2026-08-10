@@ -287,6 +287,35 @@ class SetCardDesignationIntent:
 
 
 @dataclass(frozen=True, slots=True)
+class BecomeMonstrousIntent:
+    actor: str
+    object_id: str
+    object_ref: str
+    logical_object_id: str
+    value: int
+    reason: str
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (
+                self.actor,
+                self.object_id,
+                self.object_ref,
+                self.logical_object_id,
+                self.reason,
+            )
+        ):
+            raise ValueError(
+                "Monstrous intents require complete object identity"
+            )
+        if type(self.value) is not int or self.value < 0:
+            raise ValueError(
+                "Monstrous intents require an exact nonnegative value"
+            )
+
+
+@dataclass(frozen=True, slots=True)
 class RecordChoiceIntent:
     actor: str
     event_code: str
@@ -1027,6 +1056,7 @@ SemanticIntent: TypeAlias = (
     | DealFixedDamageSetIntent
     | AddManaIntent
     | SetCardDesignationIntent
+    | BecomeMonstrousIntent
     | RecordChoiceIntent
     | ZoneMoveIntent
     | MoveObjectsSimultaneouslyIntent

@@ -1,8 +1,8 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, and ADR 0039"
-verified: "2026-08-09"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, and ADR 0048"
+verified: "2026-08-10"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
 ---
@@ -89,6 +89,18 @@ positive fixed counter operations must enter the transaction instead of adding
 another direct engine write. Counter removal, effects that prohibit placement,
 combined or modified loyalty-symbol costs, and other unrepresented rule actions
 remain distinct and fail closed until their ordering semantics are modeled.
+
+Fixed positive Adapt and Monstrosity use the same transaction. Their activation
+remains available independently of the current resolution condition. The
+strict handler resolves the current source incarnation, checks for existing
++1/+1 counters or the monstrous designation, and then emits the ordinary
+counter intent. Monstrosity follows that intent with the typed designation
+transition, so replacement can change the counter result—including to zero—
+without preventing the permanent from becoming monstrous. The designation is
+public and noncopiable, survives control changes and phasing, and is cleared by
+the extracted object-local CR 400.7 reset when a zone change creates a new
+object. Variable, zero, compound, granted, copied, and value-consuming variants
+remain material residuals.
 
 Closed target- and source-threaded sequences may now place one fixed counter
 and then apply a represented fixed characteristic result in printed order.

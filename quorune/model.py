@@ -159,6 +159,10 @@ class CardInstance:
     deathtouch_damage: bool = False
     temporary_keywords: list[str] = field(default_factory=list)
     goaded_by: list[GoadDesignation] = field(default_factory=list)
+    # CR 701.37b noncopiable permanent designation. ``None`` means the
+    # current logical object has not become monstrous.  The recorded value
+    # supports rules text that later refers to the N used for monstrosity.
+    monstrous_value: int | None = None
     annotations: dict[str, Any] = field(default_factory=dict)
     attached_to: str | None = None
     attachments: list[str] = field(default_factory=list)
@@ -196,6 +200,13 @@ class CardInstance:
             )
         if type(self.deathtouch_damage) is not bool:
             raise ValueError("Deathtouch damage state must be a boolean")
+        if self.monstrous_value is not None and (
+            type(self.monstrous_value) is not int
+            or self.monstrous_value < 0
+        ):
+            raise ValueError(
+                "A monstrous designation value must be a nonnegative integer"
+            )
 
     @property
     def logical_object_id(self) -> str:
@@ -221,6 +232,9 @@ class CardInstance:
             # Preserve byte-for-byte historical checkpoint payloads. The
             # GameState identity-version marker distinguishes new records.
             payload.pop("commander_designation_id")
+        if self.monstrous_value is None:
+            # Keep historical Game Record v3 card payloads byte-compatible.
+            payload.pop("monstrous_value")
         return payload
 
     @classmethod

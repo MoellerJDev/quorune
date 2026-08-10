@@ -54222,23 +54222,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-701.37",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "701"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_fixed_monstrosity_compiles_source_spanned_and_capability_closed"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword-action heading; keyword_action.monstrosity.fixed and permanent.designation.monstrous own the bounded fixed-value slice."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "701.37",
       "rule_text_sha256": "3b9da656aec790695dd3d28bb846b2842b923c24a11a77ebb81f30ea375f650a",
       "schema_version": 1,
@@ -54247,26 +54251,51 @@
         "end_line": 3609,
         "start_line": 3608
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "variable and zero Monstrosity values are not lowered",
+        "compound Monstrosity instructions remain material residuals"
       ],
       "case_id": "cr-701.37a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "701.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_fixed_monstrosity_compiles_source_spanned_and_capability_closed",
+        "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_unsupported_adapt_and_monstrosity_variants_remain_residuals",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_false_resolution_conditions_do_not_prevent_activation",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_zero_counter_commit_result_still_creates_monstrous_designation",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_designation_failure_rolls_back_counter_placement"
+      ],
+      "implementation_components": [
+        "quorune.compiler.self_counter_keyword_actions.fixed_self_counter_keyword_action_template",
+        "quorune.semantic_choices.self_counter_keyword_actions.FixedSelfCounterKeywordActionHandler",
+        "quorune.permanent_designations.become_monstrous"
+      ],
+      "notes": [
+        "The fixed positive slice checks the designation on resolution, places counters through replacement, and becomes monstrous even when replacement leaves zero counters; unsupported value grammar fails closed."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.37a",
       "rule_text_sha256": "0518f48edc58413af5c8e529703b157cc844c7fd90139791e957e7ccbc54b4d3",
       "schema_version": 1,
@@ -54275,26 +54304,50 @@
         "end_line": 3611,
         "start_line": 3610
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-701.37b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "701.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_preserves_value_control_change_and_phasing",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_is_strict_and_old_incarnation_is_ignored",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_zone_change_clears_and_copy_does_not_inherit_monstrous",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.model.CardInstance.monstrous_value",
+        "quorune.permanent_designations.become_monstrous",
+        "quorune.engine.CommanderEngine.move_card",
+        "quorune.projection.StateProjector"
+      ],
+      "notes": [
+        "The designation is public, noncopiable, identity-pinned, survives control changes and phasing, and is cleared by a zone change that creates a new object."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "701.37b",
       "rule_text_sha256": "a8fd41b34d95f37a110adfb420b7805ba81e2eb97673bfe2591b72f3a0b5b06b",
       "schema_version": 1,
@@ -54303,26 +54356,43 @@
         "end_line": 3613,
         "start_line": 3612
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "the resolved fixed value is stored but generic abilities that refer to the Monstrosity value are not compiled or bound"
       ],
       "case_id": "cr-701.37c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "701.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_preserves_value_control_change_and_phasing",
+        "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_unsupported_adapt_and_monstrosity_variants_remain_residuals"
+      ],
+      "implementation_components": [
+        "quorune.model.CardInstance.monstrous_value",
+        "quorune.permanent_designations.become_monstrous"
+      ],
+      "notes": [
+        "Recording the value is replay-safe foundation evidence, not a claim that downstream value references are executable."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.37c",
       "rule_text_sha256": "3e6539510cc4bc473b7dee2a13f6acead04cee85a3db00b3debe29e245fd73c1",
       "schema_version": 1,
@@ -54331,7 +54401,7 @@
         "end_line": 3615,
         "start_line": 3614
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",
@@ -55357,23 +55427,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-701.46",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "701"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_fixed_adapt_compiles_source_spanned_and_capability_closed"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword-action heading; keyword_action.adapt.fixed owns the bounded fixed-value slice."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "701.46",
       "rule_text_sha256": "0c01219fa815768e1d764b59ed40107d830aa87237b4681ac3658a857a426109",
       "schema_version": 1,
@@ -55382,26 +55456,54 @@
         "end_line": 3686,
         "start_line": 3685
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "zero or variable Adapt values are not lowered",
+        "compound Adapt instructions remain material residuals"
       ],
       "case_id": "cr-701.46a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "701.46"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_fixed_adapt_compiles_source_spanned_and_capability_closed",
+        "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_unsupported_adapt_and_monstrosity_variants_remain_residuals",
+        "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordRuleTests.test_adapt_condition_is_checked_only_on_resolution",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_false_resolution_conditions_do_not_prevent_activation",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_adapt_uses_canonical_counter_replacement_and_replays",
+        "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_four_player_adapt_replacement_choice_is_seat_scoped"
+      ],
+      "implementation_components": [
+        "quorune.compiler.self_counter_keyword_actions.fixed_self_counter_keyword_action_template",
+        "quorune.semantic_choices.self_counter_keyword_actions.FixedSelfCounterKeywordActionHandler",
+        "quorune.counter_placement.place_counters_on_refs"
+      ],
+      "notes": [
+        "The fixed positive slice checks the +1/+1-counter condition only on resolution and uses the replacement-aware counter transaction; unsupported value grammar fails closed."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "701.46a",
       "rule_text_sha256": "1d4c1dbe72a0026d06422a242e54f17ec7fb2b615093ece3f095d5c501ea0c37",
       "schema_version": 1,
@@ -55410,7 +55512,7 @@
         "end_line": 3688,
         "start_line": 3687
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

@@ -25,6 +25,7 @@ from .node_capability_shapes import (
     fixed_scry_node_capabilities,
     single_explore_node_capabilities,
     single_proliferate_node_capabilities,
+    fixed_self_counter_keyword_action_node_capabilities,
     targeted_counter_node_capabilities,
     targeted_destruction_node_capabilities,
     targeted_exile_node_capabilities,
@@ -191,6 +192,8 @@ _SHAPE_GATED_MECHANICS = frozenset(
         "return-to-owner-hand",
         _FIXED_TARGET_SEQUENCE_MECHANIC,
         _FIXED_SOURCE_SEQUENCE_MECHANIC,
+        "adapt",
+        "monstrosity",
     }
 )
 _CAPABILITY_ID = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$")
@@ -777,6 +780,7 @@ def _targeted_effect_capabilities(
         fixed_scry_node_capabilities,
         single_explore_node_capabilities,
         single_proliferate_node_capabilities,
+        fixed_self_counter_keyword_action_node_capabilities,
         targeted_counter_node_capabilities,
         targeted_destruction_node_capabilities,
         targeted_exile_node_capabilities,
@@ -1015,6 +1019,10 @@ def capability_covered_mechanics(
         covered.add("ex" + "plore")
     if "counter.producer.proliferate" in supplied:
         covered.add("pro" + "liferate")
+    if "keyword_action.adapt.fixed" in supplied:
+        covered.update({"adapt", "cr-122-counters"})
+    if "keyword_action.monstrosity.fixed" in supplied:
+        covered.update({"monstrosity", "cr-122-counters"})
     if "damage.amount.positive" in supplied and supplied.intersection(
         {"damage.result.player_life", "damage.result.multitype_permanent"}
     ):
