@@ -11,6 +11,17 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Keyword-counter composition assurance
+
+- Added explicit four-player and exact-replay interaction coverage for
+  ordinary keyword counters feeding Flying block legality, Vigilance attack
+  tapping, Double strike damage-step participation, and Lifelink damage
+  results.
+- Classified those boundaries and replacement-aware keyword-counter placement
+  as ambient high-risk interactions in the existing reusable-piece matrix.
+  This is assurance for the represented owners, not a claim that every keyword
+  or counter interaction is complete.
+
 ### Typed fixed Adapt and Monstrosity
 
 - Added one source-spanned fixed positive Adapt/Monstrosity action family that

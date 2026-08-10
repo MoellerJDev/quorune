@@ -890,6 +890,46 @@
       "capability_ids": ["permanent.designation.monstrous"],
       "interaction_order": 3,
       "assertion": "The monstrous designation is bound to one battlefield incarnation, is not copied to another object, and is cleared when a zone transition creates a new logical object."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_four_player_sequence_choice_is_seat_scoped_and_replays",
+      "piece_ids": ["capability.counter.characteristic.keyword", "capability.counter.placement.quantity_replacement"],
+      "capability_ids": ["counter.characteristic.keyword", "counter.placement.quantity_replacement"],
+      "interaction_order": 2,
+      "assertion": "A four-player affected-seat quantity-replacement choice completes before a Flying counter changes effective layer-6 characteristics, remains hidden from other seats while pending, and replays to the same state hash."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_flying_counter_feeds_offer_and_command_block_legality",
+      "piece_ids": ["capability.combat.block.flying", "capability.counter.characteristic.keyword"],
+      "capability_ids": ["combat.block.flying", "counter.characteristic.keyword"],
+      "interaction_order": 2,
+      "assertion": "A canonically placed Flying counter changes the exact effective-keyword snapshot consumed by both advertised and accepted block declarations, rejects a ground block without mutation, and replays the no-block declaration exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_vigilance_counter_feeds_four_player_attack_tap_owner",
+      "piece_ids": ["capability.combat.attack.vigilance", "capability.counter.characteristic.keyword"],
+      "capability_ids": ["combat.attack.vigilance", "counter.characteristic.keyword"],
+      "interaction_order": 2,
+      "assertion": "A canonically placed Vigilance counter enters the current effective-keyword view used by the four-player attack tap owner, leaves the legal attacker untapped, and replays the declaration exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_double_strike_counter_feeds_both_damage_steps",
+      "piece_ids": ["capability.combat.damage.participation.strike_steps", "capability.counter.characteristic.keyword"],
+      "capability_ids": ["combat.damage.participation.strike_steps", "counter.characteristic.keyword"],
+      "interaction_order": 2,
+      "assertion": "A canonically placed Double strike counter creates the first combat-damage step and remains in the current effective-keyword snapshot that permits the source to participate in the second step, with exact replay."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_lifelink_counter_feeds_final_damage_result",
+      "piece_ids": ["capability.counter.characteristic.keyword", "capability.damage.result.lifelink"],
+      "capability_ids": ["counter.characteristic.keyword", "damage.result.lifelink"],
+      "interaction_order": 2,
+      "assertion": "A canonically placed Lifelink counter is captured in the combat source snapshot and produces one canonical life-gain result from the final simultaneous damage batch, with exact replay."
     }
   ]
 }

@@ -22,7 +22,7 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "3d48a63a309c56cb8ee8aac9b60e69e868d418437b3be7781da6fcc7e663eb75",
+      "sha256": "5d73431983d30ac59749c2e0b730e8ed4c26c9b08a3f9a9f85f717068e0f15cd",
       "version": 11
     },
     {
@@ -6535,7 +6535,7 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "3d48a63a309c56cb8ee8aac9b60e69e868d418437b3be7781da6fcc7e663eb75",
+      "contract_sha256": "5d73431983d30ac59749c2e0b730e8ed4c26c9b08a3f9a9f85f717068e0f15cd",
       "contract_version": 11,
       "coverage_status": "partial",
       "dependencies": [],
@@ -6646,6 +6646,10 @@
         "test_four_player_sequence_choice_is_seat_scoped_and_replays",
         "test_keyword_counter_vocabulary_is_closed_and_strict",
         "test_keyword_counter_characteristic_mutant_is_killed",
+        "test_flying_counter_feeds_offer_and_command_block_legality",
+        "test_vigilance_counter_feeds_four_player_attack_tap_owner",
+        "test_double_strike_counter_feeds_both_damage_steps",
+        "test_lifelink_counter_feeds_final_damage_result",
         "test_indefinite_keyword_sequence_compiles_the_closed_family",
         "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
         "test_four_player_zone_object_keyword_sequence_is_private_and_replays",

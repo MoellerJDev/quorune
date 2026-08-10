@@ -260,6 +260,15 @@ specific Flying, Haste, Trample, Hexproof, Indestructible, or other mechanic
 capability. Parameterized keyword variants and same-layer dependency cases
 outside the current continuous-effect model fail closed.
 
+The interaction inventory treats the counter-to-keyword boundary as
+high-risk wherever it crosses another rules owner. Current focused composition
+evidence covers replacement-aware placement before the ability appears,
+Flying block legality, Vigilance attacker tapping, Double strike damage-step
+participation, and Lifelink's final damage result. Those owners all consume the
+same effective characteristic view used by projection; none reinterprets the
+counter name. The evidence does not promote unrepresented keyword semantics or
+same-layer ability-removal dependencies.
+
 Oracle IR v65 lowers one mandatory instruction that places two or three
 distinct fixed counter kinds on the source permanent or one direct permanent
 target. The compiler preserves printed counter order and emits one
