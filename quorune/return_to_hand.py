@@ -17,6 +17,9 @@ from .rules.single_object_zone_transition import (
 )
 
 
+_REASON_FIELD = "reason"
+
+
 ReturnToHandError = SingleObjectZoneTransitionError
 ReturnToHandRequest = SingleObjectZoneTransitionRequest
 ReturnToHandEntry = SingleObjectZoneTransitionEntry
@@ -178,7 +181,7 @@ def _committed_return_result(
         "origin_controller": result.origin_controller,
         "requested_destination": SingleObjectDestination.OWNER_HAND.value,
         "destination": result.destination,
-        "reason": plan.reason,
+        _REASON_FIELD: plan.reason,
     }
     if include_origin:
         details["origin"] = plan.entry.origin.value

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Mapping, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 
 class GraveyardCardTargetError(ValueError):
@@ -163,8 +163,41 @@ class OwnGraveyardCardTargetSpec:
         return spec
 
 
+def targeted_own_graveyard_return_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return capabilities only for the closed own-graveyard card grammar."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if (
+        not {"return-to-owner-hand", "cr-115-targets"}.issubset(mechanics)
+        or len(effects) != 1
+        or not isinstance(target_schema, Mapping)
+    ):
+        return ()
+    try:
+        OwnGraveyardCardTargetSpec.from_target_schema(target_schema)
+    except (GraveyardCardTargetError, TypeError):
+        return ()
+    effect = effects[0]
+    if (
+        set(effect) != {"op", "card"}
+        or effect.get("op") != "return_graveyard_card_to_owner_hand"
+        or effect.get("card") != "$target.0"
+    ):
+        return ()
+    return (
+        "card.return.own_graveyard_to_owner_hand",
+        "target.revalidate_resolution",
+    )
+
+
 __all__ = [
     "GraveyardCardTargetError",
     "GraveyardCardTargetKind",
     "OwnGraveyardCardTargetSpec",
+    "targeted_own_graveyard_return_node_capabilities",
 ]

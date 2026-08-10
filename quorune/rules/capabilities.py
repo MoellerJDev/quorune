@@ -11,6 +11,9 @@ from .component_resolution import implementation_component_resolves
 from .counter_capability_shapes import (
     fixed_counter_placement_group_node_capabilities,
 )
+from .graveyard_card_targets import (
+    targeted_own_graveyard_return_node_capabilities,
+)
 from .node_capability_shapes import (
     fixed_counter_additional_cost_node_capabilities,
     fixed_sacrifice_additional_cost_node_capabilities,
@@ -35,7 +38,6 @@ from .node_capability_shapes import (
     targeted_destruction_node_capabilities,
     targeted_exile_node_capabilities,
     targeted_return_to_hand_node_capabilities,
-    targeted_own_graveyard_return_node_capabilities,
     targeted_tap_state_node_capabilities,
 )
 
@@ -986,7 +988,12 @@ def capability_covered_mechanics(
         covered.add("destroy-fixed-set")
     if "permanent.exile.effect" in supplied:
         covered.add(_EXILE_MECHANIC)
-    if "permanent.return.owner_hand" in supplied:
+    if supplied.intersection(
+        {
+            "card.return.own_graveyard_to_owner_hand",
+            "permanent.return.owner_hand",
+        }
+    ):
         covered.add("return-to-owner-hand")
     if "stack.counter.effect" in supplied:
         covered.add("counter")

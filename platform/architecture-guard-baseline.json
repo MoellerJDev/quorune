@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "376dccce9a71c626a031b8f1cf9cc7451f2a152b",
+  "baseline_commit": "c8ebbfb04e843cdc34bdd5638b30c7caba4c20de",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -2219,9 +2219,9 @@
     "physical_lines": 12468
   },
   "exception_binding": {
-    "adr": "docs/adr/0052-typed-ordinary-bolster.md",
-    "allowance_fingerprint": "b3969cb95d351bf5a6baa98b8da4c26f7186bc1a4db1aa574015014e1907d643",
-    "exception_id": "ARCH-EXC-0022"
+    "adr": "docs/adr/0053-typed-own-graveyard-return-to-hand.md",
+    "allowance_fingerprint": "46a06a74812c3a770149d1fc51977b1d5708904e00d74912c6d83d5c67766148",
+    "exception_id": "ARCH-EXC-0023"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2579,6 +2579,7 @@
     "remora_tax",
     "reorder_top",
     "retarget_stack_item",
+    "return_graveyard_card_to_owner_hand",
     "return_transformed",
     "reveal_top_permanent",
     "sacrifice",

@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "21d35bc77a3c2d618b6cbf3cfb3abec51e7c3fb8662a4e616555dcbd8755a536"
+verified: "311e4258a8457401110e47eccedeecf0a6f2d11a592dfe51b9aba401b99c4255"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -22,6 +22,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Twists and Turns // Mycoid Maze | 189 | 24 | 6 | 6 | 8 | 7 | `blocked` |
 | Vorinclex // The Grand Evolution | 188 | 22 | 7 | 7 | 9 | 4 | `blocked` |
 | Sheoldred // The True Scriptures | 187 | 21 | 7 | 7 | 10 | 4 | `blocked` |
+| Conqueror's Galleon // Conqueror's Foothold | 186 | 24 | 6 | 7 | 6 | 14 | `blocked` |
 | Dion, Bahamut's Dominant // Bahamut, Warden of Light | 186 | 22 | 6 | 7 | 8 | 10 | `blocked` |
 | Elesh Norn // The Argent Etchings | 182 | 20 | 7 | 7 | 11 | 2 | `blocked` |
 | Invasion of Zendikar // Awakened Skyclave | 178 | 20 | 5 | 5 | 6 | 18 | `blocked` |
@@ -30,7 +31,6 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Jin-Gitaxias // The Great Synthesis | 177 | 19 | 5 | 7 | 11 | 6 | `blocked` |
 | Urabrask // The Great Work | 176 | 19 | 6 | 7 | 10 | 4 | `blocked` |
 | Invasion of Fiora // Marchesa, Resolute Monarch | 175 | 17 | 5 | 7 | 6 | 17 | `blocked` |
-| Conqueror's Galleon // Conqueror's Foothold | 171 | 20 | 5 | 7 | 7 | 14 | `blocked` |
 | Grist, Voracious Larva // Grist, the Plague Swarm | 170 | 22 | 5 | 5 | 8 | 14 | `blocked` |
 | Ojer Taq, Deepest Foundation // Temple of Civilization | 170 | 22 | 7 | 6 | 8 | 2 | `blocked` |
 | Nicol Bolas, the Ravager // Nicol Bolas, the Arisen | 169 | 24 | 6 | 7 | 5 | 11 | `blocked` |

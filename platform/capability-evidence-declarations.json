@@ -506,6 +506,94 @@
       "applicability_note": "Replay the source-departure checkpoint and pinned last-known attachment result to the identical state hash."
     },
     {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_destination_replacement_preserves_graveyard_return_result",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit the own-graveyard return through the canonical destination-replacement boundary and retain the requested and actual destinations in the typed result journal."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_compiled_regrowth_is_owner_scoped_private_and_replays",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Advertise and resolve only the acting seat's graveyard cards in a four-player game while rejecting another seat's public graveyard card."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_graveyard_return_transaction_mutant_is_killed",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Bypass the prepared physical and logical identity validation and prove that the stale-plan rollback assertion rejects the mutant."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_compiler_mutant_is_killed",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the closed own-graveyard compiler production and prove that the source-spanned instruction returns to a material residual."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "negative",
+      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_opponent_noncard_and_stale_graveyard_objects_fail_before_mutation",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject another player's card, a noncard object, and a stale logical incarnation before authoritative mutation."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "negative",
+      "test_id": "tests.test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_unsupported_graveyard_return_variants_remain_material_residuals",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep optional, qualified, opponent-graveyard, reanimation, aggregate, and compound variants outside the closed grammar."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "positive",
+      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_own_graveyard_card_returns_to_hand_with_new_identity",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Move one owned physical card from the actor's graveyard to hand and create a new logical incarnation through the canonical zone owner."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "positive",
+      "test_id": "tests.test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_spell_trigger_and_activated_contexts_share_graveyard_return_lowering",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower the same closed own-graveyard card return with precise source spans in spell, trigger, and activated contexts."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_compiled_regrowth_is_owner_scoped_private_and_replays",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the returned card in its owner's hand while withholding that seat's private hand zone and unrelated private references from opponents."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "replay",
+      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_compiled_regrowth_is_owner_scoped_private_and_replays",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the owner-scoped target, paid spell, public graveyard departure, hidden hand result, and final authoritative hash exactly."
+    },
+    {
+      "capability_id": "card.return.own_graveyard_to_owner_hand",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_opponent_noncard_and_stale_graveyard_objects_fail_before_mutation",
+      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve the authoritative state hash when origin, ownership, object kind, or logical identity validation fails."
+    },
+    {
       "capability_id": "casting.additional_cost.fixed_counter_placement",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
@@ -8933,94 +9021,6 @@
       "official_rule_ids": ["701.8b", "702.12", "702.12a", "702.12b", "702.12c", "704.5g", "704.5h"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject a destruction plan after the current Indestructible characteristic changes and preserve the authoritative state hash."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "interaction",
-      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_destination_replacement_preserves_graveyard_return_result",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Commit the own-graveyard return through the canonical destination-replacement boundary and retain the requested and actual destinations in the typed result journal."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "multiplayer",
-      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_compiled_regrowth_is_owner_scoped_private_and_replays",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Advertise and resolve only the acting seat's graveyard cards in a four-player game while rejecting another seat's public graveyard card."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "mutation",
-      "test_id": "tests.test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_compiler_mutant_is_killed",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Remove the closed own-graveyard compiler production and prove that the source-spanned instruction returns to a material residual."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "mutation",
-      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_graveyard_return_transaction_mutant_is_killed",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Bypass the prepared physical and logical identity validation and prove that the stale-plan rollback assertion rejects the mutant."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "negative",
-      "test_id": "tests.test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_unsupported_graveyard_return_variants_remain_material_residuals",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Keep optional, qualified, opponent-graveyard, reanimation, aggregate, and compound variants outside the closed grammar."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "negative",
-      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_opponent_noncard_and_stale_graveyard_objects_fail_before_mutation",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Reject another player's card, a noncard object, and a stale logical incarnation before authoritative mutation."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "positive",
-      "test_id": "tests.test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_spell_trigger_and_activated_contexts_share_graveyard_return_lowering",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Lower the same closed own-graveyard card return with precise source spans in spell, trigger, and activated contexts."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "positive",
-      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_own_graveyard_card_returns_to_hand_with_new_identity",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Move one owned physical card from the actor's graveyard to hand and create a new logical incarnation through the canonical zone owner."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "privacy",
-      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_compiled_regrowth_is_owner_scoped_private_and_replays",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Project the returned card in its owner's hand while withholding that seat's private hand zone and unrelated private references from opponents."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "replay",
-      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_compiled_regrowth_is_owner_scoped_private_and_replays",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Replay the owner-scoped target, paid spell, public graveyard departure, hidden hand result, and final authoritative hash exactly."
-    },
-    {
-      "capability_id": "card.return.own_graveyard_to_owner_hand",
-      "evidence_class": "rollback",
-      "test_id": "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_opponent_noncard_and_stale_graveyard_objects_fail_before_mutation",
-      "official_rule_ids": ["108.3", "109.5", "115.1", "115.1a", "115.1b", "400.2", "400.3", "400.7", "608.2b", "608.2c"],
-      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Preserve the authoritative state hash when origin, ownership, object kind, or logical identity validation fails."
     },
     {
       "capability_id": "permanent.return.owner_hand",

@@ -11,10 +11,6 @@ from .casting_additional_costs import (
     FixedSacrificeAdditionalCost,
     FixedZoneChangeAdditionalCost,
 )
-from .graveyard_card_targets import (
-    GraveyardCardTargetError,
-    OwnGraveyardCardTargetSpec,
-)
 from ..additional_cost_vocabulary import (
     DISCARD_ONE_COST,
     EXILE_ONE_FROM_BATTLEFIELD_COST,
@@ -794,38 +790,6 @@ def targeted_return_to_hand_node_capabilities(
     )
 
 
-def targeted_own_graveyard_return_node_capabilities(
-    *,
-    effects: Sequence[Mapping[str, Any]],
-    target_schema: Mapping[str, Any] | None,
-    mechanic_ids: Iterable[str],
-) -> tuple[str, ...]:
-    """Return capabilities only for the closed own-graveyard card grammar."""
-
-    mechanics = {str(value).casefold() for value in mechanic_ids}
-    if (
-        not {"return-to-owner-hand", "cr-115-targets"}.issubset(mechanics)
-        or len(effects) != 1
-        or not isinstance(target_schema, Mapping)
-    ):
-        return ()
-    try:
-        OwnGraveyardCardTargetSpec.from_target_schema(target_schema)
-    except (GraveyardCardTargetError, TypeError):
-        return ()
-    effect = effects[0]
-    if (
-        set(effect) != {"op", "card"}
-        or effect.get("op") != "return_graveyard_card_to_owner_hand"
-        or effect.get("card") != "$target.0"
-    ):
-        return ()
-    return (
-        "card.return.own_graveyard_to_owner_hand",
-        "target.revalidate_resolution",
-    )
-
-
 def targeted_exile_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -1598,7 +1562,6 @@ __all__ = [
     "targeted_destruction_node_capabilities",
     "targeted_exile_node_capabilities",
     "targeted_return_to_hand_node_capabilities",
-    "targeted_own_graveyard_return_node_capabilities",
     "targeted_tap_state_node_capabilities",
     "targeted_counter_node_capabilities",
 ]
