@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from dataclasses import replace
 import json
 from pathlib import Path
 import tempfile
@@ -12,6 +13,9 @@ from scripts.build_test_database import build_fixture_database
 from quorune.card_programs import CardProgram
 from quorune.card_programs.adapters import compile_card_program
 from quorune.carddb import CardDatabase, CardRecord
+from quorune.counter_placement import (
+    prepare_counter_placements as canonical_prepare_counter_placements,
+)
 from quorune.deck import DeckLoader
 from quorune.engine import TURN_STEPS
 from quorune.entry_counter_model import (
@@ -34,7 +38,11 @@ from quorune.replacement import (
     apply_replacement,
     replacement_choice,
 )
-from quorune.replacement_effects import ReplacementChoiceRequired
+from quorune.replacement_effects import (
+    ReplacementChoiceRequired,
+    ReplacementContinuation,
+    ReplacementEffectError,
+)
 from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
@@ -397,6 +405,226 @@ class SagaCounterProgressionTests(unittest.TestCase):
         self.assertEqual(2, saga.counters["lore"])
         advance_active_player_sagas(engine, "A")
         self.assertEqual(3, saga.counters["lore"])
+
+    def test_saga_turn_action_applies_unqualified_but_not_effect_only_replacement(
+        self,
+    ):
+        session = self.session(7143018)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doubling Season",
+            ref="a-effect-only",
+        )
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doc Samson, Super Psychiatrist",
+            ref="a-unqualified",
+        )
+        event_sequence = engine.state.event_sequence
+
+        advance_active_player_sagas(engine, "A")
+
+        self.assertEqual(3, saga.counters["lore"])
+        replacements = [
+            event
+            for event in engine.state.events
+            if event.event_id > event_sequence
+            and event.code == "replacement.apply"
+        ]
+        self.assertEqual(1, len(replacements))
+        self.assertEqual(
+            "a-unqualified",
+            replacements[0].details["source"],
+        )
+
+    def test_saga_turn_replacement_choice_is_private_resumable_and_exact(
+        self,
+    ):
+        session = self.session(7143019, players=4)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        engine.state.stack.clear()
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doc Samson, Super Psychiatrist",
+            ref="a-doc-turn",
+        )
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doc Samson, Super Psychiatrist",
+            ref="a-second-doc-turn",
+        )
+        engine.state.active_player = "A"
+        engine.state.phase_index = TURN_STEPS.index(
+            ("precombat_main", "main")
+        )
+        engine._enter_step()
+
+        self.assertEqual("precombat_main", engine.state.phase)
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        self.assertEqual(1, saga.counters["lore"])
+        projector = StateProjector(self.db, engine.state)
+        projected_a = projector._decision("pilot:A")
+        self.assertIsNotNone(projected_a)
+        for seat in ("B", "C", "D"):
+            self.assertIsNone(projector._decision(f"pilot:{seat}"))
+        serialized = json.dumps(projected_a, sort_keys=True)
+        self.assertNotIn("turn_action_frame", serialized)
+        self.assertNotIn("replacement_batch", serialized)
+        self.assertNotIn(saga.object_id, serialized)
+
+        malformed = copy.deepcopy(engine.state.pending_decision.continuation)
+        malformed["turn_action_frame"]["unknown"] = True
+        with self.assertRaises(ReplacementEffectError):
+            ReplacementContinuation.from_dict(malformed)
+        malformed = copy.deepcopy(engine.state.pending_decision.continuation)
+        malformed["held_triggers"] = [{"unknown": True}]
+        with self.assertRaises(ReplacementEffectError):
+            ReplacementContinuation.from_dict(malformed)
+        malformed = copy.deepcopy(engine.state.pending_decision.continuation)
+        malformed["held_triggers"] = [
+            StackItem(
+                stack_id="held-trigger-id",
+                ref="held-trigger-ref",
+                kind="triggered_ability",
+                controller="A",
+                label="Held trigger",
+                targets=[4],
+            ).to_dict()
+        ]
+        with self.assertRaises(ReplacementEffectError):
+            ReplacementContinuation.from_dict(malformed)
+
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "saga-turn-replacement"
+            session.save(record_dir)
+            restarted = CommanderSession.load(self.db, record_dir)
+            restarted_projection = StateProjector(
+                self.db, restarted.engine.state
+            )._decision("pilot:A")
+            selection = restarted_projection["ctx"]["options"][0]["id"]
+            result = restarted.act(
+                "pilot:A",
+                {
+                    "action_id": "choose",
+                    "choices": {"replacement": selection},
+                },
+            )
+            self.assertTrue(result.ok, result.summary)
+            restarted_saga = restarted.engine.state.cards[saga.object_id]
+            self.assertEqual(4, restarted_saga.counters["lore"])
+            expected_hash = authoritative_state_hash(restarted.engine.state)
+            restarted.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_simultaneous_saga_turn_replacements_pin_event_ids_and_replay(
+        self,
+    ):
+        session = self.session(7143022, players=4)
+        engine = session.engine
+        first = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            first.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        second = CardInstance(
+            object_id="fixture:second-turn-replacement-saga",
+            ref="second-turn-replacement-saga",
+            oracle_id=first.oracle_id,
+            printed_name=first.printed_name,
+            owner="A",
+            controller="A",
+            zone="battlefield",
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+            counters={"lore": 1},
+        )
+        engine.state.cards[second.object_id] = second
+        engine.state.players["A"].zones["battlefield"].append(
+            second.object_id
+        )
+        engine.state.pending_trigger_batches.clear()
+        engine.state.stack.clear()
+        for ref in ("first-doc-batch", "second-doc-batch"):
+            self.add_permanent(
+                engine,
+                seat="A",
+                name="Doc Samson, Super Psychiatrist",
+                ref=ref,
+            )
+        engine.state.active_player = "A"
+        engine.state.phase_index = TURN_STEPS.index(
+            ("precombat_main", "main")
+        )
+        engine._enter_step()
+
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        self.assertEqual(1, first.counters["lore"])
+        self.assertEqual(1, second.counters["lore"])
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        choices = 0
+        while engine.state.pending_decision.kind == "replacement.order":
+            packet = session.packet("pilot:A", full=True)["decision"]
+            context = packet["ctx"]
+            response = {
+                "replacement": context["options"][0]["id"],
+            }
+            event_options = context.get("event_order_options") or []
+            if event_options:
+                response["replacement_event"] = event_options[-1]
+            result = session.act(
+                "pilot:A",
+                {
+                    "action_id": "choose",
+                    "choices": response,
+                },
+            )
+            self.assertTrue(result.ok, result.summary)
+            choices += 1
+            self.assertLessEqual(choices, 4)
+
+        self.assertGreaterEqual(choices, 2)
+        self.assertEqual(4, first.counters["lore"])
+        self.assertEqual(4, second.counters["lore"])
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "saga-turn-event-order"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
 
     def test_multiple_sagas_commit_lore_before_any_chapter_dispatch(self):
         session = self.session(7143004)
@@ -1198,6 +1426,44 @@ class SagaCounterProgressionTests(unittest.TestCase):
         ):
             with self.assertRaises(AssertionError):
                 assert_entry_counter_created(7143016)
+
+        def assert_turn_action_is_not_effect_generated(seed: int) -> None:
+            session = self.session(seed)
+            engine = session.engine
+            saga = self.card(engine, "A", "Urza's Saga")
+            engine.move_card(
+                saga.object_id,
+                "battlefield",
+                controller="A",
+                log=False,
+                semantic_events=False,
+            )
+            self.add_permanent(
+                engine,
+                seat="A",
+                name="Doubling Season",
+                ref=f"doubling-mutation-{seed}",
+            )
+            advance_active_player_sagas(engine, "A")
+            self.assertEqual(2, saga.counters["lore"])
+
+        def mutate_rule_action_to_effect(host, requests, **kwargs):
+            return canonical_prepare_counter_placements(
+                host,
+                tuple(
+                    replace(request, effect_generated=True)
+                    for request in requests
+                ),
+                **kwargs,
+            )
+
+        assert_turn_action_is_not_effect_generated(7143020)
+        with patch(
+            "quorune.saga_progression.prepare_counter_placements",
+            side_effect=mutate_rule_action_to_effect,
+        ):
+            with self.assertRaises(AssertionError):
+                assert_turn_action_is_not_effect_generated(7143021)
 
     def test_blocked_dependency_prevents_trusted_saga_card_form(self):
         registry_value = json.loads(

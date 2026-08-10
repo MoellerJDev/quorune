@@ -4,8 +4,8 @@
     "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-10",
-    "phase": "normalized_spell_cast_and_typed_prowess",
-    "scope_note": "The evaluated source tree adds a strict immutable normalized spell-cast event and one closed ordinary Prowess family. Compiler v71 and capability registry v78 lower every exact printed Prowess instance into a source-spanned CardProgram and typed layer-6 ability fragment. Trigger discovery requires that fragment in current effective characteristics, filters committed noncreature spells by canonical type set and controller, and delegates APNAP batching to the existing unified trigger owner and the +1/+1-until-end-of-turn result to the existing continuous-effect owner. The family adds no GameState mutation, card-name, Oracle-ID, or runtime Oracle-text path. Rules-text equivalents, qualified variants, unsupported grants and copies, trigger multiplication, and broader cast-event families remain fail-closed material residuals."
+    "phase": "replacement_aware_saga_turn_counter_action",
+    "scope_note": "The evaluated source tree migrates ordinary non-Read-Ahead Saga precombat lore progression from a direct counter-state plan to the canonical immutable counter-placement transaction. One simultaneous effect_generated=false batch applies unqualified quantity replacements but excludes effect-qualified replacements such as Doubling Season, suspends competing CR 616 choices before mutation through a strict seat-scoped continuation, preserves held trigger identity, and resumes step entry exactly once. The engine imports a narrow typed rules coordinator and shrinks by two logical lines; direct GameState writes remain flat. Read Ahead, arbitrary lore movement, copied or gained chapter abilities, unsupported quantity replacements, and broader turn-based counter producers remain fail-closed."
   },
   "ci": {
     "workflow": "PR",
@@ -215,6 +215,18 @@
         "quorune/semantic_runtime/zone_replacements.py",
         "quorune/semantic_runtime/self_entry_counters.py",
         "quorune/engine.py"
+      ],
+      "missing_dedicated_owner": false
+    },
+    {
+      "id": "counter_placement",
+      "status": "typed_precommit_owner_with_resumable_producer_coordinators",
+      "owners": [
+        "quorune/counter_placement.py",
+        "quorune/counter_placement_sets.py",
+        "quorune/counter_state.py",
+        "quorune/entry_counter_coordination.py",
+        "quorune/turn_counter_coordination.py"
       ],
       "missing_dedicated_owner": false
     },

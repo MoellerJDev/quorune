@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 
 from ..additional_cost_vocabulary import FIXED_ZONE_CHANGE_COST_CONTRACTS
+from ..trigger_batches import PendingTriggerItem, TriggerBatchError
 from .immutable import FrozenMap, thaw_value
 from .model import (
     ReplacementEffect,
@@ -80,6 +81,16 @@ _RESOLVING_ENTRY_FIELDS = {
     "replacement_batch",
     "replacement_effects",
 }
+_TURN_COUNTER_ACTION_FIELDS = {
+    "replacement_resume_kind",
+    "turn_action_kind",
+    "turn_action_actor",
+    "turn_action_frame",
+    "held_triggers",
+    "replacement_selections",
+    "replacement_batch",
+    "replacement_effects",
+}
 _MANA_FRAME_FIELDS = {
     "active_player",
     "phase",
@@ -89,8 +100,15 @@ _MANA_FRAME_FIELDS = {
     "priority_epoch",
     "stack_refs",
 }
-
-
+_TURN_ACTION_FRAME_FIELDS = {
+    "active_player",
+    "phase",
+    "step",
+    "phase_index",
+    "turn_sequence",
+    "priority_player",
+    "stack_refs",
+}
 @dataclass(frozen=True, slots=True)
 class ReplacementContinuation:
     """Strictly deserialized, replay-pinned replacement suspension data."""
@@ -118,6 +136,10 @@ class ReplacementContinuation:
     counter_intent: FrozenMap | None = None
     semantic_intent_kind: str = ""
     semantic_intent: FrozenMap | None = None
+    turn_action_kind: str = ""
+    turn_action_actor: str = ""
+    turn_action_frame: FrozenMap | None = None
+    held_triggers: tuple[PendingTriggerItem, ...] = ()
 
     @classmethod
     def from_dict(
@@ -152,6 +174,10 @@ class ReplacementContinuation:
             )
         if resume_kind == "resolving_entry":
             return _decode_resolving_entry_continuation(
+                cls, value, batch, effects
+            )
+        if resume_kind == "turn_counter_action":
+            return _decode_turn_counter_action_continuation(
                 cls, value, batch, effects
             )
         return _decode_semantic_continuation(cls, value, batch, effects)
@@ -218,6 +244,13 @@ class ReplacementContinuation:
             )
         return thaw_value(self.semantic_intent)
 
+    def thaw_turn_action_frame(self) -> dict[str, Any]:
+        if self.turn_action_frame is None:
+            raise ReplacementEffectError(
+                "This continuation has no turn-action frame"
+            )
+        return thaw_value(self.turn_action_frame)
+
 
 def _validate_continuation_shape(value: Mapping[str, Any]) -> str:
     resume_kind = str(value.get("replacement_resume_kind") or "semantic")
@@ -244,6 +277,10 @@ def _validate_continuation_shape(value: Mapping[str, Any]) -> str:
         "resolving_entry": (
             _RESOLVING_ENTRY_FIELDS,
             "resolving entry continuation",
+        ),
+        "turn_counter_action": (
+            _TURN_COUNTER_ACTION_FIELDS,
+            "turn-counter action continuation",
         ),
     }
     shape = shapes.get(resume_kind)
@@ -277,6 +314,106 @@ def _decode_batch_and_effects(
             "Replacement continuation requires effects"
         )
     return batch, effects
+
+
+def _decode_turn_counter_action_continuation(
+    continuation_type: type[ReplacementContinuation],
+    value: Mapping[str, Any],
+    batch: ReplacementEventBatch,
+    effects: tuple[ReplacementEffect, ...],
+) -> ReplacementContinuation:
+    action_kind = value["turn_action_kind"]
+    actor = value["turn_action_actor"]
+    frame = value["turn_action_frame"]
+    if (
+        action_kind != "saga_lore"
+        or type(actor) is not str
+        or not actor
+        or actor not in batch.apnap_order
+        or not isinstance(frame, Mapping)
+    ):
+        raise ReplacementEffectError(
+            "Turn-counter continuation identity is malformed"
+        )
+    exact_fields(
+        frame,
+        _TURN_ACTION_FRAME_FIELDS,
+        field_name="turn-counter action frame",
+    )
+    stack_refs = frame["stack_refs"]
+    if (
+        frame["active_player"] != actor
+        or frame["phase"] != "precombat_main"
+        or frame["step"] != "main"
+        or type(frame["phase_index"]) is not int
+        or frame["phase_index"] < 0
+        or type(frame["turn_sequence"]) is not int
+        or frame["turn_sequence"] < 1
+        or frame["priority_player"] is not None
+        or not isinstance(stack_refs, (list, tuple))
+        or any(type(item) is not str or not item for item in stack_refs)
+        or len(stack_refs) != len(set(stack_refs))
+    ):
+        raise ReplacementEffectError(
+            "Turn-counter continuation frame values are malformed"
+        )
+    if not batch.events:
+        raise ReplacementEffectError(
+            "Turn-counter continuation requires counter events"
+        )
+    for event in batch.events:
+        payload = event.payload
+        affected = event.affected_object
+        if (
+            event.kind != "counter.place"
+            or event.affected_player is not None
+            or affected is None
+            or affected.controller != actor
+            or event.children
+            or payload.get("placing_player") != actor
+            or payload.get("target_controller") != actor
+            or payload.get("target_zone") != "battlefield"
+            or payload.get("target_kind") != "permanent"
+            or payload.get("counter_name") != "lore"
+            or payload.get("requested_amount") != 1
+            or type(payload.get("amount")) is not int
+            or payload.get("amount", 0) < 1
+            or payload.get("source") is not None
+            or payload.get("effect_generated") is not False
+            or payload.get("prospective_subject") is not None
+            or "saga" not in payload.get("target_types", ())
+            or type(payload.get("target_logical_object_id")) is not str
+            or not payload.get("target_logical_object_id")
+        ):
+            raise ReplacementEffectError(
+                "Turn-counter continuation event is malformed"
+            )
+    try:
+        held = tuple(
+            PendingTriggerItem.from_dict(item)
+            for item in mapping_sequence(
+                value["held_triggers"],
+                field_name="turn-counter held triggers",
+            )
+        )
+    except TriggerBatchError as exc:
+        raise ReplacementEffectError(str(exc)) from exc
+    stack_ids = tuple(item.payload["stack_id"] for item in held)
+    refs = tuple(item.ref for item in held)
+    if len(stack_ids) != len(set(stack_ids)) or len(refs) != len(set(refs)):
+        raise ReplacementEffectError(
+            "Turn-counter held triggers must be unique"
+        )
+    return continuation_type(
+        batch=batch,
+        effects=effects,
+        resume_kind="turn_counter_action",
+        replacement_selections=_decode_combat_selections(value),
+        turn_action_kind=action_kind,
+        turn_action_actor=actor,
+        turn_action_frame=FrozenMap(frame),
+        held_triggers=held,
+    )
 
 
 def _decode_typed_selection(item: Mapping[str, Any]) -> FrozenMap:

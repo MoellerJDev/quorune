@@ -149,10 +149,8 @@ from .zone_trigger_processing import (
     semantic_event_sources,
 )
 from .zone_object_state import reset_card_after_zone_change
-from .saga_progression import (
-    saga_final_chapter_snapshot,
-    saga_step_batch,
-)
+from . import turn_counter_coordination
+from .saga_progression import saga_final_chapter_snapshot
 from .life_state import (
     pay_life_cost,
 )
@@ -2929,7 +2927,11 @@ class CommanderEngine(
             self._advance_step(held_triggers=waiting_triggers)
             return
 
-        waiting_at_priority = saga_step_batch(self, active, phase, step, held_triggers)
+        waiting_at_priority = turn_counter_coordination.coordinate_turn_counter_step(
+            self, active, phase, step, held_triggers
+        )
+        if waiting_at_priority is None:
+            return
 
         if step == "cleanup":
             # Abilities can trigger at the beginning of cleanup, but CR
@@ -3056,17 +3058,12 @@ class CommanderEngine(
             self._complete_draw_step_entry(active)
             return
 
-        context = {"phase": phase, "step": step, "player": active}
-        waiting_triggers = collect_trigger_items(
+        if not turn_counter_coordination.complete_ordinary_priority_step_entry(
             self,
-            "step.begin",
-            context,
-            held_triggers=waiting_at_priority,
-        )
-        if self._semantic_pause_annotation() is not None:
+            waiting_at_priority,
+            grant_priority=False,
+        ):
             return
-        enqueue_trigger_batch(self, waiting_triggers)
-
         if step == "declare_attackers":
             self._issue_attackers()
             return

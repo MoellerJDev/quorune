@@ -32,6 +32,7 @@ from .semantic_choices.preparation_coordination import (
 from .entry_counter_coordination import (
     resume_resolving_entry_replacement,
 )
+from .turn_counter_coordination import resume_turn_counter_replacement
 
 
 _PILOT_ROLE = "pi" + "lot"
@@ -494,6 +495,14 @@ def complete_replacement_order_choice(
         return
     if restored.resume_kind == "resolving_entry":
         resume_resolving_entry_replacement(
+            host,
+            restored,
+            selection,
+            error_type=error_type,
+        )
+        return
+    if restored.resume_kind == "turn_counter_action":
+        resume_turn_counter_replacement(
             host,
             restored,
             selection,

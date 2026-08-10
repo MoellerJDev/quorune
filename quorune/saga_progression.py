@@ -7,12 +7,14 @@ import re
 from typing import Any, Mapping, Protocol, Sequence
 
 from .characteristic_evaluation import type_parts
-from .counter_state import (
-    CounterChange,
-    CounterStateError,
-    CounterStatePlan,
-    commit_counter_changes,
-    plan_counter_changes,
+from .counter_placement import (
+    CounterPlacementCommitPlan,
+    CounterPlacementError,
+    CounterPlacementRequest,
+    commit_counter_placement_plan,
+    log_counter_placement_replacements,
+    plan_prepared_counter_placement_commit,
+    prepare_counter_placements,
 )
 from .model import StackItem
 from .saga_lifecycle import SagaFinalChapterSnapshot
@@ -93,7 +95,7 @@ class SagaLoreSubject:
 class SagaLoreTurnAction:
     controller: str
     subjects: tuple[SagaLoreSubject, ...]
-    counter_plan: CounterStatePlan
+    counter_plan: CounterPlacementCommitPlan
 
     def __post_init__(self) -> None:
         if type(self.controller) is not str or not self.controller:
@@ -104,11 +106,11 @@ class SagaLoreTurnAction:
             raise SagaProgressionError(
                 "Saga turn actions require typed subjects"
             )
-        if not isinstance(self.counter_plan, CounterStatePlan):
+        if not isinstance(self.counter_plan, CounterPlacementCommitPlan):
             raise SagaProgressionError(
-                "Saga turn actions require a typed counter plan"
+                "Saga turn actions require a typed counter-placement plan"
             )
-        if len(self.subjects) != len(self.counter_plan.transitions):
+        if len(self.subjects) != len(self.counter_plan.rows):
             raise SagaProgressionError(
                 "Saga turn action subjects and transitions must align"
             )
@@ -241,6 +243,11 @@ def saga_final_chapter_snapshot(
 def capture_saga_lore_turn_action(
     host: SagaProgressionHost,
     controller: str,
+    *,
+    replacement_selections: Sequence[
+        str | None | Mapping[str, Any]
+    ] = (),
+    replacement_event_ids: Sequence[str] | None = None,
 ) -> SagaLoreTurnAction:
     """Snapshot one simultaneous CR 714.3c turn-based counter action."""
 
@@ -248,7 +255,7 @@ def capture_saga_lore_turn_action(
     if player is None:
         raise SagaProgressionError("Saga turn-action controller is not active")
     subjects: list[SagaLoreSubject] = []
-    changes: list[CounterChange] = []
+    requests: list[CounterPlacementRequest] = []
     for object_id in tuple(player.zones["battlefield"]):
         card = host.state.cards.get(object_id)
         if card is None or card.controller != controller:
@@ -273,19 +280,25 @@ def capture_saga_lore_turn_action(
                 chapters=chapters,
             )
         )
-        changes.append(
-            CounterChange(
+        requests.append(
+            CounterPlacementRequest(
                 subject_kind="permanent",
                 subject_id=card.object_id,
                 counter_name="lore",
                 amount=1,
-                expected_zone="battlefield",
-                expected_logical_object_id=card.logical_object_id,
+                placing_player=controller,
+                effect_generated=False,
             )
         )
     try:
-        plan = plan_counter_changes(host, tuple(changes))
-    except CounterStateError as exc:
+        prepared = prepare_counter_placements(
+            host,
+            tuple(requests),
+            selections=replacement_selections,
+            event_ids=replacement_event_ids,
+        )
+        plan = plan_prepared_counter_placement_commit(host, prepared)
+    except CounterPlacementError as exc:
         raise SagaProgressionError(str(exc)) from exc
     return SagaLoreTurnAction(
         controller=controller,
@@ -372,28 +385,40 @@ def commit_saga_lore_turn_action(
                 "Saga turn-action snapshot changed before commit"
             )
     try:
-        commit_counter_changes(host, action.counter_plan)
-    except CounterStateError as exc:
+        results = commit_counter_placement_plan(
+            host,
+            action.counter_plan,
+            reason="Saga lore turn action",
+            log=False,
+        )
+    except CounterPlacementError as exc:
         raise SagaProgressionError(str(exc)) from exc
     owns_trigger_batch = trigger_batch is None
     pending = trigger_batch if trigger_batch is not None else []
     changed: list[str] = []
-    for subject, transition in zip(
+    log_counter_placement_replacements(host, action.counter_plan.prepared)
+    for subject, result in zip(
         action.subjects,
-        action.counter_plan.transitions,
+        results,
         strict=True,
     ):
         card = host.state.cards[subject.object_id]
-        changed.append(card.object_id)
+        if result.after != result.before:
+            changed.append(card.object_id)
         host._log(
             action.controller,
             "saga.lore",
-            f"{card.ref} received lore counter {transition.after}.",
+            f"{card.ref} received lore counter {result.after}.",
             {
                 "source": card.ref,
-                "before": transition.before,
-                "chapter": transition.after,
+                "before": result.before,
+                "chapter": result.after,
                 "rule": "714.3c",
+                **(
+                    {"placed": result.placed}
+                    if result.placed != 1
+                    else {}
+                ),
             },
             importance=1,
             changed_objects=[card.object_id],
@@ -415,12 +440,21 @@ def advance_active_player_sagas(
     controller: str,
     *,
     trigger_batch: list[StackItem] | None = None,
+    replacement_selections: Sequence[
+        str | None | Mapping[str, Any]
+    ] = (),
+    replacement_event_ids: Sequence[str] | None = None,
 ) -> tuple[str, ...]:
     """Capture and commit the represented ordinary precombat Saga action."""
 
     return commit_saga_lore_turn_action(
         host,
-        capture_saga_lore_turn_action(host, controller),
+        capture_saga_lore_turn_action(
+            host,
+            controller,
+            replacement_selections=replacement_selections,
+            replacement_event_ids=replacement_event_ids,
+        ),
         trigger_batch=trigger_batch,
     )
 
@@ -431,6 +465,11 @@ def saga_step_batch(
     phase: str,
     step: str,
     held_triggers: Sequence[StackItem],
+    *,
+    replacement_selections: Sequence[
+        str | None | Mapping[str, Any]
+    ] = (),
+    replacement_event_ids: Sequence[str] | None = None,
 ) -> list[StackItem]:
     """Combine a Saga turn action with triggers already waiting for priority."""
 
@@ -440,6 +479,8 @@ def saga_step_batch(
             host,
             controller,
             trigger_batch=pending,
+            replacement_selections=replacement_selections,
+            replacement_event_ids=replacement_event_ids,
         )
     return pending
 

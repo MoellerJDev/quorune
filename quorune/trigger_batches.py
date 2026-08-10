@@ -110,12 +110,19 @@ class PendingTriggerItem(Mapping[str, Any]):
         if "notes" in data and type(data["notes"]) is not str:
             raise TriggerBatchError("trigger_item.notes must be a string")
         x_value = data.get("x_value")
-        if x_value is not None and type(x_value) is not int:
-            raise TriggerBatchError("trigger_item.x_value must be an integer")
-        for field in ("targets", "modes", "visibility", "referred_object_ids"):
+        if x_value is not None:
+            _exact_integer(x_value, field="trigger_item.x_value")
+        for field in ("targets", "modes"):
             value = data.get(field, ())
             if not isinstance(value, tuple):
                 raise TriggerBatchError(f"trigger_item.{field} must be an array")
+            for index, item in enumerate(value):
+                _exact_string(item, field=f"trigger_item.{field}[{index}]")
+        for field in ("visibility", "referred_object_ids"):
+            _string_tuple(
+                data.get(field, ()),
+                field=f"trigger_item.{field}",
+            )
         context = data.get("context", FrozenMap())
         if not isinstance(context, FrozenMap):
             raise TriggerBatchError("trigger_item.context must be a mapping")

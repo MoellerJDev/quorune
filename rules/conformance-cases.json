@@ -88505,6 +88505,7 @@
         "negative",
         "interaction",
         "multiplayer",
+        "hidden_information",
         "replay"
       ],
       "dependency_rule_ids": [
@@ -88515,6 +88516,9 @@
         "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_multiple_sagas_commit_lore_before_any_chapter_dispatch",
         "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_four_player_precombat_lore_only_advances_active_players_sagas",
         "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_counter_uses_quantity_replacement_but_turn_action_does_not",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_action_applies_unqualified_but_not_effect_only_replacement",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_simultaneous_saga_turn_replacements_pin_event_ids_and_replay",
         "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_stale_saga_snapshot_rolls_back_without_partial_mutation",
         "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_precombat_saga_progression_replays_exactly"
       ],
@@ -88522,17 +88526,21 @@
         "quorune.saga_progression.SagaLoreTurnAction",
         "quorune.saga_progression.capture_saga_lore_turn_action",
         "quorune.saga_progression.commit_saga_lore_turn_action",
-        "quorune.counter_state.commit_counter_changes",
+        "quorune.counter_placement.prepare_counter_placements",
+        "quorune.counter_placement.commit_counter_placement_plan",
+        "quorune.turn_counter_coordination.coordinate_turn_counter_step",
+        "quorune.turn_counter_coordination.resume_turn_counter_replacement",
         "quorune.saga_progression.dispatch_saga_chapters"
       ],
       "notes": [
-        "The represented turn-based action snapshots only the active player's qualifying Sagas, commits all lore counters simultaneously through the typed counter owner, does not apply effect-qualified quantity replacements, and dispatches crossed trusted chapters only after the full batch commits."
+        "The represented turn-based action snapshots only the active player's qualifying Sagas and prepares one effect_generated=false simultaneous batch through the canonical counter owner. Unqualified placing-player quantity replacements apply, effect-qualified replacements do not, competing orders suspend before mutation, and crossed trusted chapters dispatch only after the full batch commits."
       ],
       "required_scenarios": [
         "positive",
         "negative",
         "interaction",
         "multiplayer",
+        "hidden_information",
         "replay"
       ],
       "reviewed": true,

@@ -73,6 +73,21 @@ class TriggerBatchModelTests(unittest.TestCase):
             ),
         )
 
+    def test_pending_item_rejects_malformed_nested_values(self):
+        malformed_values = (
+            {"targets": [4]},
+            {"modes": [""]},
+            {"visibility": ["A", "A"]},
+            {"referred_object_ids": [""]},
+            {"x_value": True},
+        )
+        for update in malformed_values:
+            with self.subTest(update=update):
+                payload = trigger_payload("S1", "A")
+                payload.update(update)
+                with self.assertRaises(TriggerBatchError):
+                    PendingTriggerItem.from_dict(payload)
+
     def test_legacy_batch_shape_round_trips_to_versioned_shape(self):
         batch = create_pending_trigger_batch(
             batch_id="batch-1",
