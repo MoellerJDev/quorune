@@ -3938,7 +3938,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 133714,
+      "logical_lines": 133722,
       "methods": {
         "dunder": 360,
         "private": 685,
@@ -4034,8 +4034,8 @@
           "file": "quorune/damage_results.py",
           "functions_and_methods": 47,
           "language": "python",
-          "logical_lines": 1295,
-          "physical_lines": 1410
+          "logical_lines": 1303,
+          "physical_lines": 1422
         },
         {
           "file": "quorune/semantic_choices/intent_host.py",
@@ -6968,7 +6968,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 146281,
+      "physical_lines": 146293,
       "python_file_count": 361,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -12985,8 +12985,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2479,
-      "discovered_total": 5779,
+      "conventional_ast_cases": 2481,
+      "discovered_total": 5781,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 93,

@@ -1193,23 +1193,35 @@ def _counter_removal_plan(
     host: DamageResultHost,
     deltas: _CommitDeltas,
 ) -> CounterRemovalPlan:
-    try:
-        return plan_counter_removals(
-            host,
-            tuple(
+    removals: list[CounterRemoval] = []
+    for (object_id, name), requested in sorted(
+        deltas.permanent_counter_remove.items()
+    ):
+        card = host.state.cards[object_id]
+        available = card.counters.get(name, 0)
+        if type(available) is not int or available < 0:
+            raise DamageResultError(
+                "Damage-result counter state must be a nonnegative integer"
+            )
+        # Damage removes counters as its result; it is not a cost that fails
+        # when the damage amount exceeds the permanent's counter total.  Pin
+        # the exact removable amount before entering the canonical exact-
+        # removal transaction so validation and commit still share one owner.
+        amount = min(requested, available)
+        if amount:
+            removals.append(
                 CounterRemoval(
                     object_id=object_id,
                     counter_name=name,
                     amount=amount,
                     expected_zone="battlefield",
-                    expected_logical_object_id=(
-                        host.state.cards[object_id].logical_object_id
-                    ),
+                    expected_logical_object_id=card.logical_object_id,
                 )
-                for (object_id, name), amount in sorted(
-                    deltas.permanent_counter_remove.items()
-                )
-            ),
+            )
+    try:
+        return plan_counter_removals(
+            host,
+            tuple(removals),
         )
     except CounterRemovalError as exc:
         raise DamageResultError(str(exc)) from exc
