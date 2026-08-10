@@ -5,6 +5,10 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Mapping
 
+from ..rules.graveyard_card_targets import (
+    GraveyardCardTargetKind,
+    OwnGraveyardCardTargetSpec,
+)
 from .direct_target import (
     compiled_direct_target,
     direct_target_effect,
@@ -86,6 +90,52 @@ class TargetedReturnToHandEffectTemplate:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class TargetedOwnGraveyardReturnToHandEffectTemplate:
+    """Closed lowering for one mandatory own-graveyard card return."""
+
+    target: GraveyardCardTargetKind
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.target, GraveyardCardTargetKind):
+            raise ValueError("Graveyard return target domain is unsupported")
+
+    @property
+    def template_id(self) -> str:
+        slug = OwnGraveyardCardTargetSpec(self.target).slug
+        return f"return-target-{slug}-from-own-graveyard-v1"
+
+    @property
+    def effects(self) -> tuple[Mapping[str, Any], ...]:
+        return direct_target_effect(
+            "return_graveyard_card_to_owner_hand",
+            reference_field="card",
+        )
+
+    @property
+    def target_schema(self) -> Mapping[str, Any]:
+        return OwnGraveyardCardTargetSpec(self.target).to_target_schema()
+
+    @property
+    def mechanics(self) -> tuple[str, ...]:
+        return ("return-to-owner-hand", "cr-115-targets")
+
+    def compiled(
+        self,
+    ) -> tuple[
+        str,
+        tuple[Mapping[str, Any], ...],
+        Mapping[str, Any],
+        tuple[str, ...],
+    ]:
+        return compiled_direct_target(
+            template_id=self.template_id,
+            effects=self.effects,
+            target_schema=self.target_schema,
+            mechanics=self.mechanics,
+        )
+
+
 def targeted_return_to_hand_effect_template(
     text: str,
 ) -> TargetedReturnToHandEffectTemplate | None:
@@ -103,8 +153,30 @@ def targeted_return_to_hand_effect_template(
     )
 
 
+def targeted_own_graveyard_return_to_hand_effect_template(
+    text: str,
+) -> TargetedOwnGraveyardReturnToHandEffectTemplate | None:
+    targets = "|".join(
+        re.escape(kind.value) for kind in GraveyardCardTargetKind
+    )
+    match = re.fullmatch(
+        rf"return target (?P<target>{targets}) "
+        r"from your graveyard to your hand\.?",
+        text.strip(),
+        re.IGNORECASE,
+    )
+    if match is None:
+        return None
+    return TargetedOwnGraveyardReturnToHandEffectTemplate(
+        GraveyardCardTargetKind(match.group("target").casefold())
+    )
+
+
 __all__ = [
+    "GraveyardCardTargetKind",
     "ReturnToHandTarget",
+    "TargetedOwnGraveyardReturnToHandEffectTemplate",
     "TargetedReturnToHandEffectTemplate",
+    "targeted_own_graveyard_return_to_hand_effect_template",
     "targeted_return_to_hand_effect_template",
 ]

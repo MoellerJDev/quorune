@@ -33,6 +33,7 @@ VALID_EFFECT_OPERATIONS = {
     "reanimate_attached_creature_aura",
     "attach",
     "bounce",
+    "return_graveyard_card_to_owner_hand",
     "change_control",
     "change_control_until_end_of_turn",
     "choose_card_name",

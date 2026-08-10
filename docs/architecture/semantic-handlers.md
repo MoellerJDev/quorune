@@ -42,11 +42,12 @@ effects, and other persistent descriptors—belongs to
 mutation and ordering contracts belong in subsystem documents such as
 [drawing](drawing.md), [damage](damage.md), [prevention](prevention.md), and
 [counter placement](counter-placement.md). Direct permanent destruction,
-permanent exile, and return-to-owner-hand instructions lower through strict
-handlers into identity-pinned transactions; none reparses Oracle text or owns
-the underlying counter or zone mutation. Broad legacy exile operations remain
-separate because they also represent stack and hidden-zone movement outside the
-direct battlefield-target grammar.
+permanent exile, battlefield return-to-owner-hand, and closed own-graveyard
+card-return instructions lower through strict handlers into identity-pinned
+transactions; none reparses Oracle text or owns the underlying counter or zone
+mutation. Broad legacy exile and return operations remain separate because they
+represent other origins, destinations, quantities, choices, or hidden-zone
+movement outside these closed direct-target grammars.
 
 The direct-target compiler families share structural builders for their one
 effect, closed target schema, and mechanics tuple, while each family retains
@@ -75,5 +76,6 @@ See [ADR 0006](../adr/0006-typed-semantic-handler-boundary.md),
 [ADR 0014](../adr/0014-typed-semantic-choice-and-effect-ownership.md),
 [ADR 0027](../adr/0027-typed-permanent-destruction.md),
 [ADR 0028](../adr/0028-typed-return-to-owner-hand.md),
-[ADR 0029](../adr/0029-typed-permanent-exile.md), and
-[ADR 0030](../adr/0030-typed-stack-counter.md).
+[ADR 0029](../adr/0029-typed-permanent-exile.md),
+[ADR 0030](../adr/0030-typed-stack-counter.md), and
+[ADR 0053](../adr/0053-typed-own-graveyard-return-to-hand.md).

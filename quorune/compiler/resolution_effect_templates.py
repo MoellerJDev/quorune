@@ -28,7 +28,10 @@ from .fixed_source_effect_sequences import (
     fixed_source_effect_sequence_template,
 )
 from .proliferate_templates import single_proliferate_effect_template
-from .return_to_hand_templates import targeted_return_to_hand_effect_template
+from .return_to_hand_templates import (
+    targeted_own_graveyard_return_to_hand_effect_template,
+    targeted_return_to_hand_effect_template,
+)
 from .self_counter_keyword_actions import (
     fixed_self_counter_keyword_action_template,
 )
@@ -138,6 +141,7 @@ def typed_resolution_effect_template(
         destruction_effect_template,
         targeted_exile_effect_template,
         targeted_return_to_hand_effect_template,
+        targeted_own_graveyard_return_to_hand_effect_template,
         targeted_counter_effect_template,
     ):
         compiled = compiler(text)

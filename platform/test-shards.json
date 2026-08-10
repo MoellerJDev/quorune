@@ -46,6 +46,7 @@
       "test_fixed_counter_placement_sets",
       "test_fixed_counter_placement_target_sets",
       "test_fixed_player_counter_placement_effects",
+      "test_graveyard_return_rules",
       "test_intrinsic_entry_counters",
       "test_life_change",
       "test_life_effect_runtime",
@@ -216,6 +217,7 @@
       "test_targeted_counter_effect_clauses",
       "test_targeted_destruction_effect_clauses",
       "test_targeted_exile_effect_clauses",
+      "test_targeted_graveyard_return_effect_clauses",
       "test_targeted_return_to_hand_effect_clauses",
       "test_targeted_tap_state_effect_clauses",
       "test_unleash_rules"

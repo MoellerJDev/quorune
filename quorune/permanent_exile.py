@@ -5,6 +5,7 @@ from typing import Any, Mapping, Protocol, Sequence
 
 from .rules.single_object_zone_transition import (
     SingleObjectDestination,
+    SingleObjectOrigin,
     SingleObjectZoneTransitionEntry,
     SingleObjectZoneTransitionError,
     SingleObjectZoneTransitionPlan,
@@ -95,6 +96,7 @@ def prepare_permanent_exile(
         actor=actor,
         reason=reason,
         requested_destination=SingleObjectDestination.EXILE,
+        expected_origin=SingleObjectOrigin.BATTLEFIELD,
         replacement_selections=replacement_selections,
     )
 
@@ -106,6 +108,7 @@ def validate_permanent_exile_plan(
     if (
         not isinstance(plan, PermanentExilePlan)
         or plan.requested_destination is not SingleObjectDestination.EXILE
+        or plan.entry.origin is not SingleObjectOrigin.BATTLEFIELD
     ):
         raise PermanentExileError("Permanent exile requires a typed exile plan")
     validate_single_object_zone_transition_plan(host, plan)
