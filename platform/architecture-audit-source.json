@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "audit": {
-    "baseline_main_commit": "fe170e287728d2e1da39087f38963e7694e3f2eb",
+    "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-10",
     "phase": "typed_fixed_multi_subject_counter_placement",
@@ -9,8 +9,8 @@
   },
   "ci": {
     "workflow": "PR",
-    "run_id": 31371011175,
-    "url": "https://github.com/MoellerJDev/quorune/actions/runs/31371011175",
+    "run_id": 31282459637,
+    "url": "https://github.com/MoellerJDev/quorune/actions/runs/31282459637",
     "status": "pass",
     "python_versions": [
       "3.12"
