@@ -164,7 +164,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 for row in status["semantic_handlers"]
             },
         )
-        self.assertEqual(35, len(status["runtime_components"]))
+        self.assertEqual(36, len(status["runtime_components"]))
         self.assertIn(
             "replacement.counter.quantity.v2",
             {

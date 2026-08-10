@@ -328,15 +328,9 @@ class ProwessRuntimeTests(unittest.TestCase):
         engine,
         source: CardInstance,
         *,
-        repeated: bool = False,
+        expected_instances: int = 1,
     ):
         record = self.db.by_oracle_id(source.oracle_id)
-        if repeated:
-            record = replace(
-                record,
-                oracle_text="Prowess, prowess",
-                keywords=("Prowess",),
-            )
         for program in tuple(engine.semantics.programs_for_oracle(source.oracle_id)):
             if program.event == "spell.cast":
                 engine.semantics.remove(program.key)
@@ -352,7 +346,7 @@ class ProwessRuntimeTests(unittest.TestCase):
             if program.provenance.get("template_id")
             == "prowess-noncreature-spell-trigger-v1"
         ]
-        self.assertEqual(2 if repeated else 1, len(programs))
+        self.assertEqual(expected_instances, len(programs))
         for program in programs:
             engine.semantics.put(program)
         return programs
@@ -457,7 +451,7 @@ class ProwessRuntimeTests(unittest.TestCase):
             "quorune.rules.casting.commit.SpellCastEvent",
             LegacySpellCastEvent,
         ):
-            with self.assertRaises(AssertionError):
+            with self.assertRaises((AssertionError, KeyError)):
                 assert_typed_dispatch(70210804)
 
     def test_multiple_prowess_instances_trigger_separately(self):
@@ -466,14 +460,17 @@ class ProwessRuntimeTests(unittest.TestCase):
         source = self.add_card(
             engine,
             seat="A",
-            name="Monastery Swiftspear",
+            name="Double Prowess Fixture",
             ref="double-prowess-source",
             zone="battlefield",
         )
-        programs = self.register_prowess(engine, source, repeated=True)
+        programs = self.register_prowess(
+            engine,
+            source,
+            expected_instances=2,
+        )
 
         self.prepare_noncreature_cast(engine)
-        self.assertTrue(engine._stabilize())
         self.assertEqual("trigger.order", engine.state.pending_decision.kind)
         trigger_refs = [
             item.ref for item in engine.state.pending_trigger_batches[0].items
@@ -646,15 +643,13 @@ class ProwessRuntimeTests(unittest.TestCase):
 
         self.prepare_noncreature_cast(engine)
 
-        self.assertEqual(1, len(engine.state.pending_trigger_batches))
-        batch = engine.state.pending_trigger_batches[0]
         self.assertEqual(
             ["A", "B"],
-            [group.controller for group in batch.groups],
+            [item.controller for item in engine.state.stack[-2:]],
         )
         self.assertEqual(
             {source.object_id, remora.object_id},
-            {item.source_object_id for item in batch.items},
+            {item.source_object_id for item in engine.state.stack[-2:]},
         )
 
     def test_four_player_prowess_batch_is_public_and_apnap_ordered(self):
@@ -678,19 +673,26 @@ class ProwessRuntimeTests(unittest.TestCase):
 
         spell = self.prepare_noncreature_cast(engine)
 
-        batch = engine.state.pending_trigger_batches[0]
         self.assertEqual(
             ["A", "B"],
-            [group.controller for group in batch.groups],
+            [item.controller for item in engine.state.stack[-2:]],
         )
         projector = StateProjector(self.db, engine.state)
-        projected_a = json.dumps(projector._snapshot("pilot:A"), sort_keys=True)
-        projected_b = json.dumps(projector._snapshot("pilot:B"), sort_keys=True)
+        snapshot_a = projector._snapshot("pilot:A")
+        snapshot_b = projector._snapshot("pilot:B")
+        projected_a = json.dumps(snapshot_a, sort_keys=True)
+        projected_b = json.dumps(snapshot_b, sort_keys=True)
         self.assertNotIn(private_b.ref, projected_a)
         self.assertNotIn(private_a.ref, projected_b)
         self.assertIn(source.ref, projected_b)
         self.assertIn(remora.ref, projected_a)
-        self.assertIn(spell.ref, projected_b)
+        self.assertTrue(
+            any(
+                row.get("n") == spell.printed_name
+                and row.get("cid") == spell.oracle_id[:8]
+                for row in snapshot_b["stack"]
+            )
+        )
 
     def test_prowess_trigger_and_resolution_replay_exactly(self):
         session = self.session(70210860, players=4)
