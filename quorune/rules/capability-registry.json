@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 80,
+  "registry_version": 81,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -1035,6 +1035,33 @@
       "dependency_fail_closed_rationale": "The CardProgram fails closed if either live-or-LKI attachment identity or the canonical fixed counter-placement transaction is unavailable.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "Focused compiler and runtime mutations remove the typed attached-object descriptor or alter current-versus-last-known selection and prevent exact promotion or change the asserted recipient.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.bolster",
+      "version": 1,
+      "official_rules": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one ordinary fixed positive Bolster N keyword action by choosing among the resolving controller's creatures tied for least effective toughness and using canonical counter placement.",
+        "inputs": ["one source-spanned Bolster N instruction", "positive fixed integral N", "immutable public controlled-creature identity and effective-toughness snapshot", "one creature tied for least toughness"],
+        "outputs": ["seat-scoped public object choice", "strict stale-snapshot rejection", "replacement-aware +1/+1 counter placement", "exact replay"],
+        "exclusions": ["Bolster X, zero, or negative values", "optional, repeated, conditional, copied, granted, modal, or compound Bolster instructions", "unresolved effective power/toughness layers", "noncreature or nonbattlefield choices", "broader counter placement and choice grammar"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.compiler.bolster_templates.FixedBolsterTemplate", "quorune.compiler.bolster_templates.fixed_bolster_effect_template", "quorune.rules.node_capability_shapes.fixed_bolster_node_capabilities", "quorune.semantic_choices.bolster.FixedBolsterChoiceHandler", "quorune.semantic_choices.engine_coordination.SemanticChoiceCoordinationMixin", "quorune.semantic_runtime.intents.PlaceCountersIntent", "quorune.counter_placement.place_counters_on_refs"],
+      "positive_tests": ["test_fixed_bolster_compiles_in_spell_trigger_and_activated_contexts", "test_bolster_offers_every_creature_tied_for_least_effective_toughness", "test_bolster_with_no_controlled_creature_auto_continues"],
+      "negative_tests": ["test_unsupported_bolster_variants_remain_material_residuals", "test_bolster_shape_and_snapshot_mutations_fail_closed", "test_unresolved_effective_toughness_fails_before_choice"],
+      "interaction_tests": ["test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly"],
+      "multiplayer_tests": ["test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly"],
+      "privacy_tests": ["test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly"],
+      "replay_tests": ["test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Bolster CardPrograms fail closed when effective-toughness choice coordination or canonical counter quantity replacement is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and shape mutations remove the fixed Bolster lowering or alter the least-toughness descriptor and prevent exact promotion.",
       "blockers": [],
       "status": "trusted"
     },

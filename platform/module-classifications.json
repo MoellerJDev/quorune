@@ -988,6 +988,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/bolster_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/card_form_rules.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -3653,6 +3668,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_choices/bolster.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_choices",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_choices/conditional_draw.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_choices",
@@ -5178,5 +5208,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "1aba2935e0c8339b695cbafa8e46e1757cd89ce7dda394a824802fae4ec2d248"
+  "fingerprint": "25a1c94a537c4ff522a21a9ee87f4c20150f67e88db84164a4fcca8ca46ded53"
 }

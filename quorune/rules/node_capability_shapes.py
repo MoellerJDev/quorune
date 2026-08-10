@@ -624,6 +624,32 @@ def fixed_self_counter_keyword_action_node_capabilities(
     return ()
 
 
+def fixed_bolster_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return ownership for one exact fixed positive Bolster action."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if (
+        target_schema is not None
+        or len(effects) != 1
+        or not {"bolster", "cr-122-counters"}.issubset(mechanics)
+    ):
+        return ()
+    effect = effects[0]
+    if (
+        set(effect) != {"op", "player", "amount"}
+        or effect.get("op") != "fixed_bolster"
+        or effect.get("player") != "$controller"
+        or not _positive_int(effect.get("amount"))
+    ):
+        return ()
+    return ("counter.producer.bolster",)
+
+
 def targeted_tap_state_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -1532,6 +1558,7 @@ __all__ = [
     "single_explore_node_capabilities",
     "single_proliferate_node_capabilities",
     "fixed_self_counter_keyword_action_node_capabilities",
+    "fixed_bolster_node_capabilities",
     "targeted_destruction_node_capabilities",
     "targeted_exile_node_capabilities",
     "targeted_return_to_hand_node_capabilities",

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from ..attachment_references import AttachmentReferenceKind
+from .bolster_templates import fixed_bolster_effect_template
 from .counter_placement_group_templates import (
     fixed_counter_placement_group_effect_template,
 )
@@ -59,6 +60,9 @@ def typed_resolution_effect_template(
     proliferate = single_proliferate_effect_template(text)
     if proliferate is not None:
         return proliferate.compiled()
+    bolster = fixed_bolster_effect_template(text)
+    if bolster is not None:
+        return bolster.compiled()
     if source_is_permanent is not None:
         support = support_counter_placement_effect_template(
             text,

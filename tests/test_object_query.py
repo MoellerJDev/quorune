@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import unittest
+from types import SimpleNamespace
 
 from quorune.object_query import (
     ObjectQueryError,
     ObjectQueryResult,
     ObjectQuerySpec,
+    exact_numeric_characteristic,
     query_objects,
 )
 
@@ -105,6 +107,29 @@ class ObjectQueryTests(unittest.TestCase):
         result = query_objects(original, ObjectQuerySpec(types_all=("land",)))
         original.clear()
         self.assertEqual(("C1",), tuple(row.ref for row in result))
+
+    def test_exact_numeric_characteristics_apply_counters_and_fail_closed(self):
+        card = SimpleNamespace(
+            annotations={"until_end_of_turn": {"power": 1}},
+            counters={"+1/+1": 2, "-1/-1": 1},
+        )
+        self.assertEqual(
+            5,
+            exact_numeric_characteristic(
+                card,
+                {"power": "3", "toughness": "*"},
+                "power",
+            ),
+        )
+        self.assertIsNone(
+            exact_numeric_characteristic(
+                card,
+                {"power": "3", "toughness": "*"},
+                "toughness",
+            )
+        )
+        with self.assertRaisesRegex(ValueError, "power or toughness"):
+            exact_numeric_characteristic(card, {}, "loyalty")
 
     def test_color_all_any_and_known_visibility_are_distinct(self):
         rows = (

@@ -20,6 +20,7 @@ from .death_return import DEATH_RETURN_CHOICE_HANDLERS
 from .self_counter_keyword_actions import (
     SELF_COUNTER_KEYWORD_ACTION_HANDLERS,
 )
+from .bolster import BOLSTER_CHOICE_HANDLERS
 
 
 @lru_cache(maxsize=1)
@@ -41,5 +42,6 @@ def default_semantic_choice_registry() -> SemanticChoiceRegistry:
             *OPTIONAL_DRAW_CHOICE_HANDLERS,
             *DEATH_RETURN_CHOICE_HANDLERS,
             *SELF_COUNTER_KEYWORD_ACTION_HANDLERS,
+            *BOLSTER_CHOICE_HANDLERS,
         )
     ).freeze()
