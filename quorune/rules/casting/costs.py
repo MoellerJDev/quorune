@@ -6,6 +6,16 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
+from ...compiled_cast_costs import compiled_convoke_specs
+from ...convoke import (
+    CONVOKE_PAYMENT_SYMBOLS,
+    ConvokeCandidate,
+    ConvokeError,
+    ConvokePaymentPlan,
+    canonical_mana_requirements,
+    find_convoke_plan,
+    select_convoke_plan,
+)
 from ..action_proposals import CastCostOption
 from ..casting_additional_costs import (
     AdditionalCostError,
@@ -75,10 +85,6 @@ class CastCostHost(Protocol):
         spend_context: Any,
     ) -> tuple[dict[str, int], list[Any]] | None: ...
 
-    def _convoke_reduction(
-        self, requirements: Mapping[str, int], cards: Sequence[Any]
-    ) -> dict[str, int] | None: ...
-
     def _cost_is_affordable(
         self,
         seat: str,
@@ -87,10 +93,6 @@ class CastCostHost(Protocol):
         exclude_sources: set[str] | None = None,
         spend_context: Any = None,
     ) -> bool: ...
-
-    def _maximum_affordable_x_with_mechanics(
-        self, seat: str, card: Any, mechanics: Sequence[Mapping[str, Any]]
-    ) -> int: ...
 
     def _maximum_affordable_x(self, seat: str, card: Any) -> int: ...
 
@@ -142,6 +144,29 @@ def _initial_options(
         str(host._effective_card_data(card).get("type_line") or "")
     )
     mechanics = host._cost_payment_mechanics(record, schema)
+    declared_convoke = any(
+        str(value.get("kind") or "").casefold() == "convoke"
+        for value in mechanics
+    )
+    mechanics = [
+        value
+        for value in mechanics
+        if str(value.get("kind") or "").casefold() != "convoke"
+    ]
+    compiled_convoke = compiled_convoke_specs(
+        host,
+        record.oracle_id,
+        spell_program=program,
+    )
+    if compiled_convoke:
+        mechanics.append(
+            {
+                "kind": "convoke",
+                "schema_version": compiled_convoke[0].schema_version,
+            }
+        )
+    elif declared_convoke:
+        return None
     if host.state.players[seat].stats.get("next_spell_improvise") and not any(
         str(value.get("kind") or "").casefold() == "improvise"
         for value in mechanics
@@ -282,7 +307,148 @@ def _apply_affinity(
     )
 
 
-def _apply_tap_payment_mechanic(
+def _convoke_candidates(host: CastCostHost, seat: str) -> tuple[ConvokeCandidate, ...]:
+    result: list[ConvokeCandidate] = []
+    for object_id in host.state.players[seat].zones["battlefield"]:
+        card = host.state.cards[object_id]
+        if card.controller != seat or card.phased_out or card.tapped:
+            continue
+        data = host._effective_card_data(card)
+        types, _, _ = host._type_parts(str(data.get("type_line") or ""))
+        if "creature" not in types:
+            continue
+        result.append(
+            ConvokeCandidate(
+                ref=card.ref,
+                object_id=card.object_id,
+                logical_object_id=card.logical_object_id,
+                colors=tuple(str(color) for color in data.get("colors", ())),
+            )
+        )
+    return tuple(result)
+
+
+def _convoke_plan_is_affordable(
+    host: CastCostHost,
+    seat: str,
+    plan: ConvokePaymentPlan,
+    *,
+    spend_context: Any,
+) -> bool:
+    return host._cost_is_affordable(
+        seat,
+        plan.remaining_dict,
+        exclude_sources=set(plan.selected_object_ids),
+        spend_context=spend_context,
+    )
+
+
+def revalidate_convoke_payment(
+    host: CastCostHost,
+    seat: str,
+    option: Mapping[str, Any],
+) -> ConvokePaymentPlan | None:
+    raw = option.get("convoke_payment")
+    if raw is None:
+        return None
+    if not isinstance(raw, Mapping):
+        raise ConvokeError("Convoke payment snapshot must be an object")
+    plan = ConvokePaymentPlan.from_dict(raw)
+    if plan.remaining_dict != canonical_mana_requirements(
+        option.get("requirements") or {}
+    ):
+        raise ConvokeError("Convoke payment remainder does not match the cast cost")
+    current_by_id = {
+        candidate.object_id: candidate
+        for candidate in _convoke_candidates(host, seat)
+    }
+    for contribution in plan.contributions:
+        current = current_by_id.get(contribution.candidate.object_id)
+        if current != contribution.candidate:
+            raise ConvokeError(
+                "A selected Convoke creature changed identity or characteristics"
+            )
+    selected_tap_refs = option.get("selected_tap_cost_cards") or []
+    if not isinstance(selected_tap_refs, list) or not set(plan.selected_refs).issubset(
+        set(selected_tap_refs)
+    ):
+        raise ConvokeError("Convoke payment refs do not match the tap-cost plan")
+    return plan
+
+
+def _apply_convoke(
+    host: CastCostHost,
+    seat: str,
+    option: dict[str, Any],
+    response: Mapping[str, Any],
+    *,
+    hint: bool,
+    spend_context: Any,
+    selected_cards: list[Any],
+    choice_schema: dict[str, Any],
+) -> bool:
+    selected_object_ids = {card.object_id for card in selected_cards}
+    candidates = tuple(
+        candidate
+        for candidate in _convoke_candidates(host, seat)
+        if candidate.object_id not in selected_object_ids
+    )
+    requirements = canonical_mana_requirements(option["requirements"])
+    choice_schema["convoke_cards"] = {
+        "type": "object_ref_array",
+        "minimum": 0,
+        "maximum": min(
+            len(candidates),
+            sum(requirements[symbol] for symbol in CONVOKE_PAYMENT_SYMBOLS),
+        ),
+        "legal_refs": [candidate.ref for candidate in candidates],
+        "payment": "convoke",
+    }
+    affordable = lambda plan: _convoke_plan_is_affordable(
+        host,
+        seat,
+        plan,
+        spend_context=spend_context,
+    )
+    if hint:
+        plan = find_convoke_plan(requirements, candidates, affordable=affordable)
+    else:
+        raw_values = response.get("convoke_cards") or []
+        if not isinstance(raw_values, (list, tuple)) or any(
+            type(value) is not str for value in raw_values
+        ):
+            return False
+        values = tuple(raw_values)
+        by_ref = {candidate.ref: candidate for candidate in candidates}
+        if len(values) != len(set(values)) or any(
+            value not in by_ref for value in values
+        ):
+            return False
+        plan = select_convoke_plan(
+            requirements,
+            tuple(by_ref[value] for value in values),
+            affordable=affordable,
+        )
+    if plan is None:
+        return False
+    option["requirements"] = plan.remaining_dict
+    option["convoke_payment"] = plan.to_dict()
+    if hint:
+        option.setdefault("recommended_payment_refs", {})["convoke_cards"] = list(
+            plan.selected_refs
+        )
+    cards_by_id = {
+        host.state.cards[object_id].object_id: host.state.cards[object_id]
+        for object_id in host.state.players[seat].zones["battlefield"]
+    }
+    selected_cards.extend(
+        cards_by_id[contribution.candidate.object_id]
+        for contribution in plan.contributions
+    )
+    return True
+
+
+def _apply_improvise(
     host: CastCostHost,
     seat: str,
     option: dict[str, Any],
@@ -294,13 +460,12 @@ def _apply_tap_payment_mechanic(
     selected_cards: list[Any],
     choice_schema: dict[str, Any],
 ) -> bool:
-    kind = str(mechanic.get("kind") or "").casefold()
     candidates = [
         card
-        for card in host._payment_mechanic_candidates(seat, kind)
+        for card in host._payment_mechanic_candidates(seat, "improvise")
         if card not in selected_cards
     ]
-    field = f"{kind}_cards"
+    field = "improvise_cards"
     choice_schema[field] = {
         "type": "object_ref_array",
         "minimum": 0,
@@ -308,13 +473,13 @@ def _apply_tap_payment_mechanic(
             len(candidates), sum(option["requirements"].values())
         ),
         "legal_refs": [card.ref for card in candidates],
-        "payment": kind,
+        "payment": "improvise",
     }
     if hint:
         plan = host._tap_payment_plan(
             seat,
             option["requirements"],
-            kind,
+            "improvise",
             candidates,
             spend_context=spend_context,
         )
@@ -329,22 +494,20 @@ def _apply_tap_payment_mechanic(
     raw_values = response.get(field) or []
     if isinstance(raw_values, (str, bytes)):
         return False
-    values = [str(value) for value in raw_values]
+    if not isinstance(raw_values, (list, tuple)) or any(
+        type(value) is not str for value in raw_values
+    ):
+        return False
+    values = list(raw_values)
     by_ref = {candidate.ref: candidate for candidate in candidates}
     if len(values) != len(set(values)) or any(
         value not in by_ref for value in values
     ):
         return False
     selected = [by_ref[value] for value in values]
-    if kind == "convoke":
-        reduced = host._convoke_reduction(option["requirements"], selected)
-        if reduced is None:
-            return False
-        option["requirements"] = reduced
-    else:
-        if len(selected) > int(option["requirements"]["GENERIC"]):
-            return False
-        option["requirements"]["GENERIC"] -= len(selected)
+    if len(selected) > int(option["requirements"]["GENERIC"]):
+        return False
+    option["requirements"]["GENERIC"] -= len(selected)
     selected_cards.extend(selected)
     return True
 
@@ -361,14 +524,35 @@ def _apply_payment_mechanics(
 ) -> tuple[dict[str, Any], list[Any]] | None:
     choice_schema: dict[str, Any] = {}
     selected_cards: list[Any] = []
+    payment_kinds = tuple(
+        str(mechanic.get("kind") or "").casefold()
+        for mechanic in mechanics
+        if str(mechanic.get("kind") or "").casefold()
+        in {"convoke", "improvise"}
+    )
+    if len(payment_kinds) > 1:
+        return None
     for mechanic in mechanics:
         kind = str(mechanic.get("kind") or "").casefold()
         if kind == "affinity":
             _apply_affinity(host, seat, option, mechanic)
             continue
-        if kind not in {"convoke", "improvise"}:
+        if kind == "convoke":
+            if not _apply_convoke(
+                host,
+                seat,
+                option,
+                response,
+                hint=hint,
+                spend_context=spend_context,
+                selected_cards=selected_cards,
+                choice_schema=choice_schema,
+            ):
+                return None
+            continue
+        if kind != "improvise":
             return None
-        if not _apply_tap_payment_mechanic(
+        if not _apply_improvise(
             host,
             seat,
             option,
@@ -381,6 +565,54 @@ def _apply_payment_mechanics(
         ):
             return None
     return choice_schema, selected_cards
+
+
+def _maximum_affordable_x_with_mechanics(
+    host: CastCostHost,
+    seat: str,
+    card: Any,
+    mechanics: Sequence[Mapping[str, Any]],
+    *,
+    spend_context: Any,
+    limit: int = 100,
+) -> int:
+    maximum = -1
+    for value in range(limit + 1):
+        printed, _ = host._compiled_printed_cost_options(
+            seat,
+            card,
+            x_value=value,
+            hint=False,
+        )
+        value_payable = False
+        for raw_option in printed:
+            option = copy.deepcopy(raw_option)
+            option["requirements"] = host._mana_vector(option["requirements"])
+            _apply_static_reductions(host, seat, card, option)
+            payment = _apply_payment_mechanics(
+                host,
+                seat,
+                option,
+                mechanics,
+                {},
+                hint=True,
+                spend_context=spend_context,
+            )
+            if payment is None:
+                continue
+            _, selected = payment
+            if host._cost_is_affordable(
+                seat,
+                option["requirements"],
+                exclude_sources={source.object_id for source in selected},
+                spend_context=spend_context,
+            ):
+                value_payable = True
+                break
+        if not value_payable:
+            break
+        maximum = value
+    return maximum
 
 
 def _fixed_zone_change_selection(
@@ -603,7 +835,13 @@ def _finalize_option(
         option["selected_tap_cost_cards"] = [card.ref for card in selected_cards]
     if has_x:
         maximum = (
-            host._maximum_affordable_x_with_mechanics(seat, card, mechanics)
+            _maximum_affordable_x_with_mechanics(
+                host,
+                seat,
+                card,
+                mechanics,
+                spend_context=spend_context,
+            )
             if mechanics
             else host._maximum_affordable_x(seat, card)
         )
@@ -686,4 +924,8 @@ def build_cast_cost_options(
     return tuple(result)
 
 
-__all__ = ["CastCostHost", "build_cast_cost_options"]
+__all__ = [
+    "CastCostHost",
+    "build_cast_cost_options",
+    "revalidate_convoke_payment",
+]

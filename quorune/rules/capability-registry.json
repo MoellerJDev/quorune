@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 78,
+  "registry_version": 79,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -360,6 +360,33 @@
       "dependency_fail_closed_rationale": "test_fixed_zone_change_capability_dependencies_fail_closed blocks each canonical zone-change dependency and proves the source-spanned return spell remains inexact.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_fixed_zone_change_compiler_mutant_is_killed removes the closed zone-change grammar and the exact compiler assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "casting.payment.convoke",
+      "version": 1,
+      "official_rules": ["601.2f", "601.2g", "601.2h", "601.2i", "702.51", "702.51a", "702.51b", "702.51c", "702.51d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Pay the colored and generic components of one announced spell's total mana cost by tapping phased-in untapped creatures the caster controls through a face-pinned ordinary printed Convoke descriptor.",
+        "inputs": ["one source-spanned trusted ordinary Convoke descriptor", "the announced post-modification total mana cost", "current effective creature types and colors", "stable physical and logical permanent identity", "the canonical mana affordability query"],
+        "outputs": ["one seat-scoped creature selection schema", "one immutable colored or generic contribution per selected creature", "one canonical remaining mana vector", "transactional tap-cost commitment", "exact replay of the selected contribution snapshot"],
+        "exclusions": ["Convoke-equivalent rules text", "Convoke granted or removed after compilation", "unrepresented cost increases, reductions, floors, restrictions, or ordering choices", "hybrid, phyrexian, snow, or other non-WUBRGC total-cost symbols", "cost-payment replacement effects", "spells copied without being cast"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.convoke.ConvokePaymentPlan", "quorune.semantic_runtime.cast_costs.ConvokeCostHandler", "quorune.compiled_cast_costs.compiled_convoke_specs", "quorune.rules.casting.costs._apply_convoke", "quorune.rules.casting.commit._commit_tap_costs", "quorune.tap_state.set_permanent_tapped"],
+      "positive_tests": ["test_ordinary_convoke_compiles_face_pinned_typed_program", "test_convoke_offer_and_submission_share_whole_vector_payment", "test_typed_convoke_pays_colored_x_cost_without_using_mana_sources"],
+      "negative_tests": ["test_raw_keyword_without_compiled_convoke_fails_closed", "test_convoke_descriptor_and_plan_reject_malformed_values", "test_stale_convoke_characteristics_roll_back_before_payment"],
+      "interaction_tests": ["test_convoke_applies_after_static_cost_reduction", "test_multicolor_creature_uses_the_payable_colored_assignment", "test_convoke_creature_cannot_also_activate_for_mana"],
+      "multiplayer_tests": ["test_four_player_convoke_offer_is_controller_scoped"],
+      "privacy_tests": ["test_four_player_convoke_offer_is_controller_scoped"],
+      "replay_tests": ["test_convoke_payment_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "This bounded payment permission consumes core post-modification mana requirements, current public permanent characteristics, and canonical tap and mana owners; it has no optional capability dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_convoke_compiler_mutant_is_killed removes the typed compiler node and test_convoke_planner_mutant_is_killed removes whole-vector contribution enumeration; source-spanned compilation and whole-vector affordability assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

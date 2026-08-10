@@ -121,6 +121,17 @@ the cast event. Historical unversioned discard and sacrifice schemas remain in
 an isolated compatibility query outside `CommanderEngine`. Unsupported cost
 grammar residualizes the entire spell rather than exposing a cost-free result.
 
+Ordinary printed Convoke is a face-pinned typed cast-cost descriptor rather
+than live keyword interpretation. `convoke.py` owns the immutable candidate,
+contribution, whole-vector payment plan, and deterministic fingerprint;
+`rules/casting/costs.py` owns the shared offer and submission query. The plan is
+computed after represented total-cost reductions and before mana payment. A
+selected creature is excluded from the mana-source plan, then revalidated for
+current physical/logical identity, controller, Creature type, color, tap state,
+and phasing before the canonical mana and tap owners mutate state. Hybrid,
+Phyrexian, snow, broader cost ordering or restriction, payment replacement,
+granted or removed Convoke, and rules-text equivalents fail closed.
+
 ## Extension and event participation
 
 Reusable mechanics belong in focused rules modules and typed semantic

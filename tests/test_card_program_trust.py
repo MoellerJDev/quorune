@@ -164,7 +164,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 for row in status["semantic_handlers"]
             },
         )
-        self.assertEqual(36, len(status["runtime_components"]))
+        self.assertEqual(37, len(status["runtime_components"]))
         self.assertIn(
             "replacement.counter.quantity.v2",
             {
@@ -188,6 +188,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.trigger.melee",
                 "ability.trigger.mentor",
                 "ability.trigger.prowess",
+                "casting.payment.convoke",
                 "combat.block.self-counter-prohibition",
                 "continuous.attached.fixed_characteristics",
                 "continuous.fixed_query_power_toughness_anthem",

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "08c873b6b7aa450fc00a868ebf959bf8bc432df8dc42bcdfc2926c2cc029c096",
-  "declaration_source_fingerprint": "e71b661665cd5efcbcd7d4ef97ca3dcf7fb9a64528d4576c20136cce07ef940e",
+  "registry_fingerprint": "725fa0aba38c38630823094481ed90149f3e03d69441a91ea17aaad6c6a2a775",
+  "declaration_source_fingerprint": "d43364aad352cd44f2dcb2ee05e854ab93f181c530703bb3f85ee73879db5765",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -2323,6 +2323,292 @@
         "commander_review"
       ],
       "applicability_note": "Replay the represented return payment to the identical authoritative hash."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_convoke_rules.ConvokeModelTests.test_multicolor_creature_uses_the_payable_colored_assignment",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Evaluate the complete remaining mana vector so a multicolored creature contributes the colored symbol that makes the announced cost payable."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_applies_after_static_cost_reduction",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply represented static generic reduction while determining total cost, then use Convoke only during payment of that resulting total."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_four_player_convoke_offer_is_controller_scoped",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose the Convoke selection only to the caster and only from permanents that player currently controls in a four-player game."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_convoke_rules.ConvokeCompilerTests.test_convoke_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the face-pinned typed Convoke compiler node before an ordinary Convoke program can remain exact."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_convoke_rules.ConvokeModelTests.test_convoke_planner_mutant_is_killed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the whole-vector contribution enumeration instead of accepting the first locally valid colored assignment."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "negative",
+      "test_id": "tests.test_convoke_rules.ConvokeModelTests.test_convoke_descriptor_and_plan_reject_malformed_values",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject unknown fields, booleans, incomplete mana vectors, unsupported handler events, and fingerprint drift before mutation."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "negative",
+      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_raw_keyword_without_compiled_convoke_fails_closed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Prove live Oracle text and Scryfall keyword metadata cannot substitute for the selected face's trusted compiled Convoke descriptor."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "positive",
+      "test_id": "tests.test_convoke_rules.ConvokeCompilerTests.test_ordinary_convoke_compiles_face_pinned_typed_program",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one ordinary printed Convoke instance to a face-pinned stack cost descriptor with a precise source span and trusted capability closure."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "positive",
+      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_offer_and_submission_share_whole_vector_payment",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Advertise and accept the same controller-scoped creatures, canonical contribution plan, remaining mana vector, and tap-cost commitment."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "positive",
+      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_typed_convoke_pays_colored_x_cost_without_using_mana_sources",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pay both the colored and chosen-X generic portions of an announced total cost entirely with distinct controlled creatures without consuming a mana source."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_four_player_convoke_offer_is_controller_scoped",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the hand spell and its executable cost choice out of every opposing seat projection before casting."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "replay",
+      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_payment_replays_exactly",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the selected physical and logical creatures, colored contributions, remaining mana, tap results, and final authoritative state hash."
+    },
+    {
+      "capability_id": "casting.payment.convoke",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_stale_convoke_characteristics_roll_back_before_payment",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.51",
+        "702.51a",
+        "702.51b",
+        "702.51c",
+        "702.51d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject changed type, color, controller, tap, phase, or logical identity before spending mana, tapping a permanent, or moving the spell."
     },
     {
       "capability_id": "combat.attack.defender",
@@ -24115,5 +24401,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "f077364b4e89483346db148b02b27146bf451d5a6fddff5f7ca80303a08dfa0f"
+  "fingerprint": "f7071d8794113e36fecbbc6fc1025bbb9ca6ac1e1e709338bc2ecb35a6eb66a4"
 }

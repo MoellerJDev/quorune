@@ -1,5 +1,5 @@
 {
-  "contract_count": 95,
+  "contract_count": 96,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -102,6 +102,12 @@
       "path": "mechanics/contracts/continuous-layers.json",
       "sha256": "d134497c32d15cce341bb720aa46f8506562770cdd1e9c0cd0bfaf8c7455fbf9",
       "version": 2
+    },
+    {
+      "mechanic_id": "convoke",
+      "path": "mechanics/contracts/convoke.json",
+      "sha256": "13d253138a4e508e5068a87515c92943d7b9ea7d410be3b1330cc2b0cb1bfcab",
+      "version": 1
     },
     {
       "mechanic_id": "cr-707-copying-objects",
@@ -1177,20 +1183,39 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/convoke.json",
+      "contract_sha256": "13d253138a4e508e5068a87515c92943d7b9ea7d410be3b1330cc2b0cb1bfcab",
+      "contract_version": 1,
+      "coverage_status": "trusted",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.rules.casting.costs._apply_convoke",
+      "implementation_version": "ordinary-convoke-payment-v1",
       "kind": "keyword_ability",
+      "known_blockers": [],
       "mechanic_id": "convoke",
       "official_name": "Convoke",
       "rule_references": [
         "702.51"
       ],
-      "test_ids": [],
-      "trust_level": "untrusted"
+      "test_ids": [
+        "test_ordinary_convoke_compiles_face_pinned_typed_program",
+        "test_multiple_convoke_instances_are_redundant_and_siblings_are_separate",
+        "test_unsupported_convoke_variants_remain_precise_residuals",
+        "test_convoke_offer_and_submission_share_whole_vector_payment",
+        "test_typed_convoke_pays_colored_x_cost_without_using_mana_sources",
+        "test_raw_keyword_without_compiled_convoke_fails_closed",
+        "test_convoke_applies_after_static_cost_reduction",
+        "test_multicolor_creature_uses_the_payable_colored_assignment",
+        "test_convoke_creature_cannot_also_activate_for_mana",
+        "test_stale_convoke_characteristics_roll_back_before_payment",
+        "test_four_player_convoke_offer_is_controller_scoped",
+        "test_convoke_payment_replays_exactly",
+        "test_convoke_compiler_mutant_is_killed",
+        "test_convoke_planner_mutant_is_killed"
+      ],
+      "trust_level": "trusted"
     },
     {
       "category": "additional_rules",
@@ -10997,5 +11022,5 @@
       "taxonomy_id": "cr-905-conspiracy-draft"
     }
   ],
-  "trusted_mechanic_count": 6
+  "trusted_mechanic_count": 7
 }

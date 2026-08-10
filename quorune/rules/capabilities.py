@@ -83,6 +83,7 @@ _HEXPROOF_MECHANIC = "hexproof"
 _FLYING_MECHANIC = "fl" + "ying"
 _REACH_MECHANIC = "re" + "ach"
 _FLASH_MECHANIC = "fl" + "ash"
+_CONVOKE_MECHANIC = "con" + "voke"
 _TRAMPLE_MECHANIC = "tram" + "ple"
 _INDESTRUCTIBLE_MECHANIC = "inde" + "structible"
 _DEATHTOUCH_MECHANIC = "dea" + "thtouch"
@@ -159,6 +160,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
         "combat.damage.participation.strike_steps",
     ),
     _FLASH_MECHANIC: ("timing.cast.printed_flash",),
+    _CONVOKE_MECHANIC: ("casting.payment.convoke",),
     _FIRST_STRIKE_MECHANIC: (
         "combat.damage.participation.strike_steps",
     ),
