@@ -1723,7 +1723,7 @@
           "module": "quorune.compiler.keyword_nodes"
         }
       ],
-      "internal_edges": 1307,
+      "internal_edges": 1310,
       "modules": [
         {
           "fan_in": 2,
@@ -2251,8 +2251,8 @@
           "module": "quorune.continuous_effects"
         },
         {
-          "fan_in": 11,
-          "fan_out": 3,
+          "fan_in": 13,
+          "fan_out": 4,
           "module": "quorune.counter_placement"
         },
         {
@@ -2711,7 +2711,7 @@
           "module": "quorune.replacement.immutable"
         },
         {
-          "fan_in": 6,
+          "fan_in": 7,
           "fan_out": 2,
           "module": "quorune.replacement.model"
         },
@@ -2732,7 +2732,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 8,
+          "fan_out": 9,
           "module": "quorune.replacement_decisions"
         },
         {
@@ -2957,7 +2957,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 6,
+          "fan_out": 7,
           "module": "quorune.semantic_choices.counter_coordination"
         },
         {
@@ -3832,7 +3832,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 127844,
+      "logical_lines": 127892,
       "methods": {
         "dunder": 340,
         "private": 687,
@@ -4142,6 +4142,13 @@
           "physical_lines": 783
         },
         {
+          "file": "quorune/counter_placement.py",
+          "functions_and_methods": 27,
+          "language": "python",
+          "logical_lines": 725,
+          "physical_lines": 810
+        },
+        {
           "file": "quorune/replacement/replay.py",
           "functions_and_methods": 24,
           "language": "python",
@@ -4175,13 +4182,6 @@
           "language": "python",
           "logical_lines": 697,
           "physical_lines": 755
-        },
-        {
-          "file": "quorune/counter_placement.py",
-          "functions_and_methods": 26,
-          "language": "python",
-          "logical_lines": 694,
-          "physical_lines": 771
         },
         {
           "file": "server/store.py",
@@ -4464,18 +4464,18 @@
           "physical_lines": 541
         },
         {
+          "file": "quorune/replacement_decisions.py",
+          "functions_and_methods": 18,
+          "language": "python",
+          "logical_lines": 466,
+          "physical_lines": 505
+        },
+        {
           "file": "quorune/runtime.py",
           "functions_and_methods": 25,
           "language": "python",
           "logical_lines": 459,
           "physical_lines": 506
-        },
-        {
-          "file": "quorune/replacement_decisions.py",
-          "functions_and_methods": 18,
-          "language": "python",
-          "logical_lines": 458,
-          "physical_lines": 497
         },
         {
           "file": "quorune/rules/activation/commit.py",
@@ -4583,6 +4583,13 @@
           "physical_lines": 433
         },
         {
+          "file": "quorune/semantic_choices/counter_coordination.py",
+          "functions_and_methods": 10,
+          "language": "python",
+          "logical_lines": 385,
+          "physical_lines": 409
+        },
+        {
           "file": "quorune/mana_activation.py",
           "functions_and_methods": 23,
           "language": "python",
@@ -4602,13 +4609,6 @@
           "language": "python",
           "logical_lines": 378,
           "physical_lines": 428
-        },
-        {
-          "file": "quorune/semantic_choices/counter_coordination.py",
-          "functions_and_methods": 10,
-          "language": "python",
-          "logical_lines": 376,
-          "physical_lines": 400
         },
         {
           "file": "server/data.py",
@@ -6719,7 +6719,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 139756,
+      "physical_lines": 139812,
       "python_file_count": 339,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -6737,7 +6737,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1713,
+      "top_level_functions": 1714,
       "web_file_count": 16
     },
     "semantic_handlers": {
