@@ -35,7 +35,7 @@
     "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "72068b2818e7c908b7e80d5c4c4638e3be8fd7829ea8f5f54b9fc19eb343c282",
+    "evaluated_input_fingerprint": "868f79289ca3b4119304b9acafb1a5059c864cf1d9d7422aa8fb958aa75e9c86",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -391,12 +391,6 @@
       "status": "integrated_on_certified_main"
     },
     {
-      "evidence": "One source-spanned fixed target sequence places a positive fixed counter through the canonical replacement-aware counter owner and then grants one represented keyword through an immutable layer-6 continuous effect locked to the target's current battlefield logical identity. Flying, First strike, Trample, and Vigilance are capability-closed independently. Cleanup, source departure, target reentry, rollback, four-player projection, and exact replay have focused evidence. The family contains no runtime Oracle parser or printed card identity dispatch. Optional, variable, compound, chosen, multi-target, arbitrary granted-text, and unsupported keyword variants remain residuals; current corpus measurements live in generated compiler coverage and the card-unlock frontier.",
-      "id": "fixed_target_zone_object_keyword_sequence",
-      "name": "Typed fixed target zone-object keyword results",
-      "status": "implemented_on_current_source_tree"
-    },
-    {
       "evidence": "PR 142 and merge commit dada1b1 route represented printed Planeswalker loyalty, Battle defense, and enters-with fixed counters through one immutable pre-entry snapshot and the canonical nested replacement event before battlefield mutation. Physical/logical identity reservation, source-leaves last-known information, token entry, optional replacement ordering, rollback, privacy, exact replay, and historical Game Record v3 compatibility remain explicit. The engine preserves the initialized intrinsic counter state even when replacement reduces the final quantity to zero. Broader variable, chosen, copying, face-down, conditional, and linked entry-counter families remain blocked.",
       "id": "intrinsic_entry_counter_placement",
       "name": "Intrinsic entry-counter replacement transactions",
@@ -461,6 +455,12 @@
       "id": "oracle_snapshot",
       "name": "Current Oracle snapshot",
       "status": "partial"
+    },
+    {
+      "evidence": "One source-spanned fixed target sequence places a positive fixed counter through the canonical replacement-aware counter owner and then grants one represented keyword through an immutable layer-6 continuous effect locked to the target's current battlefield logical identity. Flying, First strike, Trample, and Vigilance are capability-closed independently. Cleanup, source departure, target reentry, rollback, four-player projection, and exact replay have focused evidence. The family contains no runtime Oracle parser or printed card identity dispatch. Optional, variable, compound, chosen, multi-target, arbitrary granted-text, and unsupported keyword variants remain residuals; current corpus measurements live in generated compiler coverage and the card-unlock frontier.",
+      "id": "fixed_target_zone_object_keyword_sequence",
+      "name": "Typed fixed target zone-object keyword results",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
