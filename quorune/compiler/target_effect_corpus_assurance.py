@@ -16,6 +16,11 @@ from ..rules.node_capability_shapes import (
     fixed_target_effect_sequence_node_capabilities,
 )
 from ..util import stable_json
+from .counter_placement_templates import _target_subject
+from .direct_target import (
+    DIRECT_NONCREATURE_SUBTYPES,
+    DirectPermanentTargetSpec,
+)
 from .fixed_target_effect_sequences import (
     FIXED_TARGET_CHARACTERISTIC_KEYWORDS,
     FixedTargetCharacteristicsTemplate,
@@ -72,6 +77,8 @@ class AcceptedTargetEffectContract:
     body: str
     template_id: str
     controller_relation: str
+    target_predicate: str
+    source_exclusion: bool
     clause_count: int
     operation_order: str
 
@@ -94,6 +101,8 @@ class TargetEffectObservation:
     effect_count: int
     operation_order: tuple[str, ...]
     controller_relation: str
+    target_predicate: str
+    source_exclusion: bool
     keywords: tuple[str, ...]
     node_exact: bool
     card_exact: bool
@@ -108,6 +117,8 @@ class TargetEffectObservation:
             "effect_count": self.effect_count,
             "operation_order": list(self.operation_order),
             "controller_relation": self.controller_relation,
+            "target_predicate": self.target_predicate,
+            "source_exclusion": self.source_exclusion,
             "keywords": list(self.keywords),
             "node_exact": self.node_exact,
         }
@@ -141,6 +152,8 @@ def accepted_target_effect_contracts() -> tuple[
                 ),
                 template_id=STANDALONE_TEMPLATE_ID,
                 controller_relation="any",
+                target_predicate="creature",
+                source_exclusion=False,
                 clause_count=1,
                 operation_order="target_only",
             )
@@ -156,6 +169,8 @@ def accepted_target_effect_contracts() -> tuple[
                 ),
                 template_id=STANDALONE_TEMPLATE_ID,
                 controller_relation=relation,
+                target_predicate="creature",
+                source_exclusion=False,
                 clause_count=1,
                 operation_order="target_only",
             )
@@ -184,10 +199,63 @@ def accepted_target_effect_contracts() -> tuple[
                         body=body,
                         template_id=SEQUENCE_TEMPLATE_ID,
                         controller_relation=relation,
+                        target_predicate="creature",
+                        source_exclusion=False,
                         clause_count=clause_count,
                         operation_order=order,
                     )
                 )
+    predicate_contracts = (
+        (
+            "artifact-or-creature",
+            "target artifact or creature",
+            "artifact-or-creature",
+        ),
+        (
+            "enchantment-creature",
+            "target enchantment creature",
+            "creature-enchantment",
+        ),
+        (
+            "creature-with-flying",
+            "target creature with flying",
+            "creature-with-flying",
+        ),
+        (
+            "creature-subtype-disjunction",
+            "target Bird or Cat",
+            "bird-or-cat",
+        ),
+        (
+            "reviewed-noncreature-subtype",
+            "target Vehicle",
+            DirectPermanentTargetSpec(
+                subtypes_any=tuple(DIRECT_NONCREATURE_SUBTYPES)
+            ).characteristic_slug,
+        ),
+        (
+            "source-exclusion",
+            "another target creature",
+            "creature",
+        ),
+    )
+    for category, subject, target_predicate in predicate_contracts:
+        source_exclusion = subject.startswith("another target ")
+        contracts.append(
+            AcceptedTargetEffectContract(
+                category=f"sequence_predicate:{category}",
+                body=(
+                    f"Put a +1/+1 counter on {subject}. "
+                    "It gains trample until end of turn."
+                ),
+                template_id=SEQUENCE_TEMPLATE_ID,
+                controller_relation="any",
+                target_predicate=target_predicate,
+                source_exclusion=source_exclusion,
+                clause_count=2,
+                operation_order="counter_first",
+            )
+        )
     return tuple(contracts)
 
 
@@ -297,6 +365,19 @@ def synthetic_target_effect_contract(
                     "accepted target-effect contract did not lower through "
                     f"{context}: {contract.category}"
                 )
+            if _target_predicate(nodes[0].target_schema) != contract.target_predicate:
+                raise TargetEffectAssuranceError(
+                    "accepted target-effect contract lowered the wrong target "
+                    f"predicate through {context}: {contract.category}"
+                )
+            if (
+                _target_source_exclusion(nodes[0].target_schema)
+                is not contract.source_exclusion
+            ):
+                raise TargetEffectAssuranceError(
+                    "accepted target-effect contract lowered the wrong source "
+                    f"exclusion through {context}: {contract.category}"
+                )
             accepted_context_counts[context] += 1
             template_counts[contract.template_id] += 1
     for contract in rejected:
@@ -327,6 +408,12 @@ def synthetic_target_effect_contract(
         "operation_orders": sorted(
             {value.operation_order for value in accepted}
         ),
+        "target_predicates": sorted(
+            {value.target_predicate for value in accepted}
+        ),
+        "source_exclusion_values": sorted(
+            {value.source_exclusion for value in accepted}
+        ),
         "rejected_case_count": len(rejected) * len(SUPPORTED_CONTEXTS),
         "rejection_categories": sorted(
             {value.category for value in rejected}
@@ -342,6 +429,8 @@ def synthetic_target_effect_contract(
                         "body_sha256": _sha256(value.body),
                         "template_id": value.template_id,
                         "relation": value.controller_relation,
+                        "target_predicate": value.target_predicate,
+                        "source_exclusion": value.source_exclusion,
                         "clause_count": value.clause_count,
                         "operation_order": value.operation_order,
                     }
@@ -367,6 +456,10 @@ def grammar_source_fingerprint() -> str:
         FixedTargetCharacteristicsTemplate.__post_init__,
         FixedTargetCharacteristicsTemplate.compiled,
         FixedTargetEffectSequenceTemplate.compiled,
+        DirectPermanentTargetSpec.__post_init__,
+        DirectPermanentTargetSpec.from_target_schema,
+        DirectPermanentTargetSpec.to_target_schema,
+        _target_subject,
         fixed_target_characteristics_effect_template,
         fixed_target_effect_sequence_template,
         fixed_target_characteristics_node_capabilities,
@@ -471,6 +564,30 @@ def _relation(target_schema: Mapping[str, Any] | None) -> str:
     return relation
 
 
+def _target_predicate(target_schema: Mapping[str, Any] | None) -> str:
+    try:
+        return DirectPermanentTargetSpec.from_target_schema(
+            target_schema  # type: ignore[arg-type]
+        ).characteristic_slug
+    except (TypeError, ValueError) as exc:
+        raise TargetEffectAssuranceError(
+            "target-effect assurance requires one closed direct target"
+        ) from exc
+
+
+def _target_source_exclusion(
+    target_schema: Mapping[str, Any] | None,
+) -> bool:
+    try:
+        return DirectPermanentTargetSpec.from_target_schema(
+            target_schema  # type: ignore[arg-type]
+        ).source_exclusion
+    except (TypeError, ValueError) as exc:
+        raise TargetEffectAssuranceError(
+            "target-effect assurance requires one closed direct target"
+        ) from exc
+
+
 def _required_capabilities(node: OracleNode) -> tuple[str, ...]:
     resolver = (
         fixed_target_characteristics_node_capabilities
@@ -561,6 +678,8 @@ def _observation(
         effect_count=len(node.effects),
         operation_order=operations,
         controller_relation=_relation(node.target_schema),
+        target_predicate=_target_predicate(node.target_schema),
+        source_exclusion=_target_source_exclusion(node.target_schema),
         keywords=keywords,
         node_exact=node.exact,
         card_exact=ir.status == "exact",
@@ -666,6 +785,12 @@ class TargetEffectCorpusCollector:
             "contexts": Counter(value.context for value in observations),
             "controller_relations": Counter(
                 value.controller_relation for value in observations
+            ),
+            "target_predicates": Counter(
+                value.target_predicate for value in observations
+            ),
+            "source_exclusion": Counter(
+                value.source_exclusion for value in observations
             ),
             "effect_counts": Counter(value.effect_count for value in observations),
             "keywords": Counter(

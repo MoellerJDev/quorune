@@ -9444,6 +9444,14 @@
     {
       "capability_id": "resolution.effect_sequence.fixed_target",
       "evidence_class": "positive",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_compound_target_sequence_harvests_enchantment_creature",
+      "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Thread one validated compound enchantment-creature target through fixed counter placement and the later represented Trample grant."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_target",
+      "evidence_class": "positive",
       "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_indefinite_keyword_sequence_compiles_the_closed_family",
       "official_rule_ids": ["115.1", "115.3", "608.2b", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -9776,6 +9784,70 @@
       "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Resolve a pending chapter and replay the resulting typed Saga sacrifice to the same authoritative state hash."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_current_effective_characteristics_govern_offer_command_and_resolution",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use one current effective-characteristic predicate for offer generation, submitted-command validation, and CR 608.2b resolution revalidation."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Offer only the acting seat's legal controlled permanent in a four-player target-selection decision."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_typed_target_parser_mutation_is_killed",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the immutable direct-permanent target parser from fixed counter-placement lowering."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "negative",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_unsupported_and_malformed_direct_target_predicates_fail_closed",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep unrepresented qualities residual and reject unknown, noncanonical, or ill-typed target descriptors."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "positive",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_closed_direct_target_grammar_compiles_typed_predicates",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower closed type conjunctions/disjunctions, validated creature and Vehicle subtype disjunctions, Flying, controller relation, and source exclusion to one typed target descriptor."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "positive",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_compound_target_sequence_harvests_enchantment_creature",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve a compound enchantment-creature target predicate across a shared-target ordered effect sequence."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the seat-scoped legal target set without another seat's pending decision or hidden hand identities."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "replay",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the accepted typed target and fixed counter placement to the same authoritative state hash."
     },
     {
       "capability_id": "target.protection.hexproof_permanent",

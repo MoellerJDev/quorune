@@ -130,6 +130,20 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
         self.assertIn("counter_first", contract["operation_orders"])
         self.assertIn("target_first", contract["operation_orders"])
         self.assertEqual(
+            [False, True], contract["source_exclusion_values"]
+        )
+        self.assertEqual(
+            {
+                "artifact-or-creature",
+                "bird-or-cat",
+                "creature",
+                "creature-enchantment",
+                "creature-with-flying",
+                "vehicle",
+            },
+            set(contract["target_predicates"]),
+        )
+        self.assertEqual(
             list(REJECTION_CATEGORIES),
             contract["rejection_categories"],
         )

@@ -436,6 +436,7 @@ def _string_records(
             "_COUNTER_NAME_ANY": {"counters"},
             "_COUNTER_TARGET_GOBLIN": {"goblin"},
             "_COUNTER_TARGET_VEHICLE": {"vehicle"},
+            "DIRECT_NONCREATURE_SUBTYPES": {"vehicle"},
             "SACRIFICE_COST_KIND": {"sacrifice"},
             # Closed rules vocabulary may also coincide with exact printed
             # card names. These exemptions are limited to the typed keyword
@@ -446,6 +447,7 @@ def _string_records(
             "_FIXED_TARGET_SEQUENCE_KEYWORDS": ordinary_keyword_values,
             "KEYWORD_COUNTER_MECHANICS": ordinary_keyword_values,
             "ZONE_OBJECT_KEYWORDS": ordinary_keyword_values,
+            "_TARGET_GROUP_FIELDS": {"attacking"},
             # Closed predefined token names are CR vocabulary used to build
             # token characteristics.  The structural exemption is limited to
             # these named constants and still fails if a value participates

@@ -37,12 +37,99 @@ def _strings(value: Any) -> tuple[str, ...]:
     if value is None:
         return ()
     if isinstance(value, str):
-        return (value,)
-    return tuple(str(item) for item in value)
+        values = (value,)
+    elif isinstance(value, (list, tuple)):
+        values = tuple(value)
+    else:
+        raise ValueError("Target string predicates must be strings or arrays")
+    if any(type(item) is not str or not item for item in values):
+        raise ValueError("Target string predicates require nonempty strings")
+    if len(set(values)) != len(values):
+        raise ValueError("Target string predicates require unique values")
+    return values
 
 
 def _optional_bool(value: Any) -> bool | None:
-    return None if value is None else bool(value)
+    if value is None:
+        return None
+    if type(value) is not bool:
+        raise ValueError("Target boolean predicates must be boolean or null")
+    return value
+
+
+_TARGET_GROUP_FIELDS = frozenset(
+    {
+        "selector",
+        "count",
+        "min",
+        "minimum",
+        "max",
+        "maximum",
+        "up_to",
+        "zones",
+        "zone",
+        "categories",
+        "category",
+        "types_any",
+        "card_types",
+        "type",
+        "types_all",
+        "types_none",
+        "subtypes_any",
+        "subtype",
+        "supertypes_any",
+        "supertype",
+        "keywords_all",
+        "colors_any",
+        "colors",
+        "colors_all",
+        "colorless",
+        "mana_value_min",
+        "mana_value_max",
+        "mana_value",
+        "controller",
+        "controller_relation",
+        "controller_seat",
+        "owner",
+        "owner_relation",
+        "player_relation",
+        "attacking",
+        "blocking",
+        "tapped",
+        "commander",
+        "token",
+        "land",
+        "creature",
+        "artifact",
+        "enchantment",
+        "permanent",
+        "source_exclusion",
+        "another",
+        "distinct",
+        "allow_reuse",
+        "different_from_groups",
+        "predicate",
+        "resolution_condition",
+        "id",
+        "group",
+        # Validated by the owning compiler/capability shape rather than by
+        # target selection itself.
+        "support_source_context",
+        # A modal definition may colocate its resolution effects with its
+        # target group.  Effects remain owned by mode_effects().
+        "effects",
+        # Plan-level containers are consumed by target_plan(); retaining them
+        # here keeps the single-group compatibility representation strict but
+        # composable.
+        "modes",
+        "min_modes",
+        "max_modes",
+        "mode_count",
+        "groups",
+        "globally_distinct",
+        "same_player_groups",
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,6 +144,7 @@ class TargetGroup:
     types_none: tuple[str, ...] = ()
     subtypes_any: tuple[str, ...] = ()
     supertypes_any: tuple[str, ...] = ()
+    keywords_all: tuple[str, ...] = ()
     colors_any: tuple[str, ...] = ()
     colors_all: tuple[str, ...] = ()
     colorless: bool | None = None
@@ -120,6 +208,17 @@ class TargetGroup:
             )
         )
 
+    def matches_keyword_characteristics(
+        self,
+        *,
+        keywords: Iterable[str],
+    ) -> bool:
+        """Evaluate the canonical current keyword predicate."""
+
+        actual = {str(value).casefold() for value in keywords}
+        required = {value.casefold() for value in self.keywords_all}
+        return required.issubset(actual)
+
     @classmethod
     def from_mapping(
         cls,
@@ -128,6 +227,11 @@ class TargetGroup:
         default_id: str = "target",
     ) -> "TargetGroup":
         raw = dict(value)
+        unknown_fields = sorted(set(raw) - _TARGET_GROUP_FIELDS)
+        if unknown_fields:
+            raise ValueError(
+                "Target schema has unknown fields: " + ", ".join(unknown_fields)
+            )
         selector = str(raw.pop("selector", "") or "")
         if selector:
             legacy = LEGACY_SELECTORS.get(selector)
@@ -140,8 +244,12 @@ class TargetGroup:
         if raw.get("up_to") is not None:
             minimum = 0
             maximum = raw["up_to"]
-        minimum = 1 if minimum is None else int(minimum)
-        maximum = minimum if maximum is None else int(maximum)
+        if minimum is not None and type(minimum) is not int:
+            raise ValueError("Target minimum must be an exact integer")
+        if maximum is not None and type(maximum) is not int:
+            raise ValueError("Target maximum must be an exact integer")
+        minimum = 1 if minimum is None else minimum
+        maximum = minimum if maximum is None else maximum
         if minimum < 0 or maximum < minimum:
             raise ValueError("Target count bounds are invalid")
         zones = _strings(raw.get("zones", raw.get("zone", ("battlefield",))))
@@ -185,6 +293,7 @@ class TargetGroup:
             supertypes_any=_strings(
                 raw.get("supertypes_any", raw.get("supertype"))
             ),
+            keywords_all=_strings(raw.get("keywords_all")),
             colors_any=tuple(
                 color.upper()
                 for color in _strings(raw.get("colors_any", raw.get("colors")))

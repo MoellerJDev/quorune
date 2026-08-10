@@ -11,6 +11,24 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Typed direct-permanent target predicates
+
+- Added one immutable `DirectPermanentTargetSpec` shared by fixed-counter
+  compiler lowering, legal-target offers, submitted-command validation, and
+  resolution-time revalidation. The closed grammar represents ordinary
+  permanent types, artifact-or-creature disjunctions, enchantment-creature
+  conjunctions, pinned creature-subtype disjunctions, reviewed Vehicle
+  targets, Flying, controller relations, and source exclusion using current
+  effective characteristics.
+- Harvested the represented counter family and its shared-target sequence
+  through the same typed descriptor without runtime Oracle parsing. Modified,
+  token or nontoken, Snow, general standalone Commander-qualified,
+  combat-state, attachment-state, tapped, arbitrary-keyword,
+  counter-presence, and unreviewed noncreature-subtype predicates remain
+  explicit residuals; the existing bounded optional Commander-creature group
+  target remains supported, and aggregate targeting support is not claimed
+  complete.
+
 ### Typed ordinary Indestructible
 
 - Added one fine-grained ordinary Indestructible capability shared by typed

@@ -26,6 +26,7 @@ from ..compiler.fixed_source_effect_sequences import (
     SOURCE_ZONE_OBJECT,
 )
 from ..compiler.creature_subtypes import canonical_creature_subtype
+from ..compiler.direct_target import DirectPermanentTargetSpec
 from ..keyword_counters import keyword_counter_mechanic
 from ..zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
 from ..affected_permanents import (
@@ -784,57 +785,25 @@ def fixed_counter_target_schema_is_closed(
     *,
     allow_commander: bool = False,
 ) -> bool:
-    if target_schema is None:
-        return False
-    schema = dict(target_schema)
-    allowed = {
-        "zones",
-        "categories",
-        "count",
-        "types_any",
-        "subtypes_any",
-        "controller_relation",
-        "source_exclusion",
-        *(("commander",) if allow_commander else ()),
-    }
-    if set(schema) - allowed or (
-        schema.get("zones") != ["battlefield"]
-        or schema.get("categories") != ["permanent"]
-        or type(schema.get("count")) is not int
-        or schema.get("count") != 1
-    ):
-        return False
-    types = schema.get("types_any", ())
-    subtypes = schema.get("subtypes_any", ())
-    if types and subtypes:
-        return False
-    if types:
-        if not isinstance(types, (list, tuple)) or tuple(types) not in {
-            ("artifact",),
-            ("battle",),
-            ("creature",),
-            ("enchantment",),
-            ("land",),
-            ("planeswalker",),
-        }:
-            return False
-    if subtypes:
-        if (
-            not isinstance(subtypes, (list, tuple))
-            or len(subtypes) != 1
-            or canonical_creature_subtype(subtypes[0]) != subtypes[0]
-        ):
-            return False
-    relation = schema.get("controller_relation", "any")
-    if relation not in {"any", "you", "opponent"}:
-        return False
-    if "source_exclusion" in schema and schema["source_exclusion"] is not True:
-        return False
-    if "commander" in schema and (
-        schema["commander"] is not True or tuple(types) != ("creature",)
-    ):
+    try:
+        DirectPermanentTargetSpec.from_target_schema(
+            target_schema,  # type: ignore[arg-type]
+            allow_commander=allow_commander,
+        )
+    except (TypeError, ValueError):
         return False
     return True
+
+
+def _direct_target_predicate_capabilities(
+    target_schema: Mapping[str, Any],
+) -> tuple[str, ...]:
+    target_spec = DirectPermanentTargetSpec.from_target_schema(target_schema)
+    return (
+        ("target.permanent.characteristic_predicate",)
+        if target_spec.uses_compound_characteristics
+        else ()
+    )
 
 
 def fixed_counter_placement_node_capabilities(
@@ -883,9 +852,12 @@ def fixed_counter_placement_node_capabilities(
         and effect.get("card") == "$target.0"
         and fixed_counter_target_schema_is_closed(target_schema)
     ):
+        assert target_schema is not None
+        target_capabilities = _direct_target_predicate_capabilities(target_schema)
         return (
             "counter.producer.fixed_effect",
             *characteristic_capabilities,
+            *target_capabilities,
             "target.revalidate_resolution",
         )
     return ()
@@ -950,7 +922,12 @@ def fixed_counter_placement_batch_node_capabilities(
         and effect.get("card") == "$target.0"
         and fixed_counter_target_schema_is_closed(target_schema)
     ):
-        return (*result, "target.revalidate_resolution")
+        assert target_schema is not None
+        return (
+            *result,
+            *_direct_target_predicate_capabilities(target_schema),
+            "target.revalidate_resolution",
+        )
     return ()
 
 
@@ -1006,6 +983,7 @@ def fixed_target_effect_sequence_node_capabilities(
             *(("counter.characteristic.keyword",) if counter_mechanic else ()),
             "counter.producer.fixed_effect",
             "resolution.effect_sequence.fixed_target",
+            *_direct_target_predicate_capabilities(target_schema),
             "target.revalidate_resolution",
         )
     if not {
@@ -1015,15 +993,9 @@ def fixed_target_effect_sequence_node_capabilities(
         "cr-611-continuous-effects",
     }.issubset(mechanics) or not 2 <= len(effects) <= 4:
         return ()
-    schema = dict(target_schema or {})
-    relation = schema.pop("controller_relation", "any")
-    if relation not in {"any", "you", "opponent"} or schema != {
-        "zones": ["battlefield"],
-        "categories": ["permanent"],
-        "types_any": ["creature"],
-        "count": 1,
-    }:
+    if not fixed_counter_target_schema_is_closed(target_schema):
         return ()
+    assert target_schema is not None
     counter_count = 0
     keyword_counter = False
     characteristic_count = 0
@@ -1079,6 +1051,7 @@ def fixed_target_effect_sequence_node_capabilities(
         *(("counter.characteristic.keyword",) if keyword_counter else ()),
         "counter.producer.fixed_effect",
         "resolution.effect_sequence.fixed_target",
+        *_direct_target_predicate_capabilities(target_schema),
         "target.revalidate_resolution",
     )
 
