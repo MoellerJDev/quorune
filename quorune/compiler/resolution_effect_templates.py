@@ -25,6 +25,9 @@ from .fixed_source_effect_sequences import (
 )
 from .proliferate_templates import single_proliferate_effect_template
 from .return_to_hand_templates import targeted_return_to_hand_effect_template
+from .self_counter_keyword_actions import (
+    fixed_self_counter_keyword_action_template,
+)
 
 
 CompiledEffectTemplate = tuple[
@@ -47,6 +50,9 @@ def typed_resolution_effect_template(
     fixed_damage = fixed_damage_effect_template(text, card_name=card_name)
     if fixed_damage is not None:
         return fixed_damage.compiled()
+    self_counter_action = fixed_self_counter_keyword_action_template(text)
+    if self_counter_action is not None:
+        return self_counter_action.compiled()
     proliferate = single_proliferate_effect_template(text)
     if proliferate is not None:
         return proliferate.compiled()

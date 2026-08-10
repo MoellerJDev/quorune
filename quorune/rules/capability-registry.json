@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 75,
+  "registry_version": 76,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -70,9 +70,21 @@
       ]
     },
     {
+      "mechanic_id": "adapt",
+      "capabilities": [
+        "keyword_action.adapt.fixed"
+      ]
+    },
+    {
       "mechanic_id": "exhaust",
       "capabilities": [
         "activation.exhaust.once_per_object"
+      ]
+    },
+    {
+      "mechanic_id": "monstrosity",
+      "capabilities": [
+        "keyword_action.monstrosity.fixed"
       ]
     },
     {
@@ -1239,6 +1251,87 @@
       "dependency_fail_closed_rationale": "The compiler dependency mutation blocks trusted Proliferate CardPrograms when the canonical counter-placement capability is unavailable.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "The focused compiler mutation removes the closed Proliferate template and proves the previously exact generated CardProgram becomes a material residual; the positive runtime evidence separately requires every snapshotted counter kind to be placed.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "permanent.designation.monstrous",
+      "version": 1,
+      "official_rules": ["701.37b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Mark one identity-pinned battlefield permanent monstrous as a public noncopiable designation, record the value of X used by the resolving Monstrosity action, preserve it across control changes and phasing, and clear it only when that object changes zones.",
+        "inputs": ["current physical permanent and logical incarnation", "nonnegative exact Monstrosity value", "authoritative actor and resolution reason"],
+        "outputs": ["one public monstrous designation", "recorded Monstrosity value", "normalized becomes-monstrous semantic event", "deterministic replay"],
+        "exclusions": ["other permanent designations", "effects that directly make a permanent monstrous without the represented typed intent", "copied or granted Monstrosity outside typed ability propagation", "listeners whose own behavior is not capability closed"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.permanent_designations.BecomeMonstrousRequest", "quorune.permanent_designations.become_monstrous", "quorune.semantic_runtime.intents.BecomeMonstrousIntent", "quorune.semantic_choices.intent_host.SemanticChoiceIntentHostMixin.become_monstrous_intent", "quorune.model.CardInstance.monstrous_value"],
+      "positive_tests": ["test_monstrous_designation_preserves_value_control_change_and_phasing"],
+      "negative_tests": ["test_monstrous_designation_is_strict_and_old_incarnation_is_ignored", "test_zone_change_clears_and_copy_does_not_inherit_monstrous"],
+      "interaction_tests": ["test_zero_counter_commit_result_still_creates_monstrous_designation", "test_monstrous_replacement_resume_pins_source_identity"],
+      "multiplayer_tests": ["test_monstrous_replacement_resume_replays_exactly"],
+      "privacy_tests": ["test_monstrous_replacement_resume_replays_exactly"],
+      "replay_tests": ["test_monstrous_replacement_resume_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded designation owner has no capability dependency and never discovers or mutates counters itself.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused designation mutation suppresses the typed transition and the designation, event, projection, and replay assertions reject the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "keyword_action.adapt.fixed",
+      "version": 1,
+      "official_rules": ["701.46a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one positive fixed Adapt N instruction by checking the current permanent only on resolution and placing N +1/+1 counters through the canonical replacement-aware counter transaction only when it has none.",
+        "inputs": ["one complete fixed positive Adapt instruction", "current source physical and logical identity", "current +1/+1 counter state"],
+        "outputs": ["resolution-time conditional counter request", "replacement-aware +1/+1 counter placement", "deterministic no-op when the condition is false"],
+        "exclusions": ["Adapt 0 or variable Adapt values", "compound instructions containing Adapt", "effects that modify an Adapt amount", "copied or granted Adapt outside typed ability propagation", "triggers referring to adapting"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.compiler.self_counter_keyword_actions.fixed_self_counter_keyword_action_template", "quorune.rules.node_capability_shapes.fixed_self_counter_keyword_action_node_capabilities", "quorune.semantic_choices.self_counter_keyword_actions.FixedSelfCounterKeywordActionHandler", "quorune.semantic_runtime.intents.PlaceCountersIntent", "quorune.counter_placement.place_counters_on_refs"],
+      "positive_tests": ["test_fixed_adapt_compiles_source_spanned_and_capability_closed", "test_adapt_condition_is_checked_only_on_resolution"],
+      "negative_tests": ["test_unsupported_adapt_and_monstrosity_variants_remain_residuals", "test_self_counter_keyword_shape_rejects_malformed_nodes"],
+      "interaction_tests": ["test_adapt_uses_canonical_counter_replacement_and_replays"],
+      "multiplayer_tests": ["test_four_player_adapt_replacement_choice_is_seat_scoped"],
+      "privacy_tests": ["test_four_player_adapt_replacement_choice_is_seat_scoped"],
+      "replay_tests": ["test_adapt_uses_canonical_counter_replacement_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The compiler dependency mutation blocks fixed Adapt CardPrograms when canonical counter placement is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler mutation removes the closed fixed action template and proves the previously exact Adapt program becomes a material residual.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "keyword_action.monstrosity.fixed",
+      "version": 1,
+      "official_rules": ["701.37a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one positive fixed Monstrosity N instruction by checking the current permanent only on resolution, placing N +1/+1 counters through the canonical replacement-aware transaction, then applying the noncopiable monstrous designation even when replacement leaves zero counters.",
+        "inputs": ["one complete fixed positive Monstrosity instruction", "current source physical and logical identity", "current monstrous designation"],
+        "outputs": ["resolution-time conditional counter request", "replacement-aware +1/+1 counter placement", "typed public monstrous designation and recorded value", "normalized becomes-monstrous event"],
+        "exclusions": ["Monstrosity 0 or variable Monstrosity values", "compound instructions containing Monstrosity", "monstrous-matters triggers and static abilities not independently capability closed", "copied or granted Monstrosity outside typed ability propagation", "effects that directly make another permanent monstrous"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement", "permanent.designation.monstrous"],
+      "implementation_components": ["quorune.compiler.self_counter_keyword_actions.fixed_self_counter_keyword_action_template", "quorune.rules.node_capability_shapes.fixed_self_counter_keyword_action_node_capabilities", "quorune.semantic_choices.self_counter_keyword_actions.FixedSelfCounterKeywordActionHandler", "quorune.semantic_runtime.intents.PlaceCountersIntent", "quorune.semantic_runtime.intents.BecomeMonstrousIntent", "quorune.permanent_designations.become_monstrous"],
+      "positive_tests": ["test_fixed_monstrosity_compiles_source_spanned_and_capability_closed", "test_monstrous_designation_preserves_value_control_change_and_phasing"],
+      "negative_tests": ["test_unsupported_adapt_and_monstrosity_variants_remain_residuals", "test_self_counter_keyword_shape_rejects_malformed_nodes", "test_monstrous_designation_is_strict_and_old_incarnation_is_ignored"],
+      "interaction_tests": ["test_zero_counter_commit_result_still_creates_monstrous_designation", "test_monstrous_replacement_resume_pins_source_identity"],
+      "multiplayer_tests": ["test_monstrous_replacement_resume_replays_exactly"],
+      "privacy_tests": ["test_monstrous_replacement_resume_replays_exactly"],
+      "replay_tests": ["test_monstrous_replacement_resume_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Compiler dependency mutations block fixed Monstrosity CardPrograms whenever canonical counter placement or the typed designation owner is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and designation mutations remove each typed owner and the source-spanned CardProgram, designation, event, and replay assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

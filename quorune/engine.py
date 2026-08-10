@@ -1330,6 +1330,7 @@ class CommanderEngine(
         card.deathtouch_damage = False
         card.temporary_keywords.clear()
         card.goaded_by.clear()
+        card.monstrous_value = None
         card.attacking = None
         card.blocking = None
         card.attached_to = None

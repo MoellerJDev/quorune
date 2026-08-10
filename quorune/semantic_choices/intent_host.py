@@ -36,12 +36,18 @@ from ..life_state import (
     commit_life_changes,
     plan_life_changes,
 )
+from ..permanent_designations import (
+    BecomeMonstrousRequest,
+    PermanentDesignationError,
+    become_monstrous,
+)
 from ..rules.library_scry import ScryError, commit_scry_arrangement
 from ..replacement.immutable import thaw_value
 from ..semantic_runtime import (
     AddManaIntent,
     AddSubtypeIntent,
     AmassIntent,
+    BecomeMonstrousIntent,
     ChooseOneRestBottomRandomIntent,
     CopyControlledTokensIntent,
     CopyStackItemIntent,
@@ -235,6 +241,25 @@ class SemanticChoiceIntentHostMixin:
             changed_objects=[card.object_id],
         )
         return intent.value
+
+    def become_monstrous_intent(
+        self,
+        intent: BecomeMonstrousIntent,
+    ):
+        try:
+            return become_monstrous(
+                self,
+                BecomeMonstrousRequest(
+                    actor=intent.actor,
+                    object_id=intent.object_id,
+                    object_ref=intent.object_ref,
+                    logical_object_id=intent.logical_object_id,
+                    value=intent.value,
+                    reason=intent.reason,
+                ),
+            )
+        except PermanentDesignationError as exc:
+            raise GameRuleError(str(exc)) from exc
 
     def record_choice_intent(self, intent: RecordChoiceIntent) -> None:
         changed_objects = [

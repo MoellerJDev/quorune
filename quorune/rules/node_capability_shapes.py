@@ -552,6 +552,37 @@ def single_proliferate_node_capabilities(
     return ("counter.producer.proliferate",)
 
 
+def fixed_self_counter_keyword_action_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return ownership for one exact fixed Adapt or Monstrosity action."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if (
+        target_schema is not None
+        or len(effects) != 1
+        or "cr-122-counters" not in mechanics
+    ):
+        return ()
+    effect = effects[0]
+    if (
+        set(effect) != {"op", "action", "amount", "source"}
+        or effect.get("op") != "fixed_self_counter_keyword_action"
+        or effect.get("source") != "$source"
+        or not _positive_int(effect.get("amount"))
+    ):
+        return ()
+    action = effect.get("action")
+    if action == "adapt" and "adapt" in mechanics:
+        return ("keyword_action.adapt.fixed",)
+    if action == "monstrosity" and "monstrosity" in mechanics:
+        return ("keyword_action.monstrosity.fixed",)
+    return ()
+
+
 def targeted_tap_state_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -1478,6 +1509,7 @@ __all__ = [
     "fixed_mana_cumulative_upkeep_node_capabilities",
     "single_explore_node_capabilities",
     "single_proliferate_node_capabilities",
+    "fixed_self_counter_keyword_action_node_capabilities",
     "targeted_destruction_node_capabilities",
     "targeted_exile_node_capabilities",
     "targeted_return_to_hand_node_capabilities",

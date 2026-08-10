@@ -13,6 +13,7 @@ from .intents import (
     AddManaIntent,
     AddSubtypeIntent,
     AmassIntent,
+    BecomeMonstrousIntent,
     BecomeMonarchIntent,
     CounterStackIntent,
     ChooseOneRestBottomRandomIntent,
@@ -82,6 +83,11 @@ class SemanticIntentSink(
         self,
         intent: SetCardDesignationIntent,
     ) -> str: ...
+
+    def become_monstrous_intent(
+        self,
+        intent: BecomeMonstrousIntent,
+    ) -> object: ...
 
     def record_choice_intent(self, intent: RecordChoiceIntent) -> None: ...
 
@@ -451,6 +457,10 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
             continue
         if isinstance(intent, SetCardDesignationIntent):
             result = sink.set_card_designation_intent(intent)
+            results.append((intent.object_ref, result))
+            continue
+        if isinstance(intent, BecomeMonstrousIntent):
+            result = sink.become_monstrous_intent(intent)
             results.append((intent.object_ref, result))
             continue
         if isinstance(intent, RECORDING_INTENT_TYPES):

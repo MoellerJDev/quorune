@@ -157,6 +157,10 @@ def continue_semantic_preparation(
         expected = validate_semantic_intent_identity(
             expected_intent_kind, expected_intent
         )
+        if start_index >= len(intents):
+            raise SemanticChoiceError(
+                "Semantic preparation intent disappeared before replacement resume"
+            )
     for index in range(start_index, len(intents)):
         intent = intents[index]
         selections = replacement_selections if index == start_index else ()

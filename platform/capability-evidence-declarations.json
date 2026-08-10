@@ -6944,6 +6944,104 @@
       "applicability_note": "Attribute combat damage to the designated physical commander card across zone and control changes and apply the separate 21-damage state-based action ledger."
     },
     {
+      "capability_id": "keyword_action.adapt.fixed",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_adapt_uses_canonical_counter_replacement_and_replays",
+      "official_rule_ids": [
+        "701.46a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Route fixed Adapt through competing canonical counter-quantity replacements before mutation."
+    },
+    {
+      "capability_id": "keyword_action.adapt.fixed",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_four_player_adapt_replacement_choice_is_seat_scoped",
+      "official_rule_ids": [
+        "701.46a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Route the four-player counter replacement choice only to the affected permanent's controller."
+    },
+    {
+      "capability_id": "keyword_action.adapt.fixed",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_self_counter_keyword_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "701.46a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the closed fixed Adapt compiler template."
+    },
+    {
+      "capability_id": "keyword_action.adapt.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_unsupported_adapt_and_monstrosity_variants_remain_residuals",
+      "official_rule_ids": [
+        "701.46a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Leave zero, variable, repeated, targeted, and compound Adapt wording outside the closed grammar."
+    },
+    {
+      "capability_id": "keyword_action.adapt.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_fixed_adapt_compiles_source_spanned_and_capability_closed",
+      "official_rule_ids": [
+        "701.46a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one complete fixed positive Adapt instruction into the typed source action."
+    },
+    {
+      "capability_id": "keyword_action.adapt.fixed",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_four_player_adapt_replacement_choice_is_seat_scoped",
+      "official_rule_ids": [
+        "701.46a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the affected-controller replacement continuation absent from other seat projections."
+    },
+    {
+      "capability_id": "keyword_action.adapt.fixed",
+      "evidence_class": "replay",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_adapt_uses_canonical_counter_replacement_and_replays",
+      "official_rule_ids": [
+        "701.46a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Exactly replay the chosen replacement order and final Adapt counter quantity."
+    },
+    {
       "capability_id": "keyword_action.explore.single",
       "evidence_class": "interaction",
       "test_id": "tests.test_explore_rules.ExploreEngineTests.test_counter_and_zone_replacements_suspend_before_explore_mutation",
@@ -6998,6 +7096,104 @@
       "official_rule_ids": ["122.1", "400.6", "701.44", "701.44a", "701.44b", "701.44c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the suspended counter replacement and following Explore choice to the identical authoritative state hash."
+    },
+    {
+      "capability_id": "keyword_action.monstrosity.fixed",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_zero_counter_commit_result_still_creates_monstrous_designation",
+      "official_rule_ids": [
+        "701.37a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the designation instruction independent from the actual number of counters committed."
+    },
+    {
+      "capability_id": "keyword_action.monstrosity.fixed",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_replays_exactly",
+      "official_rule_ids": [
+        "701.37a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resume one fixed Monstrosity action after a four-player affected-controller replacement choice."
+    },
+    {
+      "capability_id": "keyword_action.monstrosity.fixed",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_runtime_mutant_is_killed",
+      "official_rule_ids": [
+        "701.37a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the runtime monstrous designation owner."
+    },
+    {
+      "capability_id": "keyword_action.monstrosity.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_pins_source_identity",
+      "official_rule_ids": [
+        "701.37a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a suspended result whose source became a new logical object before continuation."
+    },
+    {
+      "capability_id": "keyword_action.monstrosity.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_fixed_monstrosity_compiles_source_spanned_and_capability_closed",
+      "official_rule_ids": [
+        "701.37a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one complete fixed positive Monstrosity instruction into ordered counter and designation intents."
+    },
+    {
+      "capability_id": "keyword_action.monstrosity.fixed",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_replays_exactly",
+      "official_rule_ids": [
+        "701.37a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the pending replacement continuation seat-scoped while projecting the completed designation publicly."
+    },
+    {
+      "capability_id": "keyword_action.monstrosity.fixed",
+      "evidence_class": "replay",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_replays_exactly",
+      "official_rule_ids": [
+        "701.37a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Persist, resume, and exactly replay the counter result, designation, and recorded Monstrosity value."
     },
     {
       "capability_id": "library.scry.fixed_controller",
@@ -7559,6 +7755,104 @@
       "official_rule_ids": ["106.1", "106.4", "605.1a", "605.2", "605.3a", "605.3b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the exact activation command and typed fixed mana result from the initial checkpoint."
+    },
+    {
+      "capability_id": "permanent.designation.monstrous",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_zero_counter_commit_result_still_creates_monstrous_designation",
+      "official_rule_ids": [
+        "701.37b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply the monstrous designation after the independent counter result even when the counter owner commits zero counters."
+    },
+    {
+      "capability_id": "permanent.designation.monstrous",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_replays_exactly",
+      "official_rule_ids": [
+        "701.37b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resume a four-player affected-controller replacement choice and designate only the source permanent."
+    },
+    {
+      "capability_id": "permanent.designation.monstrous",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_runtime_mutant_is_killed",
+      "official_rule_ids": [
+        "701.37b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the typed designation transition."
+    },
+    {
+      "capability_id": "permanent.designation.monstrous",
+      "evidence_class": "negative",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_zone_change_clears_and_copy_does_not_inherit_monstrous",
+      "official_rule_ids": [
+        "701.37b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Clear the designation when the object changes zones and do not copy it onto a copy token."
+    },
+    {
+      "capability_id": "permanent.designation.monstrous",
+      "evidence_class": "positive",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_preserves_value_control_change_and_phasing",
+      "official_rule_ids": [
+        "701.37b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply one public noncopiable monstrous designation and preserve its recorded value across control changes and phasing."
+    },
+    {
+      "capability_id": "permanent.designation.monstrous",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_replays_exactly",
+      "official_rule_ids": [
+        "701.37b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose the replacement decision only to its affected controller while the resulting monstrous designation remains public."
+    },
+    {
+      "capability_id": "permanent.designation.monstrous",
+      "evidence_class": "replay",
+      "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_replays_exactly",
+      "official_rule_ids": [
+        "701.37b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Persist, resume, and exactly replay the selected counter result and public monstrous designation."
     },
     {
       "capability_id": "permanent.destroy.effect",
