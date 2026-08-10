@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "audit": {
-    "baseline_main_commit": "7ccbc89207f4ede103935e2801aa616be891ccdc",
+    "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-10",
     "phase": "typed_fixed_zone_change_casting_costs",

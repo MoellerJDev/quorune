@@ -11343,7 +11343,7 @@
     ]
   },
   "audit": {
-    "baseline_main_commit": "7ccbc89207f4ede103935e2801aa616be891ccdc",
+    "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "phase": "typed_fixed_zone_change_casting_costs",
     "scope_note": "The evaluated source tree adds one closed fixed single-object zone-change casting-cost family for discard, sacrifice, graveyard or battlefield exile, and return-to-owner-hand operations. Compiler and capability metadata lower exact source-spanned CardProgram V2 descriptors with typed ObjectQuerySpec predicates; casting offer, validation, replacement suspension, commit, replay, and privacy paths consume that pinned descriptor without runtime Oracle parsing. The shared casting owner revalidates the selected object immediately before a replacement-aware zone change, emits normalized zone-change events, and returns controlled permanents to their actual owner. Variable, multiple, optional, alternative, composite, reveal, tap, historical, dynamic, and named-keyword costs remain fail-closed material residuals.",
@@ -11883,7 +11883,7 @@
     }
   },
   "coordinates": {
-    "baseline_main_commit": "7ccbc89207f4ede103935e2801aa616be891ccdc",
+    "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "ci": {
       "local_observed": {
