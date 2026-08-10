@@ -770,20 +770,20 @@
     },
     {
       "id": "counter.placement.quantity_replacement",
-      "version": 3,
+      "version": 4,
       "official_rules": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
-        "summary": "Resolve represented fixed integral counter-quantity replacements for effect-generated placements and positive loyalty-symbol costs on permanents or players through affected-player/object ordering and a typed precommit plan before mutation.",
-        "inputs": ["placing player", "affected player, card, or permanent", "resolved positive integral counter amount", "effect-versus-cost provenance", "closed target-kind and effective-type predicates", "fixed multiply/add runtime components"],
+        "summary": "Resolve represented fixed integral counter-quantity replacements for effect-generated placements, positive loyalty-symbol costs, and canonical damage-result placements on permanents or players through affected-player/object ordering and a typed precommit plan before mutation.",
+        "inputs": ["placing player", "affected player, card, or permanent", "resolved positive integral counter amount", "effect, cost, or damage-result provenance", "closed target-kind and effective-type predicates", "fixed multiply/add runtime components"],
         "outputs": ["resolved counter amount", "exact replacement journal", "principal-scoped competing choice", "validated typed counter commit plan", "authoritative counter mutation"],
-        "exclusions": ["fractional, halving, dynamic, or optional quantity replacements", "counter movement", "counter removal including negative loyalty-symbol costs", "effects that prohibit counter placement", "combined or modified loyalty-symbol costs", "Class-level-gated static replacements", "unrepresented rule-generated placements"]
+        "exclusions": ["fractional, halving, dynamic, or optional quantity replacements", "counter movement", "counter removal including negative loyalty-symbol costs", "effects that prohibit counter placement", "combined or modified loyalty-symbol costs", "Class-level-gated static replacements", "rule-generated placements outside the represented damage, Saga, and state-action families"]
       },
       "dependencies": [],
-      "implementation_components": ["quorune.semantic_runtime.counter_replacements.CounterQuantityReplacementHandler", "quorune.semantic_runtime.counter_replacements.CounterQuantityReplacementV2Handler", "quorune.compiler.counter_replacement_templates.static_counter_quantity_replacement_handler", "quorune.counter_placement.prepare_counter_placements", "quorune.counter_placement.plan_prepared_counter_placement_commit", "quorune.counter_placement.commit_counter_placement_plan", "quorune.damage_prevention_aftermath.prepare_prevention_aftermath"],
-      "positive_tests": ["test_counter_quantity_component_changes_effect_generated_placement", "test_counter_aftermath_reuses_counter_replacement_pipeline", "test_closed_descriptor_distinguishes_effects_costs_players_and_types", "test_generic_compiler_emits_exact_source_spanned_card_program_node"],
-      "negative_tests": ["test_counter_quantity_component_rejects_malformed_and_nonmatching_events", "test_stale_counter_aftermath_fails_before_life_or_damage_mutation", "test_generic_compiler_accepts_closed_family_and_rejects_near_misses"],
-      "interaction_tests": ["test_counter_replacements_apply_in_affected_players_chosen_order", "test_zone_replacement_counter_is_a_nested_precommit_event", "test_counter_aftermath_reuses_counter_replacement_pipeline", "test_competing_cost_replacements_suspend_before_mutation_and_replay"],
+      "implementation_components": ["quorune.semantic_runtime.counter_replacements.CounterQuantityReplacementHandler", "quorune.semantic_runtime.counter_replacements.CounterQuantityReplacementV2Handler", "quorune.compiler.counter_replacement_templates.static_counter_quantity_replacement_handler", "quorune.counter_placement.prepare_counter_placements", "quorune.counter_placement.plan_prepared_counter_placement_commit", "quorune.counter_placement.plan_resolved_counter_placement_commit", "quorune.counter_placement.commit_counter_placement_plan", "quorune.damage_prevention_aftermath.prepare_prevention_aftermath", "quorune.damage_results.plan_damage_result_commit"],
+      "positive_tests": ["test_counter_quantity_component_changes_effect_generated_placement", "test_counter_aftermath_reuses_counter_replacement_pipeline", "test_closed_descriptor_distinguishes_effects_costs_players_and_types", "test_generic_compiler_emits_exact_source_spanned_card_program_node", "test_damage_counter_results_use_canonical_typed_owners"],
+      "negative_tests": ["test_counter_quantity_component_rejects_malformed_and_nonmatching_events", "test_stale_counter_aftermath_fails_before_life_or_damage_mutation", "test_generic_compiler_accepts_closed_family_and_rejects_near_misses", "test_resolved_counter_owner_rejects_nonplacement_event", "test_stale_damage_counter_subject_rolls_back_every_result"],
+      "interaction_tests": ["test_counter_replacements_apply_in_affected_players_chosen_order", "test_zone_replacement_counter_is_a_nested_precommit_event", "test_counter_aftermath_reuses_counter_replacement_pipeline", "test_competing_cost_replacements_suspend_before_mutation_and_replay", "test_damage_counter_replacement_is_not_rediscovered_at_commit"],
       "multiplayer_tests": ["test_simultaneous_counter_choices_follow_apnap", "test_player_counter_choices_follow_four_player_apnap"],
       "privacy_tests": ["test_counter_replacement_choice_is_seat_scoped", "test_competing_cost_replacements_suspend_before_mutation_and_replay"],
       "replay_tests": ["test_counter_replacement_choice_replays_exactly", "test_competing_cost_replacements_suspend_before_mutation_and_replay", "test_death_return_replacement_continuation_survives_process_restart", "test_saga_entry_replacement_continuation_survives_process_restart"],
@@ -791,7 +791,7 @@
       "dependency_fail_closed_status": "not_applicable",
       "dependency_fail_closed_rationale": "This bounded counter producer has no capability dependencies beyond the shared replacement event substrate.",
       "implementation_mutation_status": "killed",
-      "implementation_mutation_rationale": "test_counter_quantity_replacement_mutant_is_killed replaces the legacy effect quantity transform with an identity operation, while test_counter_quantity_cost_scope_mutant_is_killed incorrectly narrows an all-placement modifier to effect-only; both behavioral assertions reject the survivors.",
+      "implementation_mutation_rationale": "The existing quantity and provenance mutations reject incorrect replacement transforms; test_damage_counter_owner_mutants_are_killed additionally replaces the canonical resolved-result commit with a no-op and proves damage cannot bypass the placement owner.",
       "blockers": [],
       "status": "trusted"
     },
@@ -824,18 +824,18 @@
     },
     {
       "id": "counter.removal.rule_generated",
-      "version": 1,
+      "version": 2,
       "official_rules": ["122.1d", "502.3", "701.26b", "704.3", "704.5q", "704.5r"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
-        "summary": "Prepare and commit exact permanent-counter removals through one canonical typed transaction for the represented stun untap replacement and simultaneous state-based opposing-pair and maximum-counter actions.",
+        "summary": "Prepare and commit exact permanent-counter removals through one canonical typed transaction for represented planeswalker and Battle damage results, the stun untap replacement, and simultaneous state-based opposing-pair and maximum-counter actions.",
         "inputs": ["stable physical and logical permanent identity", "battlefield zone", "canonical counter kind", "exact positive integral removal amount", "one simultaneous state-based snapshot"],
-        "outputs": ["canonical immutable removal plan", "rollback-safe exact counter transition", "typed state-based result data", "deterministic public journal state"],
+        "outputs": ["canonical immutable removal plan", "rollback-safe exact counter transition", "typed damage and state-based result data", "deterministic public journal state"],
         "exclusions": ["effect or cost counter-removal grammar", "player counters", "choices among counter kinds", "counter movement", "arbitrary maximum-counter ability grammar", "replacement discovery and ordering beyond the represented mandatory stun replacement"]
       },
       "dependencies": [],
-      "implementation_components": ["quorune.counter_removal.plan_counter_removals", "quorune.counter_removal.commit_counter_removals", "quorune.tap_state.untap_permanent", "quorune.state_based_execution.prepare_state_based_execution", "quorune.state_based_execution.commit_state_based_counter_removals"],
-      "positive_tests": ["test_removals_are_canonical_and_commit_exactly", "test_stun_replacement_uses_the_counter_removal_owner", "test_overlapping_sba_removals_share_one_atomic_plan"],
+      "implementation_components": ["quorune.counter_removal.plan_counter_removals", "quorune.counter_removal.validate_counter_removal_plan", "quorune.counter_removal.commit_counter_removals", "quorune.damage_results.plan_damage_result_commit", "quorune.damage_results.commit_damage_result_plan", "quorune.tap_state.untap_permanent", "quorune.state_based_execution.prepare_state_based_execution", "quorune.state_based_execution.commit_state_based_counter_removals"],
+      "positive_tests": ["test_removals_are_canonical_and_commit_exactly", "test_stun_replacement_uses_the_counter_removal_owner", "test_overlapping_sba_removals_share_one_atomic_plan", "test_damage_counter_results_use_canonical_typed_owners"],
       "negative_tests": ["test_malformed_or_unpayable_removal_fails_before_mutation", "test_stale_identity_rolls_back_the_whole_removal_batch", "test_stun_replacement_rejects_malformed_public_state", "test_malformed_sba_removal_fails_before_mutation"],
       "interaction_tests": ["test_overlapping_sba_removals_share_one_atomic_plan", "test_moving_permanent_skips_redundant_counter_removal"],
       "multiplayer_tests": ["test_opposing_counter_removal_replays_in_four_player_game"],
@@ -845,7 +845,7 @@
       "dependency_fail_closed_status": "not_applicable",
       "dependency_fail_closed_rationale": "This bounded mutation owner has no capability dependencies beyond the shared typed counter-state substrate.",
       "implementation_mutation_status": "killed",
-      "implementation_mutation_rationale": "test_stun_replacement_uses_the_counter_removal_owner replaces the canonical counter commit with a no-op and proves the untap replacement cannot report success while leaving the counter state unchanged.",
+      "implementation_mutation_rationale": "The stun mutation proves untap cannot bypass the removal owner, while test_damage_counter_owner_mutants_are_killed replaces the damage-result removal commit with a no-op and proves loyalty and defense cannot change through another path.",
       "blockers": [],
       "status": "trusted"
     },
@@ -3119,7 +3119,7 @@
     },
     {
       "id": "damage.result.planeswalker_loyalty",
-      "version": 1,
+      "version": 2,
       "official_rules": ["120.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
@@ -3128,8 +3128,8 @@
         "outputs": ["loyalty counters removed without becoming negative"],
         "exclusions": ["damage prevention", "counter replacement", "redirection under obsolete rules"]
       },
-      "dependencies": ["damage.amount.positive"],
-      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.counter_state.plan_counter_changes", "quorune.counter_state.apply_counter_changes"],
+      "dependencies": ["damage.amount.positive", "counter.removal.rule_generated"],
+      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.damage_results.plan_damage_result_commit", "quorune.counter_removal.plan_counter_removals", "quorune.counter_removal.commit_counter_removals"],
       "positive_tests": ["test_planeswalker_damage_removes_loyalty_counters"],
       "negative_tests": ["test_damage_rejects_nondamageable_permanent"],
       "interaction_tests": ["test_lethal_planeswalker_combat_damage_applies_state_action"],
@@ -3146,7 +3146,7 @@
     },
     {
       "id": "damage.result.battle_defense",
-      "version": 1,
+      "version": 2,
       "official_rules": ["120.3h"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
@@ -3155,8 +3155,8 @@
         "outputs": ["defense counters removed without becoming negative"],
         "exclusions": ["damage prevention", "counter replacement", "defeated-battle cast permission"]
       },
-      "dependencies": ["damage.amount.positive"],
-      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.counter_state.plan_counter_changes", "quorune.counter_state.apply_counter_changes"],
+      "dependencies": ["damage.amount.positive", "counter.removal.rule_generated"],
+      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.damage_results.plan_damage_result_commit", "quorune.counter_removal.plan_counter_removals", "quorune.counter_removal.commit_counter_removals"],
       "positive_tests": ["test_battle_damage_removes_defense_instead_of_marking_damage"],
       "negative_tests": ["test_damage_rejects_nondamageable_permanent"],
       "interaction_tests": ["test_damage_to_battle_creature_applies_both_results"],
@@ -3416,7 +3416,7 @@
     },
     {
       "id": "damage.result.infect",
-      "version": 1,
+      "version": 2,
       "official_rules": ["120.3b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
@@ -3425,8 +3425,8 @@
         "outputs": ["poison counters or -1/-1 counters"],
         "exclusions": []
       },
-      "dependencies": ["damage.amount.positive"],
-      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.counter_state.plan_counter_changes", "quorune.counter_state.apply_counter_changes"],
+      "dependencies": ["damage.amount.positive", "counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.damage_results.plan_damage_result_commit", "quorune.counter_placement.plan_resolved_counter_placement_commit", "quorune.counter_placement.commit_counter_placement_plan"],
       "positive_tests": ["test_infect_player_damage_is_poison_not_life_loss", "test_source_pinned_keyword_witnesses_follow_damage_results"],
       "negative_tests": ["test_prevented_infect_and_toxic_create_no_counter_results"],
       "interaction_tests": ["test_infect_and_wither_use_minus_counters_only_on_creatures", "test_multitype_permanent_receives_every_applicable_result"],
@@ -3443,7 +3443,7 @@
     },
     {
       "id": "damage.result.wither",
-      "version": 1,
+      "version": 2,
       "official_rules": ["120.3d"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
@@ -3452,8 +3452,8 @@
         "outputs": ["-1/-1 counters"],
         "exclusions": []
       },
-      "dependencies": ["damage.amount.positive"],
-      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.counter_state.plan_counter_changes", "quorune.counter_state.apply_counter_changes"],
+      "dependencies": ["damage.amount.positive", "counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.damage_results.plan_damage_result_commit", "quorune.counter_placement.plan_resolved_counter_placement_commit", "quorune.counter_placement.commit_counter_placement_plan"],
       "positive_tests": ["test_infect_and_wither_use_minus_counters_only_on_creatures", "test_source_pinned_keyword_witnesses_follow_damage_results"],
       "negative_tests": ["test_infect_and_wither_use_minus_counters_only_on_creatures"],
       "interaction_tests": ["test_wither_damage_still_records_deathtouch_result"],
@@ -3497,7 +3497,7 @@
     },
     {
       "id": "damage.result.toxic",
-      "version": 1,
+      "version": 2,
       "official_rules": ["120.3g"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
@@ -3506,8 +3506,8 @@
         "outputs": ["source-controller-attributed poison counters"],
         "exclusions": ["unresolved or dynamic toxic values", "unrepresented ability-granting continuous effects"]
       },
-      "dependencies": ["damage.amount.positive"],
-      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.counter_state.plan_counter_changes", "quorune.counter_state.apply_counter_changes"],
+      "dependencies": ["damage.amount.positive", "counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.damage_results.materialize_damage_results", "quorune.damage_results.plan_damage_result_commit", "quorune.counter_placement.plan_resolved_counter_placement_commit", "quorune.counter_placement.commit_counter_placement_plan"],
       "positive_tests": ["test_toxic_is_additional_only_for_creature_combat_damage_to_player", "test_multiple_toxic_abilities_are_cumulative", "test_source_pinned_keyword_witnesses_follow_damage_results"],
       "negative_tests": ["test_unresolved_toxic_value_fails_before_mutation", "test_prevented_infect_and_toxic_create_no_counter_results"],
       "interaction_tests": ["test_source_pinned_keyword_witnesses_follow_damage_results"],

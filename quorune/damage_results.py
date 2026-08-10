@@ -4,14 +4,22 @@ from dataclasses import dataclass
 from typing import Any, Literal, Mapping, Protocol, Sequence
 
 from . import deathtouch as deathtouch_rules
-from .counter_state import (
-    apply_counter_changes,
-    CounterChange,
-    CounterStateError,
-    CounterStatePlan,
-    plan_counter_changes,
-    validate_counter_changes,
+from .counter_placement import (
+    commit_counter_placement_plan,
+    CounterPlacementCommitPlan,
+    CounterPlacementError,
+    plan_resolved_counter_placement_commit,
+    validate_counter_placement_commit,
 )
+from .counter_removal import (
+    commit_counter_removals,
+    CounterRemoval,
+    CounterRemovalError,
+    CounterRemovalPlan,
+    plan_counter_removals,
+    validate_counter_removal_plan,
+)
+from .counter_state import CounterStatePlan
 from .life_state import (
     apply_life_changes,
     LifeChange,
@@ -98,7 +106,8 @@ class _PermanentStatePlan:
 class DamageResultCommitPlan:
     life: LifeStatePlan
     permanents: tuple[_PermanentStatePlan, ...]
-    counters: CounterStatePlan
+    counter_placements: CounterPlacementCommitPlan
+    counter_removals: CounterRemovalPlan
     records: tuple[DamageResultRecord, ...]
     changed_players: tuple[str, ...]
     changed_objects: tuple[str, ...]
@@ -1135,56 +1144,79 @@ def _life_state_plan(
         raise DamageResultError(str(exc)) from exc
 
 
-def _counter_state_plan(
+def _resolved_counter_placement_events(
+    host: DamageResultHost,
+    prepared: PreparedDamageResults,
+) -> tuple[ReplaceableEvent, ...]:
+    resolved: list[ReplaceableEvent] = []
+    for root in prepared.events:
+        logical_object_id = root.payload.get("subject_logical_object_id")
+        for child in root.children:
+            if child.kind != "counter.place":
+                continue
+            payload = dict(child.payload)
+            if child.affected_object is not None:
+                card = host.state.cards.get(child.affected_object.object_id)
+                if card is None or card.logical_object_id != logical_object_id:
+                    raise DamageResultError(
+                        "Damage-result counter subject changed object identity"
+                    )
+                payload["target_logical_object_id"] = logical_object_id
+            resolved.append(
+                ReplaceableEvent(
+                    event_id=child.event_id,
+                    kind=child.kind,
+                    affected_player=child.affected_player,
+                    affected_object=child.affected_object,
+                    payload=payload,
+                    applied_effects=child.applied_effects,
+                    entry_scope=child.entry_scope,
+                )
+            )
+    return tuple(resolved)
+
+
+def _counter_placement_plan(
+    host: DamageResultHost,
+    prepared: PreparedDamageResults,
+) -> CounterPlacementCommitPlan:
+    try:
+        return plan_resolved_counter_placement_commit(
+            host,
+            _resolved_counter_placement_events(host, prepared),
+        )
+    except CounterPlacementError as exc:
+        raise DamageResultError(str(exc)) from exc
+
+
+def _counter_removal_plan(
     host: DamageResultHost,
     deltas: _CommitDeltas,
-) -> CounterStatePlan:
-    changes: list[CounterChange] = []
-    for player, amount in sorted(deltas.player_poison.items()):
-        changes.append(
-            CounterChange(
-                subject_kind="player",
-                subject_id=player,
-                counter_name="poison",
-                amount=amount,
-            )
-        )
-    for (object_id, name), amount in sorted(
-        deltas.permanent_counter_remove.items()
-    ):
-        card = host.state.cards[object_id]
-        changes.append(
-            CounterChange(
-                subject_kind="permanent",
-                subject_id=object_id,
-                counter_name=name,
-                amount=-amount,
-                expected_zone="battlefield",
-                expected_logical_object_id=card.logical_object_id,
-            )
-        )
-    for (object_id, name), amount in sorted(
-        deltas.permanent_counter_add.items()
-    ):
-        card = host.state.cards[object_id]
-        changes.append(
-            CounterChange(
-                subject_kind="permanent",
-                subject_id=object_id,
-                counter_name=name,
-                amount=amount,
-                expected_zone="battlefield",
-                expected_logical_object_id=card.logical_object_id,
-            )
-        )
+) -> CounterRemovalPlan:
     try:
-        return plan_counter_changes(host, tuple(changes))
-    except CounterStateError as exc:
+        return plan_counter_removals(
+            host,
+            tuple(
+                CounterRemoval(
+                    object_id=object_id,
+                    counter_name=name,
+                    amount=amount,
+                    expected_zone="battlefield",
+                    expected_logical_object_id=(
+                        host.state.cards[object_id].logical_object_id
+                    ),
+                )
+                for (object_id, name), amount in sorted(
+                    deltas.permanent_counter_remove.items()
+                )
+            ),
+        )
+    except CounterRemovalError as exc:
         raise DamageResultError(str(exc)) from exc
 
 
 def _counter_after(
-    plan: CounterStatePlan,
+    plans: Sequence[CounterStatePlan],
     *,
     subject_kind: str,
     subject_id: str,
@@ -1192,13 +1224,14 @@ def _counter_after(
     fallback: int,
 ) -> int:
     result = fallback
-    for transition in plan.transitions:
-        if (
-            transition.subject_kind == subject_kind
-            and transition.subject_id == subject_id
-            and transition.counter_name == counter_name
-        ):
-            result = transition.after
+    for plan in plans:
+        for transition in plan.transitions:
+            if (
+                transition.subject_kind == subject_kind
+                and transition.subject_id == subject_id
+                and transition.counter_name == counter_name
+            ):
+                result = transition.after
     return result
 
 
@@ -1206,12 +1239,16 @@ def _permanent_state_plan(
     host: DamageResultHost,
     object_id: str,
     deltas: _CommitDeltas,
-    counter_plan: CounterStatePlan,
+    counter_placements: CounterPlacementCommitPlan,
+    counter_removals: CounterRemovalPlan,
 ) -> _PermanentStatePlan:
     card = host.state.cards[object_id]
     before_defense = max(0, int(card.counters.get("defense", 0)))
     after_defense = _counter_after(
-        counter_plan,
+        (
+            counter_placements.state_plan,
+            counter_removals.counter_plan,
+        ),
         subject_kind="permanent",
         subject_id=object_id,
         counter_name="defense",
@@ -1235,13 +1272,22 @@ def _permanent_state_plan(
 def _permanent_state_plans(
     host: DamageResultHost,
     deltas: _CommitDeltas,
-    counter_plan: CounterStatePlan,
+    counter_placements: CounterPlacementCommitPlan,
+    counter_removals: CounterRemovalPlan,
 ) -> tuple[_PermanentStatePlan, ...]:
-    object_ids = set(counter_plan.changed_objects).union(
+    object_ids = set(
+        counter_placements.state_plan.changed_objects
+    ).union(counter_removals.counter_plan.changed_objects).union(
         deltas.permanent_mark
     ).union(deltas.permanent_deathtouch)
     return tuple(
-        _permanent_state_plan(host, object_id, deltas, counter_plan)
+        _permanent_state_plan(
+            host,
+            object_id,
+            deltas,
+            counter_placements,
+            counter_removals,
+        )
         for object_id in sorted(object_ids)
     )
 
@@ -1260,27 +1306,34 @@ def plan_damage_result_commit(
     for root in prepared.events:
         _accumulate_result_root(host, root, deltas)
     _validate_counter_delta_conflicts(deltas)
-    counter_plan = _counter_state_plan(host, deltas)
+    counter_placements = _counter_placement_plan(host, prepared)
+    counter_removals = _counter_removal_plan(host, deltas)
     life_plan = _life_state_plan(host, deltas)
     permanent_plans = _permanent_state_plans(
-        host, deltas, counter_plan
+        host,
+        deltas,
+        counter_placements,
+        counter_removals,
     )
     return DamageResultCommitPlan(
         life=life_plan,
         permanents=permanent_plans,
-        counters=counter_plan,
+        counter_placements=counter_placements,
+        counter_removals=counter_removals,
         records=tuple(deltas.records),
         changed_players=tuple(
             sorted(
                 set(life_plan.changed_players).union(
-                    counter_plan.changed_players
+                    counter_placements.state_plan.changed_players
                 )
             )
         ),
         changed_objects=tuple(
             sorted(
                 {plan.object_id for plan in permanent_plans}.union(
-                    counter_plan.changed_objects
+                    counter_placements.state_plan.changed_objects
+                ).union(
+                    counter_removals.counter_plan.changed_objects
                 )
             )
         ),
@@ -1294,11 +1347,22 @@ def commit_damage_result_plan(
     """Apply a fully validated result plan without rediscovery or choices."""
 
     try:
-        validate_counter_changes(host, plan.counters)
+        validate_counter_placement_commit(host, plan.counter_placements)
+        validate_counter_removal_plan(host, plan.counter_removals)
         validate_life_changes(host, plan.life)
-    except (CounterStateError, LifeStateError) as exc:
+    except (
+        CounterPlacementError,
+        CounterRemovalError,
+        LifeStateError,
+    ) as exc:
         raise DamageResultError(str(exc)) from exc
-    apply_counter_changes(host, plan.counters)
+    commit_counter_placement_plan(
+        host,
+        plan.counter_placements,
+        reason="damage result",
+        log=False,
+    )
+    commit_counter_removals(host, plan.counter_removals)
     apply_life_changes(host, plan.life)
     defeated: list[Any] = []
     for permanent_plan in plan.permanents:

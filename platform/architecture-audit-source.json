@@ -4,8 +4,8 @@
     "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-10",
-    "phase": "replacement_aware_saga_turn_counter_action",
-    "scope_note": "The evaluated source tree migrates ordinary non-Read-Ahead Saga precombat lore progression from a direct counter-state plan to the canonical immutable counter-placement transaction. One simultaneous effect_generated=false batch applies unqualified quantity replacements but excludes effect-qualified replacements such as Doubling Season, suspends competing CR 616 choices before mutation through a strict seat-scoped continuation, preserves held trigger identity, and resumes step entry exactly once. The engine imports a narrow typed rules coordinator and shrinks by two logical lines; direct GameState writes remain flat. Read Ahead, arbitrary lore movement, copied or gained chapter abilities, unsupported quantity replacements, and broader turn-based counter producers remain fail-closed."
+    "phase": "damage_result_counter_owner_harvest",
+    "scope_note": "The evaluated source tree delegates represented damage-result counter placement and removal to the existing typed transaction owners. Infect, Wither, and Toxic consume resolved childless counter-placement leaves without rediscovering replacement effects, while Planeswalker loyalty and Battle defense use exact typed counter removal. The damage-result coordinator validates placement, removal, life, and permanent-result plans before the first write and retains atomic rollback. The family adds no card-name, Oracle-ID, runtime Oracle-text, or parallel GameState mutation path. Effect- and cost-generated removal, counter movement, unrepresented rule-result counters, unsupported keyword variants, and broader damage interactions remain fail-closed material residuals."
   },
   "ci": {
     "workflow": "PR",
@@ -35,6 +35,7 @@
       "quorune/engine.py",
       "quorune/permissions.py",
       "quorune/counter_placement.py",
+      "quorune/counter_removal.py",
       "quorune/counter_state.py",
       "quorune/damage.py",
       "quorune/damage_prevention_creation.py",
@@ -232,10 +233,12 @@
     },
     {
       "id": "damage_results_life_and_counters",
-      "status": "typed_precommit_owners_with_damage_coordinator",
+      "status": "typed_delegated_result_owners_with_damage_coordinator",
       "owners": [
         "quorune/damage.py",
         "quorune/damage_results.py",
+        "quorune/counter_placement.py",
+        "quorune/counter_removal.py",
         "quorune/counter_state.py",
         "quorune/life_state.py"
       ],

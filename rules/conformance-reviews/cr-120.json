@@ -247,14 +247,16 @@
         "damage_results.materialize_damage_results",
         "damage_results.plan_damage_result_commit",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "executable_test_ids": [
         "tests.test_damage_result_events.DamageResultEventTests.test_infect_player_damage_is_poison_not_life_loss",
         "tests.test_damage_result_events.DamageResultEventTests.test_prevented_infect_and_toxic_create_no_counter_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_source_pinned_keyword_witnesses_follow_damage_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_four_player_keyword_results_keep_source_attribution",
-        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment"
+        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_replacement_is_not_rediscovered_at_commit"
       ],
       "required_scenarios": [
         "positive",
@@ -284,12 +286,14 @@
         "damage_results.materialize_damage_results",
         "damage_results.plan_damage_result_commit",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_removal.plan_counter_removals",
+        "counter_removal.commit_counter_removals"
       ],
       "executable_test_ids": [
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_planeswalker_damage_removes_loyalty_counters",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_damage_to_multityped_permanent_applies_every_result",
-        "tests.test_damage_result_events.DamageResultEventTests.test_multitype_permanent_receives_every_applicable_result"
+        "tests.test_damage_result_events.DamageResultEventTests.test_multitype_permanent_receives_every_applicable_result",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners"
       ],
       "required_scenarios": [
         "positive",
@@ -315,13 +319,15 @@
         "damage_results.materialize_damage_results",
         "damage_results.plan_damage_result_commit",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "executable_test_ids": [
         "tests.test_damage_result_events.DamageResultEventTests.test_infect_and_wither_use_minus_counters_only_on_creatures",
         "tests.test_damage_result_events.DamageResultEventTests.test_source_pinned_keyword_witnesses_follow_damage_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_wither_damage_still_records_deathtouch_result",
-        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment"
+        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners"
       ],
       "required_scenarios": [
         "positive",
@@ -419,7 +425,8 @@
         "damage._total_toxic_value",
         "damage_results.materialize_damage_results",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "executable_test_ids": [
         "tests.test_damage_result_events.DamageResultEventTests.test_toxic_is_additional_only_for_creature_combat_damage_to_player",
@@ -427,7 +434,8 @@
         "tests.test_damage_result_events.DamageResultEventTests.test_unresolved_toxic_value_fails_before_mutation",
         "tests.test_damage_result_events.DamageResultEventTests.test_prevented_infect_and_toxic_create_no_counter_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_four_player_keyword_results_keep_source_attribution",
-        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment"
+        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners"
       ],
       "required_scenarios": [
         "positive",
@@ -457,13 +465,15 @@
         "damage_results.materialize_damage_results",
         "damage_results.plan_damage_result_commit",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_removal.plan_counter_removals",
+        "counter_removal.commit_counter_removals"
       ],
       "executable_test_ids": [
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_damage_removes_defense_instead_of_marking_damage",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_damage_to_multityped_permanent_applies_every_result",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_damage_and_state_action_replay_exactly",
-        "tests.test_damage_result_events.DamageResultEventTests.test_multitype_permanent_receives_every_applicable_result"
+        "tests.test_damage_result_events.DamageResultEventTests.test_multitype_permanent_receives_every_applicable_result",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners"
       ],
       "required_scenarios": [
         "positive",

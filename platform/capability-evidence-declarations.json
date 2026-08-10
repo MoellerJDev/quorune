@@ -3238,6 +3238,14 @@
     },
     {
       "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_replacement_is_not_rediscovered_at_commit",
+      "official_rule_ids": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply a counter replacement once in the containing damage-result tree and commit the resolved amount without rediscovery."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_simultaneous_counter_choices_follow_apnap",
       "official_rule_ids": [
@@ -3292,6 +3300,14 @@
     },
     {
       "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_owner_mutants_are_killed",
+      "official_rule_ids": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replace the canonical damage-result placement commit with a no-op and prove the represented counters cannot appear through a bypass."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
       "evidence_class": "negative",
       "test_id": "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_quantity_component_rejects_malformed_and_nonmatching_events",
       "official_rule_ids": [
@@ -3311,6 +3327,14 @@
     },
     {
       "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "negative",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_resolved_counter_owner_rejects_nonplacement_event",
+      "official_rule_ids": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a non-counter event at the typed already-resolved placement boundary before planning any mutation."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
       "evidence_class": "positive",
       "test_id": "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_quantity_component_changes_effect_generated_placement",
       "official_rule_ids": [
@@ -3327,6 +3351,14 @@
         "commander_review"
       ],
       "applicability_note": "Resolve represented effect-generated counter placements through affected-object ordering before committing the counters."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "positive",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners",
+      "official_rule_ids": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit resolved Infect, Wither, and Toxic counter leaves through the canonical typed placement owner without bypassing its precommit plan."
     },
     {
       "capability_id": "counter.placement.quantity_replacement",
@@ -3389,6 +3421,14 @@
       "official_rule_ids": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reload a pending Saga entry counter-quantity ordering continuation, keep it seat scoped, commit it once, and replay the restarted record to the same hash."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_stale_damage_counter_subject_rolls_back_every_result",
+      "official_rule_ids": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a stale permanent logical incarnation before committing any counter or accompanying life result."
     },
     {
       "capability_id": "counter.producer.bloodthirst",
@@ -5369,6 +5409,14 @@
     {
       "capability_id": "counter.removal.rule_generated",
       "evidence_class": "mutation",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_owner_mutants_are_killed",
+      "official_rule_ids": ["122.1d", "502.3", "701.26b", "704.3", "704.5q", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replace the canonical damage-result removal commit with a no-op and prove loyalty and defense cannot change through a bypass."
+    },
+    {
+      "capability_id": "counter.removal.rule_generated",
+      "evidence_class": "mutation",
       "test_id": "tests.test_rule_generated_counter_removals.CounterRemovalTransactionTests.test_stun_replacement_uses_the_counter_removal_owner",
       "official_rule_ids": ["122.1d", "502.3", "701.26b", "704.3", "704.5q", "704.5r"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -5393,6 +5441,14 @@
     {
       "capability_id": "counter.removal.rule_generated",
       "evidence_class": "positive",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners",
+      "official_rule_ids": ["122.1d", "502.3", "701.26b", "704.3", "704.5q", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit simultaneous Planeswalker loyalty and Battle defense damage removals through the canonical exact-removal owner."
+    },
+    {
+      "capability_id": "counter.removal.rule_generated",
+      "evidence_class": "positive",
       "test_id": "tests.test_rule_generated_counter_removals.CounterRemovalTransactionTests.test_removals_are_canonical_and_commit_exactly",
       "official_rule_ids": ["122.1d", "502.3", "701.26b", "704.3", "704.5q", "704.5r"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -5405,6 +5461,14 @@
       "official_rule_ids": ["122.1d", "502.3", "701.26b", "704.3", "704.5q", "704.5r"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay a four-player opposing-counter state action to the same authoritative state hash."
+    },
+    {
+      "capability_id": "counter.removal.rule_generated",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_stale_damage_counter_subject_rolls_back_every_result",
+      "official_rule_ids": ["122.1d", "502.3", "701.26b", "704.3", "704.5q", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Validate all damage-result counter owners before applying any placement, removal, or life mutation."
     },
     {
       "capability_id": "damage.amount.positive",
@@ -6502,6 +6566,14 @@
     {
       "capability_id": "damage.result.battle_defense",
       "evidence_class": "interaction",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners",
+      "official_rule_ids": ["120.3h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove Battle defense in the same atomic typed-owner commit as Infect, Wither, Toxic, and Planeswalker results."
+    },
+    {
+      "capability_id": "damage.result.battle_defense",
+      "evidence_class": "interaction",
       "test_id": "tests.test_state_based_actions.StateBasedActionEngineTests.test_damage_to_battle_creature_applies_both_results",
       "official_rule_ids": [
         "120.3h"
@@ -6526,6 +6598,14 @@
         "commander_review"
       ],
       "applicability_note": "Remove defense counters from a battle dealt represented positive damage."
+    },
+    {
+      "capability_id": "damage.result.battle_defense",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_owner_mutants_are_killed",
+      "official_rule_ids": ["120.3h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a no-op canonical counter-removal mutant with the missing Battle defense result."
     },
     {
       "capability_id": "damage.result.battle_defense",
@@ -6746,6 +6826,14 @@
     {
       "capability_id": "damage.result.infect",
       "evidence_class": "interaction",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners",
+      "official_rule_ids": ["120.3b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit Infect counter results through the canonical placement owner alongside other simultaneous damage results."
+    },
+    {
+      "capability_id": "damage.result.infect",
+      "evidence_class": "interaction",
       "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_infect_and_wither_use_minus_counters_only_on_creatures",
       "official_rule_ids": [
         "120.3b"
@@ -6798,6 +6886,14 @@
         "commander_review"
       ],
       "applicability_note": "Apply infect damage to players and creatures as poison or -1/-1 counters."
+    },
+    {
+      "capability_id": "damage.result.infect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_owner_mutants_are_killed",
+      "official_rule_ids": ["120.3b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a no-op canonical counter-placement mutant with the missing Infect result."
     },
     {
       "capability_id": "damage.result.infect",
@@ -7077,6 +7173,14 @@
     },
     {
       "capability_id": "damage.result.planeswalker_loyalty",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners",
+      "official_rule_ids": ["120.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove Planeswalker loyalty in the same atomic typed-owner commit as Battle, Infect, Wither, and Toxic results."
+    },
+    {
+      "capability_id": "damage.result.planeswalker_loyalty",
       "evidence_class": "mutation",
       "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_damage_result_dispatch_mutant_is_killed",
       "official_rule_ids": [
@@ -7088,6 +7192,14 @@
         "commander_review"
       ],
       "applicability_note": "Remove loyalty counters from a planeswalker dealt represented positive damage."
+    },
+    {
+      "capability_id": "damage.result.planeswalker_loyalty",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_owner_mutants_are_killed",
+      "official_rule_ids": ["120.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a no-op canonical counter-removal mutant with the missing Planeswalker loyalty result."
     },
     {
       "capability_id": "damage.result.planeswalker_loyalty",
@@ -7371,6 +7483,14 @@
     {
       "capability_id": "damage.result.toxic",
       "evidence_class": "interaction",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners",
+      "official_rule_ids": ["120.3g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit Toxic player-counter results through the canonical placement owner alongside other simultaneous damage results."
+    },
+    {
+      "capability_id": "damage.result.toxic",
+      "evidence_class": "interaction",
       "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_source_pinned_keyword_witnesses_follow_damage_results",
       "official_rule_ids": [
         "120.3g"
@@ -7409,6 +7529,14 @@
         "commander_review"
       ],
       "applicability_note": "Give a player poison counters equal to a creature damage source's represented total toxic value after combat damage is dealt."
+    },
+    {
+      "capability_id": "damage.result.toxic",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_owner_mutants_are_killed",
+      "official_rule_ids": ["120.3g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a no-op canonical counter-placement mutant with the missing Toxic result."
     },
     {
       "capability_id": "damage.result.toxic",
@@ -7497,6 +7625,14 @@
     {
       "capability_id": "damage.result.wither",
       "evidence_class": "interaction",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners",
+      "official_rule_ids": ["120.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit Wither counter results through the canonical placement owner alongside other simultaneous damage results."
+    },
+    {
+      "capability_id": "damage.result.wither",
+      "evidence_class": "interaction",
       "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_wither_damage_still_records_deathtouch_result",
       "official_rule_ids": [
         "120.3d"
@@ -7521,6 +7657,14 @@
         "commander_review"
       ],
       "applicability_note": "Apply wither damage to creatures as -1/-1 counters."
+    },
+    {
+      "capability_id": "damage.result.wither",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_owner_mutants_are_killed",
+      "official_rule_ids": ["120.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a no-op canonical counter-placement mutant with the missing Wither result."
     },
     {
       "capability_id": "damage.result.wither",
