@@ -2,6 +2,7 @@ name: PR
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
   workflow_dispatch:
 
 permissions:
@@ -30,6 +31,9 @@ jobs:
         with:
           python-version: "3.12"
           architecture: x64
+      - name: Validate pull request description and status provenance
+        if: github.event_name == 'pull_request'
+        run: python scripts/validate_pr_body.py
       - id: impact
         name: Classify exact changed-file impact
         run: python scripts/ci_plan.py

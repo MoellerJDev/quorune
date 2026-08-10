@@ -286,12 +286,24 @@ totals are allowed only when the count itself is the contract being tested.
 Push the coherent exact head and let public pull-request CI run the broad
 Python, generated, package, platform and headless-browser checks. Use that CI
 window for independent Slot B work instead of repeating the same suite
-locally. A successful `PR / Certification` publishes the ephemeral exact-head
+locally. Complete `.github/pull_request_template.md` before opening the pull
+request: remove its instructional comments, fill every required section and
+evidence row, give a concrete reason for every N/A, and check every safety
+assertion. When generated inputs or outputs changed, the Generators run field
+must name `scripts/finalize_generated.py --write`. Do not claim a broad local
+pass without the exact command and numeric result, or a broad CI pass without
+the authoritative GitHub Actions run URL. The early `PR / Plan` job enforces
+this policy on open, synchronize, reopen, edit, and ready-for-review events.
+
+A successful `PR / Certification` publishes the ephemeral exact-head
 receipt; Main smoke validates the squash-merged source tree against that
 receipt. Never put PR numbers, branch names, exact heads, merge SHAs or workflow
-run IDs into `platform/readiness-source.json`, and never create a follow-up
-commit solely to reconcile squash-merge identity. A local behavioral test or
-broader gate is exceptional: use it only
+run IDs into `platform/readiness-source.json` or
+`platform/architecture-audit-source.json`. PR CI compares those durable sources
+with the base revision and rejects newly written volatile provenance; the
+historical CI escape ledger remains the explicit owner for observed workflow
+incidents. Never create a follow-up commit solely to reconcile squash-merge
+identity. A local behavioral test or broader gate is exceptional: use it only
 when the user asks or when diagnosing a specific CI-only or release-critical
 failure that cannot be isolated from the Actions evidence. Run only the
 directly relevant test in that case. Browser automation remains headless. The
