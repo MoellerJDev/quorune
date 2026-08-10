@@ -18,6 +18,7 @@ from .replacement_effects import (
     ReplacementEffect,
     ReplacementSelection,
 )
+from .replacement.model import walk_events
 from .semantic_runtime.counter_replacements import (
     CounterPlacementEventSpec,
     collect_counter_placement_replacement_effects,
@@ -27,6 +28,44 @@ from .semantic_runtime.counter_replacements import (
 
 class CounterPlacementError(ValueError):
     pass
+
+
+def validate_counter_event_subjects(
+    host: "CounterPlacementHost",
+    events: Sequence[ReplaceableEvent],
+) -> None:
+    """Validate every permanent subject pinned by counter event trees.
+
+    Replacement ordering may suspend a counter event. Resuming must retain the
+    original physical and logical subject instead of rebuilding the placement
+    around a permanent that left and returned under the same public ref.
+    """
+
+    for root in events:
+        if not isinstance(root, ReplaceableEvent):
+            raise CounterPlacementError(
+                "Counter subject validation requires typed events"
+            )
+        for event in walk_events(root):
+            if event.kind != "counter.place" or event.affected_object is None:
+                continue
+            card = host.state.cards.get(event.affected_object.object_id)
+            expected_zone = event.payload.get("target_zone")
+            expected_logical_id = event.payload.get(
+                "target_logical_object_id"
+            )
+            if (
+                card is None
+                or type(expected_zone) is not str
+                or not expected_zone
+                or type(expected_logical_id) is not str
+                or not expected_logical_id
+                or card.zone != expected_zone
+                or card.logical_object_id != expected_logical_id
+            ):
+                raise CounterPlacementError(
+                    "Counter replacement continuation subject changed"
+                )
 
 
 class CounterPlacementHost(Protocol):

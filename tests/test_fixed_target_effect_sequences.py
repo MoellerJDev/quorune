@@ -388,17 +388,11 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
         dependency["status"] = "blocked"
         dependency["blockers"] = ["test mutation"]
         ir = compile_oracle_card(
-            replace(
-                self.base,
-                name="Fixture",
-                oracle_text=(
-                    "Sacrifice this creature: Put a +2/+2 counter on target "
-                    "Chimera creature. It gains flying. "
-                    "(This effect lasts indefinitely.)"
-                ),
+            self.record(
+                "Sacrifice this creature: Put a +2/+2 counter on target "
+                "Chimera creature. It gains flying. "
+                "(This effect lasts indefinitely.)",
                 type_line="Artifact Creature — Chimera",
-                keywords=(),
-                faces=(),
             ),
             capability_registry=CapabilityRegistry(raw),
             capability_profile="commander_review",

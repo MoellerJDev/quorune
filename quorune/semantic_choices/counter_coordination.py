@@ -9,6 +9,10 @@ from ..replacement_effects import (
     ReplacementEffectError,
     replacement_choice_payload,
 )
+from ..counter_placement import (
+    CounterPlacementError,
+    validate_counter_event_subjects,
+)
 from ..semantic_runtime import (
     IntentPlan,
     PlaceCounterBatchIntent,
@@ -296,6 +300,7 @@ def resume_semantic_counter_completion(
         expected_intent = validate_counter_intent_identity(
             restored.thaw_counter_intent()
         )
+        validate_counter_event_subjects(host, restored.batch.events)
         registry = default_semantic_choice_registry()
         handler, continuation = registry.decode_continuation(raw_continuation)
         item = next(
@@ -338,7 +343,11 @@ def resume_semantic_counter_completion(
             ),
             expected_counter_intent=expected_intent,
         )
-    except (SemanticChoiceError, ReplacementEffectError) as exc:
+    except (
+        CounterPlacementError,
+        SemanticChoiceError,
+        ReplacementEffectError,
+    ) as exc:
         raise error_type(str(exc)) from exc
 
 
