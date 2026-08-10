@@ -71,12 +71,15 @@ class CastCostHost(Protocol):
         self, seat: str, card: Any, specification: Mapping[str, Any]
     ) -> list[str]: ...
 
-    def _improvise_candidates(self, seat: str) -> list[Any]: ...
+    def _payment_mechanic_candidates(
+        self, seat: str, kind: str
+    ) -> list[Any]: ...
 
-    def _improvise_payment_plan(
+    def _tap_payment_plan(
         self,
         seat: str,
         requirements: Mapping[str, int],
+        kind: str,
         candidates: Sequence[Any],
         *,
         spend_context: Any,
@@ -459,7 +462,7 @@ def _apply_improvise(
 ) -> bool:
     candidates = [
         card
-        for card in host._improvise_candidates(seat)
+        for card in host._payment_mechanic_candidates(seat, "improvise")
         if card not in selected_cards
     ]
     field = "improvise_cards"
@@ -473,9 +476,10 @@ def _apply_improvise(
         "payment": "improvise",
     }
     if hint:
-        plan = host._improvise_payment_plan(
+        plan = host._tap_payment_plan(
             seat,
             option["requirements"],
+            "improvise",
             candidates,
             spend_context=spend_context,
         )

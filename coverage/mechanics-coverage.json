@@ -7,10 +7,10 @@
   "status_counts": {
     "partial": 65,
     "tested": 24,
-    "trusted": 6,
-    "unclassified": 330
+    "trusted": 7,
+    "unclassified": 329
   },
   "total_mechanics": 425,
-  "trusted_fraction": 0.014118,
-  "trusted_mechanics": 6
+  "trusted_fraction": 0.016471,
+  "trusted_mechanics": 7
 }

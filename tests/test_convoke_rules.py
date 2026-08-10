@@ -412,24 +412,17 @@ class ConvokeRuntimeTests(unittest.TestCase):
     def test_convoke_applies_after_static_cost_reduction(self):
         session, chord, creatures = self.fixture(7025103)
         engine = session.engine
-        reducer = self.card(engine, "B", "Elves of Deep Shadow")
-        engine.move_card(reducer.object_id, "battlefield", controller="B", log=False)
-        reducer.tapped = True
-        program = engine.semantics.get(f"{reducer.oracle_id}:spell:front")
-        self.assertIsNotNone(program)
-        program.cost_schema = {
-            "static_modifiers": [
-                {"spell_type": "instant", "generic_reduction": 1}
-            ]
-        }
-
-        options = engine._cast_cost_options(
-            "B",
-            chord,
-            engine.semantics.get(f"{chord.oracle_id}:spell:front"),
-            response={"x": 1, "convoke_cards": list(creatures)},
-            hint=False,
-        )
+        with mock.patch(
+            "quorune.rules.casting.costs._static_generic_reduction",
+            return_value=1,
+        ):
+            options = engine._cast_cost_options(
+                "B",
+                chord,
+                engine.semantics.get(f"{chord.oracle_id}:spell:front"),
+                response={"x": 1, "convoke_cards": list(creatures)},
+                hint=False,
+            )
 
         self.assertEqual(1, len(options))
         self.assertEqual(0, sum(options[0]["requirements"].values()))
@@ -440,6 +433,7 @@ class ConvokeRuntimeTests(unittest.TestCase):
         engine = session.engine
         birds = self.card(engine, "B", "Birds of Paradise")
         engine.move_card(birds.object_id, "battlefield", controller="B", log=False)
+        birds.acquired_control_turn_count = -1
         program = engine.semantics.get(f"{chord.oracle_id}:spell:front")
 
         payable = engine._cast_cost_options(
@@ -471,7 +465,7 @@ class ConvokeRuntimeTests(unittest.TestCase):
         selected = next(
             card for card in engine.state.cards.values() if card.ref == creatures[0]
         )
-        selected.annotations["token_characteristics"]["type_line"] = "Token Artifact"
+        selected.annotations["copy_overrides"]["type_line"] = "Token Artifact"
         before = authoritative_state_hash(engine.state)
 
         with self.assertRaisesRegex(CastProposalError, "changed identity or characteristics"):

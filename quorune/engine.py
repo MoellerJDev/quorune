@@ -5437,7 +5437,13 @@ class CommanderEngine(
             candidates.append(card.ref)
         return candidates
 
-    def _improvise_candidates(self, seat: str) -> list[CardInstance]:
+    def _payment_mechanic_candidates(
+        self,
+        seat: str,
+        mechanic: str,
+    ) -> list[CardInstance]:
+        if mechanic != "improvise":
+            return []
         candidates: list[CardInstance] = []
         for object_id in self.state.players[seat].zones["battlefield"]:
             card = self.state.cards[object_id]
@@ -5457,15 +5463,19 @@ class CommanderEngine(
                 candidates.append(card)
         return candidates
 
-    def _improvise_payment_plan(
+    def _tap_payment_plan(
         self,
         seat: str,
         requirements: Mapping[str, int],
+        mechanic: str,
         candidates: Sequence[CardInstance],
         *,
         spend_context: str | None = None,
     ) -> tuple[dict[str, int], list[CardInstance]] | None:
-        """Find a payable minimum-card Improvise plan."""
+        """Find a payable minimum-card legacy Improvise plan."""
+
+        if mechanic != "improvise":
+            return None
 
         base = self._mana_vector(requirements)
         best: tuple[dict[str, int], list[CardInstance]] | None = None
