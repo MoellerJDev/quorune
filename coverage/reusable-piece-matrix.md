@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "7e9b491837e2cbfcaea9dec3a9589d2ef0e86ff72fafa82cb9ec5364a53ef50d"
+verified: "dcea0caed04223e368abd22d1ba06be92af901c3e6f151d7e3cc310e7035ff1d"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,12 +17,12 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,257
+- Pieces: 1,263
 - Cards indexed: 31,623
 - Material abilities classified: 59,573
 - Unclassified material spans: 0
-- Mapped pinned rules: 761 / 3,300
-- Applicable piece pairs: 26,160
+- Mapped pinned rules: 762 / 3,300
+- Applicable piece pairs: 26,240
 - Covered piece pairs: 361
 
 ## Ontology classes
@@ -33,10 +33,10 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `card_forms` — Card types and specialized forms | 4 |
 | `choices_continuations` — Modes, targets, choices, and continuations | 8 |
 | `combat` — Combat | 22 |
-| `compiler_cardprogram` — Compiler and CardProgram pieces | 372 |
+| `compiler_cardprogram` — Compiler and CardProgram pieces | 377 |
 | `continuous_effects` — Static abilities and continuous effects | 17 |
 | `costs_mana` — Costs and mana | 7 |
-| `events_mutations` — Typed events and mutations | 90 |
+| `events_mutations` — Typed events and mutations | 91 |
 | `keyword_mechanics` — Keyword actions and keyword abilities | 549 |
 | `multiplayer_commander` — Multiplayer, Commander, and profile pieces | 1 |
 | `object_identity` — Object identity and lifetime | 26 |
@@ -61,14 +61,14 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `replacement_prevention` | `inventoried` | 16 | 3 |
 | `state_turn_loops_stabilization` | `inventoried` | 0 | 0 |
 | `targets_modes_searches_references_choices` | `inventoried` | 10 | 6 |
-| `typed_transactions_events_mutations` | `inventoried` | 202 | 62 |
+| `typed_transactions_events_mutations` | `inventoried` | 203 | 62 |
 
 ## Highest current blocker leverage
 
 | Piece | Class | Residuals | Sole blockers | Expected cards | Runtime | Assurance |
 |---|---|---:|---:|---:|---|---|
 | `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 9,538 | 3,591 | 3,591 | `absent` | `untested` |
-| `residual.activated_effect.unparsed-clause-grammar` | `one_shot_effects` | 2,542 | 716 | 716 | `absent` | `untested` |
+| `residual.activated_effect.unparsed-clause-grammar` | `one_shot_effects` | 2,541 | 715 | 715 | `absent` | `untested` |
 | `residual.effect_clause.unparsed-clause-grammar` | `one_shot_effects` | 2,642 | 429 | 429 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-614-replacement-effects` | `keyword_mechanics` | 539 | 194 | 194 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-611-continuous-effects` | `keyword_mechanics` | 480 | 194 | 194 | `absent` | `untested` |

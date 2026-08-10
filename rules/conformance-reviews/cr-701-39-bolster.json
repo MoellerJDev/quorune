@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 701.39 — Ordinary fixed Bolster",
+  "cases": [
+    {
+      "rule_id": "701.39",
+      "rule_text_sha256": "d39ab71764c888de203d657c02524ca4bfbb9b23c02a67b512f6de2c6863db77",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.capabilities.CapabilityRegistry"],
+      "executable_test_ids": ["tests.test_bolster_rules.BolsterCompilerTests.test_fixed_bolster_compiles_in_spell_trigger_and_activated_contexts"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword-action heading; counter.producer.bolster owns only the bounded ordinary fixed positive instruction."]
+    },
+    {
+      "rule_id": "701.39a",
+      "rule_text_sha256": "326a3ef98209e52ffb0d5d12701d22831980ffdd0f99e958dfdd71a8357ff4a6",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.bolster_templates.FixedBolsterTemplate", "quorune.semantic_choices.bolster.FixedBolsterChoiceHandler", "quorune.semantic_choices.engine_coordination.SemanticChoiceCoordinationMixin", "quorune.semantic_runtime.intents.PlaceCountersIntent", "quorune.counter_placement.place_counters_on_refs"],
+      "executable_test_ids": ["tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_offers_every_creature_tied_for_least_effective_toughness", "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_shape_and_snapshot_mutations_fail_closed", "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": [],
+      "notes": ["The resolving controller chooses from a pinned public set tied for least effective toughness, and the selected +1/+1 counters enter the canonical replacement-aware placement transaction."]
+    }
+  ]
+}

@@ -289,6 +289,7 @@ def _activated_effect_dependency_gate(
             "place_counters_on_targets",
             "place_player_counters",
             "fixed_self_counter_keyword_action",
+            "fixed_bolster",
             "tap",
             "untap",
         }

@@ -22,8 +22,8 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "d00a0dadebb9bd54f819656704c9f099962100f7d11305f281a81c610ee3a8b8",
-      "version": 12
+      "sha256": "6ac6e7256df727700827af20c5f5ea62d2f7b14fb60255316349405d1232c627",
+      "version": 13
     },
     {
       "mechanic_id": "cr-111-tokens",
@@ -6621,15 +6621,15 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "d00a0dadebb9bd54f819656704c9f099962100f7d11305f281a81c610ee3a8b8",
-      "contract_version": 12,
+      "contract_sha256": "6ac6e7256df727700827af20c5f5ea62d2f7b14fb60255316349405d1232c627",
+      "contract_version": 13,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, fixed target or source counter-and-characteristic sequence, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v14",
+      "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, fixed target or source counter-and-characteristic sequence, bounded target-set, Bolster, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
+      "implementation_version": "counter-placement-transaction-v15",
       "kind": "rules_section",
       "known_blockers": [
-        "Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions",
+        "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions",
         "alternative, snow, hybrid, Phyrexian, zero, variable, nonmana, multiple-instance, copied, and granted cumulative upkeep remain residual; combined or modified loyalty costs and other rule-action counter producers are not yet migrated to the shared transaction",
         "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Planeswalker or Battle token entry remains outside the prospective-token boundary",
         "Read Ahead and effective copied, gained, removed, or layer-modified Saga chapter abilities remain unsupported",
@@ -6678,6 +6678,12 @@
         "test_target_set_suspends_for_quantity_replacement_and_replays",
         "test_unsupported_target_set_variants_remain_material_residuals",
         "test_target_set_compiler_mutant_is_killed",
+        "test_fixed_bolster_compiles_in_spell_trigger_and_activated_contexts",
+        "test_unsupported_bolster_variants_remain_material_residuals",
+        "test_bolster_compiler_mutant_is_killed",
+        "test_bolster_offers_every_creature_tied_for_least_effective_toughness",
+        "test_bolster_shape_and_snapshot_mutations_fail_closed",
+        "test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly",
         "test_support_compiles_in_spell_trigger_and_activated_contexts",
         "test_permanent_support_excludes_source_while_spell_support_does_not",
         "test_support_shape_mutations_fail_closed",

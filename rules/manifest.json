@@ -19,11 +19,11 @@
     }
   },
   "derived_hashes": {
-    "conformance-cases.json": "7d5e70f016fe1edabf4c78579f7aaa560125f21dbeba6100248d591b239543bf",
+    "conformance-cases.json": "004cb213eef804cf5b7167295d5a888bee485b49eb37b3c627c2d4e0d82bb58c",
     "dependency-graph.json": "0c2c5095e0875c278e26d58d601246bcc597183ab96be167dec64bc0fe0ae956",
     "glossary-index.json": "576fad18aaf10a2f1c0f1f257837eae95057721b668fe38740d2182ce9aebb7d",
     "mechanic-index.json": "72998332705128357f9adc1ba7f20b73a6f5b97ccdda9fc46a95edc5f5ff7fcb",
-    "mechanics/registry.json": "0e6a8d331492cb33df9b4500f21a26e49e63fd1eb296f729c513b43642bab569",
+    "mechanics/registry.json": "5dbeb48469e8487b25819dd985cb6bebf96a55adcf79e322e3a6f0526cfa94db",
     "rule-index.json": "ae20b6961f35621fe5f9cec5e784416ca14a7723a4f0ffb5d2326aa5555f4347"
   },
   "effective_date": "2026-06-19",

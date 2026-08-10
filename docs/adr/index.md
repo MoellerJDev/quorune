@@ -66,3 +66,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0049 — typed fixed single-object zone-change casting costs](0049-typed-fixed-zone-change-casting-costs.md)
 - [ADR 0050 — normalized spell-cast events and typed Prowess](0050-normalized-spell-cast-and-prowess.md)
 - [ADR 0051 — typed ordinary Convoke payment](0051-typed-ordinary-convoke-payment.md)
+- [ADR 0052 — typed ordinary Bolster resolution](0052-typed-ordinary-bolster.md)

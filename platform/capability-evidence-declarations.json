@@ -3383,6 +3383,78 @@
       "applicability_note": "Replay stack resolution and the resulting Bloodthirst entry counter to the identical final authoritative state hash."
     },
     {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend fixed Bolster counter placement before mutation when multiple quantity replacements apply, then resume the affected controller's ordering choice."
+    },
+    {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Issue the Bolster and replacement choices only to the resolving controller in a four-player game."
+    },
+    {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_bolster_rules.BolsterCompilerTests.test_bolster_compiler_mutant_is_killed",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the closed fixed-Bolster compiler production by requiring its synthetic CardProgram to remain exact."
+    },
+    {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "negative",
+      "test_id": "tests.test_bolster_rules.BolsterCompilerTests.test_unsupported_bolster_variants_remain_material_residuals",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep variable, zero, negative, repeated, targeted, and conditional Bolster wording outside the bounded grammar."
+    },
+    {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "negative",
+      "test_id": "tests.test_bolster_rules.BolsterRuntimeTests.test_unresolved_effective_toughness_fails_before_choice",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Fail before issuing the Bolster choice when any controlled creature's effective toughness is not represented as an exact integer rather than guessing a least-toughness candidate."
+    },
+    {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "positive",
+      "test_id": "tests.test_bolster_rules.BolsterCompilerTests.test_fixed_bolster_compiles_in_spell_trigger_and_activated_contexts",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower fixed positive Bolster instructions through one source-spanned descriptor in spell, trigger, and activated contexts."
+    },
+    {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "positive",
+      "test_id": "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_with_no_controlled_creature_auto_continues",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Treat the mandatory creature choice as impossible and continue resolution without mutation when the Bolster player controls no creatures."
+    },
+    {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project only public tied creatures and the affected seat's replacement options without exposing any hand or authoritative object identity."
+    },
+    {
+      "capability_id": "counter.producer.bolster",
+      "evidence_class": "replay",
+      "test_id": "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "608.2c", "614.16", "616.1", "701.39", "701.39a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the least-toughness choice and suspended quantity-replacement ordering to the same authoritative state hash."
+    },
+    {
       "capability_id": "counter.producer.cumulative_upkeep_fixed_mana",
       "evidence_class": "interaction",
       "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_intervening_source_identity_and_control_change_are_respected",

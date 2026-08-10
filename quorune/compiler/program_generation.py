@@ -24,6 +24,7 @@ from ..rules.node_capability_shapes import (
     fixed_counter_placement_set_node_capabilities,
     fixed_counter_placement_target_set_node_capabilities,
     fixed_self_counter_keyword_action_node_capabilities,
+    fixed_bolster_node_capabilities,
     fixed_target_effect_sequence_node_capabilities,
     fixed_source_effect_sequence_node_capabilities,
     fixed_target_characteristics_node_capabilities,
@@ -504,6 +505,21 @@ def _is_closed_fixed_self_counter_keyword_action_program(
     )
 
 
+def _is_closed_fixed_bolster_program(program: SemanticProgram) -> bool:
+    """Recognize one capability-closed fixed positive Bolster action."""
+
+    required = set(
+        fixed_bolster_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
 def _is_closed_fixed_target_effect_sequence_program(
     program: SemanticProgram,
 ) -> bool:
@@ -736,6 +752,7 @@ def _is_closed_effect_program(program: SemanticProgram) -> bool:
         _is_closed_fixed_counter_placement_batch_program,
         _is_closed_fixed_counter_placement_group_program,
         _is_closed_fixed_self_counter_keyword_action_program,
+        _is_closed_fixed_bolster_program,
         _is_closed_fixed_target_characteristics_program,
         _is_closed_fixed_target_effect_sequence_program,
         _is_closed_fixed_source_effect_sequence_program,

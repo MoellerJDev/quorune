@@ -219,6 +219,7 @@ from .model import (
     YieldPolicy,
 )
 from .turn_history import opponent_was_dealt_damage_this_turn
+from .object_query import exact_numeric_characteristic
 from .permissions import AuthorizedCommand, CapabilityManager, PermissionDenied
 from .protection import (
     ProtectionSource,
@@ -11430,23 +11431,8 @@ class CommanderEngine(
     def _numeric_stat(self, object_id: str, stat: str) -> int:
         card = self.state.cards[object_id]
         data = self._effective_card_data(card)
-        raw = card.annotations.get(f"continuous_{stat}", data.get(stat))
-        try:
-            base = int(str(raw))
-        except (TypeError, ValueError):
-            return 0
-        if stat == "toughness":
-            base += card.counters.get("+1/+1", 0)
-            base -= card.counters.get("-1/-1", 0)
-        if stat == "power":
-            base += card.counters.get("+1/+1", 0)
-            base -= card.counters.get("-1/-1", 0)
-        base += int(
-            dict(card.annotations.get("until_end_of_turn") or {}).get(
-                stat, 0
-            )
-        )
-        return base
+        value = exact_numeric_characteristic(card, data, stat)
+        return value if value is not None else 0
 
     def _attachment_is_legal(
         self,

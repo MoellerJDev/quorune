@@ -42,6 +42,10 @@ def keyword_mechanics(
             # the instruction's source is a permanent or an instant/sorcery.
             # Let the source-context-aware resolution grammar own it.
             return None
+        if re.fullmatch(r"bolster\s+.+", lower):
+            # Bolster is a resolution-time keyword action whose eligible
+            # creature set depends on current effective toughness.
+            return None
         if lower in _KNOWN_BARE_KEYWORDS or lower in known:
             mechanics.append(lower)
             continue

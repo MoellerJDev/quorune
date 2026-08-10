@@ -54551,23 +54551,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-701.39",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "701"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_bolster_rules.BolsterCompilerTests.test_fixed_bolster_compiles_in_spell_trigger_and_activated_contexts"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword-action heading; counter.producer.bolster owns only the bounded ordinary fixed positive instruction."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "701.39",
       "rule_text_sha256": "d39ab71764c888de203d657c02524ca4bfbb9b23c02a67b512f6de2c6863db77",
       "schema_version": 1,
@@ -54576,26 +54580,50 @@
         "end_line": 3627,
         "start_line": 3626
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-701.39a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "701.39"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_offers_every_creature_tied_for_least_effective_toughness",
+        "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_shape_and_snapshot_mutations_fail_closed",
+        "tests.test_bolster_rules.BolsterRuntimeTests.test_bolster_quantity_replacement_is_seat_scoped_and_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.compiler.bolster_templates.FixedBolsterTemplate",
+        "quorune.semantic_choices.bolster.FixedBolsterChoiceHandler",
+        "quorune.semantic_choices.engine_coordination.SemanticChoiceCoordinationMixin",
+        "quorune.semantic_runtime.intents.PlaceCountersIntent",
+        "quorune.counter_placement.place_counters_on_refs"
+      ],
+      "notes": [
+        "The resolving controller chooses from a pinned public set tied for least effective toughness, and the selected +1/+1 counters enter the canonical replacement-aware placement transaction."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "701.39a",
       "rule_text_sha256": "326a3ef98209e52ffb0d5d12701d22831980ffdd0f99e958dfdd71a8357ff4a6",
       "schema_version": 1,
@@ -54604,7 +54632,7 @@
         "end_line": 3629,
         "start_line": 3628
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
       "assertion_kind": "inventory_only",

@@ -26,6 +26,8 @@ class ObjectQueryResult:
     keywords: tuple[str, ...] = ()
     counters: FrozenMap = field(default_factory=FrozenMap)
     mana_value: int = 0
+    effective_power: int | None = None
+    effective_toughness: int | None = None
     token: bool = False
     tapped: bool = False
     phased_out: bool = False
@@ -37,6 +39,46 @@ class ObjectQueryResult:
     def __post_init__(self) -> None:
         if not isinstance(self.counters, FrozenMap):
             object.__setattr__(self, "counters", FrozenMap(self.counters))
+
+
+def exact_numeric_characteristic(
+    card: Any,
+    effective: Mapping[str, Any],
+    stat: str,
+) -> int | None:
+    """Return one represented effective power/toughness without guessing."""
+
+    if stat not in {"power", "toughness"}:
+        raise ValueError("Exact numeric characteristics are power or toughness")
+
+    def exact_integer(value: Any) -> int | None:
+        if type(value) is int:
+            return value
+        if type(value) is not str or not value.strip():
+            return None
+        try:
+            return int(value.strip())
+        except ValueError:
+            return None
+
+    base = exact_integer(
+        card.annotations.get(
+            f"continuous_{stat}", effective.get(stat)
+        )
+    )
+    if base is None:
+        return None
+    plus = card.counters.get("+1/+1", 0)
+    minus = card.counters.get("-1/-1", 0)
+    if type(plus) is not int or type(minus) is not int:
+        return None
+    duration = card.annotations.get("until_end_of_turn") or {}
+    if not isinstance(duration, Mapping):
+        return None
+    delta = exact_integer(duration.get(stat, 0))
+    if delta is None:
+        return None
+    return base + plus - minus + delta
 
 
 def object_query_result(
@@ -69,6 +111,12 @@ def object_query_result(
         ),
         counters=FrozenMap(card.counters),
         mana_value=int(effective.get("mana_value") or 0),
+        effective_power=exact_numeric_characteristic(
+            card, effective, "power"
+        ),
+        effective_toughness=exact_numeric_characteristic(
+            card, effective, "toughness"
+        ),
         token=bool(card.is_token),
         tapped=bool(card.tapped),
         phased_out=bool(card.phased_out),
@@ -119,6 +167,7 @@ __all__ = [
     "ObjectQueryError",
     "ObjectQueryResult",
     "ObjectQuerySpec",
+    "exact_numeric_characteristic",
     "object_matches_query",
     "object_query_result",
     "query_objects",

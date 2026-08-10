@@ -723,7 +723,7 @@
     "quorune/record.py": 11
   },
   "engine": {
-    "logical_lines": 12081,
+    "logical_lines": 11765,
     "methods": [
       {
         "kind": "method",
@@ -773,11 +773,6 @@
       {
         "kind": "method",
         "name": "_add_restricted_mana",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_additional_cost_candidates",
         "visibility": "private"
       },
       {
@@ -1167,11 +1162,6 @@
       },
       {
         "kind": "method",
-        "name": "_convoke_reduction",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_copy_stack_item",
         "visibility": "private"
       },
@@ -1527,11 +1517,6 @@
       },
       {
         "kind": "method",
-        "name": "_maximum_affordable_x_with_mechanics",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_may_activate_creature_as_haste",
         "visibility": "private"
       },
@@ -1598,11 +1583,6 @@
       {
         "kind": "method",
         "name": "_opening_hand_signals",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_opponent_was_dealt_damage_this_turn",
         "visibility": "private"
       },
       {
@@ -2236,12 +2216,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 12793
+    "physical_lines": 12468
   },
   "exception_binding": {
-    "adr": "docs/adr/0048-typed-fixed-adapt-and-monstrosity.md",
-    "allowance_fingerprint": "5bdfc1f502726df1ff908230d9b1be0db4438e6ca603f34a7759fe3259cf0d7e",
-    "exception_id": "ARCH-EXC-0021"
+    "adr": "docs/adr/0052-typed-ordinary-bolster.md",
+    "allowance_fingerprint": "b3969cb95d351bf5a6baa98b8da4c26f7186bc1a4db1aa574015014e1907d643",
+    "exception_id": "ARCH-EXC-0022"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2385,11 +2365,6 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 174,
-      "symbol": "CommanderEngine._target_row_matches"
-    },
-    {
-      "file": "quorune/engine.py",
       "logical_lines": 339,
       "symbol": "CommanderEngine.move_card"
     },
@@ -2471,7 +2446,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 12081
+      "logical_lines": 11765
     },
     {
       "file": "quorune/record.py",
@@ -2560,6 +2535,7 @@
     "explore",
     "extra_turn",
     "fabricate",
+    "fixed_bolster",
     "fixed_self_counter_keyword_action",
     "fomori_vault",
     "goad",
