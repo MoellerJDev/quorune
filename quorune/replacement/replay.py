@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from ..additional_cost_vocabulary import FIXED_ZONE_CHANGE_COST_CONTRACTS
 from .immutable import FrozenMap, thaw_value
 from .model import (
     ReplacementEffect,
@@ -538,8 +539,28 @@ def _decode_mana_continuation(
                 and payload.get("source") == card_ref
             )
         elif event.kind == "zone.change" and action == "cast":
-            raw_refs = response.get("sacrifice_cards")
-            if raw_refs is None:
+            origin = payload.get("origin")
+            destination = payload.get("destination")
+            matching_fields = {
+                choice_field
+                for contract_origin, contract_destination, choice_field in (
+                    FIXED_ZONE_CHANGE_COST_CONTRACTS.values()
+                )
+                if origin == contract_origin
+                and destination == contract_destination
+            }
+            raw_refs = None
+            for field in sorted(matching_fields):
+                if response.get(field) is not None:
+                    raw_refs = response[field]
+                    break
+            # Historical fixed-sacrifice continuations used cost_cards before
+            # the typed zone-change cost vocabulary was introduced.
+            if (
+                raw_refs is None
+                and origin == "battlefield"
+                and destination == "graveyard"
+            ):
                 raw_refs = response.get("cost_cards")
             selected_ref = (
                 raw_refs[0]
@@ -551,11 +572,13 @@ def _decode_mana_continuation(
             affected = event.affected_object
             common_valid = (
                 selected_ref is not None
-                and payload.get("origin") == "battlefield"
-                and payload.get("destination") == "graveyard"
+                and bool(matching_fields)
                 and payload.get("object_ref") == selected_ref
                 and affected is not None
-                and affected.controller == seat
+                and (
+                    (origin == "battlefield" and affected.controller == seat)
+                    or (origin != "battlefield" and affected.owner == seat)
+                )
             )
             action_valid = (
                 event.event_id.startswith("zone.change:")

@@ -5,7 +5,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from ...additional_cost_vocabulary import SACRIFICE_COST_KIND
+from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
 from ...counter_placement import (
     CounterPlacementError,
     CounterPlacementRequest,
@@ -22,8 +22,9 @@ from ..casting_additional_costs import (
     AdditionalCostError,
     fixed_counter_additional_cost,
     fixed_counter_cost_candidates,
-    fixed_sacrifice_additional_cost,
-    fixed_sacrifice_cost_candidates,
+    FixedZoneChangeAdditionalCost,
+    fixed_zone_change_additional_cost,
+    fixed_zone_change_cost_candidates,
 )
 from .model import CastProposalError
 
@@ -323,13 +324,17 @@ def _commit_counter_placement_additional_cost(
     return paid.ref
 
 
-def _resolve_fixed_sacrifice_additional_cost(
+def _resolve_fixed_zone_change_additional_cost(
     host: CastCommitHost,
     proposal: CastProposal,
     response: Mapping[str, Any],
     selected_option: Mapping[str, Any],
     selected: Mapping[str, Any],
-) -> tuple[Any, tuple[str | None | Mapping[str, Any], ...]]:
+) -> tuple[
+    Any,
+    FixedZoneChangeAdditionalCost,
+    tuple[str | None | Mapping[str, Any], ...],
+]:
     raw_costs = selected_option.get("additional_costs")
     cost_position = selected.get("cost_position")
     if (
@@ -337,43 +342,55 @@ def _resolve_fixed_sacrifice_additional_cost(
         or type(cost_position) is not int
         or cost_position < 0
         or cost_position >= len(raw_costs)
-        or set(selected) != {"kind", "card", "cost_position"}
+        or set(selected) != {
+            "kind",
+            "operation",
+            "card",
+            "cost_position",
+        }
+        or selected.get("kind") != ZONE_CHANGE_COST_KIND
     ):
         raise CastProposalError(
-            "The sacrifice additional-cost selection is malformed",
+            "The zone-change additional-cost selection is malformed",
             reason="additional_cost_malformed",
         )
     try:
-        cost = fixed_sacrifice_additional_cost(raw_costs[cost_position])
+        cost = fixed_zone_change_additional_cost(raw_costs[cost_position])
     except AdditionalCostError as exc:
         raise CastProposalError(
             str(exc), reason="additional_cost_malformed"
         ) from exc
     if cost is None or len(raw_costs) != 1:
         raise CastProposalError(
-            "The sacrifice additional cost is outside the represented family",
+            "The zone-change additional cost is outside the represented family",
             reason="additional_cost_unsupported",
+        )
+    if selected.get("operation") != cost.operation:
+        raise CastProposalError(
+            "The zone-change additional-cost operation is malformed",
+            reason="additional_cost_malformed",
         )
     selected_ref = selected.get("card")
     if (
         type(selected_ref) is not str
         or selected_ref
-        not in fixed_sacrifice_cost_candidates(
+        not in fixed_zone_change_cost_candidates(
             host,
             actor=proposal.seat,
             cost=cost,
         )
     ):
         raise CastProposalError(
-            "The selected sacrifice-cost permanent is no longer legal",
+            "The selected zone-change cost object is no longer legal",
             status="unpayable",
-            reason="sacrifice_cost_unpayable",
+            reason="zone_change_cost_unpayable",
         )
     paid = host._resolve_object(
         proposal.seat,
         selected_ref,
-        zones={"battlefield"},
-        controlled_only=True,
+        zones={cost.origin_zone},
+        controlled_only=cost.origin_zone == "battlefield",
+        owned_only=cost.origin_zone != "battlefield",
     )
     raw_journal = response.get("_mana_replacement_selections") or {}
     if not isinstance(raw_journal, Mapping) or len(raw_journal) > 1:
@@ -399,7 +416,40 @@ def _resolve_fixed_sacrifice_additional_cost(
             "The casting replacement selections are malformed",
             reason="replacement_journal_malformed",
         )
-    return paid, tuple(selections)
+    return paid, cost, tuple(selections)
+
+
+def _fixed_zone_change_commit_entry(
+    host: CastCommitHost,
+    proposal: CastProposal,
+    response: Mapping[str, Any],
+    selected_option: Mapping[str, Any],
+    selected: Mapping[str, Any],
+) -> tuple[Any, str, str, str, dict[str, Any], list[str], str, str, tuple]:
+    paid, cost, replacement_selections = (
+        _resolve_fixed_zone_change_additional_cost(
+            host,
+            proposal,
+            response,
+            selected_option,
+            selected,
+        )
+    )
+    return (
+        paid,
+        paid.zone,
+        paid.controller,
+        paid.logical_object_id,
+        copy.deepcopy(host._effective_card_data(paid)),
+        [
+            host.state.cards[attachment_id].ref
+            for attachment_id in paid.attachments
+            if attachment_id in host.state.cards
+        ],
+        cost.log_kind,
+        cost.destination_zone,
+        replacement_selections,
+    )
 
 
 def _commit_additional_costs(
@@ -460,30 +510,10 @@ def _commit_additional_costs(
                 )
             )
             continue
-        if kind == SACRIFICE_COST_KIND and "cost_position" in selected:
-            paid, replacement_selections = (
-                _resolve_fixed_sacrifice_additional_cost(
-                    host,
-                    proposal,
-                    response,
-                    selected_option,
-                    selected,
-                )
-            )
+        if kind == ZONE_CHANGE_COST_KIND:
             changes.append(
-                (
-                    paid,
-                    paid.zone,
-                    paid.controller,
-                    paid.logical_object_id,
-                    copy.deepcopy(host._effective_card_data(paid)),
-                    [
-                        host.state.cards[attachment_id].ref
-                        for attachment_id in paid.attachments
-                        if attachment_id in host.state.cards
-                    ],
-                    kind,
-                    replacement_selections,
+                _fixed_zone_change_commit_entry(
+                    host, proposal, response, selected_option, selected
                 )
             )
             continue
@@ -509,6 +539,7 @@ def _commit_additional_costs(
                         if attachment_id in host.state.cards
                     ],
                     kind,
+                    "graveyard",
                     (),
                 )
             )
@@ -520,11 +551,12 @@ def _commit_additional_costs(
         data,
         attachments,
         kind,
+        destination,
         replacement_selections,
     ) in changes:
         host.move_card(
             paid.object_id,
-            "graveyard",
+            destination,
             reason=f"{card.printed_name} {kind} cost",
             semantic_events=False,
             replacement_selections=replacement_selections,

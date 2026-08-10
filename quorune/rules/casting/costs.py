@@ -5,14 +5,16 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from ...additional_cost_vocabulary import SACRIFICE_COST_KIND
+from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
 from ..action_proposals import CastCostOption
 from ..casting_additional_costs import (
     AdditionalCostError,
+    FixedZoneChangeAdditionalCost,
     fixed_counter_additional_cost,
     fixed_counter_cost_candidates,
-    fixed_sacrifice_additional_cost,
-    fixed_sacrifice_cost_candidates,
+    fixed_zone_change_additional_cost,
+    fixed_zone_change_cost_candidates,
+    legacy_additional_cost_candidates,
 )
 
 
@@ -91,11 +93,6 @@ class CastCostHost(Protocol):
     ) -> int: ...
 
     def _maximum_affordable_x(self, seat: str, card: Any) -> int: ...
-
-    def _additional_cost_candidates(
-        self, seat: str, card: Any, specification: Mapping[str, Any]
-    ) -> list[str]: ...
-
 
 def _initial_options(
     host: CastCostHost,
@@ -386,6 +383,51 @@ def _apply_payment_mechanics(
     return choice_schema, selected_cards
 
 
+def _fixed_zone_change_selection(
+    host: CastCostHost,
+    *,
+    seat: str,
+    cost: FixedZoneChangeAdditionalCost,
+    cost_position: int,
+    response: Mapping[str, Any],
+    hint: bool,
+    choice_schema: dict[str, Any],
+) -> tuple[bool, dict[str, Any] | None]:
+    candidates = list(
+        fixed_zone_change_cost_candidates(host, actor=seat, cost=cost)
+    )
+    if not candidates:
+        return False, None
+    choice_schema[cost.choice_field] = {
+        "type": "object_ref_array",
+        "count": 1,
+        "legal_refs": candidates,
+        "zone": cost.origin_zone,
+        "destination": cost.destination_zone,
+        "payment": cost.log_kind,
+    }
+    if hint:
+        return True, None
+    raw_values = response.get(cost.choice_field)
+    if raw_values is None:
+        raw_values = response.get("cost_cards")
+    if not isinstance(raw_values, (list, tuple)):
+        return False, None
+    values = list(raw_values)
+    if (
+        len(values) != 1
+        or type(values[0]) is not str
+        or values[0] not in candidates
+    ):
+        return False, None
+    return True, {
+        "kind": ZONE_CHANGE_COST_KIND,
+        "operation": cost.operation,
+        "card": values[0],
+        "cost_position": cost_position,
+    }
+
+
 def _apply_additional_costs(
     host: CastCostHost,
     seat: str,
@@ -440,50 +482,25 @@ def _apply_additional_costs(
             )
             continue
         try:
-            sacrifice_cost = fixed_sacrifice_additional_cost(additional)
+            zone_change_cost = fixed_zone_change_additional_cost(additional)
         except AdditionalCostError:
             return False
-        if sacrifice_cost is not None:
+        if zone_change_cost is not None:
             if len(mandatory_costs) != 1:
                 return False
-            candidates = list(
-                fixed_sacrifice_cost_candidates(
-                    host,
-                    actor=seat,
-                    cost=sacrifice_cost,
-                )
+            valid, selected = _fixed_zone_change_selection(
+                host,
+                seat=seat,
+                cost=zone_change_cost,
+                cost_position=index,
+                response=response,
+                hint=hint,
+                choice_schema=choice_schema,
             )
-            if not candidates:
+            if not valid:
                 return False
-            choice_schema[sacrifice_cost.choice_field] = {
-                "type": "object_ref_array",
-                "count": 1,
-                "legal_refs": candidates,
-                "zone": "battlefield",
-                "destination": "graveyard",
-                "payment": SACRIFICE_COST_KIND,
-            }
-            if hint:
-                continue
-            raw_values = response.get(sacrifice_cost.choice_field)
-            if raw_values is None:
-                raw_values = response.get("cost_cards")
-            if not isinstance(raw_values, (list, tuple)):
-                return False
-            values = list(raw_values)
-            if (
-                len(values) != 1
-                or type(values[0]) is not str
-                or values[0] not in candidates
-            ):
-                return False
-            selected_nonmana.append(
-                {
-                    "kind": sacrifice_cost.kind,
-                    "card": values[0],
-                    "cost_position": index,
-                }
-            )
+            if selected is not None:
+                selected_nonmana.append(selected)
             continue
         if kind == "life_x":
             selected_x = int(response["x"]) if response.get("x") is not None else 0
@@ -503,7 +520,12 @@ def _apply_additional_costs(
         count = int(additional.get("count", 1))
         candidates = [
             ref
-            for ref in host._additional_cost_candidates(seat, card, additional)
+            for ref in legacy_additional_cost_candidates(
+                host,
+                actor=seat,
+                source=card,
+                specification=additional,
+            )
             if ref not in selected_refs
         ]
         if len(candidates) < count:

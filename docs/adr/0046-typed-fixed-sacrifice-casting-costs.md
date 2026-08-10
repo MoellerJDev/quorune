@@ -6,11 +6,15 @@ verified: "2026-08-09"
 audience: "rules, compiler, casting, replay, and architecture maintainers"
 maintenance: "hand-maintained"
 adr_id: "0046"
-decision_status: "accepted"
+decision_status: "superseded"
 date: "2026-08-09"
 ---
 
 # ADR 0046: typed fixed sacrifice casting costs
+
+> Superseded by [ADR 0049](0049-typed-fixed-zone-change-casting-costs.md),
+> which retains this descriptor as a Game Record v3 compatibility shape while
+> moving its execution into the shared fixed single-object zone-change owner.
 
 ## Context
 

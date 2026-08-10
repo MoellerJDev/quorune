@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "dea77fdbc34af000c6ba3615e720cf4510aa721cc9c932a7b7ffdcca6a854dd5"
+verified: "ac84875a36718f84e29faf9efe25f0a7756da859b635ef5acdbfd38198492168"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -14,10 +14,10 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 ## Snapshot
 
 - Cards considered: 31,623
-- Oracle states: `{"exact":2830,"partial":13014,"unresolved":15779}`
-- CardProgram states: `{"residual":28793,"trusted":2830}`
+- Oracle states: `{"exact":2843,"partial":13014,"unresolved":15766}`
+- CardProgram states: `{"residual":28780,"trusted":2843}`
 - Hard construction failures: 0
-- Frontier fingerprint: `dea77fdbc34af000c6ba3615e720cf4510aa721cc9c932a7b7ffdcca6a854dd5`
+- Frontier fingerprint: `ac84875a36718f84e29faf9efe25f0a7756da859b635ef5acdbfd38198492168`
 
 ## Highest-leverage single families
 
@@ -26,8 +26,8 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `continuous_layer:continuous-effect-layers-and-dependencies` | 9,561 | 7,706 | 3,588 | 9,561 | missing_lowering | very_high |
 | `mechanic_dependency:cr-614-replacement-effects` | 539 | 539 | 194 | 539 | partial | high |
 | `mechanic_dependency:cr-611-continuous-effects` | 480 | 440 | 193 | 346 | partial | high |
-| `effect_clause:typed-spell-additional-cost-clause` | 155 | 155 | 154 | 155 | missing_lowering | high |
 | `mechanic_dependency:cr-509-declare-blockers-step` | 428 | 423 | 152 | 392 | partial | high |
+| `effect_clause:typed-spell-additional-cost-clause` | 123 | 123 | 122 | 123 | missing_lowering | high |
 | `mechanic_dependency:cr-111-tokens` | 338 | 333 | 113 | 338 | partial | high |
 | `effect_clause:return` | 721 | 694 | 111 | 248 | missing_lowering | high |
 | `effect_clause:deal-damage` | 956 | 925 | 110 | 245 | missing_lowering | high |
@@ -38,10 +38,10 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `activated_effect:tap-state` | 322 | 311 | 75 | 164 | missing_lowering | high |
 | `activated_effect:unparsed-regenerate-this-creature` | 149 | 148 | 73 | 129 | missing_lowering | high |
 | `effect_clause:tap-state` | 373 | 364 | 67 | 136 | missing_lowering | high |
+| `effect_clause:typed-spell-result-clause` | 66 | 66 | 65 | 66 | missing_lowering | high |
 | `activated_effect:unparsed-this-creature-gets` | 131 | 126 | 64 | 86 | missing_lowering | high |
 | `effect_clause:look-reveal` | 552 | 548 | 60 | 94 | missing_lowering | high |
 | `activated_effect:create-token` | 475 | 464 | 54 | 194 | missing_lowering | high |
-| `effect_clause:typed-spell-result-clause` | 52 | 52 | 51 | 52 | missing_lowering | high |
 | `effect_clause:draw` | 577 | 569 | 47 | 125 | missing_lowering | high |
 | `effect_clause:create-token` | 707 | 690 | 43 | 158 | missing_lowering | high |
 | `activated_effect:destroy-target` | 151 | 150 | 42 | 60 | missing_lowering | high |
@@ -57,14 +57,14 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-509-declare-blockers-step` | 4,021 | 10,299 | 10,299 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, mechanic_dependency:cr-509-declare-blockers-step` | 4,010 | 10,492 | 10,492 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-111-tokens` | 3,969 | 10,245 | 10,245 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:typed-spell-additional-cost-clause` | 3,967 | 10,062 | 10,062 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, mechanic_dependency:cr-111-tokens` | 3,963 | 10,438 | 10,438 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, effect_clause:typed-spell-additional-cost-clause` | 3,960 | 10,255 | 10,255 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-509-declare-blockers-step, mechanic_dependency:cr-111-tokens` | 3,948 | 10,291 | 10,291 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, effect_clause:typed-spell-additional-cost-clause, mechanic_dependency:cr-509-declare-blockers-step` | 3,948 | 10,108 | 10,108 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:typed-spell-additional-cost-clause` | 3,935 | 10,030 | 10,030 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, effect_clause:typed-spell-additional-cost-clause` | 3,928 | 10,223 | 10,223 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:return` | 3,924 | 10,155 | 10,155 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:deal-damage` | 3,922 | 10,152 | 10,152 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, effect_clause:return` | 3,918 | 10,348 | 10,348 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-509-declare-blockers-step, effect_clause:typed-spell-additional-cost-clause` | 3,916 | 10,076 | 10,076 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, effect_clause:deal-damage` | 3,915 | 10,345 | 10,345 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:exile` | 3,912 | 10,338 | 10,338 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:destroy-target` | 3,909 | 10,156 | 10,156 |

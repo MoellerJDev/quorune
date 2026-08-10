@@ -4,8 +4,8 @@
     "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
     "verified_at": "2026-08-10",
-    "phase": "typed_fixed_multi_subject_counter_placement",
-    "scope_note": "The evaluated source tree adds one closed fixed same-kind and same-amount counter-placement family over two or three printed-order source/direct-target permanent subjects. Compiler v70 and capability registry v77 preserve target reuse under CR 115.3, compile explicit another/a-third distinctness, revalidate each target independently, and route every surviving subject through the existing replacement-aware PlaceCountersIntent transaction. The strict runtime handler adds no GameState mutation, operation, card-name, Oracle-ID, or runtime Oracle-text path. Counter-specific capability closure is extracted from the oversized general node-shape registry into a narrow independently classified rules module. Different kinds or amounts, variable or distributed values, optional nonfinal subjects, more than three subjects, compound wording, and dynamically linked quantities remain fail-closed material residuals."
+    "phase": "typed_fixed_zone_change_casting_costs",
+    "scope_note": "The evaluated source tree adds one closed fixed single-object zone-change casting-cost family for discard, sacrifice, graveyard or battlefield exile, and return-to-owner-hand operations. Compiler and capability metadata lower exact source-spanned CardProgram V2 descriptors with typed ObjectQuerySpec predicates; casting offer, validation, replacement suspension, commit, replay, and privacy paths consume that pinned descriptor without runtime Oracle parsing. The shared casting owner revalidates the selected object immediately before a replacement-aware zone change, emits normalized zone-change events, and returns controlled permanents to their actual owner. Variable, multiple, optional, alternative, composite, reveal, tap, historical, dynamic, and named-keyword costs remain fail-closed material residuals."
   },
   "ci": {
     "workflow": "PR",

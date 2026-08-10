@@ -619,11 +619,19 @@
     },
     {
       "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_compiler_mutant_is_killed",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the qualified single-permanent sacrifice grammar while preserving the legacy card-type-union production."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
       "evidence_class": "negative",
       "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_cost_grammar_fails_closed",
       "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Leave optional, variable, multiple, alternate, qualified, subtype, and compound sacrifice wording as precise material residuals."
+      "applicability_note": "Leave optional, variable, multiple, alternate, dynamic, historical, and compound sacrifice wording as precise material residuals."
     },
     {
       "capability_id": "casting.additional_cost.fixed_sacrifice",
@@ -632,6 +640,14 @@
       "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Revalidate current effective card types and reject a stale sacrifice choice before mana, zone, stack, or journal mutation."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_cost_grammar_fails_closed",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject dynamic and historical sacrifice qualities, alternatives, and variable or multiple payments."
     },
     {
       "capability_id": "casting.additional_cost.fixed_sacrifice",
@@ -648,6 +664,22 @@
       "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Advertise and accept one effective controlled creature, sacrifice it, and place the represented spell on the stack through the shared casting path."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_costs_compile_source_spanned_programs",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower subtype, supertype, color, and nonland single-permanent predicates to an exact source-spanned cost descriptor."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_sacrifice",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_qualified_sacrifice_uses_pinned_subtype_predicate",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Offer and accept only a permanent matching the pinned creature-subtype predicate."
     },
     {
       "capability_id": "casting.additional_cost.fixed_sacrifice",
@@ -688,6 +720,174 @@
       "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject a stale effective-type selection with identical authoritative state before mana, zone, stack, or journal mutation."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_discard",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend a discard cost for competing destination replacements and resume it before stack placement."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_discard",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve the affected caster's replacement order in four-player APNAP state."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_discard",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_compiler_mutant_is_killed",
+      "official_rule_ids": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the typed fixed-discard compiler production."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_discard",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_cost_grammar_fails_closed",
+      "official_rule_ids": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep random, variable, multiple, optional, and alternative discard costs as precise residuals."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_discard",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_costs_compile_source_spanned_programs",
+      "official_rule_ids": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower unqualified, fixed card-type, and fixed color-union discards to exact source-spanned descriptors."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_discard",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_private_discard_offer_is_seat_scoped",
+      "official_rule_ids": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project private hand candidates only to the caster and omit their refs from opposing views."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_discard",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay a suspended replacement-aware discard payment to the identical authoritative hash."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_exile",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_each_fixed_zone_change_cost_commits_to_operation_destination",
+      "official_rule_ids": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Route graveyard-card and controlled-permanent exile costs through the same typed destination owner."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_exile",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Exercise the shared four-player replacement continuation used by every represented zone-change cost."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_exile",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_compiler_mutant_is_killed",
+      "official_rule_ids": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the typed fixed-exile compiler production."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_exile",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_cost_grammar_fails_closed",
+      "official_rule_ids": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep variable, multiple, optional, alternative, and dynamic exile costs as precise residuals."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_exile",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_costs_compile_source_spanned_programs",
+      "official_rule_ids": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower one graveyard card or controlled permanent exile cost to an exact source-spanned descriptor."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_exile",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_private_discard_offer_is_seat_scoped",
+      "official_rule_ids": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Exercise the shared seat-scoped private candidate projection boundary."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_exile",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_each_fixed_zone_change_cost_commits_to_operation_destination",
+      "official_rule_ids": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay both represented fixed-exile origins to identical authoritative hashes."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_return_cost_routes_controlled_permanent_to_owner_hand",
+      "official_rule_ids": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Return a permanent controlled by the caster to its distinct owner's hand."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_return_cost_routes_controlled_permanent_to_owner_hand",
+      "official_rule_ids": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve owner routing through a four-player control change."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_compiler_mutant_is_killed",
+      "official_rule_ids": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the typed fixed-return compiler production."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_cost_grammar_fails_closed",
+      "official_rule_ids": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep variable, multiple, state-qualified, and alternative return costs as precise residuals."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_costs_compile_source_spanned_programs",
+      "official_rule_ids": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower one controlled land, creature, or permanent return cost to an exact source-spanned descriptor."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_private_discard_offer_is_seat_scoped",
+      "official_rule_ids": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Exercise the shared seat-scoped candidate projection boundary without exposing another hand."
+    },
+    {
+      "capability_id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostRuntimeTests.test_each_fixed_zone_change_cost_commits_to_operation_destination",
+      "official_rule_ids": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the represented return payment to the identical authoritative hash."
     },
     {
       "capability_id": "combat.attack.defender",
