@@ -445,6 +445,7 @@ def _string_records(
             "FIXED_TARGET_CHARACTERISTIC_KEYWORDS": ordinary_keyword_values,
             "_FIXED_TARGET_SEQUENCE_KEYWORDS": ordinary_keyword_values,
             "KEYWORD_COUNTER_MECHANICS": ordinary_keyword_values,
+            "ZONE_OBJECT_KEYWORDS": ordinary_keyword_values,
             # Closed predefined token names are CR vocabulary used to build
             # token characteristics.  The structural exemption is limited to
             # these named constants and still fails if a value participates
