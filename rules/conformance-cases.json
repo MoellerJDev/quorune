@@ -82182,23 +82182,48 @@
       "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "copied gained removed and layer-modified chapter abilities are not comprehensively represented",
+        "Read Ahead remains outside the ordinary Saga card form",
+        "combined cause provenance when another zone-moving state-based action applies to the same completed Saga remains fail-closed"
       ],
       "case_id": "cr-704.5s",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "704.5"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_completed_saga_waits_only_for_its_pending_chapter",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_sba_waits_then_sacrifices_under_current_control",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_four_player_completed_sagas_move_in_one_sba_batch",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_completion_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.saga_lifecycle.SagaFinalChapterSnapshot",
+        "quorune.state_based_actions.evaluate_permanent_state_based_actions",
+        "quorune.state_based_execution.commit_state_based_zone_changes"
+      ],
+      "notes": [
+        "Represented ordinary Sagas participate in the simultaneous state-based-action snapshot and use a typed sacrifice occurrence through the replacement-aware zone owner."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "704.5s",
       "rule_text_sha256": "a55d3b3617adb214bce34b3e9b7c40a907f566f9f4f10357d5a96aa890bde520",
       "schema_version": 1,
@@ -82207,7 +82232,7 @@
         "end_line": 5525,
         "start_line": 5524
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",
@@ -87930,23 +87955,37 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "effective copied gained removed and layer-modified chapter abilities remain outside typed ability propagation"
       ],
       "case_id": "cr-714.2d",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative"
+      ],
       "dependency_rule_ids": [
         "714.2"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_completed_saga_waits_only_for_its_pending_chapter",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_and_untrusted_chapters_fail_closed"
+      ],
+      "implementation_components": [
+        "quorune.saga_progression.represented_chapter_numbers",
+        "quorune.saga_lifecycle.SagaFinalChapterSnapshot.final_chapter_number"
+      ],
+      "notes": [
+        "The greatest trusted typed chapter number is canonical for the represented ordinary card form; untrusted declarations fail before mutation."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "714.2d",
       "rule_text_sha256": "d8a0b4617f973ec417ffd457ffd0e7860d37402b851a0a6dcf04411e9f92857c",
       "schema_version": 1,
@@ -87955,26 +87994,39 @@
         "end_line": 5975,
         "start_line": 5974
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "multi-part chapter symbols and dynamically changed chapter abilities are not comprehensively represented"
       ],
       "case_id": "cr-714.2e",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative"
+      ],
       "dependency_rule_ids": [
         "714.2"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_completed_saga_waits_only_for_its_pending_chapter"
+      ],
+      "implementation_components": [
+        "quorune.saga_progression.represented_chapter_numbers",
+        "quorune.saga_lifecycle.SagaFinalChapterSnapshot.final_chapter_number"
+      ],
+      "notes": [
+        "Every trusted typed chapter declaration with the greatest represented chapter value is treated as a final ability for the bounded lifecycle."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "714.2e",
       "rule_text_sha256": "5bc732f1b4dd10a6b597d1fd1738fbbec774c0d21cebc540fbccc6592f972e6d",
       "schema_version": 1,
@@ -87983,7 +88035,7 @@
         "end_line": 5977,
         "start_line": 5976
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "static_traceability",
@@ -88174,23 +88226,53 @@
       "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Read Ahead and dynamically copied gained removed or layer-modified chapter abilities remain unsupported",
+        "combined cause provenance when another zone-moving state-based action applies to the same completed Saga remains fail-closed",
+        "generic sacrifice-trigger compilation is not claimed by this normalized Saga occurrence"
       ],
       "case_id": "cr-714.4",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "714"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_sba_waits_then_sacrifices_under_current_control",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_old_incarnation_chapter_does_not_protect_reentered_saga",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_completed_phased_out_saga_waits_until_it_phases_in",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_countered_final_chapter_uses_the_next_sba_check",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_sacrifice_uses_destination_replacement",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_source_leaving_before_chapter_resolution_is_not_sacrificed_twice",
+        "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_lifecycle_snapshot_staleness_rolls_back_before_mutation"
+      ],
+      "implementation_components": [
+        "quorune.saga_progression.saga_chapter_trigger_pending",
+        "quorune.saga_lifecycle.SagaFinalChapterSnapshot",
+        "quorune.state_based_actions.evaluate_permanent_state_based_actions",
+        "quorune.state_based_execution.prepare_state_based_execution",
+        "quorune.zone_trigger_events.ZoneTransitionKind.SACRIFICE"
+      ],
+      "notes": [
+        "A chapter ability defers sacrifice only for its exact physical and logical Saga incarnation; resolution, countering, source departure, phasing, control change, simultaneous multiplayer actions, destination replacement, rollback, and replay are covered."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "714.4",
       "rule_text_sha256": "43472e108ec4e5a07827a9ecec067ca7a30342e5dafb65629ae4f7a00212cfc2",
       "schema_version": 1,
@@ -88199,7 +88281,7 @@
         "end_line": 5987,
         "start_line": 5986
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 7,
+  "contract_version": 8,
   "mechanic_id": "cr-704-state-based-actions",
   "official_name": "State-Based Actions",
   "effective_date": "2026-06-19",
@@ -28,13 +28,18 @@
     "704.5p",
     "704.5q",
     "704.5r",
+    "704.5s",
     "704.5v",
     "704.5w",
     "704.5x",
     "704.6c",
     "704.8",
     "122",
-    "122.4"
+    "122.4",
+    "701.17",
+    "714.2d",
+    "714.2e",
+    "714.4"
   ],
   "glossary_references": [
     "state-based action",
@@ -69,14 +74,16 @@
       "World permanents",
       "Auras",
       "Equipment",
-      "Fortifications"
+      "Fortifications",
+      "ordinary Sagas with trusted typed chapter declarations"
     ],
     "events": [
       "priority would be granted",
       "cleanup state check",
       "simultaneous state-based action batch",
       "World-rule batch",
-      "fixed-point recheck"
+      "fixed-point recheck",
+      "ordinary final-chapter Saga check"
     ],
     "state_reads": [
       "life, poison, empty draw, and commander damage",
@@ -85,7 +92,8 @@
       "the timestamp from which each permanent has continuously had the World supertype",
       "attachment restriction and protected qualities",
       "+1/+1 and -1/-1 counter counts from one immutable state-based snapshot",
-      "reviewed maximum-counter ability text, the named counter count, and each permanent's stable logical identity"
+      "reviewed maximum-counter ability text, the named counter count, and each permanent's stable logical identity",
+      "Saga subtype, lore count, canonical typed chapter numbers, current controller, physical and logical identity, and exact-incarnation chapter abilities pending on the stack"
     ],
     "state_writes": [
       "player elimination",
@@ -98,13 +106,15 @@
       "opposing counter-pair removal through the typed exact counter-removal transaction",
       "counters above a permanent's stated maximum removed through the same typed transaction",
       "zero-defense Battle graveyard moves",
-      "Battle protector repair or no-protector graveyard moves"
+      "Battle protector repair or no-protector graveyard moves",
+      "simultaneous replacement-aware sacrifice of represented completed Sagas"
     ],
     "costs": [],
     "timing": [
       "after resolution and before priority",
       "all applicable actions from one snapshot happen simultaneously",
-      "repeat until no actions or waiting triggers remain"
+      "repeat until no actions or waiting triggers remain",
+      "a completed Saga waits while a chapter ability from that exact logical incarnation has triggered but has not left the stack"
     ],
     "targets": [
       "attachment legality reuses declarative target-domain predicates without applying targeting-only shroud or hexproof"
@@ -122,13 +132,14 @@
       "derived characteristics are evaluated before each snapshot"
     ],
     "replacement_effects": [
-      "destruction and graveyard moves use the authoritative zone-change path"
+      "destruction and graveyard moves use the authoritative zone-change path",
+      "Saga sacrifice uses the same simultaneous destination-replacement boundary and preserves a typed sacrifice occurrence"
     ],
     "copy": [
       "copied names, types, supertypes, and abilities affect state checks"
     ],
     "control_change": [
-      "current controller determines legend groups and attachment relations"
+      "current controller determines legend groups, attachment relations, and who sacrifices a completed Saga"
     ],
     "zone_change": [
       "zone changes create new objects and detach attached permanents before the next check"
@@ -151,7 +162,14 @@
     "overlapping opposing-counter and maximum-counter removal",
     "canonical counter-removal planning across equivalent snapshot orderings",
     "malformed or stale counter-removal rollback before mutation",
-    "four-player exact replay of opposing-counter removal"
+    "four-player exact replay of opposing-counter removal",
+    "ordinary completed Saga deferral and sacrifice",
+    "old Saga logical incarnation does not defer the current object",
+    "phased-out completed Saga waits until it phases in",
+    "countered chapter causes sacrifice during the next check",
+    "destination replacement of a Saga sacrifice",
+    "simultaneous completed Sagas controlled by different players",
+    "exact replay of final-chapter completion"
   ],
   "witness_cards": [
     {
@@ -222,15 +240,29 @@
     "test_world_rule_requires_a_since_timestamp",
     "test_new_world_moves_the_older_world_to_graveyard",
     "test_worlds_entering_simultaneously_are_tied_and_all_leave",
-    "test_losing_and_regaining_world_gets_a_new_since_time"
+    "test_losing_and_regaining_world_gets_a_new_since_time",
+    "test_completed_saga_waits_only_for_its_pending_chapter",
+    "test_malformed_saga_lifecycle_fails_closed",
+    "test_final_chapter_sba_waits_then_sacrifices_under_current_control",
+    "test_old_incarnation_chapter_does_not_protect_reentered_saga",
+    "test_completed_phased_out_saga_waits_until_it_phases_in",
+    "test_countered_final_chapter_uses_the_next_sba_check",
+    "test_final_chapter_sacrifice_uses_destination_replacement",
+    "test_source_leaving_before_chapter_resolution_is_not_sacrificed_twice",
+    "test_four_player_completed_sagas_move_in_one_sba_batch",
+    "test_saga_lifecycle_snapshot_staleness_rolls_back_before_mutation",
+    "test_final_chapter_completion_replays_exactly",
+    "test_saga_lifecycle_mutation_is_killed"
   ],
   "implementation": {
-    "component": "state_based_actions.evaluate_permanent_state_based_actions, state_based_execution.prepare_state_based_execution, state_based_execution.commit_state_based_counter_removals, and counter_removal.commit_counter_removals",
-    "version": "state-based-actions-v8"
+    "component": "state_based_actions.evaluate_permanent_state_based_actions, saga_lifecycle.SagaFinalChapterSnapshot, state_based_execution.prepare_state_based_execution, state_based_execution.commit_state_based_zone_changes, state_based_execution.commit_state_based_counter_removals, and counter_removal.commit_counter_removals",
+    "version": "state-based-actions-v9"
   },
   "known_blockers": [
     "specialized copy-object exceptions such as Prepare copies in exile are not implemented",
-    "Sagas, dungeons, space sculptor, Roles, speed, and several other specialized state actions are not implemented",
+    "Read Ahead and copied, gained, removed, or layer-modified Saga chapter abilities remain outside the represented ordinary final-chapter action",
+    "one completed Saga simultaneously subject to another zone-moving state-based action fails closed until combined-cause replacement provenance is represented",
+    "dungeons, space sculptor, Roles, speed, and several other specialized state actions are not implemented",
     "native Siege defeated-trigger transformed casting and future Battle subtypes remain unresolved",
     "maximum-counter abilities outside the reviewed numeric self-restriction sentence family remain unresolved",
     "Aura attachment to players and the complete enchant-quality grammar are not implemented",

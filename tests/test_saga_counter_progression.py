@@ -47,7 +47,10 @@ from quorune.saga_progression import (
     commit_saga_lore_turn_action,
     dispatch_saga_chapters,
 )
+from quorune.state_based_actions import evaluate_state_based_actions
 from quorune.semantic_runtime import prepare_zone_change_replacement_batch
+from quorune.semantics import SemanticProgram
+from quorune.trigger_processing import enqueue_trigger_batch
 
 
 class SagaCounterProgressionTests(unittest.TestCase):
@@ -189,6 +192,40 @@ class SagaCounterProgressionTests(unittest.TestCase):
         )
 
     @staticmethod
+    def chapter_item(
+        engine,
+        saga: CardInstance,
+        *,
+        chapter: int = 3,
+        logical_object_id: str | None = None,
+    ) -> StackItem:
+        program = next(
+            value
+            for value in engine.semantics.programs_for_oracle(
+                saga.oracle_id
+            )
+            if value.event == f"saga.chapter.{chapter}"
+            and engine.semantic_program_is_current_trusted(value)
+        )
+        return StackItem(
+            stack_id=f"chapter-{chapter}-{saga.object_id}",
+            ref=f"S-chapter-{chapter}-{saga.ref}",
+            kind="triggered_ability",
+            controller=saga.controller,
+            label=f"{saga.printed_name} chapter {chapter}",
+            source_object_id=saga.object_id,
+            semantic_key=program.key,
+            visibility=list(engine.seats),
+            context={
+                "source_logical_object_id": (
+                    logical_object_id
+                    if logical_object_id is not None
+                    else saga.logical_object_id
+                )
+            },
+        )
+
+    @staticmethod
     def saga_record(*, read_ahead: bool = False) -> CardRecord:
         return CardRecord(
             oracle_id=(
@@ -275,7 +312,11 @@ class SagaCounterProgressionTests(unittest.TestCase):
         )
         self.assertTrue(residual["material"])
         self.assertEqual(
-            ["counter.producer.saga_lore"], residual["blockers"]
+            [
+                "counter.producer.saga_lore",
+                "state_based.saga_final_chapter",
+            ],
+            residual["blockers"],
         )
         self.assertIn("Read Ahead", residual["reason"])
 
@@ -604,6 +645,373 @@ class SagaCounterProgressionTests(unittest.TestCase):
         self.assertEqual(2, active_saga.counters["lore"])
         self.assertEqual(1, other_saga.counters["lore"])
 
+    def test_final_chapter_sba_waits_then_sacrifices_under_current_control(self):
+        session = self.session(7144001)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="B",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        engine.state.stack.clear()
+        saga.counters["lore"] = 3
+        chapter = self.chapter_item(engine, saga)
+        engine.state.stack.append(chapter)
+
+        self.assertFalse(engine._stabilize())
+        self.assertEqual("battlefield", saga.zone)
+
+        engine.state.stack.remove(chapter)
+        self.assertFalse(engine._stabilize())
+
+        self.assertEqual("graveyard", saga.zone)
+        self.assertIn(
+            saga.object_id, engine.state.players["A"].zones["graveyard"]
+        )
+        event = next(
+            value
+            for value in reversed(engine.state.events)
+            if value.code == "state.saga_sacrificed"
+        )
+        self.assertEqual([saga.ref], event.details["objects"])
+
+    def test_waiting_final_chapter_batch_defers_before_stack_placement(self):
+        session = self.session(7144012)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        engine.state.stack.clear()
+        saga.counters["lore"] = 3
+        enqueue_trigger_batch(engine, [self.chapter_item(engine, saga)])
+
+        self.assertFalse(engine._stabilize())
+
+        self.assertEqual("battlefield", saga.zone)
+        self.assertTrue(
+            engine.state.stack or engine.state.pending_trigger_batches
+        )
+
+    def test_old_incarnation_chapter_does_not_protect_reentered_saga(self):
+        session = self.session(7144002)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        saga.counters["lore"] = 3
+        engine.state.stack.append(
+            self.chapter_item(
+                engine,
+                saga,
+                logical_object_id="previous-incarnation",
+            )
+        )
+
+        self.assertFalse(engine._stabilize())
+        self.assertEqual("graveyard", saga.zone)
+
+    def test_completed_phased_out_saga_waits_until_it_phases_in(self):
+        session = self.session(7144003)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        saga.counters["lore"] = 3
+        saga.phased_out = True
+
+        self.assertFalse(engine._stabilize())
+        self.assertEqual("battlefield", saga.zone)
+
+        saga.phased_out = False
+        self.assertFalse(engine._stabilize())
+        self.assertEqual("graveyard", saga.zone)
+
+    def test_countered_final_chapter_uses_the_next_sba_check(self):
+        session = self.session(7144004)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        engine.state.stack.clear()
+        saga.counters["lore"] = 3
+        chapter = self.chapter_item(engine, saga)
+        engine.state.stack.append(chapter)
+
+        engine._counter_stack_item(chapter.ref, as_rule=True)
+        self.assertEqual("battlefield", saga.zone)
+        self.assertFalse(engine._stabilize())
+        self.assertEqual("graveyard", saga.zone)
+
+    def test_source_leaving_before_chapter_resolution_is_not_sacrificed_twice(self):
+        session = self.session(7144005)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        saga.counters["lore"] = 3
+        chapter = self.chapter_item(engine, saga)
+        engine.state.stack.append(chapter)
+        engine.move_card(
+            saga.object_id,
+            "exile",
+            reason="source leaves before final chapter resolves",
+            semantic_events=True,
+        )
+        engine.state.stack.remove(chapter)
+
+        self.assertFalse(engine._stabilize())
+        self.assertEqual("exile", saga.zone)
+        self.assertFalse(
+            any(
+                value.code == "state.saga_sacrificed"
+                for value in engine.state.events
+            )
+        )
+
+    def test_final_chapter_sacrifice_uses_destination_replacement(self):
+        session = self.session(7144011)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        source = self.add_permanent(
+            engine,
+            seat="B",
+            name="Birds of Paradise",
+            ref="saga-graveyard-replacement",
+        )
+        engine.semantics.put(
+            SemanticProgram(
+                key="test:saga-graveyard-replacement",
+                label="Replace completed Saga destination",
+                oracle_id=source.oracle_id,
+                ability_id="static:front:saga-destination",
+                active_zone="battlefield",
+                event="zone.change",
+                trust_level="provisional",
+                handlers=[
+                    {
+                        "handler_id": "replacement.zone.destination.v1",
+                        "schema_version": 1,
+                        "event": "zone.change",
+                        "condition": {
+                            "destination": "graveyard",
+                            "object_kind": "card",
+                            "owner_relation": "opponent",
+                        },
+                        "destination": "exile",
+                        "counters": {},
+                    }
+                ],
+            )
+        )
+        engine.state.pending_trigger_batches.clear()
+        engine.state.stack.clear()
+        saga.counters["lore"] = 3
+
+        original_trust = engine.semantic_program_is_current_trusted
+        with patch.object(
+            type(engine),
+            "semantic_program_is_current_trusted",
+            autospec=True,
+            side_effect=lambda runtime, program: (
+                program.key == "test:saga-graveyard-replacement"
+                or original_trust(program)
+            ),
+        ), patch.object(
+            engine,
+            "_dispatch_semantic_event",
+            wraps=engine._dispatch_semantic_event,
+        ) as dispatch:
+            self.assertFalse(engine._stabilize())
+
+        self.assertEqual("exile", saga.zone)
+        self.assertIn(
+            "permanent.sacrificed",
+            [call.args[0] for call in dispatch.call_args_list],
+        )
+
+    def test_four_player_completed_sagas_move_in_one_sba_batch(self):
+        session = self.session(7144006, players=4)
+        engine = session.engine
+        first = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            first.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        second = CardInstance(
+            object_id="fixture:completed-saga-b",
+            ref="completed-saga-b",
+            oracle_id=first.oracle_id,
+            printed_name=first.printed_name,
+            owner="B",
+            controller="B",
+            zone="battlefield",
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+            counters={"lore": 3},
+        )
+        engine.state.cards[second.object_id] = second
+        engine.state.players["B"].zones["battlefield"].append(
+            second.object_id
+        )
+        engine.state.pending_trigger_batches.clear()
+        engine.state.stack.clear()
+        first.counters["lore"] = 3
+
+        self.assertFalse(engine._stabilize())
+
+        self.assertEqual("graveyard", first.zone)
+        self.assertEqual("graveyard", second.zone)
+        self.assertEqual(first.zone_timestamp, second.zone_timestamp)
+        event = next(
+            value
+            for value in reversed(engine.state.events)
+            if value.code == "state.saga_sacrificed"
+        )
+        self.assertEqual(
+            [first.ref, second.ref], event.details["objects"]
+        )
+
+    def test_saga_lifecycle_snapshot_staleness_rolls_back_before_mutation(self):
+        session = self.session(7144007)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        saga.counters["lore"] = 3
+        batch = evaluate_state_based_actions(
+            permanents=engine._permanent_sba_snapshots(),
+            objects=engine._object_sba_snapshots(),
+        )
+        saga.controller = "B"
+        before = authoritative_state_hash(engine.state)
+
+        from quorune.state_based_execution import (
+            StateBasedExecutionError,
+            prepare_state_based_execution,
+        )
+
+        with self.assertRaisesRegex(
+            StateBasedExecutionError, "snapshot changed"
+        ):
+            prepare_state_based_execution(engine, batch)
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        self.assertEqual("battlefield", saga.zone)
+
+    def test_final_chapter_completion_replays_exactly(self):
+        session = self.session(7144008)
+        engine = session.engine
+        saga = self.card(engine, "A", "Urza's Saga")
+        engine.move_card(
+            saga.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+            semantic_events=False,
+        )
+        engine.state.pending_trigger_batches.clear()
+        engine.state.stack.clear()
+        saga.counters["lore"] = 3
+        engine.state.stack.append(
+            self.chapter_item(engine, saga, chapter=1)
+        )
+        engine._grant_priority("A")
+        engine.pump()
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        for seat in ("A", "B"):
+            result = session.act(
+                f"pilot:{seat}",
+                {"a": "pass", "reason": "Resolve the chapter."},
+            )
+            self.assertTrue(result.ok, result.summary)
+
+        self.assertEqual("graveyard", saga.zone)
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "saga-final-record"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_saga_lifecycle_mutation_is_killed(self):
+        def final_saga_moves(seed: int) -> None:
+            session = self.session(seed)
+            engine = session.engine
+            saga = self.card(engine, "A", "Urza's Saga")
+            engine.move_card(
+                saga.object_id,
+                "battlefield",
+                controller="A",
+                log=False,
+                semantic_events=False,
+            )
+            engine.state.pending_trigger_batches.clear()
+            saga.counters["lore"] = 3
+            engine._stabilize()
+            self.assertEqual("graveyard", saga.zone)
+
+        final_saga_moves(7144009)
+        with patch(
+            "quorune.saga_lifecycle."
+            "SagaFinalChapterSnapshot.requires_sacrifice",
+            new_callable=lambda: property(lambda _self: False),
+        ):
+            with self.assertRaises(AssertionError):
+                final_saga_moves(7144010)
+
     def test_saga_entry_replacement_choice_replays_exactly(self):
         session = self.session(7143009, players=4)
         engine = session.engine
@@ -800,6 +1208,32 @@ class SagaCounterProgressionTests(unittest.TestCase):
             row
             for row in registry_value["capabilities"]
             if row["id"] == "counter.placement.quantity_replacement"
+        )
+        dependency["status"] = "blocked"
+        dependency["blockers"] = ["test mutation"]
+        registry = CapabilityRegistry(copy.deepcopy(registry_value))
+        registry.mark_evidence_verified("0" * 64)
+
+        with self.assertRaisesRegex(
+            ValueError, "intrinsic entry-counter capability is blocked"
+        ):
+            compile_card_program(
+                self.db,
+                self.saga_record(),
+                capability_registry=registry,
+                capability_profile="commander_review",
+                trust_level="trusted",
+            )
+
+    def test_blocked_final_lifecycle_prevents_trusted_saga_card_form(self):
+        registry_value = json.loads(
+            (ROOT / "quorune" / "rules" / "capability-registry.json")
+            .read_text(encoding="utf-8")
+        )
+        dependency = next(
+            row
+            for row in registry_value["capabilities"]
+            if row["id"] == "state_based.saga_final_chapter"
         )
         dependency["status"] = "blocked"
         dependency["blockers"] = ["test mutation"]

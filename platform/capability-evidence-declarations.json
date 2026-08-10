@@ -8764,6 +8764,94 @@
       "applicability_note": "Replay the generated counter attempt against a checkpoint-pinned intrinsic prohibition with the same failed-counter journal and final state."
     },
     {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_countered_final_chapter_uses_the_next_sba_check",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove a countered final chapter from the stack, then sacrifice its exact source during the next state-based-action check."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_sacrifice_uses_destination_replacement",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply a represented graveyard-destination replacement to the Saga sacrifice while retaining its normalized sacrifice occurrence."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_four_player_completed_sagas_move_in_one_sba_batch",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Sacrifice completed Sagas controlled by different players in one canonical four-player state-based-action batch."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_lifecycle_mutation_is_killed",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a mutation that disables the typed final-chapter sacrifice predicate."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "negative",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_blocked_final_lifecycle_prevents_trusted_saga_card_form",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Refuse trusted Saga card-form promotion when the final-chapter lifecycle capability is unavailable."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "negative",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_old_incarnation_chapter_does_not_protect_reentered_saga",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Do not allow a chapter ability from an older logical incarnation to defer the current Saga's state action."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "negative",
+      "test_id": "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_completed_saga_with_another_zone_action_fails_closed",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Fail before mutation when one completed Saga is simultaneously subject to another zone-moving state-based action whose combined cause is not represented."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "negative",
+      "test_id": "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_malformed_saga_lifecycle_fails_closed",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject missing, duplicate, unordered, nonpositive, or identity-mismatched chapter snapshots before mutation."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "positive",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_sba_waits_then_sacrifices_under_current_control",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Defer while the exact chapter ability remains pending, then have the current controller sacrifice the Saga to its owner's graveyard."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "positive",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_waiting_final_chapter_batch_defers_before_stack_placement",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Defer the final-chapter state action while the exact typed chapter occurrence is still waiting in its APNAP placement batch."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_completion_replays_exactly",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve a pending chapter and replay the resulting typed Saga sacrifice to the same authoritative state hash."
+    },
+    {
       "capability_id": "target.public.player_or_damageable_permanent",
       "evidence_class": "interaction",
       "test_id": "tests.test_exact_mishra_closure.ExactMishraClosureTests.test_stasis_coffin_protection_blocks_targeting_and_damage",

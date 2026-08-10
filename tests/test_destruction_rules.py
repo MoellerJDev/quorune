@@ -336,6 +336,37 @@ class DestructionRuleTests(unittest.TestCase):
         self.assertEqual((citadel.object_id,), result.indestructible_object_ids)
         self.assertEqual("graveyard", citadel.zone)
 
+    def test_companion_transition_kind_rejects_untyped_values_before_mutation(self):
+        session = self.session(7010809, players=2)
+        engine = session.engine
+        citadel = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "A" and card.printed_name == "Darksteel Citadel"
+        )
+        self.put_on_battlefield(engine, citadel)
+        plan = prepare_destructions(
+            engine,
+            (request_for_card(citadel),),
+            cause=DestructionCause.STATE_BASED_ACTION,
+            actor=None,
+            reason="typed companion transition witness",
+        )
+        before = authoritative_state_hash(engine.state)
+
+        with self.assertRaisesRegex(DestructionError, "must be typed"):
+            commit_destruction_plan(
+                engine,
+                plan,
+                companion_changes=((citadel.object_id, "graveyard"),),
+                companion_transition_kinds={
+                    citadel.object_id: "sacrifice"
+                },
+            )
+
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        self.assertEqual("battlefield", citadel.zone)
+
     def test_stale_destruction_plan_rolls_back_without_mutation(self):
         session = self.session(7010805, players=2)
         engine = session.engine
