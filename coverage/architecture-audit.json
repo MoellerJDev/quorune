@@ -10978,13 +10978,13 @@
         "missing_dedicated_owner": false,
         "owners": [
           "quorune/engine.py",
-          "quorune/activation_usage.py",
           "quorune/abilities.py",
           "quorune/mana.py",
           "quorune/mana_activation.py",
           "quorune/rules/action_catalog.py",
           "quorune/rules/casting",
-          "quorune/rules/activation"
+          "quorune/rules/activation",
+          "quorune/activation_usage.py"
         ],
         "status": "typed_proposal_query_and_commit_subsystems_with_engine_facades"
       },

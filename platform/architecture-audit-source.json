@@ -33,7 +33,6 @@
     ],
     "state_owner_modules": [
       "quorune/engine.py",
-      "quorune/activation_usage.py",
       "quorune/permissions.py",
       "quorune/counter_placement.py",
       "quorune/counter_state.py",
@@ -55,6 +54,7 @@
       ,"quorune/effect_runtime/objects_stack_and_tokens.py"
       ,"quorune/rules/casting/commit.py"
       ,"quorune/rules/activation/commit.py"
+      ,"quorune/activation_usage.py"
     ],
     "state_parameter_modules": [
       "quorune/record.py",
@@ -148,13 +148,13 @@
       "status": "typed_proposal_query_and_commit_subsystems_with_engine_facades",
       "owners": [
         "quorune/engine.py",
-        "quorune/activation_usage.py",
         "quorune/abilities.py",
         "quorune/mana.py",
         "quorune/mana_activation.py",
         "quorune/rules/action_catalog.py",
         "quorune/rules/casting",
-        "quorune/rules/activation"
+        "quorune/rules/activation",
+        "quorune/activation_usage.py"
       ],
       "missing_dedicated_owner": false
     },
