@@ -288,6 +288,7 @@ def _activated_effect_dependency_gate(
             "place_counters_on_set",
             "place_counters_on_targets",
             "place_player_counters",
+            "return_graveyard_card_to_owner_hand",
             "fixed_self_counter_keyword_action",
             "fixed_bolster",
             "tap",

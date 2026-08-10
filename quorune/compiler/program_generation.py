@@ -39,6 +39,7 @@ from ..rules.node_capability_shapes import (
     targeted_destruction_node_capabilities,
     targeted_exile_node_capabilities,
     targeted_return_to_hand_node_capabilities,
+    targeted_own_graveyard_return_node_capabilities,
     targeted_tap_state_node_capabilities,
 )
 from ..semantics import SemanticProgram, SemanticRegistry
@@ -740,6 +741,27 @@ def _is_closed_targeted_return_to_hand_program(
     )
 
 
+def _is_closed_targeted_own_graveyard_return_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize only the reviewed own-graveyard card return family."""
+
+    required = set(
+        targeted_own_graveyard_return_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=(
+                value
+                for value in program.coverage
+                if value in {"return-to-owner-hand", "cr-115-targets"}
+            ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
 def _is_closed_effect_program(program: SemanticProgram) -> bool:
     """Return whether a reviewed capability-shaped effect owns execution."""
 
@@ -765,6 +787,7 @@ def _is_closed_effect_program(program: SemanticProgram) -> bool:
         _is_closed_mass_destruction_program,
         _is_closed_targeted_exile_program,
         _is_closed_targeted_return_to_hand_program,
+        _is_closed_targeted_own_graveyard_return_program,
         _is_closed_targeted_tap_state_program,
     )
     return any(recognizer(program) for recognizer in recognizers)

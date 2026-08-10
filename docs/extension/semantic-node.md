@@ -39,7 +39,8 @@ include tap state in
 [ADR 0009](../adr/0009-typed-tap-state-mutation-owner.md), direct permanent
 destruction in [ADR 0027](../adr/0027-typed-permanent-destruction.md), and
 direct return to an owner's hand in
-[ADR 0028](../adr/0028-typed-return-to-owner-hand.md), and direct permanent
-exile in [ADR 0029](../adr/0029-typed-permanent-exile.md). Mandatory direct
+[ADR 0028](../adr/0028-typed-return-to-owner-hand.md), own-graveyard card return
+in [ADR 0053](../adr/0053-typed-own-graveyard-return-to-hand.md), and direct
+permanent exile in [ADR 0029](../adr/0029-typed-permanent-exile.md). Mandatory direct
 stack counters and intrinsic counter prohibition use
 [ADR 0030](../adr/0030-typed-stack-counter.md).

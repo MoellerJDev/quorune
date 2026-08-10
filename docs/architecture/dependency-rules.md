@@ -44,11 +44,12 @@ boundary also routes represented counter events to
 `quorune/counter_placement.py`. Represented damage events route to
 `quorune/damage.py` for proposal preparation, replacement/prevention,
 atomic result commit, and final-event dispatch. Direct destruction,
-permanent-exile, and return-to-owner-hand intents route to
+permanent-exile, battlefield return-to-owner-hand, and own-graveyard card
+return intents route to
 `quorune/destruction.py`, `quorune/permanent_exile.py`, and
 `quorune/return_to_hand.py`. Exile and return share the closed
-`rules/single_object_zone_transition.py` preparation, stale-plan validation, and
-commit substrate while retaining distinct results and journals. Destruction
+`rules/single_object_zone_transition.py` typed-origin preparation, stale-plan
+validation, and commit substrate while retaining distinct results and journals. Destruction
 remains a separate disposition family. These transaction owners delegate
 authoritative counter or zone writes to existing canonical owners. Direct stack-counter intents route to
 `quorune/stack_counter.py`, which owns counterability, stack removal,
@@ -60,8 +61,9 @@ structural host protocols rather than the engine class and are authorized by
 [ADR 0012](../adr/0012-damage-transaction-and-static-prevention.md),
 [ADR 0027](../adr/0027-typed-permanent-destruction.md),
 [ADR 0028](../adr/0028-typed-return-to-owner-hand.md),
-[ADR 0029](../adr/0029-typed-permanent-exile.md), and
-[ADR 0030](../adr/0030-typed-stack-counter.md).
+[ADR 0029](../adr/0029-typed-permanent-exile.md),
+[ADR 0030](../adr/0030-typed-stack-counter.md), and
+[ADR 0053](../adr/0053-typed-own-graveyard-return-to-hand.md).
 
 Represented zone-destination replacements use an additional narrow split.
 `semantic_runtime/zone_replacement_model.py` owns immutable affected-object,

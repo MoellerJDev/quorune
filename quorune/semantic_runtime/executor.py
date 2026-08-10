@@ -44,6 +44,7 @@ from .intents import (
     RecordChoiceIntent,
     RecordZoneMoveIntent,
     ReturnCardsToLibraryTopIntent,
+    ReturnGraveyardCardToOwnerHandIntent,
     ReturnPermanentToOwnerHandIntent,
     ReorderLibraryTopIntent,
     RetargetStackItemIntent,
@@ -279,12 +280,14 @@ PermanentTransitionIntent = (
     | DestroyPermanentSetIntent
     | ExilePermanentIntent
     | ReturnPermanentToOwnerHandIntent
+    | ReturnGraveyardCardToOwnerHandIntent
 )
 PERMANENT_TRANSITION_INTENT_TYPES = (
     DestroyPermanentIntent,
     DestroyPermanentSetIntent,
     ExilePermanentIntent,
     ReturnPermanentToOwnerHandIntent,
+    ReturnGraveyardCardToOwnerHandIntent,
 )
 
 
@@ -316,9 +319,20 @@ def _execute_permanent_transition_intent(
                 replacement_selections=intent.replacement_selections,
             ),
         )
+    if isinstance(intent, ReturnPermanentToOwnerHandIntent):
+        return (
+            intent.object_ref,
+            return_to_hand.return_permanent_to_owner_hand(
+                sink,
+                intent.object_ref,
+                actor=intent.actor,
+                reason=intent.reason,
+                replacement_selections=intent.replacement_selections,
+            ),
+        )
     return (
         intent.object_ref,
-        return_to_hand.return_permanent_to_owner_hand(
+        return_to_hand.return_graveyard_card_to_owner_hand(
             sink,
             intent.object_ref,
             actor=intent.actor,

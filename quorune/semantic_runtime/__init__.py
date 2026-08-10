@@ -172,6 +172,7 @@ from .fixed_damage_set_handlers import (
 )
 from .return_to_hand_handlers import (
     RETURN_TO_HAND_HANDLERS,
+    ReturnGraveyardCardToOwnerHandHandler,
     ReturnPermanentToOwnerHandHandler,
 )
 from .stack_counter_handlers import (
@@ -216,6 +217,7 @@ from .intents import (
     RecordChoiceIntent,
     RecordZoneMoveIntent,
     ReturnCardsToLibraryTopIntent,
+    ReturnGraveyardCardToOwnerHandIntent,
     ReturnPermanentToOwnerHandIntent,
     ReorderLibraryTopIntent,
     RetargetStackItemIntent,
@@ -351,6 +353,8 @@ __all__ = [
     "ExilePermanentIntent",
     "FixedDamageSetHandler",
     "ReturnPermanentToOwnerHandHandler",
+    "ReturnGraveyardCardToOwnerHandHandler",
+    "ReturnGraveyardCardToOwnerHandIntent",
     "ReturnPermanentToOwnerHandIntent",
     "DrawEachPlayerNode",
     "DrawNode",

@@ -55,12 +55,15 @@ the focused tap-state port.
 chapter-dispatch sequence while `counter_state.py` owns the simultaneous lore
 write. Entry lore remains inside the zone-replacement transaction; the later
 turn-based action deliberately bypasses effect-qualified counter replacement.
-Typed direct-target destruction, permanent-exile, return-to-owner-hand, and
-stack-counter handlers likewise commit only through their focused
-transactions. The aggregate mechanics remain untrusted where regeneration,
-mass selection, linked exile, recursion, reanimation, conditional payment,
-alternate counter destinations, or other unsupported grammar and interactions
-are materially reachable.
+Typed direct-target destruction, permanent-exile, battlefield
+return-to-owner-hand, own-graveyard card return, and stack-counter handlers
+likewise commit only through their focused transactions. Battlefield and
+graveyard return share one origin-pinned, replacement-aware single-object
+transition substrate while retaining distinct compiler shapes, handlers,
+capabilities, and journals. The aggregate mechanics remain untrusted where
+regeneration, mass selection, linked exile, opponent-graveyard recursion,
+reanimation, conditional payment, alternate counter destinations, or other
+unsupported grammar and interactions are materially reachable.
 
 Continuous characteristics are a shared rules responsibility rather than a
 client reconstruction. `continuous_effect_state.py` owns the authoritative

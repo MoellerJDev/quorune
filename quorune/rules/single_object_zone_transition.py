@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-"""Closed shared transaction mechanics for one battlefield permanent.
+"""Closed shared transaction mechanics for one public card object.
 
-This owner deliberately supports only the two represented destination families.
-Destruction and stack countering have different rule semantics and do not use it.
+This owner deliberately supports only the represented origin and destination
+families. Destruction and stack countering have different rule semantics and do
+not use it.
 """
 
 from dataclasses import dataclass
@@ -28,6 +29,11 @@ class SingleObjectZoneTransitionError(ValueError):
 class SingleObjectDestination(str, Enum):
     OWNER_HAND = "hand"
     EXILE = "exile"
+
+
+class SingleObjectOrigin(str, Enum):
+    BATTLEFIELD = "battlefield"
+    GRAVEYARD = "graveyard"
 
 
 class SingleObjectZoneTransitionHost(Protocol):
@@ -98,6 +104,7 @@ class SingleObjectZoneTransitionEntry:
     logical_object_id: str
     owner: str
     controller: str
+    origin: SingleObjectOrigin
 
     def __post_init__(self) -> None:
         for field in (
@@ -108,6 +115,10 @@ class SingleObjectZoneTransitionEntry:
             "controller",
         ):
             _nonempty(getattr(self, field), field=field)
+        if not isinstance(self.origin, SingleObjectOrigin):
+            raise SingleObjectZoneTransitionError(
+                "Single-object transition origin must be a supported typed value"
+            )
 
 
 @dataclass(frozen=True, slots=True)
@@ -149,6 +160,7 @@ class SingleObjectZoneTransitionResult:
     requested_destination: SingleObjectDestination
     actual_destination: str
     logical_object_id: str
+    origin: SingleObjectOrigin
 
     def __post_init__(self) -> None:
         for field in (
@@ -163,6 +175,10 @@ class SingleObjectZoneTransitionResult:
         if not isinstance(self.requested_destination, SingleObjectDestination):
             raise SingleObjectZoneTransitionError(
                 "Single-object result destination must be a supported typed value"
+            )
+        if not isinstance(self.origin, SingleObjectOrigin):
+            raise SingleObjectZoneTransitionError(
+                "Single-object result origin must be a supported typed value"
             )
 
 
@@ -180,9 +196,10 @@ def prepare_single_object_zone_transition(
     actor: str,
     reason: str,
     requested_destination: SingleObjectDestination,
+    expected_origin: SingleObjectOrigin = SingleObjectOrigin.BATTLEFIELD,
     replacement_selections: Sequence[str | Mapping[str, Any]] = (),
 ) -> SingleObjectZoneTransitionPlan:
-    """Snapshot one phased-in battlefield permanent before any mutation."""
+    """Snapshot one card in a represented public origin before mutation."""
 
     if not isinstance(request, SingleObjectZoneTransitionRequest):
         raise SingleObjectZoneTransitionError(
@@ -194,19 +211,38 @@ def prepare_single_object_zone_transition(
         raise SingleObjectZoneTransitionError(
             "Single-object transition destination must be a supported typed value"
         )
+    if not isinstance(expected_origin, SingleObjectOrigin):
+        raise SingleObjectZoneTransitionError(
+            "Single-object transition origin must be a supported typed value"
+        )
     selections = canonical_replacement_selections(replacement_selections)
     card = host.state.cards.get(request.object_id)
     if card is None:
         raise SingleObjectZoneTransitionError(
-            "Single-object transition permanent does not exist"
+            (
+                "Single-object transition permanent does not exist"
+                if expected_origin is SingleObjectOrigin.BATTLEFIELD
+                else "Single-object transition card does not exist"
+            )
         )
-    if card.zone != "battlefield" or bool(card.phased_out):
+    if card.zone != expected_origin.value or (
+        expected_origin is SingleObjectOrigin.BATTLEFIELD
+        and bool(card.phased_out)
+    ):
+        if expected_origin is SingleObjectOrigin.BATTLEFIELD:
+            raise SingleObjectZoneTransitionError(
+                "Only a phased-in battlefield permanent can transition"
+            )
         raise SingleObjectZoneTransitionError(
-            "Only a phased-in battlefield permanent can transition"
+            "Only a card in the required graveyard can transition"
         )
     if card.logical_object_id != request.logical_object_id:
         raise SingleObjectZoneTransitionError(
-            "Single-object transition permanent changed logical identity"
+            (
+                "Single-object transition permanent changed logical identity"
+                if expected_origin is SingleObjectOrigin.BATTLEFIELD
+                else "Single-object transition card changed logical identity"
+            )
         )
     return SingleObjectZoneTransitionPlan(
         actor=actor,
@@ -218,6 +254,7 @@ def prepare_single_object_zone_transition(
             logical_object_id=card.logical_object_id,
             owner=card.owner,
             controller=card.controller,
+            origin=expected_origin,
         ),
         replacement_selections=selections,
     )
@@ -235,8 +272,11 @@ def validate_single_object_zone_transition_plan(
     card = host.state.cards.get(entry.object_id)
     if (
         card is None
-        or card.zone != "battlefield"
-        or bool(card.phased_out)
+        or card.zone != entry.origin.value
+        or (
+            entry.origin is SingleObjectOrigin.BATTLEFIELD
+            and bool(card.phased_out)
+        )
         or card.ref != entry.object_ref
         or card.logical_object_id != entry.logical_object_id
         or card.owner != entry.owner
@@ -272,11 +312,13 @@ def commit_prevalidated_single_object_zone_transition(
         requested_destination=plan.requested_destination,
         actual_destination=card.zone,
         logical_object_id=card.logical_object_id,
+        origin=entry.origin,
     )
 
 
 __all__ = [
     "SingleObjectDestination",
+    "SingleObjectOrigin",
     "SingleObjectZoneTransitionEntry",
     "SingleObjectZoneTransitionError",
     "SingleObjectZoneTransitionHost",

@@ -174,6 +174,28 @@ class ReturnPermanentToOwnerHandIntent:
 
 
 @dataclass(frozen=True, slots=True)
+class ReturnGraveyardCardToOwnerHandIntent:
+    actor: str
+    object_ref: str
+    reason: str
+    replacement_selections: tuple[str | FrozenMap, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not all((self.actor, self.object_ref, self.reason)):
+            raise ValueError(
+                "Graveyard-return intents require actor, object, and reason"
+            )
+        object.__setattr__(
+            self,
+            "replacement_selections",
+            _freeze_replacement_selections(
+                self.replacement_selections,
+                family="graveyard-card-return-to-owner-hand",
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class ExilePermanentIntent:
     actor: str
     object_ref: str
@@ -1052,6 +1074,7 @@ SemanticIntent: TypeAlias = (
     | DestroyPermanentIntent
     | DestroyPermanentSetIntent
     | ReturnPermanentToOwnerHandIntent
+    | ReturnGraveyardCardToOwnerHandIntent
     | ExilePermanentIntent
     | DealFixedDamageSetIntent
     | AddManaIntent

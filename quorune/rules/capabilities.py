@@ -35,6 +35,7 @@ from .node_capability_shapes import (
     targeted_destruction_node_capabilities,
     targeted_exile_node_capabilities,
     targeted_return_to_hand_node_capabilities,
+    targeted_own_graveyard_return_node_capabilities,
     targeted_tap_state_node_capabilities,
 )
 
@@ -805,6 +806,7 @@ def _targeted_effect_capabilities(
         targeted_destruction_node_capabilities,
         targeted_exile_node_capabilities,
         targeted_return_to_hand_node_capabilities,
+        targeted_own_graveyard_return_node_capabilities,
         targeted_tap_state_node_capabilities,
     ):
         dependencies.update(
