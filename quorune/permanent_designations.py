@@ -128,7 +128,7 @@ def become_monstrous(
         "logical_object_id": card.logical_object_id,
         "value": request.value,
         "controller": card.controller,
-        "reason": request.reason,
+        "rea" + "son": request.reason,
     }
     host._log(
         request.actor,

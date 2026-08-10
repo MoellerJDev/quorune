@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "533425a527cd72b1e9bf086cd9f8fa0767c189186540bb32ef2047394aa2e91a",
+    "evaluated_input_fingerprint": "e1dc518b7b04c66cd7a2abc783093218a9ca3ae04e930d9bb305a068abc61180",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -462,6 +462,12 @@
       "id": "fixed_target_zone_object_keyword_sequence",
       "name": "Typed fixed target zone-object keyword results",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "Ordinary printed positive-integral Adapt N and Monstrosity N activations lower once into source-spanned CardProgram V2 nodes. Resolution revalidates the source's current battlefield logical identity, Adapt conditionally places +1/+1 counters through the canonical replacement-aware counter transaction, and Monstrosity performs the same counter transaction before assigning one physical-object monstrous designation through a typed owner. The designation survives control changes and phasing, clears on a zone change, is not copied, serializes additively for Game Record v3 compatibility, and participates in exact replay and public projection. The engine delegates object-local zone-change reset to a dedicated typed owner. Zero, variable, compound, copied, granted, removed, and face-down keyword actions, multiple instances, Monstrosity-value consumers, and broader replacement interactions remain explicit residuals; neither aggregate mechanic is trusted.",
+      "id": "fixed_adapt_and_monstrosity_actions",
+      "name": "Typed fixed Adapt and Monstrosity keyword actions",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -485,7 +491,7 @@
     "reusable_piece_inventory": "implemented_versioned_generated_matrix_card_index_interaction_index_complex_card_benchmark_durable_baseline_delta_and_cli_with_zero_unclassified_material_spans",
     "rooms_and_lobbies": "implemented_invite_only_two_or_four_seat_remove_leave_replace_and_watch",
     "security": "guest_hash_csrf_origin_capability_and_projection_baseline",
-    "semantic_handlers": "implemented_registered read-only typed-intent handlers plus bounded runtime components and closed effect-runtime families with strict binding and focused tap token counter fixed_counter_placement fixed_counter_placement_set fixed_counter_placement_target_set fixed_player_counter_placement entry_counter optional_self_entry_counter counter_removal stack_counter destruction permanent_exile return_to_hand damage fixed_damage_set combat_damage_snapshot combat_damage_assignment combat_damage_sequence damage_result life player_counter continuous_effect attachment aura_entry draw scry typed_ability_fragment haste_eligibility aerial_block_legality defender_attack_restriction menace_block_restriction landwalk_restriction combat_evasion_restriction self_counter_block_restriction block_transition_keyword_trigger attack_transition_keyword_trigger fixed_mana_ability color_set_mana_ability ordinary_cycling_ability and cast_permission owners",
+    "semantic_handlers": "implemented_registered read-only typed-intent handlers plus bounded runtime components and closed effect-runtime families with strict binding and focused tap token counter fixed_counter_placement fixed_counter_placement_set fixed_counter_placement_target_set fixed_player_counter_placement entry_counter optional_self_entry_counter counter_removal permanent_designation zone_object_state stack_counter destruction permanent_exile return_to_hand damage fixed_damage_set combat_damage_snapshot combat_damage_assignment combat_damage_sequence damage_result life player_counter continuous_effect attachment aura_entry draw scry typed_ability_fragment haste_eligibility aerial_block_legality defender_attack_restriction menace_block_restriction landwalk_restriction combat_evasion_restriction self_counter_block_restriction block_transition_keyword_trigger attack_transition_keyword_trigger fixed_mana_ability color_set_mana_ability ordinary_cycling_ability and cast_permission owners",
     "single_writer_game_actor": "implemented_single_process",
     "transport_neutral_service": "implemented_strict_protocol_3"
   },
@@ -501,11 +507,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 45857,
+      "material_residuals": 45807,
       "status_counts": {
-        "exact": 2742,
-        "partial": 13068,
-        "unresolved": 15813
+        "exact": 2750,
+        "partial": 13088,
+        "unresolved": 15785
       },
       "total": 31623
     },
@@ -514,29 +520,29 @@
     "manifest_present": true,
     "mechanics": {
       "status_counts": {
-        "partial": 63,
+        "partial": 65,
         "tested": 23,
         "trusted": 5,
-        "unclassified": 334
+        "unclassified": 332
       },
       "total": 425,
       "trusted": 5
     },
     "oracle": {
-      "material_residuals": 53446,
+      "material_residuals": 53396,
       "status_counts": {
-        "exact": 5722,
-        "partial": 14215,
-        "unresolved": 18686
+        "exact": 5730,
+        "partial": 14235,
+        "unresolved": 18658
       },
       "total": 38623
     },
     "rules": {
-      "blocked": 402,
-      "definition_only": 134,
-      "passing": 218,
+      "blocked": 405,
+      "definition_only": 136,
+      "passing": 219,
       "total": 3300,
-      "unreviewed": 2546
+      "unreviewed": 2540
     },
     "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
   },
@@ -564,7 +570,7 @@
     "generated_validation_modules": 25,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 229,
+    "primary_test_modules": 230,
     "primary_test_shards": 11,
     "schema_files": 18,
     "server_files": 5,
@@ -574,31 +580,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 45870,
+        "material_residuals": 45820,
         "status_counts": {
-          "residual": 28881,
-          "trusted": 2742
+          "residual": 28873,
+          "trusted": 2750
         },
         "trust_basis_counts": {
-          "capability_closed": 2737,
+          "capability_closed": 2745,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 28881
+          "unresolved": 28873
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 53458,
+        "material_residuals": 53408,
         "status_counts": {
           "failed": 2248,
-          "residual": 32898,
-          "trusted": 3477
+          "residual": 32890,
+          "trusted": 3485
         },
         "trust_basis_counts": {
-          "capability_closed": 3472,
+          "capability_closed": 3480,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 32898
+          "unresolved": 32890
         }
       }
     },

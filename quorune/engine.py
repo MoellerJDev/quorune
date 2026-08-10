@@ -148,6 +148,7 @@ from .zone_trigger_processing import (
     dispatch_zone_change_occurrence,
     semantic_event_sources,
 )
+from .zone_object_state import reset_card_after_zone_change
 from .saga_progression import (
     saga_final_chapter_snapshot,
     saga_step_batch,
@@ -1325,58 +1326,11 @@ class CommanderEngine(
             card.has_left_battlefield = True
 
         clear_object_attachment_relations(self.state.cards, card)
-        card.tapped = False
-        card.marked_damage = 0
-        card.deathtouch_damage = False
-        card.temporary_keywords.clear()
-        card.goaded_by.clear()
-        card.monstrous_value = None
-        card.attacking = None
-        card.blocking = None
-        card.attached_to = None
-        card.attachments.clear()
-        card.phased_out = False
-        if not stack_to_battlefield:
-            card.battle_protector = None
-
-        # CR 400.7 gives the destination a new logical object.  Retain only
-        # state covered by an implemented exception or by the token's initial
-        # copiable characteristics.
-        retained_annotation_keys = {
-            "object_characteristics",
-            "token_characteristics",
-        }
-        if card.is_token or card.object_kind in {
-            "spell_copy",
-            "card_copy",
-        }:
-            retained_annotation_keys.update(
-                {"copied_from", "copy_overrides"}
-            )
-        if stack_to_battlefield:
-            retained_annotation_keys.update(
-                {
-                    "bestowed",
-                    "chosen_creature_type",
-                    "chosen_creature_type_adds_subtype",
-                    "chosen_name",
-                    "copy_overrides",
-                    "evoked",
-                    "pending_aura_target",
-                    "pending_aura_zone",
-                }
-            )
-        card.annotations = {
-            key: value
-            for key, value in card.annotations.items()
-            if key in retained_annotation_keys
-        }
-        card.counters.clear()
-        if not stack_to_battlefield:
-            card.active_face = None
-            card.face_down = False
-        if destination != "battlefield":
-            card.controller = card.owner
+        reset_card_after_zone_change(
+            card,
+            destination=destination,
+            stack_to_battlefield=stack_to_battlefield,
+        )
 
     def _unconditionally_enters_tapped(
         self,

@@ -58,6 +58,7 @@
     "quorune/model.py",
     "quorune/oracle_ir.py",
     "quorune/permanent_exile.py",
+    "quorune/permanent_designations.py",
     "quorune/permissions.py",
     "quorune/protection.py",
     "quorune/replacement_decisions.py",
@@ -80,6 +81,7 @@
     "quorune/trigger_processing.py",
     "quorune/zone_trigger_events.py",
     "quorune/zone_trigger_processing.py",
+    "quorune/zone_object_state.py",
     "quorune/object_query.py"
   ],
   "protected_future_prefixes": [
@@ -172,6 +174,7 @@
       "quorune/tap_state.py": "typed tap-state effect mutation owner behind the semantic intent executor",
       "quorune/token_creation.py": "typed token-creation and replacement mutation owner behind CommanderEngine",
       "quorune/permanent_exile.py": "typed identity-pinned permanent-exile transaction delegating mutation to the canonical zone-change owner",
+      "quorune/permanent_designations.py": "typed identity-pinned noncopiable permanent-designation mutation owner",
       "quorune/return_to_hand.py": "typed identity-pinned permanent-return transaction delegating mutation to the canonical zone-change owner",
       "quorune/stack_counter.py": "typed stack-counter legality, removal, ordinary spell destination, telemetry, and public journal owner",
       "quorune/trigger_processing.py": "typed CR 603.3 occurrence batching, APNAP placement, stack commit, and historical continuation owner behind CommanderEngine",
@@ -188,6 +191,7 @@
       ,"quorune/drawing/transaction.py": "canonical replacement-aware draw mutation owner behind CommanderEngine"
       ,"quorune/combat_relationship_state.py": "typed combat participation and relationship mutation owner behind CommanderEngine"
       ,"quorune/relative_power_target.py": "typed pending-target last-known-information snapshot owner for departing relative-power sources"
+      ,"quorune/zone_object_state.py": "typed object-local CR 400.7 reset owner behind the canonical zone transition"
     },
     "read_only_consumers": {
       "quorune/projection.py": "principal-scoped projection",

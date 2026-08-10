@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 701.37 — Fixed Monstrosity and monstrous designation",
+  "cases": [
+    {
+      "rule_id": "701.37",
+      "rule_text_sha256": "3b9da656aec790695dd3d28bb846b2842b923c24a11a77ebb81f30ea375f650a",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.capabilities.CapabilityRegistry"],
+      "executable_test_ids": ["tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_fixed_monstrosity_compiles_source_spanned_and_capability_closed"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword-action heading; keyword_action.monstrosity.fixed and permanent.designation.monstrous own the bounded fixed-value slice."]
+    },
+    {
+      "rule_id": "701.37a",
+      "rule_text_sha256": "0518f48edc58413af5c8e529703b157cc844c7fd90139791e957e7ccbc54b4d3",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.self_counter_keyword_actions.fixed_self_counter_keyword_action_template", "quorune.semantic_choices.self_counter_keyword_actions.FixedSelfCounterKeywordActionHandler", "quorune.permanent_designations.become_monstrous"],
+      "executable_test_ids": ["tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_fixed_monstrosity_compiles_source_spanned_and_capability_closed", "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_unsupported_adapt_and_monstrosity_variants_remain_residuals", "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_false_resolution_conditions_do_not_prevent_activation", "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_zero_counter_commit_result_still_creates_monstrous_designation", "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_designation_failure_rolls_back_counter_placement"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "blockers": ["variable and zero Monstrosity values are not lowered", "compound Monstrosity instructions remain material residuals"],
+      "notes": ["The fixed positive slice checks the designation on resolution, places counters through replacement, and becomes monstrous even when replacement leaves zero counters; unsupported value grammar fails closed."]
+    },
+    {
+      "rule_id": "701.37b",
+      "rule_text_sha256": "a8fd41b34d95f37a110adfb420b7805ba81e2eb97673bfe2591b72f3a0b5b06b",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["quorune.model.CardInstance.monstrous_value", "quorune.permanent_designations.become_monstrous", "quorune.engine.CommanderEngine.move_card", "quorune.projection.StateProjector"],
+      "executable_test_ids": ["tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_preserves_value_control_change_and_phasing", "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_is_strict_and_old_incarnation_is_ignored", "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_zone_change_clears_and_copy_does_not_inherit_monstrous", "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_replacement_resume_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": [],
+      "notes": ["The designation is public, noncopiable, identity-pinned, survives control changes and phasing, and is cleared by a zone change that creates a new object."]
+    },
+    {
+      "rule_id": "701.37c",
+      "rule_text_sha256": "3e6539510cc4bc473b7dee2a13f6acead04cee85a3db00b3debe29e245fd73c1",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.model.CardInstance.monstrous_value", "quorune.permanent_designations.become_monstrous"],
+      "executable_test_ids": ["tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_monstrous_designation_preserves_value_control_change_and_phasing", "tests.test_self_counter_keyword_actions.FixedSelfCounterKeywordCompilerTests.test_unsupported_adapt_and_monstrosity_variants_remain_residuals"],
+      "required_scenarios": ["positive", "negative", "interaction", "replay"],
+      "covered_scenarios": ["positive", "negative", "replay"],
+      "blockers": ["the resolved fixed value is stored but generic abilities that refer to the Monstrosity value are not compiled or bound"],
+      "notes": ["Recording the value is replay-safe foundation evidence, not a claim that downstream value references are executable."]
+    }
+  ]
+}

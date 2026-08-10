@@ -182,6 +182,8 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/menace.py",
         "quorune/mentor.py",
         "quorune/permanent_exile.py",
+        "quorune/permanent_designations.py",
+        "quorune/zone_object_state.py",
         "quorune/permissions.py",
         "quorune/protection.py",
         "quorune/replacement_decisions.py",
@@ -381,6 +383,10 @@ def _owner(relative: str, layer: str) -> str:
         return "return_to_hand"
     if relative == "quorune/permanent_exile.py":
         return "permanent_exile"
+    if relative == "quorune/permanent_designations.py":
+        return "permanent_designations"
+    if relative == "quorune/zone_object_state.py":
+        return "zone_object_state"
     if relative in {
         "quorune/stack_counter.py",
         "quorune/stack_resolution.py",

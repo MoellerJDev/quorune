@@ -1,10 +1,16 @@
 {
-  "contract_count": 91,
+  "contract_count": 93,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
       "path": "mechanics/contracts/activating-activated-abilities.json",
       "sha256": "e2f85029cc1ded5873f36ed43d1ba121b2b9cd186a023d131f5704f98041a96e",
+      "version": 1
+    },
+    {
+      "mechanic_id": "adapt",
+      "path": "mechanics/contracts/adapt.json",
+      "sha256": "cc52acbfb4bc40c0f286a523fa64781bca16e03d626b479ad54c4c4ea5753cfe",
       "version": 1
     },
     {
@@ -377,6 +383,12 @@
       "mechanic_id": "cr-725-the-monarch",
       "path": "mechanics/contracts/monarch.json",
       "sha256": "3a9a07a580385babf6e2182f20f9fad7e2139add24c971b9df6710feb52617f1",
+      "version": 1
+    },
+    {
+      "mechanic_id": "monstrosity",
+      "path": "mechanics/contracts/monstrosity.json",
+      "sha256": "9a0e316006720739c9e8a4bf30f63ff136def3ea44a0e1c9fec1ed66aba0cc41",
       "version": 1
     },
     {
@@ -4680,19 +4692,37 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/adapt.json",
+      "contract_sha256": "cc52acbfb4bc40c0f286a523fa64781bca16e03d626b479ad54c4c4ea5753cfe",
+      "contract_version": 1,
+      "coverage_status": "partial",
       "dependencies": [
         "701"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.compiler.self_counter_keyword_actions, quorune.semantic_choices.self_counter_keyword_actions, and the canonical counter-placement transaction",
+      "implementation_version": "typed-fixed-adapt-v1",
       "kind": "keyword_action",
+      "known_blockers": [
+        "zero or variable Adapt values are not lowered",
+        "compound Adapt instructions remain material residuals",
+        "copied or granted Adapt requires trusted typed ability fragments",
+        "triggers referring to a permanent adapting are not represented"
+      ],
       "mechanic_id": "adapt",
       "official_name": "Adapt",
       "rule_references": [
         "701.46"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_templates_and_shapes_are_closed",
+        "test_unsupported_adapt_and_monstrosity_variants_remain_residuals",
+        "test_fixed_adapt_compiles_source_spanned_and_capability_closed",
+        "test_adapt_condition_is_checked_only_on_resolution",
+        "test_false_resolution_conditions_do_not_prevent_activation",
+        "test_adapt_uses_canonical_counter_replacement_and_replays",
+        "test_four_player_adapt_replacement_choice_is_seat_scoped",
+        "test_self_counter_keyword_compiler_mutant_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {
@@ -5503,19 +5533,43 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/monstrosity.json",
+      "contract_sha256": "9a0e316006720739c9e8a4bf30f63ff136def3ea44a0e1c9fec1ed66aba0cc41",
+      "contract_version": 1,
+      "coverage_status": "partial",
       "dependencies": [
         "701"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.compiler.self_counter_keyword_actions, quorune.semantic_choices.self_counter_keyword_actions, quorune.permanent_designations, and the canonical counter-placement transaction",
+      "implementation_version": "typed-fixed-monstrosity-v1",
       "kind": "keyword_action",
+      "known_blockers": [
+        "zero or variable Monstrosity values are not lowered",
+        "compound Monstrosity instructions remain material residuals",
+        "monstrous-matters triggers and static abilities are not compiler closed",
+        "typed consumers of the stored CR 701.37c value are not implemented",
+        "copied or granted Monstrosity requires trusted typed ability fragments"
+      ],
       "mechanic_id": "monstrosity",
       "official_name": "Monstrosity",
       "rule_references": [
         "701.37"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_templates_and_shapes_are_closed",
+        "test_unsupported_adapt_and_monstrosity_variants_remain_residuals",
+        "test_fixed_monstrosity_compiles_source_spanned_and_capability_closed",
+        "test_monstrosity_prepares_counter_then_designation",
+        "test_false_resolution_conditions_do_not_prevent_activation",
+        "test_monstrous_designation_preserves_value_control_change_and_phasing",
+        "test_monstrous_designation_is_strict_and_old_incarnation_is_ignored",
+        "test_zone_change_clears_and_copy_does_not_inherit_monstrous",
+        "test_zero_counter_commit_result_still_creates_monstrous_designation",
+        "test_monstrous_replacement_resume_replays_exactly",
+        "test_monstrous_replacement_resume_pins_source_identity",
+        "test_designation_failure_rolls_back_counter_placement",
+        "test_monstrous_designation_runtime_mutant_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {

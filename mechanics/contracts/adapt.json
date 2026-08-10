@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "adapt",
+  "official_name": "Adapt",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["122.1", "122.6", "701.46", "701.46a"],
+  "glossary_references": ["adapt"],
+  "dependencies": ["activated-abilities", "counters", "replacement-effects", "resolving-spells-and-abilities"],
+  "coverage_status": "partial",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["battlefield", "stack"],
+    "objects": ["one current source permanent and logical incarnation", "one source-spanned activated ability"],
+    "events": ["resolve one fixed positive Adapt instruction", "place +1/+1 counters through the canonical counter transaction"],
+    "state_reads": ["current source identity", "current +1/+1 counter count at resolution"],
+    "state_writes": ["replacement-aware +1/+1 counter placement only when the source currently has no +1/+1 counters"],
+    "costs": ["the independently capability-closed activated-ability cost"],
+    "timing": ["Adapt's counter condition is checked on resolution rather than as an activation restriction"],
+    "targets": [],
+    "choices": ["counter-replacement ordering remains scoped to the affected permanent's controller"],
+    "hidden_information": [],
+    "apnap": ["ordinary multiplayer priority and replacement ordering apply"],
+    "layers": ["the condition reads counters on the current permanent; effective characteristic changes do not copy or remove those counters"],
+    "replacement_effects": ["counter quantity replacements suspend before the atomic counter commit"],
+    "copy": ["copied or granted Adapt requires independently trusted typed ability propagation"],
+    "control_change": ["the resolving stack object's controller remains the action actor while the current permanent supplies the affected-object controller"],
+    "zone_change": ["a source that leaves and returns is a new object and cannot receive counters from the old stack object"],
+    "source_leaves": ["a missing, phased-out, or new source incarnation makes the resolving Adapt instruction do nothing"]
+  },
+  "variants": ["fixed positive Adapt value", "condition true", "condition false", "quantity replacement", "four-player replacement choice", "restart and exact replay"],
+  "witness_cards": [{"name": "Aeromunculus", "oracle_id": "a0cd19c1-9125-4627-83ba-d42c489b4e7d"}],
+  "rulings": [],
+  "test_ids": [
+    "test_fixed_templates_and_shapes_are_closed",
+    "test_unsupported_adapt_and_monstrosity_variants_remain_residuals",
+    "test_fixed_adapt_compiles_source_spanned_and_capability_closed",
+    "test_adapt_condition_is_checked_only_on_resolution",
+    "test_false_resolution_conditions_do_not_prevent_activation",
+    "test_adapt_uses_canonical_counter_replacement_and_replays",
+    "test_four_player_adapt_replacement_choice_is_seat_scoped",
+    "test_self_counter_keyword_compiler_mutant_is_killed"
+  ],
+  "implementation": {
+    "component": "quorune.compiler.self_counter_keyword_actions, quorune.semantic_choices.self_counter_keyword_actions, and the canonical counter-placement transaction",
+    "version": "typed-fixed-adapt-v1",
+    "capability_ids": ["keyword_action.adapt.fixed"]
+  },
+  "known_blockers": [
+    "zero or variable Adapt values are not lowered",
+    "compound Adapt instructions remain material residuals",
+    "copied or granted Adapt requires trusted typed ability fragments",
+    "triggers referring to a permanent adapting are not represented"
+  ],
+  "review_status": "reviewed"
+}

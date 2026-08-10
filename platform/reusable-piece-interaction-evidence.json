@@ -866,6 +866,30 @@
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_source"],
       "interaction_order": 5,
       "assertion": "A source that leaves and returns while its counter result is suspended no longer matches the pinned logical identity, so replacement resume rejects before committing either the counter or the later characteristic result."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_adapt_uses_canonical_counter_replacement_and_replays",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.keyword_action.adapt.fixed", "mechanic.adapt", "mechanic.cr-122-counters"],
+      "capability_ids": ["counter.placement.quantity_replacement", "keyword_action.adapt.fixed"],
+      "interaction_order": 4,
+      "assertion": "Fixed Adapt checks the current source only at resolution, suspends its +1/+1 counter request for affected-object replacement ordering, commits through the canonical counter owner, and replays the chosen quantity exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_monstrous_replacement_resume_replays_exactly",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.keyword_action.monstrosity.fixed", "capability.permanent.designation.monstrous", "mechanic.cr-122-counters", "mechanic.monstrosity"],
+      "capability_ids": ["counter.placement.quantity_replacement", "keyword_action.monstrosity.fixed", "permanent.designation.monstrous"],
+      "interaction_order": 5,
+      "assertion": "Fixed Monstrosity resumes one four-player counter-replacement continuation, commits the counter result before the public monstrous designation, preserves the affected-seat projection, and replays the designation and value exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_zone_change_clears_and_copy_does_not_inherit_monstrous",
+      "piece_ids": ["capability.permanent.designation.monstrous", "mechanic.cr-400-general", "mechanic.monstrosity"],
+      "capability_ids": ["permanent.designation.monstrous"],
+      "interaction_order": 3,
+      "assertion": "The monstrous designation is bound to one battlefield incarnation, is not copied to another object, and is cleared when a zone transition creates a new logical object."
     }
   ]
 }

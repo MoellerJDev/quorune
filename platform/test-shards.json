@@ -201,6 +201,7 @@
       "test_proliferate_compiler",
       "test_riot_rules",
       "test_rule_capabilities",
+      "test_self_counter_keyword_actions",
       "test_source_references",
       "test_targeted_counter_effect_clauses",
       "test_targeted_destruction_effect_clauses",

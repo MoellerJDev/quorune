@@ -635,6 +635,44 @@ class PermanentDesignationTests(unittest.TestCase):
         self.assertEqual({}, source.counters)
         self.assertEqual(3, source.monstrous_value)
 
+    def test_false_resolution_conditions_do_not_prevent_activation(self):
+        adapt_session = self.session(7014600)
+        adapt_source = self.add_permanent(
+            adapt_session,
+            name="Aeromunculus",
+            ref="A-aeromunculus-already-countered",
+        )
+        adapt_source.counters["+1/+1"] = 1
+        self.activate(
+            adapt_session,
+            adapt_source,
+            mana={"C": 2, "G": 1, "U": 1},
+        )
+        self.pass_until(adapt_session, lambda: not adapt_session.state.stack)
+        self.assertEqual(1, adapt_source.counters["+1/+1"])
+
+        monstrous_session = self.session(7013700)
+        monstrous_source = self.add_permanent(
+            monstrous_session,
+            name="Gluttonous Cyclops",
+            ref="A-cyclops-already-monstrous",
+        )
+        become_monstrous(
+            monstrous_session.engine,
+            self.designation_request(monstrous_source),
+        )
+        self.activate(
+            monstrous_session,
+            monstrous_source,
+            mana={"C": 5, "R": 2},
+        )
+        self.pass_until(
+            monstrous_session,
+            lambda: not monstrous_session.state.stack,
+        )
+        self.assertEqual({}, monstrous_source.counters)
+        self.assertEqual(3, monstrous_source.monstrous_value)
+
     def test_adapt_uses_canonical_counter_replacement_and_replays(self):
         session = self.session(7014601)
         source = self.add_permanent(

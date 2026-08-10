@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Mapping
 
+from ..object_query import ObjectQueryResult
 from ..replacement.immutable import FrozenMap
 from ..semantic_runtime import (
     BecomeMonstrousIntent,
@@ -53,9 +54,8 @@ def _validated_effect(
     return action, amount, source_ref
 
 
-def _counter_amount(source: object) -> int:
-    counters = getattr(source, "counters", None)
-    raw = counters.get(_COUNTER_NAME, 0) if isinstance(counters, Mapping) else None
+def _counter_amount(source: ObjectQueryResult) -> int:
+    raw = source.counters.get(_COUNTER_NAME, 0)
     if type(raw) is not int or raw < 0:
         raise SemanticChoiceError(
             "The source permanent's +1/+1 counter state is malformed"

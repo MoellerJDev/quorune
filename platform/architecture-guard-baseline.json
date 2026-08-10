@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "0a280f4c70f9f19075b11323f89ef9593b1e3f57",
+  "baseline_commit": "376dccce9a71c626a031b8f1cf9cc7451f2a152b",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -723,7 +723,7 @@
     "quorune/record.py": 11
   },
   "engine": {
-    "logical_lines": 12094,
+    "logical_lines": 12081,
     "methods": [
       {
         "kind": "method",
@@ -1537,11 +1537,6 @@
       },
       {
         "kind": "method",
-        "name": "_maybe_sacrifice_completed_saga",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_monarch_trigger",
         "visibility": "private"
       },
@@ -2241,12 +2236,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 12807
+    "physical_lines": 12793
   },
   "exception_binding": {
-    "adr": "docs/adr/0047-typed-zone-object-keyword-results.md",
-    "allowance_fingerprint": "93da41a7c8b8ac30364704736f47fdd07ab4a0349ab8a50579da977a2d37467f",
-    "exception_id": "ARCH-EXC-0020"
+    "adr": "docs/adr/0048-typed-fixed-adapt-and-monstrosity.md",
+    "allowance_fingerprint": "5bdfc1f502726df1ff908230d9b1be0db4438e6ca603f34a7759fe3259cf0d7e",
+    "exception_id": "ARCH-EXC-0021"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2476,7 +2471,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 12094
+      "logical_lines": 12081
     },
     {
       "file": "quorune/record.py",
@@ -2565,6 +2560,7 @@
     "explore",
     "extra_turn",
     "fabricate",
+    "fixed_self_counter_keyword_action",
     "fomori_vault",
     "goad",
     "grant_ability_marker",

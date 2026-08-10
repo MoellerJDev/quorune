@@ -62,3 +62,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0045 — typed fixed Scry resolution](0045-typed-fixed-scry-resolution.md)
 - [ADR 0046 — typed fixed sacrifice casting costs](0046-typed-fixed-sacrifice-casting-costs.md)
 - [ADR 0047 — typed zone-object keyword results](0047-typed-zone-object-keyword-results.md)
+- [ADR 0048 — typed fixed Adapt and Monstrosity actions](0048-typed-fixed-adapt-and-monstrosity.md)
