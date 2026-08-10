@@ -9,6 +9,12 @@ from quorune.counter_placement import (
     CounterPlacementRequest,
     place_counters,
 )
+from quorune.counter_removal import (
+    commit_counter_removals,
+    CounterRemoval,
+    plan_counter_removals,
+)
+from quorune.destruction import destroy_permanent_refs
 from quorune.model import CombatState
 from quorune.record import (
     authoritative_state_hash,
@@ -261,6 +267,52 @@ class KeywordCounterCompositionTests(unittest.TestCase):
         self.assertTrue(result.ok, result.summary)
         self.assertEqual(23, engine.state.players["A"].life)
         self.assert_replays(session, "keyword-counter-lifelink-damage")
+
+    def test_indestructible_counter_feeds_canonical_destruction(self):
+        session = self.session(122_001_005, step="combat_damage")
+        engine = session.engine
+        permanent = self.token(
+            engine,
+            "B",
+            "Counter-granted indestructible permanent",
+        )
+        self.place_keyword_counter(engine, permanent, "indestructible")
+
+        protected = destroy_permanent_refs(
+            engine,
+            (permanent.ref,),
+            actor="A",
+            reason="keyword-counter Indestructible witness",
+        )
+
+        self.assertEqual(
+            (permanent.object_id,),
+            protected.indestructible_object_ids,
+        )
+        self.assertEqual("battlefield", permanent.zone)
+        removal = plan_counter_removals(
+            engine,
+            (
+                CounterRemoval(
+                    object_id=permanent.object_id,
+                    counter_name="indestructible",
+                    amount=1,
+                    expected_logical_object_id=permanent.logical_object_id,
+                ),
+            ),
+        )
+        commit_counter_removals(engine, removal)
+
+        destroyed = destroy_permanent_refs(
+            engine,
+            (permanent.ref,),
+            actor="A",
+            reason="removed keyword-counter witness",
+        )
+        self.assertEqual(
+            (permanent.object_id,),
+            destroyed.destroyed_object_ids,
+        )
 
 
 if __name__ == "__main__":

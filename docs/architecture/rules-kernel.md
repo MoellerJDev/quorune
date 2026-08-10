@@ -2,7 +2,7 @@
 title: "Rules kernel"
 status: "current"
 authoritative_source: "quorune engine and rules modules, including quorune/saga_progression.py, quorune/mentor.py, quorune/relative_power_target.py, and quorune/target_predicates.py"
-verified: "2026-08-09"
+verified: "2026-08-10"
 audience: "rules and engine contributors"
 maintenance: "hand-maintained"
 ---
@@ -33,6 +33,18 @@ movement to the zone owner; direct exile and return snapshot owner, controller,
 and object identity through one closed single-object transition substrate before
 delegating their distinct requested destinations to that same replacement-aware
 zone owner.
+Represented single-target, fixed-set, lethal-damage, and Deathtouch destruction
+all snapshot the current canonical effective-keyword view before committing
+through `destruction.py`. The fine-grained
+`permanent.indestructible.ordinary` capability covers ordinary intrinsic,
+temporary, continuous-grant, and keyword-counter instances already represented
+by that view. It prohibits only destruction: zero toughness, sacrifice, exile,
+and other nondestruction movement remain owned by their normal rules paths.
+Ordinary Trample still assigns lethal damage without treating Indestructible as
+damage already assigned. Regeneration, qualified or conditional wording,
+player-facing Indestructible, and unrepresented copy, face-down, merged-object,
+or ability-changing producers remain fail-closed blockers; the aggregate
+Indestructible mechanic remains partial.
 Capability lifecycle and replay hydration have narrowly declared compatibility
 ownership. All other rules helpers return values or operate through an
 approved mutation boundary. Typed semantic handlers receive

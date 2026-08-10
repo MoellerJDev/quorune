@@ -157,6 +157,7 @@ from .life_state import (
     pay_life_cost,
 )
 from . import haste
+from .keyword_abilities import normalized_characteristic_keywords
 from .combat_evasion_engine_adapter import engine_combat_evasion_verdict
 from .errors import GameRuleError, StateInvariantError
 from .entry_counters import (
@@ -11816,10 +11817,7 @@ class CommanderEngine(
                 card_types, subtypes, supertypes = self._type_parts(
                     str(data.get("type_line") or "")
                 )
-                keywords = {
-                    str(value).casefold()
-                    for value in data.get("keywords", [])
-                }
+                keywords = normalized_characteristic_keywords(data)
                 snapshots.append(
                     PermanentSnapshot(
                         object_id=card.object_id,

@@ -530,7 +530,7 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
             ir.faces[0].nodes[0].capability_dependencies,
         )
 
-    def test_untrusted_indestructible_behavior_blocks_exact_sequence_promotion(
+    def test_trusted_indestructible_behavior_promotes_exact_sequence(
         self,
     ):
         text = (
@@ -543,8 +543,12 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
 
         ir = self.compile(text)
 
-        self.assertNotEqual("exact", ir.status)
-        self.assertTrue(ir.material_residuals)
+        self.assertEqual("exact", ir.status)
+        self.assertFalse(ir.material_residuals)
+        self.assertIn(
+            "permanent.indestructible.ordinary",
+            ir.faces[0].nodes[0].capability_dependencies,
+        )
 
     def test_target_threaded_sequence_shape_mutants_fail_closed(self):
         template = fixed_target_effect_sequence_template(

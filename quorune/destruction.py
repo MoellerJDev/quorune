@@ -12,6 +12,7 @@ from .counter_state import (
     plan_counter_changes,
     validate_counter_changes,
 )
+from .keyword_abilities import normalized_effective_keywords
 from .replacement.immutable import (
     FrozenMap,
     freeze_value,
@@ -279,12 +280,12 @@ def request_for_card(card: Any) -> DestructionRequest:
 
 
 def _effective_keywords(host: DestructionHost, card: Any) -> frozenset[str]:
-    raw = host._effective_card_data(card).get("keywords", ())
-    if not isinstance(raw, (list, tuple, set, frozenset)) or any(
-        not isinstance(keyword, str) or not keyword for keyword in raw
-    ):
-        raise DestructionError("Effective destruction keywords are malformed")
-    return frozenset(keyword.casefold() for keyword in raw)
+    try:
+        return normalized_effective_keywords(host, card)
+    except ValueError as exc:
+        raise DestructionError(
+            f"Unable to compute effective destruction keywords: {exc}"
+        ) from exc
 
 
 def _destruction_disposition(

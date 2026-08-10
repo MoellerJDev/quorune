@@ -80,6 +80,7 @@ _FLYING_MECHANIC = "fl" + "ying"
 _REACH_MECHANIC = "re" + "ach"
 _FLASH_MECHANIC = "fl" + "ash"
 _TRAMPLE_MECHANIC = "tram" + "ple"
+_INDESTRUCTIBLE_MECHANIC = "inde" + "structible"
 _DEATHTOUCH_MECHANIC = "dea" + "thtouch"
 _DEFENDER_MECHANIC = "def" + "ender"
 _MENACE_MECHANIC = "men" + "ace"
@@ -166,6 +167,9 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _HEXPROOF_MECHANIC: ("target.protection.hexproof_permanent",),
     _REACH_MECHANIC: ("combat.block.reach",),
     _TRAMPLE_MECHANIC: ("combat.damage.assignment.trample",),
+    _INDESTRUCTIBLE_MECHANIC: (
+        "permanent.indestructible.ordinary",
+    ),
     _VIGILANCE_MECHANIC: ("combat.attack.vigilance",),
     "cr-119-life": ("life.change.effect",),
     "cr-121-drawing-a-card": ("zone.draw.library_to_hand",),
