@@ -499,7 +499,7 @@ class FixedZoneChangeAdditionalCostRuntimeTests(unittest.TestCase):
         engine._cast(
             "A", {"card": spell.ref, "sacrifice_cards": [goblin_ref]}
         )
-        self.assertNotIn(goblin_object_id, engine.state.cards)
+        self.assertEqual("outside", engine.state.cards[goblin_object_id].zone)
         self.assertEqual("stack", spell.zone)
 
     def test_stale_zone_change_selection_rolls_back(self):
