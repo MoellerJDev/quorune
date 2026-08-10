@@ -476,6 +476,9 @@ class FixedZoneChangeAdditionalCostRuntimeTests(unittest.TestCase):
                 "toughness": "1",
             },
         )[0]
+        goblin_object_id = engine._resolve_object(
+            "A", goblin_ref, zones={"battlefield"}
+        ).object_id
         nongoblin = self.card(engine, "A", "Birds of Paradise")
         engine.move_card(
             nongoblin.object_id,
@@ -496,7 +499,7 @@ class FixedZoneChangeAdditionalCostRuntimeTests(unittest.TestCase):
         engine._cast(
             "A", {"card": spell.ref, "sacrifice_cards": [goblin_ref]}
         )
-        self.assertNotIn(goblin_ref, engine.state.ref_index)
+        self.assertNotIn(goblin_object_id, engine.state.cards)
         self.assertEqual("stack", spell.zone)
 
     def test_stale_zone_change_selection_rolls_back(self):
