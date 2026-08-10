@@ -64,6 +64,7 @@ class KeywordCounterCompositionTests(unittest.TestCase):
         *,
         power: int = 2,
         toughness: int = 2,
+        colors: tuple[str, ...] = ("G",),
         temporary_keywords: tuple[str, ...] = (),
     ):
         ref = engine.create_token(
@@ -74,7 +75,7 @@ class KeywordCounterCompositionTests(unittest.TestCase):
                 "power": str(power),
                 "toughness": str(toughness),
                 "keywords": [],
-                "colors": ["G"],
+                "colors": list(colors),
             },
             temporary_keywords=temporary_keywords,
         )[0]
@@ -83,6 +84,30 @@ class KeywordCounterCompositionTests(unittest.TestCase):
             ref,
             zones={"battlefield"},
         )
+
+    @staticmethod
+    def card(engine, seat: str, name: str):
+        return next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == seat and card.printed_name == name
+        )
+
+    def prepare_red_elemental_blast(self, session):
+        engine = session.engine
+        spell = self.card(engine, "A", "Red Elemental Blast")
+        engine.move_card(spell.object_id, "hand")
+        engine.state.players["A"].mana_pool["R"] = 1
+        engine.state.priority_player = "A"
+        engine._issue_priority("A")
+        action = next(
+            value
+            for value in session.packet("pilot:A", full=True)["decision"][
+                "legal_actions"
+            ]
+            if value.get("card") == spell.ref
+        )
+        return spell, action
 
     @staticmethod
     def place_keyword_counter(engine, card, counter_name: str) -> None:
@@ -313,6 +338,255 @@ class KeywordCounterCompositionTests(unittest.TestCase):
             (permanent.object_id,),
             destroyed.destroyed_object_ids,
         )
+
+    def test_deathtouch_counter_feeds_assignment_and_final_damage_result(self):
+        session = self.session(122_001_006, step="combat_damage")
+        engine = session.engine
+        engine.state.phase_index = 7
+        attacker = self.token(
+            engine,
+            "A",
+            "Counter-granted deathtoucher",
+            power=2,
+            toughness=8,
+        )
+        first = self.token(
+            engine,
+            "B",
+            "First high-toughness blocker",
+            power=1,
+            toughness=8,
+        )
+        second = self.token(
+            engine,
+            "B",
+            "Second high-toughness blocker",
+            power=1,
+            toughness=8,
+        )
+        self.place_keyword_counter(engine, attacker, "deathtouch")
+        self.set_combat(engine, attacker, first, second)
+        engine._begin_combat_damage()
+        session.initial_checkpoint = checkpoint_envelope(session.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        result = session.act(
+            "pilot:A",
+            {
+                "a": "dmg",
+                "assignments": [
+                    {
+                        "source": attacker.ref,
+                        "target": first.ref,
+                        "amount": 1,
+                    },
+                    {
+                        "source": attacker.ref,
+                        "target": second.ref,
+                        "amount": 1,
+                    },
+                ],
+            },
+        )
+
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual("outside", first.zone)
+        self.assertEqual("outside", second.zone)
+        self.assertEqual("battlefield", attacker.zone)
+        self.assert_replays(session, "keyword-counter-deathtouch")
+
+    def test_trample_counter_feeds_offer_and_command_spill_legality(self):
+        session = self.session(122_001_007, step="combat_damage")
+        engine = session.engine
+        engine.state.phase_index = 7
+        attacker = self.token(
+            engine,
+            "A",
+            "Counter-granted trampler",
+            power=5,
+            toughness=5,
+        )
+        blocker = self.token(engine, "B", "Trample blocker")
+        self.place_keyword_counter(engine, attacker, "trample")
+        self.set_combat(engine, attacker, blocker)
+        engine._begin_combat_damage()
+        decision = session.packet("pilot:A", full=True)["decision"]
+        damage_sources = decision["legal_actions"][0]["form"]["fields"][0][
+            "combat"
+        ]["damage_sources"]
+        self.assertEqual(
+            [blocker.ref, "B"],
+            damage_sources[attacker.ref]["targets"],
+        )
+        self.assertIsNone(session.packet("pilot:C", full=True)["decision"])
+        self.assertIsNone(session.packet("pilot:D", full=True)["decision"])
+        session.initial_checkpoint = checkpoint_envelope(session.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        before = authoritative_state_hash(session.state)
+        rejected = session.act(
+            "pilot:A",
+            {
+                "a": "dmg",
+                "assignments": [
+                    {
+                        "source": attacker.ref,
+                        "target": blocker.ref,
+                        "amount": 1,
+                    },
+                    {"source": attacker.ref, "target": "B", "amount": 4},
+                ],
+            },
+        )
+        self.assertFalse(rejected.ok)
+        self.assertEqual(before, authoritative_state_hash(session.state))
+
+        accepted = session.act(
+            "pilot:A",
+            {
+                "a": "dmg",
+                "assignments": [
+                    {
+                        "source": attacker.ref,
+                        "target": blocker.ref,
+                        "amount": 2,
+                    },
+                    {"source": attacker.ref, "target": "B", "amount": 3},
+                ],
+            },
+        )
+        self.assertTrue(accepted.ok, accepted.summary)
+        self.assertEqual(37, engine.state.players["B"].life)
+        self.assertEqual(
+            "outside",
+            engine.state.cards[blocker.object_id].zone,
+        )
+        self.assert_replays(session, "keyword-counter-trample")
+
+    def test_menace_counter_feeds_offer_and_command_block_legality(self):
+        session = self.session(122_001_008, step="declare_blockers")
+        engine = session.engine
+        engine.state.phase_index = 6
+        attacker = self.token(engine, "A", "Counter-granted menace")
+        first = self.token(engine, "B", "First menace blocker")
+        second = self.token(engine, "B", "Second menace blocker")
+        self.place_keyword_counter(engine, attacker, "menace")
+        attacker.attacking = "B"
+        engine.state.combat = CombatState(
+            attackers_declared=True,
+            had_attacking_creature=True,
+            attackers={attacker.object_id: "B"},
+            defending_players=["B"],
+        )
+        engine._begin_blocker_decisions()
+        decision = session.packet("pilot:B", full=True)["decision"]
+        self.assertEqual(
+            {attacker.ref: 2},
+            decision["ctx"]["minimum_blockers"],
+        )
+        session.initial_checkpoint = checkpoint_envelope(session.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        before = authoritative_state_hash(session.state)
+        rejected = session.act(
+            "pilot:B",
+            {"a": "block", "blk": {first.ref: attacker.ref}},
+        )
+        self.assertFalse(rejected.ok)
+        self.assertEqual(before, authoritative_state_hash(session.state))
+        accepted = session.act(
+            "pilot:B",
+            {
+                "a": "block",
+                "blk": {
+                    first.ref: attacker.ref,
+                    second.ref: attacker.ref,
+                },
+            },
+        )
+        self.assertTrue(accepted.ok, accepted.summary)
+        self.assert_replays(session, "keyword-counter-menace")
+
+    def test_hexproof_counter_feeds_offer_and_resolution_revalidation(self):
+        session = self.session(122_001_009, step="combat_damage")
+        engine = session.engine
+        opposing = self.token(
+            engine,
+            "B",
+            "Opposing counter-granted hexproof",
+            colors=("U",),
+        )
+        controlled = self.token(
+            engine,
+            "A",
+            "Controlled counter-granted hexproof",
+            colors=("U",),
+        )
+        later_protected = self.token(
+            engine,
+            "B",
+            "Later counter-granted hexproof",
+            colors=("U",),
+        )
+        self.place_keyword_counter(engine, opposing, "hexproof")
+        self.place_keyword_counter(engine, controlled, "hexproof")
+        _, action = self.prepare_red_elemental_blast(session)
+
+        legal_refs = action["target_schema"]["legal_refs"]
+        self.assertNotIn(opposing.ref, legal_refs)
+        self.assertIn(controlled.ref, legal_refs)
+        self.assertIn(later_protected.ref, legal_refs)
+        for seat in ("B", "C", "D"):
+            self.assertIsNone(
+                session.packet(f"pilot:{seat}", full=True)["decision"]
+            )
+
+        before = authoritative_state_hash(session.state)
+        rejected = session.act(
+            "pilot:A",
+            {
+                "action_id": action["id"],
+                "modes": ["destroy"],
+                "targets": [opposing.ref],
+                "pay": "manual",
+                "payment": {"R": 1},
+            },
+        )
+        self.assertFalse(rejected.ok)
+        self.assertEqual(before, authoritative_state_hash(session.state))
+        cast = session.act(
+            "pilot:A",
+            {
+                "action_id": action["id"],
+                "modes": ["destroy"],
+                "targets": [later_protected.ref],
+                "pay": "manual",
+                "payment": {"R": 1},
+            },
+        )
+        self.assertTrue(cast.ok, cast.summary)
+        stack_ref = engine.state.stack[-1].ref
+
+        self.place_keyword_counter(engine, later_protected, "hexproof")
+        session.initial_checkpoint = checkpoint_envelope(session.state)
+        session.commands.clear()
+        session.decisions.clear()
+        for _ in range(16):
+            if not any(item.ref == stack_ref for item in engine.state.stack):
+                break
+            pass_current(session)
+
+        self.assertFalse(
+            any(item.ref == stack_ref for item in engine.state.stack)
+        )
+        self.assertEqual(
+            "battlefield",
+            engine.state.cards[later_protected.object_id].zone,
+        )
+        self.assert_replays(session, "keyword-counter-hexproof-revalidation")
 
 
 if __name__ == "__main__":

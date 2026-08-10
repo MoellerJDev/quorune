@@ -2,7 +2,7 @@
 title: "Interaction coverage"
 status: "current"
 authoritative_source: "platform/reusable-piece-interaction-evidence.json, capability evidence, mechanic contracts, conformance records, semantic programs, and tests"
-verified: "2026-08-09"
+verified: "2026-08-10"
 audience: "rules and test contributors"
 maintenance: "hand-maintained"
 ---
@@ -45,3 +45,11 @@ ambient high-risk declaration, explicit interaction evidence, or a combination.
 Adding an ambient pair without evidence therefore creates an uncovered
 high-risk row; evidence can cover it only by naming a registered test and the
 exact participating pieces.
+
+The current keyword-counter assurance grid treats the boundary between
+canonical counter placement, layer-6 characteristic projection, and each
+independent executable consumer as ambient high risk. It covers replacement
+ordering, Flying, Vigilance, Double strike, Lifelink, Deathtouch, Trample,
+Menace, Indestructible, and ordinary permanent Hexproof only through their
+named capability pairs. Other entries in the CR 122.1b vocabulary remain
+unknown until an exact consumer interaction is declared and certified.
