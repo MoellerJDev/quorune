@@ -14,6 +14,7 @@ from .counter_capability_shapes import (
 from .node_capability_shapes import (
     fixed_counter_additional_cost_node_capabilities,
     fixed_sacrifice_additional_cost_node_capabilities,
+    fixed_zone_change_additional_cost_node_capabilities,
     fixed_counter_placement_batch_node_capabilities,
     fixed_counter_placement_node_capabilities,
     fixed_counter_placement_set_node_capabilities,
@@ -872,6 +873,11 @@ def capability_dependencies_for_node(
             cost_schema=cost_schema
         )
     )
+    dependencies.update(
+        fixed_zone_change_additional_cost_node_capabilities(
+            cost_schema=cost_schema
+        )
+    )
     for mechanic in mechanics:
         if mechanic not in _SHAPE_GATED_MECHANICS:
             dependencies.update(
@@ -1024,6 +1030,14 @@ def capability_covered_mechanics(
     if "casting.additional_cost.fixed_counter_placement" in supplied:
         covered.update({"cr-601-casting-spells", "cr-122-counters"})
     if "casting.additional_cost.fixed_sacrifice" in supplied:
+        covered.add("cr-601-casting-spells")
+    if supplied.intersection(
+        {
+            "casting.additional_cost.zone_change.fixed_discard",
+            "casting.additional_cost.zone_change.fixed_exile",
+            "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
+        }
+    ):
         covered.add("cr-601-casting-spells")
     if "counter.producer.cumulative_upkeep_fixed_mana" in supplied:
         covered.update({"cr-122-counters", "cumulative upkeep"})

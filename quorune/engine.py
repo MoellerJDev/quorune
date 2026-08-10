@@ -5437,53 +5437,6 @@ class CommanderEngine(
             candidates.append(card.ref)
         return candidates
 
-    def _additional_cost_candidates(
-        self,
-        seat: str,
-        source: CardInstance,
-        specification: Mapping[str, Any],
-    ) -> list[str]:
-        kind = str(specification.get("kind") or "")
-        zone = str(
-            specification.get("zone")
-            or ("hand" if kind == "discard" else "battlefield")
-        )
-        types = {
-            str(value).casefold()
-            for value in (
-                specification.get("types_any")
-                or (
-                    [specification["card_type"]]
-                    if specification.get("card_type")
-                    else []
-                )
-            )
-        }
-        candidates: list[str] = []
-        for object_id in self.state.players[seat].zones.get(zone, []):
-            card = self.state.cards[object_id]
-            if zone == "battlefield":
-                if card.controller != seat or card.phased_out:
-                    continue
-            elif card.owner != seat:
-                continue
-            if (
-                specification.get("exclude_source")
-                or specification.get("another")
-            ) and card.object_id == source.object_id:
-                continue
-            if types:
-                card_types, _, _ = self._type_parts(
-                    str(
-                        self._effective_card_data(card).get("type_line")
-                        or ""
-                    )
-                )
-                if not types.intersection(card_types):
-                    continue
-            candidates.append(card.ref)
-        return candidates
-
     def _payment_mechanic_candidates(
         self,
         seat: str,

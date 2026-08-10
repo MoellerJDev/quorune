@@ -6,7 +6,17 @@ from collections.abc import Mapping
 from dataclasses import dataclass, replace
 from typing import Any, Protocol
 
-from ..additional_cost_vocabulary import SACRIFICE_COST_KIND
+from ..additional_cost_vocabulary import (
+    DISCARD_ONE_COST,
+    EXILE_ONE_FROM_BATTLEFIELD_COST,
+    EXILE_ONE_FROM_GRAVEYARD_COST,
+    FIXED_ZONE_CHANGE_COST_CONTRACTS,
+    FIXED_ZONE_CHANGE_COST_OPERATIONS,
+    RETURN_ONE_TO_OWNER_HAND_COST,
+    SACRIFICE_COST_KIND,
+    SACRIFICE_ONE_COST,
+    ZONE_CHANGE_COST_KIND,
+)
 from ..object_predicate import ObjectQuerySpec
 from ..object_query import object_query_result, query_objects
 
@@ -44,6 +54,16 @@ _FIXED_SACRIFICE_FIELDS = frozenset(
         "predicate",
     }
 )
+_FIXED_ZONE_CHANGE_FIELDS = frozenset(
+    {
+        "schema_version",
+        "kind",
+        "operation",
+        "count",
+        "choice_field",
+        "predicate",
+    }
+)
 _PERMANENT_CARD_TYPES = frozenset(
     {
         "artifact",
@@ -53,6 +73,9 @@ _PERMANENT_CARD_TYPES = frozenset(
         "land",
         "planeswalker",
     }
+)
+_CARD_TYPES = _PERMANENT_CARD_TYPES | frozenset(
+    {"instant", "kindred", "sorcery"}
 )
 
 
@@ -253,6 +276,159 @@ class FixedSacrificeAdditionalCost:
         return replace(self.predicate, controller=actor)
 
 
+@dataclass(frozen=True, slots=True)
+class FixedZoneChangeAdditionalCost:
+    """Move exactly one selected object between operation-owned zones."""
+
+    operation: str
+    choice_field: str
+    predicate: ObjectQuerySpec
+    schema_version: int = 1
+    kind: str = ZONE_CHANGE_COST_KIND
+    count: int = 1
+
+    def __post_init__(self) -> None:
+        if type(self.schema_version) is not int or self.schema_version != 1:
+            raise AdditionalCostError(
+                "Zone-change additional-cost schema version is unsupported"
+            )
+        if self.kind != ZONE_CHANGE_COST_KIND:
+            raise AdditionalCostError(
+                "Zone-change additional-cost kind is unsupported"
+            )
+        if self.operation not in FIXED_ZONE_CHANGE_COST_OPERATIONS:
+            raise AdditionalCostError(
+                "Zone-change additional-cost operation is unsupported"
+            )
+        if type(self.count) is not int or self.count != 1:
+            raise AdditionalCostError(
+                "Fixed zone-change additional costs require one object"
+            )
+        origin, _, expected_field = FIXED_ZONE_CHANGE_COST_CONTRACTS[
+            self.operation
+        ]
+        if self.choice_field != expected_field:
+            raise AdditionalCostError(
+                "Zone-change additional cost has a noncanonical choice field"
+            )
+        if not isinstance(self.predicate, ObjectQuerySpec):
+            raise AdditionalCostError(
+                "Zone-change additional costs require a typed object predicate"
+            )
+        expected_owner = "$actor" if origin != "battlefield" else None
+        expected_controller = "$actor" if origin == "battlefield" else None
+        if (
+            self.predicate.zones != (origin,)
+            or self.predicate.owner != expected_owner
+            or self.predicate.controller != expected_controller
+            or self.predicate.known_to_actor is not True
+            or self.predicate.include_phased_out
+            or self.predicate.keywords_all
+            or self.predicate.token is not None
+            or self.predicate.tapped is not None
+            or self.predicate.exclude_ref is not None
+        ):
+            raise AdditionalCostError(
+                "Zone-change additional-cost predicate is outside the closed family"
+            )
+        represented_types = (
+            set(self.predicate.types_all)
+            | set(self.predicate.types_any)
+            | set(self.predicate.excluded_types)
+        )
+        allowed_types = (
+            _PERMANENT_CARD_TYPES if origin == "battlefield" else _CARD_TYPES
+        )
+        if not represented_types.issubset(allowed_types):
+            raise AdditionalCostError(
+                "Zone-change additional-cost card types are unsupported"
+            )
+        if self.predicate.types_all and self.predicate.types_any:
+            raise AdditionalCostError(
+                "Zone-change costs cannot combine type conjunction and union"
+            )
+        if self.predicate.colors_all and self.predicate.colors_any:
+            raise AdditionalCostError(
+                "Zone-change costs cannot combine color conjunction and union"
+            )
+        if not set(
+            self.predicate.colors_all + self.predicate.colors_any
+        ).issubset({"W", "U", "B", "R", "G", "C"}):
+            raise AdditionalCostError(
+                "Zone-change additional-cost colors are unsupported"
+            )
+
+    @classmethod
+    def from_descriptor(
+        cls, value: Mapping[str, Any]
+    ) -> "FixedZoneChangeAdditionalCost":
+        if not isinstance(value, Mapping) or set(value) != _FIXED_ZONE_CHANGE_FIELDS:
+            raise AdditionalCostError(
+                "Zone-change additional-cost descriptor fields are closed"
+            )
+        try:
+            predicate = ObjectQuerySpec.from_dict(value["predicate"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise AdditionalCostError(
+                "Zone-change additional-cost predicate is malformed"
+            ) from exc
+        return cls(
+            schema_version=value["schema_version"],
+            kind=value["kind"],
+            operation=value["operation"],
+            count=value["count"],
+            choice_field=value["choice_field"],
+            predicate=predicate,
+        )
+
+    @classmethod
+    def from_legacy_sacrifice(
+        cls, cost: FixedSacrificeAdditionalCost
+    ) -> "FixedZoneChangeAdditionalCost":
+        return cls(
+            operation=SACRIFICE_ONE_COST,
+            choice_field=cost.choice_field,
+            predicate=cost.predicate,
+        )
+
+    @property
+    def origin_zone(self) -> str:
+        return FIXED_ZONE_CHANGE_COST_CONTRACTS[self.operation][0]
+
+    @property
+    def destination_zone(self) -> str:
+        return FIXED_ZONE_CHANGE_COST_CONTRACTS[self.operation][1]
+
+    @property
+    def log_kind(self) -> str:
+        return {
+            DISCARD_ONE_COST: "discard",
+            SACRIFICE_ONE_COST: "sacri" + "fice",
+            EXILE_ONE_FROM_GRAVEYARD_COST: "ex" + "ile",
+            EXILE_ONE_FROM_BATTLEFIELD_COST: "ex" + "ile",
+            RETURN_ONE_TO_OWNER_HAND_COST: "ret" + "urn",
+        }[self.operation]
+
+    def to_descriptor(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "kind": self.kind,
+            "operation": self.operation,
+            "count": self.count,
+            "choice_field": self.choice_field,
+            "predicate": self.predicate.to_dict(),
+        }
+
+    def bound_predicate(self, actor: str) -> ObjectQuerySpec:
+        if type(actor) is not str or not actor:
+            raise AdditionalCostError(
+                "Zone-change additional-cost actor must be nonempty"
+            )
+        if self.origin_zone == "battlefield":
+            return replace(self.predicate, controller=actor)
+        return replace(self.predicate, owner=actor)
+
+
 def fixed_counter_additional_cost(
     value: Mapping[str, Any],
 ) -> FixedCounterPlacementAdditionalCost | None:
@@ -274,6 +450,19 @@ def fixed_sacrifice_additional_cost(
     ):
         return None
     return FixedSacrificeAdditionalCost.from_descriptor(value)
+
+
+def fixed_zone_change_additional_cost(
+    value: Mapping[str, Any],
+) -> FixedZoneChangeAdditionalCost | None:
+    if not isinstance(value, Mapping):
+        raise AdditionalCostError("Additional costs must be objects")
+    if value.get("kind") == ZONE_CHANGE_COST_KIND:
+        return FixedZoneChangeAdditionalCost.from_descriptor(value)
+    legacy = fixed_sacrifice_additional_cost(value)
+    if legacy is None:
+        return None
+    return FixedZoneChangeAdditionalCost.from_legacy_sacrifice(legacy)
 
 
 def fixed_counter_cost_candidates(
@@ -313,8 +502,23 @@ def fixed_sacrifice_cost_candidates(
 ) -> tuple[str, ...]:
     """Return controlled sacrifice candidates using effective characteristics."""
 
+    return fixed_zone_change_cost_candidates(
+        host,
+        actor=actor,
+        cost=FixedZoneChangeAdditionalCost.from_legacy_sacrifice(cost),
+    )
+
+
+def fixed_zone_change_cost_candidates(
+    host: AdditionalCostQueryHost,
+    *,
+    actor: str,
+    cost: FixedZoneChangeAdditionalCost,
+) -> tuple[str, ...]:
+    """Return operation-owned candidates through one immutable query path."""
+
     rows = []
-    for object_id in host.state.players[actor].zones["battlefield"]:
+    for object_id in host.state.players[actor].zones[cost.origin_zone]:
         card = host.state.cards[object_id]
         effective = host._effective_card_data(card)
         rows.append(
@@ -334,13 +538,66 @@ def fixed_sacrifice_cost_candidates(
     )
 
 
+def legacy_additional_cost_candidates(
+    host: AdditionalCostQueryHost,
+    *,
+    actor: str,
+    source: Any,
+    specification: Mapping[str, Any],
+) -> tuple[str, ...]:
+    """Isolate the remaining pre-typed discard/sacrifice compatibility path."""
+
+    kind = str(specification.get("kind") or "")
+    zone = str(
+        specification.get("zone")
+        or ("hand" if kind == "discard" else "battlefield")
+    )
+    types = {
+        str(value).casefold()
+        for value in (
+            specification.get("types_any")
+            or (
+                [specification["card_type"]]
+                if specification.get("card_type")
+                else []
+            )
+        )
+    }
+    candidates: list[str] = []
+    for object_id in host.state.players[actor].zones.get(zone, []):
+        card = host.state.cards[object_id]
+        if zone == "battlefield":
+            if card.controller != actor or card.phased_out:
+                continue
+        elif card.owner != actor:
+            continue
+        if (
+            specification.get("exclude_source")
+            or specification.get("another")
+        ) and card.object_id == source.object_id:
+            continue
+        if types:
+            effective = host._effective_card_data(card)
+            card_types, _, _ = host._type_parts(
+                str(effective.get("type_line") or "")
+            )
+            if types.isdisjoint(card_types):
+                continue
+        candidates.append(card.ref)
+    return tuple(candidates)
+
+
 __all__ = [
     "AdditionalCostError",
     "AdditionalCostQueryHost",
     "FixedCounterPlacementAdditionalCost",
     "FixedSacrificeAdditionalCost",
+    "FixedZoneChangeAdditionalCost",
     "fixed_counter_additional_cost",
     "fixed_counter_cost_candidates",
     "fixed_sacrifice_additional_cost",
     "fixed_sacrifice_cost_candidates",
+    "fixed_zone_change_additional_cost",
+    "fixed_zone_change_cost_candidates",
+    "legacy_additional_cost_candidates",
 ]

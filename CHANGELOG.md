@@ -11,6 +11,21 @@ maintenance: "hand-maintained"
 
 ## Unreleased
 
+### Typed fixed single-object zone-change casting costs
+
+- Added one immutable cost descriptor and candidate query shared by fixed
+  discard, sacrifice, graveyard or battlefield exile, and return-to-owner-hand
+  payments. Legal-action offers, command validation, destination replacement,
+  normalized zone triggers, transactional rollback, private continuations,
+  owner routing, and exact replay now use the same operation-owned origin and
+  destination contract.
+- Added source-spanned compiler lowering for one-card discard predicates, one
+  creature or instant/sorcery graveyard exile, one controlled-permanent exile,
+  one controlled land/creature/permanent return, and qualified single-object
+  sacrifices using pinned subtype, Legendary, color, or nonland predicates.
+  Random, variable, multiple, optional, alternative, dynamic, historical,
+  reveal, and tap costs remain explicit residuals.
+
 ### Typed direct-permanent target predicates
 
 - Added one immutable `DirectPermanentTargetSpec` shared by fixed-counter

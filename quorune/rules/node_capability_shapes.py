@@ -9,6 +9,14 @@ from .casting_additional_costs import (
     AdditionalCostError,
     FixedCounterPlacementAdditionalCost,
     FixedSacrificeAdditionalCost,
+    FixedZoneChangeAdditionalCost,
+)
+from ..additional_cost_vocabulary import (
+    DISCARD_ONE_COST,
+    EXILE_ONE_FROM_BATTLEFIELD_COST,
+    EXILE_ONE_FROM_GRAVEYARD_COST,
+    RETURN_ONE_TO_OWNER_HAND_COST,
+    SACRIFICE_ONE_COST,
 )
 
 from ..attachment_references import (
@@ -81,6 +89,38 @@ def fixed_sacrifice_additional_cost_node_capabilities(
     except (AdditionalCostError, TypeError):
         return ()
     return ("casting.additional_cost.fixed_sacrifice",)
+
+
+def fixed_zone_change_additional_cost_node_capabilities(
+    *, cost_schema: Mapping[str, Any] | None
+) -> tuple[str, ...]:
+    """Recognize one typed single-object zone-change casting cost."""
+
+    if not isinstance(cost_schema, Mapping) or set(cost_schema) != {
+        "additional_costs"
+    }:
+        return ()
+    raw_costs = cost_schema.get("additional_costs")
+    if not isinstance(raw_costs, list) or len(raw_costs) != 1:
+        return ()
+    try:
+        cost = FixedZoneChangeAdditionalCost.from_descriptor(raw_costs[0])
+    except (AdditionalCostError, TypeError):
+        return ()
+    capability = {
+        DISCARD_ONE_COST: "casting.additional_cost.zone_change.fixed_discard",
+        SACRIFICE_ONE_COST: "casting.additional_cost.fixed_sacrifice",
+        EXILE_ONE_FROM_GRAVEYARD_COST: (
+            "casting.additional_cost.zone_change.fixed_exile"
+        ),
+        EXILE_ONE_FROM_BATTLEFIELD_COST: (
+            "casting.additional_cost.zone_change.fixed_exile"
+        ),
+        RETURN_ONE_TO_OWNER_HAND_COST: (
+            "casting.additional_cost.zone_change.fixed_return_to_owner_hand"
+        ),
+    }[cost.operation]
+    return (capability,)
 
 
 _FIXED_DAMAGE_TARGET_SCHEMAS: dict[str, Mapping[str, Any]] = {
@@ -1475,6 +1515,7 @@ def fixed_mana_cumulative_upkeep_node_capabilities(
 __all__ = [
     "fixed_counter_additional_cost_node_capabilities",
     "fixed_sacrifice_additional_cost_node_capabilities",
+    "fixed_zone_change_additional_cost_node_capabilities",
     "fixed_damage_node_capabilities",
     "mass_destruction_node_capabilities",
     "fixed_draw_node_capabilities",

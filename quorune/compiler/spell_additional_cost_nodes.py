@@ -15,6 +15,7 @@ from .ir_model import (
 from .spell_additional_cost_templates import (
     fixed_counter_additional_cost_template,
     fixed_sacrifice_additional_cost_template,
+    fixed_zone_change_additional_cost_template,
 )
 from ..rules.capabilities import CapabilityRegistry
 
@@ -177,6 +178,9 @@ def typed_additional_cost_spell_node(
     cost_mechanics = ("cr-122-counters",)
     if cost is None:
         cost = fixed_sacrifice_additional_cost_template(first_clause)
+        cost_mechanics = ()
+    if cost is None:
+        cost = fixed_zone_change_additional_cost_template(first_clause)
         cost_mechanics = ()
     if cost is None and not first_clause.casefold().startswith(
         _ADDITIONAL_COST_PREFIX

@@ -131,9 +131,8 @@ class FixedSacrificeAdditionalCostCompilerTests(unittest.TestCase):
     def test_fixed_sacrifice_cost_grammar_fails_closed(self):
         unsupported = (
             "sacrifice two creatures",
-            "sacrifice a Goblin",
-            "sacrifice a legendary creature",
             "sacrifice a modified creature",
+            "sacrifice a creature with power 4 or greater",
             "sacrifice an tapped creature",
             "sacrifice a creature you control",
             "sacrifice a creature or pay 2 life",

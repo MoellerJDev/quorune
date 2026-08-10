@@ -63,3 +63,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0046 — typed fixed sacrifice casting costs](0046-typed-fixed-sacrifice-casting-costs.md)
 - [ADR 0047 — typed zone-object keyword results](0047-typed-zone-object-keyword-results.md)
 - [ADR 0048 — typed fixed Adapt and Monstrosity actions](0048-typed-fixed-adapt-and-monstrosity.md)
+- [ADR 0049 — typed fixed single-object zone-change casting costs](0049-typed-fixed-zone-change-casting-costs.md)
