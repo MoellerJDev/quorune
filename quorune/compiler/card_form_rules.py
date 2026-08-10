@@ -15,6 +15,7 @@ from .ir_model import SourceSpan
 
 INTRINSIC_ENTRY_COUNTER_CAPABILITY = "counter.producer.intrinsic_entry"
 SAGA_LORE_COUNTER_CAPABILITY = "counter.producer.saga_lore"
+SAGA_FINAL_CHAPTER_CAPABILITY = "state_based.saga_final_chapter"
 _REASON_FIELD = "rea" + "son"
 
 
@@ -35,9 +36,15 @@ class CardFormRuleNode:
             raise ValueError("Card-form rule source span must cover the type line")
         if self.span.line != 1:
             raise ValueError("Card-form rule source span must use line one")
-        if self.capability_dependencies != (
-            self.entry_counter.capability_id,
-        ):
+        expected = (
+            (
+                self.entry_counter.capability_id,
+                SAGA_FINAL_CHAPTER_CAPABILITY,
+            )
+            if self.entry_counter.required_type == "saga"
+            else (self.entry_counter.capability_id,)
+        )
+        if self.capability_dependencies != expected:
             raise ValueError(
                 "Intrinsic entry nodes require their fine-grained capability"
             )
@@ -131,11 +138,14 @@ def compile_intrinsic_entry_counter_forms(
                     "span": asdict(span),
                     "material": True,
                     _REASON_FIELD: str(exc),
-                    "blockers": [
-                        SAGA_LORE_COUNTER_CAPABILITY
+                    "blockers": (
+                        [
+                            SAGA_LORE_COUNTER_CAPABILITY,
+                            SAGA_FINAL_CHAPTER_CAPABILITY,
+                        ]
                         if "saga" in subtypes
-                        else INTRINSIC_ENTRY_COUNTER_CAPABILITY
-                    ],
+                        else [INTRINSIC_ENTRY_COUNTER_CAPABILITY]
+                    ),
                 }
             )
             continue
@@ -146,7 +156,14 @@ def compile_intrinsic_entry_counter_forms(
                     source_text=type_line,
                     span=SourceSpan(start=0, end=len(type_line), line=1),
                     entry_counter=counter,
-                    capability_dependencies=(counter.capability_id,),
+                    capability_dependencies=(
+                        (
+                            counter.capability_id,
+                            SAGA_FINAL_CHAPTER_CAPABILITY,
+                        )
+                        if counter.required_type == "saga"
+                        else (counter.capability_id,)
+                    ),
                 )
             )
     return CardFormRuleCompilation(
@@ -160,5 +177,6 @@ __all__ = [
     "CardFormRuleCompilation",
     "INTRINSIC_ENTRY_COUNTER_CAPABILITY",
     "SAGA_LORE_COUNTER_CAPABILITY",
+    "SAGA_FINAL_CHAPTER_CAPABILITY",
     "compile_intrinsic_entry_counter_forms",
 ]

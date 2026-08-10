@@ -247,7 +247,8 @@
       "test_rules_authority",
       "test_rules_corpus",
       "test_rules_scheduler",
-      "test_test_shards"
+      "test_test_shards",
+      "test_worktree_bootstrap"
     ]
   },
   "overlay_suites": {

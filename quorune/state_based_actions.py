@@ -6,6 +6,7 @@ from typing import Iterable, Mapping
 
 from .commander import commander_damage_losers
 from .model import GameState
+from .saga_lifecycle import SagaFinalChapterSnapshot
 
 
 _NUMBER_WORDS = {
@@ -94,6 +95,7 @@ class PermanentSnapshot:
     loyalty: int | None = None
     defense: int | None = None
     battle_trigger_pending: bool = False
+    saga: SagaFinalChapterSnapshot | None = None
     world: bool = False
     world_timestamp: int | None = None
     attached_to: str | None = None
@@ -128,6 +130,7 @@ class StateBasedActionBatch:
     ] = ()
     cease: tuple[str, ...] = ()
     world_rule: tuple[str, ...] = ()
+    saga_sacrifices: tuple[SagaFinalChapterSnapshot, ...] = ()
     deathtouch_checks: tuple[str, ...] = ()
 
     @property
@@ -140,7 +143,23 @@ class StateBasedActionBatch:
             or self.counter_maximums_to_remove
             or self.cease
             or self.world_rule
+            or self.saga_sacrifices
         )
+
+
+def _completed_saga(
+    permanent: PermanentSnapshot,
+) -> tuple[SagaFinalChapterSnapshot, ...]:
+    saga = permanent.saga
+    if saga is None:
+        return ()
+    if saga.object_id != permanent.object_id or "saga" not in {
+        value.casefold() for value in permanent.subtypes
+    }:
+        raise ValueError(
+            "Saga lifecycle snapshot must match a Saga permanent"
+        )
+    return (saga,) if saga.requires_sacrifice else ()
 
 
 def evaluate_permanent_state_based_actions(
@@ -160,6 +179,7 @@ def evaluate_permanent_state_based_actions(
     counter_maximums: dict[tuple[str, str], int] = {}
     world_permanents: list[PermanentSnapshot] = []
     deathtouch_checks: set[str] = set()
+    saga_sacrifices: list[SagaFinalChapterSnapshot] = []
 
     for permanent in permanents:
         if permanent.deathtouch_damage:
@@ -177,6 +197,7 @@ def evaluate_permanent_state_based_actions(
         is_aura = "aura" in subtypes
         is_equipment = "equipment" in subtypes
         is_fortification = "fortification" in subtypes
+        saga_sacrifices.extend(_completed_saga(permanent))
         if permanent.world:
             if permanent.world_timestamp is None:
                 raise ValueError(
@@ -282,10 +303,19 @@ def evaluate_permanent_state_based_actions(
 
     # A permanent moving zones is detached as part of that zone change.  Do
     # not emit a second independent detach operation for the same object.
-    moving = put_in_graveyard | destroy | world_rule
+    saga_ids = {value.object_id for value in saga_sacrifices}
+    overlapping_saga_moves = saga_ids.intersection(
+        put_in_graveyard | destroy | world_rule
+    )
+    if overlapping_saga_moves:
+        raise ValueError(
+            "A completed Saga subject to another zone-moving state-based "
+            "action requires unrepresented combined-cause handling"
+        )
+    moving = put_in_graveyard | destroy | world_rule | saga_ids
     return StateBasedActionBatch(
-        put_in_graveyard=tuple(sorted(put_in_graveyard)),
-        destroy=tuple(sorted(destroy - put_in_graveyard)),
+        put_in_graveyard=tuple(sorted(put_in_graveyard - saga_ids)),
+        destroy=tuple(sorted(destroy - put_in_graveyard - saga_ids)),
         detach=tuple(sorted(detach - moving)),
         counter_pairs_to_remove=tuple(sorted(counter_pairs.items())),
         counter_maximums_to_remove=tuple(
@@ -299,6 +329,9 @@ def evaluate_permanent_state_based_actions(
             )
         ),
         world_rule=tuple(sorted(world_rule)),
+        saga_sacrifices=tuple(
+            sorted(saga_sacrifices, key=lambda value: value.object_id)
+        ),
         deathtouch_checks=tuple(sorted(deathtouch_checks)),
     )
 
@@ -342,5 +375,6 @@ def evaluate_state_based_actions(
         ),
         cease=tuple(sorted(cease)),
         world_rule=permanent_batch.world_rule,
+        saga_sacrifices=permanent_batch.saga_sacrifices,
         deathtouch_checks=permanent_batch.deathtouch_checks,
     )

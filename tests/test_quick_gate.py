@@ -18,6 +18,13 @@ class QuickGatePlanTests(unittest.TestCase):
         self.assertIn("affected-tests", names)
         self.assertIn("architecture", names)
         self.assertEqual(1, names.count("generated-finalization"))
+        build = next(
+            step.command
+            for step in plan["steps"]
+            if step.name == "build-test-database"
+        )
+        self.assertIn("build-ci", build)
+        self.assertNotIn("--fixture", build)
 
     def test_docs_only_plan_skips_database_and_tests(self):
         plan = build_plan(("README.md",))

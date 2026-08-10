@@ -220,35 +220,39 @@ def changed_generated_outputs(
     outputs = all_outputs(specs)
     if not outputs:
         return ()
-    result = subprocess.run(
-        [
+    changed: set[str] = set()
+    commands = (
+        ("git", "diff", "--name-only", "--", *outputs),
+        ("git", "diff", "--cached", "--name-only", "--", *outputs),
+        (
             "git",
-            "status",
-            "--porcelain=v1",
-            "--untracked-files=all",
+            "ls-files",
+            "--others",
+            "--exclude-standard",
             "--",
             *outputs,
-        ],
-        cwd=root,
-        text=True,
-        encoding="utf-8",
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        ),
     )
-    if result.returncode:
-        raise GeneratedFinalizationError(
-            "unable to inspect generated-output Git state: "
-            + result.stderr.strip()
+    for command in commands:
+        result = subprocess.run(
+            command,
+            cwd=root,
+            text=True,
+            encoding="utf-8",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
-    changed: list[str] = []
-    for line in result.stdout.splitlines():
-        if not line:
-            continue
-        relative = line[3:]
-        if " -> " in relative:
-            relative = relative.split(" -> ", 1)[1]
-        changed.append(relative)
-    return tuple(changed)
+        if result.returncode:
+            raise GeneratedFinalizationError(
+                "unable to inspect generated-output Git state: "
+                + result.stderr.strip()
+            )
+        changed.update(
+            line.strip()
+            for line in result.stdout.splitlines()
+            if line.strip()
+        )
+    return tuple(sorted(changed))
 
 
 def _database(argument: str | None) -> Path | None:
@@ -263,8 +267,8 @@ def main() -> int:
     require_supported_python()
     parser = argparse.ArgumentParser(
         description=(
-            "Write or verify the registered deterministic generated-artifact "
-            "set from one dependency-ordered manifest"
+            "Write or verify the complete discovered and registered "
+            "generated-artifact set from one dependency-ordered manifest"
         )
     )
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -292,16 +296,17 @@ def main() -> int:
     args = parser.parse_args()
     if args.resume_from and not args.write:
         parser.error("--resume-from requires --write")
-    specs = load_manifest()
     database = _database(args.db)
     result: dict[str, object] = {
         "ok": False,
         "mode": "write" if args.write else "check",
         "manifest": "platform/generated-artifacts.json",
-        "generator_count": len(specs),
+        "generator_count": None,
         "database": str(database) if database is not None else None,
     }
     try:
+        specs = load_manifest()
+        result["generator_count"] = len(specs)
         selected_ids: frozenset[str] | None = None
         if args.resume_from:
             resumed = next(

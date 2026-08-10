@@ -8,7 +8,11 @@ from pathlib import Path
 import sys
 
 from quorune import CardDatabase
-from scripts.build_test_database import build_fixture_database
+from scripts.build_test_database import (
+    build_fixture_database,
+    compact_ci_fixture_paths,
+    validate_compact_ci_consumers,
+)
 from scripts.local_merge_gate import (
     DEFAULT_FOCUSED_TESTS,
     PRIVACY_TESTS,
@@ -20,14 +24,7 @@ from scripts.local_merge_gate import (
 class LocalMergeGateTests(unittest.TestCase):
     def test_compact_card_fixtures_compose_without_external_data(self):
         root = Path(__file__).resolve().parents[1]
-        fixtures = [
-            root / "tests" / "fixtures" / "scryfall-exact-lists.json",
-            root / "tests" / "fixtures" / "browser-lifecycle-cards.json",
-            root / "tests" / "fixtures" / "damage-result-cards.json",
-            root / "tests" / "fixtures" / "draw-rules-cards.json",
-            root / "tests" / "fixtures" / "counter-replacement-cards.json",
-            root / "tests" / "fixtures" / "explore-cards.json",
-        ]
+        fixtures = list(compact_ci_fixture_paths())
         with tempfile.TemporaryDirectory() as temporary:
             database = Path(temporary) / "test-ci.sqlite3"
             result = build_fixture_database(fixtures, database)
@@ -47,6 +44,86 @@ class LocalMergeGateTests(unittest.TestCase):
             sum(len(value.get("rulings", ())) for value in fixture_data),
             result["rulings"],
         )
+
+    def test_compact_ci_manifest_is_the_only_consumer_fixture_source(self):
+        result = validate_compact_ci_consumers()
+
+        self.assertTrue(result["ok"])
+        self.assertGreater(result["invocations"], 0)
+        self.assertEqual(
+            [
+                path.relative_to(
+                    Path(__file__).resolve().parents[1]
+                ).as_posix()
+                for path in compact_ci_fixture_paths()
+            ],
+            result["fixtures"],
+        )
+
+    def test_compact_ci_manifest_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fixture = root / "fixtures" / "cards.json"
+            fixture.parent.mkdir()
+            fixture.write_text("{}\n", encoding="utf-8")
+            manifest = root / "manifest.json"
+
+            cases = (
+                (["fixtures/cards.json", "fixtures/cards.json"], "duplicates"),
+                (["../outside.json"], "canonical repository-relative"),
+                (["fixtures/missing.json"], "does not exist"),
+            )
+            for entries, message in cases:
+                with self.subTest(entries=entries):
+                    manifest.write_text(
+                        json.dumps(
+                            {
+                                "schema_version": 1,
+                                "fixture_kind": "compact_ci_card_database_inputs",
+                                "fixtures": entries,
+                            }
+                        ),
+                        encoding="utf-8",
+                    )
+                    with self.assertRaisesRegex(ValueError, message):
+                        compact_ci_fixture_paths(manifest, root=root)
+
+    def test_new_workflow_cannot_add_an_independent_fixture_list(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fixture = root / "tests" / "fixtures" / "cards.json"
+            fixture.parent.mkdir(parents=True)
+            fixture.write_text("{}\n", encoding="utf-8")
+            (fixture.parent / "compact-ci-fixtures.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "fixture_kind": "compact_ci_card_database_inputs",
+                        "fixtures": ["tests/fixtures/cards.json"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            workflows = root / ".github" / "workflows"
+            workflows.mkdir(parents=True)
+            (workflows / "new.yml").write_text(
+                "python scripts/build_test_database.py build "
+                "--fixture tests/fixtures/cards.json\n",
+                encoding="utf-8",
+            )
+            scripts = root / "scripts"
+            scripts.mkdir()
+            for name in ("local_merge_gate.py", "quick_gate.py"):
+                (scripts / name).write_text(
+                    '"scripts/build_test_database.py", "build-ci"\n',
+                    encoding="utf-8",
+                )
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "independent fixture list",
+            ):
+                validate_compact_ci_consumers(root=root)
 
     def test_gate_orchestrates_every_required_existing_command(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -97,30 +174,8 @@ class LocalMergeGateTests(unittest.TestCase):
             ("python-under-test", "scripts/validate_python_runtime.py"),
             by_name["python_runtime_policy"],
         )
-        self.assertIn(
-            "tests/fixtures/scryfall-exact-lists.json",
-            by_name["build_test_database"],
-        )
-        self.assertIn(
-            "tests/fixtures/browser-lifecycle-cards.json",
-            by_name["build_test_database"],
-        )
-        self.assertIn(
-            "tests/fixtures/damage-result-cards.json",
-            by_name["build_test_database"],
-        )
-        self.assertIn(
-            "tests/fixtures/draw-rules-cards.json",
-            by_name["build_test_database"],
-        )
-        self.assertIn(
-            "tests/fixtures/counter-replacement-cards.json",
-            by_name["build_test_database"],
-        )
-        self.assertIn(
-            "tests/fixtures/explore-cards.json",
-            by_name["build_test_database"],
-        )
+        self.assertIn("build-ci", by_name["build_test_database"])
+        self.assertNotIn("--fixture", by_name["build_test_database"])
         self.assertIn(
             "tests.test_seed_20260730_regression",
             by_name["focused_regressions"],

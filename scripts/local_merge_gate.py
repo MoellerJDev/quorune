@@ -6,7 +6,6 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import sys
@@ -18,6 +17,7 @@ root_text = str(ROOT)
 if root_text not in sys.path:
     sys.path.insert(0, root_text)
 
+from scripts.demo_four_player_protocol import validate_protocol_output
 from scripts.validate_python_runtime import require_supported_python
 DEFAULT_FOCUSED_TESTS = (
     "tests.test_seed_20260730_regression",
@@ -31,7 +31,6 @@ PRIVACY_TESTS = (
     "tests.test_native_v3_slice",
     "tests.test_public_fixtures",
 )
-RAW_CAPABILITY = re.compile(r'"cap"\s*:\s*"c_[A-Za-z0-9_-]{8,}"')
 
 
 def _utc_now() -> str:
@@ -165,19 +164,7 @@ def build_steps(
             (
                 python,
                 "scripts/build_test_database.py",
-                "build",
-                "--fixture",
-                "tests/fixtures/scryfall-exact-lists.json",
-                "--fixture",
-                "tests/fixtures/browser-lifecycle-cards.json",
-                "--fixture",
-                "tests/fixtures/damage-result-cards.json",
-                "--fixture",
-                "tests/fixtures/draw-rules-cards.json",
-                "--fixture",
-                "tests/fixtures/counter-replacement-cards.json",
-                "--fixture",
-                "tests/fixtures/explore-cards.json",
+                "build-ci",
                 "--output",
                 str(database),
             ),
@@ -392,43 +379,7 @@ def _run_step(
 
 
 def _verify_protocol_output(output: Path) -> dict:
-    protocol_output = output / "protocol-demo"
-    expected = {
-        "SMOKE_TEST.md",
-        "pilot-a-after-declaration-delta.json",
-        "pilot-a-bootstrap.json",
-        "pilot-a-unchanged-delta.json",
-        "token-benchmark.json",
-    }
-    actual = {
-        path.name for path in protocol_output.iterdir() if path.is_file()
-    }
-    missing = sorted(expected - actual)
-    if missing:
-        raise ValueError(
-            f"Protocol demo did not create expected files: {missing}"
-        )
-    for path in protocol_output.iterdir():
-        if path.is_file() and RAW_CAPABILITY.search(
-            path.read_text(encoding="utf-8")
-        ):
-            raise ValueError(
-                f"Protocol demo contains a raw capability: {_relative(path)}"
-            )
-    smoke = (protocol_output / "SMOKE_TEST.md").read_text(encoding="utf-8")
-    if not smoke.startswith("---\n") or 'status: "generated"' not in smoke:
-        raise ValueError("Protocol demo documentation metadata is missing")
-    benchmark = json.loads(
-        (protocol_output / "token-benchmark.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    return {
-        "protocol": benchmark["protocol"],
-        "players": benchmark["players"],
-        "seed": benchmark["seed"],
-        "raw_capabilities": "absent",
-    }
+    return validate_protocol_output(output / "protocol-demo")
 
 
 def _assert_clean(label: str) -> None:

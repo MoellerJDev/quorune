@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 import hashlib
 import re
-from typing import Any, Literal
+from typing import Any, Literal, Sequence
 
 from .errors import GameRuleError
 from .replacement.immutable import (
@@ -17,6 +17,7 @@ from .util import stable_json
 
 
 ZoneEventSourceTiming = Literal["before", "after"]
+_SACRIFICE_TRANSITION_KIND = "sacrifice"
 
 
 class ZoneTransitionKind(str, Enum):
@@ -24,6 +25,7 @@ class ZoneTransitionKind(str, Enum):
 
     ORDINARY = "ordinary"
     COUNTERED_SPELL = "countered_spell"
+    SACRIFICE = _SACRIFICE_TRANSITION_KIND
 
 
 class ZoneTriggerEventError(ValueError):
@@ -54,7 +56,29 @@ def validate_zone_transition_request(
         raise GameRuleError(
             "Only a physical spell on the stack can use the countered-spell transition"
         )
+    if transition_kind is ZoneTransitionKind.SACRIFICE and card.zone != "battlefield":
+        raise GameRuleError(
+            "Only a battlefield permanent can use the sacrifice transition"
+        )
     return card
+
+
+def normalized_transition_kind_map(
+    changes: Sequence[tuple[str, str]],
+    values: Mapping[str, ZoneTransitionKind] | None,
+) -> dict[str, ZoneTransitionKind]:
+    """Validate closed per-object transition causes for one move batch."""
+
+    result = dict(values or {})
+    changed_ids = {object_id for object_id, _destination in changes}
+    if not set(result).issubset(changed_ids) or any(
+        not isinstance(value, ZoneTransitionKind)
+        for value in result.values()
+    ):
+        raise GameRuleError(
+            "Simultaneous transition kinds must be typed and name changed objects"
+        )
+    return result
 
 
 def normalized_library_position(
@@ -309,6 +333,12 @@ def normalized_zone_trigger_events(
         "types": sorted(previous_types),
     }
     result: list[NormalizedZoneTriggerEvent] = []
+    if occurrence.transition_kind is ZoneTransitionKind.SACRIFICE:
+        result.append(
+            NormalizedZoneTriggerEvent(
+                "permanent.sacrificed", "before", FrozenMap(common)
+            )
+        )
     if occurrence.transition_kind is ZoneTransitionKind.COUNTERED_SPELL:
         result.append(
             NormalizedZoneTriggerEvent(
@@ -397,6 +427,7 @@ __all__ = [
     "ZoneTransitionKind",
     "ZoneTriggerEventError",
     "normalized_library_position",
+    "normalized_transition_kind_map",
     "normalized_zone_trigger_events",
     "validate_zone_transition_request",
 ]

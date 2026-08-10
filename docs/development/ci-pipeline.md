@@ -2,7 +2,7 @@
 title: "CI pipeline and two-slot development"
 status: "current"
 authoritative_source: "GitHub workflows, platform/test-shards.json, and local gate scripts"
-verified: "2026-08-08"
+verified: "2026-08-09"
 audience: "contributors and maintainers"
 maintenance: "hand-maintained"
 ---
@@ -28,7 +28,18 @@ git worktree add ..\quorune-next -b <next-branch> origin/main
 Set-Location ..\quorune-next
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e . -r requirements-dev.txt
+.\.venv\Scripts\python.exe scripts\worktree_bootstrap.py --install-hook `
+  --db "C:\path\to\the\pinned\scryfall-current.sqlite3"
 ```
+
+The readiness command is read-only except for the explicit hook-install mode,
+which changes only repository-local Git configuration and refuses to overwrite
+a foreign hook policy. Database lookup uses `--db`, `MTG_CARD_DB`, then the
+worktree-local `data/scryfall-current.sqlite3`. The command compares that
+database with the tracked compiler-corpus snapshot, distinguishes missing,
+stale, and invalid inputs, validates primary test-shard ownership, and prints
+the exact finalizer command for the detected platform. Run it without
+`--install-hook` to recheck an existing worktree.
 
 Never rebase or rewrite Slot A while its exact head is being certified. If its
 CI fails, preserve coherent Slot B work, fix Slot A in its own worktree, push a
@@ -89,14 +100,27 @@ navigates the user's browser.
 ## Generated artifact finalization
 
 `platform/generated-artifacts.json` is the canonical ownership and dependency
-manifest for deterministic Python reports enforced by generated/architecture
-CI. It does not replace the existing owners for protocol types, pinned rules
-snapshots, or other separately governed generated assets. It declares each
-registered output, its writer and checker, and whether writing is automatic,
+manifest for every tracked generated artifact. Its versioned discovery policy
+finds artifacts through generated path prefixes, top-level pinned-rules JSON,
+generated-document metadata, explicit binary/report paths, and embedded
+third-party generator markers. The completeness validator rejects unowned
+discovered artifacts, duplicate owners, repository escapes, missing registered
+outputs, and dependency cycles before any writer runs.
+
+The manifest does not replace specialized source authorities. Pinned rules
+snapshots, browser protocol bindings, durable baseline history, and the public
+protocol demo remain deliberate manual or separately generated assets, while
+their paths and checks still have one manifest owner. Deterministic Python
+reports declare their writer and checker and whether writing is automatic,
 database-backed, or a deliberate manual baseline operation. CI and the local
-impact plan invoke the same interface. Run write mode after the coherent
-source/test/documentation worktree is complete and before the final commit;
-inspect and stage its outputs with the source change:
+impact plan invoke the same interface. Adding a file below `coverage/` or
+`demo/`, a top-level `rules/*.json` file, a generated-status Markdown document,
+or a file with a registered generator marker requires adding that output to its
+owner in the same change.
+
+Run write mode after the coherent source/test/documentation worktree is complete
+and before the final commit; inspect and stage its outputs with the source
+change:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write
@@ -146,7 +170,8 @@ had not been added to the reviewed architecture baseline. Run write mode before
 the final commit; the pre-push hook repeats it and blocks publication on either
 generated drift or architecture-policy failure.
 
-Install the tracked pre-push hook once in each worktree:
+The worktree readiness command installs and verifies the tracked pre-push hook.
+The hook-only installer remains available when repairing an existing setup:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\install_dev_hooks.py
@@ -176,6 +201,20 @@ Compiler-only tests should construct their input `CardRecord` directly; only
 runtime integration tests should require the compact CI card database. When a
 database-backed fixture is genuinely required, identify every workflow and
 local-gate database builder that consumes it before publishing the branch.
+
+`tests/fixtures/compact-ci-fixtures.json` is the single machine-readable input
+set for the shared compact CI database. Every Linux, Windows, generated,
+browser, main-smoke, nightly, quick-gate, and local-gate build invokes:
+
+```text
+python scripts/build_test_database.py build-ci --output <job-specific-path>
+```
+
+`python scripts/build_test_database.py validate-ci` fails when the manifest is
+malformed, contains duplicate, missing, escaping, or noncanonical paths, or a
+registered consumer reintroduces its own `--fixture` list. Add a required
+fixture once to the manifest; all consumers retain isolated output paths while
+receiving the same composed card set automatically.
 
 The full `scripts/local_merge_gate.py` is not a default development step. Run a
 broad local gate only when the user explicitly asks or while diagnosing a

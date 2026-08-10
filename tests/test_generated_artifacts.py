@@ -11,6 +11,7 @@ import unittest
 from scripts.finalize_generated import (
     POST_CHECKS,
     check_all,
+    changed_generated_outputs,
     stabilization_ids,
     write_until_stable,
 )
@@ -19,20 +20,31 @@ from scripts.update_compiler_corpus_coverage import (
     validate_reports,
 )
 from scripts.generated_artifacts import (
+    GeneratedArtifactDiscoverySpec,
     GeneratedArtifactManifestError,
     GeneratorSpec,
     ROOT,
     all_outputs,
+    discover_tracked_generated_artifacts,
     load_manifest,
+    parse_discovery,
     parse_manifest,
     topological_order,
+    validate_manifest_completeness,
 )
+from scripts.demo_four_player_protocol import validate_protocol_output
 from scripts.install_dev_hooks import (
     HookInstallationError,
     check as check_hooks,
     install as install_hooks,
 )
+from scripts.validate_generated_web_types import validate as validate_web_types
 from quorune.oracle_ir import ORACLE_COMPILER_VERSION
+from quorune.compiler.target_effect_corpus_assurance import (
+    SEQUENCE_TEMPLATE_ID,
+    STANDALONE_TEMPLATE_ID,
+    TargetEffectCorpusCollector,
+)
 from quorune.rules.capabilities import load_default_capability_registry
 
 
@@ -53,6 +65,15 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
                 "commander_legal_only": commander_only,
                 "total_oracle_ids": count,
                 "status_counts": {"exact": count},
+                "target_effect_corpus_assurance": (
+                    TargetEffectCorpusCollector().report(
+                        compiler_version=ORACLE_COMPILER_VERSION,
+                        capability_registry=capabilities,
+                        capability_profile="commander_review",
+                        card_data_snapshot=snapshot,
+                        commander_legal_only=commander_only,
+                    )
+                ),
             }
 
         def program(commander_only: bool, count: int) -> dict:
@@ -91,27 +112,71 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         ):
             validate_reports(mismatched)
 
+        stale_assurance = copy.deepcopy(reports)
+        stale_assurance["oracle_commander"][
+            "target_effect_corpus_assurance"
+        ]["grammar_source_fingerprint"] = "0" * 64
+        with self.assertRaisesRegex(
+            CompilerCorpusCoverageError,
+            "fingerprint is stale",
+        ):
+            validate_reports(stale_assurance)
+
+    def test_tracked_target_effect_assurance_is_corpus_derived_and_nonempty(self):
+        report = json.loads(
+            (ROOT / "coverage" / "oracle-coverage-commander.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assurance = report["target_effect_corpus_assurance"]
+        dimensions = assurance["dimensions"]
+
+        self.assertGreater(assurance["total_nodes"], 0)
+        self.assertGreater(assurance["shape_count"], 0)
+        self.assertEqual(
+            {STANDALONE_TEMPLATE_ID, SEQUENCE_TEMPLATE_ID},
+            set(dimensions["templates"]),
+        )
+        self.assertEqual(
+            assurance["total_nodes"],
+            sum(dimensions["templates"].values()),
+        )
+        self.assertEqual(
+            assurance["total_nodes"],
+            sum(shape["count"] for shape in assurance["shapes"]),
+        )
+        self.assertTrue(
+            all(shape["representative_identities"] for shape in assurance["shapes"])
+        )
+
     def test_generated_manifest_has_one_owner_and_dependency_order(self):
         specs = load_manifest()
         ordered = [spec.id for spec in topological_order(specs)]
         outputs = all_outputs(specs)
 
         self.assertEqual(len(outputs), len(set(outputs)))
-        self.assertEqual(
+        self.assertTrue(
             {
                 "architecture-audit",
+                "browser-protocol-bindings",
                 "capability-evidence",
                 "card-unlock-frontier",
                 "ci-escape-report",
                 "compiler-corpus-coverage",
                 "continuous-effect-performance",
                 "module-classifications",
+                "pinned-rules-snapshot",
                 "platform-status",
+                "protocol-reference",
+                "protocol-smoke-fixture",
                 "reusable-pieces",
                 "rules-derived",
                 "rules-scheduler",
-            },
-            {spec.id for spec in specs},
+            }.issubset({spec.id for spec in specs})
+        )
+        self.assertLess(
+            ordered.index("pinned-rules-snapshot"),
+            ordered.index("rules-derived"),
         )
         self.assertLess(
             ordered.index("rules-derived"),
@@ -145,6 +210,115 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         self.assertIn("rules/conformance-cases.json", rules_owner.outputs)
         self.assertIn("mechanics/registry.json", rules_owner.outputs)
         self.assertIn("coverage/rules-coverage.md", rules_owner.outputs)
+        architecture_owner = next(
+            spec for spec in specs if spec.id == "architecture-audit"
+        )
+        self.assertIn(
+            "platform/card-name-hash-index.json",
+            architecture_owner.outputs,
+        )
+
+    def test_every_discovered_generated_artifact_has_one_existing_owner(self):
+        manifest = json.loads(
+            (ROOT / "platform" / "generated-artifacts.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        specs = parse_manifest(manifest)
+        discovery = parse_discovery(manifest["discovery"])
+        report = validate_manifest_completeness(
+            specs,
+            discovery,
+            root=ROOT,
+        )
+        owners = dict(report.owners)
+
+        self.assertEqual(
+            report.discovered,
+            discover_tracked_generated_artifacts(ROOT, discovery),
+        )
+        self.assertEqual(set(report.discovered), set(owners))
+        self.assertEqual(len(owners), len(all_outputs(specs)))
+        self.assertIn("coverage/rules-delta.json", report.discovered)
+        self.assertIn("demo/pilot-a-bootstrap.json", report.discovered)
+        self.assertIn("rules/rule-index.json", report.discovered)
+        self.assertIn(
+            "web/src/generated/decision-packet.ts",
+            report.discovered,
+        )
+
+    def test_generated_completeness_rejects_unowned_tracked_artifact(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            coverage = root / "coverage"
+            coverage.mkdir()
+            (coverage / "owned.json").write_text("{}\n", encoding="utf-8")
+            (coverage / "unowned.json").write_text("{}\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            spec = GeneratorSpec(
+                id="owned",
+                depends_on=(),
+                outputs=("coverage/owned.json",),
+                check=("unused.py", "--check"),
+                write=("unused.py", "--write"),
+                write_with_database=None,
+                write_policy="automatic",
+            )
+            discovery = GeneratedArtifactDiscoverySpec(
+                path_prefixes=("coverage/",),
+                path_globs=("rules/*.json",),
+                explicit_paths=("platform/card-name-hash-index.json",),
+                markdown_statuses=("generated",),
+                content_markers=("automatically generated",),
+            )
+
+            with self.assertRaisesRegex(
+                GeneratedArtifactManifestError,
+                "coverage/unowned.json",
+            ):
+                validate_manifest_completeness(
+                    (spec,),
+                    discovery,
+                    root=root,
+                )
+
+    def test_generated_completeness_rejects_missing_registered_output(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            spec = GeneratorSpec(
+                id="missing",
+                depends_on=(),
+                outputs=("coverage/missing.json",),
+                check=("unused.py", "--check"),
+                write=("unused.py", "--write"),
+                write_with_database=None,
+                write_policy="automatic",
+            )
+            discovery = GeneratedArtifactDiscoverySpec(
+                path_prefixes=("coverage/",),
+                path_globs=("rules/*.json",),
+                explicit_paths=("platform/card-name-hash-index.json",),
+                markdown_statuses=("generated",),
+                content_markers=("automatically generated",),
+            )
+
+            with self.assertRaisesRegex(
+                GeneratedArtifactManifestError,
+                "registered generated outputs do not exist",
+            ):
+                validate_manifest_completeness(
+                    (spec,),
+                    discovery,
+                    root=root,
+                )
+
+    def test_separately_generated_protocol_assets_retain_their_sources(self):
+        browser = validate_web_types()
+        demo = validate_protocol_output(ROOT / "demo")
+
+        self.assertEqual(2, len(browser["outputs"]))
+        self.assertEqual("absent", demo["raw_capabilities"])
 
     def test_generated_manifest_rejects_duplicate_output_and_cycle(self):
         manifest = json.loads(
@@ -182,6 +356,94 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             "repository-relative POSIX path",
         ):
             parse_manifest(escaped)
+
+    def test_generated_change_detection_uses_git_visible_content(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Generated Test"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "core.autocrlf", "true"],
+                cwd=root,
+                check=True,
+            )
+            output = root / "generated.json"
+            output.write_bytes(b'{"ok": true}\n')
+            subprocess.run(["git", "add", "generated.json"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "fixture"],
+                cwd=root,
+                check=True,
+            )
+            output.write_bytes(b'{"ok": true}\r\n')
+            spec = GeneratorSpec(
+                id="generated",
+                depends_on=(),
+                outputs=("generated.json",),
+                check=("unused.py", "--check"),
+                write=("unused.py", "--write"),
+                write_with_database=None,
+                write_policy="automatic",
+            )
+
+            self.assertEqual((), changed_generated_outputs((spec,), root=root))
+
+    def test_generated_change_detection_includes_worktree_index_and_untracked(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Generated Test"],
+                cwd=root,
+                check=True,
+            )
+            for name in ("worktree.json", "staged.json"):
+                (root / name).write_text("old\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "fixture"],
+                cwd=root,
+                check=True,
+            )
+            (root / "worktree.json").write_text("new\n", encoding="utf-8")
+            (root / "staged.json").write_text("new\n", encoding="utf-8")
+            (root / "untracked.json").write_text("new\n", encoding="utf-8")
+            subprocess.run(["git", "add", "staged.json"], cwd=root, check=True)
+            specs = tuple(
+                GeneratorSpec(
+                    id=name.removesuffix(".json"),
+                    depends_on=(),
+                    outputs=(name,),
+                    check=("unused.py", "--check"),
+                    write=("unused.py", "--write"),
+                    write_with_database=None,
+                    write_policy="automatic",
+                )
+                for name in (
+                    "worktree.json",
+                    "staged.json",
+                    "untracked.json",
+                )
+            )
+
+            self.assertEqual(
+                ("staged.json", "untracked.json", "worktree.json"),
+                changed_generated_outputs(specs, root=root),
+            )
 
     def test_generated_finalizer_reaches_a_bounded_fixed_point(self):
         with TemporaryDirectory() as raw:

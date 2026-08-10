@@ -62,12 +62,16 @@ def discovered_modules(root: Path = TESTS) -> tuple[str, ...]:
     return tuple(sorted(path.stem for path in root.glob("test_*.py")))
 
 
-def validate_partition(manifest: Mapping) -> dict:
+def validate_partition(
+    manifest: Mapping,
+    *,
+    tests_root: Path = TESTS,
+) -> dict:
     primary = manifest["primary_shards"]
     assigned = [module for modules in primary.values() for module in modules]
     counts = Counter(assigned)
     duplicates = sorted(module for module, count in counts.items() if count != 1)
-    actual = set(discovered_modules())
+    actual = set(discovered_modules(tests_root))
     configured = set(assigned)
     missing = sorted(actual - configured)
     unknown = sorted(configured - actual)

@@ -1442,6 +1442,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/target_effect_corpus_assurance.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/token_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -3438,6 +3453,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/saga_lifecycle.py",
+      "layer": "rules",
+      "owning_subsystem": "state_based_actions",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "read_only",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/saga_progression.py",
       "layer": "rules",
       "owning_subsystem": "counter_placement",
@@ -4548,7 +4577,7 @@
     {
       "file": "quorune/state_based_actions.py",
       "layer": "rules",
-      "owning_subsystem": "legacy_rules",
+      "owning_subsystem": "state_based_actions",
       "allowed_dependency_layers": [
         "domain",
         "rules",
@@ -4878,5 +4907,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "05c2d9da21194dff9b2f0f6358eed1287a4ebfd75de939a99f6a36fe300812ab"
+  "fingerprint": "3f7e8a8dfd12e703bfd6b5185deb7353134d8c080f3933013415903ba2fd2519"
 }

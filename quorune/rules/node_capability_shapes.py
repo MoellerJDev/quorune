@@ -18,6 +18,9 @@ from ..attachment_references import (
 from ..compiler.counter_placement_templates import (
     fixed_counter_set_spec_is_closed,
 )
+from ..compiler.fixed_target_effect_sequences import (
+    FIXED_TARGET_CHARACTERISTIC_KEYWORDS,
+)
 from ..compiler.creature_subtypes import canonical_creature_subtype
 from ..keyword_counters import keyword_counter_mechanic
 from ..affected_permanents import (
@@ -221,20 +224,7 @@ _TARGETED_EXPLORE_SCHEMA = {
 }
 _FIXED_TARGET_SEQUENCE_MECHANIC = "fixed-target-effect-sequence"
 _FIXED_TARGET_SEQUENCE_KEYWORDS = frozenset(
-    {
-        "Deathtouch",
-        "Double Strike",
-        "First Strike",
-        "Flying",
-        "Haste",
-        "Hexproof",
-        "Indestructible",
-        "Lifelink",
-        "Menace",
-        "Reach",
-        "Trample",
-        "Vigilance",
-    }
+    value.title() for value in FIXED_TARGET_CHARACTERISTIC_KEYWORDS
 )
 _TARGETED_COUNTER_SCHEMAS: tuple[Mapping[str, Any], ...] = (
     _COUNTER_STACK_BASE,

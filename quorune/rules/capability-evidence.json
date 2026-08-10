@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "1f8cce7298713111418792a3686cab8b1fc65c0fabd699bf26126f16d41fe76a",
-  "declaration_source_fingerprint": "81483ed38ac9229958a4e0f0a8275497078d209a1ca85d20891bbd6eebf2e1e2",
+  "registry_fingerprint": "37c9ed47fbe8c766f70fd5e787ba2ba776d1efb7f0876438b24d873ed34be7be",
+  "declaration_source_fingerprint": "3dc937c0fc649201000d293dab878e82ec63a856bfdae67d4d6160a579de034b",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -5948,168 +5948,6 @@
       "applicability_note": "Serialize and replay a source-bound resolution-created effect from exact commands."
     },
     {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "interaction",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Keep the typed layer-6 grant through cleanup and source departure while the target remains the same battlefield logical object, then stop applying it after target reentry."
-    },
-    {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "multiplayer",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Resolve one target-threaded counter and persistent keyword sequence in four-player APNAP state without issuing another seat the affected-object replacement choice."
-    },
-    {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "mutation",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_zone_object_keyword_commit_mutant_is_killed",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Suppress the canonical continuous-effect commit and prove the whole resolving transaction rolls back instead of silently omitting the persistent keyword."
-    },
-    {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "negative",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_indefinite_keyword_sequence_rejects_open_variants",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Keep variable, compound, optional, temporary, conditional, and arbitrary granted-ability wording outside the closed persistent-keyword grammar."
-    },
-    {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "negative",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_zone_object_keyword_handler_rejects_malformed_effects",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Reject unknown descriptor fields, unsupported keywords, and missing authoritative resolving-source context before mutation."
-    },
-    {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "positive",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_indefinite_keyword_sequence_compiles_the_closed_family",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Lower each represented fixed keyword into one source-spanned typed zone-object grant while retaining its independent gameplay capability."
-    },
-    {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "positive",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Commit and consume one immutable layer-6 keyword grant against the target's current physical and logical battlefield identity."
-    },
-    {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "privacy",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Keep authoritative physical identity and replacement continuation data out of every nonchoosing seat projection."
-    },
-    {
-      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
-      "evidence_class": "replay",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-      "official_rule_ids": [
-        "400.7",
-        "608.2c",
-        "611.2a",
-        "611.2c",
-        "613.1f"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Serialize and replay the replacement choice, persistent layer-6 effect, and target logical identity to the same authoritative final hash."
-    },
-    {
       "capability_id": "counter.characteristic.keyword",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
@@ -6422,6 +6260,44 @@
         "commander_review"
       ],
       "applicability_note": "Resolve represented effect-generated counter placements through affected-object ordering before committing the counters."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload a pending Persist or Undying counter-quantity ordering continuation, keep it seat scoped, commit it once, and replay the restarted record to the same hash."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload a pending Saga entry counter-quantity ordering continuation, keep it seat scoped, commit it once, and replay the restarted record to the same hash."
     },
     {
       "capability_id": "counter.producer.cumulative_upkeep_fixed_mana",
@@ -6784,6 +6660,26 @@
         "commander_review"
       ],
       "applicability_note": "Project public death-return objects without exposing opposing hands or authoritative zone-incarnation counters."
+    },
+    {
+      "capability_id": "counter.producer.effect_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "400.6",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Persist and reload the identity-pinned effect-entry counter continuation before completing its canonical replacement-aware zone move."
     },
     {
       "capability_id": "counter.producer.effect_entry",
@@ -9873,6 +9769,28 @@
     {
       "capability_id": "counter.producer.persist",
       "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "400.7",
+        "603.4",
+        "603.6c",
+        "603.10a",
+        "603.10e",
+        "702.79",
+        "702.79a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload a suspended Persist return and counter-quantity replacement choice, preserve its physical identity and chooser, then replay the completed record exactly."
+    },
+    {
+      "capability_id": "counter.producer.persist",
+      "evidence_class": "replay",
       "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_resume_replays_exactly",
       "official_rule_ids": [
         "122.1",
@@ -10620,6 +10538,32 @@
       "applicability_note": "Replay the selected Saga entry replacement order, lore result, and crossed chapter events to the same authoritative hash."
     },
     {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload the seat-scoped Saga entry replacement continuation before selection, commit its lore result once, and replay the restarted record exactly."
+    },
+    {
       "capability_id": "counter.producer.support",
       "evidence_class": "interaction",
       "test_id": "tests.test_support_counter_placement.SupportCounterPlacementRuntimeTests.test_support_partial_target_revalidation_and_quantity_replacement_replay",
@@ -10975,6 +10919,28 @@
         "commander_review"
       ],
       "applicability_note": "Expose public Undying triggers without projecting unrelated opposing hand cards or authoritative incarnation counters."
+    },
+    {
+      "capability_id": "counter.producer.undying",
+      "evidence_class": "replay",
+      "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_death_return_replacement_continuation_survives_process_restart",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "400.7",
+        "603.4",
+        "603.6c",
+        "603.10a",
+        "603.10e",
+        "702.93",
+        "702.93a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload a suspended Undying return and counter-quantity replacement choice, preserve its physical identity and chooser, then replay the completed record exactly."
     },
     {
       "capability_id": "counter.producer.undying",
@@ -17294,30 +17260,6 @@
     },
     {
       "capability_id": "resolution.effect_sequence.fixed_target",
-      "evidence_class": "interaction",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
-      "official_rule_ids": [
-        "115.1",
-        "115.3",
-        "608.2b",
-        "608.2c",
-        "608.2h",
-        "611.2a",
-        "611.2c",
-        "614.16",
-        "616.1",
-        "122.1",
-        "122.6"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Execute the fixed counter result before a distinct persistent layer-6 result and retain the latter only for the target's current zone object."
-    },
-    {
-      "capability_id": "resolution.effect_sequence.fixed_target",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_sequence_choice_is_seat_scoped_and_replays",
       "official_rule_ids": [
@@ -17339,30 +17281,6 @@
         "commander_review"
       ],
       "applicability_note": "Resolve the sequence in a four-player game while routing the affected-object replacement choice only to its controller."
-    },
-    {
-      "capability_id": "resolution.effect_sequence.fixed_target",
-      "evidence_class": "multiplayer",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-      "official_rule_ids": [
-        "115.1",
-        "115.3",
-        "608.2b",
-        "608.2c",
-        "608.2h",
-        "611.2a",
-        "611.2c",
-        "614.16",
-        "616.1",
-        "122.1",
-        "122.6"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Resume the target-threaded sequence after a four-player replacement choice and execute the remaining typed keyword result exactly once."
     },
     {
       "capability_id": "resolution.effect_sequence.fixed_target",
@@ -17390,54 +17308,6 @@
     },
     {
       "capability_id": "resolution.effect_sequence.fixed_target",
-      "evidence_class": "mutation",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_zone_object_keyword_commit_mutant_is_killed",
-      "official_rule_ids": [
-        "115.1",
-        "115.3",
-        "608.2b",
-        "608.2c",
-        "608.2h",
-        "611.2a",
-        "611.2c",
-        "614.16",
-        "616.1",
-        "122.1",
-        "122.6"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Kill a sequence executor that omits the persistent second result and prove its earlier counter placement cannot survive the failed transaction."
-    },
-    {
-      "capability_id": "resolution.effect_sequence.fixed_target",
-      "evidence_class": "negative",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_indefinite_keyword_sequence_rejects_open_variants",
-      "official_rule_ids": [
-        "115.1",
-        "115.3",
-        "608.2b",
-        "608.2c",
-        "608.2h",
-        "611.2a",
-        "611.2c",
-        "614.16",
-        "616.1",
-        "122.1",
-        "122.6"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Reject target-threaded persistent results whose target count, optionality, keyword value, duration, or ability grammar is outside the represented family."
-    },
-    {
-      "capability_id": "resolution.effect_sequence.fixed_target",
       "evidence_class": "negative",
       "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_unsupported_target_threaded_variants_remain_material_residuals",
       "official_rule_ids": [
@@ -17459,30 +17329,6 @@
         "commander_review"
       ],
       "applicability_note": "Reject optional, variable, multi-target, choice-bearing, and otherwise open target-threaded wording as material residuals."
-    },
-    {
-      "capability_id": "resolution.effect_sequence.fixed_target",
-      "evidence_class": "positive",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceCompilerTests.test_indefinite_keyword_sequence_compiles_the_closed_family",
-      "official_rule_ids": [
-        "115.1",
-        "115.3",
-        "608.2b",
-        "608.2c",
-        "608.2h",
-        "611.2a",
-        "611.2c",
-        "614.16",
-        "616.1",
-        "122.1",
-        "122.6"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Lower one counter placement and one indefinite keyword grant into a single exact source span with printed result order."
     },
     {
       "capability_id": "resolution.effect_sequence.fixed_target",
@@ -17534,30 +17380,6 @@
     },
     {
       "capability_id": "resolution.effect_sequence.fixed_target",
-      "evidence_class": "privacy",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-      "official_rule_ids": [
-        "115.1",
-        "115.3",
-        "608.2b",
-        "608.2c",
-        "608.2h",
-        "611.2a",
-        "611.2c",
-        "614.16",
-        "616.1",
-        "122.1",
-        "122.6"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Expose the pending replacement choice only to its chooser while retaining authoritative target identity inside the continuation."
-    },
-    {
-      "capability_id": "resolution.effect_sequence.fixed_target",
       "evidence_class": "replay",
       "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_counter_replacement_suspends_and_resumes_remaining_sequence_exactly",
       "official_rule_ids": [
@@ -17579,30 +17401,6 @@
         "commander_review"
       ],
       "applicability_note": "Replay the ordered suspended sequence to the same authoritative final state hash."
-    },
-    {
-      "capability_id": "resolution.effect_sequence.fixed_target",
-      "evidence_class": "replay",
-      "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-      "official_rule_ids": [
-        "115.1",
-        "115.3",
-        "608.2b",
-        "608.2c",
-        "608.2h",
-        "611.2a",
-        "611.2c",
-        "614.16",
-        "616.1",
-        "122.1",
-        "122.6"
-      ],
-      "supported_profiles": [
-        "traditional",
-        "commander_duel",
-        "commander_review"
-      ],
-      "applicability_note": "Replay the replacement-aware counter result and persistent keyword result to the same authoritative final hash."
     },
     {
       "capability_id": "stack.counter.effect",
@@ -18035,6 +17833,237 @@
         "commander_review"
       ],
       "applicability_note": "Replay the generated counter attempt against a checkpoint-pinned intrinsic prohibition with the same failed-counter journal and final state."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_countered_final_chapter_uses_the_next_sba_check",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove a countered final chapter from the stack, then sacrifice its exact source during the next state-based-action check."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_sacrifice_uses_destination_replacement",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply a represented graveyard-destination replacement to the Saga sacrifice while retaining its normalized sacrifice occurrence."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_four_player_completed_sagas_move_in_one_sba_batch",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Sacrifice completed Sagas controlled by different players in one canonical four-player state-based-action batch."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_lifecycle_mutation_is_killed",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a mutation that disables the typed final-chapter sacrifice predicate."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "negative",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_blocked_final_lifecycle_prevents_trusted_saga_card_form",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Refuse trusted Saga card-form promotion when the final-chapter lifecycle capability is unavailable."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "negative",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_old_incarnation_chapter_does_not_protect_reentered_saga",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Do not allow a chapter ability from an older logical incarnation to defer the current Saga's state action."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "negative",
+      "test_id": "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_completed_saga_with_another_zone_action_fails_closed",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Fail before mutation when one completed Saga is simultaneously subject to another zone-moving state-based action whose combined cause is not represented."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "negative",
+      "test_id": "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_malformed_saga_lifecycle_fails_closed",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject missing, duplicate, unordered, nonpositive, or identity-mismatched chapter snapshots before mutation."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "positive",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_sba_waits_then_sacrifices_under_current_control",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Defer while the exact chapter ability remains pending, then have the current controller sacrifice the Saga to its owner's graveyard."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "positive",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_waiting_final_chapter_batch_defers_before_stack_placement",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Defer the final-chapter state action while the exact typed chapter occurrence is still waiting in its APNAP placement batch."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_final_chapter_completion_replays_exactly",
+      "official_rule_ids": [
+        "101.4",
+        "603.3",
+        "701.17",
+        "704.3",
+        "704.5s",
+        "714.2d",
+        "714.2e",
+        "714.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve a pending chapter and replay the resulting typed Saga sacrifice to the same authoritative state hash."
     },
     {
       "capability_id": "target.public.player_or_damageable_permanent",
@@ -20749,5 +20778,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "3ba918e1f8849fd4bc524863ccbd0f639f9238b666458818041ab09447e71a58"
+  "fingerprint": "e3bc504d6704596a68759de5363954ac5fd522ec932a234525e68a3e7076f948"
 }

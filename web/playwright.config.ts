@@ -15,6 +15,12 @@ const pythonExecutable =
   (process.platform === "win32"
     ? path.resolve("..", ".venv", "Scripts", "python.exe")
     : "python");
+process.env.MTG_E2E_RUNTIME_RESOLVED = serverData;
+process.env.MTG_E2E_CARD_DB_RESOLVED = path.resolve(
+  "..",
+  process.env.MTG_CARD_DB ?? "data/test-ci.sqlite3",
+);
+process.env.MTG_E2E_PYTHON_RESOLVED = pythonExecutable;
 if (pythonExecutable.includes('"')) {
   throw new Error("MTG_PYTHON_EXECUTABLE cannot contain a double quote");
 }

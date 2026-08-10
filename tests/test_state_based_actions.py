@@ -38,6 +38,10 @@ from quorune.state_based_actions import (
     evaluate_state_based_actions,
     evaluate_permanent_state_based_actions,
 )
+from quorune.saga_lifecycle import (
+    SagaFinalChapterSnapshot,
+    SagaLifecycleError,
+)
 
 
 class StateBasedActionPrimitiveTests(unittest.TestCase):
@@ -282,6 +286,128 @@ class StateBasedActionPrimitiveTests(unittest.TestCase):
         )
 
         self.assertEqual(("defeated",), batch.put_in_graveyard)
+
+    def test_completed_saga_waits_only_for_its_pending_chapter(self):
+        completed = SagaFinalChapterSnapshot(
+            object_id="completed",
+            logical_object_id="completed:1",
+            controller="A",
+            lore_counters=4,
+            chapter_numbers=(1, 2, 3),
+            chapter_trigger_pending=False,
+        )
+        pending = SagaFinalChapterSnapshot(
+            object_id="pending",
+            logical_object_id="pending:1",
+            controller="B",
+            lore_counters=3,
+            chapter_numbers=(1, 3),
+            chapter_trigger_pending=True,
+        )
+        below_final = SagaFinalChapterSnapshot(
+            object_id="below",
+            logical_object_id="below:1",
+            controller="C",
+            lore_counters=2,
+            chapter_numbers=(1, 2, 3),
+            chapter_trigger_pending=False,
+        )
+
+        batch = evaluate_permanent_state_based_actions(
+            [
+                PermanentSnapshot(
+                    value.object_id,
+                    card_types=frozenset({"enchantment"}),
+                    subtypes=frozenset({"saga"}),
+                    saga=value,
+                    indestructible=value is completed,
+                )
+                for value in (completed, pending, below_final)
+            ]
+        )
+
+        self.assertEqual((completed,), batch.saga_sacrifices)
+        self.assertTrue(batch.changed)
+
+    def test_completed_saga_with_another_zone_action_fails_closed(self):
+        saga = SagaFinalChapterSnapshot(
+            object_id="creature-saga",
+            logical_object_id="creature-saga:1",
+            controller="A",
+            lore_counters=3,
+            chapter_numbers=(1, 2, 3),
+            chapter_trigger_pending=False,
+        )
+        with self.assertRaisesRegex(
+            ValueError, "combined-cause handling"
+        ):
+            evaluate_permanent_state_based_actions(
+                [
+                    PermanentSnapshot(
+                        "creature-saga",
+                        card_types=frozenset(
+                            {"creature", "enchantment"}
+                        ),
+                        subtypes=frozenset({"saga"}),
+                        toughness=0,
+                        saga=saga,
+                    )
+                ]
+            )
+
+    def test_phased_completed_saga_is_ignored_by_the_current_check(self):
+        saga = SagaFinalChapterSnapshot(
+            object_id="phased",
+            logical_object_id="phased:1",
+            controller="A",
+            lore_counters=3,
+            chapter_numbers=(1, 2, 3),
+            chapter_trigger_pending=False,
+        )
+        batch = evaluate_permanent_state_based_actions(
+            [
+                PermanentSnapshot(
+                    "phased",
+                    card_types=frozenset({"enchantment"}),
+                    subtypes=frozenset({"saga"}),
+                    saga=saga,
+                    phased_out=True,
+                )
+            ]
+        )
+        self.assertEqual((), batch.saga_sacrifices)
+
+    def test_malformed_saga_lifecycle_fails_closed(self):
+        for chapters in ((), (0,), (2, 1), (1, 1)):
+            with self.subTest(chapters=chapters):
+                with self.assertRaises(SagaLifecycleError):
+                    SagaFinalChapterSnapshot(
+                        object_id="saga",
+                        logical_object_id="saga:1",
+                        controller="A",
+                        lore_counters=3,
+                        chapter_numbers=chapters,
+                        chapter_trigger_pending=False,
+                    )
+        saga = SagaFinalChapterSnapshot(
+            object_id="saga",
+            logical_object_id="saga:1",
+            controller="A",
+            lore_counters=3,
+            chapter_numbers=(1, 2, 3),
+            chapter_trigger_pending=False,
+        )
+        with self.assertRaisesRegex(ValueError, "match a Saga"):
+            evaluate_permanent_state_based_actions(
+                [
+                    PermanentSnapshot(
+                        "other",
+                        card_types=frozenset({"enchantment"}),
+                        subtypes=frozenset({"saga"}),
+                        saga=saga,
+                    )
+                ]
+            )
 
     def test_attachment_and_counter_actions_are_snapshot_based(self):
         batch = evaluate_permanent_state_based_actions(

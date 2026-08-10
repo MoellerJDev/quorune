@@ -118,6 +118,7 @@ def validate_reusable_piece_policy(policy: Mapping[str, Any]) -> None:
         "runtime_family_classes",
         "universal_system_classes",
         "high_risk_class_pairs",
+        "ambient_high_risk_piece_pairs",
         "complex_card_weights",
         "complex_card_sentinels",
     }
@@ -190,6 +191,26 @@ def validate_reusable_piece_policy(policy: Mapping[str, Any]) -> None:
         for pair in pairs
     ):
         raise ValueError("Reusable-piece high-risk pairs are invalid")
+    ambient_pairs = policy.get("ambient_high_risk_piece_pairs")
+    if (
+        not isinstance(ambient_pairs, list)
+        or ambient_pairs != sorted(ambient_pairs)
+        or len(ambient_pairs) != len({tuple(pair) for pair in ambient_pairs})
+        or any(
+            not isinstance(pair, list)
+            or len(pair) != 2
+            or pair != sorted(set(pair))
+            or not all(
+                isinstance(piece_id, str)
+                and _PIECE_ID.fullmatch(piece_id)
+                for piece_id in pair
+            )
+            for pair in ambient_pairs
+        )
+    ):
+        raise ValueError(
+            "Reusable-piece ambient high-risk pairs are invalid"
+        )
     sentinels = policy.get("complex_card_sentinels")
     if (
         not isinstance(sentinels, list)
@@ -1388,7 +1409,7 @@ def _build_indexes(
     interactions = _with_fingerprint(
         {
             "schema_version": REUSABLE_PIECE_SCHEMA_VERSION,
-            "algorithm_version": "reusable-piece-interactions-v2",
+            "algorithm_version": "reusable-piece-interactions-v3",
             "profile": policy["profile"],
             "matrix_fingerprint": matrix["fingerprint"],
             "summary": {

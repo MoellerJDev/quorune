@@ -2,7 +2,7 @@
 title: "Codex project instructions"
 status: "current"
 authoritative_source: "repository contribution, architecture, and documentation policy"
-verified: "2026-08-08"
+verified: "2026-08-09"
 audience: "Codex agents and contributors"
 maintenance: "hand-maintained"
 ---
@@ -132,6 +132,23 @@ Use the worktree-local CPython 3.12 environment, never a global `python` alias.
 Keep one substantive branch under certification and at most one independent
 next-batch worktree. Do not mix their changes.
 
+After creating or entering a worktree, run its repository-owned readiness
+command. `--install-hook` may update only this repository's local Git hook
+configuration and refuses to replace a foreign hook policy:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\worktree_bootstrap.py --install-hook
+```
+
+The command verifies the exact CPython runtime, tracked pre-push hook, primary
+test-shard ownership, and the pinned card database selected by `--db`,
+`MTG_CARD_DB`, or `data/scryfall-current.sqlite3`, in that order. It compares
+database metadata with the tracked compiler-corpus snapshot, reports missing,
+stale, and invalid databases separately, and prints the exact standard and
+database-backed finalizer arguments for the detected environment. Run it
+without `--install-hook` for a read-only recheck. A compact test database is
+not a substitute for the pinned corpus database.
+
 As the default development policy, do not run behavioral tests, broad suites,
 gates, or historical regression journeys locally. During implementation, run
 changed-module compilation, JSON/schema parsing, applicable deterministic
@@ -168,10 +185,17 @@ the database-backed census in that same finalization step:
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write --db data\scryfall-current.sqlite3
 ```
 
-`platform/generated-artifacts.json` owns the registered deterministic report
-commands, outputs, write policies, and dependency order. It does not replace
-the existing owners for protocol types or pinned rules snapshots. Do not
-hand-order individual platform-status, architecture-audit, or coverage writers.
+`platform/generated-artifacts.json` owns the complete tracked generated-artifact
+inventory, deterministic report commands, write policies, and dependency order.
+Its discovery policy recognizes the repository's generated path conventions,
+generated-document metadata, pinned rules indexes, and embedded third-party
+generator markers. Validation fails when a discovered artifact has no owner,
+an output has two owners, an output escapes the repository, or a registered
+output is absent. Pinned rules snapshots, browser protocol bindings, durable
+baseline history, and the protocol demo retain their specialized/manual
+generation workflows, but they still have exactly one manifest owner. Do not
+hand-order individual platform-status, architecture-audit, or coverage writers,
+and do not add a tracked generated artifact without registering its owner.
 The registered `rules-derived` owner rebuilds conformance cases, the rules
 manifest hashes, the mechanic registry, and their coverage documents whenever
 an authoritative conformance review or mechanic contract changes. Do not run
@@ -206,7 +230,8 @@ runs all registered freshness, architecture, documentation, and diff checks.
 The ordinary first finalization and the pre-push hook always run the complete
 manifest.
 
-Install the repository-owned pre-push hook once per worktree:
+The worktree readiness command installs the repository-owned pre-push hook.
+The lower-level hook-only command remains available for repair:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\install_dev_hooks.py
@@ -242,6 +267,14 @@ pushing. Do not assume that Linux, Windows, package, browser, or generated jobs
 consume the same source unless the repository proves that they do. Prefer one
 canonical manifest or machine-readable source. When duplicated consumer lists
 must remain, add or preserve a deterministic completeness check.
+
+The compact CI card database is specifically owned by
+`tests/fixtures/compact-ci-fixtures.json`. Linux, Windows, generated, browser,
+main-smoke, nightly, quick-gate, and local-gate consumers must call
+`scripts/build_test_database.py build-ci --output <path>` and must not copy
+`--fixture` arguments. Run `scripts/build_test_database.py validate-ci` after
+changing its manifest, builder, or any consumer. Focused test-only databases may
+continue to pass their narrow fixtures directly to `build_fixture_database`.
 
 Compiler-only tests must construct a minimal `CardRecord` directly instead of
 depending on an incidental card in the local or compact CI database. Tests of

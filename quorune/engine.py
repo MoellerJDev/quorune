@@ -138,6 +138,7 @@ from .trigger_discovery import (
 )
 from .zone_trigger_events import (
     normalized_library_position,
+    normalized_transition_kind_map,
     validate_zone_transition_request,
     ZoneChangeOccurrence,
     ZoneTransitionKind,
@@ -147,7 +148,10 @@ from .zone_trigger_processing import (
     dispatch_zone_change_occurrence,
     semantic_event_sources,
 )
-from .saga_progression import saga_step_batch
+from .saga_progression import (
+    saga_final_chapter_snapshot,
+    saga_step_batch,
+)
 from .life_state import (
     pay_life_cost,
 )
@@ -2022,9 +2026,13 @@ class CommanderEngine(
         reason: str,
         log: bool = False,
         replacement_selections: Sequence[str | None | Mapping[str, Any]] = (),
+        transition_kinds: Mapping[str, ZoneTransitionKind] | None = None,
     ) -> list[CardInstance]:
         """Move a set of objects before emitting any resulting trigger event."""
 
+        transition_kinds = normalized_transition_kind_map(
+            changes, transition_kinds
+        )
         sources = [
             copy.deepcopy(source)
             for source in self._semantic_event_sources()
@@ -2054,6 +2062,7 @@ class CommanderEngine(
                 list[str],
                 str | None,
                 str,
+                ZoneTransitionKind,
             ]
         ] = []
         for object_id, destination in changes:
@@ -2076,6 +2085,9 @@ class CommanderEngine(
                         else None
                     ),
                     destination,
+                    transition_kinds.get(
+                        object_id, ZoneTransitionKind.ORDINARY
+                    ),
                 )
             )
         # CR 704.8 last-known information comes from the state before any
@@ -2097,6 +2109,9 @@ class CommanderEngine(
                 semantic_events=False,
                 prepared_replacement=prepared_replacements[object_id],
                 _relative_power_lki_prepared=True,
+                transition_kind=transition_kinds.get(
+                    object_id, ZoneTransitionKind.ORDINARY
+                ),
             )
         trigger_batch: list[StackItem] = []
         for (
@@ -2108,6 +2123,7 @@ class CommanderEngine(
             origin_attachments,
             origin_attached_to,
             _requested_destination,
+            transition_kind,
         ) in snapshots:
             self._dispatch_zone_change_events(
                 card,
@@ -2122,6 +2138,7 @@ class CommanderEngine(
                 departure_source_zones=source_zones,
                 departure_source_characteristics=source_characteristics,
                 reason=reason,
+                transition_kind=transition_kind,
                 trigger_batch=trigger_batch,
             )
         enqueue_trigger_batch(self, trigger_batch)
@@ -3455,11 +3472,8 @@ class CommanderEngine(
                 semantic_events=False,
             )
             exiled_cards.append(card.object_id)
-        removed_items = list(self.state.stack)
-        removed_stack = [item.ref for item in removed_items]
+        removed_stack = [item.ref for item in self.state.stack]
         self.state.stack.clear()
-        for item in removed_items:
-            self._maybe_sacrifice_completed_saga(item)
         self.state.pending_trigger_batches.clear()
         self.permissions.invalidate_current()
         self.state.priority_player = None
@@ -9231,36 +9245,6 @@ class CommanderEngine(
             countered_by=countered_by,
         )
 
-    def _maybe_sacrifice_completed_saga(
-        self, chapter_item: StackItem
-    ) -> None:
-        program = self.semantics.get(chapter_item.semantic_key)
-        if (
-            program is None
-            or "saga_final_chapter" not in program.coverage
-            or chapter_item.source_object_id not in self.state.cards
-        ):
-            return
-        saga = self.state.cards[chapter_item.source_object_id]
-        if saga.zone != "battlefield":
-            return
-        if any(
-            item.source_object_id == saga.object_id
-            and (
-                (candidate := self.semantics.get(item.semantic_key))
-                is not None
-                and "saga_chapter" in candidate.coverage
-            )
-            for item in self.state.stack
-        ):
-            return
-        self.move_card(
-            saga.object_id,
-            "graveyard",
-            reason="Saga final chapter left the stack",
-            semantic_events=True,
-        )
-
     # ------------------------------------------------------------------
     # Replacement/prevention ordering during resolution
     # ------------------------------------------------------------------
@@ -11960,6 +11944,7 @@ class CommanderEngine(
                             if "battle" in card_types
                             else False
                         ),
+                        saga=saga_final_chapter_snapshot(self, card),
                         attached_to=card.attached_to,
                         attachment_legal=(
                             self._attachment_is_legal(
@@ -12249,8 +12234,8 @@ class CommanderEngine(
                         "state.creatures_died",
                         (
                             "State-based actions moved "
-                            f"{len(execution.move_to_grave)} permanent(s) to "
-                            "graveyards."
+                            f"{len(execution.ordinary_move_to_grave)} permanent(s) "
+                            "to graveyards."
                         ),
                         {
                             "objects": [

@@ -725,6 +725,102 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_persist_returns_under_owner_with_replacement_aware_counter",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
+      "interaction_order": 2,
+      "assertion": "Persist returns the same graveyard incarnation under its owner and delegates its -1/-1 entry counter to the canonical effect-qualified quantity-replacement path."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_zone_and_counter_replacements_complete_before_return_mutates",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
+      "interaction_order": 2,
+      "assertion": "Persist suspends competing destination and counter replacements before either the return or its -1/-1 counter can mutate authoritative state."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_death_return_replacement_resume_replays_exactly",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
+      "interaction_order": 2,
+      "assertion": "Persist resumes the affected-seat counter replacement continuation without exposing its authoritative batch and replays to the identical final hash."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_death_return_replacement_continuation_survives_process_restart",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
+      "interaction_order": 2,
+      "assertion": "A persisted pending Persist quantity-replacement continuation reloads for the same seat and physical graveyard incarnation, commits once, and remains exactly replayable."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_zone_and_counter_replacements_complete_before_return_mutates",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.undying"],
+      "interaction_order": 2,
+      "assertion": "Undying suspends competing destination and counter replacements before either the return or its +1/+1 counter can mutate authoritative state."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_death_return_replacement_resume_replays_exactly",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.undying"],
+      "interaction_order": 2,
+      "assertion": "Undying resumes the affected-seat counter replacement continuation without exposing its authoritative batch and replays to the identical final hash."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_death_return_replacement_continuation_survives_process_restart",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.undying"],
+      "interaction_order": 2,
+      "assertion": "A persisted pending Undying quantity-replacement continuation reloads for the same seat and physical graveyard incarnation, commits once, and remains exactly replayable."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_saga_entry_counter_uses_quantity_replacement_but_turn_action_does_not",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
+      "interaction_order": 2,
+      "assertion": "The effect-qualified quantity replacement applies to a Saga's nested entry lore counter but not to its later rule-generated precombat lore action."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_competing_saga_entry_replacements_order_to_three_or_four",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
+      "interaction_order": 2,
+      "assertion": "Competing Saga entry quantity replacements suspend before zone or counter mutation and produce the two legal order-dependent lore totals."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_four_player_saga_entry_replacement_choices_follow_apnap",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
+      "interaction_order": 2,
+      "assertion": "Simultaneous Saga entry quantity choices are requested from affected controllers in four-player APNAP order without preparation mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_saga_entry_replacement_choice_replays_exactly",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
+      "interaction_order": 2,
+      "assertion": "The Saga entry quantity decision remains visible only to its affected controller and replays the selected lore result to the identical hash."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_saga_entry_replacement_continuation_survives_process_restart",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
+      "interaction_order": 2,
+      "assertion": "A persisted pending Saga entry quantity continuation reloads for the same affected seat, commits one lore result, and remains exactly replayable."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
       "piece_ids": ["capability.continuous.resolution.fixed_keyword_zone_object", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_target", "mechanic.cr-122-counters", "mechanic.cr-611-continuous-effects"],
       "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_target"],

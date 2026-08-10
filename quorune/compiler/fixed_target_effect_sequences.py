@@ -25,7 +25,7 @@ _GETS = re.compile(
     re.IGNORECASE,
 )
 _GAINS = re.compile(r"gains (?P<keywords>.+)", re.IGNORECASE)
-_KEYWORDS = frozenset(
+FIXED_TARGET_CHARACTERISTIC_KEYWORDS = frozenset(
     {
         "deathtouch",
         "double strike",
@@ -59,7 +59,7 @@ def _keyword_list(text: str) -> tuple[str, ...] | None:
         not values
         or len(values) > 2
         or len(set(values)) != len(values)
-        or any(value not in _KEYWORDS for value in values)
+        or any(value not in FIXED_TARGET_CHARACTERISTIC_KEYWORDS for value in values)
     ):
         return None
     return tuple(value.title() for value in values)
@@ -82,7 +82,8 @@ class FixedTargetCharacteristicsTemplate:
         if self.controller_relation not in {None, "any", "you", "opponent"}:
             raise ValueError("Target controller relation is unsupported")
         if len(set(self.keywords)) != len(self.keywords) or any(
-            value.casefold() not in _KEYWORDS for value in self.keywords
+            value.casefold() not in FIXED_TARGET_CHARACTERISTIC_KEYWORDS
+            for value in self.keywords
         ):
             raise ValueError("Granted keyword set is unsupported")
 
@@ -378,6 +379,7 @@ def fixed_target_effect_sequence_template(
 
 
 __all__ = [
+    "FIXED_TARGET_CHARACTERISTIC_KEYWORDS",
     "FixedTargetCharacteristicsTemplate",
     "FixedTargetEffectSequenceTemplate",
     "FixedTargetZoneObjectKeywordSequenceTemplate",

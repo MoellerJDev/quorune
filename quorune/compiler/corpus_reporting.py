@@ -8,6 +8,7 @@ from typing import Any, TYPE_CHECKING
 
 from ..carddb import CardDatabase
 from ..util import stable_json
+from .target_effect_corpus_assurance import TargetEffectCorpusCollector
 
 if TYPE_CHECKING:
     from ..oracle_ir import OracleCardIR
@@ -41,6 +42,11 @@ def oracle_corpus_coverage(
     examples: list[dict[str, Any]] = []
     total_faces = 0
     total_residuals = 0
+    target_effect_assurance = (
+        TargetEffectCorpusCollector()
+        if capability_registry is not None
+        else None
+    )
     for record in db.iter_cards(
         commander_legal_only=commander_legal_only,
         limit=limit,
@@ -50,6 +56,8 @@ def oracle_corpus_coverage(
             capability_registry=capability_registry,
             capability_profile=capability_profile,
         )
+        if target_effect_assurance is not None:
+            target_effect_assurance.observe(record, ir)
         statuses[ir.status] += 1
         total_faces += len(ir.faces)
         for face in ir.faces:
@@ -80,6 +88,19 @@ def oracle_corpus_coverage(
                     examples.append(example)
     total_cards = sum(statuses.values())
     metadata = db.metadata()
+    card_data_snapshot = {
+        key: metadata.get(key)
+        for key in (
+            "schema_version",
+            "card_count",
+            "ruling_count",
+            "oracle_source_sha256",
+            "rulings_source_sha256",
+            "scryfall_oracle_updated_at",
+            "scryfall_rulings_updated_at",
+        )
+        if metadata.get(key) is not None
+    }
     return {
         "schema_version": ORACLE_IR_SCHEMA_VERSION,
         "compiler_version": ORACLE_COMPILER_VERSION,
@@ -96,19 +117,7 @@ def oracle_corpus_coverage(
             if capability_registry is not None
             else None
         ),
-        "card_data_snapshot": {
-            key: metadata.get(key)
-            for key in (
-                "schema_version",
-                "card_count",
-                "ruling_count",
-                "oracle_source_sha256",
-                "rulings_source_sha256",
-                "scryfall_oracle_updated_at",
-                "scryfall_rulings_updated_at",
-            )
-            if metadata.get(key) is not None
-        },
+        "card_data_snapshot": card_data_snapshot,
         "commander_legal_only": commander_legal_only,
         "limited": limit is not None,
         "total_oracle_ids": total_cards,
@@ -123,6 +132,17 @@ def oracle_corpus_coverage(
         "residual_kinds": dict(residual_kinds.most_common()),
         "templates": dict(templates.most_common()),
         "residual_examples": examples,
+        "target_effect_corpus_assurance": (
+            target_effect_assurance.report(
+                compiler_version=ORACLE_COMPILER_VERSION,
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+                card_data_snapshot=card_data_snapshot,
+                commander_legal_only=commander_legal_only,
+            )
+            if target_effect_assurance is not None
+            else None
+        ),
         "current_snapshot_complete": bool(total_cards)
         and statuses["exact"] == total_cards
         and total_residuals == 0,

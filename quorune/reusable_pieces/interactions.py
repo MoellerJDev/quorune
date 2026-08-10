@@ -98,7 +98,13 @@ def build_interactions(
     policy: Mapping[str, Any],
     interaction_evidence: Mapping[str, Any],
 ) -> tuple[list[dict[str, Any]], dict[str, dict[str, int]]]:
-    """Build pair coverage only from explicit interaction declarations."""
+    """Build corpus and declared ambient pair coverage.
+
+    Corpus co-occurrence alone cannot identify cross-card composition surfaces.
+    The existing policy therefore declares bounded ambient high-risk pairs, and
+    explicit evidence declarations make every exercised pair visible even when
+    no one printed card contains both pieces.
+    """
 
     validate_interaction_evidence(interaction_evidence)
     evidence_by_pair: dict[tuple[str, str], set[str]] = defaultdict(set)
@@ -120,6 +126,22 @@ def build_interactions(
             )
         for pair in combinations(piece_ids, 2):
             evidence_by_pair[tuple(sorted(pair))].add(test_id)
+
+    ambient_high_risk_pairs = {
+        tuple(str(piece_id) for piece_id in pair)
+        for pair in policy["ambient_high_risk_piece_pairs"]
+    }
+    unknown_ambient = {
+        piece_id
+        for pair in ambient_high_risk_pairs
+        for piece_id in pair
+        if piece_id not in pieces
+    }
+    if unknown_ambient:
+        raise ValueError(
+            "Ambient high-risk policy references unknown pieces: "
+            + ", ".join(sorted(unknown_ambient))
+        )
 
     pair_cards: dict[tuple[str, str], set[str]] = defaultdict(set)
     pair_abilities: dict[tuple[str, str], set[str]] = defaultdict(set)
@@ -157,16 +179,26 @@ def build_interactions(
             "high_risk_covered": 0,
         }
     )
-    for pair in sorted(pair_cards):
+    applicable_pairs = (
+        set(pair_cards) | set(evidence_by_pair) | ambient_high_risk_pairs
+    )
+    for pair in sorted(applicable_pairs):
         left, right = pair
         left_piece = pieces[left]
         right_piece = pieces[right]
         evidence_tests = sorted(evidence_by_pair.get(pair, ()))
         covered = bool(evidence_tests)
-        high_risk = (
+        high_risk = pair in ambient_high_risk_pairs or (
             tuple(sorted((left_piece.class_id, right_piece.class_id)))
             in high_risk_pairs
         )
+        applicability_bases = []
+        if pair in pair_cards:
+            applicability_bases.append("corpus_cooccurrence")
+        if pair in ambient_high_risk_pairs:
+            applicability_bases.append("declared_ambient_high_risk")
+        if pair in evidence_by_pair:
+            applicability_bases.append("explicit_interaction_evidence")
         rows.append(
             {
                 "piece_ids": [left, right],
@@ -175,6 +207,7 @@ def build_interactions(
                 "ability_count": len(pair_abilities.get(pair, set())),
                 "covered": covered,
                 "high_risk": high_risk,
+                "applicability_bases": sorted(applicability_bases),
                 "evidence_test_ids": evidence_tests,
                 "evidence_basis": "explicit_interaction_declaration_v1",
             }

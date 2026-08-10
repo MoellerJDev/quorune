@@ -8,14 +8,25 @@ import unittest
 from unittest.mock import patch
 
 from common import DB_PATH, ROOT, keep_all, make_session
-from quorune.carddb import CardDatabase
+from quorune.carddb import CardDatabase, CardRecord
 from quorune.compiler.fixed_target_effect_sequences import (
+    FIXED_TARGET_CHARACTERISTIC_KEYWORDS,
     fixed_target_effect_sequence_template,
     fixed_target_zone_object_keyword_sequence_template,
 )
 from quorune.continuous_effect_model import ContinuousEffectDuration
 from quorune.continuous_effect_state import (
     expire_end_of_turn_continuous_effects,
+)
+from quorune.compiler.target_effect_corpus_assurance import (
+    REJECTION_CATEGORIES,
+    SEQUENCE_TEMPLATE_ID,
+    STANDALONE_TEMPLATE_ID,
+    SUPPORTED_CONTEXTS,
+    TargetEffectAssuranceError,
+    TargetEffectCorpusCollector,
+    synthetic_target_effect_contract,
+    validate_target_effect_assurance,
 )
 from quorune.deck import DeckLoader
 from quorune.model import CardInstance, StackItem
@@ -65,27 +76,62 @@ def focused_card_database(directory: str) -> CardDatabase:
 class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.db = CardDatabase(DB_PATH)
-        cls.base = cls.db.lookup("Sol Ring")
         cls.capabilities = load_default_capability_registry()
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.db.close()
+    def record(self, text: str, *, type_line: str = "Instant") -> CardRecord:
+        return CardRecord(
+            oracle_id="fixed-target-compiler-fixture",
+            name="Fixture",
+            mana_cost="{1}",
+            mana_value=1.0,
+            type_line=type_line,
+            oracle_text=text,
+            power="1" if "Creature" in type_line else None,
+            toughness="1" if "Creature" in type_line else None,
+            loyalty=None,
+            defense=None,
+            colors=(),
+            color_identity=(),
+            keywords=(),
+            produced_mana=(),
+            layout="normal",
+            released_at="2000-01-01",
+            legalities={"commander": "legal"},
+            faces=(),
+            raw={},
+        )
 
     def compile(self, text: str, *, type_line: str = "Instant"):
         return compile_oracle_card(
-            replace(
-                self.base,
-                name="Fixture",
-                oracle_text=text,
-                type_line=type_line,
-                keywords=(),
-                faces=(),
-            ),
+            self.record(text, type_line=type_line),
             capability_registry=self.capabilities,
             capability_profile="commander_review",
         )
+
+    def test_corpus_assurance_contract_covers_every_closed_dimension(self):
+        contract = synthetic_target_effect_contract(
+            self.capabilities,
+            capability_profile="commander_review",
+        )
+
+        self.assertEqual(list(SUPPORTED_CONTEXTS), contract["contexts"])
+        self.assertEqual(
+            sorted(FIXED_TARGET_CHARACTERISTIC_KEYWORDS),
+            contract["supported_keywords"],
+        )
+        self.assertEqual([1, 2, 3], contract["clause_counts"])
+        self.assertEqual(
+            ["any", "opponent", "you"],
+            contract["controller_relations"],
+        )
+        self.assertIn("counter_first", contract["operation_orders"])
+        self.assertIn("target_first", contract["operation_orders"])
+        self.assertEqual(
+            list(REJECTION_CATEGORIES),
+            contract["rejection_categories"],
+        )
+        self.assertGreater(contract["accepted_case_count"], 0)
+        self.assertGreater(contract["rejected_case_count"], 0)
 
     def test_keyword_counter_vocabulary_is_closed_and_strict(self):
         self.assertEqual("flying", keyword_counter_mechanic(" Flying "))
@@ -522,16 +568,9 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
         dependency["status"] = "blocked"
         dependency["blockers"] = ["test mutation"]
         ir = compile_oracle_card(
-            replace(
-                self.base,
-                name="Fixture",
-                oracle_text=(
-                    "Put a +1/+1 counter on target creature. "
-                    "It gains flying until end of turn."
-                ),
-                type_line="Instant",
-                keywords=(),
-                faces=(),
+            self.record(
+                "Put a +1/+1 counter on target creature. "
+                "It gains flying until end of turn."
             ),
             capability_registry=CapabilityRegistry(raw),
             capability_profile="commander_review",
@@ -556,6 +595,90 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
         ):
             with self.assertRaises(AssertionError):
                 exact()
+
+    def test_corpus_assurance_rejects_semantic_and_capability_mutants(self):
+        record = self.record(
+            "Target creature gets +1/+1 until end of turn. "
+            "Put a +1/+1 counter on it."
+        )
+        ir = compile_oracle_card(
+            record,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+        )
+        node = ir.faces[0].nodes[0]
+        self.assertEqual(SEQUENCE_TEMPLATE_ID, node.template_id)
+
+        lost_capability = replace(
+            node,
+            capability_dependencies=tuple(
+                value
+                for value in node.capability_dependencies
+                if value != SEQUENCE_CAPABILITY
+            ),
+        )
+        mutated_ir = replace(
+            ir,
+            faces=(
+                replace(ir.faces[0], nodes=(lost_capability,)),
+            ),
+        )
+        with self.assertRaisesRegex(
+            TargetEffectAssuranceError,
+            "lost required capabilities",
+        ):
+            TargetEffectCorpusCollector().observe(record, mutated_ir)
+
+        malformed_effect = replace(
+            node,
+            effects=({**node.effects[0], "power": True}, *node.effects[1:]),
+        )
+        mutated_ir = replace(
+            ir,
+            faces=(replace(ir.faces[0], nodes=(malformed_effect,)),),
+        )
+        with self.assertRaises(TargetEffectAssuranceError):
+            TargetEffectCorpusCollector().observe(record, mutated_ir)
+
+    def test_corpus_assurance_report_is_canonical_and_stratified(self):
+        collector = TargetEffectCorpusCollector()
+        for text in (
+            "Target creature an opponent controls gains flying until end of turn.",
+            "Put a +1/+1 counter on target creature you control. "
+            "It gets +2/+0 until end of turn.",
+        ):
+            record = self.record(text)
+            collector.observe(
+                record,
+                compile_oracle_card(
+                    record,
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                ),
+            )
+        snapshot = {"oracle_source_sha256": "a" * 64}
+        report = collector.report(
+            compiler_version="assurance-test",
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            card_data_snapshot=snapshot,
+            commander_legal_only=True,
+        )
+
+        validate_target_effect_assurance(
+            report,
+            compiler_version="assurance-test",
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            card_data_snapshot=snapshot,
+            commander_legal_only=True,
+        )
+        self.assertEqual(2, report["total_nodes"])
+        self.assertEqual(2, report["shape_count"])
+        self.assertEqual(
+            {STANDALONE_TEMPLATE_ID, SEQUENCE_TEMPLATE_ID},
+            set(report["dimensions"]["templates"]),
+        )
 
 
 class FixedTargetEffectSequenceRuntimeTests(unittest.TestCase):
