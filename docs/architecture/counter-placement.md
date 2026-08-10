@@ -1,7 +1,7 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, and ADR 0048"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
 verified: "2026-08-10"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -162,11 +162,15 @@ the zone-change tree, so represented effect-qualified quantity replacements
 apply before the permanent enters and crossed trusted chapter events are
 discovered afterward. At the active player's precombat main boundary,
 `saga_progression.py` snapshots every controlled Saga with trusted typed
-chapter declarations, commits all +1 lore changes through `counter_state.py`
-before dispatching any chapter, and contributes the resulting triggers to the
-same waiting-trigger batch as other beginning-of-phase triggers. That later
-placement is a turn-based action, not an effect, so CR 614.16 excludes effects
-such as Doubling Season. The separate `state_based.saga_final_chapter`
+chapter declarations and prepares one simultaneous `counter.place` batch with
+`effect_generated=false`. Unqualified replacements that apply when that
+player would put counters participate in the ordinary affected-controller
+ordering, while effect-qualified text such as Doubling Season remains
+inapplicable. `turn_counter_coordination.py` suspends a competing order before
+mutation, pins the phase and event identities, and resumes the same batch
+after save/load. All resulting lore changes commit before any crossed chapter
+is dispatched, and those triggers join the same waiting-trigger batch as
+other beginning-of-phase triggers. The separate `state_based.saga_final_chapter`
 capability snapshots the exact Saga incarnation, waits while one of its typed
 chapter abilities is pending, and then routes the ordinary final-chapter
 sacrifice through the simultaneous state-based zone-change transaction.

@@ -132,6 +132,15 @@ Use the worktree-local CPython 3.12 environment, never a global `python` alias.
 Keep one substantive branch under certification and at most one independent
 next-batch worktree. Do not mix their changes.
 
+Keep the filesystem equally bounded. The normal layout is the canonical
+`C:\Code Projects\Quorune` checkout plus, only while Slot B is active, one
+`C:\Code Projects\Quorune-<batch>` worktree. Before creating that second
+worktree, remove any stale registered worktree after verifying it is clean and
+contains no unpublished work. As soon as a branch merges or is abandoned,
+remove its checkout with `git worktree remove`, run `git worktree prune`, and
+retain the branch itself only when it still protects unique work. Never leave
+one top-level project directory per historical pull request.
+
 After creating or entering a worktree, run its repository-owned readiness
 command. `--install-hook` may update only this repository's local Git hook
 configuration and refuses to replace a foreign hook policy:

@@ -425,10 +425,12 @@ def _resolved_amount(event: ReplaceableEvent) -> tuple[str, int, int]:
     return name, requested, amount
 
 
-def _log_replacements(
+def log_counter_placement_replacements(
     host: CounterPlacementHost,
     prepared: PreparedCounterPlacements,
 ) -> None:
+    """Journal applied counter replacements without duplicating mutation."""
+
     effects = {effect.effect_id: effect for effect in prepared.effects}
     events = {event.event_id: event for event in prepared.events}
     for selection in prepared.journal:
@@ -643,7 +645,7 @@ def commit_counter_placement_plan(
                 changed_players=changed_players,
             )
     if log:
-        _log_replacements(host, plan.prepared)
+        log_counter_placement_replacements(host, plan.prepared)
     return tuple(results)
 
 

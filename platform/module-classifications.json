@@ -5000,6 +5000,20 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/turn_counter_coordination.py",
+      "layer": "rules",
+      "owning_subsystem": "counter_placement",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/turn_history.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -5222,5 +5236,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "f771257e9e019079babab2946ed28eacf756f51334e0a61a55f0740ca1e9eb9f"
+  "fingerprint": "1fc401f0b94094417c548bc601a3a888863e05b11314e422392866eb5e84bc9c"
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "a0cac030f85eb9db5545f1565b1bbf2554c92d6fde5277808fbdff45bd525ba8",
-  "declaration_source_fingerprint": "0c5c4fe6c04accedcf49bfcf2a259523a41887444015eb2693230329cb583c7c",
+  "registry_fingerprint": "9b1a40f3ce8c74f0db38a51e8df7d65abfb737987fbebf9eb09d8b9d68c41dba",
+  "declaration_source_fingerprint": "f46f6d0ead8952be2514ded2dffbfc25a902e92fff09871396fd189813e9002b",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -12626,6 +12626,58 @@
     },
     {
       "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_action_applies_unqualified_but_not_effect_only_replacement",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply an unqualified placing-player quantity replacement to the rule-generated lore action while excluding an effect-qualified Doubling Season replacement from the same event."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_simultaneous_saga_turn_replacements_pin_event_ids_and_replay",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preserve both simultaneous Saga event identities across successive replacement-order retries and commit the complete batch before chapter dispatch."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_four_player_precombat_lore_only_advances_active_players_sagas",
       "official_rule_ids": [
@@ -12678,6 +12730,32 @@
     },
     {
       "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suspend a four-player precombat Saga batch for its affected controller and resume the same simultaneous rule action before priority."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
       "evidence_class": "mutation",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_counter_producer_mutations_are_killed",
       "official_rule_ids": [
@@ -12700,7 +12778,7 @@
         "commander_duel",
         "commander_review"
       ],
-      "applicability_note": "Kill removal of the Saga self-replacement by requiring an ordinary entry to produce its mandatory lore counter."
+      "applicability_note": "Kill removal of the Saga entry self-replacement and misclassification of the turn action as effect-generated through entry and Doubling Season boundary assertions."
     },
     {
       "capability_id": "counter.producer.saga_lore",
@@ -12727,6 +12805,32 @@
         "commander_review"
       ],
       "applicability_note": "Keep Read Ahead material and reject runtime progression without trusted typed chapter programs before counter mutation."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "negative",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject an unknown turn-action frame field through strict replacement-continuation deserialization before any lore mutation."
     },
     {
       "capability_id": "counter.producer.saga_lore",
@@ -12860,6 +12964,32 @@
     },
     {
       "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the precombat replacement choice only to the affected active player without exposing the authoritative turn-action frame, batch, or physical Saga identity."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
       "evidence_class": "replay",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_precombat_saga_progression_replays_exactly",
       "official_rule_ids": [
@@ -12935,6 +13065,58 @@
         "commander_review"
       ],
       "applicability_note": "Reload the seat-scoped Saga entry replacement continuation before selection, commit its lore result once, and replay the restarted record exactly."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload the immutable precombat turn-action continuation, apply the selected replacement order once, and replay to the identical authoritative hash."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_simultaneous_saga_turn_replacements_pin_event_ids_and_replay",
+      "official_rule_ids": [
+        "101.4",
+        "122.1",
+        "122.6",
+        "603.2",
+        "603.3",
+        "614.1c",
+        "614.16",
+        "616.1",
+        "616.1f",
+        "714.2b",
+        "714.3",
+        "714.3a",
+        "714.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay successive choices across two simultaneous Saga counter events to the same counters, chapter batch, and authoritative state hash."
     },
     {
       "capability_id": "counter.producer.support",
@@ -25063,5 +25245,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "248645920bd2eaaeb312f668ff13b8f067ac1e7ec61543d025ac55fb56893e48"
+  "fingerprint": "59ce0abac1a17967b9e6ac592f5757e75784b6161d5104648354ada76e9d135d"
 }

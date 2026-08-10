@@ -417,19 +417,19 @@
     {
       "id": "closed_source_self_reference_compilation",
       "name": "Closed source-self reference compilation",
-      "status": "implemented_on_current_source_tree",
+      "status": "integrated_on_certified_main",
       "evidence": "One immutable versioned source-reference vocabulary now serves represented counter, damage, prevention, trigger, entry, activation-cost, and declaration grammar. Full names and bounded complete leading forms lower to the ordinary physical $source reference, while arbitrary prefixes, suffixes, and nicknames remain residuals. Runtime handlers receive no card names and do not reinterpret Oracle text. Gained-ability rewriting, name-changing effects, alternate or interchangeable names, and shortened-name conventions outside the closed vocabulary remain separate blocked families."
     },
     {
       "id": "fixed_scry_resolution",
       "name": "Typed fixed-controller Scry resolution",
-      "status": "implemented_on_current_source_tree",
+      "status": "integrated_on_certified_main",
       "evidence": "One positive fixed-count Scry instruction for its controller now compiles to a source-spanned capability-closed CardProgram node. A private ordered-partition choice represents every looked-at card exactly once, independently orders the top and bottom groups, revalidates the exact current library top, and commits one atomic hidden library arrangement with rollback, four-player seat projection, exact replay, and historical Game Record v3 bottom-subset response compatibility. Scry 0 and an empty library create no Scry event. Simultaneous multi-player Scry, dynamic counts, added-card modifiers, Scry triggers, Surveil, fateseal, and broader library ordering remain blocked, so aggregate Scry is not trusted."
     },
     {
       "id": "ordinary_saga_final_chapter",
       "name": "Ordinary Saga final-chapter lifecycle",
-      "status": "implemented_on_current_source_tree",
+      "status": "integrated_on_certified_main",
       "evidence": "Ordinary non-Read-Ahead Sagas now declare a separate state_based.saga_final_chapter dependency in addition to lore progression. One immutable exact-incarnation snapshot waits while a trusted typed chapter occurrence is pending, then has the current controller sacrifice the completed Saga through the simultaneous replacement-aware zone-change owner with a normalized sacrifice event, rollback, four-player batching, and exact replay. The former stack-resolution shortcut is removed and CommanderEngine shrinks. Read Ahead, arbitrary lore movement, copied, gained, removed, or layer-modified chapter abilities, generic sacrifice-trigger compilation, and one Saga simultaneously subject to another zone-moving state action remain fail-closed; aggregate Saga is not trusted, and this correction produces no full-card promotion from lore progression alone."
     },
     {
@@ -447,26 +447,92 @@
     {
       "id": "fixed_target_zone_object_keyword_sequence",
       "name": "Typed fixed target zone-object keyword results",
-      "status": "implemented_on_current_source_tree",
+      "status": "integrated_on_certified_main",
       "evidence": "One source-spanned fixed target sequence places a positive fixed counter through the canonical replacement-aware counter owner and then grants one represented keyword through an immutable layer-6 continuous effect locked to the target's current battlefield logical identity. Flying, First strike, Trample, and Vigilance are capability-closed independently. Cleanup, source departure, target reentry, rollback, four-player projection, and exact replay have focused evidence. The family contains no runtime Oracle parser or printed card identity dispatch. Optional, variable, compound, chosen, multi-target, arbitrary granted-text, and unsupported keyword variants remain residuals; current corpus measurements live in generated compiler coverage and the card-unlock frontier."
     },
     {
       "id": "fixed_adapt_and_monstrosity_actions",
       "name": "Typed fixed Adapt and Monstrosity keyword actions",
-      "status": "implemented_on_current_source_tree",
+      "status": "integrated_on_certified_main",
       "evidence": "Ordinary printed positive-integral Adapt N and Monstrosity N activations lower once into source-spanned CardProgram V2 nodes. Resolution revalidates the source's current battlefield logical identity, Adapt conditionally places +1/+1 counters through the canonical replacement-aware counter transaction, and Monstrosity performs the same counter transaction before assigning one physical-object monstrous designation through a typed owner. The designation survives control changes and phasing, clears on a zone change, is not copied, serializes additively for Game Record v3 compatibility, and participates in exact replay and public projection. The engine delegates object-local zone-change reset to a dedicated typed owner. Zero, variable, compound, copied, granted, removed, and face-down keyword actions, multiple instances, Monstrosity-value consumers, and broader replacement interactions remain explicit residuals; neither aggregate mechanic is trusted."
     },
     {
       "id": "keyword_counter_composition_assurance",
       "name": "Keyword-counter composition assurance",
-      "status": "implemented_on_current_source_tree",
+      "status": "integrated_on_certified_main",
       "evidence": "Explicit high-risk interaction evidence now connects the canonical replacement-aware counter transaction and CR 122.1b layer-6 keyword-counter projection to Flying block legality, Vigilance attack tapping, Double strike combat-damage-step participation, and Lifelink final damage results. The four downstream witnesses use four-player authoritative state, shared offer/command legality where applicable, transactional rejection, and exact replay. The existing affected-seat replacement-continuation witness covers privacy, suspension, restart, and replay before the keyword becomes effective. This certifies only the represented ordinary keyword-counter and downstream capability pairs; unsupported keyword behavior, counter types, same-layer dependency cases, and broader continuous-effect composition remain explicit limitations."
     },
     {
       "id": "ordinary_permanent_hexproof",
       "name": "Typed ordinary permanent Hexproof target protection",
-      "status": "implemented_on_current_source_tree",
+      "status": "integrated_on_certified_main",
       "evidence": "Bare ordinary permanent Hexproof lowers once into a source-spanned CardProgram V2 capability and consumes one immutable current-controller target-protection snapshot shared by offer generation, submitted-command validation, and CR 608.2b resolution revalidation. The typed boundary composes with Shroud, represented Protection, and existing player/controller color restrictions without parsing Oracle text or mutating state; four-player privacy, rollback, control-change revalidation, non-target attachment separation, exact replay, and a killed implementation mutant have focused evidence. Player Hexproof, Hexproof from qualities, effects that ignore Hexproof, and unsupported ability-changing, copy, face-down, or merged-object producers remain explicit residuals; aggregate targeting and continuous-effect completeness is not claimed."
+    },
+    {
+      "id": "ordinary_indestructible_destruction",
+      "name": "Typed ordinary Indestructible destruction prevention",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main routes ordinary printed Indestructible through one current-characteristics destruction verdict shared by targeted destruction, lethal damage, Deathtouch, and zero-toughness state-based processing. The boundary distinguishes destruction from sacrifice, exile, toughness-based graveyard movement, and counter removal; rollback, multiplayer, replay, and interaction evidence remain capability-scoped. Unsupported ability-changing, copy, face-down, and broader replacement producers remain explicit residuals."
+    },
+    {
+      "id": "fixed_multi_subject_counter_placement",
+      "name": "Typed fixed multi-subject counter placement",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main includes one immutable simultaneous counter-placement family for closed direct permanent, affected-set, and bounded target-set subjects. Every represented producer uses the canonical quantity-replacement transaction, APNAP ordering, logical-object revalidation, rollback, privacy where choices are seat-scoped, and exact replay. Variable, distributed, optional, modal, conditional, and linked counter instructions remain explicit residuals."
+    },
+    {
+      "id": "keyword_counter_consumer_composition",
+      "name": "Keyword-counter consumer composition assurance",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main includes explicit interaction pairs between replacement-aware keyword-counter placement and the represented combat, tap, strike-step, and damage-result consumers. Evidence declarations identify exact capability pairs rather than inferring coverage from incidental test co-citation. Unsupported keyword, layer-dependency, and broader counter-type composition remains unclaimed."
+    },
+    {
+      "id": "typed_permanent_target_predicates",
+      "name": "Typed permanent target predicates",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main includes a closed immutable permanent-target predicate vocabulary shared by compiler lowering, advertised choices, command validation, and resolution revalidation. Represented type, subtype, controller, tapped-state, counter, and related public predicates use current effective characteristics without runtime Oracle parsing or card identity dispatch. Unsupported negative, compound, history-sensitive, linked, and hidden predicates remain source-spanned residuals."
+    },
+    {
+      "id": "typed_zone_change_casting_costs",
+      "name": "Typed fixed zone-change casting costs",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main lowers one closed family of mandatory fixed sacrifice, discard, and exile casting costs into immutable CardProgram nodes. Offer generation and accepted casts share the same preflight; the entire cast suspends before mutation when represented replacement ordering requires a choice, and cost, mana, stack placement, rollback, privacy, and replay remain one authoritative transaction. Variable, optional, alternate, repeated, linked, and unsupported zone-cost grammar remains fail-closed."
+    },
+    {
+      "id": "ordinary_prowess",
+      "name": "Typed ordinary Prowess",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main lowers exact printed Prowess into a source-spanned CardProgram ability fragment. A normalized committed-spell event, canonical noncreature type test, ordinary APNAP trigger batching, and identity-pinned layer-7c until-end-of-turn modifier provide the reusable runtime path. Rules-text equivalents, qualified variants, trigger multiplication, unsupported grants and copies, and broader cast-event families remain residuals."
+    },
+    {
+      "id": "ordinary_convoke",
+      "name": "Typed ordinary Convoke",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main represents ordinary printed Convoke as a typed alternative mana-payment contribution. Cast advertisement and acceptance consume the same eligible-creature snapshot, tap chosen creatures through the canonical tap owner, preserve colored and generic payment constraints, and replay the exact payment. Unsupported cost modifiers, hybrid and Phyrexian interactions, granted or removed Convoke, and broader payment ordering remain fail-closed."
+    },
+    {
+      "id": "ordinary_bloodthirst",
+      "name": "Typed ordinary Bloodthirst",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main lowers fixed positive ordinary Bloodthirst into a source-spanned entry-counter fragment. The condition consumes canonical current-turn opponent-damage history and prospective entry identity, then uses the replacement-aware intrinsic entry-counter transaction. Variable values, alternate damage histories, unsupported grants and copies, and broader entry replacement interactions remain explicit residuals."
+    },
+    {
+      "id": "ordinary_bolster",
+      "name": "Typed ordinary Bolster",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main lowers fixed positive Bolster into one typed resolution choice over the controller's creatures with least current effective toughness. Ties are seat-scoped, resolution revalidates the selected logical identity and least-toughness set, and counter placement uses the canonical quantity-replacement owner with rollback, multiplayer ordering, privacy, and exact replay. Variable, compound, copied, and unsupported toughness-layer interactions remain fail-closed."
+    },
+    {
+      "id": "typed_own_graveyard_return",
+      "name": "Typed own-graveyard return to hand",
+      "status": "integrated_on_certified_main",
+      "evidence": "Certified main lowers the closed mandatory form 'Return target [represented card-type phrase] card from your graveyard to your hand' into source-spanned CardProgram V2 nodes. Advertisement, target selection, resolution revalidation, replacement-aware zone movement, private hand projection, rollback, multiplayer isolation, and exact replay share one typed owner. The certified Commander census gains 50 generic exact and trusted cards, gains 49 capability-closed programs, removes 63 unresolved cards, and removes 90 material residuals. Other owners, destinations, quantities, qualifications, optional or modal wording, reanimation, linked results, and cast permissions remain residuals."
+    },
+    {
+      "id": "replacement_aware_saga_turn_counter_action",
+      "name": "Replacement-aware Saga lore turn action",
+      "status": "implemented_on_current_source_tree",
+      "evidence": "The current source tree routes ordinary non-Read-Ahead Saga precombat lore progression through one simultaneous immutable counter-placement batch marked effect_generated=false. Unqualified quantity replacements apply; effect-qualified replacements such as Doubling Season do not. Competing CR 616 orders suspend before mutation through a strict seat-scoped continuation that preserves event IDs and held trigger identity, survives save/load, and resumes step entry exactly once. CommanderEngine shrinks by two logical lines and direct writes remain flat. Read Ahead, arbitrary lore movement, copied or gained chapter abilities, unsupported replacement grammar, and other turn-based counter producers remain fail-closed."
     }
   ],
   "platform": {

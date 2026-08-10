@@ -68,3 +68,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0051 — typed ordinary Convoke payment](0051-typed-ordinary-convoke-payment.md)
 - [ADR 0052 — typed ordinary Bolster resolution](0052-typed-ordinary-bolster.md)
 - [ADR 0053 — typed own-graveyard return to hand](0053-typed-own-graveyard-return-to-hand.md)
+- [ADR 0054 — replacement-aware Saga turn action](0054-replacement-aware-saga-turn-action.md)
