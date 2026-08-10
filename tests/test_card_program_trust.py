@@ -187,6 +187,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.trigger.flanking",
                 "ability.trigger.melee",
                 "ability.trigger.mentor",
+                "ability.trigger.prowess",
                 "combat.block.self-counter-prohibition",
                 "continuous.attached.fixed_characteristics",
                 "continuous.fixed_query_power_toughness_anthem",
