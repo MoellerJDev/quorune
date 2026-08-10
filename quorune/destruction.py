@@ -18,6 +18,7 @@ from .replacement.immutable import (
     ImmutableValueError,
     thaw_value,
 )
+from .zone_trigger_events import ZoneTransitionKind
 
 
 class DestructionError(ValueError):
@@ -68,6 +69,7 @@ class DestructionHost(Protocol):
         replacement_selections: Sequence[
             str | None | Mapping[str, Any]
         ] = (),
+        transition_kinds: Mapping[str, ZoneTransitionKind] | None = None,
     ) -> list[Any]: ...
 
     def _log(
@@ -538,6 +540,7 @@ def commit_destruction_plan(
     plan: DestructionPlan,
     *,
     companion_changes: Sequence[tuple[str, str]] = (),
+    companion_transition_kinds: Mapping[str, ZoneTransitionKind] | None = None,
 ) -> DestructionResult:
     """Commit one preflighted destruction family through canonical owners."""
 
@@ -545,6 +548,19 @@ def commit_destruction_plan(
     destroyed = plan.destroyed_object_ids
     event_order = plan.destruction_event_order or destroyed
     companions = _canonical_companion_changes(plan, companion_changes)
+    transition_kinds = dict(companion_transition_kinds or {})
+    if (
+        not set(transition_kinds).issubset(
+            {object_id for object_id, _destination in companions}
+        )
+        or any(
+            not isinstance(value, ZoneTransitionKind)
+            for value in transition_kinds.values()
+        )
+    ):
+        raise DestructionError(
+            "Companion transition kinds must be typed and name companion objects"
+        )
     changes = (
         tuple((object_id, "graveyard") for object_id in event_order)
         + companions
@@ -561,6 +577,7 @@ def commit_destruction_plan(
             replacement_selections=tuple(
                 thaw_value(value) for value in plan.replacement_selections
             ),
+            transition_kinds=transition_kinds,
         )
     apply_counter_changes(host, plan.shield_counter_plan)
 

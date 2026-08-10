@@ -190,6 +190,21 @@ class ZoneTriggerEventModelTests(unittest.TestCase):
         with self.assertRaisesRegex(ZoneTriggerEventError, "supported typed value"):
             occurrence(transition_kind="countered_spell")
 
+    def test_sacrifice_transition_is_closed_and_emits_typed_event(self):
+        value = occurrence(
+            origin="battlefield",
+            destination="graveyard",
+            transition_kind=ZoneTransitionKind.SACRIFICE,
+        )
+
+        self.assertEqual(
+            "sacrifice", value.to_dict()["transition_kind"]
+        )
+        self.assertEqual(
+            "permanent.sacrificed",
+            normalized_zone_trigger_events(value)[0].kind,
+        )
+
 
 class ZoneTriggerIntegrationTests(unittest.TestCase):
     @classmethod

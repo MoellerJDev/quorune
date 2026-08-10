@@ -132,8 +132,13 @@ chapter declarations, commits all +1 lore changes through `counter_state.py`
 before dispatching any chapter, and contributes the resulting triggers to the
 same waiting-trigger batch as other beginning-of-phase triggers. That later
 placement is a turn-based action, not an effect, so CR 614.16 excludes effects
-such as Doubling Season. Read Ahead, untrusted chapter programs, and copied,
-gained, removed, or layer-modified chapter abilities remain fail-closed.
+such as Doubling Season. The separate `state_based.saga_final_chapter`
+capability snapshots the exact Saga incarnation, waits while one of its typed
+chapter abilities is pending, and then routes the ordinary final-chapter
+sacrifice through the simultaneous state-based zone-change transaction.
+Read Ahead, untrusted chapter programs, arbitrary lore-counter movement, and
+copied, gained, removed, or layer-modified chapter abilities remain
+fail-closed.
 
 Effect-generated entry counters use the same nested replacement tree through
 an immutable `EffectEntryCounter`. The instruction pins the physical card's

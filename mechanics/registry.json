@@ -16,7 +16,7 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "9ce5c077110a787c80ec066f784dba8b72bfbd04c44673654d0659b1e64967ef",
+      "sha256": "aa8d9a3a54aef49ab35544007647655a297f7be63f0ce8ee39e4edf83aac7fda",
       "version": 10
     },
     {
@@ -472,8 +472,8 @@
     {
       "mechanic_id": "cr-704-state-based-actions",
       "path": "mechanics/contracts/state-based-actions.json",
-      "sha256": "d89181e085d367ee4b261256bcb9b88c379d364cb0fc8be217d10ad6b5ae25a2",
-      "version": 7
+      "sha256": "33c545224644d91809259f2d95e6981e3c2575a885006f85913f682758af46bc",
+      "version": 8
     },
     {
       "mechanic_id": "tap-and-untap",
@@ -6454,7 +6454,7 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "9ce5c077110a787c80ec066f784dba8b72bfbd04c44673654d0659b1e64967ef",
+      "contract_sha256": "aa8d9a3a54aef49ab35544007647655a297f7be63f0ce8ee39e4edf83aac7fda",
       "contract_version": 10,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8770,16 +8770,18 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/state-based-actions.json",
-      "contract_sha256": "d89181e085d367ee4b261256bcb9b88c379d364cb0fc8be217d10ad6b5ae25a2",
-      "contract_version": 7,
+      "contract_sha256": "33c545224644d91809259f2d95e6981e3c2575a885006f85913f682758af46bc",
+      "contract_version": 8,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "state_based_actions.evaluate_permanent_state_based_actions, state_based_execution.prepare_state_based_execution, state_based_execution.commit_state_based_counter_removals, and counter_removal.commit_counter_removals",
-      "implementation_version": "state-based-actions-v8",
+      "implementation_component": "state_based_actions.evaluate_permanent_state_based_actions, saga_lifecycle.SagaFinalChapterSnapshot, state_based_execution.prepare_state_based_execution, state_based_execution.commit_state_based_zone_changes, state_based_execution.commit_state_based_counter_removals, and counter_removal.commit_counter_removals",
+      "implementation_version": "state-based-actions-v9",
       "kind": "rules_section",
       "known_blockers": [
         "specialized copy-object exceptions such as Prepare copies in exile are not implemented",
-        "Sagas, dungeons, space sculptor, Roles, speed, and several other specialized state actions are not implemented",
+        "Read Ahead and copied, gained, removed, or layer-modified Saga chapter abilities remain outside the represented ordinary final-chapter action",
+        "one completed Saga simultaneously subject to another zone-moving state-based action fails closed until combined-cause replacement provenance is represented",
+        "dungeons, space sculptor, Roles, speed, and several other specialized state actions are not implemented",
         "native Siege defeated-trigger transformed casting and future Battle subtypes remain unresolved",
         "maximum-counter abilities outside the reviewed numeric self-restriction sentence family remain unresolved",
         "Aura attachment to players and the complete enchant-quality grammar are not implemented",
@@ -8830,7 +8832,19 @@
         "test_world_rule_requires_a_since_timestamp",
         "test_new_world_moves_the_older_world_to_graveyard",
         "test_worlds_entering_simultaneously_are_tied_and_all_leave",
-        "test_losing_and_regaining_world_gets_a_new_since_time"
+        "test_losing_and_regaining_world_gets_a_new_since_time",
+        "test_completed_saga_waits_only_for_its_pending_chapter",
+        "test_malformed_saga_lifecycle_fails_closed",
+        "test_final_chapter_sba_waits_then_sacrifices_under_current_control",
+        "test_old_incarnation_chapter_does_not_protect_reentered_saga",
+        "test_completed_phased_out_saga_waits_until_it_phases_in",
+        "test_countered_final_chapter_uses_the_next_sba_check",
+        "test_final_chapter_sacrifice_uses_destination_replacement",
+        "test_source_leaving_before_chapter_resolution_is_not_sacrificed_twice",
+        "test_four_player_completed_sagas_move_in_one_sba_batch",
+        "test_saga_lifecycle_snapshot_staleness_rolls_back_before_mutation",
+        "test_final_chapter_completion_replays_exactly",
+        "test_saga_lifecycle_mutation_is_killed"
       ],
       "trust_level": "untrusted"
     },

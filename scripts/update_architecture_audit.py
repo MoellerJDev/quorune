@@ -428,6 +428,7 @@ def _string_records(
             "_EXILE_MECHANIC": {"exile"},
             "_EXILE_ZONE": {"exile"},
             "_REASON_FIELD": {"reason"},
+            "_SACRIFICE_TRANSITION_KIND": {"sacrifice"},
             "PLAYER_COUNTERS_FIELD": {"counters"},
             # Closed rules/compiler vocabulary can coincide with short card
             # names. The exemption applies only to these assigned constants;

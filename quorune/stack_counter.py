@@ -17,8 +17,6 @@ class StackCounterHost(Protocol):
     state: Any
     semantics: Any
 
-    def _maybe_sacrifice_completed_saga(self, item: StackItem) -> None: ...
-
     def move_card(self, object_id: str, zone: str, **kwargs: Any) -> Any: ...
 
     def _increment_optimization(self, seat: str, key: str) -> None: ...
@@ -103,7 +101,6 @@ def counter_stack_item(
         )
         return item
     host.state.stack.remove(item)
-    host._maybe_sacrifice_completed_saga(item)
     if item.card_object_id:
         card = host.state.cards[item.card_object_id]
         if card.zone == "stack":

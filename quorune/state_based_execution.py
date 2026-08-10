@@ -23,6 +23,7 @@ from .destruction import (
     request_for_card,
 )
 from .state_based_actions import StateBasedActionBatch
+from .zone_trigger_events import ZoneTransitionKind
 from .util import unique_preserving_order
 
 
@@ -74,6 +75,7 @@ class StateBasedExecutionPlan:
     move_to_grave: tuple[str, ...]
     simultaneous_changes: tuple[tuple[str, str], ...]
     destruction_companions: tuple[tuple[str, str], ...]
+    saga_sacrifices: tuple[str, ...]
     counter_removals: StateBasedCounterRemovalPlan
     state_changed: bool
 
@@ -217,13 +219,29 @@ def prepare_state_based_execution(
         actor=None,
         reason="state-based action",
     )
+    saga_ids = tuple(
+        value.object_id for value in batch.saga_sacrifices
+    )
+    for value in batch.saga_sacrifices:
+        card = host.state.cards.get(value.object_id)
+        if (
+            card is None
+            or card.zone != "battlefield"
+            or card.logical_object_id != value.logical_object_id
+            or card.controller != value.controller
+        ):
+            raise StateBasedExecutionError(
+                "Saga lifecycle snapshot changed before commit"
+            )
     ordinary = tuple(
         unique_preserving_order(
             (*batch.put_in_graveyard, *destruction.destroyed_object_ids)
         )
     )
     moved = tuple(
-        unique_preserving_order((*ordinary, *batch.world_rule))
+        unique_preserving_order(
+            (*ordinary, *batch.world_rule, *saga_ids)
+        )
     )
     if any(
         not isinstance(object_id, str)
@@ -254,6 +272,7 @@ def prepare_state_based_execution(
         move_to_grave=moved,
         simultaneous_changes=simultaneous,
         destruction_companions=companions,
+        saga_sacrifices=saga_ids,
         counter_removals=counter_removals,
         state_changed=bool(
             ordinary
@@ -261,6 +280,7 @@ def prepare_state_based_execution(
             or counter_removals.counters.removals
             or batch.cease
             or batch.world_rule
+            or saga_ids
         ),
     )
 
@@ -279,6 +299,31 @@ def commit_state_based_zone_changes(
         host,
         plan.destruction,
         companion_changes=plan.destruction_companions,
+        companion_transition_kinds={
+            object_id: ZoneTransitionKind.SACRIFICE
+            for object_id in plan.saga_sacrifices
+        },
+    )
+    log_saga_sacrifices(host, plan.saga_sacrifices)
+
+
+def log_saga_sacrifices(
+    host: DestructionHost,
+    object_ids: tuple[str, ...],
+) -> None:
+    """Journal one committed Saga SBA batch without owning its mutation."""
+
+    if not object_ids:
+        return
+    cards = tuple(host.state.cards[object_id] for object_id in object_ids)
+    host._log(
+        None,
+        "state.saga_sacrificed",
+        f"State-based actions sacrificed {len(cards)} completed Saga permanent(s).",
+        {"objects": [card.ref for card in cards], "rule": "704.5s"},
+        importance=2,
+        changed_objects=object_ids,
+        changed_players=sorted({card.owner for card in cards}),
     )
 
 
@@ -324,6 +369,7 @@ __all__ = [
     "CounterMaximumRemovalResult",
     "CounterPairRemoval",
     "prepare_state_based_execution",
+    "log_saga_sacrifices",
     "StateBasedCounterRemovalPlan",
     "StateBasedCounterRemovalResult",
     "StateBasedExecutionError",

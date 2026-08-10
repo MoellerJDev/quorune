@@ -27,8 +27,6 @@ class GenericStackResolutionQuery(Protocol):
 class StackResolutionCompletionHost(Protocol):
     state: Any
 
-    def _maybe_sacrifice_completed_saga(self, item: StackItem) -> None: ...
-
     def move_card(
         self,
         object_id: str,
@@ -87,7 +85,6 @@ def complete_stack_resolution(
 
     item.context.pop("currently_resolving", None)
     host.state.stack.remove(item)
-    host._maybe_sacrifice_completed_saga(item)
     if item.context.get("copy_permanent_spell"):
         if not item.card_object_id:
             raise StateInvariantError(

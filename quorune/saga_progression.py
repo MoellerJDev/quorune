@@ -15,6 +15,7 @@ from .counter_state import (
     plan_counter_changes,
 )
 from .model import StackItem
+from .saga_lifecycle import SagaFinalChapterSnapshot
 from .trigger_processing import enqueue_trigger_batch
 
 
@@ -135,6 +136,106 @@ def represented_chapter_numbers(
             continue
         numbers.add(int(match.group("number")))
     return tuple(sorted(numbers))
+
+
+def _chapter_item_matches_incarnation(
+    host: SagaProgressionHost,
+    card: Any,
+    item: StackItem | Mapping[str, Any],
+) -> bool:
+    if isinstance(item, StackItem):
+        source_object_id = item.source_object_id
+        semantic_key = item.semantic_key
+        context = item.context
+    elif isinstance(item, Mapping):
+        source_object_id = item.get("source_object_id")
+        semantic_key = item.get("semantic_key")
+        context = item.get("context")
+    else:
+        raise SagaProgressionError(
+            "Saga pending chapter entries must be stack items"
+        )
+    if not isinstance(context, Mapping):
+        raise SagaProgressionError(
+            "Saga pending chapter context must be an object"
+        )
+    if source_object_id != card.object_id:
+        return False
+    if context.get("source_logical_object_id") != card.logical_object_id:
+        return False
+    program = host.semantics.get(str(semantic_key or ""))
+    return bool(
+        program is not None
+        and _CHAPTER_EVENT.fullmatch(str(program.event or "")) is not None
+        and host.semantic_program_is_current_trusted(program)
+    )
+
+
+def saga_chapter_trigger_pending(
+    host: SagaProgressionHost,
+    card: Any,
+) -> bool:
+    """Return whether this exact Saga incarnation has a chapter pending."""
+
+    if any(
+        _chapter_item_matches_incarnation(host, card, item)
+        for item in host.state.stack
+    ):
+        return True
+    for batch in host.state.pending_trigger_batches:
+        if not isinstance(batch, Mapping):
+            raise SagaProgressionError(
+                "Saga pending trigger batches must be objects"
+            )
+        groups = batch.get("groups", ())
+        if not isinstance(groups, (list, tuple)):
+            raise SagaProgressionError(
+                "Saga pending trigger groups must be an array"
+            )
+        for group in groups:
+            if not isinstance(group, Mapping):
+                raise SagaProgressionError(
+                    "Saga pending trigger groups must be objects"
+                )
+            items = group.get("items", ())
+            if not isinstance(items, (list, tuple)):
+                raise SagaProgressionError(
+                    "Saga pending trigger items must be an array"
+                )
+            if any(
+                _chapter_item_matches_incarnation(host, card, item)
+                for item in items
+            ):
+                return True
+    return False
+
+
+def saga_final_chapter_snapshot(
+    host: SagaProgressionHost,
+    card: Any,
+) -> SagaFinalChapterSnapshot | None:
+    """Capture the represented final-chapter state of one current Saga."""
+
+    if not _is_current_saga(host, card):
+        return None
+    chapters = represented_chapter_numbers(host, card)
+    if not chapters:
+        raise SagaProgressionError(
+            "Saga final-chapter state requires trusted typed chapter programs"
+        )
+    lore = card.counters.get("lore", 0)
+    if type(lore) is not int or lore < 0:
+        raise SagaProgressionError(
+            "Saga lore counters must be a nonnegative integer"
+        )
+    return SagaFinalChapterSnapshot(
+        object_id=card.object_id,
+        logical_object_id=card.logical_object_id,
+        controller=card.controller,
+        lore_counters=lore,
+        chapter_numbers=chapters,
+        chapter_trigger_pending=saga_chapter_trigger_pending(host, card),
+    )
 
 
 def capture_saga_lore_turn_action(
@@ -353,5 +454,7 @@ __all__ = [
     "dispatch_saga_chapters",
     "dispatch_saga_entry_chapters",
     "represented_chapter_numbers",
+    "saga_chapter_trigger_pending",
+    "saga_final_chapter_snapshot",
     "saga_step_batch",
 ]
