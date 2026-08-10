@@ -949,6 +949,38 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_deathtouch_counter_feeds_assignment_and_final_damage_result",
+      "piece_ids": ["capability.combat.damage.assignment.deathtouch", "capability.counter.characteristic.keyword", "capability.damage.result.deathtouch"],
+      "capability_ids": ["combat.damage.assignment.deathtouch", "counter.characteristic.keyword", "damage.result.deathtouch"],
+      "interaction_order": 3,
+      "assertion": "A canonically placed Deathtouch counter enters the immutable combat source snapshot, makes one positive damage lethal for assignment ordering, and destroys both high-toughness blockers through the final damage-result state action with exact replay."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_trample_counter_feeds_offer_and_command_spill_legality",
+      "piece_ids": ["capability.combat.damage.assignment.trample", "capability.counter.characteristic.keyword"],
+      "capability_ids": ["combat.damage.assignment.trample", "counter.characteristic.keyword"],
+      "interaction_order": 2,
+      "assertion": "A canonically placed Trample counter changes both the projected damage recipients and authoritative lethal-before-spill validation; an underassignment rolls back and the legal assignment replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_menace_counter_feeds_offer_and_command_block_legality",
+      "piece_ids": ["capability.combat.block.menace", "capability.counter.characteristic.keyword"],
+      "capability_ids": ["combat.block.menace", "counter.characteristic.keyword"],
+      "interaction_order": 2,
+      "assertion": "A canonically placed Menace counter feeds the shared projected and accepted block-declaration constraint; a one-blocker declaration rolls back and the two-blocker declaration replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_hexproof_counter_feeds_offer_and_resolution_revalidation",
+      "piece_ids": ["capability.counter.characteristic.keyword", "capability.target.protection.hexproof_permanent", "capability.target.revalidate_resolution"],
+      "capability_ids": ["counter.characteristic.keyword", "target.protection.hexproof_permanent", "target.revalidate_resolution"],
+      "interaction_order": 3,
+      "assertion": "A canonically placed Hexproof counter excludes an opposing permanent while preserving its controller's target access, and a counter gained after casting makes the target illegal at CR 608.2b revalidation with seat-scoped exact replay."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_plain_hexproof_depends_on_current_controller",
       "piece_ids": ["capability.target.protection.hexproof_permanent", "mechanic.hexproof"],
       "capability_ids": ["target.protection.hexproof_permanent"],

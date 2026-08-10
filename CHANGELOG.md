@@ -41,7 +41,9 @@ maintenance: "hand-maintained"
 - Added explicit four-player and exact-replay interaction coverage for
   ordinary keyword counters feeding Flying block legality, Vigilance attack
   tapping, Double strike damage-step participation, and Lifelink damage
-  results.
+  results. The follow-on assurance grid now also covers Deathtouch assignment
+  and damage results, Trample spill assignment, Menace block declarations,
+  and controller-relative Hexproof offer and resolution revalidation.
 - Classified those boundaries and replacement-aware keyword-counter placement
   as ambient high-risk interactions in the existing reusable-piece matrix.
   This is assurance for the represented owners, not a claim that every keyword
