@@ -23,6 +23,7 @@ from ..compiler.fixed_target_effect_sequences import (
 )
 from ..compiler.creature_subtypes import canonical_creature_subtype
 from ..keyword_counters import keyword_counter_mechanic
+from ..zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
 from ..affected_permanents import (
     AffectedPermanentSetError,
     AffectedPermanentSetSpec,
@@ -225,6 +226,9 @@ _TARGETED_EXPLORE_SCHEMA = {
 _FIXED_TARGET_SEQUENCE_MECHANIC = "fixed-target-effect-sequence"
 _FIXED_TARGET_SEQUENCE_KEYWORDS = frozenset(
     value.title() for value in FIXED_TARGET_CHARACTERISTIC_KEYWORDS
+)
+_FIXED_TARGET_ZONE_OBJECT_KEYWORDS = frozenset(
+    value.title() for value in ZONE_OBJECT_KEYWORDS
 )
 _TARGETED_COUNTER_SCHEMAS: tuple[Mapping[str, Any], ...] = (
     _COUNTER_STACK_BASE,
@@ -947,7 +951,7 @@ def fixed_target_effect_sequence_node_capabilities(
             set(grant) != {"op", "card", "keyword"}
             or grant.get("op") != "grant_zone_object_keyword"
             or grant.get("card") != "$target.0"
-            or keyword not in _FIXED_TARGET_SEQUENCE_KEYWORDS
+            or keyword not in _FIXED_TARGET_ZONE_OBJECT_KEYWORDS
             or keyword_mechanic is None
             or keyword_mechanic not in mechanics
         ):

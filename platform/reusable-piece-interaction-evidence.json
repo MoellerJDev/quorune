@@ -826,6 +826,22 @@
       "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_target"],
       "interaction_order": 5,
       "assertion": "One source-spanned target sequence commits its fixed counter through the canonical counter owner, then commits a separate typed layer-6 grant that survives cleanup and source departure but stops applying after the target changes logical identity."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_zone_object_keyword_replacement_continuation_survives_restart",
+      "piece_ids": ["capability.continuous.resolution.fixed_keyword_zone_object", "capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_target"],
+      "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.placement.quantity_replacement", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_target"],
+      "interaction_order": 4,
+      "assertion": "A persisted affected-seat counter-replacement continuation reloads without exposing another seat, commits the fixed counter, executes the persistent keyword result once, and replays to the identical final hash."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_zone_object_keyword_continuation_rejects_stale_target_identity",
+      "piece_ids": ["capability.continuous.resolution.fixed_keyword_zone_object", "capability.counter.placement.quantity_replacement", "capability.resolution.effect_sequence.fixed_target", "capability.target.revalidate_resolution"],
+      "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.placement.quantity_replacement", "resolution.effect_sequence.fixed_target", "target.revalidate_resolution"],
+      "interaction_order": 4,
+      "assertion": "A target that leaves and returns during a synthetic suspended counter replacement no longer matches the pinned logical identity, so the whole sequence fails before partial mutation."
     }
   ]
 }

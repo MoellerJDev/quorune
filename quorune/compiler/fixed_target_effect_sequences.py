@@ -7,6 +7,7 @@ import re
 from typing import Any, Mapping
 
 from ..keyword_counters import keyword_counter_mechanic
+from ..zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
 from .counter_placement_templates import (
     existing_target_counter_placement_effect_template,
     fixed_counter_placement_effect_template,
@@ -304,7 +305,7 @@ def fixed_target_zone_object_keyword_sequence_template(
     if match is None:
         return None
     keyword = " ".join(match.group("keyword").casefold().split())
-    if keyword not in _KEYWORDS:
+    if keyword not in ZONE_OBJECT_KEYWORDS:
         return None
     counter = fixed_counter_placement_effect_template(
         match.group("counter"),

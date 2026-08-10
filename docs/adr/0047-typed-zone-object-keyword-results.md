@@ -28,9 +28,10 @@ result, transactional rollback, private continuation routing, and exact replay.
 ## Decision
 
 Add the closed universal `grant_zone_object_keyword` semantic operation. Its
-strict read-only handler accepts one direct target reference, one represented
-keyword, and authoritative resolving-source context, then emits an immutable
-typed intent. The rules-layer commit owner creates one replay-pinned continuous
+pure model accepts only Flying, First strike, Trample, or Vigilance. The strict
+read-only handler accepts one direct target reference, one represented keyword,
+and authoritative resolving-source context, then emits an immutable typed
+intent. The rules-layer commit owner creates one replay-pinned continuous
 effect locked to the target's physical and current logical battlefield identity.
 It persists through cleanup, control change, and source departure, but stops
 applying after the target changes zones or logical identity.

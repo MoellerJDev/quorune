@@ -31,10 +31,12 @@ from quorune.compiler.target_effect_corpus_assurance import (
 from quorune.deck import DeckLoader
 from quorune.model import CardInstance, StackItem
 from quorune.keyword_counters import (
+    KEYWORD_COUNTER_MECHANICS,
     KeywordCounterError,
     keyword_counter_abilities,
     keyword_counter_mechanic,
 )
+from quorune.zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
 from quorune.oracle_ir import compile_oracle_card
 from quorune.projection import StateProjector
 from quorune.record import (
@@ -47,6 +49,7 @@ from quorune.rules.capabilities import (
     capability_dependencies_for_node,
     load_default_capability_registry,
 )
+from quorune.session import CommanderSession
 from quorune.semantic_runtime import (
     GrantZoneObjectKeywordHandler,
     ReadOnlyHandlerContext,
@@ -315,6 +318,24 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
                 self.assertNotEqual("exact", ir.status)
                 self.assertTrue(ir.material_residuals)
 
+        for keyword in sorted(
+            set(KEYWORD_COUNTER_MECHANICS).difference(ZONE_OBJECT_KEYWORDS)
+        ):
+            text = (
+                "Put a +1/+1 counter on target creature. "
+                f"It gains {keyword}."
+            )
+            with self.subTest(unrepresented_keyword=keyword):
+                self.assertIsNone(
+                    fixed_target_zone_object_keyword_sequence_template(
+                        text,
+                        card_name="Fixture",
+                    )
+                )
+                ir = self.compile(text)
+                self.assertNotEqual("exact", ir.status)
+                self.assertTrue(ir.material_residuals)
+
     def test_zone_object_sequence_shape_and_dependency_mutants_fail_closed(self):
         template = fixed_target_zone_object_keyword_sequence_template(
             "Put a +2/+2 counter on target Chimera creature. It gains flying.",
@@ -417,6 +438,11 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
                 "op": "grant_zone_object_keyword",
                 "card": "$target.0",
                 "keyword": "ward {2}",
+            },
+            {
+                "op": "grant_zone_object_keyword",
+                "card": "$target.0",
+                "keyword": "hexproof",
             },
         ):
             with self.subTest(effect=effect):
@@ -1074,6 +1100,146 @@ class FixedTargetEffectSequenceRuntimeTests(unittest.TestCase):
             replay = replay_record(record_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_zone_object_keyword_replacement_continuation_survives_restart(self):
+        session = self.session(60812208, players=4)
+        engine = session.engine
+        target = self.add_permanent(
+            engine,
+            seat="A",
+            name="Elves of Deep Shadow",
+            ref="restart-zone-object-target",
+        )
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doubling Season",
+            ref="restart-zone-object-doubling",
+        )
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doc Samson, Super Psychiatrist",
+            ref="restart-zone-object-doc",
+        )
+        self.stage_sequence(
+            session,
+            target=target,
+            key="restart-zone-object-sequence",
+            effects=[
+                {
+                    "op": "place_counters",
+                    "card": "$target.0",
+                    "counter": "+1/+1",
+                    "amount": 1,
+                    "source": "$source",
+                },
+                {
+                    "op": "grant_zone_object_keyword",
+                    "card": "$target.0",
+                    "keyword": "Vigilance",
+                },
+            ],
+        )
+        self.pass_priority(session)
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "zone-object-restart"
+            session.save(record_dir)
+            restarted = CommanderSession.load(self.db, record_dir)
+            projector = StateProjector(self.db, restarted.engine.state)
+            packet = projector._decision("pilot:A")
+            self.assertIsNotNone(packet)
+            for seat in ("B", "C", "D"):
+                self.assertIsNone(projector._decision(f"pilot:{seat}"))
+            selection = packet["ctx"]["options"][0]["id"]
+            result = restarted.act(
+                "pilot:A",
+                {
+                    "action_id": "choose",
+                    "choices": {"replacement": selection},
+                },
+            )
+            self.assertTrue(result.ok, result.summary)
+            restarted_target = restarted.engine.state.cards[target.object_id]
+            self.assertGreater(restarted_target.counters["+1/+1"], 1)
+            self.assertIn(
+                "vigilance",
+                restarted.engine._combat_keywords(restarted_target),
+            )
+            restarted.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(
+            authoritative_state_hash(restarted.engine.state),
+            replay["final_state_hash"],
+        )
+
+    def test_zone_object_keyword_continuation_rejects_stale_target_identity(self):
+        session = self.session(60812209)
+        engine = session.engine
+        target = self.add_permanent(
+            engine,
+            seat="A",
+            name="Elves of Deep Shadow",
+            ref="stale-zone-object-target",
+        )
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doubling Season",
+            ref="stale-zone-object-doubling",
+        )
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doc Samson, Super Psychiatrist",
+            ref="stale-zone-object-doc",
+        )
+        self.stage_sequence(
+            session,
+            target=target,
+            key="stale-zone-object-sequence",
+            effects=[
+                {
+                    "op": "place_counters",
+                    "card": "$target.0",
+                    "counter": "+1/+1",
+                    "amount": 1,
+                    "source": "$source",
+                },
+                {
+                    "op": "grant_zone_object_keyword",
+                    "card": "$target.0",
+                    "keyword": "Flying",
+                },
+            ],
+        )
+        self.pass_priority(session)
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        packet = StateProjector(self.db, engine.state)._decision("pilot:A")
+        self.assertIsNotNone(packet)
+        selection = packet["ctx"]["options"][0]["id"]
+
+        original_logical_id = target.logical_object_id
+        engine.move_card(target.object_id, "graveyard", reason="stale target left")
+        engine.move_card(target.object_id, "battlefield", reason="stale target returned")
+        self.assertNotEqual(original_logical_id, target.logical_object_id)
+        result = session.act(
+            "pilot:A",
+            {
+                "action_id": "choose",
+                "choices": {"replacement": selection},
+            },
+        )
+
+        self.assertFalse(result.ok)
+        current = engine.state.cards[target.object_id]
+        self.assertEqual({}, current.counters)
+        self.assertNotIn("flying", engine._combat_keywords(current))
+        self.assertFalse(engine.state.continuous_effects)
 
     def test_zone_object_keyword_commit_mutant_is_killed(self):
         session = self.session(60812207)

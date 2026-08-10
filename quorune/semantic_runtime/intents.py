@@ -13,7 +13,7 @@ from ..fixed_damage_set_model import FixedDamageSetSpec
 from ..entry_counter_model import EffectEntryCounter
 from ..replacement.immutable import FrozenMap, freeze_value
 from ..rules.library_scry import ScryArrangement
-from ..zone_object_keyword_grants import (
+from ..zone_object_keyword_model import (
     ZoneObjectKeywordGrantError,
     normalized_zone_object_keyword,
 )

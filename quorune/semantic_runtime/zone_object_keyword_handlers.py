@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
-from ..zone_object_keyword_grants import (
+from ..zone_object_keyword_model import (
     ZoneObjectKeywordGrantError,
     normalized_zone_object_keyword,
 )
