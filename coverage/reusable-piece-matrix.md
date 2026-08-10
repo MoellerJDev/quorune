@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "a3defc1b96bc5711e0569ba56b7e6d4d9623c088ada79f7dfbd7b9c306cbf72e"
+verified: "2a83bf7b8184a851636f938b2f60ad1e09c7b0121309dd08f70e388a1f914f1a"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,12 +17,12 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,228
+- Pieces: 1,234
 - Cards indexed: 31,623
 - Material abilities classified: 59,562
 - Unclassified material spans: 0
-- Mapped pinned rules: 749 / 3,300
-- Applicable piece pairs: 25,603
+- Mapped pinned rules: 752 / 3,300
+- Applicable piece pairs: 25,736
 - Covered piece pairs: 345
 
 ## Ontology classes
@@ -31,9 +31,9 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 |---|---:|
 | `actions_permissions` — Actions, permissions, and prohibitions | 15 |
 | `card_forms` — Card types and specialized forms | 4 |
-| `choices_continuations` — Modes, targets, choices, and continuations | 7 |
+| `choices_continuations` — Modes, targets, choices, and continuations | 8 |
 | `combat` — Combat | 22 |
-| `compiler_cardprogram` — Compiler and CardProgram pieces | 353 |
+| `compiler_cardprogram` — Compiler and CardProgram pieces | 358 |
 | `continuous_effects` — Static abilities and continuous effects | 17 |
 | `costs_mana` — Costs and mana | 7 |
 | `events_mutations` — Typed events and mutations | 89 |
@@ -60,7 +60,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `objects_identity_zones_faces_copies` | `compositional` | 30 | 0 |
 | `replacement_prevention` | `inventoried` | 15 | 3 |
 | `state_turn_loops_stabilization` | `inventoried` | 0 | 0 |
-| `targets_modes_searches_references_choices` | `inventoried` | 9 | 6 |
+| `targets_modes_searches_references_choices` | `inventoried` | 10 | 6 |
 | `typed_transactions_events_mutations` | `inventoried` | 199 | 62 |
 
 ## Highest current blocker leverage
@@ -95,8 +95,8 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `residual.activated_effect.draw` | `one_shot_effects` | 412 | 30 | 30 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-119-life` | `keyword_mechanics` | 76 | 30 | 30 | `absent` | `untested` |
 | `residual.activated_effect.exile` | `one_shot_effects` | 386 | 28 | 28 | `absent` | `untested` |
-| `residual.activated_effect.put-counter` | `one_shot_effects` | 330 | 28 | 28 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-615-prevention-effects` | `keyword_mechanics` | 78 | 28 | 28 | `absent` | `untested` |
+| `residual.keyword_dependency.prowess` | `keyword_mechanics` | 86 | 27 | 27 | `absent` | `untested` |
 
 ## Boundary
 

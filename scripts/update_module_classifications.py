@@ -204,6 +204,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/tap_state.py",
         "quorune/target_protection.py",
         "quorune/target_protection_engine_adapter.py",
+        "quorune/target_characteristics.py",
         "quorune/target_predicates.py",
         "quorune/targets.py",
         "quorune/token_creation.py",
@@ -398,6 +399,7 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/relative_power_target.py",
         "quorune/target_protection.py",
         "quorune/target_protection_engine_adapter.py",
+        "quorune/target_characteristics.py",
         "quorune/target_predicates.py",
         "quorune/targets.py",
     }:

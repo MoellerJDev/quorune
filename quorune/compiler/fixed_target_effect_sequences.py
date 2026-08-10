@@ -12,6 +12,7 @@ from .counter_placement_templates import (
     existing_target_counter_placement_effect_template,
     fixed_counter_placement_effect_template,
 )
+from .direct_target import DirectPermanentTargetSpec
 
 
 _TARGET_CREATURE = re.compile(
@@ -218,17 +219,12 @@ def _sentences(text: str) -> tuple[str, ...]:
     return clauses if 2 <= len(clauses) <= 3 else ()
 
 
-def _fixed_creature_target_schema(value: Mapping[str, Any] | None) -> bool:
-    if value is None:
+def _fixed_direct_target_schema(value: Mapping[str, Any] | None) -> bool:
+    try:
+        DirectPermanentTargetSpec.from_target_schema(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
         return False
-    schema = dict(value)
-    relation = schema.pop("controller_relation", "any")
-    return relation in {"any", "you", "opponent"} and schema == {
-        "zones": ["battlefield"],
-        "categories": ["permanent"],
-        "types_any": ["creature"],
-        "count": 1,
-    }
+    return True
 
 
 @dataclass(frozen=True, slots=True)
@@ -358,7 +354,7 @@ def fixed_target_effect_sequence_template(
             return None
         _template_id, clause_effects, clause_schema, mechanics = compiled.compiled()
         if clause_schema is not None:
-            if target_schema is not None or not _fixed_creature_target_schema(
+            if target_schema is not None or not _fixed_direct_target_schema(
                 clause_schema
             ):
                 return None

@@ -261,12 +261,20 @@ def fixed_counter_placement_group_effect_template(
         }:
             return None
         if commander:
+            target_spec = placement.target_spec
             if (
                 placement.subject is not CounterPlacementSubject.TARGET
-                or placement.permanent_type != "creature"
+                or target_spec is None
+                or target_spec.types_any != ("creature",)
+                or target_spec.types_all
+                or target_spec.subtypes_any
+                or target_spec.keywords_all
             ):
                 return None
-            placement = replace(placement, commander=True)
+            placement = replace(
+                placement,
+                target_spec=replace(target_spec, commander=True),
+            )
         if placement.subject is CounterPlacementSubject.SOURCE:
             if optional or ordinal is not None or source_is_permanent is not True:
                 return None
@@ -300,10 +308,20 @@ def fixed_counter_placement_group_effect_template(
             placement_index = target_indexes[0]
             if not source_indexes:
                 return None
-            placements[placement_index] = replace(
-                placements[placement_index],
-                exclude_source=True,
-            )
+            placement = placements[placement_index]
+            if placement.target_spec is not None:
+                placements[placement_index] = replace(
+                    placement,
+                    target_spec=replace(
+                        placement.target_spec,
+                        source_exclusion=True,
+                    ),
+                )
+            else:
+                placements[placement_index] = replace(
+                    placement,
+                    exclude_source=True,
+                )
     elif any(value is not None for value in target_ordinals):
         expected = (
             (None, "another")

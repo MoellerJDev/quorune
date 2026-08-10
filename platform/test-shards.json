@@ -93,6 +93,7 @@
     "targets-choices-continuations": [
       "test_aura_targeting_entry",
       "test_choice_forms",
+      "test_counter_target_predicates",
       "test_decision_opportunities",
       "test_explore_rules",
       "test_hexproof_targeting",

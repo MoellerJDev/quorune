@@ -2,7 +2,7 @@
 title: "ADR 0033: typed fixed counter placement effects"
 status: "ADR"
 authoritative_source: "this decision record and typed fixed counter-placement implementation"
-verified: "2026-08-07"
+verified: "2026-08-10"
 audience: "rules, compiler, replay, and architecture contributors"
 maintenance: "hand-maintained"
 adr_id: "0033"
@@ -30,10 +30,14 @@ equivalent to one mandatory positive fixed quantity on one permanent.
 Add one closed `place_counters` semantic operation. The compiler lowers only a
 mandatory positive fixed quantity of one named counter on the source, an exact
 named source, or one direct battlefield permanent target. Permanent subjects
-use a closed card-type or pinned creature-subtype predicate, an explicit
-controller relation, and source exclusion where required. The same immutable,
-source-spanned descriptor is shared by spell, triggered, and activated
-CardProgram V2 contexts.
+use one immutable `DirectPermanentTargetSpec`. Its closed current grammar
+supports ordinary permanent types, artifact-or-creature disjunction,
+enchantment-creature conjunction, pinned creature-subtype disjunctions, the
+reviewed Vehicle subtype, Flying, explicit controller relation, and source
+exclusion where required. The same source-spanned descriptor is shared by
+spell, triggered, and activated CardProgram V2 contexts and serializes to the
+exact target schema consumed by offer, command-validation, and resolution
+revalidation paths.
 
 The registered runtime handler strictly validates the descriptor and lowers it
 to `PlaceCountersIntent`. It is read-only: the canonical counter-placement
@@ -62,8 +66,10 @@ printed-name, collector-number, set-code, or Oracle-ID dispatch.
 - The handler adds no direct `GameState` write and `CommanderEngine` remains
   flat.
 - Optional, variable, distributed, set-based, fixed player-counter,
-  multiple-counter-kind, conditional-target, noncreature-subtype, entry, cost,
-  removal, movement, and rule-generated variants remain fail-closed residuals.
+  multiple-counter-kind, counter-presence, modified, token-state, combat-state,
+  attachment-state, tapped-state, arbitrary-keyword, unreviewed noncreature-
+  subtype, entry, cost, removal, movement, and rule-generated variants remain
+  fail-closed residuals.
 - Game Record v3 remains structurally unchanged; current compiler, program,
   registry, and runtime fingerprints advance with the represented operation.
 

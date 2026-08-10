@@ -333,6 +333,7 @@ from .targets import (
     mode_effects,
     target_plan,
 )
+from .target_characteristics import TargetCharacteristicSnapshot
 from .target_predicates import (
     TargetPredicateError,
     target_predicate_matches,
@@ -6079,11 +6080,7 @@ class CommanderEngine(
                         "category": "player",
                         "controller": seat,
                         "owner": seat,
-                        "types": set(),
-                        "subtypes": set(),
-                        "supertypes": set(),
-                        "colors": set(),
-                        "mana_value": 0.0,
+                        **TargetCharacteristicSnapshot().row_values(),
                         "card": None,
                     }
                 )
@@ -6091,9 +6088,6 @@ class CommanderEngine(
             for item in self.state.stack:
                 card = self.state.cards.get(item.card_object_id or "")
                 data = self._effective_card_data(card) if card else {}
-                types, subtypes, supertypes = self._type_parts(
-                    str(data.get("type_line") or "")
-                )
                 ability_source = self.state.cards.get(
                     item.source_object_id or ""
                 )
@@ -6116,20 +6110,9 @@ class CommanderEngine(
                         ),
                         "controller": item.controller,
                         "owner": card.owner if card else item.controller,
-                        "types": types,
-                        "subtypes": subtypes,
-                        "supertypes": supertypes,
-                        "colors": {
-                            str(color).upper()
-                            for color in data.get("colors", [])
-                        },
-                        "mana_value": float(
-                            data.get(
-                                "mana_value",
-                                data.get("cmc", 0),
-                            )
-                            or 0
-                        ),
+                        **TargetCharacteristicSnapshot.from_effective_data(
+                            data
+                        ).row_values(),
                         "card": card,
                         "stack_item": item,
                         "stack_source_types": stack_source_types,
@@ -6159,9 +6142,6 @@ class CommanderEngine(
                         }
                     else:
                         data = self._effective_card_data(card)
-                    types, subtypes, supertypes = self._type_parts(
-                        str(data.get("type_line") or "")
-                    )
                     rows.append(
                         {
                             "ref": card.ref,
@@ -6171,20 +6151,9 @@ class CommanderEngine(
                             ),
                             "controller": card.controller,
                             "owner": card.owner,
-                            "types": types,
-                            "subtypes": subtypes,
-                            "supertypes": supertypes,
-                            "colors": {
-                                str(color).upper()
-                                for color in data.get("colors", [])
-                            },
-                            "mana_value": float(
-                                data.get(
-                                    "mana_value",
-                                    data.get("cmc", 0),
-                                )
-                                or 0
-                            ),
+                            **TargetCharacteristicSnapshot.from_effective_data(
+                                data
+                            ).row_values(),
                             "card": card,
                         }
                     )
@@ -6245,22 +6214,19 @@ class CommanderEngine(
             group.player_relation,
         ):
             return False
-        types = set(row.get("types") or ())
-        supertypes = set(row.get("supertypes") or ())
-        if not group.matches_type_characteristics(
-            types=types,
-            subtypes=row.get("subtypes") or (),
-            supertypes=supertypes,
-        ):
+        characteristics = TargetCharacteristicSnapshot.from_row(row)
+        if not characteristics.matches(group):
             return False
-        colors = set(row.get("colors") or ())
+        types = set(characteristics.types)
+        supertypes = set(characteristics.supertypes)
+        colors = set(characteristics.colors)
         if group.colors_any and not colors.intersection(group.colors_any):
             return False
         if group.colors_all and not set(group.colors_all).issubset(colors):
             return False
         if group.colorless is not None and (not colors) != group.colorless:
             return False
-        mana_value = float(row.get("mana_value", 0) or 0)
+        mana_value = characteristics.mana_value
         if (
             group.mana_value_equal is not None
             and mana_value != group.mana_value_equal

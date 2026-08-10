@@ -2,7 +2,7 @@
 title: "Oracle compiler architecture"
 status: "current"
 authoritative_source: "quorune/oracle_ir.py, quorune/compiler, and quorune/card_programs"
-verified: "2026-08-09"
+verified: "2026-08-10"
 audience: "compiler and rules contributors"
 maintenance: "hand-maintained"
 ---
@@ -37,9 +37,10 @@ performing a transition.
 `compiler/fixed_target_effect_sequences.py` owns the closed cross-sentence
 target-threading grammar. It is the only compiler authority for represented
 fixed counter plus until-end-of-turn characteristic sequences: one clause
-establishes direct creature target zero, later clauses use the exact pronoun
-“it,” and printed operation order is retained. The runtime consumes only the
-resulting typed node and never reparses those Oracle sentences.
+establishes target zero through one closed `DirectPermanentTargetSpec`, later
+clauses use the exact pronoun “it,” and printed operation order is retained.
+The runtime consumes only the resulting typed node and never reparses those
+Oracle sentences.
 
 `compiler/fixed_source_effect_sequences.py` owns the separate source-threaded
 two-clause grammar. It accepts one fixed positive counter placement on a
@@ -57,15 +58,20 @@ compiler census derives grammatical shapes and representative identities from
 the complete corpus; it does not maintain a card list. Its synthetic contract
 also covers every accepted keyword, spell/trigger/activation context,
 two-/three-clause and target-/counter-first sequence, controller relation, and
-the adjacent optional, modal, variable, compound, repeated, and multi-target
-forms that must remain residual. The generated assurance lives in the Oracle
-coverage reports and contains hashes and public identities rather than Oracle
-prose.
+closed characteristic predicate and source-exclusion dimension. Adjacent
+optional, modal, variable, compound-result, repeated, and multi-target forms
+must remain residual. The generated assurance lives in the Oracle coverage
+reports and contains hashes and public identities rather than Oracle prose.
 
 `compiler/counter_placement_templates.py` separately owns the closed
-single-sentence multi-kind counter grammar. It preserves two or three printed
-fixed placements on one shared source or direct permanent target as one typed
-batch node; runtime code receives that node and never reparses Oracle text.
+fixed counter-placement grammar. Direct targets lower once to
+`DirectPermanentTargetSpec`, whose deterministic runtime schema supports the
+represented type conjunctions and disjunctions, pinned creature-subtype
+disjunctions, reviewed Vehicle subtype, Flying predicate, controller relation,
+and source exclusion. Arbitrary adjectives are never inferred as creature
+subtypes. The same owner preserves two or three printed fixed placements on
+one shared source or direct permanent target as one typed batch node; runtime
+code receives the typed node and never reparses Oracle text.
 
 ## Invariants
 
