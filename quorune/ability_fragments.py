@@ -36,6 +36,15 @@ class CombatKeywordTriggerKind(str, Enum):
     MENTOR = "mentor"
 
 
+class SpellCastKeywordTriggerKind(str, Enum):
+    """Closed printed keywords tied to a normalized spell-cast event."""
+
+    PROWESS = "prowess"
+
+
+CURRENT_ABILITY_FRAGMENT_COVERAGE = "current_ability_fragment_required"
+
+
 _COLOR_NAMES = {
     "white": "W",
     "blue": "U",
@@ -386,6 +395,61 @@ class CombatKeywordTriggerSpec:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class SpellCastKeywordTriggerSpec:
+    """One executable printed spell-cast keyword-trigger instance."""
+
+    kind: SpellCastKeywordTriggerKind
+    amount: int = 1
+    schema_version: int = 1
+
+    def __post_init__(self) -> None:
+        if type(self.schema_version) is not int or self.schema_version != 1:
+            raise AbilityFragmentError(
+                "Unsupported spell-cast keyword-trigger fragment schema version"
+            )
+        if not isinstance(self.kind, SpellCastKeywordTriggerKind):
+            raise AbilityFragmentError(
+                "Unsupported spell-cast keyword-trigger kind"
+            )
+        if type(self.amount) is not int or self.amount != 1:
+            raise AbilityFragmentError(
+                f"Each {self.kind.value} instance has amount 1"
+            )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "kind": self.kind.value,
+            "amount": self.amount,
+        }
+
+    @classmethod
+    def from_dict(
+        cls, value: Mapping[str, Any]
+    ) -> "SpellCastKeywordTriggerSpec":
+        expected = {"schema_version", "kind", "amount"}
+        if not isinstance(value, Mapping) or set(value) != expected:
+            raise AbilityFragmentError(
+                "Spell-cast keyword-trigger fragments have a closed schema"
+            )
+        if not isinstance(value["kind"], str):
+            raise AbilityFragmentError(
+                "Spell-cast keyword-trigger kind must be a string"
+            )
+        try:
+            kind = SpellCastKeywordTriggerKind(value["kind"])
+        except ValueError as exc:
+            raise AbilityFragmentError(
+                "Unsupported spell-cast keyword-trigger kind"
+            ) from exc
+        return cls(
+            schema_version=value["schema_version"],
+            kind=kind,
+            amount=value["amount"],
+        )
+
+
 StaticAbilityFragment: TypeAlias = (
     SimpleEnchantSpec
     | LinkedGraveyardCreatureEnchantSpec
@@ -393,6 +457,7 @@ StaticAbilityFragment: TypeAlias = (
     | GrantedActivatedAbilitySpec
     | GrantedTriggeredAbilitySpec
     | CombatKeywordTriggerSpec
+    | SpellCastKeywordTriggerSpec
 )
 
 
@@ -411,6 +476,8 @@ def ability_fragment_to_dict(
         kind = "granted_triggered"
     elif isinstance(fragment, CombatKeywordTriggerSpec):
         kind = "combat_keyword_trigger"
+    elif isinstance(fragment, SpellCastKeywordTriggerSpec):
+        kind = "spell_cast_keyword_trigger"
     else:
         raise AbilityFragmentError(
             f"Unsupported ability fragment {type(fragment).__name__}"
@@ -443,6 +510,8 @@ def ability_fragment_from_dict(
         return GrantedTriggeredAbilitySpec.from_dict(value["value"])
     if value["kind"] == "combat_keyword_trigger":
         return CombatKeywordTriggerSpec.from_dict(value["value"])
+    if value["kind"] == "spell_cast_keyword_trigger":
+        return SpellCastKeywordTriggerSpec.from_dict(value["value"])
     raise AbilityFragmentError(
         f"Unsupported ability fragment kind {value['kind']!r}"
     )
@@ -462,6 +531,7 @@ def canonical_ability_fragments(
                 GrantedActivatedAbilitySpec,
                 GrantedTriggeredAbilitySpec,
                 CombatKeywordTriggerSpec,
+                SpellCastKeywordTriggerSpec,
             ),
         )
         else ability_fragment_from_dict(value)
@@ -575,14 +645,27 @@ def combat_keyword_trigger_specs(
     )
 
 
+def spell_cast_keyword_trigger_specs(
+    fragments: Iterable[StaticAbilityFragment],
+) -> tuple[SpellCastKeywordTriggerSpec, ...]:
+    return tuple(
+        fragment
+        for fragment in fragments
+        if isinstance(fragment, SpellCastKeywordTriggerSpec)
+    )
+
+
 __all__ = [
     "AbilityFragmentError",
     "CombatKeywordTriggerKind",
     "CombatKeywordTriggerSpec",
+    "CURRENT_ABILITY_FRAGMENT_COVERAGE",
     "GrantedActivatedAbilitySpec",
     "GrantedTriggeredAbilitySpec",
     "ProtectionQualityKind",
     "ProtectionSpec",
+    "SpellCastKeywordTriggerKind",
+    "SpellCastKeywordTriggerSpec",
     "StaticAbilityFragment",
     "ability_fragment_from_dict",
     "ability_fragment_to_dict",
@@ -593,4 +676,5 @@ __all__ = [
     "granted_triggered_specs",
     "parse_protection_line",
     "protection_specs",
+    "spell_cast_keyword_trigger_specs",
 ]

@@ -102,6 +102,7 @@ _MENTOR_MECHANIC = "men" + "tor"
 _EXHAUST_MECHANIC = "ex" + "haust"
 _CYCLING_MECHANIC = "cyc" + "ling"
 _EVOLVE_MECHANIC = "evo" + "lve"
+_PROWESS_MECHANIC = "prow" + "ess"
 _PERSIST_MECHANIC = "per" + "sist"
 _UNDYING_MECHANIC = "un" + "dying"
 _UNLEASH_MECHANIC = "un" + "leash"
@@ -121,6 +122,7 @@ _FIXED_SOURCE_SEQUENCE_MECHANIC = "fixed-source-effect-sequence"
 MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _CYCLING_MECHANIC: ("activation.cycling.hand",),
     _EVOLVE_MECHANIC: ("counter.producer.evolve",),
+    _PROWESS_MECHANIC: ("trigger.keyword.prowess",),
     _PERSIST_MECHANIC: ("counter.producer.persist",),
     _UNDYING_MECHANIC: ("counter.producer.undying",),
     _UNLEASH_MECHANIC: (

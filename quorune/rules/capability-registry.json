@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 77,
+  "registry_version": 78,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -2659,6 +2659,33 @@
       "status": "trusted"
     },
     {
+      "id": "trigger.event.normalized_spell_cast",
+      "version": 1,
+      "official_rules": ["601.2i", "603.2", "603.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Capture one immutable normalized event after a spell's complete cast transaction, including its stack incarnation, controller, origin, and canonical effective card types, then dispatch represented cast triggers in the same ordinary batch.",
+        "inputs": ["committed spell cast", "physical and logical stack-object identity", "casting player", "origin zone", "canonical parsed card types", "stack reference"],
+        "outputs": ["strict versioned spell-cast event", "deterministic event fingerprint", "ordinary trigger batch input", "exact replay"],
+        "exclusions": ["copied spells that were not cast", "putting cards directly onto the stack", "cast triggers requiring unrepresented payment history", "visibility-sensitive characteristics not present in the public stack object"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.rules.spell_cast_events.SpellCastEvent", "quorune.rules.casting.commit._dispatch_cast_events", "quorune.trigger_discovery.dispatch_semantic_event"],
+      "positive_tests": ["test_spell_cast_event_is_strict_canonical_and_round_trips", "test_noncreature_spell_creates_one_prowess_trigger"],
+      "negative_tests": ["test_spell_cast_event_rejects_malformed_context_without_mutation", "test_creature_and_opponent_spells_do_not_trigger_prowess"],
+      "interaction_tests": ["test_prowess_and_opponent_cast_trigger_share_one_apnap_batch"],
+      "multiplayer_tests": ["test_four_player_prowess_batch_is_public_and_apnap_ordered"],
+      "privacy_tests": ["test_four_player_prowess_batch_is_public_and_apnap_ordered"],
+      "replay_tests": ["test_prowess_trigger_and_resolution_replay_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The normalized cast-event value has no capability dependencies; each consuming trigger declares its own placement and result dependencies.",
+      "implementation_mutation_status": "killed",
+        "implementation_mutation_rationale": "test_spell_cast_event_dispatch_mutant_is_killed replaces typed spell-cast event construction with the former loose context; exact schema and physical/logical identity assertions reject the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "trigger.event.normalized_zone_change",
       "version": 2,
       "official_rules": ["603.2", "603.6", "603.6a", "603.6c", "603.10", "603.10a", "603.10e"],
@@ -2682,6 +2709,33 @@
       "dependency_fail_closed_rationale": "This event detector produces immutable occurrence facts; stack placement and effect results are declared separately by each CardProgram.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_zone_trigger_detection_mutant_is_killed suppresses ordinary normalized event derivation and test_counter_event_derivation_mutant_is_killed suppresses counter-event derivation; the focused occurrence assertions reject both survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "trigger.keyword.prowess",
+      "version": 1,
+      "official_rules": ["601.2i", "603.2", "603.3", "702.108", "702.108a", "702.108b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile each ordinary printed Prowess instance as an independent current layer-6 ability fragment that triggers from its controller's normalized noncreature spell cast and gives the same source logical object +1/+1 until end of turn on resolution.",
+        "inputs": ["one printed Prowess keyword instance", "current effective ability fragments", "normalized spell-cast event", "source physical and logical identity", "trigger controller captured at trigger creation"],
+        "outputs": ["one trigger per current Prowess instance", "ordinary APNAP trigger placement", "identity-pinned layer 7c +1/+1 result", "exact replay"],
+        "exclusions": ["Oracle-equivalent nonkeyword wording", "conditional Prowess variants", "granted or copied Prowess outside trusted typed ability-fragment propagation", "trigger-doubling policies beyond the represented ordinary trigger subsystem", "noncreature-spell classification requiring unsupported type-changing stack effects"]
+      },
+      "dependencies": ["continuous.resolution.fixed_characteristics_until_end_of_turn", "trigger.event.normalized_spell_cast", "trigger.placement.apnap"],
+      "implementation_components": ["quorune.ability_fragments.SpellCastKeywordTriggerSpec", "quorune.semantic_runtime.ability_fragments.ProwessAbilityFragmentHandler", "quorune.compiler.keyword_nodes.prowess_keyword_node", "quorune.trigger_discovery.dispatch_semantic_event"],
+      "positive_tests": ["test_prowess_keyword_lowers_each_instance_with_precise_spans", "test_noncreature_spell_creates_one_prowess_trigger", "test_multiple_prowess_instances_trigger_separately"],
+      "negative_tests": ["test_unsupported_prowess_wording_remains_material_residual", "test_creature_and_opponent_spells_do_not_trigger_prowess", "test_current_layer_six_ability_fragment_is_required"],
+      "interaction_tests": ["test_prowess_source_identity_and_control_are_pinned", "test_prowess_and_opponent_cast_trigger_share_one_apnap_batch"],
+      "multiplayer_tests": ["test_four_player_prowess_batch_is_public_and_apnap_ordered"],
+      "privacy_tests": ["test_four_player_prowess_batch_is_public_and_apnap_ordered"],
+      "replay_tests": ["test_prowess_trigger_and_resolution_replay_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Compiler promotion fails closed when normalized cast events, ordinary APNAP trigger placement, or identity-pinned until-end-of-turn characteristic results are unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and current-ability mutations remove Prowess lowering or ignore layer-6 ability removal; exact source-span and suppressed-trigger assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

@@ -1,5 +1,5 @@
 {
-  "contract_count": 94,
+  "contract_count": 95,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -425,6 +425,12 @@
       "mechanic_id": "protection",
       "path": "mechanics/contracts/protection.json",
       "sha256": "54be5784f632d1ad4626b4a519b879d43b884612e88d826a4c438a6de17af71d",
+      "version": 1
+    },
+    {
+      "mechanic_id": "prowess",
+      "path": "mechanics/contracts/prowess.json",
+      "sha256": "fb65107736f51607ef7fad34a45c77769bbdd6e3256886382e06806568fc3e7b",
       "version": 1
     },
     {
@@ -3563,19 +3569,43 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/prowess.json",
+      "contract_sha256": "fb65107736f51607ef7fad34a45c77769bbdd6e3256886382e06806568fc3e7b",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.rules.spell_cast_events, quorune.compiler.keyword_nodes.prowess_keyword_node, quorune.semantic_runtime.ability_fragments.ProwessAbilityFragmentHandler, and quorune.trigger_discovery",
+      "implementation_version": "typed-ordinary-prowess-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Oracle-equivalent nonkeyword trigger wording remains unsupported",
+        "granted, copied, and face-down Prowess requires broader trusted typed ability propagation",
+        "trigger-doubling policies remain bounded by the represented ordinary trigger subsystem",
+        "aggregate casting, continuous effects, and triggered abilities remain incomplete"
+      ],
       "mechanic_id": "prowess",
       "official_name": "Prowess",
       "rule_references": [
         "702.108"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_spell_cast_event_is_strict_canonical_and_round_trips",
+        "test_spell_cast_event_rejects_malformed_context_without_mutation",
+        "test_prowess_keyword_lowers_each_instance_with_precise_spans",
+        "test_unsupported_prowess_wording_remains_material_residual",
+        "test_prowess_dependency_and_compiler_mutations_fail_closed",
+        "test_noncreature_spell_creates_one_prowess_trigger",
+        "test_spell_cast_event_dispatch_mutant_is_killed",
+        "test_multiple_prowess_instances_trigger_separately",
+        "test_creature_and_opponent_spells_do_not_trigger_prowess",
+        "test_current_layer_six_ability_fragment_is_required",
+        "test_prowess_source_identity_and_control_are_pinned",
+        "test_prowess_and_opponent_cast_trigger_share_one_apnap_batch",
+        "test_four_player_prowess_batch_is_public_and_apnap_ordered",
+        "test_prowess_trigger_and_resolution_replay_exactly"
+      ],
       "trust_level": "untrusted"
     },
     {

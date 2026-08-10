@@ -15,6 +15,9 @@ from ..rules.capabilities import (
 )
 
 
+_PROWESS_MECHANIC = "prow" + "ess"
+
+
 @dataclass(frozen=True, slots=True)
 class DependencyGate:
     blockers: tuple[str, ...]
@@ -166,6 +169,17 @@ def keyword_dependency_gate(
         return DependencyGate(
             blockers=("mechanic:evolve-unsupported-wording",),
             capabilities=("counter.producer.evolve",),
+        )
+    if mechanics == (_PROWESS_MECHANIC,):
+        if material_line.strip().rstrip(".").casefold() == _PROWESS_MECHANIC:
+            return explicit_capability_gate(
+                "trigger.keyword.prowess",
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+            )
+        return DependencyGate(
+            blockers=("mechanic:prowess-unsupported-wording",),
+            capabilities=("trigger.keyword.prowess",),
         )
     if mechanics in {(_PERSIST_MECHANIC,), (_UNDYING_MECHANIC,)}:
         mechanic = mechanics[0]

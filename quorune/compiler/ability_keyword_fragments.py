@@ -7,6 +7,8 @@ from typing import Any, Mapping
 from ..ability_fragments import (
     CombatKeywordTriggerKind,
     CombatKeywordTriggerSpec,
+    SpellCastKeywordTriggerKind,
+    SpellCastKeywordTriggerSpec,
     ability_fragment_to_dict,
     parse_protection_line,
 )
@@ -58,6 +60,34 @@ def lower_ability_keyword_fragments(
                     "schema_version": 1,
                     "event": "continuous",
                     "fragment": ability_fragment_to_dict(enchant_spec),
+                },
+            )
+        )
+    if mechanics == ("prowess",):
+        matching_parts = tuple(
+            part
+            for part in _keyword_parts(material_line)
+            if part.casefold() == "prowess"
+        )
+        if len(matching_parts) != 1:
+            return AbilityKeywordFragmentLowering(
+                residual_kind="unsupported_prowess_variant",
+                residual_reason=(
+                    "Prowess wording is outside the closed printed keyword grammar"
+                ),
+                residual_blockers=("ordinary printed Prowess",),
+            )
+        return AbilityKeywordFragmentLowering(
+            handlers=(
+                {
+                    "handler_id": "ability.trigger.prowess.v1",
+                    "schema_version": 1,
+                    "event": "spell.cast",
+                    "fragment": ability_fragment_to_dict(
+                        SpellCastKeywordTriggerSpec(
+                            kind=SpellCastKeywordTriggerKind.PROWESS,
+                        )
+                    ),
                 },
             )
         )

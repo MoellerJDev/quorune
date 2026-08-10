@@ -1034,6 +1034,22 @@
       "capability_ids": ["permanent.destroy.fixed_set", "permanent.indestructible.ordinary"],
       "interaction_order": 3,
       "assertion": "A four-player fixed-set destruction batch composes APNAP replacement choices, shield counters, and ordinary Indestructible with seat privacy and exact replay."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_prowess_source_identity_and_control_are_pinned",
+      "piece_ids": ["capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "capability.trigger.keyword.prowess", "mechanic.cr-611-continuous-effects", "mechanic.prowess"],
+      "capability_ids": ["continuous.resolution.fixed_characteristics_until_end_of_turn", "trigger.keyword.prowess"],
+      "interaction_order": 4,
+      "assertion": "A Prowess trigger freezes its controller and resolves through the canonical identity-locked layer 7c effect owner, following the same physical source through control changes but not zone changes."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_prowess_and_opponent_cast_trigger_share_one_apnap_batch",
+      "piece_ids": ["capability.trigger.event.normalized_spell_cast", "capability.trigger.keyword.prowess", "capability.trigger.placement.apnap", "mechanic.cr-603-handling-triggered-abilities", "mechanic.prowess"],
+      "capability_ids": ["trigger.event.normalized_spell_cast", "trigger.keyword.prowess", "trigger.placement.apnap"],
+      "interaction_order": 5,
+      "assertion": "Prowess and an independent opponent-cast trigger consume one normalized committed spell event and enter one sealed multi-controller APNAP batch."
     }
   ]
 }

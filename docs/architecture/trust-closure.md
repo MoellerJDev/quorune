@@ -1,7 +1,7 @@
 ---
 title: "CardProgram trust and applicable closure"
 status: "current"
-authoritative_source: "quorune/card_programs/trust.py, binding.py, preflight.py, and capability registry v14"
+authoritative_source: "quorune/card_programs/trust.py, binding.py, preflight.py, and the versioned capability registry"
 verified: "2026-08-05"
 audience: "rules, compiler, runtime, replay, and room-policy contributors"
 maintenance: "hand-maintained"
