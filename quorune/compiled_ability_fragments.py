@@ -54,10 +54,12 @@ def compiled_static_ability_fragments(
     *,
     face_name: str | None = None,
 ) -> tuple[StaticAbilityFragment, ...]:
-    """Return trusted, face-pinned executable static-ability fragments.
+    """Return trusted, face-pinned executable layer-6 ability fragments.
 
     Oracle grammar is compiled before game execution. Runtime consumers only
     lower exact handler descriptors already pinned into SemanticPrograms.
+    A fragment-owning program may observe an event other than ``continuous``;
+    the fragment still describes an ability present on the battlefield.
     """
 
     record = host.card_record(card)
@@ -65,12 +67,27 @@ def compiled_static_ability_fragments(
         return _custom_fragments(card)
     expected_face = _face_id(record, card, face_name)
     fragments: list[StaticAbilityFragment] = []
-    programs = host.semantics.runtime_handler_programs_for_oracle(
-        record.oracle_id,
-        active_zone="battlefield",
-        event="continuous",
+    programs_by_key = {
+        program.key: program
+        for program in host.semantics.runtime_handler_programs_for_oracle(
+            record.oracle_id,
+            active_zone="battlefield",
+            event="continuous",
+        )
+    }
+    programs_by_key.update(
+        {
+            program.key: program
+            for program in host.semantics.programs_for_oracle(
+                record.oracle_id,
+                active_zone="battlefield",
+            )
+            if program.handlers
+        }
     )
-    for program in programs:
+    for program in (
+        programs_by_key[key] for key in sorted(programs_by_key)
+    ):
         if not host.semantic_program_is_current_trusted(program):
             continue
         if str(program.provenance.get("face_id") or "") != expected_face:

@@ -14,6 +14,7 @@ from ...counter_placement import (
 )
 from ...life_state import LifeStateError, pay_life_cost
 from ...model import StackItem, YieldPolicy
+from ..spell_cast_events import SpellCastEvent
 from ...stack_counter import oracle_has_intrinsic_counter_prohibition
 from ...tap_state import set_permanent_tapped
 from ...trigger_processing import enqueue_trigger_batch
@@ -824,15 +825,15 @@ def _dispatch_cast_events(
         object_incarnation=card.logical_object_id,
         types=cast_types,
     )
-    context = {
-        "card": card.ref,
-        "controller": proposal.seat,
-        "player": proposal.seat,
-        "from": proposal.origin,
-        "to": "stack",
-        "types": sorted(cast_types),
-        "stack": item.ref,
-    }
+    context = SpellCastEvent(
+        card_ref=card.ref,
+        object_id=card.object_id,
+        logical_object_id=card.logical_object_id,
+        controller=proposal.seat,
+        origin=proposal.origin,
+        stack_ref=item.ref,
+        types=tuple(cast_types),
+    ).to_context()
     host._dispatch_semantic_event("spell.cast", context, trigger_batch=trigger_batch)
     if "artifact" in cast_types:
         host._dispatch_semantic_event(

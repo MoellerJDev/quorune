@@ -9,6 +9,8 @@ from ..ability_fragments import (
     CombatKeywordTriggerKind,
     CombatKeywordTriggerSpec,
     ProtectionSpec,
+    SpellCastKeywordTriggerKind,
+    SpellCastKeywordTriggerSpec,
     StaticAbilityFragment,
     ability_fragment_from_dict,
 )
@@ -30,6 +32,7 @@ EXALTED_FRAGMENT_HANDLER_ID = "ability.trigger.exalted.v1"
 BATTLE_CRY_FRAGMENT_HANDLER_ID = "ability.trigger.battle_cry.v1"
 MELEE_FRAGMENT_HANDLER_ID = "ability.trigger.melee.v1"
 MENTOR_FRAGMENT_HANDLER_ID = "ability.trigger.mentor.v1"
+PROWESS_FRAGMENT_HANDLER_ID = "ability.trigger.prowess.v1"
 
 
 def _fragment(
@@ -364,6 +367,46 @@ class MentorAbilityFragmentHandler:
         return (self.validate(descriptor),)
 
 
+@dataclass(frozen=True, slots=True)
+class ProwessAbilityFragmentHandler:
+    handler_id: str = PROWESS_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.trigger.prowess"
+    event: str = "spell.cast"
+    rule_references: tuple[str, ...] = (
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b",
+    )
+    capability_dependencies: tuple[str, ...] = ("trigger.keyword.prowess",)
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> SpellCastKeywordTriggerSpec:
+        fragment = _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=SpellCastKeywordTriggerSpec,
+        )
+        if fragment.kind is not SpellCastKeywordTriggerKind.PROWESS:
+            raise SemanticNodeError(
+                "The Prowess runtime handler requires a Prowess fragment"
+            )
+        return fragment
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
 class AbilityFragmentRegistry(
     RuntimeComponentRegistry[object, StaticAbilityFragment]
 ):
@@ -383,6 +426,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             MeleeAbilityFragmentHandler(),
             MentorAbilityFragmentHandler(),
             ProtectionAbilityFragmentHandler(),
+            ProwessAbilityFragmentHandler(),
         )
     )
     registry.require_registered_capabilities(
@@ -413,6 +457,7 @@ __all__ = [
     "PROTECTION_FRAGMENT_HANDLER_ID",
     "MELEE_FRAGMENT_HANDLER_ID",
     "MENTOR_FRAGMENT_HANDLER_ID",
+    "PROWESS_FRAGMENT_HANDLER_ID",
     "EnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
@@ -421,6 +466,7 @@ __all__ = [
     "LinkedGraveyardEnchantFragmentHandler",
     "MeleeAbilityFragmentHandler",
     "MentorAbilityFragmentHandler",
+    "ProwessAbilityFragmentHandler",
     "ProtectionAbilityFragmentHandler",
     "AbilityFragmentRegistry",
     "default_ability_fragment_registry",

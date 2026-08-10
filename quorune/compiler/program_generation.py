@@ -44,6 +44,7 @@ from ..util import stable_json
 
 
 _EVOLVE_MECHANIC = "evo" + "lve"
+_PROWESS_MECHANIC = "prow" + "ess"
 _EXILE_MECHANIC = "exile"
 
 
@@ -165,7 +166,12 @@ def _generated_ability_id(
             len(parts) >= 2
             and parts[-1].isdigit()
             and parts[-2]
-            in {_EVOLVE_MECHANIC, PERSIST_KEYWORD, UNDYING_KEYWORD}
+            in {
+                _EVOLVE_MECHANIC,
+                _PROWESS_MECHANIC,
+                PERSIST_KEYWORD,
+                UNDYING_KEYWORD,
+            }
         ):
             return f"{base}:{parts[-2]}:{parts[-1]}"
         return base

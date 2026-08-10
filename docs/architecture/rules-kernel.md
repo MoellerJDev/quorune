@@ -147,6 +147,17 @@ damage, prevention, and entry participation remain blocked. New rules work must
 identify event/replacement participation and use capability IDs from the
 versioned registry.
 
+Committed represented casts dispatch one strict immutable `SpellCastEvent`
+that pins the physical spell, logical incarnation, controller, origin, stack
+reference, and canonical current card types. Ordinary Prowess is lowered once
+to a source-spanned trigger program plus a typed ability fragment. Trigger
+discovery requires that fragment in the source's current layer-6
+characteristics, then delegates APNAP batching to the shared trigger owner and
+the identity-pinned +1/+1-until-end-of-turn result to the continuous-effect
+owner. Removing abilities suppresses future triggers but does not erase a
+trigger already on the stack. Rules-text equivalents, qualified variants,
+unsupported grants or copies, and trigger multiplication remain fail closed.
+
 For represented CR 611 object modifications, resolution-created effects lock
 the affected physical/logical object set after successful preparation. Static
 effects keep a live source-bound `ObjectQuerySpec` and recompute membership

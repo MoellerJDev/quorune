@@ -205,6 +205,7 @@
       "test_persist_undying_rules",
       "test_preflight_v080",
       "test_proliferate_compiler",
+      "test_prowess_rules",
       "test_riot_rules",
       "test_rule_capabilities",
       "test_self_counter_keyword_actions",

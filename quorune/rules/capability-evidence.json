@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "5834889c6e515197702b4aaaf42f62af2cf09f4947472fb5078c275a8dff1d0f",
-  "declaration_source_fingerprint": "1bd9af5f77c3877f705fd0742886979674f264df531a89f1b0375cc2a3a20487",
+  "registry_fingerprint": "08c873b6b7aa450fc00a868ebf959bf8bc432df8dc42bcdfc2926c2cc029c096",
+  "declaration_source_fingerprint": "e71b661665cd5efcbcd7d4ef97ca3dcf7fb9a64528d4576c20136cce07ef940e",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -21848,6 +21848,150 @@
       "applicability_note": "Apply a reviewed mandatory replacement that adds a fixed token definition to one nonempty token-creation event controlled by the replacement source's controller."
     },
     {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_and_opponent_cast_trigger_share_one_apnap_batch",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Dispatch every represented trigger from one immutable committed spell-cast event and one ordinary APNAP batch."
+    },
+    {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_four_player_prowess_batch_is_public_and_apnap_ordered",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preserve cast identity, public trigger facts, APNAP controller order, and private hands in four-player state."
+    },
+    {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_spell_cast_event_dispatch_mutant_is_killed",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replace the typed event with the former loose context and reject the missing schema and object identities."
+    },
+    {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "negative",
+      "test_id": "tests.test_prowess_rules.ProwessCompilerTests.test_spell_cast_event_rejects_malformed_context_without_mutation",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a controller/player disagreement through the closed event schema without mutating caller data."
+    },
+    {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "negative",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_creature_and_opponent_spells_do_not_trigger_prowess",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preserve canonical cast types and controller facts so consuming triggers can reject nonmatching events."
+    },
+    {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "positive",
+      "test_id": "tests.test_prowess_rules.ProwessCompilerTests.test_spell_cast_event_is_strict_canonical_and_round_trips",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Canonicalize card types and preserve strict versioned cast facts and a deterministic fingerprint across reconstruction."
+    },
+    {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "positive",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_noncreature_spell_creates_one_prowess_trigger",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Construct the normalized event only after a physical spell reaches the stack and dispatch its represented trigger."
+    },
+    {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_four_player_prowess_batch_is_public_and_apnap_ordered",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose public spell and trigger facts without leaking another seat's unrelated hidden hand cards."
+    },
+    {
+      "capability_id": "trigger.event.normalized_spell_cast",
+      "evidence_class": "replay",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_trigger_and_resolution_replay_exactly",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the normalized cast occurrence, trigger placement, and resulting authoritative state hash exactly."
+    },
+    {
       "capability_id": "trigger.event.normalized_zone_change",
       "evidence_class": "interaction",
       "test_id": "tests.test_oracle_ir.OracleIRTests.test_self_dies_trigger_uses_last_known_controller",
@@ -22126,6 +22270,234 @@
         "commander_review"
       ],
       "applicability_note": "Replay the countered-spell transition, normalized event ordering, trigger journal inputs, and final state hash exactly."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_and_opponent_cast_trigger_share_one_apnap_batch",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose Prowess with an independent opponent-cast trigger in the same sealed cast occurrence and APNAP batch."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_source_identity_and_control_are_pinned",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Freeze trigger control while applying the result only to the same current source incarnation through control changes."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_four_player_prowess_batch_is_public_and_apnap_ordered",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Place Prowess and another controller's cast trigger in four-player APNAP order."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_prowess_rules.ProwessCompilerTests.test_prowess_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove Prowess lowering and prove the exact source-spanned CardProgram cannot survive."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "negative",
+      "test_id": "tests.test_prowess_rules.ProwessCompilerTests.test_unsupported_prowess_wording_remains_material_residual",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Leave parameterized and compound Prowess-like wording outside the closed ordinary keyword grammar."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "negative",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_creature_and_opponent_spells_do_not_trigger_prowess",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject the source controller's creature spells and every opponent spell."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "negative",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_current_layer_six_ability_fragment_is_required",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suppress a future Prowess trigger when the exact typed ability fragment is absent from current layer-6 characteristics."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "positive",
+      "test_id": "tests.test_prowess_rules.ProwessCompilerTests.test_prowess_keyword_lowers_each_instance_with_precise_spans",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower each printed instance to one independent typed fragment and exact source-spanned CardProgram V2 node."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "positive",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_multiple_prowess_instances_trigger_separately",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Create and resolve one independent trigger and +1/+1 result for each current printed Prowess instance."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "positive",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_noncreature_spell_creates_one_prowess_trigger",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Trigger once for the controller's noncreature spell and resolve through the identity-locked layer 7c owner."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_four_player_prowess_batch_is_public_and_apnap_ordered",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project public Prowess source, spell, and trigger facts without exposing opposing hand identities."
+    },
+    {
+      "capability_id": "trigger.keyword.prowess",
+      "evidence_class": "replay",
+      "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_trigger_and_resolution_replay_exactly",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.108",
+        "702.108a",
+        "702.108b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay trigger placement and the identity-locked until-end-of-turn characteristic result to the same final hash."
     },
     {
       "capability_id": "trigger.placement.apnap",
@@ -23743,5 +24115,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "d833adaa911152659bb8e272dc62046fc7463e405cfc774044b8db0a22df35e6"
+  "fingerprint": "f077364b4e89483346db148b02b27146bf451d5a6fddff5f7ca80303a08dfa0f"
 }

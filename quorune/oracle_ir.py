@@ -49,6 +49,7 @@ from .compiler.keyword_nodes import (
     evolve_keyword_node,
     fabricate_keyword_node,
     keyword_node_plans,
+    prowess_keyword_node,
     riot_keyword_node,
     unleash_keyword_nodes,
 )
@@ -89,7 +90,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v70"
+ORACLE_COMPILER_VERSION = "oracle-ir-v71"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -578,6 +579,17 @@ def _keyword_node_for_mechanics(
         residual_ids=residual_ids,
     ):
         return evolve
+    if prowess := prowess_keyword_node(
+        node_id=node_id,
+        line=line,
+        material_line=material_line,
+        span=span,
+        mechanics=mechanics,
+        gate=gate,
+        residual_ids=residual_ids,
+        handlers=fragment_lowering.handlers,
+    ):
+        return prowess
     if death_return := death_return_keyword_node(
         node_id=node_id,
         line=line,

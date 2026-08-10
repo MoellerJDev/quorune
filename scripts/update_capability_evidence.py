@@ -168,6 +168,16 @@ MUTATION_TESTS = {
         "CapabilityImplementationMutationTests."
         "test_zone_trigger_detection_mutant_is_killed"
     ),
+    "trigger.event.normalized_spell_cast": (
+        "tests.test_prowess_rules."
+        "ProwessRuntimeTests."
+        "test_spell_cast_event_dispatch_mutant_is_killed"
+    ),
+    "trigger.keyword.prowess": (
+        "tests.test_prowess_rules."
+        "ProwessCompilerTests."
+        "test_prowess_dependency_and_compiler_mutations_fail_closed"
+    ),
     "continuous.basic_land_type.add_all_lands": (
         "tests.test_capability_implementation_mutations."
         "CapabilityImplementationMutationTests."

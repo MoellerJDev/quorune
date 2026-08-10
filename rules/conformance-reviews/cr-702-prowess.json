@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.108 — Prowess",
+  "cases": [
+    {
+      "rule_id": "702.108",
+      "rule_text_sha256": "ca7c28106ea3f08968757f2042a95d904ec7f173826c2c0c1cea4f3ce7ee04f7",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.capabilities.CapabilityRegistry"],
+      "executable_test_ids": ["tests.test_prowess_rules.ProwessCompilerTests.test_prowess_keyword_lowers_each_instance_with_precise_spans"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded ordinary printed family is owned by trigger.keyword.prowess."]
+    },
+    {
+      "rule_id": "702.108a",
+      "rule_text_sha256": "07c36c36d0a6983d6bf8bd20ae84ab2127bfe03329fd141939295df548c3b9ea",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.spell_cast_events.SpellCastEvent", "quorune.compiler.keyword_nodes.prowess_keyword_node", "quorune.trigger_discovery.program_has_current_ability_fragments", "quorune.effect_runtime.objects_stack_and_tokens._apply_modify_stats_until_end_of_turn"],
+      "executable_test_ids": ["tests.test_prowess_rules.ProwessRuntimeTests.test_noncreature_spell_creates_one_prowess_trigger", "tests.test_prowess_rules.ProwessRuntimeTests.test_creature_and_opponent_spells_do_not_trigger_prowess", "tests.test_prowess_rules.ProwessRuntimeTests.test_current_layer_six_ability_fragment_is_required", "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_source_identity_and_control_are_pinned", "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_trigger_and_resolution_replay_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["granted, copied, and face-down Prowess is not yet closed through every typed ability-propagation path", "Oracle-equivalent nonkeyword trigger wording remains outside the closed compiler grammar", "aggregate casting, triggered-ability, and characteristic-effect coverage remains incomplete"],
+      "notes": ["Each represented printed Prowess instance observes one immutable completed cast event, requires its current layer-6 fragment, and resolves through the identity-pinned layer 7c effect owner."]
+    },
+    {
+      "rule_id": "702.108b",
+      "rule_text_sha256": "b9aebc096f851803be9673ea5088e7bdcd138afcb694dc0f411600ae16945be1",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.oracle_ir._keyword_nodes", "quorune.compiler.program_generation._generated_ability_id", "quorune.trigger_discovery.program_has_current_ability_fragments"],
+      "executable_test_ids": ["tests.test_prowess_rules.ProwessCompilerTests.test_prowess_keyword_lowers_each_instance_with_precise_spans", "tests.test_prowess_rules.ProwessRuntimeTests.test_multiple_prowess_instances_trigger_separately"],
+      "required_scenarios": ["positive", "replay"],
+      "covered_scenarios": ["positive", "replay"],
+      "blockers": ["multiple granted or copied Prowess instances are not yet propagated through every typed ability-fragment path"],
+      "notes": ["Repeated printed instances have distinct source spans, generated ability identities, current typed fragments, and independently resolving triggers."]
+    }
+  ]
+}

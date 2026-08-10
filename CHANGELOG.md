@@ -26,6 +26,19 @@ maintenance: "hand-maintained"
   Random, variable, multiple, optional, alternative, dynamic, historical,
   reveal, and tap costs remain explicit residuals.
 
+### Typed ordinary Prowess
+
+- Added one strict normalized spell-cast event and a source-spanned ordinary
+  Prowess CardProgram family. Each current Prowess instance independently
+  triggers when its controller casts a noncreature spell, joins the unified
+  APNAP trigger batch, and creates an identity-pinned +1/+1 continuous effect
+  until end of turn.
+- Current layer-6 ability fragments now gate trigger discovery, so removing the
+  source's abilities prevents future Prowess triggers without erasing triggers
+  already on the stack. Rules-text equivalents, qualified variants, copied or
+  unsupported granted abilities, trigger multiplication, and broader cast
+  event families remain explicit residuals.
+
 ### Typed direct-permanent target predicates
 
 - Added one immutable `DirectPermanentTargetSpec` shared by fixed-counter

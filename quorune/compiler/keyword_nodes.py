@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
+from typing import Any, Mapping
 
+from ..ability_fragments import CURRENT_ABILITY_FRAGMENT_COVERAGE
 from ..cast_timing import PRINTED_FLASH_MECHANIC
 from ..death_return import (
     DeathReturnSpec,
@@ -36,6 +38,7 @@ _UNDYING_MECHANIC = UNDYING_KEYWORD
 _UNLEASH_MECHANIC = UNLEASH_MECHANIC
 _RIOT_MECHANIC = RIOT_MECHANIC
 _MENTOR_MECHANIC = "men" + "tor"
+_PROWESS_MECHANIC = "prow" + "ess"
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,6 +80,7 @@ def keyword_node_plans(
             _UNDYING_MECHANIC,
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
+            _PROWESS_MECHANIC,
         }
     )
     if not split_mechanics:
@@ -106,6 +110,7 @@ def keyword_node_plans(
             _UNDYING_MECHANIC,
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
+            _PROWESS_MECHANIC,
         )
     }
     result: list[KeywordNodePlan] = []
@@ -150,6 +155,7 @@ def keyword_node_plans(
             _UNDYING_MECHANIC,
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
+            _PROWESS_MECHANIC,
         }
     )
     if remaining:
@@ -233,6 +239,73 @@ def evolve_keyword_node(
             "op": "truthy",
         },
         runtime_coverage=("intervening_condition",),
+        mechanics=mechanics,
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        capability_profile=(
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    )
+
+
+def prowess_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    mechanics: tuple[str, ...],
+    gate: DependencyGate,
+    residual_ids: tuple[str, ...],
+    handlers: tuple[Mapping[str, Any], ...],
+) -> OracleNode | None:
+    if (
+        mechanics != (_PROWESS_MECHANIC,)
+        or material_line.strip().rstrip(".").casefold() != _PROWESS_MECHANIC
+    ):
+        return None
+    return OracleNode(
+        node_id=node_id,
+        kind="triggered_ability",
+        text=line,
+        span=span,
+        active_zone="battlefield",
+        event="spell.cast",
+        lowerable=True,
+        exact=not residual_ids,
+        template_id="prowess-noncreature-spell-trigger-v1",
+        effects=(
+            {
+                "op": "modify_stats_until_end_of_turn",
+                "card": "$source.zone_object",
+                "power": 1,
+                "toughness": 1,
+            },
+        ),
+        handlers=handlers,
+        event_condition={
+            "all": [
+                {
+                    "field": "controller",
+                    "op": "eq",
+                    "value": "$source.controller",
+                },
+                {
+                    "not": {
+                        "field": "types",
+                        "op": "contains_any",
+                        "value": ["creature"],
+                    }
+                },
+            ]
+        },
+        runtime_coverage=(CURRENT_ABILITY_FRAGMENT_COVERAGE,),
         mechanics=mechanics,
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,
@@ -592,6 +665,7 @@ __all__ = [
     "evolve_keyword_node",
     "fabricate_keyword_node",
     "keyword_node_plans",
+    "prowess_keyword_node",
     "riot_keyword_node",
     "unleash_keyword_nodes",
 ]

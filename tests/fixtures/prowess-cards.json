@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_prowess_card_data",
+  "source": "Scryfall-compatible Oracle subset for Prowess tests",
+  "cards": [
+    {
+      "oracle_id": "dafd2713-d1bc-474b-b390-d2ff20b5375e",
+      "name": "Monastery Swiftspear",
+      "mana_cost": "{R}",
+      "cmc": 1.0,
+      "type_line": "Creature — Human Monk",
+      "oracle_text": "Haste\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+      "power": "1",
+      "toughness": "2",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["R"],
+      "color_identity": ["R"],
+      "keywords": ["Haste", "Prowess"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2014-09-26",
+      "legalities": {"commander": "legal"}
+    },
+    {
+      "oracle_id": "00000000-0000-4000-8000-000000070210",
+      "name": "Double Prowess Fixture",
+      "mana_cost": "{1}{R}",
+      "cmc": 2.0,
+      "type_line": "Creature — Human Monk",
+      "oracle_text": "Prowess, prowess",
+      "power": "1",
+      "toughness": "2",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["R"],
+      "color_identity": ["R"],
+      "keywords": ["Prowess"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2026-06-19",
+      "legalities": {"commander": "legal"}
+    }
+  ],
+  "rulings": []
+}

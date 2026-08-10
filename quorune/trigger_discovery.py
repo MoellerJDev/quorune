@@ -5,6 +5,7 @@ from collections.abc import Mapping, Sequence
 from typing import Any, Protocol
 
 from .ability_fragments import (
+    CURRENT_ABILITY_FRAGMENT_COVERAGE,
     canonical_ability_fragments,
     granted_triggered_specs,
 )
@@ -28,6 +29,7 @@ from .death_return import (
 )
 from .model import CardInstance, StackItem
 from .semantics import SemanticProgram
+from .semantic_runtime.ability_fragments import fragments_from_descriptors
 from .trigger_processing import enqueue_trigger_batch
 
 
@@ -565,6 +567,82 @@ def _additional_trigger_count(
     return count
 
 
+def program_has_current_ability_fragments(
+    program: SemanticProgram,
+    characteristics: Mapping[str, Any],
+) -> bool:
+    """Require every typed fragment declared by one current-ability program."""
+
+    required = fragments_from_descriptors(program.handlers)
+    if not required:
+        raise GameRuleError(
+            "A current-ability trigger has no typed ability fragment"
+        )
+    available = list(
+        canonical_ability_fragments(
+            characteristics.get("ability_fragments", ())
+        )
+    )
+    for fragment in required:
+        try:
+            available.remove(fragment)
+        except ValueError:
+            return False
+    return True
+
+
+def _event_programs_for_source(
+    host: TriggerDiscoveryHost,
+    source: CardInstance,
+    event: str,
+    *,
+    source_zones: Mapping[str, str] | None,
+    source_characteristics: Mapping[
+        str, Mapping[str, Any]
+    ] | None,
+) -> tuple[str, Mapping[str, Any], list[SemanticProgram]]:
+    """Collect printed and typed-granted programs from one current source."""
+
+    active_zone = (
+        source_zones.get(source.object_id, source.zone)
+        if source_zones is not None
+        else source.zone
+    )
+    characteristics = (
+        source_characteristics.get(source.object_id)
+        if source_characteristics is not None
+        else None
+    ) or host._effective_card_data(source)
+    programs = [
+        program
+        for program in host.semantics.programs_for_oracle(
+            source.oracle_id,
+            active_zone=active_zone,
+        )
+        if not program.provenance.get("granted_only")
+    ]
+    for granted in granted_triggered_specs(
+        canonical_ability_fragments(
+            characteristics.get("ability_fragments", ())
+        )
+    ):
+        if granted.event != event:
+            continue
+        program = host.semantics.get(granted.semantic_key)
+        if program is None:
+            raise GameRuleError(
+                "A typed granted trigger references an unknown "
+                f"semantic program {granted.semantic_key!r}"
+            )
+        if program.event != granted.event:
+            raise GameRuleError(
+                "A typed granted trigger disagrees with its semantic "
+                "program event"
+            )
+        programs.append(program)
+    return active_zone, characteristics, programs
+
+
 def dispatch_semantic_event(
     host: TriggerDiscoveryHost,
     event: str,
@@ -584,45 +662,23 @@ def dispatch_semantic_event(
         list(sources) if sources is not None else host._semantic_event_sources()
     )
     for source in candidates:
-        active_zone = (
-            source_zones.get(source.object_id, source.zone)
-            if source_zones is not None
-            else source.zone
+        active_zone, characteristics, programs = _event_programs_for_source(
+            host,
+            source,
+            event,
+            source_zones=source_zones,
+            source_characteristics=source_characteristics,
         )
-        programs = list(
-            program
-            for program in host.semantics.programs_for_oracle(
-                source.oracle_id,
-                active_zone=active_zone,
-            )
-            if not program.provenance.get("granted_only")
-        )
-        characteristics = (
-            source_characteristics.get(source.object_id)
-            if source_characteristics is not None
-            else None
-        ) or host._effective_card_data(source)
-        for granted in granted_triggered_specs(
-            canonical_ability_fragments(
-                characteristics.get("ability_fragments", ())
-            )
-        ):
-            if granted.event != event:
-                continue
-            program = host.semantics.get(granted.semantic_key)
-            if program is None:
-                raise GameRuleError(
-                    "A typed granted trigger references an unknown "
-                    f"semantic program {granted.semantic_key!r}"
-                )
-            if program.event != granted.event:
-                raise GameRuleError(
-                    "A typed granted trigger disagrees with its semantic "
-                    "program event"
-                )
-            programs.append(program)
         for program in programs:
             if program.trust_level == "unresolved":
+                continue
+            if (
+                CURRENT_ABILITY_FRAGMENT_COVERAGE in program.coverage
+                and not program_has_current_ability_fragments(
+                    program,
+                    characteristics,
+                )
+            ):
                 continue
             if not semantic_event_matches(
                 host,
