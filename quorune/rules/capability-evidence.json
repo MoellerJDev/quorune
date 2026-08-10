@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "1d62000934d91882294870faa4553627843ba3f368a27b4dc04ca0cdd31ebace",
-  "declaration_source_fingerprint": "f8ea0a464c49ed9a9a9bd4cd2b564ae9d671e0d73dd32804e2aeb9ddc63ff275",
+  "registry_fingerprint": "764ea84797ae06404b9f74e75f3ededbb16f8eff3f81551b33823a3d766d4fd0",
+  "declaration_source_fingerprint": "f401c5548324b40295448c86ec993f7433f2891a93c9db5cfea1aeb7bd6104a6",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -3143,6 +3143,24 @@
     },
     {
       "capability_id": "combat.block.menace",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_menace_counter_feeds_offer_and_command_block_legality",
+      "official_rule_ids": [
+        "509.1c",
+        "702.111",
+        "702.111a",
+        "702.111b",
+        "702.111c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Consume a canonically placed Menace counter through current effective characteristics in both projected and accepted complete block declarations, including rollback and exact replay."
+    },
+    {
+      "capability_id": "combat.block.menace",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_combat_keyword_rules.CombatKeywordRuleTests.test_four_player_menace_is_seat_scoped_and_replays",
       "official_rule_ids": [
@@ -4099,6 +4117,24 @@
     },
     {
       "capability_id": "combat.damage.assignment.deathtouch",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_deathtouch_counter_feeds_assignment_and_final_damage_result",
+      "official_rule_ids": [
+        "510.1c",
+        "702.2",
+        "702.2a",
+        "702.2c",
+        "702.2f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Consume a canonically placed Deathtouch counter from the immutable source snapshot so one positive damage is lethal in assignment order before exact replay."
+    },
+    {
+      "capability_id": "combat.damage.assignment.deathtouch",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_combat_keyword_rules.CombatKeywordRuleTests.test_four_player_deathtouch_result_is_source_derived_and_replays",
       "official_rule_ids": [
@@ -4297,6 +4333,31 @@
         "commander_review"
       ],
       "applicability_note": "Use the ordinary toughness-based lethal assignment threshold even when indestructible prevents the blocker from being destroyed afterward."
+    },
+    {
+      "capability_id": "combat.damage.assignment.trample",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_trample_counter_feeds_offer_and_command_spill_legality",
+      "official_rule_ids": [
+        "510.1",
+        "510.1a",
+        "510.1c",
+        "510.1d",
+        "702.19",
+        "702.19a",
+        "702.19b",
+        "702.19c",
+        "702.19d",
+        "702.19e",
+        "702.19f",
+        "702.19g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Consume a canonically placed Trample counter in both projected damage recipients and authoritative lethal-before-spill validation, with rollback and exact replay."
     },
     {
       "capability_id": "combat.damage.assignment.trample",
@@ -6315,6 +6376,21 @@
     {
       "capability_id": "counter.characteristic.keyword",
       "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_deathtouch_counter_feeds_assignment_and_final_damage_result",
+      "official_rule_ids": [
+        "122.1b",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed a canonically placed Deathtouch counter through the source snapshot into both lethal assignment ordering and the final state-based damage result with exact replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
       "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_double_strike_counter_feeds_both_damage_steps",
       "official_rule_ids": [
         "122.1b",
@@ -6345,6 +6421,21 @@
     {
       "capability_id": "counter.characteristic.keyword",
       "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_hexproof_counter_feeds_offer_and_resolution_revalidation",
+      "official_rule_ids": [
+        "122.1b",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed a canonically placed Hexproof counter into controller-relative offer legality and current CR 608.2b resolution revalidation without widening the acting seat's decision."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
       "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_lifelink_counter_feeds_final_damage_result",
       "official_rule_ids": [
         "122.1b",
@@ -6356,6 +6447,36 @@
         "commander_review"
       ],
       "applicability_note": "Feed a canonically placed Lifelink counter through the combat source snapshot into the canonical final-damage life-gain result and exact replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_menace_counter_feeds_offer_and_command_block_legality",
+      "official_rule_ids": [
+        "122.1b",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed a canonically placed Menace counter through current effective characteristics into the complete block solver, seat projection, rollback, and exact replay."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_trample_counter_feeds_offer_and_command_spill_legality",
+      "official_rule_ids": [
+        "122.1b",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed a canonically placed Trample counter through the source snapshot into shared offer and command assignment legality, rollback, and exact replay."
     },
     {
       "capability_id": "counter.characteristic.keyword",
@@ -13805,6 +13926,28 @@
     },
     {
       "capability_id": "damage.result.deathtouch",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_deathtouch_counter_feeds_assignment_and_final_damage_result",
+      "official_rule_ids": [
+        "120.3e",
+        "120.4",
+        "702.2",
+        "702.2a",
+        "702.2b",
+        "702.2d",
+        "702.2e",
+        "702.2f",
+        "704.5h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Consume a canonically placed Deathtouch counter from the immutable damage source snapshot and destroy each creature dealt positive damage in the next simultaneous state-based check."
+    },
+    {
+      "capability_id": "damage.result.deathtouch",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_combat_keyword_rules.CombatKeywordRuleTests.test_four_player_deathtouch_result_is_source_derived_and_replays",
       "official_rule_ids": [
@@ -19901,6 +20044,25 @@
     },
     {
       "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_hexproof_counter_feeds_offer_and_resolution_revalidation",
+      "official_rule_ids": [
+        "115.1",
+        "608.2b",
+        "702.11",
+        "702.11a",
+        "702.11b",
+        "702.11h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Consume a canonically placed Hexproof counter in controller-relative target offers and again when a previously legal target is revalidated at resolution."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_hexproof_targeting.HexproofTargetingIntegrationTests.test_offer_command_rollback_privacy_and_replay_share_hexproof_legality",
       "official_rule_ids": [
@@ -20230,6 +20392,21 @@
         "commander_review"
       ],
       "applicability_note": "Revalidate the selected active player before committing the targeted fixed player-counter transaction."
+    },
+    {
+      "capability_id": "target.revalidate_resolution",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_hexproof_counter_feeds_offer_and_resolution_revalidation",
+      "official_rule_ids": [
+        "115.1",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate a previously legal public permanent after a canonically placed Hexproof counter changes its current effective targeting protection, then replay the resulting no-effect resolution exactly."
     },
     {
       "capability_id": "target.revalidate_resolution",
@@ -22802,5 +22979,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "60ee9818651c1323179f2e5509ec3854d9bfe1e1d4ec520e8aa56e1feae305ef"
+  "fingerprint": "b1e32e3e3bea968c587b5891cb78e3dacc8bdd9ade704d8963f2cac73362f3f5"
 }

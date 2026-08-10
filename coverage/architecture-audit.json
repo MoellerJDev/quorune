@@ -11545,7 +11545,7 @@
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 186,
+          "interaction": 196,
           "multiplayer": 114,
           "mutation": 125,
           "negative": 215,
@@ -11555,12 +11555,12 @@
           "replay": 147,
           "rollback": 28
         },
-        "declaration_count": 1152,
-        "declaration_source_fingerprint": "f8ea0a464c49ed9a9a9bd4cd2b564ae9d671e0d73dd32804e2aeb9ddc63ff275",
-        "fingerprint": "60ee9818651c1323179f2e5509ec3854d9bfe1e1d4ec520e8aa56e1feae305ef",
-        "registry_fingerprint": "1d62000934d91882294870faa4553627843ba3f368a27b4dc04ca0cdd31ebace"
+        "declaration_count": 1162,
+        "declaration_source_fingerprint": "f401c5548324b40295448c86ec993f7433f2891a93c9db5cfea1aeb7bd6104a6",
+        "fingerprint": "b1e32e3e3bea968c587b5891cb78e3dacc8bdd9ade704d8963f2cac73362f3f5",
+        "registry_fingerprint": "764ea84797ae06404b9f74e75f3ededbb16f8eff3f81551b33823a3d766d4fd0"
       },
-      "fingerprint": "1d62000934d91882294870faa4553627843ba3f368a27b4dc04ca0cdd31ebace",
+      "fingerprint": "764ea84797ae06404b9f74e75f3ededbb16f8eff3f81551b33823a3d766d4fd0",
       "implementation_mutation_status_counts": {
         "killed": 115,
         "not_run": 5
@@ -11811,7 +11811,7 @@
         "contract_fingerprint": "94e70002c7fa541a5049ad13b6c35456c1afddd485a91ab784742a3a3adceef9",
         "exact_cards_with_template": 311,
         "exact_nodes": 529,
-        "fingerprint": "b157498e09e1b638ddff3766786cbc112aa21b0fe214cb4154ca947a7892bd23",
+        "fingerprint": "6bdaa9a2ebf4dd258066bdde72d006b6c37d3dfe8d5964a35c7df3ab5ddcb635",
         "grammar_source_fingerprint": "4a2a9d12a901c8b92132be169fb8cd5db3d688acec9a232f4891d30a094f58b9",
         "identity_fingerprint": "3d65be2f34479922e551f86e5066e849d8f8cb1906e2facf76de90c49ba3b23c",
         "present": true,
@@ -11823,7 +11823,7 @@
         "contract_fingerprint": "94e70002c7fa541a5049ad13b6c35456c1afddd485a91ab784742a3a3adceef9",
         "exact_cards_with_template": 324,
         "exact_nodes": 549,
-        "fingerprint": "94303d3bf47e6a42b4b6077dafac412b87bccdcd8c93c3e400e76faebc1cb5cb",
+        "fingerprint": "4ad83bc8e75324abaf6d70cff5843f58884f7c6cb50947346a50d0699291ae2f",
         "grammar_source_fingerprint": "4a2a9d12a901c8b92132be169fb8cd5db3d688acec9a232f4891d30a094f58b9",
         "identity_fingerprint": "a5efe04d834d244880c808846e839e80af47f38015cbc584f523f78c186fc41f",
         "present": true,
@@ -12147,7 +12147,7 @@
           "maintenance": "hand-maintained",
           "status": "current",
           "title": "Interaction coverage",
-          "verified": "2026-08-09"
+          "verified": "2026-08-10"
         },
         "metadata_complete": true,
         "missing_metadata": [],
@@ -12683,8 +12683,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2379,
-      "discovered_total": 5679,
+      "conventional_ast_cases": 2383,
+      "discovered_total": 5683,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 87,
