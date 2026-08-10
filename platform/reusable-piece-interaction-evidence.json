@@ -946,6 +946,46 @@
       "capability_ids": ["target.protection.hexproof_permanent", "target.revalidate_resolution"],
       "interaction_order": 3,
       "assertion": "A control change between cast and resolution makes the previously legal Hexproof target illegal through the same CR 608.2b target-revalidation boundary."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_state_based_lethal_and_deathtouch_share_typed_destruction",
+      "piece_ids": ["capability.permanent.destroy.state_based_damage", "capability.permanent.indestructible.ordinary", "mechanic.indestructible"],
+      "capability_ids": ["permanent.destroy.state_based_damage", "permanent.indestructible.ordinary"],
+      "interaction_order": 3,
+      "assertion": "Lethal marked damage and one-check Deathtouch results share the same immutable SBA snapshot and canonical destruction owner that evaluates current ordinary Indestructible."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_trample_assigns_lethal_over_indestructible_blocker",
+      "piece_ids": ["capability.combat.damage.assignment.trample", "capability.permanent.indestructible.ordinary", "mechanic.indestructible", "mechanic.trample"],
+      "capability_ids": ["combat.damage.assignment.trample", "permanent.indestructible.ordinary"],
+      "interaction_order": 4,
+      "assertion": "Ordinary Trample assigns lethal damage from toughness and prior damage without reducing that threshold merely because Indestructible can prohibit later destruction."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_indestructible_consumes_deathtouch_at_the_first_sba_check",
+      "piece_ids": ["capability.damage.result.deathtouch", "capability.permanent.indestructible.ordinary", "mechanic.deathtouch", "mechanic.indestructible"],
+      "capability_ids": ["damage.result.deathtouch", "permanent.indestructible.ordinary"],
+      "interaction_order": 4,
+      "assertion": "Current ordinary Indestructible prohibits Deathtouch destruction while the temporal marker is still consumed at that same state-based-action check."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_indestructible_counter_feeds_canonical_destruction",
+      "piece_ids": ["capability.counter.characteristic.keyword", "capability.permanent.indestructible.ordinary", "mechanic.indestructible"],
+      "capability_ids": ["counter.characteristic.keyword", "permanent.indestructible.ordinary"],
+      "interaction_order": 3,
+      "assertion": "A canonically placed Indestructible counter changes the shared effective-keyword view used by destruction, and canonical removal immediately restores ordinary destroyability."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_mass_destruction_apnap_shield_indestructible_and_replay",
+      "piece_ids": ["capability.permanent.destroy.fixed_set", "capability.permanent.indestructible.ordinary", "mechanic.indestructible"],
+      "capability_ids": ["permanent.destroy.fixed_set", "permanent.indestructible.ordinary"],
+      "interaction_order": 3,
+      "assertion": "A four-player fixed-set destruction batch composes APNAP replacement choices, shield counters, and ordinary Indestructible with seat privacy and exact replay."
     }
   ]
 }

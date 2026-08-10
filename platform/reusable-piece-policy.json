@@ -134,6 +134,7 @@
     ["capability.combat.damage.participation.strike_steps", "capability.counter.characteristic.keyword"],
     ["capability.counter.characteristic.keyword", "capability.counter.placement.quantity_replacement"],
     ["capability.counter.characteristic.keyword", "capability.damage.result.lifelink"],
+    ["capability.counter.characteristic.keyword", "capability.permanent.indestructible.ordinary"],
     ["capability.counter.placement.quantity_replacement", "capability.counter.producer.optional_self_entry"],
     ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
     ["capability.counter.placement.quantity_replacement", "capability.counter.producer.riot"],

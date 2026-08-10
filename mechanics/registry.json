@@ -310,8 +310,8 @@
     {
       "mechanic_id": "indestructible",
       "path": "mechanics/contracts/indestructible.json",
-      "sha256": "1f10d250850fc804c9dfd46a0ee89c6868434653d10a691b53e2d1c40aa14bfb",
-      "version": 2
+      "sha256": "2cba02ae424baf7f591e5adcdfc344a28d179303830fac8717bb3e475b82e271",
+      "version": 3
     },
     {
       "mechanic_id": "infect",
@@ -2663,19 +2663,21 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/indestructible.json",
-      "contract_sha256": "1f10d250850fc804c9dfd46a0ee89c6868434653d10a691b53e2d1c40aa14bfb",
-      "contract_version": 2,
+      "contract_sha256": "2cba02ae424baf7f591e5adcdfc344a28d179303830fac8717bb3e475b82e271",
+      "contract_version": 3,
       "coverage_status": "partial",
       "dependencies": [
         "702"
       ],
       "implementation_component": "quorune.destruction typed transaction plus quorune.state_based_actions producer",
-      "implementation_version": "indestructible-partial-v2",
+      "implementation_version": "indestructible-bounded-ordinary-v3",
       "kind": "keyword_ability",
       "known_blockers": [
-        "ability-changing, copy, face-down, and dependency interactions are incomplete",
-        "regeneration and competing destruction replacements remain unsupported",
-        "the contract is partial and does not promote a broad trusted Indestructible capability"
+        "the fine-grained permanent.indestructible.ordinary capability is trusted only for represented current keyword producers and destruction owners",
+        "qualified, conditional, and player-facing Indestructible wording remains unsupported",
+        "unrepresented ability-changing, copy, face-down, merged-object, and characteristic producers remain blocked",
+        "regeneration and competing unrepresented destruction replacements remain unsupported",
+        "the aggregate mechanic contract remains partial and untrusted"
       ],
       "mechanic_id": "indestructible",
       "official_name": "Indestructible",
@@ -2683,11 +2685,19 @@
         "702.12"
       ],
       "test_ids": [
+        "test_plain_indestructible_compiles_to_closed_capability",
+        "test_unsupported_indestructible_variants_remain_residuals",
+        "test_indestructible_dependencies_fail_closed",
+        "test_current_indestructible_controls_effect_and_state_based_destruction",
+        "test_state_based_lethal_and_deathtouch_share_typed_destruction",
+        "test_indestructible_is_destroy_only_and_malformed_keywords_fail_closed",
+        "test_indestructible_counter_feeds_canonical_destruction",
         "test_snapshot_distinguishes_put_into_graveyard_from_destroy",
         "test_trample_assigns_lethal_over_indestructible_blocker",
         "test_indestructible_consumes_deathtouch_at_the_first_sba_check",
         "test_indestructible_and_phased_objects_are_not_destroyed",
         "test_simultaneous_multiplayer_batch_has_disjoint_results",
+        "test_mass_destruction_apnap_shield_indestructible_and_replay",
         "test_destruction_disposition_mutants_are_killed",
         "test_keyword_contracts_trace_the_pinned_rules"
       ],

@@ -2,7 +2,7 @@
 title: "Changelog"
 status: "historical"
 authoritative_source: "merged repository history"
-verified: "2026-08-09"
+verified: "2026-08-10"
 audience: "users and maintainers"
 maintenance: "hand-maintained"
 ---
@@ -10,6 +10,19 @@ maintenance: "hand-maintained"
 # Changelog
 
 ## Unreleased
+
+### Typed ordinary Indestructible
+
+- Added one fine-grained ordinary Indestructible capability shared by typed
+  single-target, fixed-set, lethal-damage, and Deathtouch destruction. Current
+  effective keyword grants and keyword counters feed the same immutable
+  destruction snapshot, while stale plans fail before mutation.
+- Ordinary Trample continues to assign lethal damage normally, repeated
+  Indestructible instances are redundant, and sacrifice, exile, and zero
+  toughness remain nondestruction movement. Regeneration, qualified,
+  conditional, player-facing, and unrepresented characteristic-producing
+  variants remain explicit blockers; aggregate Indestructible support is not
+  claimed complete.
 
 ### Keyword-counter composition assurance
 
