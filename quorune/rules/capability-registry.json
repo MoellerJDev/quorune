@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 76,
+  "registry_version": 77,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -2547,6 +2547,33 @@
       "dependency_fail_closed_rationale": "This placement capability has no capability dependencies; event detection and effect-result capabilities are declared separately by each CardProgram.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_trigger_apnap_grouping_mutant_is_killed replaces the typed batch model's active-player turn order with alphabetical controller order and the focused assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "target.protection.hexproof_permanent",
+      "version": 1,
+      "official_rules": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Prevent an opponent's spell or ability from targeting a battlefield permanent that currently has ordinary Hexproof while allowing that permanent's current controller to target it.",
+        "inputs": ["acting spell or ability controller", "target current controller", "target current represented effective keyword set", "current public target schema", "selected logical target identity"],
+        "outputs": ["offer-time target exclusion", "submitted-command rejection", "resolution-time target illegality", "controller-relative allowed verdict"],
+        "exclusions": ["players with Hexproof", "Hexproof from a quality", "multiple or each-quality Hexproof", "effects that target as though Hexproof were absent", "hidden-zone targets", "unsupported ability-changing, copy, face-down, or merged-object keyword producers"]
+      },
+      "dependencies": ["target.revalidate_resolution"],
+      "implementation_components": ["quorune.keyword_abilities.normalized_characteristic_keywords", "quorune.target_protection.TargetProtectionSnapshot", "quorune.target_protection.target_protection_verdict", "quorune.target_protection_engine_adapter.target_protection_verdict_for_row", "quorune.engine.CommanderEngine._target_row_matches"],
+      "positive_tests": ["test_plain_hexproof_depends_on_current_controller", "test_offer_command_rollback_privacy_and_replay_share_hexproof_legality"],
+      "negative_tests": ["test_malformed_snapshot_fails_closed", "test_hexproof_compounds_and_unrepresented_variants_fail_closed", "test_hexproof_dependency_fails_closed_without_target_revalidation"],
+      "interaction_tests": ["test_control_change_recomputes_offer_and_resolution_legality", "test_hexproof_does_not_prohibit_nontarget_attachment_checks"],
+      "multiplayer_tests": ["test_offer_command_rollback_privacy_and_replay_share_hexproof_legality"],
+      "privacy_tests": ["test_offer_command_rollback_privacy_and_replay_share_hexproof_legality"],
+      "replay_tests": ["test_offer_command_rollback_privacy_and_replay_share_hexproof_legality"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The Hexproof CardProgram dependency closes through target.revalidate_resolution, and runtime target legality uses the same current snapshot for offer generation, submitted-command validation, and CR 608.2b resolution revalidation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused mutation changes an opponent-targeting Hexproof verdict to allowed; the direct typed assertion rejects the survivor.",
       "blockers": [],
       "status": "trusted"
     },

@@ -94,6 +94,7 @@
       "test_choice_forms",
       "test_decision_opportunities",
       "test_explore_rules",
+      "test_hexproof_targeting",
       "test_interactions_v070",
       "test_linked_abilities",
       "test_optional_draw_choices",

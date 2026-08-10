@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "hexproof",
+  "official_name": "Hexproof",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+  "glossary_references": ["hexproof"],
+  "dependencies": [],
+  "coverage_status": "trusted",
+  "trust_level": "trusted",
+  "behavior": {
+    "zones": ["battlefield"],
+    "objects": ["permanent with the ordinary current represented Hexproof keyword"],
+    "events": ["target offer generation", "target proposal validation", "resolution-time target revalidation"],
+    "state_reads": ["acting spell or ability controller", "target current controller", "target current represented effective keywords", "target current logical identity"],
+    "state_writes": [],
+    "costs": [],
+    "timing": ["target selection", "CR 608.2b target revalidation immediately before resolution"],
+    "targets": ["an opponent's spell or ability cannot target the permanent", "the permanent's current controller may target it"],
+    "choices": ["the server exposes only currently legal public target references"],
+    "hidden_information": ["this represented contract applies only to public battlefield permanents"],
+    "apnap": [],
+    "layers": ["consume the current represented layer-6 keyword result; unsupported ability-changing producers fail trusted closure"],
+    "replacement_effects": [],
+    "copy": ["the current represented copied keyword state is consumed; unsupported copy and face-down producers fail trusted closure"],
+    "control_change": ["legality is recomputed from the permanent's current controller at offer, submission, and resolution"],
+    "zone_change": ["a new battlefield incarnation is re-evaluated from its current represented characteristics"],
+    "source_leaves": ["resolution revalidation uses the pinned acting controller and current target characteristics"]
+  },
+  "variants": ["ordinary permanent Hexproof", "multiple instances are redundant", "keyword comparison is case-insensitive", "Hexproof on players and Hexproof from qualities are outside this contract and remain explicit compiler residuals"],
+  "witness_cards": [
+    {
+      "name": "Soul of the Rapids",
+      "oracle_id": "011b2243-b8be-471f-9d8f-824a40e599df"
+    }
+  ],
+  "rulings": [],
+  "test_ids": [
+    "test_plain_hexproof_depends_on_current_controller",
+    "test_plain_hexproof_holds_across_controller_keyword_grid",
+    "test_targeting_restrictions_are_closed_and_cumulative",
+    "test_malformed_snapshot_fails_closed",
+    "test_offer_command_rollback_privacy_and_replay_share_hexproof_legality",
+    "test_control_change_recomputes_offer_and_resolution_legality",
+    "test_hexproof_does_not_prohibit_nontarget_attachment_checks",
+    "test_flying_reach_and_hexproof_use_source_spanned_capabilities",
+    "test_hexproof_compounds_and_unrepresented_variants_fail_closed",
+    "test_hexproof_dependency_fails_closed_without_target_revalidation"
+  ],
+  "implementation": {
+    "component": "quorune.target_protection.target_protection_verdict",
+    "version": "plain-permanent-hexproof-v1"
+  },
+  "known_blockers": [],
+  "review_status": "reviewed"
+}

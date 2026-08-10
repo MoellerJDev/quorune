@@ -202,6 +202,8 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/state_based_execution.py",
         "quorune/state_planner.py",
         "quorune/tap_state.py",
+        "quorune/target_protection.py",
+        "quorune/target_protection_engine_adapter.py",
         "quorune/target_predicates.py",
         "quorune/targets.py",
         "quorune/token_creation.py",
@@ -394,6 +396,8 @@ def _owner(relative: str, layer: str) -> str:
         return "stack_counter"
     if relative in {
         "quorune/relative_power_target.py",
+        "quorune/target_protection.py",
+        "quorune/target_protection_engine_adapter.py",
         "quorune/target_predicates.py",
         "quorune/targets.py",
     }:

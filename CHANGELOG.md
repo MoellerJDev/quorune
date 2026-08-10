@@ -22,6 +22,19 @@ maintenance: "hand-maintained"
   This is assurance for the represented owners, not a claim that every keyword
   or counter interaction is complete.
 
+### Typed ordinary permanent Hexproof
+
+- Added one immutable target-protection verdict shared by legal-target offers,
+  submitted-command validation, and resolution revalidation. Ordinary
+  permanent Hexproof now uses the target's current controller, composes with
+  Shroud and typed Protection, preserves non-target attachment legality,
+  rollback, four-player privacy, and exact replay, and compiles to a
+  source-spanned fine-grained capability.
+- Player Hexproof, Hexproof from qualities, effects that ignore Hexproof, and
+  unsupported ability-changing, copy, face-down, or merged-object producers
+  remain explicit residuals; aggregate targeting and continuous-effect
+  completeness is not claimed.
+
 ### Typed fixed Adapt and Monstrosity
 
 - Added one source-spanned fixed positive Adapt/Monstrosity action family that

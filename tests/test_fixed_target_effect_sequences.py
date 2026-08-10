@@ -512,22 +512,39 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
                 self.assertNotEqual("exact", ir.status)
                 self.assertTrue(ir.material_residuals)
 
-    def test_untrusted_keyword_behavior_blocks_exact_sequence_promotion(self):
-        for keyword in ("hexproof", "indestructible"):
-            text = (
-                f"Target creature gains {keyword} until end of turn. "
-                "Put a +1/+1 counter on it."
-            )
-            with self.subTest(keyword=keyword):
-                self.assertIsNotNone(
-                    fixed_target_effect_sequence_template(
-                        text,
-                        card_name="Fixture",
-                    )
-                )
-                ir = self.compile(text)
-                self.assertNotEqual("exact", ir.status)
-                self.assertTrue(ir.material_residuals)
+    def test_trusted_hexproof_behavior_promotes_exact_sequence(self):
+        text = (
+            "Target creature gains hexproof until end of turn. "
+            "Put a +1/+1 counter on it."
+        )
+        self.assertIsNotNone(
+            fixed_target_effect_sequence_template(text, card_name="Fixture")
+        )
+
+        ir = self.compile(text)
+
+        self.assertEqual("exact", ir.status)
+        self.assertFalse(ir.material_residuals)
+        self.assertIn(
+            "target.protection.hexproof_permanent",
+            ir.faces[0].nodes[0].capability_dependencies,
+        )
+
+    def test_untrusted_indestructible_behavior_blocks_exact_sequence_promotion(
+        self,
+    ):
+        text = (
+            "Target creature gains indestructible until end of turn. "
+            "Put a +1/+1 counter on it."
+        )
+        self.assertIsNotNone(
+            fixed_target_effect_sequence_template(text, card_name="Fixture")
+        )
+
+        ir = self.compile(text)
+
+        self.assertNotEqual("exact", ir.status)
+        self.assertTrue(ir.material_residuals)
 
     def test_target_threaded_sequence_shape_mutants_fail_closed(self):
         template = fixed_target_effect_sequence_template(

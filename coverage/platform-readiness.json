@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "ab362b57668afe1915c03062495b3af8f767d3a81ae75804d553dadded0124d4",
+    "evaluated_input_fingerprint": "cf1de07aa89e2f5a801906fad9761ea1e958b089d276d2ab5f0fac45646f4317",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -474,6 +474,12 @@
       "id": "keyword_counter_composition_assurance",
       "name": "Keyword-counter composition assurance",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "Bare ordinary permanent Hexproof lowers once into a source-spanned CardProgram V2 capability and consumes one immutable current-controller target-protection snapshot shared by offer generation, submitted-command validation, and CR 608.2b resolution revalidation. The typed boundary composes with Shroud, represented Protection, and existing player/controller color restrictions without parsing Oracle text or mutating state; four-player privacy, rollback, control-change revalidation, non-target attachment separation, exact replay, and a killed implementation mutant have focused evidence. Player Hexproof, Hexproof from qualities, effects that ignore Hexproof, and unsupported ability-changing, copy, face-down, or merged-object producers remain explicit residuals; aggregate targeting and continuous-effect completeness is not claimed.",
+      "id": "ordinary_permanent_hexproof",
+      "name": "Typed ordinary permanent Hexproof target protection",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -513,10 +519,10 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 45807,
+      "material_residuals": 45722,
       "status_counts": {
-        "exact": 2750,
-        "partial": 13088,
+        "exact": 2786,
+        "partial": 13052,
         "unresolved": 15785
       },
       "total": 31623
@@ -528,17 +534,17 @@
       "status_counts": {
         "partial": 65,
         "tested": 23,
-        "trusted": 5,
-        "unclassified": 332
+        "trusted": 6,
+        "unclassified": 331
       },
       "total": 425,
-      "trusted": 5
+      "trusted": 6
     },
     "oracle": {
-      "material_residuals": 53396,
+      "material_residuals": 53300,
       "status_counts": {
-        "exact": 5730,
-        "partial": 14235,
+        "exact": 5772,
+        "partial": 14193,
         "unresolved": 18658
       },
       "total": 38623
@@ -576,7 +582,7 @@
     "generated_validation_modules": 25,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 231,
+    "primary_test_modules": 232,
     "primary_test_shards": 11,
     "schema_files": 18,
     "server_files": 5,
@@ -586,31 +592,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 45820,
+        "material_residuals": 45735,
         "status_counts": {
-          "residual": 28873,
-          "trusted": 2750
+          "residual": 28837,
+          "trusted": 2786
         },
         "trust_basis_counts": {
-          "capability_closed": 2745,
+          "capability_closed": 2781,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 28873
+          "unresolved": 28837
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 53408,
+        "material_residuals": 53312,
         "status_counts": {
           "failed": 2248,
-          "residual": 32890,
-          "trusted": 3485
+          "residual": 32848,
+          "trusted": 3527
         },
         "trust_basis_counts": {
-          "capability_closed": 3480,
+          "capability_closed": 3522,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 32890
+          "unresolved": 32848
         }
       }
     },

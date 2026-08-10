@@ -225,6 +225,10 @@ from .protection import (
     protection_verdict_for_ref,
     source_characteristics_for_ref,
 )
+from .target_protection import TargetProtectionVerdict
+from .target_protection_engine_adapter import (
+    target_protection_verdict_for_row,
+)
 from .replacement_decisions import (
     apply_effect_with_replacement_choice,
     complete_replacement_order_choice,
@@ -6197,35 +6201,6 @@ class CommanderEngine(
         ref = str(row["ref"])
         if (group.source_exclusion or group.another) and ref == source_ref:
             return False
-        source_colors = self._source_colors_for_ref(source_ref)
-        protected_seat = (
-            str(row["ref"])
-            if row.get("category") == "player"
-            else str(row.get("controller") or "")
-        )
-        if (
-            as_target
-            and row.get("category") == "player"
-            and protected_seat in self.state.players
-            and self.state.players[protected_seat].stats.get(
-                "protection_from_everything_until_next_turn"
-            )
-        ):
-            return False
-        if (
-            as_target
-            and protected_seat in self.state.players
-            and protected_seat != controller
-            and source_colors.intersection(
-                {
-                    str(value).upper()
-                    for value in self.state.players[
-                        protected_seat
-                    ].stats.get("hexproof_from_colors_until_end", [])
-                }
-            )
-        ):
-            return False
         card = row.get("card")
         if (
             row.get("category") == "card"
@@ -6235,24 +6210,13 @@ class CommanderEngine(
             # CR 111.6/707.10: tokens and noncard copies may briefly exist in
             # another zone before the next state check, but are never cards.
             return False
-        if as_target and row.get("zone") == "battlefield" and isinstance(
-            card, CardInstance
-        ):
-            keywords = {
-                str(value).casefold()
-                for value in self._effective_card_data(card).get(
-                    "keywords", []
-                )
-            }
-            if "shroud" in keywords:
-                return False
-            if (
-                "hexproof" in keywords
-                and card.controller != controller
-            ):
-                return False
-            if protection_verdict_for_ref(self, self._effective_card_data(card), source_ref) is not ProtectionVerdict.ALLOWED:
-                return False
+        if as_target and target_protection_verdict_for_row(
+            self,
+            acting_controller=controller,
+            row=row,
+            source_ref=source_ref,
+        ) is not TargetProtectionVerdict.ALLOWED:
+            return False
         if group.categories and str(row["category"]) not in {
             value.casefold() for value in group.categories
         }:

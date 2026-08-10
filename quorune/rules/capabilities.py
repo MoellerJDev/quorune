@@ -75,6 +75,7 @@ _LIFELINK_MECHANIC = "li" + "felink"
 _TOXIC_MECHANIC = "tox" + "ic"
 _VIGILANCE_MECHANIC = "vigi" + "lan" + "ce"
 _HASTE_MECHANIC = "ha" + "ste"
+_HEXPROOF_MECHANIC = "hexproof"
 _FLYING_MECHANIC = "fl" + "ying"
 _REACH_MECHANIC = "re" + "ach"
 _FLASH_MECHANIC = "fl" + "ash"
@@ -162,6 +163,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
         "combat.attack.haste",
         "activation.tap_untap_cost.haste",
     ),
+    _HEXPROOF_MECHANIC: ("target.protection.hexproof_permanent",),
     _REACH_MECHANIC: ("combat.block.reach",),
     _TRAMPLE_MECHANIC: ("combat.damage.assignment.trample",),
     _VIGILANCE_MECHANIC: ("combat.attack.vigilance",),
