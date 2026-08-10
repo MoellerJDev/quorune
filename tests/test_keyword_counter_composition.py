@@ -131,6 +131,12 @@ class KeywordCounterCompositionTests(unittest.TestCase):
         engine.state.phase_index = 6
         attacker = self.token(engine, "A", "Counter-granted flyer")
         ground = self.token(engine, "B", "Ground blocker")
+        reach = self.token(
+            engine,
+            "B",
+            "Reach blocker",
+            temporary_keywords=("Reach",),
+        )
         self.place_keyword_counter(engine, attacker, "flying")
         attacker.attacking = "B"
         engine.state.combat = CombatState(
@@ -142,6 +148,7 @@ class KeywordCounterCompositionTests(unittest.TestCase):
         engine._begin_blocker_decisions()
         decision = session.packet("pilot:B", full=True)["decision"]
         self.assertNotIn(ground.ref, decision["ctx"]["legal_blocks"])
+        self.assertIn(attacker.ref, decision["ctx"]["legal_blocks"][reach.ref])
         self.assertIsNone(session.packet("pilot:C", full=True)["decision"])
         self.assertIsNone(session.packet("pilot:D", full=True)["decision"])
         session.initial_checkpoint = checkpoint_envelope(session.state)
@@ -199,11 +206,12 @@ class KeywordCounterCompositionTests(unittest.TestCase):
         engine._enter_step()
         self.assertTrue(engine.state.combat.first_strike_step)
         self.assertEqual(38, engine.state.players["B"].life)
+        engine.pump()
         session.initial_checkpoint = checkpoint_envelope(session.state)
         session.commands.clear()
         session.decisions.clear()
 
-        for _seat in engine.active_seats:
+        while engine.state.combat.damage_step_index == 0:
             pass_current(session)
 
         self.assertEqual(1, engine.state.combat.damage_step_index)
