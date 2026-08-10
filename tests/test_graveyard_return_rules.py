@@ -113,6 +113,22 @@ class GraveyardReturnRuleTests(unittest.TestCase):
         )
 
     @staticmethod
+    def land_card(engine, seat: str, *, exclude=()):
+        excluded = set(exclude)
+        return next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == seat
+            and card.object_id not in excluded
+            and card.zone != "command"
+            and card.is_card_object
+            and "land"
+            in engine._type_parts(
+                str(engine._effective_card_data(card).get("type_line") or "")
+            )[0]
+        )
+
+    @staticmethod
     def pass_stack(session):
         while session.state.stack:
             principals = session.pending_principals()
@@ -216,7 +232,13 @@ class GraveyardReturnRuleTests(unittest.TestCase):
         with self.assertRaises(FrozenInstanceError):
             plan.reason = "mutated"  # type: ignore[misc]
 
-        result = commit_graveyard_card_return_to_owner_hand(engine, plan)
+        commit_plan = prepare_graveyard_card_return_to_owner_hand(
+            engine,
+            request_for_card(target),
+            actor="A",
+            reason="typed graveyard return witness",
+        )
+        result = commit_graveyard_card_return_to_owner_hand(engine, commit_plan)
         self.assertTrue(result.returned_to_hand)
         self.assertEqual("A", result.owner)
         self.assertEqual("hand", target.zone)
@@ -279,7 +301,7 @@ class GraveyardReturnRuleTests(unittest.TestCase):
         engine = session.engine
         target = self.card(engine, "A")
         engine.move_card(target.object_id, "graveyard", log=False)
-        source = self.card(engine, "B")
+        source = self.land_card(engine, "B")
         engine.move_card(source.object_id, "battlefield", log=False)
         engine.semantics.put(
             SemanticProgram(
@@ -346,6 +368,9 @@ class GraveyardReturnRuleTests(unittest.TestCase):
         engine.move_card(opponent_target.object_id, "graveyard", log=False)
         engine.state.players["A"].mana_pool["C"] = 1
         engine.state.players["A"].mana_pool["G"] = 1
+        engine.state.active_player = "A"
+        engine.state.phase = "precombat_main"
+        engine.state.step = ""
         engine.state.priority_player = "A"
         hints = engine._priority_action_hints("A")
         action = next(
@@ -387,9 +412,12 @@ class GraveyardReturnRuleTests(unittest.TestCase):
         self.assertTrue(accepted.ok, accepted.summary)
         self.pass_stack(session)
 
-        self.assertEqual("hand", own_target.zone)
-        self.assertEqual("graveyard", source.zone)
-        self.assertEqual("graveyard", opponent_target.zone)
+        self.assertEqual("hand", engine.state.cards[own_target.object_id].zone)
+        self.assertEqual("graveyard", engine.state.cards[source.object_id].zone)
+        self.assertEqual(
+            "graveyard",
+            engine.state.cards[opponent_target.object_id].zone,
+        )
         projector = StateProjector(self.db, engine.state)
         projected_a = projector._snapshot("pilot:A")
         projected_c = projector._snapshot("pilot:C")
