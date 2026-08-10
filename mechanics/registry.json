@@ -1,5 +1,5 @@
 {
-  "contract_count": 93,
+  "contract_count": 94,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -293,6 +293,12 @@
       "mechanic_id": "haste",
       "path": "mechanics/contracts/haste.json",
       "sha256": "9d9081b990e09f6fd956fc9be6dc3cc715ad46f803f2b4f7437f3c4cd16f76ec",
+      "version": 1
+    },
+    {
+      "mechanic_id": "hexproof",
+      "path": "mechanics/contracts/hexproof.json",
+      "sha256": "03a645620c97dc6caa6a0029637e21706658747f1a8cebc693d563d65db658a4",
       "version": 1
     },
     {
@@ -2491,20 +2497,35 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/hexproof.json",
+      "contract_sha256": "03a645620c97dc6caa6a0029637e21706658747f1a8cebc693d563d65db658a4",
+      "contract_version": 1,
+      "coverage_status": "trusted",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.target_protection.target_protection_verdict",
+      "implementation_version": "plain-permanent-hexproof-v1",
       "kind": "keyword_ability",
+      "known_blockers": [],
       "mechanic_id": "hexproof",
       "official_name": "Hexproof",
       "rule_references": [
         "702.11"
       ],
-      "test_ids": [],
-      "trust_level": "untrusted"
+      "test_ids": [
+        "test_plain_hexproof_depends_on_current_controller",
+        "test_plain_hexproof_holds_across_controller_keyword_grid",
+        "test_targeting_restrictions_are_closed_and_cumulative",
+        "test_malformed_snapshot_fails_closed",
+        "test_offer_command_rollback_privacy_and_replay_share_hexproof_legality",
+        "test_control_change_recomputes_offer_and_resolution_legality",
+        "test_hexproof_does_not_prohibit_nontarget_attachment_checks",
+        "test_flying_reach_and_hexproof_use_source_spanned_capabilities",
+        "test_hexproof_compounds_and_unrepresented_variants_fail_closed",
+        "test_hexproof_dependency_fails_closed_without_target_revalidation"
+      ],
+      "trust_level": "trusted"
     },
     {
       "category": "additional_rules",
@@ -10925,5 +10946,5 @@
       "taxonomy_id": "cr-905-conspiracy-draft"
     }
   ],
-  "trusted_mechanic_count": 5
+  "trusted_mechanic_count": 6
 }

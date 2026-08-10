@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "82a26145ced471fe4f8a816b7e176912e7e585e4bc505dbfdebd1aa384730c50"
+verified: "0933f869b9d2200c690ebaaee6596df3e51debcb65d45318fa37bbb2bac1332c"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -51,11 +51,11 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Starforged Sword | 157 | 16 | 5 | 4 | 6 | 11 | `blocked` |
 | Chandra, Fire of Kaladesh // Chandra, Roaring Flame | 156 | 19 | 4 | 5 | 7 | 15 | `blocked` |
 | Invasion of Gobakhan // Lightshield Array | 156 | 12 | 5 | 4 | 8 | 19 | `blocked` |
-| Purging Stormbrood // Absorb Essence | 156 | 22 | 6 | 4 | 4 | 10 | `blocked` |
 | Tribute to Horobi // Echo of Death's Wail | 155 | 19 | 5 | 6 | 6 | 6 | `blocked` |
 | Covert Cutpurse // Covetous Geist | 154 | 19 | 6 | 4 | 6 | 7 | `blocked` |
 | Dennick, Pious Apprentice // Dennick, Pious Apparition | 154 | 16 | 5 | 6 | 6 | 10 | `blocked` |
 | Garruk Relentless // Garruk, the Veil-Cursed | 154 | 19 | 4 | 6 | 13 | 6 | `blocked` |
+| Purging Stormbrood // Absorb Essence | 154 | 22 | 6 | 4 | 3 | 10 | `blocked` |
 | Ral, Monsoon Mage // Ral, Leyline Prodigy | 154 | 13 | 5 | 6 | 8 | 17 | `blocked` |
 | Invasion of Ikoria // Zilortha, Apex of Ikoria | 153 | 14 | 4 | 4 | 6 | 19 | `blocked` |
 | Norman Osborn // Green Goblin | 153 | 17 | 4 | 6 | 5 | 16 | `blocked` |

@@ -1587,13 +1587,14 @@ class OracleIRTests(unittest.TestCase):
             programs[0].capability_dependencies,
         )
 
-    def test_flying_and_reach_use_source_spanned_block_capabilities(self):
+    def test_flying_reach_and_hexproof_use_source_spanned_capabilities(self):
         base = self.db.lookup("Wight of the Reliquary")
         capabilities = load_default_capability_registry()
 
         for keyword, capability_id in (
             ("Flying", "combat.block.flying"),
             ("Reach", "combat.block.reach"),
+            ("Hexproof", "target.protection.hexproof_permanent"),
         ):
             with self.subTest(keyword=keyword):
                 record = replace(
@@ -1638,6 +1639,50 @@ class OracleIRTests(unittest.TestCase):
                         "combat.block.reach",
                         programs[0].capability_closure["reachable"],
                     )
+
+    def test_hexproof_compounds_and_unrepresented_variants_fail_closed(self):
+        base = self.db.lookup("Wight of the Reliquary")
+        capabilities = load_default_capability_registry()
+        combined = replace(
+            base,
+            oracle_id="fixture-flying-hexproof",
+            name="Fixture Flying Hexproof",
+            oracle_text="Flying, hexproof",
+            keywords=("Flying", "Hexproof"),
+        )
+        exact = compile_oracle_card(
+            combined,
+            capability_registry=capabilities,
+            capability_profile="commander_review",
+        )
+        self.assertEqual("exact", exact.status)
+        self.assertEqual(
+            (
+                "combat.block.flying",
+                "target.protection.hexproof_permanent",
+            ),
+            exact.faces[0].nodes[0].capability_dependencies,
+        )
+
+        for oracle_id, oracle_text in (
+            ("fixture-hexproof-from-black", "Hexproof from black"),
+            ("fixture-hexproof-from-each-color", "Hexproof from each color"),
+            ("fixture-player-hexproof", "You have hexproof."),
+        ):
+            with self.subTest(oracle_text=oracle_text):
+                unsupported = compile_oracle_card(
+                    replace(
+                        base,
+                        oracle_id=oracle_id,
+                        name="Fixture Unsupported Hexproof",
+                        oracle_text=oracle_text,
+                        keywords=("Hexproof",),
+                    ),
+                    capability_registry=capabilities,
+                    capability_profile="commander_review",
+                )
+                self.assertNotEqual("exact", unsupported.status)
+                self.assertTrue(unsupported.material_residuals)
 
     def test_trample_uses_source_spanned_assignment_capability(self):
         base = self.db.lookup("Wight of the Reliquary")

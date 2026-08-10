@@ -179,6 +179,8 @@
       "status": "split_with_engine_as_executor",
       "owners": [
         "quorune/engine.py",
+        "quorune/target_protection.py",
+        "quorune/target_protection_engine_adapter.py",
         "quorune/targets.py",
         "quorune/choice_forms.py"
       ],

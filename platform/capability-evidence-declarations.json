@@ -9474,6 +9474,102 @@
       "applicability_note": "Resolve a pending chapter and replay the resulting typed Saga sacrifice to the same authoritative state hash."
     },
     {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_hexproof_targeting.HexproofTargetingIntegrationTests.test_control_change_recomputes_offer_and_resolution_legality",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Recompute ordinary permanent Hexproof from the target's current controller when CR 608.2b revalidates a previously legal target."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_hexproof_targeting.HexproofTargetingIntegrationTests.test_hexproof_does_not_prohibit_nontarget_attachment_checks",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply Hexproof only to targeting and preserve the distinct non-target attachment-legality predicate."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_hexproof_targeting.HexproofTargetingIntegrationTests.test_offer_command_rollback_privacy_and_replay_share_hexproof_legality",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose the four-player acting seat only to its current legal own-permanent target while excluding an opponent-controlled Hexproof permanent."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_plain_hexproof_target_protection_mutant_is_killed",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject an implementation mutant that allows an opponent-controlled spell or ability to target a permanent with ordinary Hexproof."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "negative",
+      "test_id": "tests.test_hexproof_targeting.TargetProtectionTests.test_malformed_snapshot_fails_closed",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed controller, boolean, color, keyword, and snapshot values before target legality is evaluated."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "negative",
+      "test_id": "tests.test_oracle_ir.OracleIRTests.test_hexproof_compounds_and_unrepresented_variants_fail_closed",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep player Hexproof and Hexproof-from-quality wording outside the closed ordinary-permanent compiler grammar."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "negative",
+      "test_id": "tests.test_rule_capabilities.CapabilityRegistryTests.test_hexproof_dependency_fails_closed_without_target_revalidation",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Block the Hexproof capability when its exact CR 608.2b target-revalidation dependency is unavailable."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "positive",
+      "test_id": "tests.test_hexproof_targeting.TargetProtectionTests.test_plain_hexproof_depends_on_current_controller",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Block opponent targeting while allowing the permanent's current controller to target the same ordinary Hexproof permanent."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_hexproof_targeting.HexproofTargetingIntegrationTests.test_offer_command_rollback_privacy_and_replay_share_hexproof_legality",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep the acting seat's legal-target decision absent from every other seat projection in the four-player witness."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "property",
+      "test_id": "tests.test_hexproof_targeting.TargetProtectionTests.test_plain_hexproof_holds_across_controller_keyword_grid",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Across the bounded current-controller and keyword-presence grid, block exactly opponent targeting of a permanent that currently has ordinary Hexproof."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "replay",
+      "test_id": "tests.test_hexproof_targeting.HexproofTargetingIntegrationTests.test_offer_command_rollback_privacy_and_replay_share_hexproof_legality",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the accepted controller-relative Hexproof target and resulting spell resolution to the exact authoritative hash."
+    },
+    {
+      "capability_id": "target.protection.hexproof_permanent",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_hexproof_targeting.HexproofTargetingIntegrationTests.test_offer_command_rollback_privacy_and_replay_share_hexproof_legality",
+      "official_rule_ids": ["115.1", "608.2b", "702.11", "702.11a", "702.11b", "702.11h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject an injected opponent Hexproof target without changing the authoritative state hash."
+    },
+    {
       "capability_id": "target.public.player_or_damageable_permanent",
       "evidence_class": "interaction",
       "test_id": "tests.test_exact_mishra_closure.ExactMishraClosureTests.test_stasis_coffin_protection_blocks_targeting_and_damage",

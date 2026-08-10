@@ -930,6 +930,22 @@
       "capability_ids": ["counter.characteristic.keyword", "damage.result.lifelink"],
       "interaction_order": 2,
       "assertion": "A canonically placed Lifelink counter is captured in the combat source snapshot and produces one canonical life-gain result from the final simultaneous damage batch, with exact replay."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_plain_hexproof_depends_on_current_controller",
+      "piece_ids": ["capability.target.protection.hexproof_permanent", "mechanic.hexproof"],
+      "capability_ids": ["target.protection.hexproof_permanent"],
+      "interaction_order": 2,
+      "assertion": "The ordinary Hexproof mechanic consumes one controller-relative targeting prohibition that blocks opponents while preserving the current controller's legal targets."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_control_change_recomputes_offer_and_resolution_legality",
+      "piece_ids": ["capability.target.protection.hexproof_permanent", "capability.target.revalidate_resolution", "mechanic.hexproof"],
+      "capability_ids": ["target.protection.hexproof_permanent", "target.revalidate_resolution"],
+      "interaction_order": 3,
+      "assertion": "A control change between cast and resolution makes the previously legal Hexproof target illegal through the same CR 608.2b target-revalidation boundary."
     }
   ]
 }

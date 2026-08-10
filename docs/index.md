@@ -54,6 +54,7 @@ belongs in the changelog or `docs/history/`.
 - [Damage prevention](architecture/prevention.md)
 - [Drawing](architecture/drawing.md)
 - [Library inspection and ordering](architecture/library-ordering.md)
+- [Target legality and protection](architecture/target-legality.md)
 - [Trust closure](architecture/trust-closure.md)
 - [Server runtime](architecture/server-runtime.md)
 - [Replay](architecture/replay.md)

@@ -461,6 +461,12 @@
       "name": "Keyword-counter composition assurance",
       "status": "implemented_on_current_source_tree",
       "evidence": "Explicit high-risk interaction evidence now connects the canonical replacement-aware counter transaction and CR 122.1b layer-6 keyword-counter projection to Flying block legality, Vigilance attack tapping, Double strike combat-damage-step participation, and Lifelink final damage results. The four downstream witnesses use four-player authoritative state, shared offer/command legality where applicable, transactional rejection, and exact replay. The existing affected-seat replacement-continuation witness covers privacy, suspension, restart, and replay before the keyword becomes effective. This certifies only the represented ordinary keyword-counter and downstream capability pairs; unsupported keyword behavior, counter types, same-layer dependency cases, and broader continuous-effect composition remain explicit limitations."
+    },
+    {
+      "id": "ordinary_permanent_hexproof",
+      "name": "Typed ordinary permanent Hexproof target protection",
+      "status": "implemented_on_current_source_tree",
+      "evidence": "Bare ordinary permanent Hexproof lowers once into a source-spanned CardProgram V2 capability and consumes one immutable current-controller target-protection snapshot shared by offer generation, submitted-command validation, and CR 608.2b resolution revalidation. The typed boundary composes with Shroud, represented Protection, and existing player/controller color restrictions without parsing Oracle text or mutating state; four-player privacy, rollback, control-change revalidation, non-target attachment separation, exact replay, and a killed implementation mutant have focused evidence. Player Hexproof, Hexproof from qualities, effects that ignore Hexproof, and unsupported ability-changing, copy, face-down, or merged-object producers remain explicit residuals; aggregate targeting and continuous-effect completeness is not claimed."
     }
   ],
   "platform": {

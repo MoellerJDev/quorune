@@ -195,6 +195,7 @@
       "id": "protection-and-attachment-interactions",
       "patterns": [
         "quorune/protection.py",
+        "quorune/target_protection*.py",
         "quorune/attachments.py",
         "quorune/enchant_spec.py",
         "quorune/aura/**",

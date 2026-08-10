@@ -71,7 +71,8 @@ helper or adding a parallel registry is not an ownership improvement.
   [trust closure](docs/architecture/trust-closure.md)
 - Rules subsystems: [damage](docs/architecture/damage.md),
   [prevention](docs/architecture/prevention.md),
-  [counter placement](docs/architecture/counter-placement.md), and
+  [counter placement](docs/architecture/counter-placement.md),
+  [target legality](docs/architecture/target-legality.md), and
   [drawing](docs/architecture/drawing.md)
 - Application boundary: [server runtime](docs/architecture/server-runtime.md),
   [visibility](docs/architecture/visibility.md), and
