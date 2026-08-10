@@ -104,6 +104,7 @@ class CounterPlacementEventSpec:
     target_zone: str | None = None
     target_types: tuple[str, ...] = ()
     logical_object_id: str | None = None
+    prospective_subject: bool = False
 
     def __post_init__(self) -> None:
         if (
@@ -142,6 +143,19 @@ class CounterPlacementEventSpec:
         elif not self.owner or not self.target_zone:
             raise SemanticNodeError(
                 "Permanent counter events require owner and zone identity"
+            )
+        if type(self.prospective_subject) is not bool:
+            raise SemanticNodeError(
+                "Counter placement prospective-subject state must be boolean"
+            )
+        if self.prospective_subject and (
+            self.subject_kind != "permanent"
+            or self.target_zone != "battlefield"
+            or not self.logical_object_id
+        ):
+            raise SemanticNodeError(
+                "Prospective counter subjects require entering permanent "
+                "identity"
             )
 
     @property
@@ -182,6 +196,11 @@ class CounterPlacementEventSpec:
                 "requested_amount": self.amount,
                 "source": self.source_ref,
                 "effect_generated": self.effect_generated,
+                **(
+                    {"prospective_subject": True}
+                    if self.prospective_subject
+                    else {}
+                ),
             },
         )
 

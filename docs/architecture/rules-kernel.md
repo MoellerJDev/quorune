@@ -127,7 +127,12 @@ For represented CR 611 object modifications, resolution-created effects lock
 the affected physical/logical object set after successful preparation. Static
 effects keep a live source-bound `ObjectQuerySpec` and recompute membership
 after earlier layers. Unsupported duration or operation families fail before
-the journal mutates.
+the journal mutates. The closed zone-object keyword result lowers once from a
+source-spanned CardProgram descriptor to a typed semantic intent and immutable
+layer-6 journal entry. It survives cleanup, control change, and source
+departure, but applies only while the affected permanent retains the same
+battlefield logical identity. The runtime does not parse Oracle text or execute
+display rules text to reconstruct that duration.
 
 Combat declaration relationships commit through
 `combat_relationship_state.py`. After a complete declaration, the engine

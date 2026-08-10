@@ -7,6 +7,7 @@ import re
 from typing import Any, Mapping
 
 from ..keyword_counters import keyword_counter_mechanic
+from ..zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
 from .counter_placement_templates import (
     existing_target_counter_placement_effect_template,
     fixed_counter_placement_effect_template,
@@ -42,6 +43,11 @@ FIXED_TARGET_CHARACTERISTIC_KEYWORDS = frozenset(
     }
 )
 _SEQUENCE_MECHANIC = "fixed-target-effect-sequence"
+_ZONE_OBJECT_SEQUENCE = re.compile(
+    r"(?P<counter>put .+?\.) it gains (?P<keyword>[a-z ]+)\."
+    r"(?: \(this effect lasts indefinitely\.\))?",
+    re.IGNORECASE,
+)
 
 
 def _keyword_list(text: str) -> tuple[str, ...] | None:
@@ -247,6 +253,77 @@ class FixedTargetEffectSequenceTemplate:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class FixedTargetZoneObjectKeywordSequenceTemplate:
+    counter_effect: Mapping[str, Any]
+    target_schema: Mapping[str, Any]
+    keyword: str
+
+    @property
+    def effects(self) -> tuple[Mapping[str, Any], ...]:
+        return (
+            self.counter_effect,
+            {
+                "op": "grant_zone_object_keyword",
+                "card": "$target.0",
+                "keyword": self.keyword,
+            },
+        )
+
+    def compiled(
+        self,
+    ) -> tuple[
+        str,
+        tuple[Mapping[str, Any], ...],
+        Mapping[str, Any],
+        tuple[str, ...],
+    ]:
+        keyword_mechanic = keyword_counter_mechanic(self.keyword)
+        return (
+            "fixed-target-counter-zone-object-keyword-sequence-v1",
+            self.effects,
+            self.target_schema,
+            (
+                _SEQUENCE_MECHANIC,
+                "cr-115-targets",
+                "cr-122-counters",
+                "cr-611-continuous-effects",
+                *((keyword_mechanic,) if keyword_mechanic else ()),
+            ),
+        )
+
+
+def fixed_target_zone_object_keyword_sequence_template(
+    text: str,
+    *,
+    card_name: str,
+) -> FixedTargetZoneObjectKeywordSequenceTemplate | None:
+    """Lower one counter placement followed by an indefinite keyword grant."""
+
+    normalized = " ".join(text.strip().split())
+    match = _ZONE_OBJECT_SEQUENCE.fullmatch(normalized)
+    if match is None:
+        return None
+    keyword = " ".join(match.group("keyword").casefold().split())
+    if keyword not in ZONE_OBJECT_KEYWORDS:
+        return None
+    counter = fixed_counter_placement_effect_template(
+        match.group("counter"),
+        card_name=card_name,
+    )
+    if (
+        counter is None
+        or counter.target_schema is None
+        or counter.effects[0].get("card") != "$target.0"
+    ):
+        return None
+    return FixedTargetZoneObjectKeywordSequenceTemplate(
+        counter_effect=counter.effects[0],
+        target_schema=counter.target_schema,
+        keyword=keyword.title(),
+    )
+
+
 def fixed_target_effect_sequence_template(
     text: str,
     *,
@@ -306,6 +383,8 @@ __all__ = [
     "FIXED_TARGET_CHARACTERISTIC_KEYWORDS",
     "FixedTargetCharacteristicsTemplate",
     "FixedTargetEffectSequenceTemplate",
+    "FixedTargetZoneObjectKeywordSequenceTemplate",
     "fixed_target_characteristics_effect_template",
     "fixed_target_effect_sequence_template",
+    "fixed_target_zone_object_keyword_sequence_template",
 ]

@@ -191,6 +191,7 @@ from .intents import (
     IntentPlan,
     EliminatePlayersIntent,
     ExploreCompletedIntent,
+    GrantZoneObjectKeywordIntent,
     ExilePermanentIntent,
     LifeChangeIntent,
     MoveObjectsSimultaneouslyIntent,
@@ -244,6 +245,10 @@ from .token_replacements import (
     resolve_token_creation_replacements,
 )
 from .tap_state_handlers import TAP_STATE_HANDLERS
+from .zone_object_keyword_handlers import (
+    GrantZoneObjectKeywordHandler,
+    ZONE_OBJECT_KEYWORD_HANDLERS,
+)
 from .zone_replacement_model import (
     PreparedZoneChange,
     ZoneChangeReplacementContext,
@@ -280,6 +285,7 @@ def default_semantic_handler_registry() -> SemanticHandlerRegistry:
             *RETURN_TO_HAND_HANDLERS,
             *STACK_COUNTER_HANDLERS,
             *COUNTER_PLACEMENT_HANDLERS,
+            *ZONE_OBJECT_KEYWORD_HANDLERS,
             *DOMAIN_EFFECT_HANDLERS,
         )
     )
@@ -408,6 +414,8 @@ __all__ = [
     "IntentPlan",
     "EliminatePlayersIntent",
     "ExploreCompletedIntent",
+    "GrantZoneObjectKeywordHandler",
+    "GrantZoneObjectKeywordIntent",
     "LifeChangeIntent",
     "MoveObjectsSimultaneouslyIntent",
     "MoveLibraryCardsToBottomIntent",

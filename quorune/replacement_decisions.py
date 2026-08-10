@@ -4,6 +4,10 @@ import copy
 from typing import Any, Mapping, Protocol, Sequence
 
 from .aura import AuraEntryChoiceRequired, issue_aura_entry_choice
+from .counter_placement import (
+    CounterPlacementError,
+    validate_counter_event_subjects,
+)
 from .replacement_effects import (
     ReplacementChoiceRequired,
     ReplacementContinuation,
@@ -406,6 +410,10 @@ def _resume_semantic_replacement(
             "Replacement continuation stack object no longer exists"
         )
     host._validate_semantic_frame(restored.thaw_semantic_frame(), item)
+    try:
+        validate_counter_event_subjects(host, restored.batch.events)
+    except CounterPlacementError as exc:
+        raise error_type(str(exc)) from exc
     current_effect = restored.thaw_effect()
     current_effect["_replacement_selections"] = [
         *list(current_effect.get("_replacement_selections") or []),

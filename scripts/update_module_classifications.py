@@ -140,6 +140,8 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/commander.py",
         "quorune/cast_timing.py",
         "quorune/continuous_effects.py",
+        "quorune/zone_object_keyword_model.py",
+        "quorune/zone_object_keyword_grants.py",
         "quorune/counter_placement.py",
         "quorune/counter_placement_sets.py",
         "quorune/keyword_counters.py",
@@ -303,6 +305,11 @@ def _owner(relative: str, layer: str) -> str:
         return "trigger_processing"
     if relative == "quorune/tap_state.py":
         return "tap_state_effects"
+    if relative in {
+        "quorune/zone_object_keyword_model.py",
+        "quorune/zone_object_keyword_grants.py",
+    }:
+        return "continuous_effects"
     if relative in {
         "quorune/mana.py",
         "quorune/mana_activation.py",

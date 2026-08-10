@@ -142,8 +142,14 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _DOUBLE_STRIKE_MECHANIC: (
         "combat.damage.participation.strike_steps",
     ),
+    "double-strike": (
+        "combat.damage.participation.strike_steps",
+    ),
     _FLASH_MECHANIC: ("timing.cast.printed_flash",),
     _FIRST_STRIKE_MECHANIC: (
+        "combat.damage.participation.strike_steps",
+    ),
+    "first-strike": (
         "combat.damage.participation.strike_steps",
     ),
     _FLYING_MECHANIC: ("combat.block.flying",),
@@ -968,6 +974,7 @@ def capability_covered_mechanics(
         {
             "continuous.power_toughness.fixed_anthem",
             "continuous.resolution.fixed_characteristics_until_end_of_turn",
+            "continuous.resolution.fixed_keyword_zone_object",
         }
     ):
         covered.add("cr-611-continuous-effects")

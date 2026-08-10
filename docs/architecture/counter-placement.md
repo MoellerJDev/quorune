@@ -90,6 +90,15 @@ another direct engine write. Counter removal, effects that prohibit placement,
 combined or modified loyalty-symbol costs, and other unrepresented rule actions
 remain distinct and fail closed until their ordering semantics are modeled.
 
+One closed target-threaded sequence may now place a fixed counter and then
+grant Flying, First strike, Trample, or Vigilance for that target's current
+battlefield incarnation. Counter placement still owns replacement suspension
+and mutation;
+the separate continuous-effect owner commits the later layer-6 result in
+printed order. A failed later result rolls the entire resolution transaction
+back. Optional, variable, compound, chosen, multi-target, and arbitrary granted
+ability text remain residuals.
+
 ## Current producer inventory
 
 The shared transaction currently owns the typed `place_counters` operation,

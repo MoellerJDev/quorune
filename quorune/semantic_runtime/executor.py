@@ -28,6 +28,7 @@ from .intents import (
     EliminatePlayersIntent,
     ExploreCompletedIntent,
     ExilePermanentIntent,
+    GrantZoneObjectKeywordIntent,
     LifeChangeIntent,
     MoveObjectsSimultaneouslyIntent,
     MoveLibraryCardsToBottomIntent,
@@ -182,6 +183,11 @@ class SemanticIntentSink(
     def apply_amass_intent(self, intent: AmassIntent) -> str: ...
 
     def add_subtype_intent(self, intent: AddSubtypeIntent) -> str: ...
+
+    def grant_zone_object_keyword_intent(
+        self,
+        intent: GrantZoneObjectKeywordIntent,
+    ) -> str: ...
 
     def proliferate_intent(self, intent: ProliferateIntent) -> None: ...
 
@@ -510,6 +516,10 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
             continue
         if isinstance(intent, AddSubtypeIntent):
             result = sink.add_subtype_intent(intent)
+            results.append((intent.object_ref, result))
+            continue
+        if isinstance(intent, GrantZoneObjectKeywordIntent):
+            result = sink.grant_zone_object_keyword_intent(intent)
             results.append((intent.object_ref, result))
             continue
         if isinstance(intent, ProliferateIntent):

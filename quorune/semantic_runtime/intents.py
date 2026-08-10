@@ -13,6 +13,11 @@ from ..fixed_damage_set_model import FixedDamageSetSpec
 from ..entry_counter_model import EffectEntryCounter
 from ..replacement.immutable import FrozenMap, freeze_value
 from ..rules.library_scry import ScryArrangement
+from ..zone_object_keyword_model import (
+    ZoneObjectKeywordGrantError,
+    normalized_zone_object_keyword,
+)
+from .context import SemanticSourceContext
 
 
 _EXPLORE_LABEL = "Ex" + "plore"
@@ -864,6 +869,38 @@ class AddSubtypeIntent:
 
 
 @dataclass(frozen=True, slots=True)
+class GrantZoneObjectKeywordIntent:
+    actor: str
+    object_ref: str
+    keyword: str
+    source: SemanticSourceContext
+    reason: str
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (
+                self.actor,
+                self.object_ref,
+                self.keyword,
+                self.reason,
+            )
+        ):
+            raise ValueError(
+                "Zone-object keyword intents require actor, object, keyword, and reason"
+            )
+        if not isinstance(self.source, SemanticSourceContext):
+            raise TypeError(
+                "Zone-object keyword intents require typed source context"
+            )
+        try:
+            keyword = normalized_zone_object_keyword(self.keyword)
+        except ZoneObjectKeywordGrantError as exc:
+            raise ValueError(str(exc)) from exc
+        object.__setattr__(self, "keyword", keyword)
+
+
+@dataclass(frozen=True, slots=True)
 class ProliferateSubject:
     subject_kind: Literal["player", "permanent"]
     subject_id: str
@@ -1017,6 +1054,7 @@ SemanticIntent: TypeAlias = (
     | CopyControlledTokensIntent
     | AmassIntent
     | AddSubtypeIntent
+    | GrantZoneObjectKeywordIntent
     | ProliferateIntent
     | DomainEffectIntent
 )

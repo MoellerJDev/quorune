@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "20b29f793f153796458785cbcfa04979d5220dbd37217e18e03509779fa7936a"
+verified: "b876d3b850ac4a0c744b3fa8726880f731239685234752d366e4c7368d1a6467"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---

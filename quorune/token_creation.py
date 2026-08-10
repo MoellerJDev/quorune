@@ -663,6 +663,7 @@ def _token_entry_counter_specs(
                     source_ref=f"rule:{counter.rule_id}:{plan.ref}",
                     effect_generated=True,
                     logical_object_id=card.logical_object_id,
+                    prospective_subject=True,
                 )
             )
     return tuple(specs)

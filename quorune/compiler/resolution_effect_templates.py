@@ -18,6 +18,7 @@ from .exile_templates import targeted_exile_effect_template
 from .fixed_target_effect_sequences import (
     fixed_target_characteristics_effect_template,
     fixed_target_effect_sequence_template,
+    fixed_target_zone_object_keyword_sequence_template,
 )
 from .proliferate_templates import single_proliferate_effect_template
 from .return_to_hand_templates import targeted_return_to_hand_effect_template
@@ -87,6 +88,14 @@ def typed_resolution_effect_template(
     )
     if fixed_target_characteristics is not None:
         return fixed_target_characteristics.compiled()
+    fixed_zone_object_keyword_sequence = (
+        fixed_target_zone_object_keyword_sequence_template(
+            text,
+            card_name=card_name,
+        )
+    )
+    if fixed_zone_object_keyword_sequence is not None:
+        return fixed_zone_object_keyword_sequence.compiled()
     fixed_target_sequence = fixed_target_effect_sequence_template(
         text,
         card_name=card_name,

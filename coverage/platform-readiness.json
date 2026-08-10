@@ -35,7 +35,7 @@
     "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "30c4dde7b0c9caffba90673b753422ab9cbbb2f9ae371edabb0eed2f10b89104",
+    "evaluated_input_fingerprint": "868f79289ca3b4119304b9acafb1a5059c864cf1d9d7422aa8fb958aa75e9c86",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -455,6 +455,12 @@
       "id": "oracle_snapshot",
       "name": "Current Oracle snapshot",
       "status": "partial"
+    },
+    {
+      "evidence": "One source-spanned fixed target sequence places a positive fixed counter through the canonical replacement-aware counter owner and then grants one represented keyword through an immutable layer-6 continuous effect locked to the target's current battlefield logical identity. Flying, First strike, Trample, and Vigilance are capability-closed independently. Cleanup, source departure, target reentry, rollback, four-player projection, and exact replay have focused evidence. The family contains no runtime Oracle parser or printed card identity dispatch. Optional, variable, compound, chosen, multi-target, arbitrary granted-text, and unsupported keyword variants remain residuals; current corpus measurements live in generated compiler coverage and the card-unlock frontier.",
+      "id": "fixed_target_zone_object_keyword_sequence",
+      "name": "Typed fixed target zone-object keyword results",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -494,11 +500,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 45939,
+      "material_residuals": 45865,
       "status_counts": {
-        "exact": 2693,
-        "partial": 13107,
-        "unresolved": 15823
+        "exact": 2740,
+        "partial": 13066,
+        "unresolved": 15817
       },
       "total": 31623
     },
@@ -516,11 +522,11 @@
       "trusted": 5
     },
     "oracle": {
-      "material_residuals": 53533,
+      "material_residuals": 53454,
       "status_counts": {
-        "exact": 5672,
-        "partial": 14255,
-        "unresolved": 18696
+        "exact": 5720,
+        "partial": 14213,
+        "unresolved": 18690
       },
       "total": 38623
     },
@@ -567,31 +573,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 45952,
+        "material_residuals": 45878,
         "status_counts": {
-          "residual": 28930,
-          "trusted": 2693
+          "residual": 28883,
+          "trusted": 2740
         },
         "trust_basis_counts": {
-          "capability_closed": 2688,
+          "capability_closed": 2735,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 28930
+          "unresolved": 28883
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 53545,
+        "material_residuals": 53466,
         "status_counts": {
           "failed": 2248,
-          "residual": 32948,
-          "trusted": 3427
+          "residual": 32900,
+          "trusted": 3475
         },
         "trust_basis_counts": {
-          "capability_closed": 3422,
+          "capability_closed": 3470,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 32948
+          "unresolved": 32900
         }
       }
     },

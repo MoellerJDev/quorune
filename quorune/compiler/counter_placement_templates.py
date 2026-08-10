@@ -702,7 +702,7 @@ def _target_subject(subject: str) -> tuple[str | None, str | None, str, bool] | 
             bool(match.group("another")),
         )
     match = re.fullmatch(
-        r"(?P<another>another )?target (?P<subtype>[A-Za-z][A-Za-z' -]*)"
+        r"(?P<another>another )?target (?P<subtype>[A-Za-z][A-Za-z' -]*?)"
         r"(?: creature)?"
         r"(?P<relation> you control| an opponent controls| you don't control)?",
         subject,

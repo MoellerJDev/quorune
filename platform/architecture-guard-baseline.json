@@ -2244,9 +2244,9 @@
     "physical_lines": 12807
   },
   "exception_binding": {
-    "adr": "docs/adr/0043-typed-fixed-multikind-counter-batches.md",
-    "allowance_fingerprint": "26d0d174f6da879d1ec5f7e27e32e3c8161314a8e6fe9ffda39af3cd03e7d2cd",
-    "exception_id": "ARCH-EXC-0019"
+    "adr": "docs/adr/0047-typed-zone-object-keyword-results.md",
+    "allowance_fingerprint": "93da41a7c8b8ac30364704736f47fdd07ab4a0349ab8a50579da977a2d37467f",
+    "exception_id": "ARCH-EXC-0020"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2317,11 +2317,6 @@
       "file": "quorune/carddb.py",
       "logical_lines": 201,
       "symbol": "build_card_database"
-    },
-    {
-      "file": "quorune/choice_forms.py",
-      "logical_lines": 151,
-      "symbol": "_field"
     },
     {
       "file": "quorune/cli.py",
@@ -2415,7 +2410,7 @@
     },
     {
       "file": "quorune/oracle_ir.py",
-      "logical_lines": 448,
+      "logical_lines": 421,
       "symbol": "_compile_face"
     },
     {
@@ -2577,6 +2572,7 @@
     "grant_keyword_until_end_of_turn",
     "grant_play_without_mana_cost",
     "grant_uncounterable_hexproof_from_colors_until_end",
+    "grant_zone_object_keyword",
     "life",
     "look_reorder_top",
     "look_top",
