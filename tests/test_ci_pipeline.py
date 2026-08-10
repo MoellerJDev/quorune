@@ -282,6 +282,12 @@ class CiPipelineTests(unittest.TestCase):
         )
         self.assertIn("cancel-in-progress: true", pr)
         self.assertIn("PR / Certification", pr)
+        self.assertIn("opened, synchronize, reopened, edited, ready_for_review", pr)
+        self.assertIn("python scripts/validate_pr_body.py", pr)
+        self.assertLess(
+            pr.index("python scripts/validate_pr_body.py"),
+            pr.index("python scripts/ci_plan.py"),
+        )
         self.assertIn("fromJSON(needs.plan.outputs.browser_matrix)", pr)
         self.assertIn("fromJSON(needs.plan.outputs.windows_matrix)", pr)
         self.assertIn("needs.plan.outputs.browser_focus_grep", pr)

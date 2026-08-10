@@ -1,6 +1,10 @@
 # Summary
 
-<!-- Explain the durable outcome and why this is one coherent change. -->
+<!--
+CI validates this form. Remove every instructional comment, fill every evidence
+row, explain each N/A, and check every safety assertion. Explain the durable
+outcome and why this is one coherent change.
+-->
 
 ## Change class and authority
 

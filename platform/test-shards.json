@@ -237,6 +237,7 @@
       "test_generated_artifacts",
       "test_local_merge_gate",
       "test_platform_status",
+      "test_pr_body_policy",
       "test_property_budget",
       "test_protocol_reference",
       "test_python_runtime",

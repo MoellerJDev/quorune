@@ -316,6 +316,30 @@ regression, and the impact-edge disposition. Push counts and Slot B idle time
 remain null when they cannot be observed; workflow-run counts are not relabeled
 as pushes.
 
+## Pull-request description gate
+
+`PR / Plan` runs `scripts/validate_pr_body.py` before change-impact planning or
+any expensive matrix job. It reads the pull-request event payload without a
+GitHub API call and fails deterministically when the tracked template is still
+untouched, a required section or evidence result is blank, an N/A has no
+reason, or a safety assertion remains unchecked. Editing the description
+restarts the gate, so a contributor can correct metadata without changing the
+certified source tree.
+
+Generated work named in the description must cite the canonical
+`scripts/finalize_generated.py --write` command. A claimed broad local pass
+must include its exact command and numeric result. A claimed broad CI pass must
+link the authoritative GitHub Actions run; before that run exists, state that
+required exact-head CI is pending rather than predicting its outcome.
+
+The same gate compares the candidate versions of
+`platform/readiness-source.json` and
+`platform/architecture-audit-source.json` with the pull request's base. Newly
+written PR numbers, branch coordinates, workflow runs, exact heads, or merge
+SHAs fail closed. Unchanged historical content is not reinterpreted, and
+`platform/ci-escape-source.json` remains the intentional durable ledger for
+observed CI incidents.
+
 ## Main and nightly assurance
 
 `.github/workflows/main-smoke.yml` runs after each push to `main`. It checks a

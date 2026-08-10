@@ -12347,8 +12347,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2286,
-      "discovered_total": 5586,
+      "conventional_ast_cases": 2299,
+      "discovered_total": 5599,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 83,
@@ -12358,7 +12358,7 @@
         "server_named": 26
       },
       "reconciles": true,
-      "test_files": 227
+      "test_files": 228
     }
   }
 }
