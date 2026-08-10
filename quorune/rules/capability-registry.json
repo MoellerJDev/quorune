@@ -796,6 +796,33 @@
       "status": "trusted"
     },
     {
+      "id": "counter.producer.fixed_permanent_group_effect",
+      "version": 1,
+      "official_rules": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one positive fixed-count placement of the same counter kind and amount on two or three source/direct-target subjects through one canonical simultaneous counter-placement transaction.",
+        "inputs": ["one closed same-kind multi-subject Oracle instruction", "two or three ordered source or direct permanent subjects", "at most one source permanent", "one through three direct target groups", "optional final target where printed", "explicit target distinctness where printed", "positive exact integral amount", "one canonical counter name", "stable source provenance reference"],
+        "outputs": ["source-spanned CardProgram node", "strict ordered target-group schema", "resolution-time per-target revalidation", "source-presence revalidation", "replacement-aware simultaneous counter-placement batch", "exact continuation replay"],
+        "exclusions": ["player counters", "entry counters", "counter costs, movement, or removal", "different counter kinds or amounts among subjects", "variable, distributed, repeated, linked, modal, conditional, or compound placements", "optional nonfinal subjects", "more than three subjects", "affected permanent sets", "unsupported target predicates", "ambiguous or partially ordered target-distinctness wording"]
+      },
+      "dependencies": ["counter.producer.fixed_effect", "target.revalidate_resolution"],
+      "implementation_components": ["quorune.compiler.counter_placement_group_templates.FixedCounterPlacementGroupTemplate", "quorune.rules.counter_capability_shapes.fixed_counter_placement_group_node_capabilities", "quorune.semantic_runtime.counter_placement_handlers.FixedCounterPlacementHandler", "quorune.semantic_runtime.intents.PlaceCountersIntent", "quorune.counter_placement.place_counters_on_refs"],
+      "positive_tests": ["test_spell_trigger_and_activated_contexts_share_fixed_counter_group_lowering", "test_group_handler_commits_same_target_twice_in_one_atomic_batch", "test_source_departure_skips_source_and_preserves_target_result"],
+      "negative_tests": ["test_unsupported_group_variants_remain_material_residuals", "test_group_handler_rejects_malformed_inputs_without_mutation", "test_group_shape_and_dependency_mutants_fail_closed"],
+      "interaction_tests": ["test_partial_target_revalidation_preserves_remaining_subject", "test_four_player_group_replacement_is_seat_scoped_and_replays"],
+      "multiplayer_tests": ["test_four_player_group_replacement_is_seat_scoped_and_replays"],
+      "privacy_tests": ["test_four_player_group_replacement_is_seat_scoped_and_replays"],
+      "replay_tests": ["test_four_player_group_replacement_is_seat_scoped_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "CardProgram closure removes exact support when the canonical fixed counter transaction, quantity replacement, or resolution-time target revalidation dependency is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "A focused compiler mutation removes the group production and converts the representative source-spanned abilities back to material residuals; shape mutations reject reordered, malformed, or unsupported subject descriptors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "counter.producer.fixed_permanent_target_set_effect",
       "version": 1,
       "official_rules": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "614.16", "616.1"],

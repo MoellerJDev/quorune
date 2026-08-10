@@ -1006,6 +1006,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/counter_placement_group_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/counter_placement_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -3396,6 +3411,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/counter_capability_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/evidence.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -5036,5 +5065,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "525f1f8ad9de5d44186fc7ce045fcc3c9886d542540af084f156f16836e53c7c"
+  "fingerprint": "c6160ba4bd4c3d83d6919a19908ef33898203d16777e6113b6f3332a4f7196b7"
 }

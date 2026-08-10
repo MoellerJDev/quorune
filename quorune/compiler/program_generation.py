@@ -14,6 +14,9 @@ from ..rules.capabilities import (
     CapabilityRegistry,
     capability_covered_mechanics,
 )
+from ..rules.counter_capability_shapes import (
+    fixed_counter_placement_group_node_capabilities,
+)
 from ..rules.node_capability_shapes import (
     fixed_counter_placement_batch_node_capabilities,
     fixed_counter_placement_node_capabilities,
@@ -453,6 +456,23 @@ def _is_closed_fixed_counter_placement_batch_program(
     )
 
 
+def _is_closed_fixed_counter_placement_group_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize one reviewed fixed same-kind multi-subject placement."""
+
+    required = set(
+        fixed_counter_placement_group_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
 def _is_closed_fixed_self_counter_keyword_action_program(
     program: SemanticProgram,
 ) -> bool:
@@ -700,6 +720,7 @@ def _is_closed_effect_program(program: SemanticProgram) -> bool:
         _is_closed_single_proliferate_program,
         _is_closed_fixed_counter_placement_program,
         _is_closed_fixed_counter_placement_batch_program,
+        _is_closed_fixed_counter_placement_group_program,
         _is_closed_fixed_self_counter_keyword_action_program,
         _is_closed_fixed_target_characteristics_program,
         _is_closed_fixed_target_effect_sequence_program,

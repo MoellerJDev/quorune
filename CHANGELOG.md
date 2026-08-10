@@ -24,6 +24,18 @@ maintenance: "hand-maintained"
   variants remain explicit blockers; aggregate Indestructible support is not
   claimed complete.
 
+### Typed fixed multi-subject counter placement
+
+- Added one closed compiler/runtime family for placing the same fixed quantity
+  of one counter kind on two or three printed-order source/direct-target
+  permanents. It preserves target reuse versus explicit distinctness, optional
+  final commander-creature targets, independent resolution revalidation,
+  affected-seat replacement ordering, rollback, privacy, and exact replay
+  through the existing counter transaction.
+- Different amounts or kinds, variable or distributed values, optional
+  nonfinal subjects, more than three subjects, and compound or dynamically
+  linked instructions remain explicit residuals.
+
 ### Keyword-counter composition assurance
 
 - Added explicit four-player and exact-replay interaction coverage for

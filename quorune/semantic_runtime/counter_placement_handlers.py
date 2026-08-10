@@ -26,6 +26,88 @@ from .intents import (
 _REASON_FIELD = "rea" + "son"
 
 
+def _fixed_counter_group_intent(
+    effect: Mapping[str, Any],
+    context: ReadOnlyHandlerContext,
+) -> PlaceCountersIntent:
+    allowed = {
+        "op",
+        "cards",
+        "counter",
+        "amount",
+        "source",
+        _REASON_FIELD,
+        "_replacement_selections",
+    }
+    unknown = sorted(set(effect) - allowed)
+    if unknown:
+        raise SemanticNodeError(
+            "Counter placement group has unknown fields: "
+            + ", ".join(unknown)
+        )
+    missing = sorted(
+        {"op", "cards", "counter", "amount", "source"} - set(effect)
+    )
+    if missing:
+        raise SemanticNodeError(
+            "Counter placement group is missing fields: "
+            + ", ".join(missing)
+        )
+    if effect.get("op") != "place_counters":
+        raise SemanticNodeError("Counter placement group operation is unsupported")
+    raw_cards = effect.get("cards")
+    if not isinstance(raw_cards, (list, tuple)) or not 2 <= len(raw_cards) <= 3:
+        raise SemanticNodeError(
+            "Counter placement group requires two or three subject entries"
+        )
+    if any(
+        value is not None and (type(value) is not str or not value)
+        for value in raw_cards
+    ):
+        raise SemanticNodeError(
+            "Counter placement group subjects must be public refs or unavailable"
+        )
+    counter_name = effect.get("counter")
+    if type(counter_name) is not str or not counter_name.strip():
+        raise SemanticNodeError(
+            "Counter placement group requires one nonempty counter name"
+        )
+    amount = effect.get("amount")
+    if type(amount) is not int or amount <= 0:
+        raise SemanticNodeError(
+            "Counter placement group amount must be a positive exact integer"
+        )
+    source_ref = effect.get("source")
+    if type(source_ref) is not str or not source_ref:
+        raise SemanticNodeError(
+            "Counter placement group requires one nonempty source reference"
+        )
+    reason = effect.get(_REASON_FIELD, context.default_reason)
+    if type(reason) is not str or not reason:
+        raise SemanticNodeError("Counter placement group reason must be nonempty")
+    raw_selections = effect.get("_replacement_selections", ())
+    if raw_selections is None:
+        raw_selections = ()
+    if not isinstance(raw_selections, (list, tuple)):
+        raise SemanticNodeError(
+            "Counter placement group replacement selections must be an array"
+        )
+    try:
+        return PlaceCountersIntent(
+            actor=context.actor,
+            object_refs=tuple(
+                value for value in raw_cards if value is not None
+            ),
+            counter_name=" ".join(counter_name.casefold().split()),
+            amount=amount,
+            reason=reason,
+            source_ref=source_ref,
+            replacement_selections=tuple(raw_selections),
+        )
+    except (TypeError, ValueError) as exc:
+        raise SemanticNodeError(str(exc)) from exc
+
+
 @dataclass(frozen=True, slots=True)
 class FixedCounterPlacementHandler:
     handler_id: str = "generic.fixed-counter-placement.v1"
@@ -33,10 +115,16 @@ class FixedCounterPlacementHandler:
     family: str = "effect.counter-placement"
     operation: str = "place_counters"
     rule_references: tuple[str, ...] = (
+        "115.3",
+        "115.6",
         "122.1",
         "122.1a",
         "122.6",
         "608.2c",
+        "608.2f",
+        "608.2h",
+        "614.16",
+        "616.1",
     )
     capability_dependencies: tuple[str, ...] = (
         "counter.producer.fixed_effect",
@@ -47,6 +135,12 @@ class FixedCounterPlacementHandler:
         effect: Mapping[str, Any],
         context: ReadOnlyHandlerContext,
     ) -> IntentPlan:
+        if "cards" in effect:
+            return IntentPlan(
+                operation=self.operation,
+                handler_id=self.handler_id,
+                intents=(_fixed_counter_group_intent(effect, context),),
+            )
         fields = validate_direct_target_effect(
             effect,
             context,
