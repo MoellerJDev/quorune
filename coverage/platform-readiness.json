@@ -32,10 +32,11 @@
     "the authoritative engine remains a measured oversized legacy module; casting and activation now use dedicated proposal and commit owners, while turn, effect, choice, and variant responsibilities still require incremental extraction",
     "future engine choice schemas and complete screen-reader audits remain incomplete",
     "production accounts, PostgreSQL, multi-process actor ownership, expiry/rate limits, containers, and deployment hardening are incomplete",
-    "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete"
+    "full Comprehensive Rules, Commander-legal Oracle, and rulings trust gates remain incomplete",
+    "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "868f79289ca3b4119304b9acafb1a5059c864cf1d9d7422aa8fb958aa75e9c86",
+    "evaluated_input_fingerprint": "533425a527cd72b1e9bf086cd9f8fa0767c189186540bb32ef2047394aa2e91a",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -500,11 +501,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 45865,
+      "material_residuals": 45857,
       "status_counts": {
-        "exact": 2740,
-        "partial": 13066,
-        "unresolved": 15817
+        "exact": 2742,
+        "partial": 13068,
+        "unresolved": 15813
       },
       "total": 31623
     },
@@ -513,20 +514,20 @@
     "manifest_present": true,
     "mechanics": {
       "status_counts": {
-        "partial": 62,
+        "partial": 63,
         "tested": 23,
         "trusted": 5,
-        "unclassified": 335
+        "unclassified": 334
       },
       "total": 425,
       "trusted": 5
     },
     "oracle": {
-      "material_residuals": 53454,
+      "material_residuals": 53446,
       "status_counts": {
-        "exact": 5720,
-        "partial": 14213,
-        "unresolved": 18690
+        "exact": 5722,
+        "partial": 14215,
+        "unresolved": 18686
       },
       "total": 38623
     },
@@ -563,7 +564,7 @@
     "generated_validation_modules": 25,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 228,
+    "primary_test_modules": 229,
     "primary_test_shards": 11,
     "schema_files": 18,
     "server_files": 5,
@@ -573,31 +574,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 45878,
+        "material_residuals": 45870,
         "status_counts": {
-          "residual": 28883,
-          "trusted": 2740
+          "residual": 28881,
+          "trusted": 2742
         },
         "trust_basis_counts": {
-          "capability_closed": 2735,
+          "capability_closed": 2737,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 28883
+          "unresolved": 28881
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 53466,
+        "material_residuals": 53458,
         "status_counts": {
           "failed": 2248,
-          "residual": 32900,
-          "trusted": 3475
+          "residual": 32898,
+          "trusted": 3477
         },
         "trust_basis_counts": {
-          "capability_closed": 3470,
+          "capability_closed": 3472,
           "legacy_reviewed": 4,
           "mixed": 1,
-          "unresolved": 32900
+          "unresolved": 32898
         }
       }
     },

@@ -171,6 +171,14 @@ def available_mana_sources(
             for ability in host._activated_abilities(card)
             if ability.mana_ability and card.zone in ability.zones
         ]
+        if any(
+            ability.activation_limit is not None
+            for ability in mana_abilities
+        ):
+            # Auto-payment plans currently identify a source and output, not
+            # a specific ability. Usage-limited mana therefore remains an
+            # explicit activation so the authoritative usage owner commits it.
+            continue
         if (
             not mana_abilities
             and not record.is_land

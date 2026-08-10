@@ -12,6 +12,7 @@ from dataclasses import dataclass
 import re
 from typing import Any, Mapping
 
+from .activation_usage import ActivationLimit
 from .replacement.immutable import FrozenMap, thaw_value
 from .util import normalize_mana_bundle
 
@@ -131,6 +132,7 @@ class FixedActivatedManaAbilitySpec:
     sacrifice_source: bool
     life_payment: int
     modes: tuple[FixedManaMode, ...]
+    activation_limit: ActivationLimit | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -186,9 +188,22 @@ class FixedActivatedManaAbilitySpec:
             raise FixedManaAbilityError(
                 "Fixed mana ability output modes must be unique"
             )
+        if self.activation_limit is not None and not isinstance(
+            self.activation_limit, ActivationLimit
+        ):
+            try:
+                object.__setattr__(
+                    self,
+                    "activation_limit",
+                    ActivationLimit(self.activation_limit),
+                )
+            except (TypeError, ValueError) as exc:
+                raise FixedManaAbilityError(
+                    "Fixed mana activation limit is unsupported"
+                ) from exc
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        value = {
             "ability_id": self.ability_id,
             "line_index": self.line_index,
             "oracle_line": self.oracle_line,
@@ -200,6 +215,9 @@ class FixedActivatedManaAbilitySpec:
             "life_payment": self.life_payment,
             "modes": [mode.to_dict() for mode in self.modes],
         }
+        if self.activation_limit is not None:
+            value["activation_limit"] = self.activation_limit.value
+        return value
 
     @classmethod
     def from_dict(
@@ -217,6 +235,8 @@ class FixedActivatedManaAbilitySpec:
             "life_payment",
             "modes",
         }
+        if "activation_limit" in value:
+            expected.add("activation_limit")
         _exact_fields(value, expected, field="fixed mana ability")
         mana_cost = value["mana_cost"]
         modes = value["modes"]
@@ -242,6 +262,7 @@ class FixedActivatedManaAbilitySpec:
             sacrifice_source=value["sacrifice_source"],
             life_payment=value["life_payment"],
             modes=tuple(FixedManaMode.from_dict(mode) for mode in modes),
+            activation_limit=value.get("activation_limit"),
         )
 
     def to_activated_ability(self) -> Any:
@@ -260,6 +281,7 @@ class FixedActivatedManaAbilitySpec:
             life_payment=self.life_payment,
             mana_ability=True,
             fixed_mana_outputs=self.modes,
+            activation_limit=self.activation_limit,
         )
 
 
@@ -356,6 +378,7 @@ def compile_fixed_activated_mana_ability(
         sacrifice_source=ability.sacrifice_source,
         life_payment=ability.life_payment,
         modes=modes,
+        activation_limit=ability.activation_limit,
     )
 
 

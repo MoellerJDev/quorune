@@ -8,6 +8,7 @@
   "printed_name_allowances": "platform/card-specificity-baseline.json",
   "protected_rules_modules": [
     "quorune/abilities.py",
+    "quorune/activation_usage.py",
     "quorune/ability_fragments.py",
     "quorune/aerial_blocking.py",
     "quorune/choice_forms.py",
@@ -153,6 +154,7 @@
   "game_state_access": {
     "mutable_owners": {
       "quorune/commander.py": "Commander game setup and stable physical designation state owner",
+      "quorune/activation_usage.py": "typed per-object activated-ability usage journal owner behind the activation transaction",
       "quorune/engine.py": "legacy authoritative transaction and mutation boundary",
       "quorune/permissions.py": "decision and capability lifecycle owned by the transaction boundary",
       "quorune/record.py": "replay hydration, verification copies, and versioned migration",

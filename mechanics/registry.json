@@ -1,10 +1,10 @@
 {
-  "contract_count": 90,
+  "contract_count": 91,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
       "path": "mechanics/contracts/activating-activated-abilities.json",
-      "sha256": "8089269fe906ed542e98649171867d8c7f8d16240fcc0861f93dcd616dd0a5b8",
+      "sha256": "e2f85029cc1ded5873f36ed43d1ba121b2b9cd186a023d131f5704f98041a96e",
       "version": 1
     },
     {
@@ -16,7 +16,7 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "b47bec1ce0dfd28996373a611ecdddefa145bb4773002c7bfa16bcc16346b4f3",
+      "sha256": "3d48a63a309c56cb8ee8aac9b60e69e868d418437b3be7781da6fcc7e663eb75",
       "version": 11
     },
     {
@@ -209,6 +209,12 @@
       "mechanic_id": "exalted",
       "path": "mechanics/contracts/exalted.json",
       "sha256": "05080c8d613f0f2a95f4d4b1955a81dd0ccb022a14e1d5e9928c1a8779a3a453",
+      "version": 1
+    },
+    {
+      "mechanic_id": "exhaust",
+      "path": "mechanics/contracts/exhaust.json",
+      "sha256": "1b227d843017b9461c96401658639b3bb3e3a810a5b36e3d2f97b95e78d0448d",
       "version": 1
     },
     {
@@ -418,7 +424,7 @@
     {
       "mechanic_id": "cr-611-continuous-effects",
       "path": "mechanics/contracts/resolution-continuous-effects.json",
-      "sha256": "1c8bded1566a754b7c067c358735e063f57fce27117693c5868de7b50b9d8df7",
+      "sha256": "021ac18bdb264cd54eb52c0bbe2f80b8c705661e2ae593ad95f25f456e7f0a8a",
       "version": 3
     },
     {
@@ -1842,19 +1848,40 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/exhaust.json",
+      "contract_sha256": "1b227d843017b9461c96401658639b3bb3e3a810a5b36e3d2f97b95e78d0448d",
+      "contract_version": 1,
+      "coverage_status": "partial",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "ActivationLimit, activation_usage, typed activation query and commit, fixed and color-set mana descriptors, source-threaded effect sequence lowering, and semantic replacement continuation",
+      "implementation_version": "typed-exhaust-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "effects that permit an Exhaust ability to be activated again remain unsupported",
+        "triggers that observe Exhaust activations remain residual",
+        "copied, granted, removed, or layer-modified Exhaust abilities require trusted typed ability propagation",
+        "every other Exhaust result remains gated by its own effect, target, cost, and interaction capabilities"
+      ],
       "mechanic_id": "exhaust",
       "official_name": "Exhaust",
       "rule_references": [
         "702.177"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_exhaust_parser_and_usage_owner_are_per_ability",
+        "test_exhaust_limit_composes_with_existing_fixed_counter_effect",
+        "test_exhaust_usage_rejects_malformed_state_and_resets_on_zone_change",
+        "test_fixed_source_sequence_compiles_exact_source_spanned_activated_nodes",
+        "test_exhaust_override_wording_remains_material_residual",
+        "test_exhaust_mana_activation_is_explicit_nonreversible_and_replays",
+        "test_exhaust_usage_commit_mutant_is_killed",
+        "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+        "test_source_sequence_rejects_stale_source_identity_without_partial_mutation",
+        "test_source_sequence_replacement_rollback_is_atomic",
+        "test_source_sequence_replacement_continuation_survives_restart"
+      ],
       "trust_level": "untrusted"
     },
     {
@@ -6454,12 +6481,12 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "b47bec1ce0dfd28996373a611ecdddefa145bb4773002c7bfa16bcc16346b4f3",
+      "contract_sha256": "3d48a63a309c56cb8ee8aac9b60e69e868d418437b3be7781da6fcc7e663eb75",
       "contract_version": 11,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "closed fixed-counter single-target, fixed target counter-and-characteristic sequence, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v12",
+      "implementation_component": "closed fixed-counter single-target, fixed target or source counter-and-characteristic sequence, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
+      "implementation_version": "counter-placement-transaction-v13",
       "kind": "rules_section",
       "known_blockers": [
         "Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with optional, variable, distributed, multi-counter, dynamic, subtype-qualified, combat-qualified, modal, conditional, and compound general target-set instructions",
@@ -6568,7 +6595,14 @@
         "test_indefinite_keyword_sequence_compiles_the_closed_family",
         "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
         "test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-        "test_zone_object_keyword_commit_mutant_is_killed"
+        "test_zone_object_keyword_commit_mutant_is_killed",
+        "test_exhaust_limit_composes_with_existing_fixed_counter_effect",
+        "test_fixed_source_sequence_compiles_exact_source_spanned_activated_nodes",
+        "test_fixed_source_sequence_is_reused_by_trigger_context",
+        "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+        "test_source_sequence_rejects_stale_source_identity_without_partial_mutation",
+        "test_source_sequence_replacement_rollback_is_atomic",
+        "test_source_sequence_replacement_continuation_survives_restart"
       ],
       "trust_level": "untrusted"
     },
@@ -8165,12 +8199,12 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/activating-activated-abilities.json",
-      "contract_sha256": "8089269fe906ed542e98649171867d8c7f8d16240fcc0861f93dcd616dd0a5b8",
+      "contract_sha256": "e2f85029cc1ded5873f36ed43d1ba121b2b9cd186a023d131f5704f98041a96e",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "abilities.parse_activated_abilities plus CommanderEngine activation availability, cost-payment, and stack paths",
-      "implementation_version": "activated-ability-foundation-v1",
+      "implementation_component": "abilities.parse_activated_abilities, activation_usage, typed activation query and commit, and the ordinary cost-payment, mana, and stack paths",
+      "implementation_version": "activated-ability-foundation-v2",
       "kind": "rules_section",
       "known_blockers": [
         "the Oracle parser recognizes selected cost and activation-instruction grammars rather than every activated ability",
@@ -8180,6 +8214,7 @@
         "cost-altering activated abilities do not use a generic prospective-cost effect model",
         "continuous prohibitions and activation instructions outside selected text predicates are incomplete",
         "acquired-ability provenance does not distinguish identically worded restricted abilities",
+        "effects that permit Exhaust abilities to be activated again are not represented",
         "illegal activation rollback is not represented as a universal transaction"
       ],
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -8195,7 +8230,11 @@
         "test_sorcery_and_instant_activation_instructions_use_right_timing",
         "test_zimone_cost_selection_is_validated_and_paid_by_kernel",
         "test_channel_is_exposed_from_hand_and_pays_authoritative_discounted_cost",
-        "test_divining_top_payability_and_tap_availability"
+        "test_divining_top_payability_and_tap_availability",
+        "test_exhaust_parser_and_usage_owner_are_per_ability",
+        "test_exhaust_usage_rejects_malformed_state_and_resets_on_zone_change",
+        "test_exhaust_mana_activation_is_explicit_nonreversible_and_replays",
+        "test_exhaust_usage_commit_mutant_is_killed"
       ],
       "trust_level": "untrusted"
     },
@@ -8500,12 +8539,12 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/resolution-continuous-effects.json",
-      "contract_sha256": "1c8bded1566a754b7c067c358735e063f57fce27117693c5868de7b50b9d8df7",
+      "contract_sha256": "021ac18bdb264cd54eb52c0bbe2f80b8c705661e2ae593ad95f25f456e7f0a8a",
       "contract_version": 3,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "compiler.fixed_target_effect_sequences, rules.node_capability_shapes, continuous_effect_state, and the typed semantic continuous-effect sink",
-      "implementation_version": "continuous-resolution-duration-v3",
+      "implementation_component": "compiler.fixed_target_effect_sequences, compiler.fixed_source_effect_sequences, rules.node_capability_shapes, continuous_effect_state, and the typed semantic continuous-effect sink",
+      "implementation_version": "continuous-resolution-duration-v4",
       "kind": "rules_section",
       "known_blockers": [
         "dynamic values, effect dependencies, and player/game-rule continuous effects remain residual",
@@ -8526,7 +8565,12 @@
         "test_indefinite_keyword_sequence_compiles_the_closed_family",
         "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
         "test_four_player_zone_object_keyword_sequence_is_private_and_replays",
-        "test_zone_object_keyword_commit_mutant_is_killed"
+        "test_zone_object_keyword_commit_mutant_is_killed",
+        "test_fixed_source_sequence_compiles_exact_source_spanned_activated_nodes",
+        "test_fixed_source_sequence_is_reused_by_trigger_context",
+        "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+        "test_source_sequence_replacement_rollback_is_atomic",
+        "test_source_sequence_replacement_continuation_survives_restart"
       ],
       "trust_level": "untrusted"
     },

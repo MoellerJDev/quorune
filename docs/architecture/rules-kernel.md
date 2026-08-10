@@ -82,10 +82,18 @@ offer only while its source, cost, target, timing, and payability facts remain
 equivalent, then commits through `rules/casting/commit.py` or
 `rules/activation/commit.py`. Stale offers fail before mutation.
 
-`abilities.py` generically lowers represented colon abilities, Crew, and the
-supported Craft reminder grammar. CardPrograms may grant an activated ability
-through a serialized descriptor; historical card-named markers are interpreted
-only by the Game Record v3 compatibility adapter.
+`abilities.py` generically lowers represented colon abilities, Crew, the
+supported Craft reminder grammar, and one typed activation-usage limit per
+printed Exhaust ability. `activation_usage.py` is the single owner for the
+usage journal: the use persists across turns, control changes, and phasing for
+the same object, and the ordinary zone-change reset clears it for the new
+object. Offer and commit share the same typed verdict; a commit postcondition
+fails the whole transaction if the limit was not consumed. Usage-limited mana
+abilities require explicit activation and are excluded from reversible
+tap-mana and automatic-payment paths. Effects that permit another Exhaust use
+remain unsupported. CardPrograms may grant an activated ability through a
+serialized descriptor; historical card-named markers are interpreted only by
+the Game Record v3 compatibility adapter.
 
 Mandatory fixed nonmana casting costs use source-spanned typed descriptors.
 The counter-placement and one-permanent sacrifice families share the ordinary
@@ -133,6 +141,15 @@ layer-6 journal entry. It survives cleanup, control change, and source
 departure, but applies only while the affected permanent retains the same
 battlefield logical identity. The runtime does not parse Oracle text or execute
 display rules text to reconstruct that duration.
+
+Closed fixed source-counter sequences use the same owners. The compiler emits
+`$source.zone_object`; resolution requires the current battlefield source and
+its stack-pinned logical identity before constructing the counter intent. A
+counter replacement may suspend, but continuation validation rejects source
+reentry before either the counter or later continuous result commits. The
+later result is still owned by `continuous_effect_state.py`, so a failed commit
+rolls back the resumed counter transaction rather than leaving a partial
+sequence.
 
 Combat declaration relationships commit through
 `combat_relationship_state.py`. After a complete declaration, the engine

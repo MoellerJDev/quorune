@@ -74,6 +74,70 @@
       "applicability_note": "Replay the source-pinned descriptor, payment, discard-cost event, stack object, and private draw exactly."
     },
     {
+      "capability_id": "activation.exhaust.once_per_object",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+      "official_rule_ids": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit an Exhaust use as an activation cost boundary before its source-threaded counter result suspends for competing replacement effects."
+    },
+    {
+      "capability_id": "activation.exhaust.once_per_object",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+      "official_rule_ids": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve one Exhaust activation in four-player state while routing its affected-object replacement choice only to the source controller."
+    },
+    {
+      "capability_id": "activation.exhaust.once_per_object",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_usage_commit_mutant_is_killed",
+      "official_rule_ids": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suppress the canonical usage commit and prove its postcondition rejects the entire activation transaction without mana, tap, or journal mutation."
+    },
+    {
+      "capability_id": "activation.exhaust.once_per_object",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceCompilerTests.test_exhaust_usage_rejects_malformed_state_and_resets_on_zone_change",
+      "official_rule_ids": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed or duplicate usage journals and reset the limit only after the physical card becomes a new logical object through a zone change."
+    },
+    {
+      "capability_id": "activation.exhaust.once_per_object",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceCompilerTests.test_exhaust_limit_composes_with_existing_fixed_counter_effect",
+      "official_rule_ids": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose the generic Exhaust activation limit with the preexisting fixed source-counter effect path rather than introducing an Exhaust-specific result implementation."
+    },
+    {
+      "capability_id": "activation.exhaust.once_per_object",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceCompilerTests.test_exhaust_parser_and_usage_owner_are_per_ability",
+      "official_rule_ids": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Parse each printed Exhaust instance into a distinct typed ability limit and preserve one consumed ability across turns, control changes, and phasing without consuming its siblings."
+    },
+    {
+      "capability_id": "activation.exhaust.once_per_object",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+      "official_rule_ids": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep the authoritative source identity and replacement continuation outside every nonchoosing seat projection."
+    },
+    {
+      "capability_id": "activation.exhaust.once_per_object",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_mana_activation_is_explicit_nonreversible_and_replays",
+      "official_rule_ids": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay an explicit nonreversible Exhaust mana activation with the same selected output, usage journal, and final authoritative hash."
+    },
+    {
       "capability_id": "activation.loyalty.positive_counter_cost",
       "evidence_class": "interaction",
       "test_id": "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
@@ -8610,6 +8674,78 @@
         "commander_review"
       ],
       "applicability_note": "Replay the exact protected-object filtering and selected legal Aura attachment from a pinned continuation."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend the first source-counter instruction for competing quantity replacements, then resume the remaining duration-pinned characteristic result exactly once."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve the source sequence in a four-player game while preserving affected-object chooser routing and public result visibility."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_source_sequence_compiler_mutant_is_killed",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the closed source-sequence compiler production and prove the full source span returns to a material residual instead of remaining exact."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceCompilerTests.test_fixed_source_sequence_rejects_open_variants",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Leave optional, variable, targeted, unsupported-keyword, nonpermanent, and extra-clause source sequences as precise material residuals."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceCompilerTests.test_fixed_source_sequence_compiles_exact_source_spanned_activated_nodes",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower the complete activated source span into one closed fixed counter followed by one represented until-end characteristic result on the same zone object."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceCompilerTests.test_fixed_source_sequence_is_reused_by_trigger_context",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reuse the same closed source-threaded effect body beneath an independently compiled enter-trigger event binding without a second sequence implementation."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose no physical object ID or private replacement continuation to nonchoosing seats while retaining public counters and characteristics."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_source_sequence_replacement_continuation_survives_restart",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reload a pending source-counter replacement continuation, finish the sequence once, and replay to the identical final authoritative hash."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_source",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_source_sequence_replacement_rollback_is_atomic",
+      "official_rule_ids": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject failure of the duration-pinned characteristic commit and roll back the counter result from the same resumed transaction."
     },
     {
       "capability_id": "resolution.effect_sequence.fixed_target",

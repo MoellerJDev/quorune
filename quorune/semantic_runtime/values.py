@@ -95,6 +95,22 @@ def resolve_semantic_value(
         return host.state.active_player
     if value == "$source":
         return host._stack_source_ref(item)
+    if value == "$source.zone_object":
+        object_id = str(getattr(item, "source_object_id", None) or "")
+        logical_object_id = str(
+            getattr(item, "context", {}).get("source_logical_object_id")
+            or ""
+        )
+        source = host.state.cards.get(object_id)
+        if (
+            source is None
+            or source.zone != "battlefield"
+            or source.phased_out
+            or not logical_object_id
+            or source.logical_object_id != logical_object_id
+        ):
+            return None
+        return source.ref
     if value == "$source.controller":
         return explore_source_controller(item, host.state.cards)
     if value == "$card":

@@ -21,6 +21,10 @@ from ..compiler.counter_placement_templates import (
 from ..compiler.fixed_target_effect_sequences import (
     FIXED_TARGET_CHARACTERISTIC_KEYWORDS,
 )
+from ..compiler.fixed_source_effect_sequences import (
+    FIXED_SOURCE_SEQUENCE_MECHANIC,
+    SOURCE_ZONE_OBJECT,
+)
 from ..compiler.creature_subtypes import canonical_creature_subtype
 from ..keyword_counters import keyword_counter_mechanic
 from ..zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
@@ -1041,6 +1045,79 @@ def fixed_target_effect_sequence_node_capabilities(
     )
 
 
+def fixed_source_effect_sequence_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return ownership for one closed source-threaded counter sequence."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if (
+        target_schema is not None
+        or not {
+            FIXED_SOURCE_SEQUENCE_MECHANIC,
+            "cr-122-counters",
+            "cr-611-continuous-effects",
+        }.issubset(mechanics)
+        or not 2 <= len(effects) <= 3
+    ):
+        return ()
+    counter = effects[0]
+    if (
+        set(counter) != {"op", "card", "counter", "amount", "source"}
+        or counter.get("op") != "place_counters"
+        or counter.get("card") != SOURCE_ZONE_OBJECT
+        or type(counter.get("counter")) is not str
+        or not counter.get("counter")
+        or type(counter.get("amount")) is not int
+        or counter.get("amount", 0) <= 0
+        or counter.get("source") != "$source"
+    ):
+        return ()
+    counter_mechanic = keyword_counter_mechanic(counter.get("counter"))
+    if counter_mechanic is not None and counter_mechanic not in mechanics:
+        return ()
+    grants: set[str] = set()
+    for effect in effects[1:]:
+        operation = effect.get("op")
+        if operation == "modify_stats_until_end_of_turn":
+            if (
+                set(effect) != {"op", "card", "power", "toughness"}
+                or effect.get("card") != SOURCE_ZONE_OBJECT
+                or type(effect.get("power")) is not int
+                or type(effect.get("toughness")) is not int
+                or (
+                    effect.get("power") == 0
+                    and effect.get("toughness") == 0
+                )
+            ):
+                return ()
+            continue
+        if operation == "grant_keyword_until_end_of_turn":
+            keyword = effect.get("keyword")
+            if (
+                set(effect) != {"op", "card", "keyword"}
+                or effect.get("card") != SOURCE_ZONE_OBJECT
+                or keyword not in _FIXED_TARGET_SEQUENCE_KEYWORDS
+                or keyword in grants
+            ):
+                return ()
+            keyword_mechanic = keyword_counter_mechanic(keyword)
+            if keyword_mechanic is not None and keyword_mechanic not in mechanics:
+                return ()
+            grants.add(keyword)
+            continue
+        return ()
+    return (
+        "continuous.resolution.fixed_characteristics_until_end_of_turn",
+        *(("counter.characteristic.keyword",) if counter_mechanic else ()),
+        "counter.producer.fixed_effect",
+        "resolution.effect_sequence.fixed_source",
+    )
+
+
 def fixed_target_characteristics_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -1393,6 +1470,7 @@ __all__ = [
     "fixed_counter_placement_node_capabilities",
     "fixed_counter_placement_batch_node_capabilities",
     "fixed_target_effect_sequence_node_capabilities",
+    "fixed_source_effect_sequence_node_capabilities",
     "fixed_target_characteristics_node_capabilities",
     "fixed_counter_placement_set_node_capabilities",
     "fixed_counter_placement_target_set_node_capabilities",

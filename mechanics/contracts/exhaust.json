@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "exhaust",
+  "official_name": "Exhaust",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["400.7", "602.2", "602.5b", "702.177", "702.177a", "702.177b"],
+  "glossary_references": ["exhaust"],
+  "dependencies": ["activated-abilities", "cost-payment", "priority", "stack", "zone-changes"],
+  "coverage_status": "partial",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["the activated ability's represented active zone"],
+    "objects": ["physical source card", "current logical source incarnation", "one source-spanned activated ability identity"],
+    "events": ["advertise an unused Exhaust ability", "commit its costs and permanent per-ability use", "resolve a represented mana or stack ability"],
+    "state_reads": ["source physical and logical identity", "typed ability identity", "existing per-ability Exhaust usage journal"],
+    "state_writes": ["one canonical Exhaust usage entry committed transactionally with the activation"],
+    "costs": ["the represented activated ability's independently capability-closed cost"],
+    "timing": ["the represented activated ability's ordinary timing plus any independently compiled restriction"],
+    "targets": ["the represented activated ability's independently capability-closed target schema"],
+    "choices": ["the represented activated ability's independently capability-closed choices"],
+    "hidden_information": ["usage is authoritative state and only ordinary projected action availability is exposed"],
+    "apnap": ["ordinary multiplayer priority and stack ordering apply"],
+    "layers": [],
+    "replacement_effects": ["represented result events retain their independent replacement boundaries after the Exhaust use commits"],
+    "copy": ["copied or granted Exhaust abilities require a trusted typed ability-fragment owner"],
+    "control_change": ["a consumed Exhaust ability remains consumed when another player controls the same object"],
+    "zone_change": ["the physical card becomes a new object and its prior Exhaust usage no longer applies"],
+    "source_leaves": ["an ordinary nonmana Exhaust ability already on the stack resolves independently of its source, except for results that explicitly require the current source zone object"]
+  },
+  "variants": ["independent multiple Exhaust abilities", "fixed-output mana ability", "fixed source counter followed by one represented until-end characteristic result"],
+  "witness_cards": [
+    {"name": "Loot, the Pathfinder", "oracle_id": "68c7e459-0932-4644-a3c0-9a1eae1db7a3"},
+    {"name": "Pacesetter Paragon", "oracle_id": "1acb289f-fb7f-4d83-aaef-4e7b9462c593"}
+  ],
+  "rulings": [],
+  "test_ids": [
+    "test_exhaust_parser_and_usage_owner_are_per_ability",
+    "test_exhaust_limit_composes_with_existing_fixed_counter_effect",
+    "test_exhaust_usage_rejects_malformed_state_and_resets_on_zone_change",
+    "test_fixed_source_sequence_compiles_exact_source_spanned_activated_nodes",
+    "test_exhaust_override_wording_remains_material_residual",
+    "test_exhaust_mana_activation_is_explicit_nonreversible_and_replays",
+    "test_exhaust_usage_commit_mutant_is_killed",
+    "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
+    "test_source_sequence_rejects_stale_source_identity_without_partial_mutation",
+    "test_source_sequence_replacement_rollback_is_atomic",
+    "test_source_sequence_replacement_continuation_survives_restart"
+  ],
+  "implementation": {
+    "component": "ActivationLimit, activation_usage, typed activation query and commit, fixed and color-set mana descriptors, source-threaded effect sequence lowering, and semantic replacement continuation",
+    "version": "typed-exhaust-v1",
+    "capability_ids": ["activation.exhaust.once_per_object", "resolution.effect_sequence.fixed_source"],
+    "supported_slice": "Printed Exhaust abilities with independently closed costs and results; each printed instance may be used once by the same object. The initial harvest covers fixed-output mana and one fixed source-counter plus represented until-end characteristic sequence."
+  },
+  "known_blockers": [
+    "effects that permit an Exhaust ability to be activated again remain unsupported",
+    "triggers that observe Exhaust activations remain residual",
+    "copied, granted, removed, or layer-modified Exhaust abilities require trusted typed ability propagation",
+    "every other Exhaust result remains gated by its own effect, target, cost, and interaction capabilities"
+  ],
+  "review_status": "reviewed"
+}

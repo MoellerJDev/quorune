@@ -140,6 +140,7 @@ def complete_mana_activation(
     )
     reversible = bool(
         ability.tap_source
+        and ability.activation_limit is None
         and not sum(ability.mana.values())
         and not ability.choices
         and not any(
@@ -214,6 +215,10 @@ def _mana_plan_modes(
         for ability in host._activated_abilities(card)
         if ability.mana_ability and card.zone in ability.zones
     ]
+    if any(ability.activation_limit is not None for ability in mana_abilities):
+        raise GameRuleError(
+            f"{card.ref} has a usage-limited mana ability; activate it explicitly"
+        )
     if (
         not mana_abilities
         and not record.is_land

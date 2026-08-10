@@ -94,7 +94,8 @@
       "activate only as a sorcery",
       "activate only as an instant",
       "summoning-sickness restriction for creature tap and untap costs",
-      "once-per-turn restriction persists on the object"
+      "once-per-turn restriction persists on the object",
+      "each represented Exhaust ability may be activated only once by the same object"
     ],
     "targets": [
       "represented target schemas are selected and validated during activation"
@@ -118,10 +119,11 @@
     ],
     "control_change": [
       "battlefield activation requires current control",
-      "per-object once-per-turn history survives control change"
+      "per-object once-per-turn and Exhaust history survives control change"
     ],
     "zone_change": [
-      "ordinary cost zone changes use the authoritative move path"
+      "ordinary cost zone changes use the authoritative move path",
+      "a zone change creates a new object and resets prior Exhaust usage"
     ],
     "source_leaves": [
       "a paid nonmana activated ability remains on the stack after its source leaves"
@@ -134,6 +136,7 @@
     "tap-symbol activation",
     "untap-symbol activation",
     "once-per-turn activation",
+    "per-ability Exhaust activation",
     "sorcery-speed activation",
     "instant-speed activation",
     "opponent-made activation choice",
@@ -162,11 +165,16 @@
     "test_sorcery_and_instant_activation_instructions_use_right_timing",
     "test_zimone_cost_selection_is_validated_and_paid_by_kernel",
     "test_channel_is_exposed_from_hand_and_pays_authoritative_discounted_cost",
-    "test_divining_top_payability_and_tap_availability"
+    "test_divining_top_payability_and_tap_availability",
+    "test_exhaust_parser_and_usage_owner_are_per_ability",
+    "test_exhaust_usage_rejects_malformed_state_and_resets_on_zone_change",
+    "test_exhaust_mana_activation_is_explicit_nonreversible_and_replays",
+    "test_exhaust_usage_commit_mutant_is_killed"
   ],
   "implementation": {
-    "component": "abilities.parse_activated_abilities plus CommanderEngine activation availability, cost-payment, and stack paths",
-    "version": "activated-ability-foundation-v1"
+    "component": "abilities.parse_activated_abilities, activation_usage, typed activation query and commit, and the ordinary cost-payment, mana, and stack paths",
+    "version": "activated-ability-foundation-v2",
+    "capability_ids": ["activation.exhaust.once_per_object"]
   },
   "known_blockers": [
     "the Oracle parser recognizes selected cost and activation-instruction grammars rather than every activated ability",
@@ -176,6 +184,7 @@
     "cost-altering activated abilities do not use a generic prospective-cost effect model",
     "continuous prohibitions and activation instructions outside selected text predicates are incomplete",
     "acquired-ability provenance does not distinguish identically worded restricted abilities",
+    "effects that permit Exhaust abilities to be activated again are not represented",
     "illegal activation rollback is not represented as a universal transaction"
   ],
   "review_status": "draft"

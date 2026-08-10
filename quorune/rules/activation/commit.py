@@ -20,9 +20,15 @@ from ...counter_placement import (
     CounterPlacementRequest,
     prepare_counter_placements,
 )
+from ...errors import GameRuleError
 from ...life_state import LifeStateError, pay_life_cost
 from ...mana_activation import complete_mana_activation
 from ...mana_undo import clear_mana_undo_stack
+from ...activation_usage import (
+    ActivationUsageError,
+    activation_usage_verdict,
+    commit_activation_usage,
+)
 from ...model import StackItem, YieldPolicy
 from ...tap_state import set_permanent_tapped
 from ..action_proposals import ActivationProposal, thaw_json
@@ -423,10 +429,24 @@ def commit_activation(
         host, proposal, source, ability, response
     )
     _commit_resource_costs(host, proposal, source, ability, response)
-    if "only once each turn" in ability.effect_text.casefold():
-        once = dict(source.annotations.get("once_per_turn_activations", {}))
-        once[ability.ability_id] = host.state.turn_sequence
-        source.annotations["once_per_turn_activations"] = once
+    try:
+        commit_activation_usage(
+            source,
+            ability_id=ability.ability_id,
+            limit=ability.activation_limit,
+            turn_sequence=host.state.turn_sequence,
+        )
+        if ability.activation_limit is not None and activation_usage_verdict(
+            source,
+            ability_id=ability.ability_id,
+            limit=ability.activation_limit,
+            turn_sequence=host.state.turn_sequence,
+        ).available:
+            raise ActivationUsageError(
+                "Activation usage commit did not consume the typed limit"
+            )
+    except ActivationUsageError as exc:
+        raise GameRuleError(str(exc)) from exc
     origin = _commit_source_cost(host, source, ability)
     if ability.mana_ability:
         complete_mana_activation(

@@ -192,6 +192,7 @@
       "test_fabricate_compiler",
       "test_fixed_damage_effect_clauses",
       "test_fixed_multikind_counter_batches",
+      "test_fixed_source_effect_sequences",
       "test_fixed_target_effect_sequences",
       "test_mentor_rules",
       "test_oracle_ir",

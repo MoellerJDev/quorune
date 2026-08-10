@@ -5,6 +5,10 @@ from collections.abc import Mapping
 from typing import Any, Protocol
 
 from ...abilities import ActivatedAbility
+from ...activation_usage import (
+    ActivationUsageError,
+    activation_usage_verdict,
+)
 
 
 class ActivationConditionHost(Protocol):
@@ -78,14 +82,20 @@ def activation_condition_status(
         and host.state.active_player != seat
     ):
         return "unavailable", "only_during_your_turn"
-    if "only once each turn" in effect:
+    if ability.activation_limit is not None:
         if source is None:
             return "unresolved", "activation_source_required"
-        activations = dict(
-            source.annotations.get("once_per_turn_activations", {})
-        )
-        if activations.get(ability.ability_id) == host.state.turn_sequence:
-            return "unavailable", "already_activated_this_turn"
+        try:
+            usage = activation_usage_verdict(
+                source,
+                ability_id=ability.ability_id,
+                limit=ability.activation_limit,
+                turn_sequence=host.state.turn_sequence,
+            )
+        except ActivationUsageError:
+            return "unresolved", "malformed_activation_usage"
+        if not usage.available:
+            return "unavailable", usage.reason
     if "activate only if" not in effect:
         return "payable", None
     if "created a token this turn" in effect:

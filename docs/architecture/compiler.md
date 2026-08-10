@@ -41,6 +41,14 @@ establishes direct creature target zero, later clauses use the exact pronoun
 “it,” and printed operation order is retained. The runtime consumes only the
 resulting typed node and never reparses those Oracle sentences.
 
+`compiler/fixed_source_effect_sequences.py` owns the separate source-threaded
+two-clause grammar. It accepts one fixed positive counter placement on a
+permanent source followed by one represented fixed characteristic result until
+end of turn. Both instructions lower to `$source.zone_object`; runtime
+resolution validates the same physical and logical battlefield incarnation
+before counter replacement and again when a suspended continuation resumes.
+This production contains no card names or mechanic-specific runtime behavior.
+
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,
 then requires the source grammar, emitted effects, target relation, closed
@@ -82,6 +90,13 @@ and adding one mana of each color among controlled permanents. Each form
 lowers an immutable relative `ObjectQuerySpec`. Monocolored-only, linked-exile,
 opponent-relative, additional-condition, restricted, and side-effecting
 variants remain source-spanned residuals.
+
+Printed Exhaust prefixes lower to a typed `ActivationLimit` on each distinct
+ability. The exact reminder sentence is stripped once by the ability parser;
+neither legality nor commit reparses it. Fixed-output and color-set mana
+descriptors carry that limit, and each nonmana result still needs its own
+ordinary effect and cost closure. Wording that permits another Exhaust use
+remains a material residual.
 
 Fixed mass-damage lowering uses the same complete `ObjectQuerySpec` descriptor
 consumed by the runtime affected-set snapshot. The compiler emits ordered
