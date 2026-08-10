@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 79,
+  "registry_version": 80,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -1170,6 +1170,33 @@
       "dependency_fail_closed_rationale": "The generated optional entry-counter program cannot become trusted when canonical counter-quantity replacement is blocked.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_unleash_entry_runtime_mutation_is_killed removes the self-entry replacement effect and the accepted apply choice no longer produces its required counter.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.bloodthirst",
+      "version": 1,
+      "official_rules": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve each ordinary fixed positive integral Bloodthirst instance as a mandatory affected-object entry-counter replacement when a current opponent of the destination controller was dealt damage this turn.",
+        "inputs": ["one source-spanned printed Bloodthirst N keyword instance", "positive integral N", "same physical card proposing battlefield entry", "prospective battlefield controller", "immutable current-turn player-damage history", "complete represented zone and counter replacement set"],
+        "outputs": ["one independent conditional affected-object entry replacement per Bloodthirst instance", "replacement-aware +1/+1 counter placement by the destination controller", "canonical replacement ordering and journal", "exact replay"],
+        "exclusions": ["Bloodthirst X", "zero, negative, or nonintegral values", "granted or copied Bloodthirst outside trusted typed ability fragments", "Oracle-equivalent nonkeyword wording", "team relationships outside the current supported profiles", "unrepresented zone or counter replacement families"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.bloodthirst.BloodthirstSpec", "quorune.turn_history.opponent_was_dealt_damage_this_turn", "quorune.compiler.keyword_nodes.bloodthirst_keyword_node", "quorune.semantic_runtime.conditional_entry_counters.ConditionalSelfEntryCounterHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.semantic_runtime.zone_replacements.commit_counter_events_from_resolution"],
+      "positive_tests": ["test_fixed_bloodthirst_compiles_with_precise_spans", "test_opponent_damage_creates_mandatory_replacement_aware_entry_counters"],
+      "negative_tests": ["test_bloodthirst_models_and_descriptors_reject_malformed_values", "test_self_damage_no_damage_and_prior_turn_damage_do_not_qualify", "test_bloodthirst_x_and_invalid_values_remain_material_residuals"],
+      "interaction_tests": ["test_bloodthirst_counter_uses_canonical_quantity_replacement"],
+      "multiplayer_tests": ["test_four_player_destination_controller_fact_is_scoped_and_replays"],
+      "privacy_tests": ["test_four_player_destination_controller_fact_is_scoped_and_replays"],
+      "replay_tests": ["test_four_player_destination_controller_fact_is_scoped_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Generated Bloodthirst programs cannot become trusted when canonical counter-quantity replacement is blocked.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler and runtime mutations remove the source-spanned Bloodthirst handler or its conditional replacement and the expected entry counter is absent.",
       "blockers": [],
       "status": "trusted"
     },

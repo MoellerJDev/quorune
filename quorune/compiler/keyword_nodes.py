@@ -5,6 +5,7 @@ import re
 from typing import Any, Mapping
 
 from ..ability_fragments import CURRENT_ABILITY_FRAGMENT_COVERAGE
+from ..bloodthirst import BLOODTHIRST_MECHANIC, BloodthirstSpec
 from ..cast_timing import PRINTED_FLASH_MECHANIC
 from ..semantic_runtime.cast_costs import convoke_handler_descriptor
 from ..death_return import (
@@ -41,6 +42,7 @@ _RIOT_MECHANIC = RIOT_MECHANIC
 _MENTOR_MECHANIC = "men" + "tor"
 _PROWESS_MECHANIC = "prow" + "ess"
 _CONVOKE_MECHANIC = "con" + "voke"
+_BLOODTHIRST_MECHANIC = BLOODTHIRST_MECHANIC
 
 
 @dataclass(frozen=True, slots=True)
@@ -72,6 +74,10 @@ def keyword_node_plans(
             _CONVOKE_MECHANIC,
         )
         if mechanic in mechanics
+    ) + tuple(
+        _BLOODTHIRST_MECHANIC
+        for mechanic in mechanics
+        if mechanic == _BLOODTHIRST_MECHANIC
     ) + tuple(
         _EVOLVE_MECHANIC
         for mechanic in mechanics
@@ -107,9 +113,20 @@ def keyword_node_plans(
                 + len(match.group().rstrip()),
             )
             for match in re.finditer(r"[^,]+", material_line)
-            if match.group().strip().rstrip(".").casefold() == mechanic
+            if (
+                match.group().strip().rstrip(".").casefold() == mechanic
+                or (
+                    mechanic == _BLOODTHIRST_MECHANIC
+                    and re.fullmatch(
+                        r"Bloodthirst\s+.+",
+                        match.group().strip().rstrip("."),
+                        re.IGNORECASE,
+                    )
+                )
+            )
         )
         for mechanic in (
+            _BLOODTHIRST_MECHANIC,
             _EVOLVE_MECHANIC,
             _PERSIST_MECHANIC,
             _RIOT_MECHANIC,
@@ -155,6 +172,7 @@ def keyword_node_plans(
         for mechanic in mechanics
         if mechanic not in {
             PRINTED_FLASH_MECHANIC,
+            _BLOODTHIRST_MECHANIC,
             _FABRICATE_MECHANIC,
             _EVOLVE_MECHANIC,
             _PERSIST_MECHANIC,
@@ -258,6 +276,67 @@ def ordinary_convoke_keyword_node(
         handlers=(convoke_handler_descriptor(),) if ordinary else (),
         runtime_coverage=("typed_convoke_payment",) if ordinary else (),
         mechanics=(_CONVOKE_MECHANIC,),
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        capability_profile=(
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    )
+
+
+def bloodthirst_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    mechanics: tuple[str, ...],
+    gate: DependencyGate,
+    residual_ids: tuple[str, ...],
+) -> OracleNode | None:
+    """Lower one ordinary fixed CR 702.54a Bloodthirst instance."""
+
+    if mechanics != (_BLOODTHIRST_MECHANIC,):
+        return None
+    match = re.fullmatch(
+        r"Bloodthirst\s+(?P<amount>[1-9]\d*)\.?",
+        material_line.strip(),
+        re.IGNORECASE,
+    )
+    if match is None:
+        return OracleNode(
+            node_id=node_id,
+            kind="static_ability",
+            text=line,
+            span=span,
+            active_zone="all",
+            event="zone.change",
+            lowerable=False,
+            exact=False,
+            mechanics=mechanics,
+            residual_ids=residual_ids,
+            capability_dependencies=gate.capabilities,
+        )
+    spec = BloodthirstSpec(int(match.group("amount")))
+    return OracleNode(
+        node_id=node_id,
+        kind="static_ability",
+        text=line,
+        span=span,
+        active_zone="all",
+        event="zone.change",
+        lowerable=True,
+        exact=not residual_ids,
+        template_id="bloodthirst-opponent-damage-entry-counter-v1",
+        handlers=(spec.handler_descriptor(),),
+        runtime_coverage=("conditional_self_entry_counter",),
+        mechanics=mechanics,
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,
         capability_closure=(
@@ -733,13 +812,13 @@ def dredge_keyword_node(
 
 __all__ = [
     "KeywordNodePlan",
+    "bloodthirst_keyword_node",
     "closed_special_keyword_node",
     "dredge_keyword_node",
     "death_return_keyword_node",
     "evolve_keyword_node",
     "fabricate_keyword_node",
     "keyword_node_plans",
-    "prowess_keyword_node",
     "ordinary_convoke_keyword_node",
     "prowess_keyword_node",
     "riot_keyword_node",

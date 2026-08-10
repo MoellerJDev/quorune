@@ -3303,6 +3303,86 @@
       "applicability_note": "Reload a pending Saga entry counter-quantity ordering continuation, keep it seat scoped, commit it once, and replay the restarted record to the same hash."
     },
     {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_bloodthirst_counter_uses_canonical_quantity_replacement",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose a fixed Bloodthirst entry result with canonical counter-quantity replacement before the battlefield move commits."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_four_player_destination_controller_fact_is_scoped_and_replays",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Evaluate a four-player opponent-damage fact for the prospective destination controller, regardless of which source dealt the damage."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_bloodthirst_runtime_mutation_is_killed",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Removing the typed conditional entry replacement prevents the required Bloodthirst counter and is detected by focused runtime evidence."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "negative",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_bloodthirst_models_and_descriptors_reject_malformed_values",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject booleans, nonpositive amounts, unknown condition vocabulary, unknown descriptor fields, and malformed immutable snapshot facts."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "negative",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_bloodthirst_x_and_invalid_values_remain_material_residuals",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep Bloodthirst X and zero, negative, or otherwise unsupported values as precise material residuals."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "negative",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_self_damage_no_damage_and_prior_turn_damage_do_not_qualify",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Do not apply Bloodthirst without positive current-turn damage to a current opponent of the destination controller."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "positive",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstCompilerAndModelTests.test_fixed_bloodthirst_compiles_with_precise_spans",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile each fixed positive integral Bloodthirst instance to its own source-spanned typed static replacement program."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "positive",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_opponent_damage_creates_mandatory_replacement_aware_entry_counters",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply fixed Bloodthirst counters when any source dealt positive damage to an opponent during the current turn."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_four_player_destination_controller_fact_is_scoped_and_replays",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep unrelated opposing hands out of seat projections while the Bloodthirst spell and committed public counter result remain visible."
+    },
+    {
+      "capability_id": "counter.producer.bloodthirst",
+      "evidence_class": "replay",
+      "test_id": "tests.test_bloodthirst_rules.BloodthirstRuntimeTests.test_four_player_destination_controller_fact_is_scoped_and_replays",
+      "official_rule_ids": ["122.1", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.54", "702.54a", "702.54c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay stack resolution and the resulting Bloodthirst entry counter to the identical final authoritative state hash."
+    },
+    {
       "capability_id": "counter.producer.cumulative_upkeep_fixed_mana",
       "evidence_class": "interaction",
       "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_intervening_source_identity_and_control_change_are_respected",

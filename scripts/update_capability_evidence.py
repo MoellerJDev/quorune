@@ -38,6 +38,11 @@ LEGACY_EVIDENCE_FIELDS = {
     "replay": "replay_tests",
 }
 MUTATION_TESTS = {
+    "counter.producer.bloodthirst": (
+        "tests.test_bloodthirst_rules."
+        "BloodthirstRuntimeTests."
+        "test_bloodthirst_runtime_mutation_is_killed"
+    ),
     "counter.producer.effect_entry": (
         "tests.test_persist_undying_rules."
         "PersistUndyingRuntimeTests."

@@ -118,6 +118,7 @@ class ZoneChangeSubjectSnapshot:
     destination_controller: str | None
     object_types: tuple[str, ...]
     is_card_object: bool
+    opponent_was_dealt_damage_this_turn: bool = False
     intrinsic_entry_counters: tuple[IntrinsicEntryCounter, ...] = ()
     effect_entry_counters: tuple[EffectEntryCounter, ...] = ()
 
@@ -175,6 +176,10 @@ class ZoneChangeSubjectSnapshot:
         if type(self.is_card_object) is not bool:
             raise ZoneReplacementError(
                 "Zone replacement card-object state must be boolean"
+            )
+        if type(self.opponent_was_dealt_damage_this_turn) is not bool:
+            raise ZoneReplacementError(
+                "Zone replacement turn-history facts must be boolean"
             )
 
     @property

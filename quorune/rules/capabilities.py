@@ -108,6 +108,7 @@ _PERSIST_MECHANIC = "per" + "sist"
 _UNDYING_MECHANIC = "un" + "dying"
 _UNLEASH_MECHANIC = "un" + "leash"
 _RIOT_MECHANIC = "ri" + "ot"
+_BLOODTHIRST_MECHANIC = "blood" + "thirst"
 _BASIC_LANDWALK_MECHANICS = (
     "pl" + "ainswalk",
     "is" + "landwalk",
@@ -131,6 +132,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
         "combat.block.self_counter_prohibition",
     ),
     _RIOT_MECHANIC: ("counter.producer.riot",),
+    _BLOODTHIRST_MECHANIC: ("counter.producer.bloodthirst",),
     **{
         mechanic: ("combat.block.landwalk.basic_type",)
         for mechanic in _BASIC_LANDWALK_MECHANICS

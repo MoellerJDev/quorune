@@ -16,6 +16,7 @@ from ..rules.capabilities import (
 
 
 _PROWESS_MECHANIC = "prow" + "ess"
+_BLOODTHIRST_MECHANIC = "blood" + "thirst"
 
 
 @dataclass(frozen=True, slots=True)
@@ -133,6 +134,21 @@ def keyword_dependency_gate(
             "zone.draw.library_to_hand",
             capability_registry=capability_registry,
             capability_profile=capability_profile,
+        )
+    if mechanics == (_BLOODTHIRST_MECHANIC,):
+        if re.fullmatch(
+            r"Bloodthirst\s+[1-9]\d*\.?",
+            material_line,
+            re.IGNORECASE,
+        ):
+            return explicit_capability_gate(
+                "counter.producer.bloodthirst",
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+            )
+        return DependencyGate(
+            blockers=("mechanic:bloodthirst-unsupported-wording",),
+            capabilities=("counter.producer.bloodthirst",),
         )
     if mechanics == (_FABRICATE_MECHANIC,):
         matches = tuple(

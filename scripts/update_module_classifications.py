@@ -51,6 +51,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
     if relative in {
         "quorune/additional_cost_vocabulary.py",
         "quorune/ability_fragments.py",
+        "quorune/bloodthirst.py",
         "quorune/damage_source.py",
         "quorune/damage_modifier_state.py",
         "quorune/death_return.py",
@@ -210,6 +211,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/target_predicates.py",
         "quorune/targets.py",
         "quorune/token_creation.py",
+        "quorune/turn_history.py",
         "quorune/trigger_targeting.py",
         "quorune/trigger_processing.py",
         "quorune/object_query.py",
@@ -262,7 +264,11 @@ def _owner(relative: str, layer: str) -> str:
         return "cast_timing"
     if relative == "quorune/enchant_spec.py":
         return "aura_rules"
-    if relative in {"quorune/riot.py", "quorune/unleash.py"}:
+    if relative in {
+        "quorune/bloodthirst.py",
+        "quorune/riot.py",
+        "quorune/unleash.py",
+    }:
         return "keyword_abilities"
     if relative == "quorune/protection.py":
         return "protection"
