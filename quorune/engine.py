@@ -580,14 +580,6 @@ class CommanderEngine(
             for event in self._current_turn_history("creature_died")
         )
 
-    def _opponent_was_dealt_damage_this_turn(self, player: str) -> bool:
-        return opponent_was_dealt_damage_this_turn(
-            self.state.turn_history,
-            turn_sequence=self.state.turn_sequence,
-            player=player,
-            active_players=self.active_seats,
-        )
-
     def _object_attacked_player_this_turn(
         self,
         object_incarnation: str,
@@ -9743,7 +9735,12 @@ class CommanderEngine(
             if condition.fact == "creature_died_under_control":
                 return self._creature_died_under_control_this_turn(player)
             if condition.fact == "opponent_dealt_damage":
-                return self._opponent_was_dealt_damage_this_turn(player)
+                return opponent_was_dealt_damage_this_turn(
+                    self.state.turn_history,
+                    turn_sequence=self.state.turn_sequence,
+                    player=player,
+                    active_players=self.active_seats,
+                )
             return False
         if isinstance(condition, DeclarationSharedSubtypeCondition):
             player = self._declaration_condition_player(

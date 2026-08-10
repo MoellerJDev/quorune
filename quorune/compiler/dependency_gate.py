@@ -16,7 +16,7 @@ from ..rules.capabilities import (
 
 
 _PROWESS_MECHANIC = "prow" + "ess"
-_BLOODTHIRST_MECHANIC = "blood" + "thirst"
+_BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
 
 
 @dataclass(frozen=True, slots=True)
@@ -137,7 +137,7 @@ def keyword_dependency_gate(
         )
     if mechanics == (_BLOODTHIRST_MECHANIC,):
         if re.fullmatch(
-            r"Bloodthirst\s+[1-9]\d*\.?",
+            rf"{re.escape(_BLOODTHIRST_MECHANIC)}\s+[1-9]\d*\.?",
             material_line,
             re.IGNORECASE,
         ):

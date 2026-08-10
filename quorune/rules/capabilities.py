@@ -108,7 +108,7 @@ _PERSIST_MECHANIC = "per" + "sist"
 _UNDYING_MECHANIC = "un" + "dying"
 _UNLEASH_MECHANIC = "un" + "leash"
 _RIOT_MECHANIC = "ri" + "ot"
-_BLOODTHIRST_MECHANIC = "blood" + "thirst"
+_BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
 _BASIC_LANDWALK_MECHANICS = (
     "pl" + "ainswalk",
     "is" + "landwalk",

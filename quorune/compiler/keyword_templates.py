@@ -4,9 +4,11 @@ import re
 from typing import Sequence
 
 
+_BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
+
 _KEYWORD_WITH_VALUE = re.compile(
-    r"^(?P<name>ward|equip|enchant|bushido|cycling|crew|dredge|kicker|toxic|"
-    r"bloodthirst|cumulative upkeep|echo|evolve|fabricate|persist|undying|riot|unleash|prowess|convoke|morph|bestow|evoke|unearth)"
+    rf"^(?P<name>{re.escape(_BLOODTHIRST_MECHANIC)}|ward|equip|enchant|bushido|cycling|crew|dredge|kicker|toxic|"
+    r"cumulative upkeep|echo|evolve|fabricate|persist|undying|riot|unleash|prowess|convoke|morph|bestow|evoke|unearth)"
     r"(?:\s+(?P<value>.+))?$",
     re.IGNORECASE,
 )

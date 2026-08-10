@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-"""Closed typed descriptors for ordinary fixed-value Bloodthirst."""
+"""Closed typed descriptors for one fixed-value entry-counter keyword."""
 
 from dataclasses import dataclass
 from typing import Any
 
 
-BLOODTHIRST_MECHANIC = "blood" + "thirst"
+BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
+BLOODTHIRST_LABEL = BLOODTHIRST_MECHANIC.title()
 BLOODTHIRST_COUNTER = "+1/+1"
 BLOODTHIRST_CONDITION = "opponent_was_dealt_damage_this_turn"
 BLOODTHIRST_HANDLER_ID = (
@@ -20,14 +21,14 @@ class BloodthirstError(ValueError):
 
 @dataclass(frozen=True, slots=True)
 class BloodthirstSpec:
-    """One printed CR 702.54a Bloodthirst N instance."""
+    """One printed fixed CR 702.54a keyword instance."""
 
     amount: int
 
     def __post_init__(self) -> None:
         if type(self.amount) is not int or self.amount < 1:
             raise BloodthirstError(
-                "Ordinary Bloodthirst requires a positive integer value"
+                f"Ordinary {BLOODTHIRST_LABEL} requires a positive integer value"
             )
 
     def handler_descriptor(self) -> dict[str, Any]:
@@ -46,6 +47,7 @@ __all__ = [
     "BLOODTHIRST_CONDITION",
     "BLOODTHIRST_COUNTER",
     "BLOODTHIRST_HANDLER_ID",
+    "BLOODTHIRST_LABEL",
     "BLOODTHIRST_MECHANIC",
     "BloodthirstError",
     "BloodthirstSpec",

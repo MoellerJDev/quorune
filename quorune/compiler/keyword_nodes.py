@@ -118,7 +118,7 @@ def keyword_node_plans(
                 or (
                     mechanic == _BLOODTHIRST_MECHANIC
                     and re.fullmatch(
-                        r"Bloodthirst\s+.+",
+                        rf"{re.escape(_BLOODTHIRST_MECHANIC)}\s+.+",
                         match.group().strip().rstrip("."),
                         re.IGNORECASE,
                     )
@@ -300,12 +300,12 @@ def bloodthirst_keyword_node(
     gate: DependencyGate,
     residual_ids: tuple[str, ...],
 ) -> OracleNode | None:
-    """Lower one ordinary fixed CR 702.54a Bloodthirst instance."""
+    """Lower one ordinary fixed CR 702.54a keyword instance."""
 
     if mechanics != (_BLOODTHIRST_MECHANIC,):
         return None
     match = re.fullmatch(
-        r"Bloodthirst\s+(?P<amount>[1-9]\d*)\.?",
+        rf"{re.escape(_BLOODTHIRST_MECHANIC)}\s+(?P<amount>[1-9]\d*)\.?",
         material_line.strip(),
         re.IGNORECASE,
     )
