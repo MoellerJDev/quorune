@@ -3,6 +3,9 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from ..attachment_references import AttachmentReferenceKind
+from .counter_placement_group_templates import (
+    fixed_counter_placement_group_effect_template,
+)
 from .counter_placement_templates import (
     fixed_counter_placement_batch_effect_template,
     fixed_counter_placement_effect_template,
@@ -78,6 +81,15 @@ def typed_resolution_effect_template(
     )
     if fixed_counter_placement_set is not None:
         return fixed_counter_placement_set.compiled()
+    fixed_counter_placement_group = (
+        fixed_counter_placement_group_effect_template(
+            text,
+            card_name=card_name,
+            source_is_permanent=source_is_permanent,
+        )
+    )
+    if fixed_counter_placement_group is not None:
+        return fixed_counter_placement_group.compiled()
     fixed_counter_placement_batch = fixed_counter_placement_batch_effect_template(
         text,
         card_name=card_name,

@@ -779,8 +779,10 @@ def targeted_counter_node_capabilities(
     )
 
 
-def _fixed_counter_target_schema_is_closed(
+def fixed_counter_target_schema_is_closed(
     target_schema: Mapping[str, Any] | None,
+    *,
+    allow_commander: bool = False,
 ) -> bool:
     if target_schema is None:
         return False
@@ -793,6 +795,7 @@ def _fixed_counter_target_schema_is_closed(
         "subtypes_any",
         "controller_relation",
         "source_exclusion",
+        *(("commander",) if allow_commander else ()),
     }
     if set(schema) - allowed or (
         schema.get("zones") != ["battlefield"]
@@ -826,6 +829,10 @@ def _fixed_counter_target_schema_is_closed(
     if relation not in {"any", "you", "opponent"}:
         return False
     if "source_exclusion" in schema and schema["source_exclusion"] is not True:
+        return False
+    if "commander" in schema and (
+        schema["commander"] is not True or tuple(types) != ("creature",)
+    ):
         return False
     return True
 
@@ -874,7 +881,7 @@ def fixed_counter_placement_node_capabilities(
     if (
         "cr-115-targets" in mechanics
         and effect.get("card") == "$target.0"
-        and _fixed_counter_target_schema_is_closed(target_schema)
+        and fixed_counter_target_schema_is_closed(target_schema)
     ):
         return (
             "counter.producer.fixed_effect",
@@ -941,7 +948,7 @@ def fixed_counter_placement_batch_node_capabilities(
     if (
         "cr-115-targets" in mechanics
         and effect.get("card") == "$target.0"
-        and _fixed_counter_target_schema_is_closed(target_schema)
+        and fixed_counter_target_schema_is_closed(target_schema)
     ):
         return (*result, "target.revalidate_resolution")
     return ()
@@ -977,7 +984,7 @@ def fixed_target_effect_sequence_node_capabilities(
             or type(counter.get("amount")) is not int
             or counter.get("amount", 0) <= 0
             or counter.get("source") != "$source"
-            or not _fixed_counter_target_schema_is_closed(target_schema)
+            or not fixed_counter_target_schema_is_closed(target_schema)
         ):
             return ()
         keyword = grant.get("keyword")
@@ -1500,6 +1507,7 @@ __all__ = [
     "fixed_draw_node_capabilities",
     "fixed_counter_placement_node_capabilities",
     "fixed_counter_placement_batch_node_capabilities",
+    "fixed_counter_target_schema_is_closed",
     "fixed_target_effect_sequence_node_capabilities",
     "fixed_source_effect_sequence_node_capabilities",
     "fixed_target_characteristics_node_capabilities",

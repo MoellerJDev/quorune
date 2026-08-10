@@ -3527,6 +3527,110 @@
       "applicability_note": "Replay the four-player priority and replacement-choice journal to the identical final authoritative state hash."
     },
     {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_partial_target_revalidation_preserves_remaining_subject",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Revalidate each direct target independently, omit an illegal subject in its printed position, and commit every remaining placement through one simultaneous counter batch."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_four_player_group_replacement_is_seat_scoped_and_replays",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve repeated same-target placements and affected-controller replacement ordering in a four-player game without splitting the instruction into independent mutations."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupCompilerTests.test_fixed_counter_group_compiler_template_mutant_is_killed",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the closed group compiler production and block target revalidation to prove that the representative exact CardProgram promotion fails closed."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupCompilerTests.test_group_shape_and_dependency_mutants_fail_closed",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject reordered target placeholders, duplicate source placeholders, booleans, unknown fields, malformed optional groups, and invalid Commander predicates at capability closure."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupCompilerTests.test_unsupported_group_variants_remain_material_residuals",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep differing amounts or counter kinds, variable quantities, optional nonfinal subjects, nonpermanent sources, compound effects, unsupported predicates, and ambiguous distinctness outside the closed grammar."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_group_handler_rejects_malformed_inputs_without_mutation",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed resolved subject arrays and stale battlefield refs before the existing counter mutation owner can commit any part of the batch."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupCompilerTests.test_spell_trigger_and_activated_contexts_share_fixed_counter_group_lowering",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower one source-spanned fixed multi-subject family through spell, triggered, and activated ability contexts with the same target and counter owners."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_group_handler_commits_same_target_twice_in_one_atomic_batch",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve two separate target-word instances that legally choose the same permanent and commit both counter events atomically in instruction order."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_source_departure_skips_source_and_preserves_target_result",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Omit a source-permanent placement when the source left before resolution while preserving the independent still-legal target placement and source provenance."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_four_player_group_replacement_is_seat_scoped_and_replays",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project replacement choices only to the affected controller without authoritative object IDs, hidden zones, or continuation internals."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "property",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupCompilerTests.test_template_is_immutable_deterministic_and_order_sensitive",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prove equivalent construction is immutable and fingerprint-stable while a materially different printed subject order changes the semantic template identity."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_four_player_group_replacement_is_seat_scoped_and_replays",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the exact four-player priority, repeated-target, replacement-choice, and counter-event journal to the identical authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.fixed_permanent_group_effect",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_group_handler_rejects_malformed_inputs_without_mutation",
+      "official_rule_ids": ["115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2c", "608.2f", "608.2h", "614.16", "616.1", "903.3d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve all battlefield refs before mutation and prove one stale subject rolls the complete multi-subject instruction back to the exact precommand hash."
+    },
+    {
       "capability_id": "counter.producer.fixed_permanent_set_effect",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_counter_placement_sets.FixedCounterPlacementSetRuntimeTests.test_fixed_counter_set_suspends_for_quantity_replacement",

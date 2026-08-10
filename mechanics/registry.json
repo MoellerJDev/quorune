@@ -22,8 +22,8 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "5d73431983d30ac59749c2e0b730e8ed4c26c9b08a3f9a9f85f717068e0f15cd",
-      "version": 11
+      "sha256": "d00a0dadebb9bd54f819656704c9f099962100f7d11305f281a81c610ee3a8b8",
+      "version": 12
     },
     {
       "mechanic_id": "cr-111-tokens",
@@ -6566,15 +6566,15 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "5d73431983d30ac59749c2e0b730e8ed4c26c9b08a3f9a9f85f717068e0f15cd",
-      "contract_version": 11,
+      "contract_sha256": "d00a0dadebb9bd54f819656704c9f099962100f7d11305f281a81c610ee3a8b8",
+      "contract_version": 12,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "closed fixed-counter single-target, fixed target or source counter-and-characteristic sequence, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v13",
+      "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, fixed target or source counter-and-characteristic sequence, bounded target-set, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
+      "implementation_version": "counter-placement-transaction-v14",
       "kind": "rules_section",
       "known_blockers": [
-        "Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with optional, variable, distributed, multi-counter, dynamic, subtype-qualified, combat-qualified, modal, conditional, and compound general target-set instructions",
+        "Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions",
         "alternative, snow, hybrid, Phyrexian, zero, variable, nonmana, multiple-instance, copied, and granted cumulative upkeep remain residual; combined or modified loyalty costs and other rule-action counter producers are not yet migrated to the shared transaction",
         "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Planeswalker or Battle token entry remains outside the prospective-token boundary",
         "Read Ahead and effective copied, gained, removed, or layer-modified Saga chapter abilities remain unsupported",
@@ -6691,7 +6691,18 @@
         "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
         "test_source_sequence_rejects_stale_source_identity_without_partial_mutation",
         "test_source_sequence_replacement_rollback_is_atomic",
-        "test_source_sequence_replacement_continuation_survives_restart"
+        "test_source_sequence_replacement_continuation_survives_restart",
+        "test_spell_trigger_and_activated_contexts_share_fixed_counter_group_lowering",
+        "test_repeated_target_instances_preserve_cr_115_3_reuse_and_printed_distinctness",
+        "test_template_is_immutable_deterministic_and_order_sensitive",
+        "test_unsupported_group_variants_remain_material_residuals",
+        "test_group_shape_and_dependency_mutants_fail_closed",
+        "test_fixed_counter_group_compiler_template_mutant_is_killed",
+        "test_group_handler_commits_same_target_twice_in_one_atomic_batch",
+        "test_group_handler_rejects_malformed_inputs_without_mutation",
+        "test_source_departure_skips_source_and_preserves_target_result",
+        "test_partial_target_revalidation_preserves_remaining_subject",
+        "test_four_player_group_replacement_is_seat_scoped_and_replays"
       ],
       "trust_level": "untrusted"
     },

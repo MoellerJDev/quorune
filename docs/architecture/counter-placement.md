@@ -122,6 +122,18 @@ counter from one permanent exploring once, and ordinary single-instruction
 Proliferate over players and permanents. These paths prepare before mutation
 and can safely suspend.
 
+The same `place_counters` operation also owns one closed multi-subject family:
+two or three printed-order source/direct-target permanent subjects receive the
+same fixed positive quantity of one counter kind. Each direct target is
+revalidated independently. Repeated target instances may select the same
+permanent unless the printed wording says “another” or “a third”; those words
+compile to explicit distinctness constraints rather than a runtime Oracle-text
+check. A source that left before resolution is skipped while remaining legal
+targets still resolve. Every surviving subject enters one immutable
+replacement-aware `PlaceCountersIntent`, so APNAP choice, rollback, privacy,
+and replay reuse the existing counter transaction rather than a second
+mutation path.
+
 Intrinsic Planeswalker loyalty and Battle defense now use the same boundary.
 The card-form compiler reads the canonical parsed type set and printed integral
 characteristic once, emits a type-line-spanned CardProgram declaration, and
@@ -231,13 +243,22 @@ prose equivalents, attackers put onto the battlefield outside declaration,
 source phasing without a typed phase-out snapshot, unsupported characteristic
 families, and trigger-doubling policies remain explicit residuals.
 
-Oracle IR v54 lowers the closed reusable fixed-placement grammars through the
+Oracle IR v70 lowers the closed reusable fixed-placement grammars through the
 typed operation in spell, triggered, and activated contexts. It accepts one
 positive exact quantity of one named counter on the source, the exact named
 source, or one direct battlefield permanent target. Direct targets may use one
 permanent card type or one pinned creature subtype, a fixed controller
 relation, and source exclusion. The strict runtime handler lowers only to
 `PlaceCountersIntent`; it neither parses Oracle text nor mutates state.
+
+The v70 group grammar composes that same single-subject grammar for two or
+three source/direct-target subjects when every clause has the same counter kind
+and amount. It preserves printed subject order, explicit target reuse or
+distinctness, controller relations, an optional final target, and the exact
+typed Commander predicate used by “target commander creature.” Different
+amounts or counter kinds, variable or distributed values, optional nonfinal
+subjects, more than three subjects, ambiguous compound wording, and dynamic or
+linked quantities remain precise material residuals.
 
 Oracle IR v64 adds one closed target-threaded sequence grammar for two or three
 mandatory sentences that share direct creature target zero. Exactly one
@@ -278,8 +299,8 @@ counter transaction. Replacement ordering therefore completes for the whole
 instruction before any counter changes. Keyword counters additionally require
 their typed layer 6 characteristic capability and the independent runtime
 capability for the granted keyword. Optional, variable, repeated, duplicate,
-distributed, multi-subject, player, entry, and affected-set variants remain
-material residuals.
+  distributed, multi-subject, player, entry, and affected-set variants remain
+  material residuals.
 
 The source-threaded sequence grammar is deliberately smaller than the target
 grammar. It accepts one positive fixed source counter followed by one fixed

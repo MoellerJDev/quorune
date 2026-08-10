@@ -68,6 +68,7 @@ class FixedCounterPlacementTemplate:
     subject: CounterPlacementSubject
     permanent_type: str | None = None
     creature_subtype: str | None = None
+    commander: bool | None = None
     controller_relation: str = "any"
     exclude_source: bool = False
     attachment_relation: AttachmentReferenceKind | None = None
@@ -88,6 +89,16 @@ class FixedCounterPlacementTemplate:
             raise ValueError("Counter placement creature subtype is unsupported")
         if self.permanent_type is not None and self.creature_subtype is not None:
             raise ValueError("Counter placement requires one subject predicate")
+        if self.commander is not None and self.commander is not True:
+            raise ValueError("Counter placement commander predicate is unsupported")
+        if self.commander is not None and (
+            self.subject is not CounterPlacementSubject.TARGET
+            or self.permanent_type != "creature"
+            or self.creature_subtype is not None
+        ):
+            raise ValueError(
+                "Counter placement commander predicate requires a creature target"
+            )
         if self.controller_relation not in {"any", "you", "opponent"}:
             raise ValueError("Counter placement controller relation is unsupported")
         if self.subject is CounterPlacementSubject.SOURCE and (
@@ -118,6 +129,8 @@ class FixedCounterPlacementTemplate:
     def template_id(self) -> str:
         subject = self.subject.value
         predicate = self.permanent_type or self.creature_subtype or "permanent"
+        if self.commander:
+            predicate = f"commander-{predicate}"
         if self.subject is CounterPlacementSubject.ATTACHED:
             assert self.attachment_relation is not None
             return (
@@ -159,6 +172,8 @@ class FixedCounterPlacementTemplate:
             schema["subtypes_any"] = [self.creature_subtype]
         if self.controller_relation != "any":
             schema["controller_relation"] = self.controller_relation
+        if self.commander is not None:
+            schema["commander"] = self.commander
         if self.exclude_source:
             schema["source_exclusion"] = True
         return schema
@@ -679,7 +694,9 @@ class FixedCounterPlacementSetTemplate:
         )
 
 
-def _target_subject(subject: str) -> tuple[str | None, str | None, str, bool] | None:
+def _target_subject(
+    subject: str,
+) -> tuple[str | None, str | None, bool | None, str, bool] | None:
     match = re.fullmatch(
         r"(?P<another>another )?target (?P<kind>artifact|battle|creature|"
         r"enchantment|land|permanent|planeswalker)"
@@ -691,6 +708,7 @@ def _target_subject(subject: str) -> tuple[str | None, str | None, str, bool] | 
         relation = (match.group("relation") or "").casefold()
         return (
             match.group("kind").casefold(),
+            None,
             None,
             (
                 "you"
@@ -717,6 +735,7 @@ def _target_subject(subject: str) -> tuple[str | None, str | None, str, bool] | 
     return (
         None,
         subtype,
+        None,
         (
             "you"
             if relation == " you control"
@@ -790,13 +809,20 @@ def fixed_counter_placement_effect_template(
     target = _target_subject(subject)
     if target is None:
         return None
-    permanent_type, creature_subtype, relation, exclude_source = target
+    (
+        permanent_type,
+        creature_subtype,
+        commander,
+        relation,
+        exclude_source,
+    ) = target
     return FixedCounterPlacementTemplate(
         count=count,
         counter_name=counter_name,
         subject=CounterPlacementSubject.TARGET,
         permanent_type=permanent_type,
         creature_subtype=creature_subtype,
+        commander=commander,
         controller_relation=relation,
         exclude_source=exclude_source,
     )

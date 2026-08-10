@@ -589,6 +589,22 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_partial_target_revalidation_preserves_remaining_subject",
+      "piece_ids": ["capability.counter.producer.fixed_permanent_group_effect", "capability.target.revalidate_resolution"],
+      "capability_ids": ["counter.producer.fixed_permanent_group_effect", "target.revalidate_resolution"],
+      "interaction_order": 2,
+      "assertion": "The fixed same-kind subject group revalidates each printed direct-target instance independently and commits only the source or targets that still resolve."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_four_player_group_replacement_is_seat_scoped_and_replays",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_permanent_group_effect"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_permanent_group_effect"],
+      "interaction_order": 2,
+      "assertion": "One immutable printed-order subject group enters the canonical counter transaction, suspends for affected-seat quantity-replacement ordering, and resumes with exact replay."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_attachment_counter_replacement_is_seat_scoped_and_replays",
       "piece_ids": ["capability.attachment.reference.current_or_lki", "capability.counter.producer.fixed_attached_effect"],
       "capability_ids": ["attachment.reference.current_or_lki", "counter.producer.fixed_attached_effect"],

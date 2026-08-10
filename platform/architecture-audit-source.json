@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
   "audit": {
-    "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
+    "baseline_main_commit": "fe170e287728d2e1da39087f38963e7694e3f2eb",
     "baseline_worktree_clean": true,
-    "verified_at": "2026-08-08",
-    "phase": "typed_fixed_adapt_monstrosity_and_permanent_designations",
-    "scope_note": "The evaluated source tree adds one closed fixed self-counter keyword-action operation shared by Adapt and Monstrosity plus one identity-pinned rules-layer owner for the public noncopiable monstrous designation. The read-only handler checks the current source only during resolution, routes every +1/+1 counter through the existing replacement-aware counter transaction, and applies the designation after the final counter result even when replacement leaves zero counters. The designation survives control changes and phasing, does not copy, clears on zone change, projects publicly, and preserves historical Game Record v3 payloads while absent. Compiler v69 and capability registry v76 add bounded trusted capabilities without card-name or Oracle-ID dispatch, runtime Oracle parsing, new direct GameState-write identities, or protocol schemas. Variable or zero values, compound wording, granted or copied abilities, monstrous-matters consumers, and CR 701.37c value-reference compilation remain fail-closed."
+    "verified_at": "2026-08-10",
+    "phase": "typed_fixed_multi_subject_counter_placement",
+    "scope_note": "The evaluated source tree adds one closed fixed same-kind and same-amount counter-placement family over two or three printed-order source/direct-target permanent subjects. Compiler v70 and capability registry v77 preserve target reuse under CR 115.3, compile explicit another/a-third distinctness, revalidate each target independently, and route every surviving subject through the existing replacement-aware PlaceCountersIntent transaction. The strict runtime handler adds no GameState mutation, operation, card-name, Oracle-ID, or runtime Oracle-text path. Counter-specific capability closure is extracted from the oversized general node-shape registry into a narrow independently classified rules module. Different kinds or amounts, variable or distributed values, optional nonfinal subjects, more than three subjects, compound wording, and dynamically linked quantities remain fail-closed material residuals."
   },
   "ci": {
     "workflow": "PR",
-    "run_id": 31282459637,
-    "url": "https://github.com/MoellerJDev/quorune/actions/runs/31282459637",
+    "run_id": 31371011175,
+    "url": "https://github.com/MoellerJDev/quorune/actions/runs/31371011175",
     "status": "pass",
     "python_versions": [
       "3.12"
