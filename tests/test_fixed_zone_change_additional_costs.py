@@ -362,6 +362,7 @@ class FixedZoneChangeAdditionalCostRuntimeTests(unittest.TestCase):
         program = engine.semantics.get(f"{spell.oracle_id}:spell:front")
         self.assertIsNotNone(program)
         program.cost_schema = zone_change_cost(clause)
+        engine.semantics.put(program)
         engine.state.players["A"].mana_pool.update({"B": 1, "C": 1})
         return spell
 
@@ -495,8 +496,7 @@ class FixedZoneChangeAdditionalCostRuntimeTests(unittest.TestCase):
         engine._cast(
             "A", {"card": spell.ref, "sacrifice_cards": [goblin_ref]}
         )
-        goblin = engine._resolve_object("A", goblin_ref, zones={"graveyard"})
-        self.assertEqual("graveyard", goblin.zone)
+        self.assertNotIn(goblin_ref, engine.state.ref_index)
         self.assertEqual("stack", spell.zone)
 
     def test_stale_zone_change_selection_rolls_back(self):

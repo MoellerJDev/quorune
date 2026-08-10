@@ -1722,7 +1722,7 @@
           "module": "quorune.compiler.program_generation"
         }
       ],
-      "internal_edges": 1360,
+      "internal_edges": 1361,
       "modules": [
         {
           "fan_in": 2,
@@ -1755,7 +1755,7 @@
           "module": "quorune.activation_usage"
         },
         {
-          "fan_in": 5,
+          "fan_in": 6,
           "fan_out": 0,
           "module": "quorune.additional_cost_vocabulary"
         },
@@ -2751,7 +2751,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 2,
+          "fan_out": 3,
           "module": "quorune.replacement.replay"
         },
         {
@@ -3886,7 +3886,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 130765,
+      "logical_lines": 130786,
       "methods": {
         "dunder": 348,
         "private": 688,
@@ -4182,6 +4182,13 @@
           "physical_lines": 825
         },
         {
+          "file": "quorune/replacement/replay.py",
+          "functions_and_methods": 24,
+          "language": "python",
+          "logical_lines": 746,
+          "physical_lines": 792
+        },
+        {
           "file": "quorune/rules_scheduler.py",
           "functions_and_methods": 21,
           "language": "python",
@@ -4201,13 +4208,6 @@
           "language": "python",
           "logical_lines": 735,
           "physical_lines": 820
-        },
-        {
-          "file": "quorune/replacement/replay.py",
-          "functions_and_methods": 24,
-          "language": "python",
-          "logical_lines": 725,
-          "physical_lines": 769
         },
         {
           "file": "quorune/model.py",
@@ -6839,7 +6839,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 143007,
+      "physical_lines": 143030,
       "python_file_count": 350,
       "review_thresholds": {
         "function_logical_lines_review": 150,
