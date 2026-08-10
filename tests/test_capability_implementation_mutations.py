@@ -31,6 +31,7 @@ from quorune.rules.activation import resolution as activation_resolution
 from quorune.rules.casting import proposal as casting_proposal
 from quorune.aura import SimpleEnchantSpec
 from quorune.abilities import ActivatedAbility
+from quorune.errors import GameRuleError
 from quorune.model import CardInstance, CombatState
 from quorune import protection as protection_module
 from quorune.ability_fragments import (
@@ -579,7 +580,13 @@ class CapabilityImplementationMutationTests(unittest.TestCase):
             "create_resolution_continuous_effect",
             lambda *_args, **_kwargs: None,
         ):
-            self.assertEqual(1, resolved_power())
+            with self.assertRaisesRegex(
+                GameRuleError,
+                "Resolution continuous-effect commit returned no effect",
+            ):
+                resolved_power()
+            self.assertEqual([], engine.state.continuous_effects)
+            self.assertEqual(1, engine._numeric_stat(card.object_id, "power"))
 
     def test_damage_amount_guard_mutant_is_killed(self):
         def assert_negative_assignment_rejected() -> None:

@@ -597,7 +597,7 @@ def _parse_activated_line(
         if prefix == "exhaust"
         else (
             ActivationLimit.ONCE_PER_TURN
-            if "activate only once each turn" in effect_lower
+            if "only once each turn" in effect_lower
             else None
         )
     )
