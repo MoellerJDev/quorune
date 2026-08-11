@@ -5230,44 +5230,6 @@ class CommanderEngine(
             return
         self._grant_priority(self.state.active_player)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @staticmethod
-
-
-
-    @staticmethod
-
-
-
     def _stack_item_can_be_countered(self, item: StackItem) -> bool:
         return stack_item_can_be_countered(self, item)
 
