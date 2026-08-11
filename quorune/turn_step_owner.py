@@ -263,10 +263,15 @@ class TurnStepOwner:
         active = self.state.active_player
         if active is None:
             raise StateInvariantError("A turn has no active player")
-        if active not in self._host.active_seats:
+        if active not in self.state.players:
             raise StateInvariantError(
-                f"Inactive player {active!r} cannot enter a turn step"
+                f"A turn names unknown active player {active!r}"
             )
+
+        # CR 800.4j leaves the current turn in progress when its active player
+        # leaves a multiplayer game.  The turn therefore retains that physical
+        # player's identity through later step boundaries; priority ownership
+        # independently advances to a remaining player.
 
         self.state.phase = phase
         self.state.step = step

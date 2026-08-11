@@ -207,6 +207,21 @@ class TurnPriorityDecisionOwnerTests(unittest.TestCase):
             )
         )
 
+    def test_departed_active_player_turn_continues_through_step_boundary(self):
+        engine = self.make_engine(5001009)
+        self.assertEqual("A", engine.state.active_player)
+        engine.state.players["A"].in_game = False
+        engine.state.phase_index = TURN_STEPS.index(
+            ("postcombat_main", "main")
+        )
+
+        engine._enter_step()
+
+        self.assertEqual("A", engine.state.active_player)
+        self.assertEqual("postcombat_main", engine.state.phase)
+        self.assertEqual("main", engine.state.step)
+        self.assertEqual("B", engine.state.priority_player)
+
 
 if __name__ == "__main__":
     unittest.main()

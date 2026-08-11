@@ -6139,7 +6139,7 @@
           "functions_and_methods": 27,
           "language": "python",
           "logical_lines": 508,
-          "physical_lines": 553
+          "physical_lines": 558
         },
         {
           "file": "quorune/effect_runtime/damage_modifiers.py",
@@ -8750,7 +8750,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 154210,
+      "physical_lines": 154215,
       "python_file_count": 395,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -19578,7 +19578,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "6dff0cfd782af65fd20e5323a3b5560232a5aa0204d372fdaaff30c71ac83702",
+      "fingerprint": "f96d4cf9cbca12f1314935490fe9edf039c05c0cbcc69b0cda45e5fdd1b38a06",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -20438,8 +20438,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2642,
-      "discovered_total": 5942,
+      "conventional_ast_cases": 2643,
+      "discovered_total": 5943,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 105,
