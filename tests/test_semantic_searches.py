@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 import tempfile
 import unittest
@@ -8,8 +9,13 @@ from pathlib import Path
 
 from common import keep_all, load_assets, make_session
 from quorune import CommanderSession, GameConfig, PilotResponse
+from quorune.errors import GameRuleError
 from quorune.model import StackItem
-from quorune.record import checkpoint_envelope, replay_record
+from quorune.record import (
+    authoritative_state_hash,
+    checkpoint_envelope,
+    replay_record,
+)
 from quorune.semantics import SemanticProgram
 
 
@@ -120,8 +126,8 @@ class SemanticPrivateSearchTests(unittest.TestCase):
         self.assertNotIn(bloodghast.ref, arbiter)
 
         frame = session.state.pending_decision.continuation[
-            "semantic_frame"
-        ]
+            "selection"
+        ]["payload"]["semantic_frame"]
         self.assertEqual(item.ref, frame["stack_object"])
         self.assertEqual(
             item.semantic_key, frame["semantic_program_id"]
@@ -213,6 +219,40 @@ class SemanticPrivateSearchTests(unittest.TestCase):
                 ValueError, "CardProgram fingerprint mismatch at command"
             ):
                 replay_record(record, self.db, verify=True)
+
+    def test_search_envelope_tampering_fails_before_mutation(self):
+        session = self._session()
+        self._begin_spell(session, seat="B", name="Entomb")
+        bloodghast = self._card(session.engine, "B", "Bloodghast")
+        original = session.state.pending_decision
+        self.assertIsNotNone(original)
+        assert original is not None
+        before = authoritative_state_hash(session.state)
+
+        mutations = {
+            "actor": lambda value: value.__setitem__("actor", "A"),
+            "revision": lambda value: value.__setitem__(
+                "state_revision", value["state_revision"] + 1
+            ),
+            "source": lambda value: value.__setitem__("source_ref", "B999"),
+            "visibility": lambda value: value.__setitem__(
+                "visibility", "public"
+            ),
+            "legal refs": lambda value: value["payload"].__setitem__(
+                "legal_refs", []
+            ),
+        }
+        for label, mutate in mutations.items():
+            with self.subTest(label=label):
+                decision = copy.deepcopy(original)
+                decision.responses["B"] = {
+                    "search_card": bloodghast.ref,
+                }
+                mutate(decision.continuation["selection"])
+                with self.assertRaises(GameRuleError):
+                    with session.engine.transaction():
+                        session.engine._complete_semantic_search(decision)
+                self.assertEqual(before, authoritative_state_hash(session.state))
 
     def _three_visits(
         self,
@@ -794,7 +834,7 @@ class SemanticPrivateSearchTests(unittest.TestCase):
         fetch = next(
             ability
             for ability in engine._activated_abilities(foothills)
-            if engine._fetch_land_types(ability.effect_text)
+            if ability.library_search_types
         )
         session.commands.clear()
         session.decisions.clear()

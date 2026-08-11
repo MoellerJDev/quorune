@@ -128,7 +128,7 @@ class ExactLandFamilyTests(unittest.TestCase):
 
         self.assertEqual(
             ("basic land",),
-            engine._fetch_land_types(ability.effect_text),
+            ability.library_search_types,
         )
         options = {
             row["id"]

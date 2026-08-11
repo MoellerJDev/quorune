@@ -82,8 +82,6 @@ class ActivationProposalHost(Protocol):
 
     def _crew_candidates(self, seat: str, source: Any) -> list[Any]: ...
 
-    def _fetch_land_types(self, effect_text: str) -> tuple[str, ...]: ...
-
     def _mana_modes_for_ability(
         self, seat: str, source: Any, ability: ActivatedAbility
     ) -> list[Any]: ...
@@ -393,7 +391,7 @@ def build_activation_offer(
                 ],
             }
         ]
-    fetch_types = host._fetch_land_types(selected.effect_text)
+    fetch_types = selected.library_search_types
     if fetch_types:
         hint["search_types"] = list(fetch_types)
     payload: dict[str, Any] = {

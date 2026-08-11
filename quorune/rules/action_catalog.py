@@ -37,8 +37,6 @@ class ActionCatalogHost(Protocol):
 
     def _crew_candidates(self, seat: str, source: Any) -> list[Any]: ...
 
-    def _fetch_land_types(self, effect_text: str) -> tuple[str, ...]: ...
-
 
 def _cast_candidates(host: ActionCatalogHost, seat: str) -> list[Any]:
     player = host.state.players[seat]
@@ -189,7 +187,7 @@ def _ability_hint(
                 ],
             }
         ]
-    fetch_types = host._fetch_land_types(ability.effect_text)
+    fetch_types = ability.library_search_types
     if fetch_types:
         hint["search_types"] = list(fetch_types)
     return hint

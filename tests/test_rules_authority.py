@@ -147,7 +147,7 @@ class RulesAuthorityRegressionTests(unittest.TestCase):
         wooded = self._card(session, "B", "Wooded Foothills")
         wooded_ability = session.engine._activated_abilities(wooded)[0]
         self.assertEqual(
-            session.engine._fetch_land_types(wooded_ability.effect_text),
+            wooded_ability.library_search_types,
             ("mountain", "forest"),
         )
 
