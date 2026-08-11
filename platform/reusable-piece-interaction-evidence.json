@@ -1074,6 +1074,30 @@
       "capability_ids": ["casting.payment.convoke", "mana.activated.fixed_output"],
       "interaction_order": 3,
       "assertion": "A creature selected for Convoke is excluded from the same spell's mana-source plan, while leaving it unselected permits its represented mana ability to pay the remaining cost."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+      "piece_ids": ["capability.casting.additional_cost.fixed_counter_placement", "capability.counter.placement.quantity_replacement"],
+      "capability_ids": ["casting.additional_cost.fixed_counter_placement", "counter.placement.quantity_replacement"],
+      "interaction_order": 2,
+      "assertion": "A fixed counter-placement casting cost enters the cost-qualified counter replacement tree before mana, counters, the spell move, or the stack mutates; its affected-seat continuation survives restart and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_discard_replacement_suspends_before_mutation_and_replays",
+      "piece_ids": ["capability.casting.additional_cost.zone_change.fixed_discard", "capability.zone.change.destination_replacement"],
+      "capability_ids": ["casting.additional_cost.zone_change.fixed_discard", "zone.change.destination_replacement"],
+      "interaction_order": 2,
+      "assertion": "A private fixed discard casting cost suspends for the affected seat's competing destination replacements before the hand, mana pool, spell zone, or stack mutates; its sealed continuation survives restart and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_zone_replacement_suspends_cost_before_mutation_and_replays",
+      "piece_ids": ["capability.casting.additional_cost.fixed_sacrifice", "capability.trigger.event.normalized_zone_change", "capability.zone.change.destination_replacement"],
+      "capability_ids": ["casting.additional_cost.fixed_sacrifice", "trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
+      "interaction_order": 3,
+      "assertion": "A fixed sacrifice casting cost suspends before mutation, survives restart, commits only the replacement-selected exile transition, and dispatches one normalized final-destination zone event rather than a false graveyard event before exact replay."
     }
   ]
 }

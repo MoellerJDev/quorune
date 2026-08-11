@@ -416,6 +416,58 @@ class ReusablePieceInventoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown pieces"):
             build_reusable_piece_artifacts(**inputs)
 
+    def test_additional_cost_replacement_boundaries_are_ambient_high_risk(
+        self,
+    ) -> None:
+        policy = load_reusable_piece_policy(ROOT)
+        ambient_pairs = {
+            tuple(pair) for pair in policy["ambient_high_risk_piece_pairs"]
+        }
+        expected = {
+            (
+                "capability.casting.additional_cost.fixed_counter_placement",
+                "capability.counter.placement.quantity_replacement",
+            ): "test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+            (
+                "capability.casting.additional_cost.fixed_sacrifice",
+                "capability.trigger.event.normalized_zone_change",
+            ): "test_zone_replacement_suspends_cost_before_mutation_and_replays",
+            (
+                "capability.casting.additional_cost.fixed_sacrifice",
+                "capability.zone.change.destination_replacement",
+            ): "test_zone_replacement_suspends_cost_before_mutation_and_replays",
+            (
+                "capability.casting.additional_cost.zone_change.fixed_discard",
+                "capability.zone.change.destination_replacement",
+            ): "test_discard_replacement_suspends_before_mutation_and_replays",
+            (
+                "capability.trigger.event.normalized_zone_change",
+                "capability.zone.change.destination_replacement",
+            ): "test_zone_replacement_suspends_cost_before_mutation_and_replays",
+        }
+
+        self.assertLessEqual(set(expected), ambient_pairs)
+        interactions = load_tracked_reusable_piece_artifacts(ROOT)[
+            "interactions"
+        ]
+        rows_by_pair = {
+            tuple(row["piece_ids"]): row for row in interactions["pairs"]
+        }
+        for pair_ids, test_id in expected.items():
+            with self.subTest(pair_ids=pair_ids):
+                row = rows_by_pair[pair_ids]
+                self.assertTrue(row["high_risk"])
+                self.assertTrue(row["covered"])
+                self.assertIn(
+                    "declared_ambient_high_risk",
+                    row["applicability_bases"],
+                )
+                self.assertIn(
+                    "explicit_interaction_evidence",
+                    row["applicability_bases"],
+                )
+                self.assertIn(test_id, row["evidence_test_ids"])
+
     def test_baseline_is_snapshot_pinned_and_delta_starts_at_zero(self) -> None:
         artifacts = _artifacts()
         self.assertEqual(set(artifacts["delta"]["deltas"].values()), {0})

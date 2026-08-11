@@ -36,6 +36,7 @@ from quorune.record import (
 from quorune.replacement.replay import ReplacementContinuation
 from quorune.replacement_effects import ReplacementEffectError
 from quorune.rules.capabilities import CapabilityRegistry
+from quorune.session import CommanderSession
 
 
 REGISTRY_PATH = ROOT / "quorune" / "rules" / "capability-registry.json"
@@ -483,20 +484,41 @@ class FixedCounterAdditionalCostRuntimeTests(unittest.TestCase):
             ReplacementContinuation.from_dict(tampered)
 
         expected = 4 if "A-doc" in selected else 3
-        result = session.act(
-            "pilot:A", {"a": "choose", "replacement": selected}
-        )
-        self.assertTrue(result.ok, result.summary)
-        current_creature = engine.state.cards[creature.object_id]
-        self.assertEqual(expected, current_creature.counters["-1/-1"])
-        self.assertEqual("stack", engine.state.cards[spell.object_id].zone)
-        self.assertEqual(0, engine.state.players["A"].mana_pool["B"])
-        self.assertEqual(0, engine.state.players["A"].mana_pool["C"])
-        expected_hash = authoritative_state_hash(engine.state)
-
         with tempfile.TemporaryDirectory() as temporary:
             record_dir = Path(temporary) / "counter-cast-cost-record"
             session.save(record_dir)
+            restarted = CommanderSession.load(self.db, record_dir)
+            restarted_projector = StateProjector(
+                self.db, restarted.engine.state
+            )
+            restarted_packet = restarted_projector._decision("pilot:A")
+            self.assertIsNotNone(restarted_packet)
+            for seat in ("B", "C", "D"):
+                self.assertIsNone(
+                    restarted_projector._decision(f"pilot:{seat}")
+                )
+            restarted_selection = restarted_packet["ctx"]["options"][0]["id"]
+            self.assertEqual(selected, restarted_selection)
+            result = restarted.act(
+                "pilot:A",
+                {"a": "choose", "replacement": restarted_selection},
+            )
+            self.assertTrue(result.ok, result.summary)
+            current_creature = restarted.engine.state.cards[
+                creature.object_id
+            ]
+            self.assertEqual(expected, current_creature.counters["-1/-1"])
+            self.assertEqual(
+                "stack", restarted.engine.state.cards[spell.object_id].zone
+            )
+            self.assertEqual(
+                0, restarted.engine.state.players["A"].mana_pool["B"]
+            )
+            self.assertEqual(
+                0, restarted.engine.state.players["A"].mana_pool["C"]
+            )
+            expected_hash = authoritative_state_hash(restarted.engine.state)
+            restarted.save(record_dir)
             replay = replay_record(record_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])

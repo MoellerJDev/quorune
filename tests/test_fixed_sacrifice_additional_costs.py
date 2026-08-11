@@ -26,6 +26,7 @@ from quorune.record import (
 from quorune.replacement.replay import ReplacementContinuation
 from quorune.replacement_effects import ReplacementEffectError
 from quorune.rules.capabilities import CapabilityRegistry
+from quorune.session import CommanderSession
 from quorune.rules.casting_additional_costs import (
     AdditionalCostError,
     FixedSacrificeAdditionalCost,
@@ -538,42 +539,59 @@ class FixedSacrificeAdditionalCostRuntimeTests(unittest.TestCase):
         ):
             ReplacementContinuation.from_dict(tampered)
 
-        dispatched_destinations: list[tuple[str, str | None]] = []
-        original_dispatch = engine._dispatch_zone_change_events
-
-        def observe_dispatch(moved_card, *args, **kwargs):
-            dispatched_destinations.append(
-                (moved_card.ref, kwargs.get("destination"))
-            )
-            return original_dispatch(moved_card, *args, **kwargs)
-
-        with patch.object(
-            engine,
-            "_dispatch_zone_change_events",
-            side_effect=observe_dispatch,
-        ):
-            result = session.act(
-                "pilot:A", {"a": "choose", "replacement": selected}
-            )
-        self.assertTrue(result.ok, result.summary)
-        current_creature = engine.state.cards[creature.object_id]
-        current_spell = engine.state.cards[spell.object_id]
-        self.assertEqual("exile", current_creature.zone)
-        self.assertEqual(1, current_creature.counters["void"])
-        self.assertEqual("stack", current_spell.zone)
-        self.assertIn(
-            (current_creature.ref, "exile"),
-            dispatched_destinations,
-        )
-        self.assertNotIn(
-            (current_creature.ref, "graveyard"),
-            dispatched_destinations,
-        )
-        expected_hash = authoritative_state_hash(engine.state)
-
         with tempfile.TemporaryDirectory() as temporary:
             record_dir = Path(temporary) / "sacrifice-replacement-record"
             session.save(record_dir)
+            restarted = CommanderSession.load(self.db, record_dir)
+            restarted_engine = restarted.engine
+            restarted_projector = StateProjector(
+                self.db, restarted_engine.state
+            )
+            restarted_packet = restarted_projector._decision("pilot:A")
+            self.assertIsNotNone(restarted_packet)
+            for seat in ("B", "C", "D"):
+                self.assertIsNone(
+                    restarted_projector._decision(f"pilot:{seat}")
+                )
+            restarted_selection = restarted_packet["ctx"]["options"][0]["id"]
+            self.assertEqual(selected, restarted_selection)
+
+            dispatched_destinations: list[tuple[str, str | None]] = []
+            original_dispatch = restarted_engine._dispatch_zone_change_events
+
+            def observe_dispatch(moved_card, *args, **kwargs):
+                dispatched_destinations.append(
+                    (moved_card.ref, kwargs.get("destination"))
+                )
+                return original_dispatch(moved_card, *args, **kwargs)
+
+            with patch.object(
+                restarted_engine,
+                "_dispatch_zone_change_events",
+                side_effect=observe_dispatch,
+            ):
+                result = restarted.act(
+                    "pilot:A",
+                    {"a": "choose", "replacement": restarted_selection},
+                )
+            self.assertTrue(result.ok, result.summary)
+            current_creature = restarted_engine.state.cards[
+                creature.object_id
+            ]
+            current_spell = restarted_engine.state.cards[spell.object_id]
+            self.assertEqual("exile", current_creature.zone)
+            self.assertEqual(1, current_creature.counters["void"])
+            self.assertEqual("stack", current_spell.zone)
+            self.assertIn(
+                (current_creature.ref, "exile"),
+                dispatched_destinations,
+            )
+            self.assertNotIn(
+                (current_creature.ref, "graveyard"),
+                dispatched_destinations,
+            )
+            expected_hash = authoritative_state_hash(restarted_engine.state)
+            restarted.save(record_dir)
             replay = replay_record(record_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
