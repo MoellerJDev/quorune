@@ -35,7 +35,7 @@ class RenownSpec:
         return {
             "handler_id": "ability.trigger.renown.v1",
             "schema_version": 1,
-            "event": "damage.dealt",
+            "event": "damage.dealt.self",
             "fragment": ability_fragment_to_dict(
                 DamageKeywordTriggerSpec(
                     kind=DamageKeywordTriggerKind.RENOWN,

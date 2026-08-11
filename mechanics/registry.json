@@ -1,5 +1,5 @@
 {
-  "contract_count": 98,
+  "contract_count": 99,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -449,6 +449,12 @@
       "mechanic_id": "reach",
       "path": "mechanics/contracts/reach.json",
       "sha256": "0f0771f3524d538b74046a68a3683d77fdf6e018e4caff94be8ea142904b806e",
+      "version": 1
+    },
+    {
+      "mechanic_id": "renown",
+      "path": "mechanics/contracts/renown.json",
+      "sha256": "9210316939779be83dfb01c6a117d0ce50a6d04e5ababdc287c54495a2c44d7c",
       "version": 1
     },
     {
@@ -3828,19 +3834,47 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/renown.json",
+      "contract_sha256": "9210316939779be83dfb01c6a117d0ce50a6d04e5ababdc287c54495a2c44d7c",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.renown, quorune.permanent_designations, typed damage-result trigger dispatch, and the canonical counter-placement transaction",
+      "implementation_version": "typed-renown-counter-designation-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "becomes-renowned listeners remain separate compiler families",
+        "conditional renowned-matters static and triggered abilities remain separate residuals",
+        "granted, copied, lost, and face-down Renown requires trusted typed ability propagation",
+        "Oracle-equivalent nonkeyword wording remains unsupported",
+        "trigger-doubling policies remain outside this bounded capability",
+        "aggregate combat damage, counter placement, and triggered abilities remain incomplete"
+      ],
       "mechanic_id": "renown",
       "official_name": "Renown",
       "rule_references": [
         "702.112"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_renown_model_and_compiler_are_strict_source_spanned_and_closed",
+        "test_unsupported_renown_values_remain_material_residuals",
+        "test_renown_dependencies_and_compiler_mutation_fail_closed",
+        "test_combat_damage_to_player_triggers_counter_and_designation",
+        "test_redirected_combat_damage_to_controller_still_triggers",
+        "test_noncombat_permanent_prevented_and_already_renowned_do_not_trigger",
+        "test_intervening_condition_uses_same_logical_object_and_current_designation",
+        "test_trigger_uses_frozen_controller_and_current_source_after_control_change",
+        "test_multiple_renown_instances_only_first_resolution_changes_object",
+        "test_counter_replacement_and_zero_result_still_create_renowned_designation",
+        "test_renown_designation_failure_rolls_back_counter_placement",
+        "test_renowned_designation_survives_control_change_and_phasing",
+        "test_renowned_designation_is_strict_identity_pinned_and_zone_scoped",
+        "test_four_player_renown_trigger_is_public_and_replay_exact",
+        "test_renowned_designation_runtime_mutant_is_killed",
+        "test_renown_condition_rejects_malformed_normalized_damage"
+      ],
       "trust_level": "untrusted"
     },
     {

@@ -447,7 +447,7 @@ class RenownAbilityFragmentHandler:
     handler_id: str = RENOWN_FRAGMENT_HANDLER_ID
     schema_version: int = 1
     family: str = "ability.trigger.renown"
-    event: str = "damage.dealt"
+    event: str = "damage.dealt.self"
     rule_references: tuple[str, ...] = (
         "702.112",
         "702.112a",

@@ -102,6 +102,7 @@ class RenownCompilerTests(unittest.TestCase):
         for node in nodes:
             self.assertTrue(node.exact)
             self.assertEqual("damage.dealt.self", node.event)
+            self.assertEqual(node.event, node.handlers[0]["event"])
             self.assertEqual(
                 {
                     "field": "renown_combat_damage_player_unrenowned",
