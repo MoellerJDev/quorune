@@ -29,6 +29,16 @@ def materialize_delayed_trigger(
         visibility=list(visibility),
         context={
             **copy.deepcopy(dict(template.get("context") or {})),
+            "event": trigger.event_kind,
+            **(
+                {
+                    "source_logical_object_id": (
+                        trigger.source_logical_object_id
+                    )
+                }
+                if trigger.source_logical_object_id is not None
+                else {}
+            ),
             "delayed_trigger_ref": trigger.ref,
         },
         referred_object_ids=list(trigger.referred_object_ids),

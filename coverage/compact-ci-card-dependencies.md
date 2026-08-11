@@ -2,7 +2,7 @@
 title: "Compact CI card dependencies"
 status: "generated"
 authoritative_source: "tests/fixtures/compact-ci-fixtures.json and platform/test-shards.json"
-verified: "ec154236468df8feed0a71c4ba4535ab6a36bc8127693f63c03b587804eb9923"
+verified: "929dcabd39f985340786516f830409ee70748433f5b21aadca26dd13b7af2d82"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -20,8 +20,8 @@ Overall closure: **closed**.
 | Fixture files | 9 |
 | Cards | 227 |
 | Rulings | 467 |
-| Modules inspected | 253 |
-| Static requirements | 621 |
+| Modules inspected | 254 |
+| Static requirements | 624 |
 | Declared dynamic requirements | 0 |
 | Unresolved dynamic sites | 0 |
 | Missing cards | 0 |
@@ -44,7 +44,7 @@ Overall closure: **closed**.
 | server-replay-privacy | 14 | closed |
 | state-actions-damage | 16 | closed |
 | targets-choices-continuations | 20 | closed |
-| triggers-turns-exact-decks | 16 | closed |
+| triggers-turns-exact-decks | 17 | closed |
 | windows-compat | 10 | closed |
 
 The JSON companion contains canonical identities, fixture owners, source

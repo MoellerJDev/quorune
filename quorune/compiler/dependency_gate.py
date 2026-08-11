@@ -130,6 +130,31 @@ def _bloodthirst_dependency_gate(
     )
 
 
+def _ward_dependency_gate(
+    mechanics: tuple[str, ...],
+    material_line: str,
+    *,
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+) -> DependencyGate | None:
+    if mechanics != ("ward",):
+        return None
+    if re.fullmatch(
+        r"Ward\s+\{\d+\}\.?",
+        material_line.strip(),
+        re.IGNORECASE,
+    ):
+        return explicit_capability_gate(
+            "trigger.keyword.ward.fixed_generic",
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+        )
+    return DependencyGate(
+        blockers=("mechanic:ward-unsupported-cost",),
+        capabilities=("trigger.keyword.ward.fixed_generic",),
+    )
+
+
 def keyword_dependency_gate(
     *,
     material_line: str,
@@ -214,6 +239,13 @@ def keyword_dependency_gate(
             blockers=("mechanic:prowess-unsupported-wording",),
             capabilities=("trigger.keyword.prowess",),
         )
+    if ward := _ward_dependency_gate(
+        mechanics,
+        material_line,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    ):
+        return ward
     if mechanics in {(_PERSIST_MECHANIC,), (_UNDYING_MECHANIC,)}:
         mechanic = mechanics[0]
         if material_line.strip().rstrip(".").casefold() == mechanic:

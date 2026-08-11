@@ -7,6 +7,7 @@ from quorune.model import StackItem, TurnEntry
 from quorune.preflight import card_semantic_status
 from quorune.projection import ProjectionCursor, StateProjector
 from quorune.saga_progression import advance_active_player_sagas
+from quorune.trigger_processing import collect_ward_occurrences
 
 
 class ExactMishraClosureTests(unittest.TestCase):
@@ -956,8 +957,19 @@ class ExactMishraClosureTests(unittest.TestCase):
             ),
             targets=[throne.ref],
         )
-        ward_refs = engine._queue_ward_triggers_for_targets(targeted)
+        ward_refs = collect_ward_occurrences(engine, targeted)
         self.assertEqual(1, len(ward_refs))
+        ward_occurrence = engine.state.pending_trigger_batches[0].items[0]
+        self.assertEqual("object.became_target", ward_occurrence.normalized_event_id)
+        self.assertEqual(throne.object_id, ward_occurrence.source_object_id)
+        self.assertEqual(
+            throne.logical_object_id,
+            ward_occurrence.source_logical_object_id,
+        )
+        self.assertEqual(
+            {"schema_version": 1, "generic_cost": 2},
+            dict(ward_occurrence.event_facts["ward_spec"]),
+        )
         self.resolve_top(engine)
         self.assertEqual("semantic.choice", engine.state.pending_decision.kind)
         result = session.act(

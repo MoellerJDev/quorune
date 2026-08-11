@@ -19,6 +19,7 @@ from .draw_templates import (
 )
 from .life_templates import static_life_handler
 from .token_templates import static_additional_token_replacement_handler
+from .trigger_participation_templates import static_trigger_multiplier_handler
 from .zone_templates import static_zone_destination_replacement_handler
 
 
@@ -28,6 +29,21 @@ class StaticRuntimeTemplate:
     kind: str
     event: str
     dependency_reason: str
+
+
+def _trigger_multiplier_template(text: str) -> StaticRuntimeTemplate | None:
+    compiled = static_trigger_multiplier_handler(text)
+    if compiled is None:
+        return None
+    return StaticRuntimeTemplate(
+        compiled=compiled,
+        kind="static_ability",
+        event="continuous",
+        dependency_reason=(
+            "generic trigger multiplication depends on an untrusted "
+            "rules capability"
+        ),
+    )
 
 
 def static_runtime_template(
@@ -40,6 +56,9 @@ def static_runtime_template(
     """Select one closed static runtime production for an Oracle line."""
 
     if source_permanent:
+        trigger_multiplier = _trigger_multiplier_template(text)
+        if trigger_multiplier is not None:
+            return trigger_multiplier
         counter_quantity = (
             None
             if source_is_class

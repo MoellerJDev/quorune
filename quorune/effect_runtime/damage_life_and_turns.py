@@ -13,6 +13,7 @@ from ..destruction import destroy_permanent_refs
 from ..errors import GameRuleError
 from ..effect_contracts import effect_family_contract
 from ..semantic_runtime.intents import PlaceCountersIntent
+from ..trigger_processing import schedule_delayed_trigger
 
 
 OPERATIONS = effect_family_contract("damage-life-and-turns.v1").operations
@@ -268,7 +269,8 @@ def _apply_create_modified_token_copy(
         token = host._resolve_object(
             actor, ref, zones={"battlefield"}, controlled_only=True
         )
-        host.schedule_delayed_trigger(
+        schedule_delayed_trigger(
+            host,
             controller=controller,
             label=f"Sacrifice {token.ref}",
             event_kind="step.begin",

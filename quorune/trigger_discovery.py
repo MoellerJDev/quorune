@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 from collections.abc import Mapping, Sequence
 from typing import Any, Protocol
 
@@ -48,6 +49,12 @@ from .modular import (
 from .semantics import SemanticProgram
 from .semantic_runtime.ability_fragments import fragments_from_descriptors
 from .trigger_processing import enqueue_trigger_batch
+from .trigger_participation import (
+    StaticTriggerParticipation,
+    TriggerMultiplierPredicate,
+    TriggerMultiplierSpec,
+)
+from .util import stable_json
 
 
 _DEPARTURE_EVENTS = frozenset(
@@ -68,12 +75,6 @@ _ENTER_EVENTS = frozenset(
         "enchantment.enter",
     }
 )
-
-_CHOSEN_TYPE_TRIGGER_MULTIPLIER = (
-    "if a triggered ability of another creature you control of the chosen "
-    "type triggers, it triggers an additional time"
-)
-
 
 def _trigger_attachment_snapshot(
     host: "TriggerDiscoveryHost",
@@ -356,12 +357,12 @@ def _semantic_condition_actual(
     if field.startswith("source_annotation."):
         return source.annotations.get(field.removeprefix("source_annotation."))
     if field == "source_active_face":
+        if source.active_face:
+            return source.active_face
         record = host.card_record(source)
-        return source.active_face or (
-            record.faces[0].get("name")
-            if record is not None and record.faces
-            else None
-        )
+        if record is not None and record.faces:
+            return str(record.faces[0].get("name") or "")
+        return host._effective_card_data(source).get("name")
     return context.get(field)
 
 
@@ -583,7 +584,95 @@ def _trigger_controller(
     return source.controller
 
 
-def _additional_trigger_count(
+def trigger_multiplier_participations(
+    host: TriggerDiscoveryHost,
+    *,
+    controller: str,
+) -> tuple[StaticTriggerParticipation, ...]:
+    """Snapshot current typed multiplier sources for one trigger controller."""
+
+    values: list[StaticTriggerParticipation] = []
+    for permanent_id in host.state.players[controller].zones["battlefield"]:
+        permanent = host.state.cards[permanent_id]
+        if permanent.controller != controller or permanent.phased_out:
+            continue
+        fragments = canonical_ability_fragments(
+            host._effective_card_data(permanent).get("ability_fragments", ())
+        )
+        for spec in fragments:
+            if not isinstance(spec, TriggerMultiplierSpec):
+                continue
+            chosen_type = (
+                str(
+                    permanent.annotations.get("chosen_creature_type") or ""
+                ).strip()
+                or None
+            )
+            try:
+                values.append(
+                    StaticTriggerParticipation(
+                        source_object_id=permanent.object_id,
+                        source_logical_object_id=permanent.logical_object_id,
+                        source_controller=permanent.controller,
+                        active_zone="battlefield",
+                        spec=spec,
+                        chosen_creature_type=chosen_type,
+                    )
+                )
+            except ValueError as exc:
+                raise GameRuleError(str(exc)) from exc
+    return tuple(
+        sorted(values, key=lambda value: value.fingerprint)
+    )
+
+
+def applicable_trigger_multipliers(
+    host: TriggerDiscoveryHost,
+    *,
+    source: CardInstance,
+    controller: str,
+    event: str,
+    context: Mapping[str, Any],
+) -> tuple[StaticTriggerParticipation, ...]:
+    entering_types = {
+        str(value).casefold() for value in context.get("types", [])
+    }
+    source_types, source_subtypes, _ = host._type_parts(
+        str(host._effective_card_data(source).get("type_line") or "")
+    )
+    result: list[StaticTriggerParticipation] = []
+    for participation in trigger_multiplier_participations(
+        host,
+        controller=controller,
+    ):
+        spec = participation.spec
+        if not isinstance(spec, TriggerMultiplierSpec):
+            continue
+        applies = False
+        if (
+            spec.predicate
+            is TriggerMultiplierPredicate.ARTIFACT_OR_CREATURE_ENTERS
+        ):
+            applies = bool(
+                event in _ENTER_EVENTS
+                and entering_types.intersection({"artifact", "creature"})
+                and source.zone == "battlefield"
+            )
+        elif (
+            spec.predicate
+            is TriggerMultiplierPredicate.ANOTHER_CREATURE_OF_CHOSEN_TYPE
+        ):
+            applies = bool(
+                "creature" in source_types
+                and participation.source_object_id != source.object_id
+                and participation.chosen_creature_type in source_subtypes
+            )
+        if applies:
+            result.extend([participation] * spec.additional_count)
+    return tuple(result)
+
+
+def additional_trigger_count(
     host: TriggerDiscoveryHost,
     *,
     source: CardInstance,
@@ -591,65 +680,15 @@ def _additional_trigger_count(
     event: str,
     context: Mapping[str, Any],
 ) -> int:
-    count = 1
-    entering_types = {
-        str(value).casefold() for value in context.get("types", [])
-    }
-    if (
-        event in _ENTER_EVENTS
-        and entering_types.intersection({"artifact", "creature"})
-        and source.zone == "battlefield"
-    ):
-        count += sum(
-            1
-            for permanent_id in host.state.players[controller].zones[
-                "battlefield"
-            ]
-            if host.state.cards[permanent_id].controller == controller
-            and not host.state.cards[permanent_id].phased_out
-            and (
-                "if an artifact or creature entering causes a triggered "
-                "ability of a permanent you control to trigger, that "
-                "ability triggers an additional time"
-                in str(
-                    (
-                        host.card_record(host.state.cards[permanent_id]).oracle_text
-                        if host.card_record(host.state.cards[permanent_id])
-                        is not None
-                        else ""
-                    )
-                ).casefold()
-            )
+    return 1 + len(
+        applicable_trigger_multipliers(
+            host,
+            source=source,
+            controller=controller,
+            event=event,
+            context=context,
         )
-    source_types, source_subtypes, _ = host._type_parts(
-        str(host._effective_card_data(source).get("type_line") or "")
     )
-    if "creature" in source_types:
-        count += sum(
-            1
-            for permanent_id in host.state.players[controller].zones[
-                "battlefield"
-            ]
-            if permanent_id != source.object_id
-            if host.state.cards[permanent_id].controller == controller
-            and not host.state.cards[permanent_id].phased_out
-            and _CHOSEN_TYPE_TRIGGER_MULTIPLIER
-            in str(
-                (
-                    host.card_record(host.state.cards[permanent_id]).oracle_text
-                    if host.card_record(host.state.cards[permanent_id])
-                    is not None
-                    else ""
-                )
-            ).casefold()
-            and str(
-                host.state.cards[permanent_id].annotations.get(
-                    "chosen_creature_type", ""
-                )
-            ).casefold()
-            in source_subtypes
-        )
-    return count
 
 
 def program_has_current_ability_fragments(
@@ -728,6 +767,103 @@ def _event_programs_for_source(
     return active_zone, characteristics, programs
 
 
+def _semantic_trigger_context(
+    host: TriggerDiscoveryHost,
+    *,
+    source: CardInstance,
+    program: SemanticProgram,
+    event: str,
+    context: Mapping[str, Any],
+    active_zone: str,
+) -> dict[str, Any]:
+    stack_context = {
+        "event": event,
+        **copy.deepcopy(dict(context)),
+        **_trigger_attachment_context(host, source, program),
+        "source_zone": active_zone,
+        "intervening_condition": (
+            copy.deepcopy(dict(program.event_condition))
+            if isinstance(program.event_condition, Mapping)
+            else {}
+        ),
+        **_echo_control_context(source, program.event_condition),
+        **(
+            {"trigger_target_selection_pending": True}
+            if program.target_schema
+            else {}
+        ),
+    }
+    if "one_or_more_event_batch" in program.coverage:
+        stack_context["one_or_more_aggregation_id"] = hashlib.sha256(
+            stable_json(
+                {
+                    "event": event,
+                    "event_id": context.get("event_id"),
+                    "source_logical_object_id": source.logical_object_id,
+                    "source_ability_id": program.key,
+                }
+            ).encode("utf-8")
+        ).hexdigest()
+    if (
+        isinstance(program.event_condition, Mapping)
+        and program.event_condition.get("field")
+        == DEATH_RETURN_EVENT_CONDITION_FIELD
+    ):
+        try:
+            stack_context["death_return_counter_snapshot"] = dict(
+                death_return_counter_snapshot(source.counters)
+            )
+        except DeathReturnError as exc:
+            raise GameRuleError(str(exc)) from exc
+    if any(
+        effect.get("op") == "offer_modular_counter_transfer"
+        for effect in program.effects
+    ):
+        try:
+            counter_snapshot = modular_counter_snapshot(source.counters)
+            stack_context[MODULAR_COUNTER_SNAPSHOT_FIELD] = dict(
+                counter_snapshot
+            )
+            stack_context[MODULAR_COUNTER_COUNT_FIELD] = (
+                modular_counter_count(counter_snapshot)
+            )
+        except ModularError as exc:
+            raise GameRuleError(str(exc)) from exc
+    return stack_context
+
+
+def _trigger_multiplier_copies(
+    host: TriggerDiscoveryHost,
+    *,
+    item: StackItem,
+    source: CardInstance,
+    event: str,
+    context: Mapping[str, Any],
+) -> list[StackItem]:
+    copies: list[StackItem] = []
+    for copy_index, participation in enumerate(
+        applicable_trigger_multipliers(
+            host,
+            source=source,
+            controller=item.controller,
+            event=event,
+            context=context,
+        ),
+        start=1,
+    ):
+        copy_ref = host._next_ref("S")
+        copied = StackItem.from_dict(item.to_dict())
+        copied.stack_id = host._stable_runtime_id("stack", copy_ref)
+        copied.ref = copy_ref
+        copied.context = {
+            **copy.deepcopy(item.context),
+            "additional_trigger_copy": copy_index,
+            "additional_trigger_source": participation.to_dict(),
+        }
+        copies.append(copied)
+    return copies
+
+
 def dispatch_semantic_event(
     host: TriggerDiscoveryHost,
     event: str,
@@ -785,42 +921,14 @@ def dispatch_semantic_event(
                 )
                 return [item.ref for item in triggered]
             ref = host._next_ref("S")
-            stack_context = {
-                "event": event,
-                **copy.deepcopy(dict(context)),
-                **_trigger_attachment_context(host, source, program),
-                **_echo_control_context(source, program.event_condition),
-                **(
-                    {"trigger_target_selection_pending": True}
-                    if program.target_schema
-                    else {}
-                ),
-            }
-            if (
-                isinstance(program.event_condition, Mapping)
-                and program.event_condition.get("field")
-                == DEATH_RETURN_EVENT_CONDITION_FIELD
-            ):
-                try:
-                    stack_context["death_return_counter_snapshot"] = dict(
-                        death_return_counter_snapshot(source.counters)
-                    )
-                except DeathReturnError as exc:
-                    raise GameRuleError(str(exc)) from exc
-            if any(
-                effect.get("op") == "offer_modular_counter_transfer"
-                for effect in program.effects
-            ):
-                try:
-                    counter_snapshot = modular_counter_snapshot(source.counters)
-                    stack_context[MODULAR_COUNTER_SNAPSHOT_FIELD] = dict(
-                        counter_snapshot
-                    )
-                    stack_context[MODULAR_COUNTER_COUNT_FIELD] = (
-                        modular_counter_count(counter_snapshot)
-                    )
-                except ModularError as exc:
-                    raise GameRuleError(str(exc)) from exc
+            stack_context = _semantic_trigger_context(
+                host,
+                source=source,
+                program=program,
+                event=event,
+                context=context,
+                active_zone=active_zone,
+            )
             item = StackItem(
                 stack_id=host._stable_runtime_id("stack", ref),
                 ref=ref,
@@ -844,25 +952,15 @@ def dispatch_semantic_event(
             ):
                 continue
             triggered.append(item)
-            for copy_index in range(
-                1,
-                _additional_trigger_count(
+            triggered.extend(
+                _trigger_multiplier_copies(
                     host,
+                    item=item,
                     source=source,
-                    controller=item.controller,
                     event=event,
                     context=context,
-                ),
-            ):
-                copy_ref = host._next_ref("S")
-                copied = StackItem.from_dict(item.to_dict())
-                copied.stack_id = host._stable_runtime_id("stack", copy_ref)
-                copied.ref = copy_ref
-                copied.context = {
-                    **copy.deepcopy(item.context),
-                    "additional_trigger_copy": copy_index,
-                }
-                triggered.append(copied)
+                )
+            )
             if "consume_evoked_marker" in program.coverage:
                 source.annotations.pop("evoked", None)
     if trigger_batch is not None:
@@ -874,8 +972,11 @@ def dispatch_semantic_event(
 
 __all__ = [
     "TriggerDiscoveryHost",
+    "additional_trigger_count",
+    "applicable_trigger_multipliers",
     "dispatch_semantic_event",
     "semantic_event_condition_matches",
     "semantic_event_matches",
     "semantic_event_value",
+    "trigger_multiplier_participations",
 ]

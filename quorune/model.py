@@ -465,6 +465,7 @@ class DelayedTrigger:
     event_kind: str
     condition: dict[str, Any]
     stack_template: dict[str, Any]
+    source_logical_object_id: str | None = None
     once: bool = True
     created_turn_sequence: int = 0
     expires_turn_sequence: int | None = None
@@ -484,6 +485,8 @@ class DelayedTrigger:
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
+        if self.source_logical_object_id is None:
+            payload.pop("source_logical_object_id")
         if not self.referred_object_ids:
             payload.pop("referred_object_ids")
         return payload

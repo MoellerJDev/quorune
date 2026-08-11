@@ -19,6 +19,7 @@ from ..ability_fragments import (
 from ..enchant_spec import SimpleEnchantSpec
 from ..enchant_spec import LinkedGraveyardCreatureEnchantSpec
 from ..rules.capabilities import load_default_capability_registry
+from ..trigger_participation import TriggerMultiplierSpec, WardSpec
 from .component_registry import RuntimeComponentRegistry, exact_fields
 from .context import SemanticNodeError
 
@@ -38,6 +39,10 @@ DETHRONE_FRAGMENT_HANDLER_ID = "ability.trigger.dethrone.v1"
 TRAINING_FRAGMENT_HANDLER_ID = "ability.trigger.training.v1"
 RENOWN_FRAGMENT_HANDLER_ID = "ability.trigger.renown.v1"
 PROWESS_FRAGMENT_HANDLER_ID = "ability.trigger.prowess.v1"
+TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID = (
+    "ability.static.trigger-multiplier.v1"
+)
+WARD_FRAGMENT_HANDLER_ID = "ability.trigger.ward.v1"
 
 
 def _fragment(
@@ -522,6 +527,65 @@ class ProwessAbilityFragmentHandler:
         return (self.validate(descriptor),)
 
 
+@dataclass(frozen=True, slots=True)
+class TriggerMultiplierAbilityFragmentHandler:
+    handler_id: str = TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.trigger_multiplier"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("603.2d",)
+    capability_dependencies: tuple[str, ...] = (
+        "trigger.multiplier.artifact_or_creature_enters",
+        "trigger.multiplier.another_creature_of_chosen_type",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> TriggerMultiplierSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=TriggerMultiplierSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
+class WardAbilityFragmentHandler:
+    handler_id: str = WARD_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.trigger.ward"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("603.3", "702.21", "702.21a")
+    capability_dependencies: tuple[str, ...] = (
+        "trigger.keyword.ward.fixed_generic",
+    )
+
+    def validate(self, descriptor: Mapping[str, Any]) -> WardSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=WardSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
 class AbilityFragmentRegistry(
     RuntimeComponentRegistry[object, StaticAbilityFragment]
 ):
@@ -545,6 +609,8 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             ProwessAbilityFragmentHandler(),
             RenownAbilityFragmentHandler(),
             TrainingAbilityFragmentHandler(),
+            TriggerMultiplierAbilityFragmentHandler(),
+            WardAbilityFragmentHandler(),
         )
     )
     registry.require_registered_capabilities(
@@ -579,6 +645,8 @@ __all__ = [
     "TRAINING_FRAGMENT_HANDLER_ID",
     "RENOWN_FRAGMENT_HANDLER_ID",
     "PROWESS_FRAGMENT_HANDLER_ID",
+    "TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID",
+    "WARD_FRAGMENT_HANDLER_ID",
     "EnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
@@ -591,6 +659,8 @@ __all__ = [
     "TrainingAbilityFragmentHandler",
     "RenownAbilityFragmentHandler",
     "ProwessAbilityFragmentHandler",
+    "TriggerMultiplierAbilityFragmentHandler",
+    "WardAbilityFragmentHandler",
     "ProtectionAbilityFragmentHandler",
     "AbilityFragmentRegistry",
     "default_ability_fragment_registry",

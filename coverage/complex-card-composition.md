@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "e44ff80dbacccd19a7ee74626f9b06c231b3663b9e93475cbf5d188728a53424"
+verified: "b9720333f03ffdbe4303a45904cf3bf0c5acad99eda938f7d14c3d0b461882f1"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -25,10 +25,10 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Dion, Bahamut's Dominant // Bahamut, Warden of Light | 186 | 22 | 6 | 7 | 8 | 10 | `blocked` |
 | Elesh Norn // The Argent Etchings | 182 | 20 | 7 | 7 | 11 | 2 | `blocked` |
 | Conqueror's Galleon // Conqueror's Foothold | 181 | 23 | 6 | 7 | 5 | 14 | `blocked` |
+| Jin-Gitaxias // The Great Synthesis | 180 | 19 | 6 | 7 | 10 | 6 | `blocked` |
 | Invasion of Zendikar // Awakened Skyclave | 178 | 20 | 5 | 5 | 6 | 18 | `blocked` |
 | Ojer Axonil, Deepest Might // Temple of Power | 178 | 22 | 7 | 6 | 8 | 6 | `blocked` |
 | Sorin of House Markov // Sorin, Ravenous Neonate | 178 | 19 | 4 | 7 | 10 | 19 | `blocked` |
-| Jin-Gitaxias // The Great Synthesis | 177 | 19 | 5 | 7 | 11 | 6 | `blocked` |
 | Urabrask // The Great Work | 176 | 19 | 6 | 7 | 10 | 4 | `blocked` |
 | Invasion of Fiora // Marchesa, Resolute Monarch | 175 | 17 | 5 | 7 | 6 | 17 | `blocked` |
 | Grist, Voracious Larva // Grist, the Plague Swarm | 170 | 22 | 5 | 5 | 8 | 14 | `blocked` |

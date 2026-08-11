@@ -32,6 +32,7 @@ from ...activation_usage import (
 from ...model import StackItem, YieldPolicy
 from ...replacement.immutable import thaw_value
 from ...tap_state import set_permanent_tapped
+from ...trigger_processing import collect_ward_occurrences
 from ..action_proposals import ActivationProposal, thaw_json
 from .model import ActivationProposalError
 
@@ -78,8 +79,6 @@ class ActivationCommitHost(Protocol):
     def _stable_runtime_id(self, kind: str, ref: str) -> str: ...
 
     def display_name(self, object_id: str) -> str: ...
-
-    def _queue_ward_triggers_for_targets(self, item: StackItem) -> Any: ...
 
     def _log(self, actor: str | None, code: str, summary: str, details: Any = None, **kwargs: Any) -> None: ...
 
@@ -487,7 +486,7 @@ def commit_activation(
         crew_context,
     )
     host.state.stack.append(item)
-    host._queue_ward_triggers_for_targets(item)
+    collect_ward_occurrences(host, item)
     host._log(
         proposal.seat,
         "stack.activate",

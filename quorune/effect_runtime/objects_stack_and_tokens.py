@@ -24,6 +24,7 @@ from ..continuous_effect_state import (
 from ..errors import GameRuleError
 from ..effect_contracts import effect_family_contract
 from ..util import unique_preserving_order
+from ..trigger_processing import schedule_delayed_trigger
 
 
 OPERATIONS = effect_family_contract("objects-stack-and-tokens.v1").operations
@@ -78,7 +79,8 @@ def _apply_delayed_trigger(
     source_id = None
     if source:
         source_id = host._resolve_object(actor, str(source)).object_id
-    return host.schedule_delayed_trigger(
+    return schedule_delayed_trigger(
+        host,
         controller=str(effect.get("controller") or actor),
         label=str(effect["label"]),
         event_kind=str(effect.get("event") or "step.begin"),

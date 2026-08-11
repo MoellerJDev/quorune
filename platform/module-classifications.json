@@ -1692,6 +1692,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/trigger_participation_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/unlock_frontier.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -2136,7 +2151,7 @@
     {
       "file": "quorune/delayed_triggers.py",
       "layer": "rules",
-      "owning_subsystem": "delayed_triggers",
+      "owning_subsystem": "trigger_processing",
       "allowed_dependency_layers": [
         "domain",
         "rules",
@@ -5319,13 +5334,25 @@
     {
       "file": "quorune/trigger_discovery.py",
       "layer": "rules",
-      "owning_subsystem": "legacy_rules",
+      "owning_subsystem": "trigger_processing",
       "allowed_dependency_layers": [
         "domain",
         "rules",
         "semantics"
       ],
       "game_state_access": "mutable_owner",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/trigger_participation.py",
+      "layer": "domain",
+      "owning_subsystem": "trigger_processing",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
       "card_specificity_policy": "generic_no_growth",
       "visibility_sensitivity": "authoritative_internal",
       "replay_participation": "none"
@@ -5609,5 +5636,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "0f972e8fe1ab883abc6fac8cc10e1a68e261f754259408ce39e2ef2292b41878"
+  "fingerprint": "e11bae0a5c70c74220cb0b882cbc58aa8b1bbb0fce0bcb2e1772f4c574867b67"
 }

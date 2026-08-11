@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "52064bf9471e627be52def496e89472c9cd0cc65dbc7a920b363fb8f5c621593",
-  "declaration_source_fingerprint": "7b869cbacbe072100b6d377b2744cb9fcbe4ed7e1291b120579d1eb216f103c9",
+  "registry_fingerprint": "248ee4c14543155f2599125a6bf30f28b5293c9dbabdba7610f3371a5a128d14",
+  "declaration_source_fingerprint": "99c4084005bae90efe9f8ba86a2bc2a76c88deefe5238129300b1d21c446a970",
   "declarations": [
     {
       "capability_id": "activation.crew.fixed_power",
@@ -26685,6 +26685,314 @@
       "applicability_note": "Replay trigger placement and the identity-locked until-end-of-turn characteristic result to the same final hash."
     },
     {
+      "capability_id": "trigger.keyword.ward.fixed_generic",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiple_ward_instances_and_control_change_use_current_state",
+      "official_rule_ids": [
+        "603.3",
+        "702.21",
+        "702.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Discover each effective Ward instance using its current controller and current opponent relation."
+    },
+    {
+      "capability_id": "trigger.keyword.ward.fixed_generic",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiple_ward_instances_and_control_change_use_current_state",
+      "official_rule_ids": [
+        "603.3",
+        "702.21",
+        "702.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Route two current Ward instances to a third-seat controller in a four-player game."
+    },
+    {
+      "capability_id": "trigger.keyword.ward.fixed_generic",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_ward_unsupported_costs_remain_residual_and_removed_ability_does_not_trigger",
+      "official_rule_ids": [
+        "603.3",
+        "702.21",
+        "702.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a mutant that restores Ward after the current layer-6 fragment was removed."
+    },
+    {
+      "capability_id": "trigger.keyword.ward.fixed_generic",
+      "evidence_class": "negative",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_ward_unsupported_costs_remain_residual_and_removed_ability_does_not_trigger",
+      "official_rule_ids": [
+        "603.3",
+        "702.21",
+        "702.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Leave nonmana Ward residual and suppress an instance removed from current effective abilities."
+    },
+    {
+      "capability_id": "trigger.keyword.ward.fixed_generic",
+      "evidence_class": "positive",
+      "test_id": "tests.test_exact_mishra_closure.ExactMishraClosureTests.test_roaming_throne_type_trigger_multiplier_and_ward",
+      "official_rule_ids": [
+        "603.3",
+        "702.21",
+        "702.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Create and resolve one typed fixed-generic Ward occurrence through the ordinary trigger batch."
+    },
+    {
+      "capability_id": "trigger.keyword.ward.fixed_generic",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiple_ward_instances_and_control_change_use_current_state",
+      "official_rule_ids": [
+        "603.3",
+        "702.21",
+        "702.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project public Ward costs and controller without exposing either opponent's private hand."
+    },
+    {
+      "capability_id": "trigger.keyword.ward.fixed_generic",
+      "evidence_class": "replay",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_ward_occurrence_replays_exactly",
+      "official_rule_ids": [
+        "603.3",
+        "702.21",
+        "702.21a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay fixed-generic Ward placement, priority passes, and declined payment to the same state hash."
+    },
+    {
+      "capability_id": "trigger.multiplier.another_creature_of_chosen_type",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_source_change_and_ability_removal_are_effective",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use the shared current-control, phasing, and effective layer-6 participation boundary for chosen-type multipliers."
+    },
+    {
+      "capability_id": "trigger.multiplier.another_creature_of_chosen_type",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_chosen_type_multiplier_runs_in_four_player_apnap_batch",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Place the source-pinned chosen-type copy in the ordinary four-player APNAP occurrence batch."
+    },
+    {
+      "capability_id": "trigger.multiplier.another_creature_of_chosen_type",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_source_change_and_ability_removal_are_effective",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill restoration of a typed multiplier after its effective ability was removed."
+    },
+    {
+      "capability_id": "trigger.multiplier.another_creature_of_chosen_type",
+      "evidence_class": "negative",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_chosen_type_multiplier_excludes_self_and_wrong_type",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject the multiplier source itself, noncreatures, and creatures outside the current chosen type."
+    },
+    {
+      "capability_id": "trigger.multiplier.another_creature_of_chosen_type",
+      "evidence_class": "positive",
+      "test_id": "tests.test_trigger_processing_owner.TriggerParticipationCompilerTests.test_chosen_type_multiplier_compiles_and_uses_effective_fragment",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower the closed chosen-creature-type multiplier sentence with explicit self exclusion."
+    },
+    {
+      "capability_id": "trigger.multiplier.another_creature_of_chosen_type",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_occurrence_projection_contains_no_hidden_cards",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use the shared public multiplier occurrence projection without opposing private card references."
+    },
+    {
+      "capability_id": "trigger.multiplier.another_creature_of_chosen_type",
+      "evidence_class": "replay",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_occurrence_replays_exactly",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use the shared immutable multiplier occurrence representation during exact replay."
+    },
+    {
+      "capability_id": "trigger.multiplier.artifact_or_creature_enters",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_source_change_and_ability_removal_are_effective",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Recompute participation from current control, phasing, and layer-6 effective ability fragments."
+    },
+    {
+      "capability_id": "trigger.multiplier.artifact_or_creature_enters",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiple_multiplier_sources_share_apnap_occurrence_batch",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Create one source-pinned copy per applicable multiplier in the ordinary four-player APNAP occurrence batch."
+    },
+    {
+      "capability_id": "trigger.multiplier.artifact_or_creature_enters",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_source_change_and_ability_removal_are_effective",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a mutant that restores a multiplier fragment removed by the current layer-6 characteristic result."
+    },
+    {
+      "capability_id": "trigger.multiplier.artifact_or_creature_enters",
+      "evidence_class": "negative",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_enter_multiplier_ignores_unrepresented_events_and_types",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Do not multiply spell-cast, leave, or nonartifact/noncreature entry facts outside the represented predicate."
+    },
+    {
+      "capability_id": "trigger.multiplier.artifact_or_creature_enters",
+      "evidence_class": "positive",
+      "test_id": "tests.test_trigger_processing_owner.TriggerParticipationCompilerTests.test_artifact_creature_enter_multiplier_compiles_with_precise_span",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower the closed artifact-or-creature-enter multiplier sentence to one typed source-spanned static fragment."
+    },
+    {
+      "capability_id": "trigger.multiplier.artifact_or_creature_enters",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_occurrence_projection_contains_no_hidden_cards",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose public multiplier provenance without disclosing opposing private hand objects."
+    },
+    {
+      "capability_id": "trigger.multiplier.artifact_or_creature_enters",
+      "evidence_class": "replay",
+      "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_occurrence_replays_exactly",
+      "official_rule_ids": [
+        "603.2d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay an explicitly ordered multiplied occurrence batch to the same authoritative state hash."
+    },
+    {
       "capability_id": "trigger.placement.apnap",
       "evidence_class": "interaction",
       "test_id": "tests.test_combat_damage_rules.CombatDamageRuleTests.test_damage_and_resulting_death_triggers_share_one_order_batch",
@@ -28300,5 +28608,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "f84889ee38fe2c3bfc64da2643cbf7a94540351c9ca37fad6388dcbc3a64db41"
+  "fingerprint": "2a42963aae08ac4bf1a798f9433ed6c06f2ba534b6f9728640c10edcdb605c55"
 }

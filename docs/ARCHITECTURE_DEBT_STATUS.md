@@ -2,7 +2,7 @@
 title: "Architecture debt status"
 status: "generated"
 authoritative_source: "coverage/architecture-audit.json"
-verified: "901abeb2813fc096df5a0bb818070b3bd74563d3e92c3ee51624c90577146f3f"
+verified: "039d7950c13ef80821f2c215c5eafd86a7f2448c74fc663f13d2fa5289929110"
 audience: "maintainers and rules contributors"
 maintenance: "generated"
 generated_source: "coverage/architecture-audit.json"
@@ -11,15 +11,15 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_architecture_audi
 
 # Architecture debt status
 
-Source fingerprint: `901abeb2813fc096df5a0bb818070b3bd74563d3e92c3ee51624c90577146f3f`
+Source fingerprint: `039d7950c13ef80821f2c215c5eafd86a7f2448c74fc663f13d2fa5289929110`
 
 ## Current top-level state
 
-- Production logical lines: `139020`
-- Engine logical lines: `11696`
-- Direct GameState-write heuristic: `128`
+- Production logical lines: `139801`
+- Engine logical lines: `11522`
+- Direct GameState-write heuristic: `127`
 - Registered typed semantic handlers: `98`
-- Registered runtime components: `42`
+- Registered runtime components: `44`
 - Oversized production modules: `5`
 
 ## Top blockers
@@ -27,7 +27,6 @@ Source fingerprint: `901abeb2813fc096df5a0bb818070b3bd74563d3e92c3ee51624c905771
 - Missing dedicated owner: `turn_priority_and_decisions`.
 - Missing dedicated owner: `zones_and_object_identity`.
 - Missing dedicated owner: `search_target_and_choice`.
-- Missing dedicated owner: `trigger_processing`.
 
 Complete module, symbol, ownership, test, and documentation inventories are in the [machine-readable architecture audit](../coverage/architecture-audit.json).
 

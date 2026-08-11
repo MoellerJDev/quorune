@@ -11,6 +11,7 @@ from .enchant_spec import (
     LinkedGraveyardCreatureEnchantSpec,
     SimpleEnchantSpec,
 )
+from .trigger_participation import TriggerMultiplierSpec, WardSpec
 from .util import stable_json
 
 
@@ -522,6 +523,8 @@ StaticAbilityFragment: TypeAlias = (
     | CombatKeywordTriggerSpec
     | DamageKeywordTriggerSpec
     | SpellCastKeywordTriggerSpec
+    | TriggerMultiplierSpec
+    | WardSpec
 )
 
 
@@ -544,6 +547,10 @@ def ability_fragment_to_dict(
         kind = "damage_keyword_trigger"
     elif isinstance(fragment, SpellCastKeywordTriggerSpec):
         kind = "spell_cast_keyword_trigger"
+    elif isinstance(fragment, TriggerMultiplierSpec):
+        kind = "trigger_multiplier"
+    elif isinstance(fragment, WardSpec):
+        kind = "ward"
     else:
         raise AbilityFragmentError(
             f"Unsupported ability fragment {type(fragment).__name__}"
@@ -580,6 +587,10 @@ def ability_fragment_from_dict(
         return DamageKeywordTriggerSpec.from_dict(value["value"])
     if value["kind"] == "spell_cast_keyword_trigger":
         return SpellCastKeywordTriggerSpec.from_dict(value["value"])
+    if value["kind"] == "trigger_multiplier":
+        return TriggerMultiplierSpec.from_dict(value["value"])
+    if value["kind"] == "ward":
+        return WardSpec.from_dict(value["value"])
     raise AbilityFragmentError(
         f"Unsupported ability fragment kind {value['kind']!r}"
     )
@@ -601,6 +612,8 @@ def canonical_ability_fragments(
                 CombatKeywordTriggerSpec,
                 DamageKeywordTriggerSpec,
                 SpellCastKeywordTriggerSpec,
+                TriggerMultiplierSpec,
+                WardSpec,
             ),
         )
         else ability_fragment_from_dict(value)
@@ -748,6 +761,8 @@ __all__ = [
     "SpellCastKeywordTriggerKind",
     "SpellCastKeywordTriggerSpec",
     "StaticAbilityFragment",
+    "TriggerMultiplierSpec",
+    "WardSpec",
     "ability_fragment_from_dict",
     "ability_fragment_to_dict",
     "canonical_ability_fragments",

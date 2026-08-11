@@ -68,6 +68,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/replacement/immutable.py",
         "quorune/riot.py",
         "quorune/trigger_batches.py",
+        "quorune/trigger_participation.py",
         "quorune/unleash.py",
     }:
         return "domain"
@@ -320,10 +321,11 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/life_state.py",
     }:
         return "life_state"
-    if relative == "quorune/delayed_triggers.py":
-        return "delayed_triggers"
     if relative in {
+        "quorune/delayed_triggers.py",
         "quorune/trigger_batches.py",
+        "quorune/trigger_discovery.py",
+        "quorune/trigger_participation.py",
         "quorune/trigger_processing.py",
         "quorune/trigger_targeting.py",
     }:
