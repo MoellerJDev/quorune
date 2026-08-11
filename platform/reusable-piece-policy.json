@@ -129,6 +129,10 @@
     ["stack_resolution", "triggers"]
   ],
   "ambient_high_risk_piece_pairs": [
+    ["capability.casting.additional_cost.fixed_counter_placement", "capability.counter.placement.quantity_replacement"],
+    ["capability.casting.additional_cost.fixed_sacrifice", "capability.trigger.event.normalized_zone_change"],
+    ["capability.casting.additional_cost.fixed_sacrifice", "capability.zone.change.destination_replacement"],
+    ["capability.casting.additional_cost.zone_change.fixed_discard", "capability.zone.change.destination_replacement"],
     ["capability.combat.attack.vigilance", "capability.counter.characteristic.keyword"],
     ["capability.combat.block.flying", "capability.counter.characteristic.keyword"],
     ["capability.combat.block.menace", "capability.counter.characteristic.keyword"],
@@ -145,7 +149,8 @@
     ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
     ["capability.counter.placement.quantity_replacement", "capability.counter.producer.riot"],
     ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
-    ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"]
+    ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"],
+    ["capability.trigger.event.normalized_zone_change", "capability.zone.change.destination_replacement"]
   ],
   "complex_card_weights": {
     "distinct_piece": 3,

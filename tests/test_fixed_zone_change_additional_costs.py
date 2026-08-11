@@ -26,6 +26,7 @@ from quorune.record import (
 from quorune.replacement.replay import ReplacementContinuation
 from quorune.replacement_effects import ReplacementEffectError
 from quorune.rules.capabilities import CapabilityRegistry
+from quorune.session import CommanderSession
 from quorune.rules.casting_additional_costs import (
     AdditionalCostError,
     FixedZoneChangeAdditionalCost,
@@ -616,17 +617,34 @@ class FixedZoneChangeAdditionalCostRuntimeTests(unittest.TestCase):
         with self.assertRaisesRegex(ReplacementEffectError, "continuation event"):
             ReplacementContinuation.from_dict(tampered)
 
-        result = session.act(
-            "pilot:A", {"a": "choose", "replacement": selected}
-        )
-        self.assertTrue(result.ok, result.summary)
-        self.assertEqual("exile", engine.state.cards[paid.object_id].zone)
-        self.assertEqual("stack", engine.state.cards[spell.object_id].zone)
-        expected_hash = authoritative_state_hash(engine.state)
-
         with tempfile.TemporaryDirectory() as temporary:
             record_dir = Path(temporary) / "discard-replacement-record"
             session.save(record_dir)
+            restarted = CommanderSession.load(self.db, record_dir)
+            restarted_projector = StateProjector(
+                self.db, restarted.engine.state
+            )
+            restarted_packet = restarted_projector._decision("pilot:A")
+            self.assertIsNotNone(restarted_packet)
+            for seat in ("B", "C", "D"):
+                self.assertIsNone(
+                    restarted_projector._decision(f"pilot:{seat}")
+                )
+            restarted_selection = restarted_packet["ctx"]["options"][0]["id"]
+            self.assertEqual(selected, restarted_selection)
+            result = restarted.act(
+                "pilot:A",
+                {"a": "choose", "replacement": restarted_selection},
+            )
+            self.assertTrue(result.ok, result.summary)
+            self.assertEqual(
+                "exile", restarted.engine.state.cards[paid.object_id].zone
+            )
+            self.assertEqual(
+                "stack", restarted.engine.state.cards[spell.object_id].zone
+            )
+            expected_hash = authoritative_state_hash(restarted.engine.state)
+            restarted.save(record_dir)
             replay = replay_record(record_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
