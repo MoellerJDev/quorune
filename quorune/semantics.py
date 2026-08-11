@@ -30,6 +30,7 @@ VALID_EFFECT_OPERATIONS = {
     "add_type",
     "add_subtype",
     "add_type_until_end_of_turn",
+    "set_types_until_end_of_turn",
     "add_subtype_until_end_of_turn",
     "prepare_graveyard_creature_aura",
     "reanimate_attached_creature_aura",

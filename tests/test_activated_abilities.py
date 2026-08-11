@@ -372,7 +372,7 @@ class ActivatedAbilityAndCostTests(unittest.TestCase):
 
         self.assertEqual((), abilities)
 
-    def test_crew_keyword_compiles_without_a_card_name_override(self):
+    def test_legacy_crew_parser_remains_card_agnostic_for_v3_compatibility(self):
         abilities = parse_activated_abilities(
             card_name="Example Vehicle",
             oracle_text="Crew 3",

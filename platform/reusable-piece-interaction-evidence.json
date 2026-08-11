@@ -509,6 +509,14 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_current_effective_power_and_source_exclusion_share_one_cost_owner",
+      "piece_ids": ["capability.activation.crew.fixed_power", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "mechanic.cr-611-continuous-effects", "mechanic.crew"],
+      "capability_ids": ["activation.crew.fixed_power", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
+      "interaction_order": 4,
+      "assertion": "Ordinary Crew validates one source-excluding set against current effective signed power, commits its tap cost, and resolves through the canonical layer-4 until-end-of-turn owner."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_generic_cycling_discards_before_stack_draw_and_replays_exactly",
       "piece_ids": ["capability.activation.cycling.hand", "capability.trigger.event.normalized_zone_change", "capability.zone.draw.library_to_hand", "mechanic.cr-121-drawing-a-card", "mechanic.cycling"],
       "capability_ids": ["activation.cycling.hand", "trigger.event.normalized_zone_change", "zone.draw.library_to_hand"],

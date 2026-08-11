@@ -78,6 +78,12 @@ from .counter_state import (
     commit_counter_changes,
     plan_counter_changes,
 )
+from .crew import (
+    CrewAbilityError,
+    CrewCandidate,
+    crew_candidates as current_crew_candidates,
+    pay_crew_cost,
+)
 from .combat_constraints import (
     DeclarationConstraintError,
     DeclarationProblem,
@@ -237,7 +243,7 @@ from .replacement_decisions import (
     issue_combat_damage_replacement_choice,
 )
 from .replacement_effects import ReplacementChoiceRequired
-from .replacement.immutable import thaw_value
+from .replacement.immutable import FrozenMap, thaw_value
 from .rules.casting import (
     build_cast_cost_options,
     build_cast_proposal,
@@ -5149,22 +5155,11 @@ class CommanderEngine(
         self,
         seat: str,
         source: CardInstance,
-    ) -> list[CardInstance]:
-        return [
-            self.state.cards[object_id]
-            for object_id in self.state.players[seat].zones["battlefield"]
-            if object_id != source.object_id
-            and self.state.cards[object_id].controller == seat
-            and not self.state.cards[object_id].phased_out
-            and not self.state.cards[object_id].tapped
-            and "creature"
-            in self._type_parts(
-                str(
-                    self._effective_card_data(object_id).get("type_line")
-                    or ""
-                )
-            )[0]
-        ]
+    ) -> list[CrewCandidate]:
+        try:
+            return list(current_crew_candidates(self, seat, source))
+        except CrewAbilityError as exc:
+            raise GameRuleError(str(exc)) from exc
 
     def _pay_crew_cost(
         self,
@@ -5172,59 +5167,20 @@ class CommanderEngine(
         source: CardInstance,
         ability: ActivatedAbility,
         response: Mapping[str, Any],
-    ) -> list[str]:
+    ) -> tuple[list[str], FrozenMap]:
         threshold = self._crew_threshold(ability)
         if threshold is None:
             raise GameRuleError("Crew threshold is not compiled")
-        values = [
-            str(value)
-            for value in (
-                response.get("cost_cards")
-                or response.get("cost_objects")
-                or []
+        try:
+            return pay_crew_cost(
+                self,
+                seat=seat,
+                source=source,
+                threshold=threshold,
+                response=response,
             )
-        ]
-        if not values or len(values) != len(set(values)):
-            raise GameRuleError(
-                "Crew requires one or more distinct untapped creatures"
-            )
-        candidates = {
-            candidate.ref: candidate
-            for candidate in self._crew_candidates(seat, source)
-        }
-        if any(value not in candidates for value in values):
-            raise GameRuleError(
-                "Crew cost objects must be other untapped creatures you control"
-            )
-        selected = [candidates[value] for value in values]
-        total_power = sum(
-            max(0, self._numeric_stat(card.object_id, "power"))
-            for card in selected
-        )
-        if total_power < threshold:
-            raise GameRuleError(
-                f"Crew {threshold} requires at least {threshold} total power"
-            )
-        for card in selected:
-            card.tapped = True
-        self._log(
-            seat,
-            "cost.crew",
-            (
-                f"{seat} tapped {len(selected)} creature(s) with "
-                f"{total_power} total power to crew {source.ref}."
-            ),
-            {
-                "source": source.ref,
-                "threshold": threshold,
-                "total_power": total_power,
-                "objects": [card.ref for card in selected],
-            },
-            importance=1,
-            changed_objects=[card.object_id for card in selected],
-            changed_players=[seat],
-        )
-        return [card.object_id for card in selected]
+        except CrewAbilityError as exc:
+            raise GameRuleError(str(exc)) from exc
 
     def _ability_availability(
         self,

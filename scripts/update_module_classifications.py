@@ -97,6 +97,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/compiled_activated_abilities.py",
         "quorune/compiled_cast_costs.py",
         "quorune/compiled_cast_timing.py",
+        "quorune/compiled_crew_abilities.py",
         "quorune/compiled_cycling_abilities.py",
         "quorune/compiled_mana_abilities.py",
     }:
@@ -261,7 +262,9 @@ def _owner(relative: str, layer: str) -> str:
         return "ability_fragments"
     if relative in {
         "quorune/compiled_activated_abilities.py",
+        "quorune/compiled_crew_abilities.py",
         "quorune/compiled_cycling_abilities.py",
+        "quorune/crew.py",
         "quorune/cycling_abilities.py",
     }:
         return "activated_abilities"
@@ -559,7 +562,9 @@ def build_classifications() -> dict[str, Any]:
                             "protection.py",
                             "compiled_ability_fragments.py",
                             "compiled_activated_abilities.py",
+                            "compiled_crew_abilities.py",
                             "compiled_cycling_abilities.py",
+                            "crew.py",
                             "cycling_abilities.py",
                             "compiled_mana_abilities.py",
                             "fixed_mana_abilities.py",

@@ -2,6 +2,70 @@
   "schema_version": 1,
   "declarations": [
     {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "positive",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_generic_crew_taps_exact_creatures_and_resolves_type_effect",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit the exact aggregate-power tap cost, preserve crewed-by snapshots, and resolve the source-pinned layer-4 effect."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "negative",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_selected_negative_power_counts_against_crew_total_and_rolls_back",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a selected set whose actual signed current power is below the printed threshold without tapping any object."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "negative",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_noncontrolled_tapped_and_duplicate_cost_objects_are_rejected",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject opposing, tapped, duplicate, and multiply encoded cost objects before any Crew cost mutation."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_current_effective_power_and_source_exclusion_share_one_cost_owner",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use current effective power while excluding the Crew source itself even after it is already a creature."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_four_player_crew_context_is_public_seat_scoped_and_replays",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Only the controller receives the activation capability while the public battlefield cost and stack result remain deterministic for four seats."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_four_player_crew_context_is_public_seat_scoped_and_replays",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "The public crewed-by relation exposes no opposing hand or library identity and no other seat receives the controller's capability."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "replay",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_four_player_crew_context_is_public_seat_scoped_and_replays",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the selected physical/logical creature snapshots, stack resolution, and cleanup-scoped type effect to the same authoritative hash."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewCompilerTests.test_ordinary_crew_compiler_mutant_is_killed",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the typed Crew lowering before capability trust can survive."
+    },
+    {
       "capability_id": "activation.cycling.hand",
       "evidence_class": "interaction",
       "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_generic_cycling_discards_before_stack_draw_and_replays_exactly",

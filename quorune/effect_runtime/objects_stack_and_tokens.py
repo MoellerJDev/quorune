@@ -219,6 +219,69 @@ def _apply_add_type_until_end_of_turn(
 
 
 
+def _apply_set_types_until_end_of_turn(
+    host: Any,
+    effect: Mapping[str, Any],
+    *,
+    actor: str,
+    operation: str,
+    reason: str,
+) -> Any:
+    """Create one source-pinned fixed layer-4 card-type result."""
+
+    del operation
+    card = host._resolve_object(
+        actor,
+        str(effect["card"]),
+        zones={"battlefield"},
+    )
+    raw_types = effect.get("types")
+    if not isinstance(raw_types, (list, tuple)) or not raw_types:
+        raise GameRuleError("Temporary set-types effect requires card types")
+    if any(type(value) is not str or not value.strip() for value in raw_types):
+        raise GameRuleError(
+            "Temporary set-types values must be nonempty strings"
+        )
+    card_types = tuple(value.strip().title() for value in raw_types)
+    if len(card_types) != len(set(card_types)):
+        raise GameRuleError("Temporary set-types values must be distinct")
+    parsed_types = host._type_parts(" ".join(card_types))[0]
+    if parsed_types != {value.casefold() for value in card_types}:
+        raise GameRuleError(
+            "Temporary set-types values must use canonical card types"
+        )
+    if not _commit_temporary_characteristic_effect(
+        host,
+        effect,
+        card,
+        layer=Layer.TYPE,
+        sublayer="4",
+        operations=(
+            ContinuousOperation(
+                "set_types", card_types, field="card_types"
+            ),
+        ),
+    ):
+        raise GameRuleError(
+            "Temporary set-types requires the continuous-effect journal"
+        )
+    label = " ".join(card_types)
+    host._log(
+        actor,
+        "permanent.types",
+        f"{card.ref} became an {label} until end of turn.",
+        {
+            "object": card.ref,
+            "types": list(card_types),
+            "reason": reason,
+        },
+        importance=1,
+        changed_objects=[card.object_id],
+    )
+    return card.ref
+
+
+
 def _apply_add_subtype_until_end_of_turn(
     host: Any,
     effect: Mapping[str, Any],
@@ -909,6 +972,7 @@ HANDLERS = {
     'add_subtype_until_end_of_turn': _apply_add_subtype_until_end_of_turn,
     'add_type': _apply_add_type,
     'add_type_until_end_of_turn': _apply_add_type_until_end_of_turn,
+    'set_types_until_end_of_turn': _apply_set_types_until_end_of_turn,
     'change_control': _apply_change_control,
     'change_control_until_end_of_turn': _apply_change_control_until_end_of_turn,
     'copy_until_end_of_turn': _apply_copy_until_end_of_turn,

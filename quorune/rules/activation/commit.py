@@ -30,6 +30,7 @@ from ...activation_usage import (
     commit_activation_usage,
 )
 from ...model import StackItem, YieldPolicy
+from ...replacement.immutable import thaw_value
 from ...tap_state import set_permanent_tapped
 from ..action_proposals import ActivationProposal, thaw_json
 from .model import ActivationProposalError
@@ -52,7 +53,7 @@ class ActivationCommitHost(Protocol):
         source: Any,
         ability: ActivatedAbility,
         response: Mapping[str, Any],
-    ) -> list[str]: ...
+    ) -> tuple[list[str], Mapping[str, Any]]: ...
 
     def _pay_ability_choice_costs(
         self,
@@ -276,14 +277,21 @@ def _pay_object_and_mana_costs(
     source: Any,
     ability: ActivatedAbility,
     response: Mapping[str, Any],
-) -> tuple[list[str], list[dict[str, Any]], dict[str, int]]:
-    paid_objects = (
-        host._pay_crew_cost(proposal.seat, source, ability, response)
-        if host._crew_threshold(ability) is not None
-        else host._pay_ability_choice_costs(
+) -> tuple[
+    list[str],
+    list[dict[str, Any]],
+    dict[str, int],
+    Mapping[str, Any] | None,
+]:
+    if host._crew_threshold(ability) is not None:
+        paid_objects, crew_context = host._pay_crew_cost(
             proposal.seat, source, ability, response
         )
-    )
+    else:
+        paid_objects = host._pay_ability_choice_costs(
+            proposal.seat, source, ability, response
+        )
+        crew_context = None
     requirements = dict(thaw_json(proposal.requirements))
     spent: dict[str, int] = {}
     activations: list[dict[str, Any]] = []
@@ -299,7 +307,7 @@ def _pay_object_and_mana_costs(
                 "artifact_ability" if "artifact" in source_types else "ability"
             ),
         )
-    return paid_objects, activations, spent
+    return paid_objects, activations, spent, crew_context
 
 
 def _commit_source_cost(
@@ -339,6 +347,7 @@ def _activation_stack_item(
     response: Mapping[str, Any],
     paid_objects: Sequence[str],
     attachment_snapshot: SourceAttachmentSnapshot | None,
+    crew_context: Mapping[str, Any] | None,
 ) -> StackItem:
     details = dict(thaw_json(proposal.details))
     snapshots = [
@@ -390,6 +399,13 @@ def _activation_stack_item(
                 host.state.cards[object_id].ref for object_id in paid_objects
             ],
             "cost_object_snapshots": snapshots,
+            **(
+                {
+                    "crew": thaw_value(crew_context)
+                }
+                if crew_context is not None
+                else {}
+            ),
             "cost_mana_value_plus_one": (
                 float(snapshots[0].get("mana_value", 0)) + 1
                 if len(snapshots) == 1
@@ -425,7 +441,7 @@ def commit_activation(
     if not ability.mana_ability:
         clear_mana_undo_stack(host.state.players[proposal.seat].stats)
     _commit_symbol_costs(host, proposal, source, ability)
-    paid_objects, activations, spent = _pay_object_and_mana_costs(
+    paid_objects, activations, spent, crew_context = _pay_object_and_mana_costs(
         host, proposal, source, ability, response
     )
     _commit_resource_costs(host, proposal, source, ability, response)
@@ -468,6 +484,7 @@ def commit_activation(
         response,
         paid_objects,
         attachment_snapshot,
+        crew_context,
     )
     host.state.stack.append(item)
     host._queue_ward_triggers_for_targets(item)
