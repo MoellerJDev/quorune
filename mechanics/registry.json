@@ -1,5 +1,5 @@
 {
-  "contract_count": 99,
+  "contract_count": 100,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -395,6 +395,12 @@
       "mechanic_id": "mentor",
       "path": "mechanics/contracts/mentor.json",
       "sha256": "bdfc66dc01344c95bffb7a5fbef6fc05f2da287f232116c0de65ae0a6defebb7",
+      "version": 1
+    },
+    {
+      "mechanic_id": "modular",
+      "path": "mechanics/contracts/modular.json",
+      "sha256": "888797f1a40bd59657b9b148a0c9594d86b9adb38e8a2a0fb28cd698ae3d41d7",
       "version": 1
     },
     {
@@ -3241,19 +3247,39 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/modular.json",
+      "contract_sha256": "888797f1a40bd59657b9b148a0c9594d86b9adb38e8a2a0fb28cd698ae3d41d7",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.modular, quorune.compiler.keyword_nodes, quorune.semantic_runtime.self_entry_counters, quorune.semantic_choices.modular, and canonical counter placement",
+      "implementation_version": "typed-fixed-modular-lifecycle-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Modular—Sunburst",
+        "granted Modular outside trusted typed ability propagation",
+        "Oracle-equivalent nonkeyword wording",
+        "trigger doubling outside ordinary represented placement",
+        "aggregate targeting, counters, replacement effects, and triggered abilities remain incomplete"
+      ],
       "mechanic_id": "modular",
       "official_name": "Modular",
       "rule_references": [
         "702.43"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_modular_model_compiler_and_multiple_instances_are_closed",
+        "test_modular_sunburst_and_malformed_values_fail_closed",
+        "test_modular_dependency_and_compiler_mutations_fail_closed",
+        "test_multiple_modular_instances_enter_and_trigger_independently",
+        "test_noncreature_modular_permanent_uses_permanent_graveyard_event",
+        "test_modular_entry_and_departure_transfer_use_canonical_counter_paths",
+        "test_modular_target_and_lki_identity_are_strict",
+        "test_modular_source_departure_control_and_target_revalidation",
+        "test_four_player_modular_choice_is_controller_scoped_public_and_replays"
+      ],
       "trust_level": "untrusted"
     },
     {

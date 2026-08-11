@@ -56,10 +56,9 @@ class SelfEntryCounterHandler:
         "614.12",
         "614.16",
         "616.1",
-        "702.98a",
     )
     capability_dependencies: tuple[str, ...] = (
-        "counter.producer.optional_self_entry",
+        "counter.placement.quantity_replacement",
     )
 
     def validate(self, descriptor: Mapping[str, Any]) -> SelfEntryCounterNode:

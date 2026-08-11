@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "81fa2c2943f2bf1d33fb434406694d0ecf3ef2fcdd2bed37baa6958b3e0cf5fb"
+verified: "188be4e37bd81c46c4be50c2530a9aee7834e252a55084a337a9dd56dec6705d"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -42,6 +42,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Starscream, Power Hungry // Starscream, Seeker Leader | 165 | 17 | 4 | 8 | 4 | 19 | `blocked` |
 | Ajani, Nacatl Pariah // Ajani, Nacatl Avenger | 163 | 22 | 4 | 5 | 10 | 15 | `blocked` |
 | Gwen Stacy // Ghost-Spider | 163 | 21 | 5 | 5 | 7 | 13 | `blocked` |
+| Blaster, Combat DJ // Blaster, Morale Booster | 161 | 16 | 5 | 6 | 8 | 16 | `blocked` |
 | Invasion of Kaladesh // Aetherwing, Golden-Scale Flagship | 161 | 16 | 4 | 5 | 7 | 17 | `blocked` |
 | Dr. Madison Li | 160 | 21 | 7 | 4 | 5 | 10 | `blocked` |
 | Devoted Grafkeeper // Departed Soulkeeper | 159 | 19 | 5 | 6 | 7 | 7 | `blocked` |
@@ -62,5 +63,4 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Invasion of New Capenna // Holy Frazzle-Cannon | 152 | 12 | 4 | 4 | 5 | 18 | `blocked` |
 | Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time | 152 | 20 | 6 | 6 | 8 | 3 | `blocked` |
 | Arcee, Sharpshooter // Arcee, Acrobatic Coupe | 151 | 16 | 5 | 5 | 7 | 14 | `blocked` |
-| Curse of Leeches // Leeching Lurker | 151 | 17 | 4 | 6 | 7 | 13 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |

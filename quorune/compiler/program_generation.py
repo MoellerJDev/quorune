@@ -9,6 +9,7 @@ from ..carddb import CardDatabase, CardRecord
 from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..bloodthirst import BLOODTHIRST_MECHANIC
 from ..object_predicate import ObjectQuerySpec
+from ..modular import MODULAR_MECHANIC_ID
 from ..riot import RIOT_MECHANIC
 from ..renown import RENOWN_MECHANIC_ID
 from ..unleash import UNLEASH_MECHANIC
@@ -185,6 +186,16 @@ def _generated_ability_id(
             }
         ):
             return f"{base}:{parts[-2]}:{parts[-1]}"
+        if (
+            len(parts) >= 3
+            and parts[-1] == "departure"
+            and parts[-2].isdigit()
+            and parts[-3] == MODULAR_MECHANIC_ID
+        ):
+            return (
+                f"{base}:{MODULAR_MECHANIC_ID}:"
+                f"{parts[-2]}:departure"
+            )
         return base
     if static_declaration:
         parts = str(node_id or "").split(":")
@@ -200,6 +211,16 @@ def _generated_ability_id(
                     f"{parts[-2]}:{suffix}"
                 )
             return f"static:{face_id}:n{line}:{suffix}"
+        if (
+            suffix == "entry"
+            and len(parts) >= 3
+            and parts[-2].isdigit()
+            and parts[-3] == MODULAR_MECHANIC_ID
+        ):
+            return (
+                f"static:{face_id}:n{line}:{MODULAR_MECHANIC_ID}:"
+                f"{parts[-2]}:entry"
+            )
         if (
             len(parts) >= 2
             and parts[-1].isdigit()

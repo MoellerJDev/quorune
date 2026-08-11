@@ -111,6 +111,7 @@ _MENTOR_MECHANIC = "men" + "tor"
 _DETHRONE_MECHANIC = "deth" + "rone"
 _TRAINING_MECHANIC = "train" + "ing"
 _RENOWN_MECHANIC = "re" + "nown"
+_MODULAR_MECHANIC = "mod" + "ular"
 _EXHAUST_MECHANIC = "ex" + "haust"
 _CYCLING_MECHANIC = "cyc" + "ling"
 _EVOLVE_MECHANIC = "evo" + "lve"
@@ -164,6 +165,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _DETHRONE_MECHANIC: ("counter.producer.dethrone",),
     _TRAINING_MECHANIC: ("counter.producer.training",),
     _RENOWN_MECHANIC: ("counter.producer.renown",),
+    _MODULAR_MECHANIC: ("counter.producer.modular",),
     _EXHAUST_MECHANIC: ("activation.exhaust.once_per_object",),
     _DEATHTOUCH_MECHANIC: (
         "combat.damage.assignment.deathtouch",

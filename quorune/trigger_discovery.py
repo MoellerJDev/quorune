@@ -33,6 +33,13 @@ from .renown import (
     RenownError,
     renown_condition_holds,
 )
+from .modular import (
+    MODULAR_COUNTER_COUNT_FIELD,
+    MODULAR_COUNTER_SNAPSHOT_FIELD,
+    ModularError,
+    modular_counter_count,
+    modular_counter_snapshot,
+)
 from .semantics import SemanticProgram
 from .semantic_runtime.ability_fragments import fragments_from_descriptors
 from .trigger_processing import enqueue_trigger_batch
@@ -748,6 +755,20 @@ def dispatch_semantic_event(
                         death_return_counter_snapshot(source.counters)
                     )
                 except DeathReturnError as exc:
+                    raise GameRuleError(str(exc)) from exc
+            if any(
+                effect.get("op") == "offer_modular_counter_transfer"
+                for effect in program.effects
+            ):
+                try:
+                    counter_snapshot = modular_counter_snapshot(source.counters)
+                    stack_context[MODULAR_COUNTER_SNAPSHOT_FIELD] = dict(
+                        counter_snapshot
+                    )
+                    stack_context[MODULAR_COUNTER_COUNT_FIELD] = (
+                        modular_counter_count(counter_snapshot)
+                    )
+                except ModularError as exc:
                     raise GameRuleError(str(exc)) from exc
             item = StackItem(
                 stack_id=host._stable_runtime_id("stack", ref),

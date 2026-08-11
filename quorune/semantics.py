@@ -155,6 +155,14 @@ VALID_EFFECT_OPERATIONS = {
 }
 
 
+def _is_supported_effect_operation(operation: str) -> bool:
+    if operation in VALID_EFFECT_OPERATIONS:
+        return True
+    from .semantic_choices.defaults import default_semantic_choice_registry
+
+    return operation in default_semantic_choice_registry().operations
+
+
 @dataclass(slots=True)
 class SemanticProgram:
     key: str
@@ -297,7 +305,7 @@ class SemanticProgram:
                     )
         for effect in effects_to_validate:
             operation = str(effect.get("op") or "")
-            if operation not in VALID_EFFECT_OPERATIONS:
+            if not _is_supported_effect_operation(operation):
                 raise ValueError(
                     f"Unsupported semantic effect operation {operation!r}"
                 )

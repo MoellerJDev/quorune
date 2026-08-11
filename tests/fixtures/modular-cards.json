@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_modular_card_data",
+  "source": "Scryfall-compatible Oracle subset for Modular tests",
+  "cards": [
+    {
+      "oracle_id": "6d9af084-cd5d-4242-b0f0-24a36d0a75d4",
+      "name": "Arcbound Worker",
+      "mana_cost": "{1}",
+      "cmc": 1.0,
+      "type_line": "Artifact Creature — Construct",
+      "oracle_text": "Modular 1 (This creature enters with a +1/+1 counter on it. When it dies, you may put its +1/+1 counters on target artifact creature.)",
+      "power": "0",
+      "toughness": "0",
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": [],
+      "keywords": ["Modular"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2013-06-07",
+      "legalities": {"commander": "legal"}
+    },
+    {
+      "oracle_id": "64687880-03f9-4f38-985b-1027c797e33f",
+      "name": "Power Depot",
+      "mana_cost": "",
+      "cmc": 0.0,
+      "type_line": "Artifact Land",
+      "oracle_text": "This land enters tapped.\n{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast artifact spells or activate abilities of artifacts.\nModular 1",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": [],
+      "keywords": ["Modular"],
+      "produced_mana": ["B", "C", "G", "R", "U", "W"],
+      "layout": "normal",
+      "released_at": "2021-06-18",
+      "legalities": {"commander": "legal"}
+    }
+  ],
+  "rulings": []
+}
