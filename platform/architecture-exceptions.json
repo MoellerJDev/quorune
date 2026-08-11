@@ -585,6 +585,31 @@
         "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiple_ward_instances_and_control_change_use_current_state",
         "tests.test_trigger_processing_owner.TriggerOccurrenceTests.test_occurrence_is_immutable_canonical_and_game_record_compatible"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0028",
+      "adr": "docs/adr/0059-typed-zone-transition-owner.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "b34f7d8da64a5c3ac8dd3e129bcf71b5fee1f63a1620458a8852b9b540c836ff",
+      "exact_allowance": "Only the reduced schema-3 structural state-write identities, owner classifications, prohibited runtime Oracle-text access identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, legacy helpers, and module classifications serialized after the typed zone-transition extraction.",
+      "rationale": "The zone-transition owner moves authoritative zone-list membership, CR 400.7 logical-incarnation reset, timestamp allocation, LKI capture, hidden-zone journaling, simultaneous transition coordination, and normalized occurrence construction out of CommanderEngine. Three engine-local write identities become declared canonical owner writes, the engine shrinks substantially, unowned mutation remains zero, and the reviewed Game Record v3 emblem compatibility stays inside the existing engine dispatch facade.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact reduced structural identities and counts serialized at implementation head 38171017 plus the typed transition plans, departure snapshots, privacy journal, compatibility facades, and canonical owner surfaces described by ADR 0059; new runtime Oracle interpretation, unowned mutation, engine-local writes, oversized symbols, or card-identity behavior remain forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered engine write and prohibited runtime-text interpretation has migrated to declared typed owners; retain the zone owner only while it preserves strict transition validation, physical and logical identity, simultaneous LKI, privacy, rollback, and exact replay.",
+      "target_milestone": "typed zone ownership, turn-priority-decision ownership, and search-target-choice convergence",
+      "replay_implications": "Game Record v3 state and command payloads remain unchanged; physical identities, logical incarnation counters, timestamps, event journals, and simultaneous APNAP trigger placement retain their existing deterministic serialization and replay meaning.",
+      "privacy_implications": "Hidden-origin moves emit an identity-free public journal plus an owner-and-analyst private journal; no object ID, logical incarnation, hand identity, library identity, or private trigger source enters another principal projection.",
+      "security_implications": "The owner accepts closed typed transition causes and existing prepared replacement values; it grants no callback, arbitrary state mutation, runtime Oracle parsing, transport access, or cross-seat capability authority.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_direct_writes_are_classified_by_actual_owner",
+        "tests.test_architecture_cli.ArchitectureCliTests.test_debt_writes_and_runtime_text_are_current_generated_views",
+        "tests.test_zone_transition_owner.ZoneTransitionOwnerTests.test_engine_facade_and_typed_owner_commit_identical_state",
+        "tests.test_zone_transition_owner.ZoneTransitionOwnerTests.test_owner_transaction_rolls_back_every_zone_mutation",
+        "tests.test_zone_transition_owner.ZoneTransitionOwnerTests.test_hidden_zone_journal_splits_public_and_private_identity",
+        "tests.test_zone_transition_owner.ZoneTransitionOwnerTests.test_simultaneous_moves_share_one_timestamp_and_keep_physical_identity",
+        "tests.test_command_zone_rules.CommandZoneRuleTests.test_daretti_emblem_creation_exact_replays"
+      ]
     }
   ]
 }

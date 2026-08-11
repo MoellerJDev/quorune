@@ -73,3 +73,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0056 — typed ordinary Crew activation](0056-typed-ordinary-crew-activation.md)
 - [ADR 0057 — actionable architecture ownership audit](0057-actionable-architecture-ownership-audit.md)
 - [ADR 0058 — typed trigger-processing ownership](0058-typed-trigger-processing-owner.md)
+- [ADR 0059 — typed zone-transition ownership](0059-typed-zone-transition-owner.md)

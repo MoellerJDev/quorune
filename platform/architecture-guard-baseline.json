@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "d793bbd8",
+  "baseline_commit": "38171017d1944ceeb23f857e595ab58520ba944b",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -8,9 +8,9 @@
     }
   ],
   "direct_game_state_write_classification_counts": {
-    "canonical_mutation_owner_write": 10,
+    "canonical_mutation_owner_write": 13,
     "compatibility_adapter_write": 11,
-    "grandfathered_engine_debt": 105,
+    "grandfathered_engine_debt": 102,
     "orchestration_root_replacement": 1
   },
   "direct_game_state_write_identities": [
@@ -400,12 +400,6 @@
     },
     {
       "file": "quorune/engine.py",
-      "kind": "augmented_assignment",
-      "state_path": "timestamp_sequence",
-      "symbol": "_next_zone_timestamp"
-    },
-    {
-      "file": "quorune/engine.py",
       "kind": "mutating_call:setdefault",
       "state_path": "players.stats",
       "symbol": "_optimization_stats"
@@ -568,18 +562,6 @@
     },
     {
       "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "stack",
-      "symbol": "move_card"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:append",
-      "state_path": "players.zones",
-      "symbol": "move_card"
-    },
-    {
-      "file": "quorune/engine.py",
       "kind": "mutating_call:insert",
       "state_path": "extra_turns",
       "symbol": "schedule_extra_turn"
@@ -715,16 +697,35 @@
       "kind": "mutating_call:append",
       "state_path": "delayed_triggers",
       "symbol": "schedule_delayed_trigger"
+    },
+    {
+      "file": "quorune/zone_transitions.py",
+      "kind": "assignment",
+      "state_path": "stack",
+      "symbol": "_commit_move"
+    },
+    {
+      "file": "quorune/zone_transitions.py",
+      "kind": "mutating_call:append",
+      "state_path": "players.zones",
+      "symbol": "_enter_battlefield"
+    },
+    {
+      "file": "quorune/zone_transitions.py",
+      "kind": "augmented_assignment",
+      "state_path": "timestamp_sequence",
+      "symbol": "next_timestamp"
     }
   ],
   "direct_game_state_writes_by_file": {
-    "quorune/engine.py": 106,
+    "quorune/engine.py": 103,
     "quorune/permissions.py": 8,
     "quorune/record.py": 11,
-    "quorune/trigger_processing.py": 2
+    "quorune/trigger_processing.py": 2,
+    "quorune/zone_transitions.py": 3
   },
   "engine": {
-    "logical_lines": 11522,
+    "logical_lines": 11043,
     "methods": [
       {
         "kind": "method",
@@ -2167,12 +2168,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 12199
+    "physical_lines": 11704
   },
   "exception_binding": {
-    "adr": "docs/adr/0058-typed-trigger-processing-owner.md",
-    "allowance_fingerprint": "db0f757a718bfe4ccd38fd6e684d7a24953ef1db52e6af75803a1cfa66dbc129",
-    "exception_id": "ARCH-EXC-0027"
+    "adr": "docs/adr/0059-typed-zone-transition-owner.md",
+    "allowance_fingerprint": "b34f7d8da64a5c3ac8dd3e129bcf71b5fee1f63a1620458a8852b9b540c836ff",
+    "exception_id": "ARCH-EXC-0028"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2320,11 +2321,6 @@
       "symbol": "CommanderEngine._stabilize"
     },
     {
-      "file": "quorune/engine.py",
-      "logical_lines": 339,
-      "symbol": "CommanderEngine.move_card"
-    },
-    {
       "file": "quorune/mana.py",
       "logical_lines": 168,
       "symbol": "extract_mana_modes"
@@ -2402,7 +2398,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 11522
+      "logical_lines": 11043
     },
     {
       "file": "quorune/record.py",

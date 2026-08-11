@@ -14,7 +14,8 @@
       "test_object_identity",
       "test_object_query",
       "test_rules_primitives",
-      "test_zone_general_rules"
+      "test_zone_general_rules",
+      "test_zone_transition_owner"
     ],
     "rules-events-replacements": [
       "test_amass_rules",

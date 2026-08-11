@@ -13,18 +13,13 @@ from .abilities import (
     ActivatedAbility,
 )
 from .aura import (
-    commit_aura_zone_move,
     complete_aura_entry_choice,
     EnchantSpec,
-    preflight_aura_zone_move,
     simple_aura_attachment_is_legal,
 )
 from .ability_fragment_host import AbilityFragmentHostMixin
 from .attachments import (
-    attach_objects,
-    clear_object_attachment_relations,
     detach_object,
-    take_pending_attachment,
 )
 from .carddb import CardDatabase, CardRecord
 from .card_programs.validation import (
@@ -71,7 +66,6 @@ from .counter_placement import (
     place_counters_on_controlled_subtype,
     place_counters_on_refs,
 )
-from .entry_results import commit_prepared_entry_results
 from .counter_state import (
     CounterChange,
     CounterStateError,
@@ -147,18 +141,14 @@ from .trigger_discovery import (
     semantic_event_value,
 )
 from .zone_trigger_events import (
-    normalized_library_position,
-    normalized_transition_kind_map,
-    validate_zone_transition_request,
     ZoneChangeOccurrence,
     ZoneTransitionKind,
 )
 from .zone_trigger_processing import (
-    capture_departure_trigger_sources,
-    dispatch_zone_change_occurrence,
-    semantic_event_sources,
+    DepartureTriggerSnapshot,
 )
-from .zone_object_state import reset_card_after_zone_change
+from .zone_transition_model import ZoneDepartureSnapshot
+from .zone_transitions import ZoneTransitionOwner
 from . import turn_counter_coordination
 from .saga_progression import saga_final_chapter_snapshot
 from .life_state import (
@@ -168,11 +158,6 @@ from . import haste
 from .keyword_abilities import normalized_characteristic_keywords
 from .combat_evasion_engine_adapter import engine_combat_evasion_verdict
 from .errors import GameRuleError, StateInvariantError
-from .entry_counters import (
-    capture_prospective_entry_characteristics,
-    mark_intrinsic_entry_counters_initialized,
-    prospective_battle_entry_protector,
-)
 from .entry_counter_coordination import (
     prepare_resolving_entry_replacement,
 )
@@ -297,10 +282,7 @@ from .semantic_runtime import (
     default_semantic_interpreter,
     execute_intent_plan,
     draw_resolution_batch,
-    log_applied_zone_replacements,
     PreparedZoneChange,
-    prepare_zone_change_replacement,
-    prepare_zone_change_replacement_batch,
     prepare_draw_resolution,
 )
 from .semantic_choices import (
@@ -318,9 +300,6 @@ from .semantic_choices.engine_coordination import (
     SemanticChoiceCoordinationMixin,
 )
 from .semantic_choices.intent_host import SemanticChoiceIntentHostMixin
-from .semantic_runtime.explore import (
-    capture_explore_source_departure,
-)
 from .semantic_runtime.values import resolve_semantic_value
 from .state_based_actions import (
     ObjectSnapshot,
@@ -620,10 +599,9 @@ class CommanderEngine(
         ).hex
 
     def _next_zone_timestamp(self) -> int:
-        """Allocate one authoritative timestamp moment."""
+        """Compatibility facade for the zone-transition timestamp owner."""
 
-        self.state.timestamp_sequence += 1
-        return self.state.timestamp_sequence
+        return ZoneTransitionOwner(self).next_timestamp()
 
     def _log(
         self,
@@ -1282,15 +1260,9 @@ class CommanderEngine(
     # Zone movement, draw, and knowledge
     # ------------------------------------------------------------------
     def _remove_from_zone(self, card: CardInstance) -> None:
-        if card.zone == "stack":
-            return
-        for player in self.state.players.values():
-            ids = player.zones.get(card.zone)
-            if ids is not None and card.object_id in ids:
-                ids.remove(card.object_id)
-                return
-        if card.zone != "outside":
-            raise StateInvariantError(f"Could not remove {card.ref} from {card.zone}")
+        """Compatibility facade for canonical zone membership mutation."""
+
+        ZoneTransitionOwner(self).remove_from_zone(card)
 
     def _reset_zone_change(
         self,
@@ -1299,47 +1271,13 @@ class CommanderEngine(
         *,
         zone_timestamp: int | None = None,
     ) -> None:
-        origin = card.zone
-        creates_new_object = (
-            origin != destination
-            or origin in {"exile", "command"}
-        )
-        if not creates_new_object:
-            return
+        """Compatibility facade for CR 400.7 incarnation reset."""
 
-        self._remove_object_from_combat(
+        ZoneTransitionOwner(self).reset_zone_change(
             card,
-            reason=f"zone change to {destination}",
+            destination,
+            zone_timestamp=zone_timestamp,
         )
-
-        # CR 400.7a: a permanent spell that resolves remains the same
-        # logical object as the permanent it becomes.  It still receives a
-        # battlefield timestamp and has the ordinary spell-only state reset.
-        stack_to_battlefield = (
-            origin == "stack" and destination == "battlefield"
-        )
-        if not stack_to_battlefield:
-            card.zone_change_counter += 1
-        card.zone_timestamp = (
-            int(zone_timestamp)
-            if zone_timestamp is not None
-            else self._next_zone_timestamp()
-        )
-        card.world_supertype_timestamp = None
-        if (
-            card.is_token
-            and origin == "battlefield"
-            and destination != "battlefield"
-        ):
-            card.has_left_battlefield = True
-
-        clear_object_attachment_relations(self.state.cards, card)
-        reset_card_after_zone_change(
-            card,
-            destination=destination,
-            stack_to_battlefield=stack_to_battlefield,
-        )
-
     def _unconditionally_enters_tapped(
         self,
         card: CardInstance,
@@ -1489,352 +1427,46 @@ class CommanderEngine(
         transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY,
         _relative_power_lki_prepared: bool = False,
     ) -> CardInstance:
-        card = validate_zone_transition_request(self.state.cards, object_id, destination, transition_kind)
-        requested_destination, origin = destination, card.zone
-        library_position = normalized_library_position(destination, position)
-        if (
-            origin == requested_destination
-            and origin not in {"library", "exile", "command"}
-        ):
-            return card
-        origin_identity_public = (
-            origin in PUBLIC_ZONES and not card.face_down
-        )
-        if (
-            card.is_token
-            and card.has_left_battlefield
-            and origin not in {"battlefield", "outside"}
-            and requested_destination not in {origin, "outside"}
-        ):
-            if log:
-                self._log(
-                    None,
-                    "zone.move.prevented",
-                    (
-                        f"{card.ref} remained in {origin}; a token that "
-                        "left the battlefield cannot move again."
-                    ),
-                    {
-                        "object": card.ref,
-                        "from": origin,
-                        "requested_destination": requested_destination,
-                        "rule": "111.8",
-                    },
-                    importance=2,
-                    changed_objects=[card.object_id],
-                    changed_players=[card.owner],
-                )
-            return card
-        entry_characteristics, destination_type_line = (
-            capture_prospective_entry_characteristics(
-                self, card=card, enter_face=enter_face
-            )
-        )
-        if (
-            destination == "battlefield"
-            and card.is_card_object
-            and self._type_parts(
-                destination_type_line
-            )[0].intersection({"instant", "sorcery"})
-        ):
-            if log:
-                self._log(
-                    None,
-                    "zone.move.prevented",
-                    (
-                        f"{card.ref} remained in {origin}; an instant or "
-                        "sorcery card cannot enter the battlefield."
-                    ),
-                    {
-                        "object": card.ref,
-                        "from": origin,
-                        "requested_destination": requested_destination,
-                        "rule": "400.4a",
-                    },
-                    importance=2,
-                    changed_objects=[card.object_id],
-                    changed_players=[card.owner],
-                )
-            return card
-        if origin == "library" and requested_destination == "library":
-            library = self.state.players[card.owner].zones["library"]
-            if object_id not in library:
-                raise GameRuleError(
-                    "Library card is absent from its owner's library"
-                )
-            library.remove(object_id)
-            library.insert(
-                self._library_insertion_index(
-                    len(library),
-                    library_position,
-                ),
-                object_id,
-            )
-            if log:
-                self._log(
-                    card.owner,
-                    "library.reorder",
-                    f"{card.owner} changed a card's library position.",
-                    {
-                        "position": library_position,
-                        "reason": reason,
-                    },
-                    visibility=[card.owner, "analyst"],
-                    importance=1,
-                    changed_objects=[card.object_id],
-                    changed_players=[card.owner],
-                )
-            return card
-        prepared_replacement = prepare_zone_change_replacement(
-            self,
-            card,
+        """Compatibility facade for the canonical zone-transition owner."""
+
+        return ZoneTransitionOwner(self).move_card(
+            object_id,
             destination,
-            destination_controller=controller,
-            entry_characteristics=entry_characteristics,
-            selections=tuple(replacement_selections),
-            prepared=prepared_replacement,
-            error_type=GameRuleError,
-        )
-        destination = prepared_replacement.destination
-        prospective_battle_protector = prospective_battle_entry_protector(
-            destination=destination,
-            entry_characteristics=entry_characteristics,
-            controller=controller or card.owner,
-            supplied_protector=(
-                str(battle_protector)
-                if battle_protector is not None
-                else card.battle_protector
-            ),
-            active_seats=self.active_seats,
-            error_type=GameRuleError,
-        )
-        if (aura_move := preflight_aura_zone_move(
-            self, card, destination=destination, requested_destination=requested_destination, destination_type_line=destination_type_line, enter_face=enter_face, enchant_spec=aura_enchant_spec, controller=controller, target_ref=aura_target_ref, resolving_as_spell=resolving_as_aura_spell, origin=origin, log=log, error_type=GameRuleError,
-        )).remain_in_origin: return card
-        destination, aura_entry_plan = aura_move.destination, aura_move.entry_plan
-        if origin == "battlefield" and not _relative_power_lki_prepared:
-            pin_host_relative_power_source_departures(self, (card,), error_type=StateInvariantError)
-        origin_controller = card.controller
-        origin_logical_object_id = card.logical_object_id
-        origin_attachments = [
-            self.state.cards[attachment_id].ref
-            for attachment_id in card.attachments
-            if attachment_id in self.state.cards
-        ]
-        origin_attached_to = (
-            self.state.cards[card.attached_to].ref
-            if card.attached_to in self.state.cards
-            else None
-        )
-        origin_data = (
-            copy.deepcopy(self._effective_card_data(card))
-            if semantic_events
-            else {}
-        )
-        if origin == "battlefield":
-            capture_explore_source_departure(self, card)
-        departure_snapshot = capture_departure_trigger_sources(self, semantic_events=semantic_events, origin=origin)
-        if origin == "stack":
-            # A resolving or countered spell has already had its StackItem
-            # removed by that procedure.  A zone-changing effect can instead
-            # exile a card spell directly; remove its associated stack object
-            # at the same atomic boundary so no ghost spell remains.  A spell
-            # that moves its own underlying card while resolving remains a
-            # resolving stack object until every later instruction finishes.
-            if not any(
-                item.card_object_id == card.object_id
-                and item.context.get("currently_resolving")
-                for item in self.state.stack
-            ):
-                self.state.stack[:] = [
-                    item
-                    for item in self.state.stack
-                    if item.card_object_id != card.object_id
-                ]
-        else:
-            self._remove_from_zone(card)
-        self._reset_zone_change(
-            card,
-            destination,
+            controller=controller,
+            tapped=tapped,
+            enter_face=enter_face,
+            battle_protector=battle_protector,
+            aura_target_ref=aura_target_ref,
+            resolving_as_aura_spell=resolving_as_aura_spell,
+            aura_enchant_spec=aura_enchant_spec,
             zone_timestamp=zone_timestamp,
+            position=position,
+            reveal_to=reveal_to,
+            reason=reason,
+            log=log,
+            semantic_events=semantic_events,
+            replacement_selections=replacement_selections,
+            prepared_replacement=prepared_replacement,
+            transition_kind=transition_kind,
+            relative_power_lki_prepared=_relative_power_lki_prepared,
         )
-        card.zone = destination
-        if enter_face is not None:
-            card.active_face = enter_face
-        if destination == "battlefield":
-            card.controller = controller or card.owner
-            self._require_seat(card.controller)
-            card.tapped = (
-                self._unconditionally_enters_tapped(card)
-                if tapped is None
-                else bool(tapped)
-            )
-            control_history.record_battlefield_acquisition(self.state, card, card.zone_timestamp)
-            card.entered_battlefield_turn_sequence = self.state.turn_sequence
-            card.battle_protector = prospective_battle_protector
-            self.state.players[card.controller].zones["battlefield"].append(
-                object_id
-            )
-            commit_aura_zone_move(self, card, aura_entry_plan, error_type=GameRuleError)
-            pending_attachment = take_pending_attachment(card)
-            if pending_attachment is not None:
-                try:
-                    attachment_target = self._resolve_object(
-                        card.controller,
-                        pending_attachment.target_ref,
-                        zones={pending_attachment.target_zone},
-                    )
-                except GameRuleError:
-                    attachment_target = None
-                if attachment_target is not None:
-                    attach_objects(
-                        self.state.cards,
-                        card,
-                        attachment_target,
-                        source_timestamp=self._next_zone_timestamp(),
-                    )
-            card.known_to = list(self.seats)
-            card.revealed_to = list(self.seats)
-            self._refresh_world_supertype_timestamp(
-                card,
-                gained_at=card.zone_timestamp,
-            )
-        elif destination == "outside":
-            known = set(card.known_to)
-            known.add(card.owner)
-            card.known_to = sorted(known)
-            card.revealed_to = sorted(
-                viewer
-                for viewer in set(card.revealed_to)
-                if viewer in known
-            )
-        else:
-            owner_zone = self.state.players[card.owner].zones[destination]
-            if destination == "library":
-                owner_zone.insert(
-                    self._library_insertion_index(
-                        len(owner_zone),
-                        library_position,
-                    ),
-                    object_id,
-                )
-                card.known_to = [card.owner]
-                card.revealed_to = []
-            else:
-                owner_zone.append(object_id)
-                if destination in PUBLIC_ZONES:
-                    card.known_to = list(self.seats)
-                    card.revealed_to = list(self.seats)
-                else:
-                    known = {card.owner, *(reveal_to or [])}
-                    if destination == "hand":
-                        if origin_identity_public:
-                            known.update(self.seats)
-                    card.known_to = sorted(known)
-                    card.revealed_to = sorted(set(reveal_to or []))
-        identity_became_hidden = (
-            card.zone in HIDDEN_ZONES
-            and not origin_identity_public
-        )
-        if log and identity_became_hidden:
-            self._log(
-                None,
-                "zone.move",
-                (
-                    f"{card.owner} moved a card: "
-                    f"{origin} → {card.zone}."
-                ),
-                {
-                    "from": origin,
-                    "to": card.zone,
-                    "reason": reason,
-                },
-                changed_objects=[object_id],
-                changed_players=[card.owner, card.controller],
-            )
-            identity_visibility = {
-                card.owner,
-                "analyst",
-                *(reveal_to or []),
-            }
-            self._log(
-                None,
-                "zone.move.private",
-                (
-                    f"{card.ref} {card.printed_name}: "
-                    f"{origin} → {card.zone}."
-                ),
-                {
-                    "object": card.ref,
-                    "from": origin,
-                    "to": card.zone,
-                    "reason": reason,
-                    "tapped": card.tapped,
-                },
-                visibility=sorted(identity_visibility),
-                changed_objects=[object_id],
-                changed_players=[card.owner, card.controller],
-            )
-        elif log:
-            self._log(
-                None,
-                "zone.move",
-                f"{card.ref} {card.printed_name}: {origin} → {card.zone}.",
-                {"object": card.ref, "from": origin, "to": card.zone, "reason": reason, "tapped": card.tapped},
-                changed_objects=[object_id],
-                changed_players=[card.owner, card.controller],
-            )
-        log_applied_zone_replacements(
-            self,
-            prepared_replacement,
-            card,
-            requested_destination=requested_destination,
-            error_type=StateInvariantError,
-        )
-        commit_prepared_entry_results(self, prepared_replacement, card, reason=reason, log=log, error_type=StateInvariantError)
-        mark_intrinsic_entry_counters_initialized(card, destination=card.zone, destination_type_line=destination_type_line)
-        if semantic_events:
-            self._dispatch_zone_change_events(
-                card,
-                origin=origin,
-                destination=destination,
-                origin_controller=origin_controller,
-                origin_logical_object_id=origin_logical_object_id,
-                origin_data=origin_data,
-                origin_attachments=origin_attachments,
-                origin_attached_to=origin_attached_to,
-                departure_sources=departure_snapshot.sources,
-                departure_source_zones=departure_snapshot.source_zones,
-                departure_source_characteristics=(
-                    departure_snapshot.source_characteristics
-                ),
-                reason=reason, transition_kind=transition_kind,
-            )
-        return card
 
     @staticmethod
     def _library_insertion_index(
         library_size: int,
         position: str | int | None,
     ) -> int:
-        if position == "top":
-            return library_size
-        if position == "bottom":
-            return 0
-        if isinstance(position, int):
-            # The internal list stores the top card last. If fewer than N
-            # cards exist, CR 401.7 puts the incoming card on the bottom.
-            return max(0, library_size - position + 1)
-        raise GameRuleError("Validated library position is required")
+        return ZoneTransitionOwner.library_insertion_index(
+            library_size,
+            position,
+        )
 
     def _semantic_event_sources(
         self,
         *,
         zones: set[str] | None = None,
     ) -> list[CardInstance]:
-        return semantic_event_sources(
-            self.state.cards.values(), active_seats=self.active_seats, zones=zones
-        )
+        return ZoneTransitionOwner(self).semantic_event_sources(zones=zones)
 
     def _dispatch_zone_change_events(
         self,
@@ -1856,108 +1488,84 @@ class CommanderEngine(
         transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY,
         trigger_batch: list[StackItem] | None = None,
     ) -> None:
-        """Compatibility adapter from committed moves to immutable facts."""
+        """Game Record v3 compatibility facade for normalized zone events."""
 
-        occurrence = ZoneChangeOccurrence(
-            object_id=card.object_id,
-            card_ref=card.ref,
-            owner=card.owner,
-            origin=origin,
-            destination=destination or card.zone,
-            previous_controller=origin_controller,
-            current_controller=card.controller,
-            previous_logical_object_id=origin_logical_object_id,
-            current_logical_object_id=card.logical_object_id,
-            zone_change_counter=card.zone_change_counter,
-            token=card.is_token,
-            card_object=card.is_card_object,
-            previous_characteristics=origin_data,
-            current_characteristics=self._effective_card_data(card),
-            previous_attachments=tuple(origin_attachments),
-            previous_attached_to=origin_attached_to,
-            tapped=card.tapped,
-            cause=reason,
-            transition_kind=transition_kind,
+        occurrence, event_triggers, owns_trigger_batch = (
+            ZoneTransitionOwner(self).dispatch_zone_change_events(
+                card,
+                departure=ZoneDepartureSnapshot(
+                    origin=origin,
+                    controller=origin_controller,
+                    logical_object_id=origin_logical_object_id,
+                    characteristics=origin_data,
+                    attachments=tuple(origin_attachments),
+                    attached_to=origin_attached_to,
+                    trigger_sources=DepartureTriggerSnapshot(
+                        sources=tuple(departure_sources),
+                        source_zones=dict(departure_source_zones),
+                        source_characteristics=dict(
+                            departure_source_characteristics
+                        ),
+                    ),
+                ),
+                destination=destination,
+                reason=reason,
+                transition_kind=transition_kind,
+                trigger_batch=trigger_batch,
+            )
         )
-        owns_trigger_batch = trigger_batch is None
-        event_triggers = trigger_batch if trigger_batch is not None else []
-        dispatch_zone_change_occurrence(
-            self,
-            occurrence,
-            card,
-            departure_sources=departure_sources,
-            departure_source_zones=departure_source_zones,
-            departure_source_characteristics=(
-                departure_source_characteristics
-            ),
-            trigger_batch=event_triggers,
-        )
-        # Historical source-pinned special cases remain isolated in this
-        # compatibility adapter until their generic descriptors are closed.
-        event_destination = occurrence.destination
-        origin_data = occurrence.previous_characteristics
         origin_types, _, _ = self._type_parts(
-            str(origin_data.get("type_line") or "")
+            str(occurrence.previous_characteristics.get("type_line") or "")
         )
-        if origin == "battlefield" and event_destination != "battlefield":
+        if not (
+            occurrence.origin == "battlefield"
+            and occurrence.destination == "graveyard"
+            and "artifact" in origin_types
+            and card.is_card_object
+            and card.owner in self.active_seats
+        ):
+            if owns_trigger_batch:
+                enqueue_trigger_batch(self, event_triggers)
+            return
+        emblem_owner = self.state.players[card.owner]
+        emblem_sources: list[CardInstance | None] = [
+            self.state.cards[object_id]
+            for object_id in emblem_owner.zones["command"]
             if (
-                event_destination == "graveyard"
-                and "artifact" in origin_types
-                and card.is_card_object
-                and card.owner in self.active_seats
-            ):
-                emblem_owner = self.state.players[card.owner]
-                emblem_sources: list[CardInstance | None] = [
-                    self.state.cards[object_id]
-                    for object_id in emblem_owner.zones["command"]
-                    if (
-                        self.state.cards[object_id].object_kind
-                        == "emblem"
-                        and self.state.cards[object_id].annotations.get(
-                            "emblem_semantic_key"
-                        )
-                        == "builtin:daretti-emblem"
-                    )
-                ]
-                if not emblem_owner.stats.get("emblem_objects_v1"):
-                    emblem_sources.extend(
-                        [None]
-                        * int(
-                            emblem_owner.stats.get(
-                                "daretti_emblems", 0
-                            )
-                        )
-                    )
-                for emblem in emblem_sources:
-                    ref = self._next_ref("S")
-                    event_triggers.append(
-                        StackItem(
-                            stack_id=self._stable_runtime_id(
-                                "stack", ref
-                            ),
-                            ref=ref,
-                            kind="triggered_ability",
-                            controller=card.owner,
-                            label=(
-                                "Daretti emblem — return artifact at "
-                                "the next end step"
-                            ),
-                            semantic_key="builtin:daretti-emblem",
-                            source_object_id=(
-                                emblem.object_id
-                                if emblem is not None
-                                else None
-                            ),
-                            visibility=list(self.seats),
-                            context={
-                                "event": "artifact.graveyard",
-                                "card": card.ref,
-                                "card_zone_change_counter": (
-                                    card.zone_change_counter
-                                ),
-                            },
-                        )
-                    )
+                self.state.cards[object_id].object_kind == "emblem"
+                and self.state.cards[object_id].annotations.get(
+                    "emblem_semantic_key"
+                )
+                == "builtin:daretti-emblem"
+            )
+        ]
+        if not emblem_owner.stats.get("emblem_objects_v1"):
+            emblem_sources.extend(
+                [None] * int(emblem_owner.stats.get("daretti_emblems", 0))
+            )
+        for emblem in emblem_sources:
+            ref = self._next_ref("S")
+            event_triggers.append(
+                StackItem(
+                    stack_id=self._stable_runtime_id("stack", ref),
+                    ref=ref,
+                    kind="triggered_ability",
+                    controller=card.owner,
+                    label=(
+                        "Daretti emblem — return artifact at the next end step"
+                    ),
+                    semantic_key="builtin:daretti-emblem",
+                    source_object_id=(
+                        emblem.object_id if emblem is not None else None
+                    ),
+                    visibility=list(self.seats),
+                    context={
+                        "event": "artifact.graveyard",
+                        "card": card.ref,
+                        "card_zone_change_counter": card.zone_change_counter,
+                    },
+                )
+            )
         if owns_trigger_batch:
             enqueue_trigger_batch(self, event_triggers)
 
@@ -1967,139 +1575,36 @@ class CommanderEngine(
         *,
         reason: str,
         log: bool = False,
-        replacement_selections: Sequence[str | None | Mapping[str, Any]] = (),
-        transition_kinds: Mapping[str, ZoneTransitionKind] | None = None,
+        replacement_selections: Sequence[
+            str | None | Mapping[str, Any]
+        ] = (),
+        transition_kinds: Mapping[
+            str, ZoneTransitionKind
+        ] | None = None,
     ) -> list[CardInstance]:
-        """Move a set of objects before emitting any resulting trigger event."""
+        """Compatibility facade for one simultaneous zone transaction."""
 
-        transition_kinds = normalized_transition_kind_map(
-            changes, transition_kinds
+        return ZoneTransitionOwner(self).move_cards_simultaneously(
+            changes,
+            reason=reason,
+            log=log,
+            replacement_selections=replacement_selections,
+            transition_kinds=transition_kinds,
         )
-        sources = [
-            copy.deepcopy(source)
-            for source in self._semantic_event_sources()
-        ]
-        source_zones = {source.object_id: source.zone for source in sources}
-        source_characteristics = {
-            source.object_id: copy.deepcopy(
-                self._effective_card_data(source)
-            )
-            for source in sources
-        }
-        prepared_replacements = prepare_zone_change_replacement_batch(
-            self,
-            tuple(changes),
-            sources=sources,
-            source_zones=source_zones,
-            selections=tuple(replacement_selections),
-            error_type=GameRuleError,
-        )
-        snapshots: list[
-            tuple[
-                CardInstance,
-                str,
-                str,
-                str,
-                dict[str, Any],
-                list[str],
-                str | None,
-                str,
-                ZoneTransitionKind,
-            ]
-        ] = []
-        for object_id, destination in changes:
-            card = self.state.cards[object_id]
-            snapshots.append(
-                (
-                    card,
-                    card.zone,
-                    card.controller,
-                    card.logical_object_id,
-                    copy.deepcopy(self._effective_card_data(card)),
-                    [
-                        self.state.cards[attachment_id].ref
-                        for attachment_id in card.attachments
-                        if attachment_id in self.state.cards
-                    ],
-                    (
-                        self.state.cards[card.attached_to].ref
-                        if card.attached_to in self.state.cards
-                        else None
-                    ),
-                    destination,
-                    transition_kinds.get(
-                        object_id, ZoneTransitionKind.ORDINARY
-                    ),
-                )
-            )
-        # CR 704.8 last-known information comes from the state before any
-        # object in the batch moves.  Keep discovery and mutation in separate
-        # loops so a departing static source cannot change a later snapshot.
-        pin_host_relative_power_source_departures(
-            self,
-            tuple(snapshot[0] for snapshot in snapshots),
-            error_type=StateInvariantError,
-        )
-        destination_timestamp = self._next_zone_timestamp()
-        for object_id, destination in changes:
-            self.move_card(
-                object_id,
-                destination,
-                zone_timestamp=destination_timestamp,
-                reason=reason,
-                log=log,
-                semantic_events=False,
-                prepared_replacement=prepared_replacements[object_id],
-                _relative_power_lki_prepared=True,
-                transition_kind=transition_kinds.get(
-                    object_id, ZoneTransitionKind.ORDINARY
-                ),
-            )
-        trigger_batch: list[StackItem] = []
-        for (
-            card,
-            origin,
-            origin_controller,
-            origin_logical_object_id,
-            origin_data,
-            origin_attachments,
-            origin_attached_to,
-            _requested_destination,
-            transition_kind,
-        ) in snapshots:
-            self._dispatch_zone_change_events(
-                card,
-                origin=origin,
-                destination=card.zone,
-                origin_controller=origin_controller,
-                origin_logical_object_id=origin_logical_object_id,
-                origin_data=origin_data,
-                origin_attachments=origin_attachments,
-                origin_attached_to=origin_attached_to,
-                departure_sources=sources,
-                departure_source_zones=source_zones,
-                departure_source_characteristics=source_characteristics,
-                reason=reason,
-                transition_kind=transition_kind,
-                trigger_batch=trigger_batch,
-            )
-        enqueue_trigger_batch(self, trigger_batch)
-        return [card for card, *_ in snapshots]
 
     def shuffle_library(self, seat: str, *, reason: str = "shuffle") -> None:
-        self._require_seat(seat)
-        player = self.state.players[seat]
-        count = int(player.stats.get("shuffle_count", 0)) + 1
-        player.stats["shuffle_count"] = count
-        randomizer = random.Random(f"{self.state.config.seed}|{seat}|shuffle|{count}")
-        randomizer.shuffle(player.zones["library"])
-        for object_id in player.zones["library"]:
-            card = self.state.cards[object_id]
-            card.known_to = []
-            card.revealed_to = []
-        self._log(seat, "library.shuffle", f"{seat} shuffled.", {"reason": reason, "count": count}, importance=0, changed_players=[seat])
+        """Compatibility facade for canonical library membership mutation."""
 
-    def draw(self, seat: str, count: int = 1, *, reason: str = "draw", private: bool = False) -> list[str]:
+        ZoneTransitionOwner(self).shuffle_library(seat, reason=reason)
+
+    def draw(
+        self,
+        seat: str,
+        count: int = 1,
+        *,
+        reason: str = "draw",
+        private: bool = False,
+    ) -> list[str]:
         """Commit setup or explicitly unreplaced draws through CR 121 state.
 
         In-game instructions use ``_begin_draw_sequence`` so every individual

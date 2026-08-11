@@ -51,9 +51,13 @@ class ArchitectureCliTests(unittest.TestCase):
             "writes", root=ROOT, subsystem="turn_priority_and_decisions"
         )
         runtime_text = execute_architecture_operation("runtime-text", root=ROOT)
-        self.assertEqual(debt["missing_dedicated_owner_count"], 3)
+        self.assertEqual(debt["missing_dedicated_owner_count"], 2)
         self.assertNotIn(
             "trigger_processing",
+            [row["subsystem"] for row in debt["migration_queue"]],
+        )
+        self.assertNotIn(
+            "zones_and_object_identity",
             [row["subsystem"] for row in debt["migration_queue"]],
         )
         self.assertEqual(debt["direct_game_state_writes"]["unowned"], 0)
