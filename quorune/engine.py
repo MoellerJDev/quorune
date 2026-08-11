@@ -141,6 +141,7 @@ from .trigger_discovery import (
     semantic_event_value,
 )
 from .zone_trigger_events import (
+    ZoneChangeOccurrence,
     ZoneTransitionKind,
 )
 from .zone_trigger_processing import (
@@ -1489,28 +1490,84 @@ class CommanderEngine(
     ) -> None:
         """Game Record v3 compatibility facade for normalized zone events."""
 
-        ZoneTransitionOwner(self).dispatch_zone_change_events(
-            card,
-            departure=ZoneDepartureSnapshot(
-                origin=origin,
-                controller=origin_controller,
-                logical_object_id=origin_logical_object_id,
-                characteristics=origin_data,
-                attachments=tuple(origin_attachments),
-                attached_to=origin_attached_to,
-                trigger_sources=DepartureTriggerSnapshot(
-                    sources=tuple(departure_sources),
-                    source_zones=dict(departure_source_zones),
-                    source_characteristics=dict(
-                        departure_source_characteristics
+        occurrence, event_triggers, owns_trigger_batch = (
+            ZoneTransitionOwner(self).dispatch_zone_change_events(
+                card,
+                departure=ZoneDepartureSnapshot(
+                    origin=origin,
+                    controller=origin_controller,
+                    logical_object_id=origin_logical_object_id,
+                    characteristics=origin_data,
+                    attachments=tuple(origin_attachments),
+                    attached_to=origin_attached_to,
+                    trigger_sources=DepartureTriggerSnapshot(
+                        sources=tuple(departure_sources),
+                        source_zones=dict(departure_source_zones),
+                        source_characteristics=dict(
+                            departure_source_characteristics
+                        ),
                     ),
                 ),
-            ),
-            destination=destination,
-            reason=reason,
-            transition_kind=transition_kind,
-            trigger_batch=trigger_batch,
+                destination=destination,
+                reason=reason,
+                transition_kind=transition_kind,
+                trigger_batch=trigger_batch,
+            )
         )
+        origin_types, _, _ = self._type_parts(
+            str(occurrence.previous_characteristics.get("type_line") or "")
+        )
+        if not (
+            occurrence.origin == "battlefield"
+            and occurrence.destination == "graveyard"
+            and "artifact" in origin_types
+            and card.is_card_object
+            and card.owner in self.active_seats
+        ):
+            if owns_trigger_batch:
+                enqueue_trigger_batch(self, event_triggers)
+            return
+        emblem_owner = self.state.players[card.owner]
+        emblem_sources: list[CardInstance | None] = [
+            self.state.cards[object_id]
+            for object_id in emblem_owner.zones["command"]
+            if (
+                self.state.cards[object_id].object_kind == "emblem"
+                and self.state.cards[object_id].annotations.get(
+                    "emblem_semantic_key"
+                )
+                == "builtin:daretti-emblem"
+            )
+        ]
+        if not emblem_owner.stats.get("emblem_objects_v1"):
+            emblem_sources.extend(
+                [None] * int(emblem_owner.stats.get("daretti_emblems", 0))
+            )
+        for emblem in emblem_sources:
+            ref = self._next_ref("S")
+            event_triggers.append(
+                StackItem(
+                    stack_id=self._stable_runtime_id("stack", ref),
+                    ref=ref,
+                    kind="triggered_ability",
+                    controller=card.owner,
+                    label=(
+                        "Daretti emblem — return artifact at the next end step"
+                    ),
+                    semantic_key="builtin:daretti-emblem",
+                    source_object_id=(
+                        emblem.object_id if emblem is not None else None
+                    ),
+                    visibility=list(self.seats),
+                    context={
+                        "event": "artifact.graveyard",
+                        "card": card.ref,
+                        "card_zone_change_counter": card.zone_change_counter,
+                    },
+                )
+            )
+        if owns_trigger_batch:
+            enqueue_trigger_batch(self, event_triggers)
 
     def _move_cards_simultaneously(
         self,
@@ -1534,11 +1591,20 @@ class CommanderEngine(
             replacement_selections=replacement_selections,
             transition_kinds=transition_kinds,
         )
+
     def shuffle_library(self, seat: str, *, reason: str = "shuffle") -> None:
         """Compatibility facade for canonical library membership mutation."""
 
         ZoneTransitionOwner(self).shuffle_library(seat, reason=reason)
-    def draw(self, seat: str, count: int = 1, *, reason: str = "draw", private: bool = False) -> list[str]:
+
+    def draw(
+        self,
+        seat: str,
+        count: int = 1,
+        *,
+        reason: str = "draw",
+        private: bool = False,
+    ) -> list[str]:
         """Commit setup or explicitly unreplaced draws through CR 121 state.
 
         In-game instructions use ``_begin_draw_sequence`` so every individual

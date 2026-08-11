@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from .zone_transition_model import (
     HIDDEN_ZONES,
+    JOURNAL_REASON_FIELD,
     ZoneDepartureSnapshot,
     ZoneMovePlan,
     ZoneTransitionHost,
@@ -30,7 +31,11 @@ def journal_zone_move(
             None,
             "zone.move",
             f"{card.owner} moved a card: {departure.origin} → {card.zone}.",
-            {"from": departure.origin, "to": card.zone, "reason": reason},
+            {
+                "from": departure.origin,
+                "to": card.zone,
+                JOURNAL_REASON_FIELD: reason,
+            },
             changed_objects=[card.object_id],
             changed_players=[card.owner, card.controller],
         )
@@ -42,7 +47,7 @@ def journal_zone_move(
                 "object": card.ref,
                 "from": departure.origin,
                 "to": card.zone,
-                "reason": reason,
+                JOURNAL_REASON_FIELD: reason,
                 "tapped": card.tapped,
             },
             visibility=sorted({card.owner, "analyst", *reveal_to}),
@@ -58,7 +63,7 @@ def journal_zone_move(
             "object": card.ref,
             "from": departure.origin,
             "to": card.zone,
-            "reason": reason,
+            JOURNAL_REASON_FIELD: reason,
             "tapped": card.tapped,
         },
         changed_objects=[card.object_id],

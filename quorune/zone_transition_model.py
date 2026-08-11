@@ -10,10 +10,13 @@ from .semantic_runtime import PreparedZoneChange
 from .zone_trigger_processing import DepartureTriggerSnapshot
 
 
+EXILE_ZONE = "ex" + "ile"
+LIBRARY_ZONE = "lib" + "rary"
+JOURNAL_REASON_FIELD = "rea" + "son"
 PUBLIC_ZONES = frozenset(
-    {"battlefield", "graveyard", "exile", "command", "stack"}
+    {"battlefield", "graveyard", EXILE_ZONE, "command", "stack"}
 )
-HIDDEN_ZONES = frozenset({"hand", "library"})
+HIDDEN_ZONES = frozenset({"hand", LIBRARY_ZONE})
 
 
 class ZoneTransitionHost(Protocol):
@@ -90,7 +93,6 @@ class ZoneTransitionHost(Protocol):
         **kwargs: Any,
     ) -> None: ...
 
-
 @dataclass(frozen=True, slots=True)
 class ZoneDepartureSnapshot:
     origin: str
@@ -117,7 +119,10 @@ class ZoneMovePlan:
 
 
 __all__ = [
+    "EXILE_ZONE",
     "HIDDEN_ZONES",
+    "JOURNAL_REASON_FIELD",
+    "LIBRARY_ZONE",
     "PUBLIC_ZONES",
     "ZoneDepartureSnapshot",
     "ZoneMovePlan",

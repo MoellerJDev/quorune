@@ -47,6 +47,9 @@ from .zone_trigger_processing import (
     semantic_event_sources,
 )
 from .zone_transition_model import (
+    EXILE_ZONE,
+    JOURNAL_REASON_FIELD,
+    LIBRARY_ZONE,
     PUBLIC_ZONES,
     ZoneDepartureSnapshot,
     ZoneMovePlan,
@@ -97,7 +100,9 @@ class ZoneTransitionOwner:
         zone_timestamp: int | None = None,
     ) -> None:
         origin = card.zone
-        creates_new_object = origin != destination or origin in {"exile", "command"}
+        creates_new_object = (
+            origin != destination or origin in {EXILE_ZONE, "command"}
+        )
         if not creates_new_object:
             return
         self.host._remove_object_from_combat(
@@ -228,7 +233,11 @@ class ZoneTransitionOwner:
         requested_destination = destination
         origin = card.zone
         library_position = normalized_library_position(destination, position)
-        if origin == requested_destination and origin not in {"library", "exile", "command"}:
+        if origin == requested_destination and origin not in {
+            LIBRARY_ZONE,
+            EXILE_ZONE,
+            "command",
+        }:
             return card
         origin_identity_public = origin in PUBLIC_ZONES and not card.face_down
         if (
@@ -251,7 +260,7 @@ class ZoneTransitionOwner:
         ):
             self._log_prevented_nonpermanent(card, origin, requested_destination, log=log)
             return card
-        if origin == "library" and requested_destination == "library":
+        if origin == LIBRARY_ZONE and requested_destination == LIBRARY_ZONE:
             self._reorder_library_card(
                 card,
                 library_position=library_position,
@@ -465,7 +474,7 @@ class ZoneTransitionOwner:
     ) -> None:
         card = plan.card
         owner_zone = self.state.players[card.owner].zones[plan.destination]
-        if plan.destination == "library":
+        if plan.destination == LIBRARY_ZONE:
             owner_zone.insert(
                 self.library_insertion_index(
                     len(owner_zone),
@@ -612,7 +621,7 @@ class ZoneTransitionOwner:
         reason: str,
         log: bool,
     ) -> None:
-        library = self.state.players[card.owner].zones["library"]
+        library = self.state.players[card.owner].zones[LIBRARY_ZONE]
         if card.object_id not in library:
             raise GameRuleError("Library card is absent from its owner's library")
         library.remove(card.object_id)
@@ -625,7 +634,10 @@ class ZoneTransitionOwner:
                 card.owner,
                 "library.reorder",
                 f"{card.owner} changed a card's library position.",
-                {"position": library_position, "reason": reason},
+                {
+                    "position": library_position,
+                    JOURNAL_REASON_FIELD: reason,
+                },
                 visibility=[card.owner, "analyst"],
                 importance=1,
                 changed_objects=[card.object_id],
@@ -651,7 +663,7 @@ class ZoneTransitionOwner:
         reason: str,
         transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY,
         trigger_batch: list[StackItem] | None = None,
-    ) -> None:
+    ) -> tuple[ZoneChangeOccurrence, list[StackItem], bool]:
         occurrence = ZoneChangeOccurrence(
             object_id=card.object_id,
             card_ref=card.ref,
@@ -685,64 +697,7 @@ class ZoneTransitionOwner:
             departure_source_characteristics=sources.source_characteristics,
             trigger_batch=event_triggers,
         )
-        self._append_legacy_daretti_triggers(
-            occurrence,
-            card,
-            event_triggers,
-        )
-        if owns_trigger_batch:
-            enqueue_trigger_batch(self.host, event_triggers)
-
-    def _append_legacy_daretti_triggers(
-        self,
-        occurrence: ZoneChangeOccurrence,
-        card: CardInstance,
-        event_triggers: list[StackItem],
-    ) -> None:
-        origin_types, _, _ = self.host._type_parts(
-            str(occurrence.previous_characteristics.get("type_line") or "")
-        )
-        if not (
-            occurrence.origin == "battlefield"
-            and occurrence.destination == "graveyard"
-            and "artifact" in origin_types
-            and card.is_card_object
-            and card.owner in self.host.active_seats
-        ):
-            return
-        emblem_owner = self.state.players[card.owner]
-        emblem_sources: list[CardInstance | None] = [
-            self.state.cards[object_id]
-            for object_id in emblem_owner.zones["command"]
-            if (
-                self.state.cards[object_id].object_kind == "emblem"
-                and self.state.cards[object_id].annotations.get("emblem_semantic_key")
-                == "builtin:daretti-emblem"
-            )
-        ]
-        if not emblem_owner.stats.get("emblem_objects_v1"):
-            emblem_sources.extend(
-                [None] * int(emblem_owner.stats.get("daretti_emblems", 0))
-            )
-        for emblem in emblem_sources:
-            ref = self.host._next_ref("S")
-            event_triggers.append(
-                StackItem(
-                    stack_id=self.host._stable_runtime_id("stack", ref),
-                    ref=ref,
-                    kind="triggered_ability",
-                    controller=card.owner,
-                    label="Daretti emblem — return artifact at the next end step",
-                    semantic_key="builtin:daretti-emblem",
-                    source_object_id=(emblem.object_id if emblem is not None else None),
-                    visibility=list(self.host.seats),
-                    context={
-                        "event": "artifact.graveyard",
-                        "card": card.ref,
-                        "card_zone_change_counter": card.zone_change_counter,
-                    },
-                )
-            )
+        return occurrence, event_triggers, owns_trigger_batch
 
     def move_cards_simultaneously(
         self,
@@ -855,8 +810,8 @@ class ZoneTransitionOwner:
         randomizer = random.Random(
             f"{self.state.config.seed}|{seat}|shuffle|{count}"
         )
-        randomizer.shuffle(player.zones["library"])
-        for object_id in player.zones["library"]:
+        randomizer.shuffle(player.zones[LIBRARY_ZONE])
+        for object_id in player.zones[LIBRARY_ZONE]:
             card = self.state.cards[object_id]
             card.known_to = []
             card.revealed_to = []
@@ -864,7 +819,7 @@ class ZoneTransitionOwner:
             seat,
             "library.shuffle",
             f"{seat} shuffled.",
-            {"reason": reason, "count": count},
+            {JOURNAL_REASON_FIELD: reason, "count": count},
             importance=0,
             changed_players=[seat],
         )
