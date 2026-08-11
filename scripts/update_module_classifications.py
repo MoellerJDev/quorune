@@ -69,6 +69,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/riot.py",
         "quorune/trigger_batches.py",
         "quorune/trigger_participation.py",
+        "quorune/turn_priority_model.py",
         "quorune/unleash.py",
     }:
         return "domain"
@@ -211,6 +212,8 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/saga_lifecycle.py",
         "quorune/saga_progression.py",
         "quorune/turn_counter_coordination.py",
+        "quorune/turn_priority_owner.py",
+        "quorune/turn_step_owner.py",
         "quorune/shortcuts.py",
         "quorune/stack_counter.py",
         "quorune/stack_resolution.py",
@@ -431,6 +434,12 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/zone_transitions.py",
     }:
         return "zones_and_object_identity"
+    if relative in {
+        "quorune/turn_priority_model.py",
+        "quorune/turn_priority_owner.py",
+        "quorune/turn_step_owner.py",
+    }:
+        return "turn_priority_and_decisions"
     if relative in {
         "quorune/stack_counter.py",
         "quorune/stack_resolution.py",

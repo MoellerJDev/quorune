@@ -58,7 +58,6 @@ from .continuous_effects import (
 )
 from .continuous_effect_state import (
     active_resolution_effects,
-    expire_end_of_turn_continuous_effects,
 )
 from . import control_history
 from .counter_placement import (
@@ -111,7 +110,6 @@ from .damage import (
 from .damage_results import (
     consume_deathtouch_damage_checks,
 )
-from .damage_prevention import expire_end_of_turn_damage_modifiers
 from .drawing import (
     begin_draw_batch,
     begin_draw_sequence,
@@ -125,13 +123,10 @@ from .drawing import (
 from .trigger_processing import (
     begin_pending_trigger_batch,
     begin_trigger_target_selection,
-    clear_pending_trigger_batches,
     collect_trigger_items,
     collect_ward_occurrences,
     complete_trigger_order_decision,
     enqueue_trigger_batch,
-    matching_delayed_triggers,
-    start_delayed_trigger_batch,
     TriggerProcessingHostMixin,
 )
 from .trigger_discovery import (
@@ -149,6 +144,8 @@ from .zone_trigger_processing import (
 )
 from .zone_transition_model import ZoneDepartureSnapshot
 from .zone_transitions import ZoneTransitionOwner
+from .turn_priority_owner import TurnPriorityDecisionOwner
+from .turn_step_owner import TURN_STEPS, TurnStepOwner
 from . import turn_counter_coordination
 from .saga_progression import saga_final_chapter_snapshot
 from .life_state import (
@@ -179,9 +176,7 @@ from .mana_ability_runtime import (
 from .mana_source_discovery import available_mana_sources
 from .mana_undo import (
     clear_mana_undo_stack,
-    ManaUndoError,
     priority_actions_with_mana_undo,
-    undo_mana_activation,
 )
 from .tap_state import tap_declared_attackers, untap_permanent
 from .stack_counter import (
@@ -191,9 +186,6 @@ from .stack_counter import (
 from .stack_resolution import (
     complete_stack_resolution,
     trusted_generic_empty_resolution,
-)
-from .mana_payment_continuations import (
-    execute_mana_choice_capable_priority_action,
 )
 from .model import (
     CardInstance,
@@ -249,7 +241,7 @@ from .rules.activation import (
     commit_activation,
     is_builtin_activation_semantic,
 )
-from .rules.action_catalog import action_offer_signature_facts, build_priority_action_catalog
+from .rules.action_catalog import build_priority_action_catalog
 from .semantics import SemanticProgram, SemanticRegistry
 from .semantic_runtime import (
     AddManaIntent,
@@ -338,21 +330,6 @@ from .util import (
     unique_preserving_order,
 )
 
-TURN_STEPS: list[tuple[str, str]] = [
-    ("beginning", "untap"),
-    ("beginning", "upkeep"),
-    ("beginning", "draw"),
-    ("precombat_main", "main"),
-    ("combat", "beginning_combat"),
-    ("combat", "declare_attackers"),
-    ("combat", "declare_blockers"),
-    ("combat", "combat_damage"),
-    ("combat", "end_combat"),
-    ("postcombat_main", "main"),
-    ("ending", "end_step"),
-    ("ending", "cleanup"),
-]
-
 PUBLIC_ZONES = {"battlefield", "graveyard", "exile", "command", "stack"}
 HIDDEN_ZONES = {"hand", "library"}
 
@@ -391,6 +368,8 @@ class CommanderEngine(
         self.state = state
         self.semantics = semantics or SemanticRegistry()
         self.permissions = CapabilityManager(self.state)
+        self.turn_priority = TurnPriorityDecisionOwner(self)
+        self.turn_steps = TurnStepOwner(self)
         self._semantic_trust_cache: dict[tuple[str, str, str], bool] = {}
         self._assert_invariants()
 
@@ -641,26 +620,14 @@ class CommanderEngine(
         kind: str,
         seat: str | None = None,
     ) -> int:
-        key = (
-            f"yield_change:{kind}:{seat}"
-            if seat is not None
-            else f"yield_change:{kind}"
-        )
-        return int(self.state.ref_counters.get(key, 0))
+        return self.turn_priority.yield_change_epoch(kind, seat)
 
     def _increment_yield_change_epoch(
         self,
         kind: str,
         seat: str | None = None,
     ) -> None:
-        key = (
-            f"yield_change:{kind}:{seat}"
-            if seat is not None
-            else f"yield_change:{kind}"
-        )
-        self.state.ref_counters[key] = (
-            int(self.state.ref_counters.get(key, 0)) + 1
-        )
+        self.turn_priority.increment_yield_change_epoch(kind, seat)
 
     def _update_yield_change_epochs(self, event: Event) -> None:
         """Persist yield-invalidating changes independently of trace output.
@@ -670,50 +637,7 @@ class CommanderEngine(
         list after a save/load boundary.
         """
 
-        stack_codes = {
-            "stack.cast",
-            "stack.activate",
-            "stack.trigger",
-            "stack.resolve",
-            "stack.counter",
-        }
-        if event.code in stack_codes:
-            self._increment_yield_change_epoch("stack")
-            return
-        if event.code == "card.draw.private":
-            for seat in self.state.players:
-                if seat in event.visibility:
-                    self._increment_yield_change_epoch("draw", seat)
-            return
-        if event.code == "zone.move":
-            if (
-                event.details.get("from") == "hand"
-                or event.details.get("to") == "hand"
-            ):
-                for seat in event.changed_players:
-                    if seat in self.state.players:
-                        self._increment_yield_change_epoch(
-                            "action",
-                            seat,
-                        )
-            self._increment_yield_change_epoch("public")
-            return
-        if event.code == "permanent.untap":
-            for seat in event.changed_players:
-                if seat in self.state.players:
-                    self._increment_yield_change_epoch("action", seat)
-            self._increment_yield_change_epoch("public")
-            return
-        if event.code in {
-            "land.play",
-            "monarch.change",
-            "token.create",
-            "control.change",
-            "permanent.goad",
-            "permanent.goad.expire",
-            "player.eliminated",
-        }:
-            self._increment_yield_change_epoch("public")
+        self.turn_priority.update_yield_change_epochs(event)
 
     def become_monarch(self, seat: str, *, reason: str) -> str:
         """Make one active player the monarch under CR 725.1 and 725.3."""
@@ -2068,95 +1992,19 @@ class CommanderEngine(
     # Turn scheduler, delayed triggers, and priority
     # ------------------------------------------------------------------
     def _start_game(self) -> None:
-        self.state.started = True
-        first = self.state.turn_order[0]
-        entry = TurnEntry(turn_id=self._next_ref("N"), player=first, extra=False, created_sequence=self.state.turn_sequence)
-        self._log(None, "game.start", f"The game began; {first} takes the first turn.", importance=3)
-        self._begin_turn(entry)
+        self.turn_steps.start_game()
 
     def schedule_extra_turn(self, seat: str, *, source: str | None = None) -> TurnEntry:
-        self._require_seat(seat, in_game=True)
-        entry = TurnEntry(
-            turn_id=self._next_ref("X"),
-            player=seat,
-            extra=True,
-            source=source,
-            created_sequence=self.state.turn_sequence,
-        )
-        # Most recently created extra turn is taken first.
-        self.state.extra_turns.insert(0, entry)
-        self._log(seat, "turn.extra.scheduled", f"{seat} received an extra turn after this one.", {"turn": entry.turn_id, "source": source}, importance=2, changed_players=[seat])
-        return entry
+        return self.turn_steps.schedule_extra_turn(seat, source=source)
 
     def _next_normal_player(self) -> str:
-        anchor = self.state.last_normal_turn_player or self.state.turn_order[0]
-        return self._next_active_after(anchor)
+        return self.turn_steps.next_normal_player()
 
     def _select_next_turn(self) -> TurnEntry:
-        while self.state.extra_turns:
-            entry = self.state.extra_turns.pop(0)
-            if self.state.players[entry.player].in_game:
-                return entry
-        seat = self._next_normal_player()
-        return TurnEntry(turn_id=self._next_ref("N"), player=seat, extra=False, created_sequence=self.state.turn_sequence)
+        return self.turn_steps.select_next_turn()
 
     def _begin_turn(self, entry: TurnEntry) -> None:
-        if entry.skip_steps:
-            raise GameRuleError(
-                "Skipped-step turn entries are not implemented; "
-                "the turn cannot begin"
-            )
-        if not self.state.players[entry.player].in_game:
-            self._begin_turn(self._select_next_turn())
-            return
-        self.state.current_turn = entry
-        self.state.active_player = entry.player
-        if not entry.extra:
-            self.state.last_normal_turn_player = entry.player
-        self.state.turn_sequence += 1
-        if self.state.turn_history is not None:
-            self.state.turn_history = TurnHistory(
-                turn_sequence=self.state.turn_sequence
-            )
-        player = self.state.players[entry.player]
-        player.stats.pop(
-            "protection_from_everything_until_next_turn",
-            None,
-        )
-        next_turn_controller = player.stats.pop(
-            "next_turn_controlled_by",
-            None,
-        )
-        if (
-            next_turn_controller in self.active_seats
-            and next_turn_controller != entry.player
-        ):
-            player.stats["turn_controlled_by"] = (
-                next_turn_controller
-            )
-        else:
-            player.stats.pop("turn_controlled_by", None)
-        player.turns_begun += 1
-        self._expire_goad_designations(entry.player)
-        player.land_plays_remaining = 1
-        if player.yield_policy.mode != "none":
-            self._increment_optimization(
-                entry.player, "yields_invalidated_by_phase"
-            )
-        player.yield_policy = YieldPolicy()
-        self.state.combat = CombatState()
-        self.state.phase_index = 0
-        self.state.priority_player = None
-        self.state.priority_passes = []
-        self._log(
-            entry.player,
-            "turn.begin",
-            f"Turn {self.state.turn_sequence} began for {entry.player}{' (extra)' if entry.extra else ''}.",
-            {"turn_id": entry.turn_id, "extra": entry.extra, "source": entry.source},
-            importance=2,
-            changed_players=[entry.player],
-        )
-        self._enter_step()
+        self.turn_steps.begin_turn(entry)
 
     def _expire_goad_designations(self, player: str) -> None:
         """Expire CR 701.15 designations at the goading player's turn."""
@@ -2260,23 +2108,20 @@ class CommanderEngine(
         self,
         *,
         held_triggers: Sequence[StackItem] = (),
+        phase: str | None = None,
+        step: str | None = None,
+        active: str | None = None,
     ) -> None:
-        phase, step = TURN_STEPS[self.state.phase_index]
-        self.state.phase = phase
-        self.state.step = step
-        self.state.priority_player = None
-        self.state.priority_passes = []
-        self._log(None, "step.begin", f"{self.state.turn_sequence}:{phase}/{step}.", importance=0)
-        active = self.state.active_player
-        if active is None:
-            raise StateInvariantError("A turn has no active player")
-
-        if step == "beginning_combat":
-            # CR 802.2 uses the attack-multiple-players option for the supported
-            # Commander profile. Unsupported CR 507.1 variants fail at setup.
-            self.state.combat = CombatState(
-                damage_sequence_id=self._next_ref("CD"),
-                defending_players=[s for s in self.active_seats if s != active],
+        if phase is None:
+            if step is not None or active is not None:
+                raise StateInvariantError(
+                    "A step callback requires phase, step, and active player"
+                )
+            self.turn_steps.enter_step(held_triggers=held_triggers)
+            return
+        if step is None or active is None:
+            raise StateInvariantError(
+                "A step callback requires phase, step, and active player"
             )
 
         if step == "untap":
@@ -2571,58 +2416,7 @@ class CommanderEngine(
         *,
         held_triggers: Sequence[StackItem] = (),
     ) -> None:
-        self._clear_mana(reason="step or phase ended")
-        if (
-            self.state.phase,
-            self.state.step,
-        ) == ("combat", "end_combat"):
-            self._finish_combat_phase()
-        if (
-            self.state.phase,
-            self.state.step,
-        ) == ("combat", "declare_attackers") and not (
-            self.state.combat.had_attacking_creature
-            or self.state.combat.attackers
-        ):
-            # CR 508.8 skips both intervening combat steps when combat has
-            # no attacking creatures. The post-declaration priority window
-            # still happens; this branch runs only after that window ends.
-            self.state.phase_index = TURN_STEPS.index(
-                ("combat", "end_combat")
-            )
-            self._enter_step()
-            return
-        if (
-            self.state.phase,
-            self.state.step,
-        ) == ("combat", "combat_damage") and (
-            self.state.combat.first_strike_step
-            and self.state.combat.damage_step_index == 0
-        ):
-            # CR 510.4 creates a second combat-damage step. It is a real
-            # step boundary: mana has already emptied above, another
-            # step.begin event is emitted, and the surviving participants
-            # are recomputed before assignment.
-            self.state.combat.damage_step_index = 1
-            self._enter_step(held_triggers=held_triggers)
-            return
-        self.state.phase_index += 1
-        if self.state.phase_index >= len(TURN_STEPS):
-            if (
-                self.state.phase,
-                self.state.step,
-            ) == ("ending", "cleanup"):
-                # Priority during cleanup is exceptional.  Once its stack is
-                # empty and every player passes, CR 514.3a starts another
-                # cleanup step rather than the next turn.
-                self.state.phase_index = TURN_STEPS.index(
-                    ("ending", "cleanup")
-                )
-                self._enter_step()
-                return
-            self._finish_cleanup()
-            return
-        self._enter_step(held_triggers=held_triggers)
+        self.turn_steps.advance_step(held_triggers=held_triggers)
 
     def _finish_combat_phase(self) -> None:
         """Remove every represented object from combat at the CR 511.3 boundary."""
@@ -2740,370 +2534,37 @@ class CommanderEngine(
         return changed
 
     def _active_cleanup_frame(self) -> dict[str, Any] | None:
-        return next(
-            (
-                annotation
-                for annotation in reversed(self.state.annotations)
-                if annotation.get("kind") == "cleanup_exception_frame"
-                and annotation.get("active", False)
-            ),
-            None,
-        )
+        return self.turn_steps.active_cleanup_frame()
 
     def _remove_cleanup_frames(self) -> None:
-        self.state.annotations = [
-            annotation
-            for annotation in self.state.annotations
-            if annotation.get("kind") != "cleanup_exception_frame"
-        ]
+        self.turn_steps.remove_cleanup_frames()
 
     def _finish_cleanup(self) -> None:
-        active = self.state.active_player
-        in_cleanup_step = (
-            self.state.phase,
-            self.state.step,
-        ) == ("ending", "cleanup")
-        self._remove_cleanup_frames()
-        cleanup_iteration = 1 + sum(
-            event.code == "turn.cleanup"
-            and event.turn_sequence == self.state.turn_sequence
-            for event in self.state.events
-        )
-        cleanup_delayed = (
-            matching_delayed_triggers(
-                self,
-                "step.begin",
-                {
-                    "phase": "ending",
-                    "step": "cleanup",
-                    "player": active,
-                },
-            )
-            if in_cleanup_step
-            else []
-        )
-        frame = {
-            "kind": "cleanup_exception_frame",
-            "active": True,
-            "turn_sequence": self.state.turn_sequence,
-            "active_player": active,
-            "iteration": cleanup_iteration,
-            "delayed_trigger_ids": [
-                trigger.trigger_id for trigger in cleanup_delayed
-            ],
-            "delayed_triggers_queued": False,
-            "priority_granted": False,
-            "exception_reasons": [],
-        }
-        if in_cleanup_step:
-            self.state.annotations.append(frame)
-        for card in self.state.cards.values():
-            card.marked_damage = 0
-            card.deathtouch_damage = False
-            card.temporary_keywords.clear()
-            card.attacking = None
-            card.blocking = None
-            until_end = dict(
-                card.annotations.get("until_end_of_turn") or {}
-            )
-            if "copy_overrides_previous" in until_end:
-                previous = until_end["copy_overrides_previous"]
-                if previous is None:
-                    card.annotations.pop("copy_overrides", None)
-                else:
-                    card.annotations["copy_overrides"] = copy.deepcopy(
-                        previous
-                    )
-            previous_controller = until_end.get("control_previous")
-            if (
-                previous_controller in self.state.players
-                and card.zone == "battlefield"
-                and card.controller != previous_controller
-            ):
-                self.change_control(
-                    card.object_id,
-                    str(previous_controller),
-                    reason="temporary control effect ended",
-                )
-            card.annotations.pop("until_end_of_turn", None)
-        for player in self.state.players.values():
-            player.stats.pop("next_spell_improvise", None)
-            player.stats.pop("next_spell_uncounterable", None)
-            player.stats.pop(
-                "spells_cant_be_countered_until_end",
-                None,
-            )
-            player.stats.pop("hexproof_from_colors_until_end", None)
-        expire_end_of_turn_damage_modifiers(self.state)
-        expire_end_of_turn_continuous_effects(self.state)
-        self._clear_mana(reason="cleanup")
-        self._log(active, "turn.cleanup", f"{active} completed cleanup.", importance=0)
-        if active in self.state.players:
-            self.state.players[active].stats.pop(
-                "turn_controlled_by",
-                None,
-            )
-        if self.state.game_over:
-            self._remove_cleanup_frames()
-            return
-        if in_cleanup_step:
-            before_stabilize_event = self.state.event_sequence
-            waiting = self._stabilize()
-            stabilization_events = [
-                event
-                for event in self.state.events
-                if event.event_id > before_stabilize_event
-            ]
-            reasons: list[str] = []
-            if cleanup_delayed:
-                reasons.append("cleanup_trigger")
-            if waiting:
-                reasons.append("state_or_trigger_choice")
-            if any(
-                event.code.startswith("state.")
-                or event.code == "player.eliminated"
-                for event in stabilization_events
-            ):
-                reasons.append("state_based_action")
-            if (
-                self.state.stack
-                or self.state.pending_trigger_batches
-                or any(
-                    event.code == "stack.trigger"
-                    for event in stabilization_events
-                )
-            ):
-                reasons.append("trigger_waiting")
-            frame["exception_reasons"] = (
-                unique_preserving_order(reasons)
-            )
-            if reasons:
-                self._log(
-                    active,
-                    "cleanup.priority_required",
-                    (
-                        "Cleanup created a state action or waiting "
-                        "trigger; the active player receives priority."
-                    ),
-                    {
-                        "iteration": cleanup_iteration,
-                        "reasons": frame["exception_reasons"],
-                    },
-                    importance=2,
-                    changed_players=[active] if active else [],
-                )
-                if waiting:
-                    return
-                self._grant_priority(active)
-                return
-            self._remove_cleanup_frames()
-        self._begin_turn(self._select_next_turn())
+        self.turn_steps.finish_cleanup()
 
     def _end_turn_now(self, *, actor: str, reason: str) -> None:
-        """Perform the special action sequence used by end-the-turn effects."""
-
-        exiled_cards: list[str] = []
-        for stack_item in list(self.state.stack):
-            if not stack_item.card_object_id:
-                continue
-            card = self.state.cards.get(stack_item.card_object_id)
-            if card is None or card.zone != "stack":
-                continue
-            self.move_card(
-                card.object_id,
-                "exile",
-                reason=reason,
-                log=False,
-                semantic_events=False,
-            )
-            exiled_cards.append(card.object_id)
-        removed_stack = [item.ref for item in self.state.stack]
-        self.state.stack.clear()
-        clear_pending_trigger_batches(self)
-        self.permissions.invalidate_current()
-        self.state.priority_player = None
-        self.state.priority_passes = []
-        self.state.combat = CombatState()
-        self._log(
-            actor,
-            "turn.ended",
-            f"{actor} ended the turn.",
-            {
-                "stack_objects_exiled": removed_stack,
-                "cards_exiled": [
-                    self.state.cards[object_id].ref
-                    for object_id in exiled_cards
-                ],
-                "reason": reason,
-            },
-            importance=3,
-            changed_objects=exiled_cards,
-        )
-        self.state.phase_index = TURN_STEPS.index(
-            ("ending", "cleanup")
-        )
-        self._enter_step()
+        self.turn_steps.end_turn_now(actor=actor, reason=reason)
 
     def _grant_priority(self, seat: str | None) -> None:
-        if self._stabilize():
-            return
-        if not self.active_seats:
-            return
-        cleanup_frame = self._active_cleanup_frame()
-        if (
-            cleanup_frame is not None
-            and not cleanup_frame.get(
-                "delayed_triggers_queued",
-                False,
-            )
-        ):
-            cleanup_frame["delayed_triggers_queued"] = True
-            delayed_ids = {
-                str(value)
-                for value in cleanup_frame.get(
-                    "delayed_trigger_ids",
-                    [],
-                )
-            }
-            delayed = [
-                trigger
-                for trigger in self.state.delayed_triggers
-                if trigger.trigger_id in delayed_ids
-            ]
-            if delayed:
-                start_delayed_trigger_batch(
-                    self,
-                    delayed,
-                    after="grant_priority",
-                )
-                return
-        if seat not in self.active_seats:
-            seat = self._next_active_after(seat or self.state.active_player or self.active_seats[0])
-        self.state.priority_player = seat
-        self.state.priority_passes = []
-        self.state.priority_epoch += 1
-        if cleanup_frame is not None:
-            cleanup_frame["priority_granted"] = True
+        self.turn_priority.grant_priority(seat)
 
     def _issue_priority(
         self, seat: str, hints: Mapping[str, Any] | None = None
     ) -> Any:
-        hints = dict(hints or self._priority_action_hints(seat))
-        payload = {
-            "stack": [{"id": item.ref, "label": item.label, "controller": item.controller} for item in reversed(self.state.stack)],
-            "legal": hints,
-            "yield_modes": ["none", "until_public_change", "until_my_turn", "auto_if_no_response"],
-        }
-        return self.permissions.issue(
-            kind="priority",
-            role="pilot",
-            actors=[seat],
-            allowed_actions=[
-                "pass",
-                "play_land",
-                "cast",
-                "activate",
-                "undo_mana",
-                "concede",
-            ],
-            payload_by_actor={seat: payload},
-        )
+        return self.turn_priority.issue_priority(seat, hints)
 
     def _complete_priority(self, decision: Any) -> None:
-        seat = decision.actors[0]
-        response = decision.responses[seat]
-        action = response.pop("action")
-        if action == "pass":
-            clear_mana_undo_stack(self.state.players[seat].stats)
-            self._set_yield(seat, response.get("yield"))
-            self._pass_priority(seat)
-        elif action == "play_land":
-            clear_mana_undo_stack(self.state.players[seat].stats)
-            self._play_land(seat, response)
-        elif action == "cast":
-            execute_mana_choice_capable_priority_action(
-                self,
-                seat=seat,
-                action=action,
-                response=response,
-                payment_id=decision.decision_id,
-            )
-        elif action == "activate":
-            execute_mana_choice_capable_priority_action(
-                self,
-                seat=seat,
-                action=action,
-                response=response,
-                payment_id=decision.decision_id,
-            )
-        elif action == "undo_mana":
-            try:
-                undo_mana_activation(self, seat, response)
-            except ManaUndoError as exc:
-                raise GameRuleError(str(exc)) from exc
-        elif action == "concede":
-            clear_mana_undo_stack(self.state.players[seat].stats)
-            if response.get("confirm_concede") is not True:
-                raise GameRuleError(
-                    "Concession requires explicit confirmation"
-                )
-            self._eliminate_players([seat], reason="conceded")
-        else:
-            raise GameRuleError(f"Unsupported priority action {action}")
+        self.turn_priority.complete_priority(decision)
 
     def _set_yield(self, seat: str, value: Any) -> None:
-        mode = str(value or "none")
-        if mode == "none":
-            self.state.players[seat].yield_policy = YieldPolicy()
-            return
-        if mode not in {"until_public_change", "until_my_turn", "auto_if_no_response"}:
-            raise GameRuleError(f"Unknown yield mode {mode}")
-        signature = self.meaningful_action_signature(seat)
-        self.state.players[seat].yield_policy = YieldPolicy(
-            mode=mode,
-            created_revision=self.state.revision,
-            created_event_sequence=self.state.event_sequence,
-            created_stack_change_epoch=self._yield_change_epoch("stack"),
-            created_public_change_epoch=self._yield_change_epoch("public"),
-            created_draw_epoch=self._yield_change_epoch("draw", seat),
-            created_action_change_epoch=self._yield_change_epoch(
-                "action",
-                seat,
-            ),
-            created_turn_sequence=self.state.turn_sequence,
-            created_priority_epoch=self.state.priority_epoch,
-            created_active_player=self.state.active_player,
-            created_phase=self.state.phase,
-            created_step=self.state.step,
-            created_land_plays_remaining=self.state.players[
-                seat
-            ].land_plays_remaining,
-            action_signature=signature,
-            stack_signature=self._stack_signature(),
-            note="Pilot-issued priority yield",
-        )
+        self.turn_priority.set_yield(seat, value)
 
     @staticmethod
     def _signature_hash(value: Any) -> str:
-        return hashlib.sha256(stable_json(value).encode("utf-8")).hexdigest()
+        return TurnPriorityDecisionOwner.signature_hash(value)
 
     def _stack_signature(self) -> str:
-        return self._signature_hash(
-            [
-                {
-                    "ref": item.ref,
-                    "kind": item.kind,
-                    "controller": item.controller,
-                    "source": item.source_object_id,
-                    "card": item.card_object_id,
-                    "semantic": item.semantic_key,
-                    "targets": item.targets,
-                    "modes": item.modes,
-                    "x": item.x_value,
-                }
-                for item in self.state.stack
-            ]
-        )
+        return self.turn_priority.stack_signature()
 
     def meaningful_action_signature(
         self,
@@ -3117,137 +2578,18 @@ class CommanderEngine(
         not turn every empty priority pass into an LLM task.
         """
 
-        hints = dict(hints or self._priority_action_hints(seat))
-        meaningful_actions = []
-        ordinary_mana_ids = {
-            f"activate:{item['s']}:{item['a']}"
-            for item in hints.get("mana_abilities", [])
-            if item not in hints.get("abilities", [])
-        }
-        for action in hints.get("actions", []):
-            if action.get("id") in {"pass", "concede"} or action.get(
-                "id"
-            ) in ordinary_mana_ids:
-                continue
-            meaningful_actions.append(action_offer_signature_facts(action))
-        payload: dict[str, Any] = {
-            "algorithm": "meaningful-action-signature/v1",
-            "actions": sorted(
-                meaningful_actions,
-                key=lambda item: stable_json(item),
-            ),
-        }
-        decision = self.state.pending_decision
-        if decision is not None and seat in decision.actors:
-            payload["mandatory_or_optional_choice"] = {
-                "kind": decision.kind,
-                "allowed": list(decision.allowed_actions),
-                "context": copy.deepcopy(decision.payload_by_actor.get(seat, {})),
-            }
-        return self._signature_hash(payload)
+        return self.turn_priority.meaningful_action_signature(seat, hints)
 
     def _optimization_stats(self, seat: str) -> dict[str, Any]:
-        telemetry = self.state.players[seat].stats.setdefault(
-            "decision_optimization", {}
-        )
-        for key in (
-            "priority_windows_considered",
-            "pass_only_windows_skipped",
-            "yield_covered_windows",
-            "suppressed_empty_windows",
-            "suppressed_meaningful_windows",
-            "yields_invalidated_by_phase",
-            "yields_invalidated_by_draw",
-            "yields_invalidated_by_action_change",
-            "yields_invalidated_by_stack",
-            "yields_invalidated_by_public_change",
-            "illegal_target_actions_prevented",
-            "illegal_target_actions_advertised",
-            "actions_removed_for_no_targets",
-            "actions_removed_for_mode_target_failure",
-            "target_candidates_generated",
-            "target_submissions_rejected",
-            "targets_became_illegal_on_resolution",
-            "spells_countered_by_rules",
-            "spells_countered_by_effect",
-            "stack_interaction_windows_created",
-            "stack_interaction_windows_auto_passed",
-        ):
-            telemetry.setdefault(key, 0)
-        return telemetry
+        return self.turn_priority.optimization_stats(seat)
 
     def _increment_optimization(self, seat: str, key: str) -> None:
-        telemetry = self._optimization_stats(seat)
-        telemetry[key] = int(telemetry.get(key, 0)) + 1
+        self.turn_priority.increment_optimization(seat, key)
 
     def _yield_stop_reason(
         self, seat: str, action_signature: str | None = None
     ) -> str | None:
-        policy = self.state.players[seat].yield_policy
-        if policy.mode == "none":
-            return "none"
-        if (
-            policy.stop_phase is not None
-            and self.state.phase == policy.stop_phase
-            and (
-                policy.stop_step is None
-                or self.state.step == policy.stop_step
-            )
-        ):
-            return "phase"
-        if self.state.active_player == seat and (
-            policy.created_active_player != seat
-            or policy.created_turn_sequence != self.state.turn_sequence
-            or policy.created_priority_epoch != self.state.priority_epoch
-            or (
-                self.state.phase
-                in {"precombat_main", "postcombat_main"}
-                and (
-                    policy.created_phase != self.state.phase
-                    or policy.created_step != "main"
-                )
-            )
-        ):
-            return "phase"
-        if policy.mode == "until_my_turn" and self.state.active_player == seat:
-            return "phase"
-        if policy.stack_signature != self._stack_signature():
-            return "stack"
-        if (
-            policy.created_stack_change_epoch
-            != self._yield_change_epoch("stack")
-        ):
-            return "stack"
-        if (
-            policy.created_draw_epoch
-            != self._yield_change_epoch("draw", seat)
-        ):
-            return "draw"
-        if (
-            policy.created_action_change_epoch
-            != self._yield_change_epoch("action", seat)
-        ):
-            return "action_change"
-        if (
-            policy.created_public_change_epoch
-            != self._yield_change_epoch("public")
-        ):
-            return "public_change"
-        if (
-            policy.created_land_plays_remaining
-            != self.state.players[seat].land_plays_remaining
-        ):
-            return "action_change"
-        current_signature = action_signature or self.meaningful_action_signature(
-            seat
-        )
-        if policy.action_signature != current_signature:
-            return "action_change"
-        if policy.mode == "auto_if_no_response" and self._signature_has_actions(
-            seat
-        ):
-            return "action_change"
-        return None
+        return self.turn_priority.yield_stop_reason(seat, action_signature)
 
     def _yield_stopped(self, seat: str) -> bool:
         return self._yield_stop_reason(seat) is not None
@@ -3259,32 +2601,16 @@ class CommanderEngine(
         action_signature: str,
         meaningful: bool,
     ) -> tuple[bool, str | None]:
-        policy = self.state.players[seat].yield_policy
-        if policy.mode == "none":
-            return False, None
-        reason = self._yield_stop_reason(seat, action_signature)
-        if reason is not None:
-            self.state.players[seat].yield_policy = YieldPolicy()
-            if reason != "none":
-                self._increment_optimization(
-                    seat, f"yields_invalidated_by_{reason}"
-                )
-            return False, reason
-        if policy.mode == "auto_if_no_response" and meaningful:
-            self.state.players[seat].yield_policy = YieldPolicy()
-            self._increment_optimization(
-                seat, "yields_invalidated_by_action_change"
-            )
-            return False, "action_change"
-        return True, None
+        return self.turn_priority.can_auto_pass(
+            seat,
+            action_signature=action_signature,
+            meaningful=meaningful,
+        )
 
     def _signature_has_actions(
         self, seat: str, hints: Mapping[str, Any] | None = None
     ) -> bool:
-        hints = dict(hints or self._priority_action_hints(seat))
-        return any(
-            hints.get(key) for key in ("cast", "lands", "abilities")
-        )
+        return self.turn_priority.signature_has_actions(seat, hints)
 
     def _record_action_opportunity(
         self,
@@ -3295,154 +2621,20 @@ class CommanderEngine(
         outcome: str,
         yield_invalidation: str | None = None,
     ) -> dict[str, Any]:
-        self.state.opportunity_sequence += 1
-        meaningful_ids = [
-            action["id"]
-            for action in hints.get("actions", [])
-            if action.get("id") not in {"pass", "concede"}
-            and action.get("kind") != "mana"
-            and (
-                action.get("kind") != "activate"
-                or any(
-                    item.get("s") == action.get("source")
-                    and item.get("a") == action.get("ability")
-                    for item in hints.get("abilities", [])
-                )
-            )
-        ]
-        diagnostics = copy.deepcopy(hints.get("diagnostic") or {})
-        meaningful = bool(meaningful_ids)
-        row = {
-                "sequence": self.state.opportunity_sequence,
-                "revision": self.state.revision,
-                "event_sequence": self.state.event_sequence,
-                "turn_sequence": self.state.turn_sequence,
-                "active_player": self.state.active_player,
-                "phase": self.state.phase,
-                "step": self.state.step,
-                "priority_epoch": self.state.priority_epoch,
-                "seat": seat,
-                "action_signature": action_signature,
-                "action_signature_algorithm": "meaningful-action-signature/v1",
-                "meaningful_action_ids": meaningful_ids,
-                "meaningful_action_count": len(meaningful_ids),
-                "meaningful_actions_exist": meaningful,
-                "pilot_task_issued": outcome == "pilot_task_issued",
-                "safe_yield_covered": outcome == "safe_yield",
-                "pass_only_auto_pass": outcome == "pass_only_auto_pass",
-                "ordered_plan_covered": outcome == "ordered_plan",
-                "incorrectly_suppressed": outcome
-                == "incorrectly_suppressed",
-                "outcome": outcome,
-                "yield_invalidated_by": yield_invalidation,
-                "diagnostic": diagnostics,
-            }
-        self.state.action_opportunities.append(row)
-        return row
+        return self.turn_priority.record_action_opportunity(
+            seat,
+            hints=hints,
+            action_signature=action_signature,
+            outcome=outcome,
+            yield_invalidation=yield_invalidation,
+        )
 
     def _pass_priority(self, seat: str, *, automatic: bool = False) -> None:
-        if self.state.priority_player != seat:
-            raise GameRuleError(f"{seat} does not have priority")
-        self.state.priority_passes.append(seat)
-        if not automatic:
-            self._log(seat, "priority.pass", f"{seat} passed priority.", importance=0)
-        if len(self.state.priority_passes) >= len(self.active_seats):
-            self.state.priority_player = None
-            self.state.priority_passes = []
-            if self.state.stack:
-                self._prepare_stack_resolution()
-            else:
-                self._advance_step()
-            return
-        self.state.priority_player = self._next_active_after(seat)
+        self.turn_priority.pass_priority(seat, automatic=automatic)
 
     def pump(self, *, max_transitions: int = 1000) -> None:
         """Run deterministic system transitions until an external decision is needed."""
-        for _ in range(max_transitions):
-            if (
-                self.state.game_over
-                or self.state.pending_decision is not None
-                or self._semantic_pause_annotation() is not None
-            ):
-                return
-            if not self.state.started:
-                return
-            if (
-                self.state.priority_player is None
-                and self._active_cleanup_frame() is not None
-            ):
-                self._grant_priority(self.state.active_player)
-                continue
-            if self.state.priority_player is not None:
-                seat = self.state.priority_player
-                hints = self._priority_action_hints(seat)
-                action_signature = self.meaningful_action_signature(
-                    seat, hints
-                )
-                meaningful = self._signature_has_actions(seat, hints)
-                self._increment_optimization(
-                    seat, "priority_windows_considered"
-                )
-                if self.state.stack:
-                    self._increment_optimization(
-                        seat,
-                        (
-                            "stack_interaction_windows_created"
-                            if meaningful
-                            else "stack_interaction_windows_auto_passed"
-                        ),
-                    )
-                can_yield, invalidation = self._can_auto_pass(
-                    seat,
-                    action_signature=action_signature,
-                    meaningful=meaningful,
-                )
-                if (
-                    self.state.config.auto_pass_empty_priority
-                    and not meaningful
-                    and not self._manual_active_main_phase_window(seat)
-                ):
-                    self._increment_optimization(
-                        seat, "pass_only_windows_skipped"
-                    )
-                    self._increment_optimization(
-                        seat, "suppressed_empty_windows"
-                    )
-                    self._record_action_opportunity(
-                        seat,
-                        hints=hints,
-                        action_signature=action_signature,
-                        outcome="pass_only_auto_pass",
-                        yield_invalidation=invalidation,
-                    )
-                    self._pass_priority(seat, automatic=True)
-                    continue
-                if can_yield:
-                    self._increment_optimization(
-                        seat, "yield_covered_windows"
-                    )
-                    self._record_action_opportunity(
-                        seat,
-                        hints=hints,
-                        action_signature=action_signature,
-                        outcome="safe_yield",
-                    )
-                    self._pass_priority(seat, automatic=True)
-                    continue
-                row = self._record_action_opportunity(
-                    seat,
-                    hints=hints,
-                    action_signature=action_signature,
-                    outcome="pilot_task_issued",
-                    yield_invalidation=invalidation,
-                )
-                decision = self._issue_priority(seat, hints)
-                row["decision_id"] = decision.decision_id
-                return
-            # Step handlers normally either advance or grant priority. Re-enter
-            # only as a fail-safe for a loaded state between transitions.
-            self._enter_step()
-        raise StateInvariantError("Automatic transition limit exceeded")
+        self.turn_priority.pump(max_transitions=max_transitions)
 
     def _manual_active_main_phase_window(self, seat: str) -> bool:
         """Keep browser play under the active player's explicit control.
@@ -3452,16 +2644,7 @@ class CommanderEngine(
         either main phase without an explicit pass.
         """
 
-        return bool(
-            self.state.config.manual_active_main_phase
-            and seat == self.state.active_player
-            and not self.state.stack
-            and (self.state.phase, self.state.step)
-            in {
-                ("precombat_main", "main"),
-                ("postcombat_main", "main"),
-            }
-        )
+        return self.turn_priority.manual_active_main_phase_window(seat)
 
     def _semantic_pause_annotation(self) -> dict[str, Any] | None:
         return next(
