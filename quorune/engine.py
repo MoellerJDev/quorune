@@ -2108,17 +2108,21 @@ class CommanderEngine(
         self,
         *,
         held_triggers: Sequence[StackItem] = (),
+        phase: str | None = None,
+        step: str | None = None,
+        active: str | None = None,
     ) -> None:
-        self.turn_steps.enter_step(held_triggers=held_triggers)
-
-    def _perform_step_entry(
-        self,
-        phase: str,
-        step: str,
-        active: str,
-        *,
-        held_triggers: Sequence[StackItem] = (),
-    ) -> None:
+        if phase is None:
+            if step is not None or active is not None:
+                raise StateInvariantError(
+                    "A step callback requires phase, step, and active player"
+                )
+            self.turn_steps.enter_step(held_triggers=held_triggers)
+            return
+        if step is None or active is None:
+            raise StateInvariantError(
+                "A step callback requires phase, step, and active player"
+            )
 
         if step == "beginning_combat":
             # CR 802.2 uses the attack-multiple-players option for the supported

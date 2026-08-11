@@ -85,13 +85,13 @@ class TurnStepHost(Protocol):
         semantic_events: bool = True,
     ) -> Any: ...
 
-    def _perform_step_entry(
+    def _enter_step(
         self,
-        phase: str,
-        step: str,
-        active: str,
         *,
         held_triggers: Sequence[StackItem] = (),
+        phase: str | None = None,
+        step: str | None = None,
+        active: str | None = None,
     ) -> None: ...
 
     def _log(
@@ -278,11 +278,11 @@ class TurnStepOwner:
             f"{self.state.turn_sequence}:{phase}/{step}.",
             importance=0,
         )
-        self._host._perform_step_entry(
-            phase,
-            step,
-            active,
+        self._host._enter_step(
             held_triggers=held_triggers,
+            phase=phase,
+            step=step,
+            active=active,
         )
 
     def advance_step(

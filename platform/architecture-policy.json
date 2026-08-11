@@ -213,6 +213,7 @@
       "quorune/aura/decisions.py": "seat-scoped Aura-entry continuation validation and resolution routing",
       "quorune/aura/runtime.py": "read-only Aura legality and entry planner delegating attachment mutation to the canonical owner",
       "quorune/record_decks.py": "read-only exact deck-list provenance hashing",
+      "quorune/turn_priority_model.py": "immutable priority transition values and read-only turn-owner host protocol",
       "quorune/state_based_actions.py": "pure state-based action detection over an authoritative snapshot",
       "quorune/saga_lifecycle.py": "immutable ordinary Saga final-chapter state-action model",
       "quorune/state_based_execution.py": "typed state-based execution planner delegating mutation to canonical destruction and zone owners",
