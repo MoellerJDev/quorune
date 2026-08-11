@@ -9,6 +9,11 @@ from scripts.architecture_support import (
     decode_card_name_hash_index,
     printed_name_digest,
 )
+from scripts.architecture_observability import (
+    classify_state_writes,
+    runtime_text_accesses,
+    runtime_text_growth,
+)
 from scripts.update_architecture_audit import ROOT, _string_records
 from scripts.validate_architecture import (
     _counter_extras,
@@ -31,6 +36,11 @@ class ArchitectureGuardTests(unittest.TestCase):
         cls.card_index_path = ROOT / cls.policy["card_name_hash_index"]
         cls.card_index = decode_card_name_hash_index(
             json.loads(cls.card_index_path.read_text(encoding="utf-8"))
+        )
+        cls.audit_source = json.loads(
+            (ROOT / "platform" / "architecture-audit-source.json").read_text(
+                encoding="utf-8"
+            )
         )
 
     def test_current_repository_passes_every_architecture_guard(self):
@@ -78,6 +88,86 @@ class ArchitectureGuardTests(unittest.TestCase):
                 [location], self.policy["game_state_access"]["mutable_owners"]
             ),
             [location],
+        )
+
+    def test_direct_writes_are_classified_by_actual_owner(self):
+        records = [
+            {
+                "file": "quorune/engine.py",
+                "symbol": "_begin_turn",
+                "kind": "assignment",
+                "state_path": "active_player",
+            },
+            {
+                "file": "quorune/damage.py",
+                "symbol": "commit",
+                "kind": "assignment",
+                "state_path": "players.life",
+            },
+            {
+                "file": "quorune/unowned_fixture.py",
+                "symbol": "commit",
+                "kind": "assignment",
+                "state_path": "players.life",
+            },
+        ]
+        inventory = classify_state_writes(
+            records,
+            source=self.audit_source,
+            policy=self.policy,
+            baseline={},
+            module_classifications={"modules": []},
+        )
+        self.assertEqual(inventory["writes_in_commander_engine"], 1)
+        self.assertEqual(inventory["writes_in_canonical_owners"], 1)
+        self.assertEqual(inventory["unowned_writes"], 1)
+        self.assertEqual(
+            [row["classification"] for row in inventory["locations"]],
+            [
+                "canonical_mutation_owner_write",
+                "grandfathered_engine_debt",
+                "unowned_write",
+            ],
+        )
+
+    def test_runtime_oracle_text_inventory_is_structural_and_non_growing(self):
+        analyses = {
+            "quorune/compiler/lowering.py": SimpleNamespace(
+                tree=ast.parse("def lower(card):\n return card.oracle_text\n")
+            ),
+            "quorune/engine.py": SimpleNamespace(
+                tree=ast.parse(
+                    "def interpret(card):\n return card.get('oracle_text', '')\n"
+                )
+            ),
+        }
+        inventory = runtime_text_accesses(analyses)
+        self.assertEqual(
+            inventory["by_classification"],
+            {"compiler_input": 1, "prohibited_runtime_interpretation": 1},
+        )
+        prohibited = inventory["prohibited_runtime_interpretation"][0]
+        baseline = {
+            "runtime_oracle_text_access_identities": [
+                {
+                    key: prohibited[key]
+                    for key in ("file", "symbol", "access_kind", "member")
+                }
+            ]
+        }
+        self.assertEqual(runtime_text_growth(inventory, baseline), [])
+        self.assertEqual(
+            runtime_text_growth(
+                inventory, {"runtime_oracle_text_access_identities": []}
+            ),
+            [
+                {
+                    "file": "quorune/engine.py",
+                    "symbol": "interpret",
+                    "access_kind": "mapping_get",
+                    "member": "oracle_text",
+                }
+            ],
         )
 
     def test_card_name_index_contains_no_plaintext_and_detects_new_literal(self):

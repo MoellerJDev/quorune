@@ -142,6 +142,10 @@ _VOLATILE_TEXT = (
         re.IGNORECASE,
     ),
 )
+_DURABLE_REPOSITORY_PATH = re.compile(
+    r"^(?:\.github|docs|platform|quorune|schemas|scripts|server|tests|web)/"
+    r"[A-Za-z0-9._/-]+\.[A-Za-z0-9]+$"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -428,9 +432,13 @@ def _volatile_status_value(path: tuple[str, ...], value: Any) -> str | None:
     dotted = ".".join(path)
     if dotted == "repository.default_branch":
         return None
+    if path and path[0] == "historical_observations":
+        return None
     if path and _VOLATILE_KEY.search(path[-1]):
         return f"volatile field {dotted!r}"
     if isinstance(value, str):
+        if _DURABLE_REPOSITORY_PATH.fullmatch(value):
+            return None
         for pattern in _VOLATILE_TEXT:
             if pattern.search(value):
                 return f"volatile provenance in {dotted!r}"

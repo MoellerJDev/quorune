@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "177596c2",
+  "baseline_commit": "e0e9c22c",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -7,6 +7,12 @@
       "symbol": "_create_mishra_warform"
     }
   ],
+  "direct_game_state_write_classification_counts": {
+    "canonical_mutation_owner_write": 8,
+    "compatibility_adapter_write": 11,
+    "grandfathered_engine_debt": 108,
+    "orchestration_root_replacement": 1
+  },
   "direct_game_state_write_identities": [
     {
       "file": "quorune/engine.py",
@@ -2214,9 +2220,9 @@
     "physical_lines": 12396
   },
   "exception_binding": {
-    "adr": "docs/adr/0056-typed-ordinary-crew-activation.md",
-    "allowance_fingerprint": "368eee738c034ec2d828911f1e0cfe1fa86c01749e2afef30defa2df9ff19ccf",
-    "exception_id": "ARCH-EXC-0025"
+    "adr": "docs/adr/0057-actionable-architecture-ownership-audit.md",
+    "allowance_fingerprint": "3920bbad0bfcf90d720e1f2fc32028924e3f450c2f658ac5d58f8aa26389c6f2",
+    "exception_id": "ARCH-EXC-0026"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2594,7 +2600,333 @@
     "untap_all_creatures",
     "veil_of_summer"
   ],
-  "schema_version": 2,
+  "runtime_oracle_text_access_identities": [
+    {
+      "access_kind": "attribute",
+      "file": "quorune/compiled_activated_abilities.py",
+      "member": "oracle_text",
+      "symbol": "printed_face"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/compiled_activated_abilities.py",
+      "member": "oracle_text",
+      "symbol": "printed_face"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/compiled_activated_abilities.py",
+      "member": "executable_oracle_text",
+      "symbol": "trusted_face_handler_programs"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/compiled_activated_abilities.py",
+      "member": "printed_oracle_text",
+      "symbol": "trusted_face_handler_programs"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/compiled_crew_abilities.py",
+      "member": "executable_oracle_text",
+      "symbol": "compiled_ordinary_crew_abilities"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/compiled_cycling_abilities.py",
+      "member": "executable_oracle_text",
+      "symbol": "compiled_ordinary_cycling_abilities"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/compiled_mana_abilities.py",
+      "member": "executable_oracle_text",
+      "symbol": "compiled_color_set_mana_abilities"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/compiled_mana_abilities.py",
+      "member": "executable_oracle_text",
+      "symbol": "compiled_fixed_mana_abilities"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/damage.py",
+      "member": "oracle_text",
+      "symbol": "_total_toxic_value"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/drawing/coordinator.py",
+      "member": "oracle_text",
+      "symbol": "_complete_legacy_draw_replacement"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._begin_semantic_search"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._begin_siege_defeated_resolution"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._combat_oracle_lines"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._compiled_zone_cast_permission"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._complete_attackers"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._complete_semantic_search"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._controller_has_oracle_text"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._copyable_characteristics"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._copyable_characteristics"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._cost_payment_mechanics"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._effective_card_data"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._effective_card_data"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._enter_step"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._goad_prohibition_source"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._land_enters_tapped"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._land_enters_tapped"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._land_entry_life_amount"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._land_entry_life_amount"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._loyalty_cost_modifier_present"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._loyalty_cost_modifier_present"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._nonmana_ability_prohibited_by_name"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._opening_hand_signals"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._permanent_sba_snapshots"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._program_can_auto_resolve"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._queue_ward_triggers_for_targets"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._unconditionally_enters_tapped"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._unsupported_untap_selection_source"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/engine.py",
+      "member": "oracle_text",
+      "symbol": "CommanderEngine._unsupported_untap_selection_source"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/mana.py",
+      "member": "oracle_text",
+      "symbol": "_has_unresolved_dynamic_output"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/mana.py",
+      "member": "oracle_text",
+      "symbol": "effective_mana_record"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/mana.py",
+      "member": "oracle_text",
+      "symbol": "extract_mana_modes"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/mana_activation.py",
+      "member": "oracle_text",
+      "symbol": "_mana_plan_modes"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/mana_source_discovery.py",
+      "member": "oracle_text",
+      "symbol": "available_mana_sources"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/report.py",
+      "member": "oracle_text",
+      "symbol": "_land_entry_review"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/report.py",
+      "member": "oracle_text",
+      "symbol": "_semantic_coverage"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/report.py",
+      "member": "oracle_text",
+      "symbol": "derive_review"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/rules/activation/query.py",
+      "member": "executable_oracle_text",
+      "symbol": "activated_abilities"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/rules/activation/query.py",
+      "member": "executable_oracle_text",
+      "symbol": "activated_abilities"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/rules/activation/query.py",
+      "member": "oracle_text",
+      "symbol": "activated_abilities"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/semantic_runtime/token_replacements.py",
+      "member": "oracle_text",
+      "symbol": "TokenDefinition.characteristics"
+    },
+    {
+      "access_kind": "subscript",
+      "file": "quorune/semantic_runtime/token_replacements.py",
+      "member": "oracle_text",
+      "symbol": "TokenDefinition.characteristics"
+    },
+    {
+      "access_kind": "mapping_get",
+      "file": "quorune/semantic_runtime/token_replacements.py",
+      "member": "oracle_text",
+      "symbol": "TokenDefinition.from_mapping"
+    },
+    {
+      "access_kind": "local_name",
+      "file": "quorune/state_based_actions.py",
+      "member": "oracle_text",
+      "symbol": "counter_maximums_from_oracle"
+    },
+    {
+      "access_kind": "attribute",
+      "file": "quorune/trigger_discovery.py",
+      "member": "oracle_text",
+      "symbol": "_additional_trigger_count"
+    }
+  ],
+  "schema_version": 3,
   "source_fingerprints": {
     "printed_name_allowances_sha256": "1de675762c676052794cdfe62a457e9fd1fc15545696b9d5d189e50a2ff068bc"
   }

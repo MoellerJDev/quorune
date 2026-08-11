@@ -248,6 +248,7 @@
     ],
     "generated-validation": [
       "test_architecture_audit",
+      "test_architecture_cli",
       "test_architecture_governance",
       "test_architecture_guards",
       "test_certification_receipt",

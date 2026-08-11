@@ -17,16 +17,38 @@ import unittest
 from typing import Any, Iterable, Mapping
 
 try:
+    from scripts.architecture_observability import (
+        build_migration_queue,
+        build_subsystem_capsules,
+        classify_state_writes,
+        interaction_assurance_summary,
+        runtime_text_accesses,
+    )
     from scripts.architecture_support import (
         build_card_name_hash_index,
         decode_card_name_hash_index,
         printed_name_digest,
     )
+    from scripts.source_tree_fingerprint import (
+        SOURCE_TREE_FINGERPRINT_ALGORITHM,
+        tracked_worktree_source_fingerprint,
+    )
 except ModuleNotFoundError:  # Direct `python scripts/...` execution.
+    from architecture_observability import (
+        build_migration_queue,
+        build_subsystem_capsules,
+        classify_state_writes,
+        interaction_assurance_summary,
+        runtime_text_accesses,
+    )
     from architecture_support import (
         build_card_name_hash_index,
         decode_card_name_hash_index,
         printed_name_digest,
+    )
+    from source_tree_fingerprint import (
+        SOURCE_TREE_FINGERPRINT_ALGORITHM,
+        tracked_worktree_source_fingerprint,
     )
 
 
@@ -44,6 +66,9 @@ JSON_OUTPUT = ROOT / "coverage" / "architecture-audit.json"
 ARCHITECTURE_STATUS = ROOT / "docs" / "ARCHITECTURE_DEBT_STATUS.md"
 COMPILER_STATUS = ROOT / "docs" / "COMPILER_COVERAGE_STATUS.md"
 GUARD_BASELINE = ROOT / "platform" / "architecture-guard-baseline.json"
+ARCHITECTURE_POLICY = ROOT / "platform" / "architecture-policy.json"
+MODULE_CLASSIFICATIONS = ROOT / "platform" / "module-classifications.json"
+ARCHITECTURE_EXCEPTIONS = ROOT / "platform" / "architecture-exceptions.json"
 CAPABILITY_REGISTRY = (
     ROOT / "quorune" / "rules" / "capability-registry.json"
 )
@@ -89,7 +114,7 @@ VIRTUAL_GENERATED_DOCS = {
         "title": "Architecture debt status",
         "status": "generated",
         "authoritative_source": "coverage/architecture-audit.json",
-        "verified": "generated from the Phase 0 baseline",
+        "verified": "generated from current architecture sources",
         "audience": "maintainers and rules contributors",
         "maintenance": "generated",
     },
@@ -132,9 +157,18 @@ def _serialize_json(value: Mapping[str, Any]) -> str:
 
 def _source() -> dict[str, Any]:
     source = _load_json(SOURCE)
-    if source.get("schema_version") != 1:
+    if source.get("schema_version") != 2:
         raise ValueError("Unsupported architecture audit source schema")
+    observations = source.get("historical_observations")
+    if not isinstance(observations, list) or not observations:
+        raise ValueError("Architecture audit source requires historical observations")
+    if not isinstance(source.get("program"), dict):
+        raise ValueError("Architecture audit source requires stable program policy")
     return source
+
+
+def _historical_observation(source: Mapping[str, Any]) -> Mapping[str, Any]:
+    return source["historical_observations"][-1]
 
 
 def _production_paths(source: Mapping[str, Any]) -> list[Path]:
@@ -1370,7 +1404,9 @@ def _documentation_metrics(source: Mapping[str, Any]) -> dict[str, Any]:
         present = path.is_file() or virtual is not None
         metadata = dict(virtual or _front_matter(path))
         if virtual:
-            metadata["verified"] = str(source["audit"]["baseline_main_commit"])
+            metadata["verified"] = str(
+                _historical_observation(source)["baseline_main_commit"]
+            )
         if metadata.get("status") == "generated" and metadata.get("verified"):
             metadata["verified"] = GENERATED_VERIFIED_SENTINEL
         missing_metadata = sorted(DOC_METADATA_KEYS - set(metadata)) if present else []
@@ -1550,14 +1586,39 @@ def _rules_metrics() -> dict[str, Any]:
 
 def _coordinates(source: Mapping[str, Any]) -> dict[str, Any]:
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    historical = _historical_observation(source)
+    source_fingerprint = tracked_worktree_source_fingerprint(ROOT)
     return {
         "repository": "MoellerJDev/quorune",
         "default_branch": "main",
-        "baseline_main_commit": source["audit"]["baseline_main_commit"],
-        "baseline_worktree_clean": source["audit"]["baseline_worktree_clean"],
         "package_version": project["project"]["version"],
         "requires_python": project["project"]["requires-python"],
-        "ci": source["ci"],
+        "durable_program_baseline": {
+            "main_commit": historical["baseline_main_commit"],
+            "worktree_clean": historical["baseline_worktree_clean"],
+            "observed_at": historical["observed_at"],
+        },
+        "evaluated_source_tree": {
+            "fingerprint_algorithm": SOURCE_TREE_FINGERPRINT_ALGORITHM,
+            "fingerprint": source_fingerprint,
+        },
+        "historical_audit_observation": {
+            "observation_id": historical["observation_id"],
+            "phase": historical["phase"],
+            "certification": historical["certification"],
+        },
+        "live_transport_context": {
+            "current_feature_head": None,
+            "certified_exact_head": None,
+            "current_main": None,
+            "active_slot_a": None,
+            "active_slot_b": None,
+            "reason": (
+                "Branch, ref, receipt, and worktree-slot facts are intentionally not "
+                "persisted in a tracked generated artifact; run `simctl architecture "
+                "owners` for live values."
+            ),
+        },
     }
 
 
@@ -1584,16 +1645,42 @@ def build_report() -> dict[str, Any]:
     semantic_handlers = _semantic_handler_metrics(state_dispatch)
     production = _production_metrics(paths, analyses, source)
     engine = _engine_metrics(analyses, source)
+    policy = _load_json(ARCHITECTURE_POLICY)
+    baseline = _load_json(GUARD_BASELINE)
+    module_classifications = _load_json(MODULE_CLASSIFICATIONS)
+    exceptions = _load_json(ARCHITECTURE_EXCEPTIONS)
+    write_inventory = classify_state_writes(
+        state_dispatch["direct_game_state_write_heuristic"]["locations"],
+        source=source,
+        policy=policy,
+        baseline=baseline,
+        module_classifications=module_classifications,
+    )
+    runtime_text = runtime_text_accesses(analyses)
+    subsystem_capsules = build_subsystem_capsules(
+        root=ROOT,
+        source=source,
+        analyses=analyses,
+        module_classifications=module_classifications,
+        writes=write_inventory,
+        runtime_text=runtime_text,
+        production=production,
+        engine=engine,
+        exceptions=exceptions,
+    )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated": {
             "generator": "scripts/update_architecture_audit.py",
             "source": "platform/architecture-audit-source.json",
             "card_specificity_source": "platform/card-specificity-baseline.json",
             "stale_check": "python scripts/update_architecture_audit.py --check",
-            "scope_note": source["audit"]["scope_note"],
+            "scope_note": source["program"]["scope_note"],
         },
-        "audit": source["audit"],
+        "audit": {
+            "observation_kind": "historical",
+            **_historical_observation(source),
+        },
         "coordinates": _coordinates(source),
         "rules": _rules_metrics(),
         "tests": _test_metrics(),
@@ -1602,10 +1689,15 @@ def build_report() -> dict[str, Any]:
             "engine": engine,
             "imports": _import_metrics(analyses),
             **state_dispatch,
+            "direct_game_state_write_ownership": write_inventory,
+            "runtime_oracle_text_access": runtime_text,
             "semantic_handlers": semantic_handlers,
             "printed_name_literals": card_validation,
             "card_named_helpers": source["card_named_helpers"],
             "subsystem_ownership": source["subsystem_ownership"],
+            "subsystem_capsules": subsystem_capsules,
+            "migration_queue": build_migration_queue(subsystem_capsules),
+            "interaction_assurance_baseline": interaction_assurance_summary(ROOT),
             "missing_dedicated_owners": [
                 item["id"]
                 for item in source["subsystem_ownership"]
@@ -1662,6 +1754,9 @@ def render_architecture_status(report: Mapping[str, Any]) -> str:
     architecture = report["architecture"]
     production = architecture["production"]
     engine = architecture["engine"]
+    write_ownership = architecture["direct_game_state_write_ownership"]
+    runtime_text = architecture["runtime_oracle_text_access"]
+    interaction_baseline = architecture["interaction_assurance_baseline"]
     docs = report["documentation"]
     tests = report["tests"]
     lines = _metadata_lines(
@@ -1674,17 +1769,26 @@ def render_architecture_status(report: Mapping[str, Any]) -> str:
         [
             "# Architecture debt status",
             "",
-            "This generated migration dashboard is anchored to the Phase 0 baseline. "
-            "It measures the current tree and does not claim architectural completion, "
+            "This generated migration dashboard measures the evaluated source tree "
+            "against the durable guard baseline and preserves historical observations "
+            "as explicitly historical. It does not claim architectural completion, "
             "rules completeness, or universal card support.",
             "",
             "## Baseline coordinates",
             "",
-            f"- Main commit: `{report['coordinates']['baseline_main_commit']}`",
+            "- Historical observation (not current head): "
+            f"`{report['coordinates']['historical_audit_observation']['observation_id']}`",
+            "- Historical baseline main commit: "
+            f"`{report['coordinates']['durable_program_baseline']['main_commit']}`",
+            "- Evaluated source-tree fingerprint: "
+            f"`{report['coordinates']['evaluated_source_tree']['fingerprint']}`",
             f"- Package: `{report['coordinates']['package_version']}`",
-            f"- CI run: [{report['coordinates']['ci']['run_id']}]"
-            f"({report['coordinates']['ci']['url']}) — "
-            f"`{report['coordinates']['ci']['status']}`",
+            "- Historical CI run: "
+            f"[{report['coordinates']['historical_audit_observation']['certification']['run_id']}]"
+            f"({report['coordinates']['historical_audit_observation']['certification']['url']}) — "
+            f"`{report['coordinates']['historical_audit_observation']['certification']['status']}`",
+            "- Live feature/main/certification/Slot A/Slot B coordinates: "
+            "`simctl architecture owners`",
             f"- Production scope: {production['file_count']} files, "
             f"{production['physical_lines']:,} physical lines, "
             f"{production['logical_lines']:,} logical lines",
@@ -1725,6 +1829,71 @@ def render_architecture_status(report: Mapping[str, Any]) -> str:
             "are also printed card names remain baseline candidates for Phase 1 review.",
         ]
     )
+    lines.extend(
+        [
+            "",
+            "## Direct GameState-write ownership",
+            "",
+            f"- Total heuristic locations: {write_ownership['total_detected_writes']}",
+            f"- Engine-local locations: {write_ownership['writes_in_commander_engine']}",
+            f"- Canonical-owner locations: {write_ownership['writes_in_canonical_owners']}",
+            f"- Grandfathered engine debt: {write_ownership['grandfathered_engine_writes']}",
+            f"- Unowned locations: {write_ownership['unowned_writes']}",
+            f"- New / removed / migrated identities versus the guard baseline: "
+            f"{len(write_ownership['newly_added_writes'])} / "
+            f"{len(write_ownership['removed_writes'])} / "
+            f"{len(write_ownership['migrated_writes'])}",
+            "",
+            "| Classification | Locations |",
+            "|---|---:|",
+        ]
+    )
+    for classification, count in write_ownership["by_classification"].items():
+        lines.append(f"| `{classification}` | {count} |")
+    lines.extend(
+        [
+            "",
+            "## Runtime Oracle-text access",
+            "",
+            f"- Total structurally detected accesses: {runtime_text['total_accesses']}",
+            "- Prohibited production runtime interpretation: "
+            f"{runtime_text['prohibited_runtime_interpretation_count']}",
+            "",
+            "| Classification | Accesses |",
+            "|---|---:|",
+        ]
+    )
+    for classification, count in runtime_text["by_classification"].items():
+        lines.append(f"| `{classification}` | {count} |")
+    lines.extend(
+        [
+            "",
+            "## Deterministic owner-migration queue",
+            "",
+            "| Priority | Subsystem | Score | Engine writes | Runtime-text reads |",
+            "|---:|---|---:|---:|---:|",
+        ]
+    )
+    for item in architecture["migration_queue"]:
+        lines.append(
+            f"| {item['priority']} | `{item['subsystem']}` | {item['score']} | "
+            f"{item['engine_direct_writes']} | {item['runtime_oracle_text_reads']} |"
+        )
+    if interaction_baseline["available"]:
+        lines.extend(
+            [
+                "",
+                "## Interaction-assurance starting baseline",
+                "",
+                f"- High-risk pairs: {interaction_baseline['covered_high_risk_pairs']} covered / "
+                f"{interaction_baseline['applicable_high_risk_pairs']} applicable "
+                f"({interaction_baseline['uncovered_high_risk_pairs']} uncovered)",
+                f"- All applicable piece pairs: {interaction_baseline['covered_piece_pairs']} covered / "
+                f"{interaction_baseline['applicable_piece_pairs']} applicable",
+                f"- Source: `{interaction_baseline['source']}` "
+                f"(`{interaction_baseline['source_fingerprint']}`)",
+            ]
+        )
     lines.extend(_debt_trend_lines(architecture))
     lines.extend(
         [
@@ -1802,7 +1971,7 @@ def render_architecture_status(report: Mapping[str, Any]) -> str:
             "## Documentation drift",
             "",
             f"- Required: {docs['required_count']}",
-            f"- Present after generated Phase 0 outputs: {docs['present_count']}",
+            f"- Present after generated audit outputs: {docs['present_count']}",
             f"- Missing: {docs['missing_count']}",
             f"- Metadata complete: {docs['metadata_complete_count']}",
             "",

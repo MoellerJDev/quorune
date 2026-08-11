@@ -226,6 +226,43 @@ class PullRequestBodyPolicyTests(unittest.TestCase):
         )
         self.assertEqual({"volatile-status-provenance"}, {row.code for row in failures})
 
+    def test_durable_repository_paths_are_not_feature_branch_provenance(self) -> None:
+        failures = validate_status_changes(
+            {"subsystems": []},
+            {
+                "subsystems": [
+                    {
+                        "adrs": [
+                            "docs/adr/0018-unified-trigger-batch-ownership.md"
+                        ]
+                    }
+                ]
+            },
+            source="platform/architecture-audit-source.json",
+        )
+        self.assertEqual((), failures)
+
+    def test_new_explicit_historical_observation_is_durable(self) -> None:
+        failures = validate_status_changes(
+            {"historical_observations": []},
+            {
+                "historical_observations": [
+                    {
+                        "baseline_main_commit": "a" * 40,
+                        "certification": {
+                            "run_id": 31340000000,
+                            "url": (
+                                "https://github.com/MoellerJDev/quorune/"
+                                "actions/runs/31340000000"
+                            ),
+                        },
+                    }
+                ]
+            },
+            source="platform/architecture-audit-source.json",
+        )
+        self.assertEqual((), failures)
+
     def test_unchanged_historical_provenance_is_not_reinterpreted(self) -> None:
         value = {
             "audit": {"baseline_main_commit": "a" * 40},

@@ -2,7 +2,7 @@
 title: "Architecture portal"
 status: "current"
 authoritative_source: "implemented runtime boundaries and modular architecture documentation"
-verified: "2026-08-07"
+verified: "2026-08-11"
 audience: "engine, server, client, and rules contributors"
 maintenance: "hand-maintained"
 concern: "architecture-portal"
@@ -57,6 +57,32 @@ The engine is being decomposed incrementally. A valid extraction transfers one
 coherent rules family to an immutable query/proposal/transaction boundary,
 removes the former path, and narrows dependencies. Moving lines to an unbounded
 helper or adding a parallel registry is not an ownership improvement.
+
+## Actionable ownership context
+
+`coverage/architecture-audit.json` is the generated, deterministic ownership
+model. It classifies direct state writes and runtime Oracle-text access, emits
+bounded subsystem capsules, records the interaction-assurance starting
+baseline, and selects the current missing-owner migration order. Stable policy
+and historical observations remain separate from live Git transport facts.
+
+Use the read-only contributor commands rather than reconstructing this context
+from broad searches:
+
+```powershell
+simctl architecture debt
+simctl architecture show trigger_processing
+simctl architecture changed --base origin/main
+simctl architecture writes turn_priority_and_decisions
+simctl architecture runtime-text
+simctl architecture owners
+```
+
+`owners` reads the current Git checkout and worktree list at invocation time.
+It reports a certified exact head as `null` when no trustworthy CI artifact is
+locally available; tracked prose is never presented as live certification.
+Regenerate the audit through `scripts/update_architecture_audit.py` or the
+fixed-point generated finalizer—never edit its measurements by hand.
 
 ## Navigate by concern
 

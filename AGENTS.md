@@ -110,6 +110,15 @@ and the accepted [ADRs](docs/adr/index.md). A production module or function over
 the policy threshold is measured debt; growth requires the documented review
 path. The generated architecture audit is the measurement authority.
 
+Before an ownership extraction, use `simctl architecture changed --base
+origin/main`, `simctl architecture show <subsystem>`, and `simctl architecture
+debt` to retrieve bounded current context. Use `writes`, `runtime-text`, and
+`owners` for exact mutation, raw-text, and live worktree provenance. Do not
+infer current branch, certification, or Slot A/Slot B state from generated
+prose, and do not hand-edit architecture metrics. A new prohibited runtime
+Oracle-text identity, engine-local direct write, or unowned direct write must
+fail the architecture guard; removal is the intended direction.
+
 ## Browser ownership
 
 Every visible browser—including the Codex in-app browser—is user-owned state.

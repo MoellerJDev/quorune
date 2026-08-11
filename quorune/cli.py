@@ -8,6 +8,10 @@ from pathlib import Path
 from typing import Any
 
 from .card_programs import CARD_PROGRAM_OPERATIONS, execute_card_operation
+from .architecture_cli import (
+    configure_architecture_commands,
+    run_architecture_command,
+)
 from .carddb import CardDatabase
 from .codex_cli import CodexCliArenaRunner, CodexExecClient
 from .arena import (
@@ -406,7 +410,7 @@ def _run_oracle_command(args: argparse.Namespace) -> int:
     return 0
 
 
-def _configure_reusable_piece_parsers(sub: Any) -> None:
+def _configure_contributor_tooling_parsers(sub: Any) -> None:
     card_program = sub.add_parser(
         "card",
         help="Compile and audit canonical CardProgram V2 artifacts",
@@ -470,9 +474,13 @@ def _configure_reusable_piece_parsers(sub: Any) -> None:
             child.add_argument("--against")
         child.add_argument("--root", default=".")
         child.add_argument("--limit", type=int, default=20)
+    configure_architecture_commands(sub)
 
 
-def _run_reusable_piece_command(args: argparse.Namespace) -> int | None:
+def _run_contributor_tooling_command(args: argparse.Namespace) -> int | None:
+    architecture_result = run_architecture_command(args)
+    if architecture_result is not None:
+        return architecture_result
     if args.cmd not in {"pieces", "card"}:
         return None
     if args.cmd == "card" and args.card_cmd != "pieces":
@@ -644,7 +652,7 @@ def build_parser(*, prog: str = "simctl") -> argparse.ArgumentParser:
     )
     _configure_oracle_subcommands(oracle_sub)
 
-    _configure_reusable_piece_parsers(sub)
+    _configure_contributor_tooling_parsers(sub)
 
     pilot_run = sub.add_parser(
         "pilot-run", help="Create or resume a provider-piloted native v3 run"
@@ -1140,7 +1148,7 @@ def main(argv: list[str] | None = None) -> int:
         return semantic_preflight_result
     if args.cmd == "oracle":
         return _run_oracle_command(args)
-    reusable_piece_result = _run_reusable_piece_command(args)
+    reusable_piece_result = _run_contributor_tooling_command(args)
     if reusable_piece_result is not None:
         return reusable_piece_result
     if args.cmd == "card":

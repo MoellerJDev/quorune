@@ -540,6 +540,28 @@
         "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_generic_crew_taps_exact_creatures_and_resolves_type_effect",
         "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_four_player_crew_context_is_public_seat_scoped_and_replays"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0026",
+      "adr": "docs/adr/0057-actionable-architecture-ownership-audit.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "3920bbad0bfcf90d720e1f2fc32028924e3f450c2f658ac5d58f8aa26389c6f2",
+      "exact_allowance": "Only the exact schema-3 structural state-write identities, owner classifications, prohibited runtime Oracle-text access identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, legacy helpers, and source fingerprints serialized after merged Crew.",
+      "rationale": "The actionable audit classifies rather than expands the existing architecture debt. It pins 54 existing prohibited runtime-text identities, distinguishes engine, canonical, compatibility, and unowned writes, fails additions while allowing removals, and exposes bounded subsystem context without changing rules or runtime behavior.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact structural identities and counts serialized in the schema-3 guard baseline at merged Crew commit e0e9c22c; new runtime Oracle-text interpretation, unowned writes, engine-local writes, oversized symbols, engine methods, specificity, or semantic operations remain forbidden.",
+      "removal_condition": "Remove the exception when prohibited production runtime Oracle-text interpretation is zero and all grandfathered engine writes have migrated to declared typed owners; preserve equivalent no-growth guards and bounded ownership observability.",
+      "target_milestone": "trigger, zone, turn/priority/decision, and search/target/choice owner convergence",
+      "replay_implications": "No game transition, record schema, serialized command, or replay hash changes; the audit reads production structure and generated evidence only.",
+      "privacy_implications": "The generated inventory contains source identities and aggregate architecture metrics only; it does not inspect or publish game records, private projections, hands, libraries, capabilities, or checkpoints.",
+      "security_implications": "The CLI is read-only and the baseline fails new prohibited runtime interpretation and unowned mutation; it grants no runtime callback, state authority, transport access, or card-identity behavior.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_direct_writes_are_classified_by_actual_owner",
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_runtime_oracle_text_inventory_is_structural_and_non_growing",
+        "tests.test_architecture_cli.ArchitectureCliTests.test_show_returns_one_bounded_complete_capsule",
+        "tests.test_architecture_cli.ArchitectureCliTests.test_simctl_architecture_owners_reports_live_coordinates"
+      ]
     }
   ]
 }

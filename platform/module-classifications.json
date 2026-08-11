@@ -144,6 +144,22 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/architecture_cli.py",
+      "layer": "application",
+      "owning_subsystem": "legacy_application",
+      "allowed_dependency_layers": [
+        "adapter",
+        "application",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/arena.py",
       "layer": "application",
       "owning_subsystem": "legacy_application",
@@ -5593,5 +5609,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "d7427ec9546eda2b67ec2e5554fe3ed2b08642ab89d2c4e4c6993d8eeb9bce87"
+  "fingerprint": "0f972e8fe1ab883abc6fac8cc10e1a68e261f754259408ce39e2ef2292b41878"
 }
