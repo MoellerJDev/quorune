@@ -376,6 +376,38 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
         self.assertIn("artifact", self.effective_types(engine, source))
         self.assertIn("creature", self.effective_types(engine, source))
 
+    def test_crew_zero_offer_and_commit_share_empty_cost_legality(self):
+        session = self.session(70212209)
+        engine = session.engine
+        with mock.patch.object(engine, "_crew_threshold", return_value=0):
+            source, candidates, action_id = self.prepare(
+                session,
+                powers=(),
+            )
+            self.assertEqual((), candidates)
+            action = next(
+                row
+                for row in session.packet("pilot:A", full=True)["decision"][
+                    "ctx"
+                ]["legal"]["actions"]
+                if row["id"] == action_id
+            )
+            self.assertEqual(0, action["choose_cost"][0]["minimum"])
+
+            result = session.act("pilot:A", {"action_id": action_id})
+
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual([], engine.state.stack[-1].context["cost_objects"])
+        self.assertEqual(
+            [],
+            engine.state.stack[-1].context["crew"]["crewed_by"],
+        )
+        self.resolve_until(
+            session,
+            lambda: "creature" in self.effective_types(engine, source),
+        )
+        self.assertIn("artifact", self.effective_types(engine, source))
+
     def test_equivalent_selection_order_produces_one_canonical_cost_plan(self):
         session = self.session(70212207)
         engine = session.engine
@@ -557,6 +589,46 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
 
         self.assertNotIn("creature", self.effective_types(engine, source))
 
+    def test_source_control_change_and_phasing_use_zone_object_identity(self):
+        controlled = self.session(70212210, players=4)
+        engine = controlled.engine
+        source, candidates, action_id = self.prepare(
+            controlled,
+            powers=(2,),
+        )
+        result = controlled.act(
+            "pilot:A",
+            {"action_id": action_id, "cost_cards": [candidates[0].ref]},
+        )
+        self.assertTrue(result.ok, result.summary)
+        engine.change_control(
+            source.object_id,
+            "B",
+            reason="ordinary Crew control-change fixture",
+        )
+
+        self.resolve_until(
+            controlled,
+            lambda: "creature" in self.effective_types(engine, source),
+        )
+        self.assertEqual("B", source.controller)
+        self.assertIn("artifact", self.effective_types(engine, source))
+
+        phased = self.session(70212211)
+        engine = phased.engine
+        source, candidates, action_id = self.prepare(phased, powers=(2,))
+        result = phased.act(
+            "pilot:A",
+            {"action_id": action_id, "cost_cards": [candidates[0].ref]},
+        )
+        self.assertTrue(result.ok, result.summary)
+        source.phased_out = True
+
+        self.resolve_until(phased, lambda: not engine.state.stack)
+
+        source.phased_out = False
+        self.assertNotIn("creature", self.effective_types(engine, source))
+
     def test_changed_crew_oracle_fails_closed_without_runtime_reparse(self):
         session = self.session(70212205)
         engine = session.engine
@@ -627,6 +699,7 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
             sort_keys=True,
         )
         self.assertNotIn(hidden_object_id, opposing_after)
+        self.assertNotIn(candidate.object_id, opposing_after)
         self.assertIn(candidate.ref, opposing_after)
         self.resolve_until(
             session,

@@ -11,6 +11,14 @@
     },
     {
       "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "positive",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_crew_zero_offer_and_commit_share_empty_cost_legality",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Advertise and accept the same empty creature selection for Crew 0, then resolve the ordinary type-changing result."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
       "evidence_class": "negative",
       "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_selected_negative_power_counts_against_crew_total_and_rolls_back",
       "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
@@ -32,6 +40,14 @@
       "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Use current effective power while excluding the Crew source itself even after it is already a creature."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_source_control_change_and_phasing_use_zone_object_identity",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve against the same battlefield incarnation after a control change, while treating a phased-out source as absent rather than creating a latent type effect."
     },
     {
       "capability_id": "activation.crew.fixed_power",
