@@ -21,6 +21,10 @@ from ..rules.counter_capability_shapes import (
 from ..rules.graveyard_card_targets import (
     targeted_own_graveyard_return_node_capabilities,
 )
+from ..rules.counter_removal_capabilities import (
+    all_counter_removal_node_capabilities,
+    fixed_counter_removal_node_capabilities,
+)
 from ..rules.node_capability_shapes import (
     fixed_counter_placement_batch_node_capabilities,
     fixed_counter_placement_node_capabilities,
@@ -457,6 +461,48 @@ def _is_closed_fixed_counter_placement_program(
     )
 
 
+def _is_closed_fixed_counter_removal_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize only the reviewed fixed permanent-counter removal family."""
+
+    required = set(
+        fixed_counter_removal_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=(
+                value
+                for value in program.coverage
+                if value in {"cr-122-counters", "cr-115-targets"}
+            ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_all_counter_removal_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize only the reviewed direct all-counter removal family."""
+
+    required = set(
+        all_counter_removal_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=(
+                value
+                for value in program.coverage
+                if value in {"cr-122-counters", "cr-115-targets"}
+            ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
 def _is_closed_fixed_counter_placement_batch_program(
     program: SemanticProgram,
 ) -> bool:
@@ -773,6 +819,8 @@ def _is_closed_effect_program(program: SemanticProgram) -> bool:
         _is_closed_single_explore_program,
         _is_closed_single_proliferate_program,
         _is_closed_fixed_counter_placement_program,
+        _is_closed_fixed_counter_removal_program,
+        _is_closed_all_counter_removal_program,
         _is_closed_fixed_counter_placement_batch_program,
         _is_closed_fixed_counter_placement_group_program,
         _is_closed_fixed_self_counter_keyword_action_program,

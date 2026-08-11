@@ -41,6 +41,8 @@ from .intents import (
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
     PlacePlayerCountersIntent,
+    RemoveAllCountersIntent,
+    RemoveCountersIntent,
     RecordChoiceIntent,
     RecordZoneMoveIntent,
     ReturnCardsToLibraryTopIntent,
@@ -168,6 +170,16 @@ class SemanticIntentSink(
         self,
         intent: PlacePlayerCountersIntent,
     ) -> tuple[str, ...]: ...
+
+    def remove_counters_intent(
+        self,
+        intent: RemoveCountersIntent,
+    ) -> Any: ...
+
+    def remove_all_counters_intent(
+        self,
+        intent: RemoveAllCountersIntent,
+    ) -> Any: ...
 
     def counter_stack_intent(self, intent: CounterStackIntent) -> None: ...
 
@@ -509,6 +521,14 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
             continue
         if isinstance(intent, COUNTER_PLACEMENT_INTENT_TYPES):
             results.append(_execute_counter_placement_intent(sink, intent))
+            continue
+        if isinstance(intent, RemoveCountersIntent):
+            result = sink.remove_counters_intent(intent)
+            results.append((_COUNTER_RESULT_KEY, result))
+            continue
+        if isinstance(intent, RemoveAllCountersIntent):
+            result = sink.remove_all_counters_intent(intent)
+            results.append((_COUNTER_RESULT_KEY, result))
             continue
         if isinstance(intent, CounterStackIntent):
             sink.counter_stack_intent(intent)

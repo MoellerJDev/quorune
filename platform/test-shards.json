@@ -45,6 +45,7 @@
       "test_fixed_counter_placement_groups",
       "test_fixed_counter_placement_sets",
       "test_fixed_counter_placement_target_sets",
+      "test_fixed_counter_removal_effects",
       "test_fixed_player_counter_placement_effects",
       "test_graveyard_return_rules",
       "test_intrinsic_entry_counters",

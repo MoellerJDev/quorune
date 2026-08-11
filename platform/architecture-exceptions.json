@@ -496,6 +496,28 @@
         "tests.test_graveyard_return_rules.GraveyardReturnRuleTests.test_destination_replacement_preserves_graveyard_return_result",
         "tests.test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_spell_trigger_and_activated_contexts_share_graveyard_return_lowering"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0024",
+      "adr": "docs/adr/0055-typed-direct-counter-removal-effects.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "cae683f3fa62c2946b5410e70ac521ab549b7e57469078de3788e50c445cdef5",
+      "exact_allowance": "Only the reduced structural write identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, legacy helpers, and module classifications serialized after typed direct counter-removal effect extraction.",
+      "rationale": "The fixed and all-counter effect families add two closed universal semantic operations while shrinking CommanderEngine, keeping direct GameState writes and Oracle-ID literals flat, reducing printed-name specificity, and avoiding a new oversized module. Strict read-only handlers emit immutable identity-pinned intents; the canonical counter-state owner retains mutation, target revalidation, rollback, replay, and Siege-trigger consequences.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "Existing serialized residual allowances plus the reviewed remove_counters and remove_all_counters operations and focused counter-removal compiler, capability-shape, handler, and typed-owner modules described by ADR 0055; removals are allowed and additions or growth are forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered allowance has migrated to a reviewed owner; remove these operations only if a successor typed result model preserves partial effects versus exact costs, canonical all-kind snapshots, source-spanned closed grammar, physical and logical target identity, target revalidation, strict counter state, rollback, privacy, replay, and fail-closed residuals.",
+      "target_milestone": "typed direct permanent counter-removal effects and shared spell, triggered, and activated effect-clause closure",
+      "replay_implications": "Game Record v3 and public protocol schemas remain compatible; newly compiled games pin source-spanned descriptors, identity-pinned public targets, canonical counter snapshots, and the existing public counter journal for exact command replay.",
+      "privacy_implications": "The represented targets and counter state are public battlefield information; hidden zones, opposing private state, and authoritative continuation payloads are neither queried nor projected.",
+      "security_implications": "The strict operations accept only closed typed descriptors, emit immutable intents, and grant no callback, arbitrary mutation, runtime Oracle parsing, transport access, or card-identity dispatch.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalCompilerTests.test_all_counter_removal_compiles_and_promotes_complete_fixture",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_does_as_much_as_possible",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_revalidates_target_and_replays_in_four_player_game"
+      ]
     }
   ]
 }

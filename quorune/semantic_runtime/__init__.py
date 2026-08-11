@@ -82,6 +82,11 @@ from .counter_placement_handlers import (
     FixedCounterPlacementTargetSetHandler,
     FixedPlayerCounterPlacementHandler,
 )
+from .counter_removal_handlers import (
+    AllCounterRemovalHandler,
+    COUNTER_REMOVAL_HANDLERS,
+    FixedCounterRemovalHandler,
+)
 from .damage_replacements import (
     collect_damage_replacement_effects,
     DamageQuantityReplacementHandler,
@@ -214,6 +219,8 @@ from .intents import (
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
     PlacePlayerCountersIntent,
+    RemoveAllCountersIntent,
+    RemoveCountersIntent,
     RecordChoiceIntent,
     RecordZoneMoveIntent,
     ReturnCardsToLibraryTopIntent,
@@ -295,6 +302,7 @@ def default_semantic_handler_registry() -> SemanticHandlerRegistry:
             *RETURN_TO_HAND_HANDLERS,
             *STACK_COUNTER_HANDLERS,
             *COUNTER_PLACEMENT_HANDLERS,
+            *COUNTER_REMOVAL_HANDLERS,
             *ZONE_OBJECT_KEYWORD_HANDLERS,
             *DOMAIN_EFFECT_HANDLERS,
         )
@@ -380,6 +388,8 @@ __all__ = [
     "FixedCounterPlacementSetHandler",
     "FixedCounterPlacementTargetSetHandler",
     "FixedPlayerCounterPlacementHandler",
+    "FixedCounterRemovalHandler",
+    "AllCounterRemovalHandler",
     "DamageQuantityReplacementHandler",
     "DamageQuantityReplacementNode",
     "DamageReplacementCondition",
@@ -445,6 +455,8 @@ __all__ = [
     "PlaceCountersOnSetIntent",
     "PlaceCountersOnTargetsIntent",
     "PlacePlayerCountersIntent",
+    "RemoveAllCountersIntent",
+    "RemoveCountersIntent",
     "ReadOnlyHandlerContext",
     "RecordChoiceIntent",
     "RecordZoneMoveIntent",

@@ -18,6 +18,16 @@ from ..counter_placement_targets import (
     CounterPlacementTargetSetError,
     resolve_counter_placement_targets,
 )
+from ..counter_removal import (
+    commit_all_counter_removal_effect,
+    commit_counter_removal_effect,
+    AllCounterRemovalResult,
+    CounterRemoval,
+    CounterRemovalError,
+    CounterRemovalResult,
+    plan_all_counter_removal_effect,
+    plan_counter_removal_effect,
+)
 from ..counter_state import player_counter_snapshot
 from ..continuous_effect_state import ResolutionEffectSource
 from ..errors import GameRuleError
@@ -70,6 +80,8 @@ from ..semantic_runtime import (
     PlaceCountersOnSetIntent,
     PlaceCountersOnTargetsIntent,
     PlacePlayerCountersIntent,
+    RemoveAllCountersIntent,
+    RemoveCountersIntent,
     ProliferateIntent,
     RecordChoiceIntent,
     RecordZoneMoveIntent,
@@ -785,6 +797,95 @@ class SemanticChoiceIntentHostMixin:
                 self.state.cards[result.object_id].ref for result in results
             )
         )
+
+    def remove_counters_intent(
+        self,
+        intent: RemoveCountersIntent,
+    ) -> CounterRemovalResult:
+        try:
+            card = self._resolve_object(
+                intent.actor,
+                intent.object_ref,
+                zones={"battlefield"},
+            )
+            plan = plan_counter_removal_effect(
+                self,
+                CounterRemoval(
+                    object_id=card.object_id,
+                    counter_name=intent.counter_name,
+                    amount=intent.amount,
+                    expected_zone="battlefield",
+                    expected_logical_object_id=card.logical_object_id,
+                ),
+            )
+            result = commit_counter_removal_effect(self, plan)
+        except CounterRemovalError as exc:
+            raise GameRuleError(str(exc)) from exc
+        self._log(
+            intent.actor,
+            "permanent.counter",
+            (
+                f"{card.ref} {result.counter_name} changed by "
+                f"{-result.removed}."
+            ),
+            {
+                "object": card.ref,
+                "counter": result.counter_name,
+                "requested_delta": -result.requested,
+                "delta": -result.removed,
+                "before": result.before,
+                "after": result.after,
+                "source": intent.source_ref,
+            },
+            importance=1,
+            changed_objects=([card.object_id] if result.removed else []),
+        )
+        if (
+            result.counter_name == "defense"
+            and result.before > 0
+            and result.after == 0
+        ):
+            self._queue_siege_defeated_trigger(card)
+        return result
+
+    def remove_all_counters_intent(
+        self,
+        intent: RemoveAllCountersIntent,
+    ) -> AllCounterRemovalResult:
+        try:
+            card = self._resolve_object(
+                intent.actor,
+                intent.object_ref,
+                zones={"battlefield"},
+            )
+            result = commit_all_counter_removal_effect(
+                self,
+                plan_all_counter_removal_effect(
+                    self,
+                    object_id=card.object_id,
+                    expected_zone="battlefield",
+                    expected_logical_object_id=card.logical_object_id,
+                ),
+            )
+        except CounterRemovalError as exc:
+            raise GameRuleError(str(exc)) from exc
+        removed = dict(result.removed)
+        self._log(
+            intent.actor,
+            "permanent.counters_removed",
+            f"{card.ref} had {result.total_removed} counter(s) removed.",
+            {
+                "object": card.ref,
+                "removed": removed,
+                "total_removed": result.total_removed,
+                "source": intent.source_ref,
+            },
+            importance=1,
+            changed_objects=([card.object_id] if result.total_removed else []),
+        )
+        if removed.get("defense", 0):
+            self._queue_siege_defeated_trigger(card)
+        return result
 
     def place_counters_on_set_intent(
         self,

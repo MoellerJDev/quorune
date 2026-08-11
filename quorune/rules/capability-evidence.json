@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "9e7a63fd5e08fd50fdd5d21af4bb9d5c9711a3f05f0fd36a1b96ae2c7a05595a",
-  "declaration_source_fingerprint": "8a57f62c4815be72dc9c30cfb79fa9e9e18f8e1448ce2c82ea41ccedb76b8d5e",
+  "registry_fingerprint": "2b0fd414adcfe0b2d87c25e448235d68968a3321b33ab35022b8c6a6d97df93a",
+  "declaration_source_fingerprint": "78c0fdd7e0e6fe20dd4f7864b8fc5beb08c3329b2f6869b8172c4da64a7ae88d",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -13615,6 +13615,446 @@
       "applicability_note": "Replay a suspended Undying replacement choice and identity-pinned return to the identical authoritative hash."
     },
     {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_revalidates_target_and_replays_in_four_player_game",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate the exact direct permanent target before committing every currently present counter kind through one canonical typed batch."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_revalidates_target_and_replays_in_four_player_game",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the direct all-counter removal family in a four-player game without changing seat-scoped command authority."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalCompilerTests.test_all_counter_removal_shape_and_compiler_mutant_fail_closed",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove direct all-counter compiler lowering and require the absent CardProgram node to kill the compiler mutant."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_owner_mutant_is_killed",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replace the canonical all-counter batch commit with a no-op and require unchanged permanent state to kill the mutation."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalCompilerTests.test_unsupported_all_counter_removal_variants_remain_residual",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject named-kind all, fixed, variable, optional, player, movement, source, and other removal wording outside the direct all-counter grammar."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_handler_rejects_malformed_effects",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject unknown fields, invalid subjects, counter-kind fields, replacement journals, and malformed sources before mutation."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_result_requires_canonical_immutable_shape",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject mutable containers, malformed entries, noncanonical names, booleans, nonpositive amounts, duplicates, and noncanonical ordering at the typed result boundary."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalCompilerTests.test_all_counter_removal_compiles_and_promotes_complete_fixture",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower mandatory direct all-counter removal through an activated CardProgram and close every ability on the representative generic fixture."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_commits_every_kind_and_handles_empty_target",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove every positive named counter kind canonically and resolve successfully when the legal target has no counters."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_revalidates_target_and_replays_in_four_player_game",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay a four-player direct all-counter removal command to the identical authoritative state hash."
+    },
+    {
+      "capability_id": "counter.removal.all_effect",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_revalidates_target_and_replays_in_four_player_game",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a stale or illegal target before removing any counter kind."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_preserves_target_revalidation_and_siege_trigger",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate the exact direct permanent target at resolution, remove only available counters through the typed owner, and preserve the resulting Siege-defeated trigger."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_replay_is_exact_in_four_player_game",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the same typed fixed-removal family in a four-player game without changing seat-scoped command authority."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalCompilerTests.test_fixed_counter_removal_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove fixed-removal compiler lowering and require the absent CardProgram node to kill the compiler mutant."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_owner_mutant_is_killed",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replace the canonical partial-removal commit with a no-op and require the unchanged permanent state to kill the mutation."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalCompilerTests.test_unsupported_fixed_counter_removal_variants_remain_residual",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject variable, optional, all-counter, player-counter, movement, and other wording outside the mandatory fixed direct-permanent grammar."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_counter_removal_rejects_malformed_state_before_mutation",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject boolean, string, and negative authoritative counter quantities at the shared counter-state boundary before any effect mutation."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_handler_rejects_malformed_effects",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject unknown fields, invalid subjects, nonpositive and boolean amounts, and malformed fixed-removal effects before mutation."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalCompilerTests.test_fixed_counter_removal_compiles_across_spell_trigger_and_activation",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one mandatory fixed named-counter removal from one direct permanent target through spell, trigger, and activated CardProgram contexts with exact source spans."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_does_as_much_as_possible",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the requested number when available and otherwise remove as many named counters as possible through the typed partial-removal owner."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_replay_is_exact_in_four_player_game",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay a four-player fixed named-counter removal command to the identical authoritative state hash."
+    },
+    {
+      "capability_id": "counter.removal.fixed_effect",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_preserves_target_revalidation_and_siege_trigger",
+      "official_rule_ids": [
+        "101.3",
+        "115.3",
+        "115.6",
+        "122.1",
+        "608.2b",
+        "608.2c",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a stale or illegal target before committing any fixed counter removal."
+    },
+    {
       "capability_id": "counter.removal.rule_generated",
       "evidence_class": "interaction",
       "test_id": "tests.test_rule_generated_counter_removals.StateBasedCounterRemovalTests.test_overlapping_sba_removals_share_one_atomic_plan",
@@ -25537,5 +25977,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "c164e4f8fdc1458f70af0d6d83dfc5bda3266d72937ceac0e01f59c7fd72a2d6"
+  "fingerprint": "c1cb5b425d859a70f0f3de620ed756c67e0f754d6694001d8966e877a2882b8e"
 }

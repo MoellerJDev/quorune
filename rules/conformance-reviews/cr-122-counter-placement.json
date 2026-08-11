@@ -15,17 +15,19 @@
         "model.CardInstance.counters",
         "model.PlayerState.counters",
         "counter_state.player_counter_snapshot",
-        "counter_placement.commit_prepared_counter_placements"
+        "counter_placement.commit_prepared_counter_placements",
+        "counter_removal.commit_counter_removal_effect"
       ],
       "executable_test_ids": [
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_quantity_component_changes_effect_generated_placement",
-        "tests.test_counter_state.CounterStateTests.test_generic_player_counter_round_trips_and_zero_is_omitted"
+        "tests.test_counter_state.CounterStateTests.test_generic_player_counter_round_trips_and_zero_is_omitted",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_does_as_much_as_possible"
       ],
       "required_scenarios": [],
       "covered_scenarios": [],
       "blockers": [],
       "notes": [
-        "Permanents and players carry normalized nonnegative named counter quantities. Poison and energy retain replay-compatible first-class player fields while other player counter kinds share one generic state owner."
+        "Permanents and players carry normalized nonnegative named counter quantities. Poison and energy retain replay-compatible first-class player fields while other player counter kinds share one generic state owner. Mandatory fixed named-counter removal and direct all-counter removal from one permanent delegate their typed effect results to that same permanent counter-state owner."
       ]
     },
     {

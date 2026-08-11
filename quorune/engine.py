@@ -1457,27 +1457,6 @@ class CommanderEngine(
             ]
         )
 
-    def _change_permanent_counter(
-        self,
-        card: CardInstance,
-        name: str,
-        delta: int,
-    ) -> tuple[int, int]:
-        """Change one counter kind without permitting negative counters."""
-
-        counter = " ".join(str(name).casefold().split())
-        if not counter:
-            raise GameRuleError("Counter effects require a counter name")
-        before = max(0, int(card.counters.get(counter, 0)))
-        after = max(0, before + int(delta))
-        if after:
-            card.counters[counter] = after
-        else:
-            card.counters.pop(counter, None)
-        if counter == "defense" and before > 0 and after == 0:
-            self._queue_siege_defeated_trigger(card)
-        return before, after
-
     def move_card(
         self,
         object_id: str,

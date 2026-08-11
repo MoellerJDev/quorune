@@ -1078,6 +1078,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/counter_removal_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/counter_replacement_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -3481,6 +3496,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/counter_removal_capabilities.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/evidence.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -4223,6 +4252,21 @@
     },
     {
       "file": "quorune/semantic_runtime/counter_placement_handlers.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/semantic_runtime/counter_removal_handlers.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
       "allowed_dependency_layers": [
@@ -5236,5 +5280,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "1fc401f0b94094417c548bc601a3a888863e05b11314e422392866eb5e84bc9c"
+  "fingerprint": "04e26b9f0cc87d511a1b82fe83fce7bf78d4b181339e63cc7ff91579adfca396"
 }

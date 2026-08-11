@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from common import DB_PATH, ROOT, keep_all, make_session
+from common import DB_PATH, ROOT, change_permanent_counter, keep_all, make_session
 from quorune.carddb import CardDatabase, CardRecord
 from quorune.compiler.fixed_target_effect_sequences import (
     FIXED_TARGET_CHARACTERISTIC_KEYWORDS,
@@ -939,7 +939,8 @@ class FixedTargetEffectSequenceRuntimeTests(unittest.TestCase):
             replay = replay_record(record_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
-        engine._change_permanent_counter(
+        change_permanent_counter(
+            engine,
             target,
             "flying",
             -target.counters["flying"],

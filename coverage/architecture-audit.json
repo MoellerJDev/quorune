@@ -8,7 +8,7 @@
       }
     ],
     "debt_trend": {
-      "baseline_commit": "c8ebbfb04e843cdc34bdd5638b30c7caba4c20de",
+      "baseline_commit": "bc19fd0c31c12879768b97b56e6b2bc248935540",
       "dimensions": {
         "card_named_helpers": {
           "baseline": 1,
@@ -21,9 +21,9 @@
           "delta": 0
         },
         "engine_logical_lines": {
-          "baseline": 11765,
-          "current": 11763,
-          "delta": -2
+          "baseline": 11744,
+          "current": 11744,
+          "delta": 0
         },
         "legacy_card_specific_operations": {
           "baseline": 5,
@@ -144,7 +144,7 @@
           "expression": "self.state.stack[:] = [ item for item in self.state.stack if item.card_object_id != card.object_id ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 1661,
+          "line": 1640,
           "state_path": "stack",
           "symbol": "move_card"
         },
@@ -153,7 +153,7 @@
           "expression": "self.state.players[card.controller].zones[\"battlefield\"].append( object_id )",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 1687,
+          "line": 1666,
           "state_path": "players.zones",
           "symbol": "move_card"
         },
@@ -162,7 +162,7 @@
           "expression": "self.state.revision += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 2222,
+          "line": 2201,
           "state_path": "revision",
           "symbol": "submit"
         },
@@ -171,7 +171,7 @@
           "expression": "self.state.mulligan_round += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 2401,
+          "line": 2380,
           "state_path": "mulligan_round",
           "symbol": "_issue_mulligan_declaration"
         },
@@ -180,7 +180,7 @@
           "expression": "self.state.started = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2578,
+          "line": 2557,
           "state_path": "started",
           "symbol": "_start_game"
         },
@@ -189,7 +189,7 @@
           "expression": "self.state.extra_turns.insert(0, entry)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:insert",
-          "line": 2594,
+          "line": 2573,
           "state_path": "extra_turns",
           "symbol": "schedule_extra_turn"
         },
@@ -198,7 +198,7 @@
           "expression": "self.state.extra_turns.pop(0)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:pop",
-          "line": 2604,
+          "line": 2583,
           "state_path": "extra_turns",
           "symbol": "_select_next_turn"
         },
@@ -207,7 +207,7 @@
           "expression": "self.state.current_turn = entry",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2619,
+          "line": 2598,
           "state_path": "current_turn",
           "symbol": "_begin_turn"
         },
@@ -216,7 +216,7 @@
           "expression": "self.state.active_player = entry.player",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2620,
+          "line": 2599,
           "state_path": "active_player",
           "symbol": "_begin_turn"
         },
@@ -225,7 +225,7 @@
           "expression": "self.state.last_normal_turn_player = entry.player",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2622,
+          "line": 2601,
           "state_path": "last_normal_turn_player",
           "symbol": "_begin_turn"
         },
@@ -234,7 +234,7 @@
           "expression": "self.state.turn_sequence += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 2623,
+          "line": 2602,
           "state_path": "turn_sequence",
           "symbol": "_begin_turn"
         },
@@ -243,7 +243,7 @@
           "expression": "self.state.turn_history = TurnHistory( turn_sequence=self.state.turn_sequence )",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2625,
+          "line": 2604,
           "state_path": "turn_history",
           "symbol": "_begin_turn"
         },
@@ -252,7 +252,7 @@
           "expression": "self.state.combat = CombatState()",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2654,
+          "line": 2633,
           "state_path": "combat",
           "symbol": "_begin_turn"
         },
@@ -261,7 +261,7 @@
           "expression": "self.state.phase_index = 0",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2655,
+          "line": 2634,
           "state_path": "phase_index",
           "symbol": "_begin_turn"
         },
@@ -270,7 +270,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2656,
+          "line": 2635,
           "state_path": "priority_player",
           "symbol": "_begin_turn"
         },
@@ -279,7 +279,7 @@
           "expression": "self.state.priority_passes = []",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2657,
+          "line": 2636,
           "state_path": "priority_passes",
           "symbol": "_begin_turn"
         },
@@ -288,7 +288,7 @@
           "expression": "self.state.phase = phase",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2772,
+          "line": 2751,
           "state_path": "phase",
           "symbol": "_enter_step"
         },
@@ -297,7 +297,7 @@
           "expression": "self.state.step = step",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2773,
+          "line": 2752,
           "state_path": "step",
           "symbol": "_enter_step"
         },
@@ -306,7 +306,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2774,
+          "line": 2753,
           "state_path": "priority_player",
           "symbol": "_enter_step"
         },
@@ -315,7 +315,7 @@
           "expression": "self.state.priority_passes = []",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2775,
+          "line": 2754,
           "state_path": "priority_passes",
           "symbol": "_enter_step"
         },
@@ -324,7 +324,7 @@
           "expression": "self.state.combat = CombatState( damage_sequence_id=self._next_ref(\"CD\"), defending_players=[s for s in self.active_seats if s != active], )",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2784,
+          "line": 2763,
           "state_path": "combat",
           "symbol": "_enter_step"
         },
@@ -333,7 +333,7 @@
           "expression": "self.state.phase_index = TURN_STEPS.index( (\"combat\", \"end_combat\") )",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3099,
+          "line": 3078,
           "state_path": "phase_index",
           "symbol": "_advance_step"
         },
@@ -342,7 +342,7 @@
           "expression": "self.state.combat.damage_step_index = 1",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3115,
+          "line": 3094,
           "state_path": "combat.damage_step_index",
           "symbol": "_advance_step"
         },
@@ -351,7 +351,7 @@
           "expression": "self.state.phase_index += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 3118,
+          "line": 3097,
           "state_path": "phase_index",
           "symbol": "_advance_step"
         },
@@ -360,7 +360,7 @@
           "expression": "self.state.phase_index = TURN_STEPS.index( (\"ending\", \"cleanup\") )",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3127,
+          "line": 3106,
           "state_path": "phase_index",
           "symbol": "_advance_step"
         },
@@ -369,7 +369,7 @@
           "expression": "self.state.combat = CombatState()",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3150,
+          "line": 3129,
           "state_path": "combat",
           "symbol": "_finish_combat_phase"
         },
@@ -378,7 +378,7 @@
           "expression": "self.state.annotations = [ annotation for annotation in self.state.annotations if annotation.get(\"kind\") != \"cleanup_exception_frame\" ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3263,
+          "line": 3242,
           "state_path": "annotations",
           "symbol": "_remove_cleanup_frames"
         },
@@ -387,7 +387,7 @@
           "expression": "self.state.annotations.append(frame)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 3307,
+          "line": 3286,
           "state_path": "annotations",
           "symbol": "_finish_cleanup"
         },
@@ -396,7 +396,7 @@
           "expression": "self.state.players[active].stats.pop( \"turn_controlled_by\", None, )",
           "file": "quorune/engine.py",
           "kind": "mutating_call:pop",
-          "line": 3350,
+          "line": 3329,
           "state_path": "players.stats",
           "symbol": "_finish_cleanup"
         },
@@ -405,7 +405,7 @@
           "expression": "self.state.stack.clear()",
           "file": "quorune/engine.py",
           "kind": "mutating_call:clear",
-          "line": 3429,
+          "line": 3408,
           "state_path": "stack",
           "symbol": "_end_turn_now"
         },
@@ -414,7 +414,7 @@
           "expression": "self.state.pending_trigger_batches.clear()",
           "file": "quorune/engine.py",
           "kind": "mutating_call:clear",
-          "line": 3430,
+          "line": 3409,
           "state_path": "pending_trigger_batches",
           "symbol": "_end_turn_now"
         },
@@ -423,7 +423,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3432,
+          "line": 3411,
           "state_path": "priority_player",
           "symbol": "_end_turn_now"
         },
@@ -432,7 +432,7 @@
           "expression": "self.state.priority_passes = []",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3433,
+          "line": 3412,
           "state_path": "priority_passes",
           "symbol": "_end_turn_now"
         },
@@ -441,7 +441,7 @@
           "expression": "self.state.combat = CombatState()",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3434,
+          "line": 3413,
           "state_path": "combat",
           "symbol": "_end_turn_now"
         },
@@ -450,7 +450,7 @@
           "expression": "self.state.phase_index = TURN_STEPS.index( (\"ending\", \"cleanup\") )",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3450,
+          "line": 3429,
           "state_path": "phase_index",
           "symbol": "_end_turn_now"
         },
@@ -459,7 +459,7 @@
           "expression": "self.state.priority_player = seat",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3489,
+          "line": 3468,
           "state_path": "priority_player",
           "symbol": "_grant_priority"
         },
@@ -468,7 +468,7 @@
           "expression": "self.state.priority_passes = []",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3490,
+          "line": 3469,
           "state_path": "priority_passes",
           "symbol": "_grant_priority"
         },
@@ -477,7 +477,7 @@
           "expression": "self.state.priority_epoch += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 3491,
+          "line": 3470,
           "state_path": "priority_epoch",
           "symbol": "_grant_priority"
         },
@@ -486,7 +486,7 @@
           "expression": "self.state.players[seat].yield_policy = YieldPolicy()",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3564,
+          "line": 3543,
           "state_path": "players.yield_policy",
           "symbol": "_set_yield"
         },
@@ -495,7 +495,7 @@
           "expression": "self.state.players[seat].yield_policy = YieldPolicy( mode=mode, created_revision=self.state.revision, created_event_sequence=self.state.event_sequence, created_stack_change_epoch=self._yield_change_epoch(\"stack\"), created_public_change_epoc",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3569,
+          "line": 3548,
           "state_path": "players.yield_policy",
           "symbol": "_set_yield"
         },
@@ -504,7 +504,7 @@
           "expression": "self.state.players[seat].stats.setdefault( \"decision_optimization\", {} )",
           "file": "quorune/engine.py",
           "kind": "mutating_call:setdefault",
-          "line": 3657,
+          "line": 3636,
           "state_path": "players.stats",
           "symbol": "_optimization_stats"
         },
@@ -513,7 +513,7 @@
           "expression": "self.state.players[seat].yield_policy = YieldPolicy()",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3774,
+          "line": 3753,
           "state_path": "players.yield_policy",
           "symbol": "_can_auto_pass"
         },
@@ -522,7 +522,7 @@
           "expression": "self.state.players[seat].yield_policy = YieldPolicy()",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3781,
+          "line": 3760,
           "state_path": "players.yield_policy",
           "symbol": "_can_auto_pass"
         },
@@ -531,7 +531,7 @@
           "expression": "self.state.opportunity_sequence += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 3805,
+          "line": 3784,
           "state_path": "opportunity_sequence",
           "symbol": "_record_action_opportunity"
         },
@@ -540,7 +540,7 @@
           "expression": "self.state.action_opportunities.append(row)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 3847,
+          "line": 3826,
           "state_path": "action_opportunities",
           "symbol": "_record_action_opportunity"
         },
@@ -549,7 +549,7 @@
           "expression": "self.state.priority_passes.append(seat)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 3853,
+          "line": 3832,
           "state_path": "priority_passes",
           "symbol": "_pass_priority"
         },
@@ -558,7 +558,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3857,
+          "line": 3836,
           "state_path": "priority_player",
           "symbol": "_pass_priority"
         },
@@ -567,7 +567,7 @@
           "expression": "self.state.priority_passes = []",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3858,
+          "line": 3837,
           "state_path": "priority_passes",
           "symbol": "_pass_priority"
         },
@@ -576,7 +576,7 @@
           "expression": "self.state.priority_player = self._next_active_after(seat)",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3864,
+          "line": 3843,
           "state_path": "priority_player",
           "symbol": "_pass_priority"
         },
@@ -585,7 +585,7 @@
           "expression": "self.state.annotations.append(annotation)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 4030,
+          "line": 4009,
           "state_path": "annotations",
           "symbol": "_pause_for_unsupported_semantic"
         },
@@ -594,7 +594,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 4031,
+          "line": 4010,
           "state_path": "priority_player",
           "symbol": "_pause_for_unsupported_semantic"
         },
@@ -603,7 +603,7 @@
           "expression": "self.state.delayed_triggers.append(trigger)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 4074,
+          "line": 4053,
           "state_path": "delayed_triggers",
           "symbol": "schedule_delayed_trigger"
         },
@@ -612,7 +612,7 @@
           "expression": "self.state.players[seat].stats.setdefault( \"restricted_mana\", {}, )",
           "file": "quorune/engine.py",
           "kind": "mutating_call:setdefault",
-          "line": 4247,
+          "line": 4226,
           "state_path": "players.stats",
           "symbol": "_restricted_mana"
         },
@@ -621,7 +621,7 @@
           "expression": "self.state.players[seat].stats[\"restricted_mana\"] = compact",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 4271,
+          "line": 4250,
           "state_path": "players.stats",
           "symbol": "_store_restricted_mana"
         },
@@ -630,7 +630,7 @@
           "expression": "self.state.players[seat].stats.pop(\"restricted_mana\", None)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:pop",
-          "line": 4273,
+          "line": 4252,
           "state_path": "players.stats",
           "symbol": "_store_restricted_mana"
         },
@@ -639,7 +639,7 @@
           "expression": "self.state.players[seat].stats[ \"next_spell_uncounterable\" ] = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 4327,
+          "line": 4306,
           "state_path": "players.stats",
           "symbol": "_apply_mana_spend"
         },
@@ -648,7 +648,7 @@
           "expression": "self.state.players[seat].mana_pool = pool",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 4338,
+          "line": 4317,
           "state_path": "players.mana_pool",
           "symbol": "_apply_mana_spend"
         },
@@ -657,7 +657,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 4733,
+          "line": 4712,
           "state_path": "priority_player",
           "symbol": "_play_land"
         },
@@ -666,7 +666,7 @@
           "expression": "self.state.priority_passes = []",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 4734,
+          "line": 4713,
           "state_path": "priority_passes",
           "symbol": "_play_land"
         },
@@ -675,7 +675,7 @@
           "expression": "self.state.priority_player = seat",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 4737,
+          "line": 4716,
           "state_path": "priority_player",
           "symbol": "_play_land"
         },
@@ -684,7 +684,7 @@
           "expression": "self.state.stack.append(ward)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 4897,
+          "line": 4876,
           "state_path": "stack",
           "symbol": "_queue_ward_triggers_for_targets"
         },
@@ -693,7 +693,7 @@
           "expression": "self.state.stack.remove(item)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:remove",
-          "line": 6820,
+          "line": 6799,
           "state_path": "stack",
           "symbol": "_finish_siege_defeated_resolution"
         },
@@ -702,7 +702,7 @@
           "expression": "self.state.stack.remove(item)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:remove",
-          "line": 7331,
+          "line": 7310,
           "state_path": "stack",
           "symbol": "_prepare_stack_resolution"
         },
@@ -711,7 +711,7 @@
           "expression": "self.state.stack.remove(item)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:remove",
-          "line": 7459,
+          "line": 7438,
           "state_path": "stack",
           "symbol": "_prepare_storm_resolution"
         },
@@ -720,7 +720,7 @@
           "expression": "self.state.stack.remove(trigger)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:remove",
-          "line": 7632,
+          "line": 7611,
           "state_path": "stack",
           "symbol": "_complete_storm_choice"
         },
@@ -729,7 +729,7 @@
           "expression": "self.state.stack.extend(copies)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:extend",
-          "line": 7633,
+          "line": 7612,
           "state_path": "stack",
           "symbol": "_complete_storm_choice"
         },
@@ -738,7 +738,7 @@
           "expression": "self.state.cards[object_id] = card",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 7728,
+          "line": 7707,
           "state_path": "cards",
           "symbol": "_create_copy_object"
         },
@@ -747,7 +747,7 @@
           "expression": "self.state.players[controller].zones[zone].append( object_id )",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 7730,
+          "line": 7709,
           "state_path": "players.zones",
           "symbol": "_create_copy_object"
         },
@@ -756,7 +756,7 @@
           "expression": "self.state.stack.append(copied)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 7865,
+          "line": 7844,
           "state_path": "stack",
           "symbol": "_copy_stack_item"
         },
@@ -765,7 +765,7 @@
           "expression": "self.state.combat.attackers_declared = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 10407,
+          "line": 10386,
           "state_path": "combat.attackers_declared",
           "symbol": "_issue_attackers"
         },
@@ -774,7 +774,7 @@
           "expression": "self.state.combat.defending_players = [ seat for seat in self.active_seats if seat != active ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 10408,
+          "line": 10387,
           "state_path": "combat.defending_players",
           "symbol": "_issue_attackers"
         },
@@ -783,7 +783,7 @@
           "expression": "self.state.combat.attackers_declared = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 10721,
+          "line": 10700,
           "state_path": "combat.attackers_declared",
           "symbol": "_complete_attackers"
         },
@@ -792,7 +792,7 @@
           "expression": "self.state.combat.had_attacking_creature = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 10723,
+          "line": 10702,
           "state_path": "combat.had_attacking_creature",
           "symbol": "_complete_attackers"
         },
@@ -801,7 +801,7 @@
           "expression": "self.state.combat.defending_players = [ seat for seat in self.active_seats if seat != active ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 10724,
+          "line": 10703,
           "state_path": "combat.defending_players",
           "symbol": "_complete_attackers"
         },
@@ -810,7 +810,7 @@
           "expression": "self.state.combat.blockers_declared = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 10831,
+          "line": 10810,
           "state_path": "combat.blockers_declared",
           "symbol": "_begin_blocker_decisions"
         },
@@ -819,7 +819,7 @@
           "expression": "self.state.combat.blocker_cursor = 0",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 10834,
+          "line": 10813,
           "state_path": "combat.blocker_cursor",
           "symbol": "_begin_blocker_decisions"
         },
@@ -828,7 +828,7 @@
           "expression": "self.state.combat.blockers_declared = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 10840,
+          "line": 10819,
           "state_path": "combat.blockers_declared",
           "symbol": "_issue_next_blocker"
         },
@@ -837,7 +837,7 @@
           "expression": "self.state.combat.blocker_cursor += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 10885,
+          "line": 10864,
           "state_path": "combat.blocker_cursor",
           "symbol": "_issue_next_blocker"
         },
@@ -846,7 +846,7 @@
           "expression": "self.state.combat.blocker_cursor += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 11029,
+          "line": 11008,
           "state_path": "combat.blocker_cursor",
           "symbol": "_complete_blockers"
         },
@@ -855,7 +855,7 @@
           "expression": "self.state.combat.damage_assignments.extend(declared)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:extend",
-          "line": 11340,
+          "line": 11319,
           "state_path": "combat.damage_assignments",
           "symbol": "_apply_combat_assignments"
         },
@@ -864,7 +864,7 @@
           "expression": "self.state.stack = [ item for item in self.state.stack if item.card_object_id != card.object_id ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 11882,
+          "line": 11861,
           "state_path": "stack",
           "symbol": "_stabilize"
         },
@@ -873,7 +873,7 @@
           "expression": "self.state.eliminated_players.append(seat)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 12146,
+          "line": 12125,
           "state_path": "eliminated_players",
           "symbol": "_eliminate_players"
         },
@@ -882,7 +882,7 @@
           "expression": "self.state.stack = [item for item in self.state.stack if item.card_object_id != card.object_id]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12159,
+          "line": 12138,
           "state_path": "stack",
           "symbol": "_eliminate_players"
         },
@@ -891,7 +891,7 @@
           "expression": "self.state.stack = [item for item in self.state.stack if item.controller != seat or item.card_object_id is not None]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12190,
+          "line": 12169,
           "state_path": "stack",
           "symbol": "_eliminate_players"
         },
@@ -900,7 +900,7 @@
           "expression": "self.state.extra_turns = [turn for turn in self.state.extra_turns if turn.player != seat]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12191,
+          "line": 12170,
           "state_path": "extra_turns",
           "symbol": "_eliminate_players"
         },
@@ -909,7 +909,7 @@
           "expression": "self.state.priority_passes = [passed for passed in self.state.priority_passes if passed != seat]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12192,
+          "line": 12171,
           "state_path": "priority_passes",
           "symbol": "_eliminate_players"
         },
@@ -918,7 +918,7 @@
           "expression": "self.state.monarch = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12199,
+          "line": 12178,
           "state_path": "monarch",
           "symbol": "_eliminate_players"
         },
@@ -927,7 +927,7 @@
           "expression": "self.state.combat.defending_players = [ seat for seat in self.state.combat.defending_players if seat in remaining ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12230,
+          "line": 12209,
           "state_path": "combat.defending_players",
           "symbol": "_eliminate_players"
         },
@@ -936,7 +936,7 @@
           "expression": "self.state.game_over = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12236,
+          "line": 12215,
           "state_path": "game_over",
           "symbol": "_eliminate_players"
         },
@@ -945,7 +945,7 @@
           "expression": "self.state.winner = remaining[0]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12237,
+          "line": 12216,
           "state_path": "winner",
           "symbol": "_eliminate_players"
         },
@@ -954,7 +954,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12238,
+          "line": 12217,
           "state_path": "priority_player",
           "symbol": "_eliminate_players"
         },
@@ -963,7 +963,7 @@
           "expression": "self.state.game_over = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12242,
+          "line": 12221,
           "state_path": "game_over",
           "symbol": "_eliminate_players"
         },
@@ -972,7 +972,7 @@
           "expression": "self.state.draw = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12243,
+          "line": 12222,
           "state_path": "draw",
           "symbol": "_eliminate_players"
         },
@@ -981,7 +981,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12244,
+          "line": 12223,
           "state_path": "priority_player",
           "symbol": "_eliminate_players"
         },
@@ -990,7 +990,7 @@
           "expression": "self.state.priority_player = self._next_active_after(unique[-1])",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12248,
+          "line": 12227,
           "state_path": "priority_player",
           "symbol": "_eliminate_players"
         },
@@ -999,7 +999,7 @@
           "expression": "self.state.cards[object_id] = emblem",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12369,
+          "line": 12348,
           "state_path": "cards",
           "symbol": "create_emblem"
         },
@@ -1008,7 +1008,7 @@
           "expression": "self.state.players[owner].zones[\"command\"].append(object_id)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 12370,
+          "line": 12349,
           "state_path": "players.zones",
           "symbol": "create_emblem"
         },
@@ -1017,7 +1017,7 @@
           "expression": "self.state.players[owner].stats[\"emblem_objects_v1\"] = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 12371,
+          "line": 12350,
           "state_path": "players.stats",
           "symbol": "create_emblem"
         },
@@ -1026,7 +1026,7 @@
           "expression": "self.state.players[old].zones[\"battlefield\"].remove(object_id)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:remove",
-          "line": 12434,
+          "line": 12413,
           "state_path": "players.zones",
           "symbol": "change_control"
         },
@@ -1035,7 +1035,7 @@
           "expression": "self.state.players[new_controller].zones[\"battlefield\"].append(object_id)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 12435,
+          "line": 12414,
           "state_path": "players.zones",
           "symbol": "change_control"
         },
@@ -1215,9 +1215,9 @@
     "engine": {
       "cross_subsystem_responsibility_count": 7,
       "dunder_methods": 1,
-      "logical_lines": 11763,
-      "physical_lines": 12465,
-      "private_methods": 269,
+      "logical_lines": 11744,
+      "physical_lines": 12444,
+      "private_methods": 268,
       "public_methods": 28,
       "responsibility_groups": [
         {
@@ -1490,7 +1490,6 @@
         "_attachment_is_legal",
         "_begin_siege_defeated_resolution",
         "_can_auto_pass",
-        "_change_permanent_counter",
         "_complete_arbiter_resolution",
         "_continue_resolution",
         "_controller_has_oracle_text",
@@ -1582,17 +1581,17 @@
           "module": "quorune.model"
         },
         {
-          "fan_in": 41,
+          "fan_in": 42,
           "fan_out": 0,
           "module": "quorune.semantic_runtime.context"
         },
         {
           "fan_in": 38,
-          "fan_out": 6,
+          "fan_out": 7,
           "module": "quorune.rules.capabilities"
         },
         {
-          "fan_in": 28,
+          "fan_in": 29,
           "fan_out": 8,
           "module": "quorune.semantic_runtime.intents"
         },
@@ -1650,7 +1649,7 @@
         },
         {
           "fan_in": 15,
-          "fan_out": 34,
+          "fan_out": 35,
           "module": "quorune.semantic_runtime"
         },
         {
@@ -1669,6 +1668,11 @@
           "module": "quorune.semantic_runtime.components"
         },
         {
+          "fan_in": 1,
+          "fan_out": 18,
+          "module": "quorune.semantic_choices.intent_host"
+        },
+        {
           "fan_in": 8,
           "fan_out": 17,
           "module": "quorune.damage"
@@ -1679,14 +1683,19 @@
           "module": "quorune.semantic_choices.defaults"
         },
         {
-          "fan_in": 1,
-          "fan_out": 17,
-          "module": "quorune.semantic_choices.intent_host"
-        },
-        {
           "fan_in": 2,
           "fan_out": 16,
           "module": "quorune.cli"
+        },
+        {
+          "fan_in": 2,
+          "fan_out": 14,
+          "module": "quorune.compiler.program_generation"
+        },
+        {
+          "fan_in": 1,
+          "fan_out": 14,
+          "module": "quorune.compiler.resolution_effect_templates"
         },
         {
           "fan_in": 1,
@@ -1699,16 +1708,6 @@
           "module": "quorune.compiler.keyword_nodes"
         },
         {
-          "fan_in": 2,
-          "fan_out": 13,
-          "module": "quorune.compiler.program_generation"
-        },
-        {
-          "fan_in": 1,
-          "fan_out": 13,
-          "module": "quorune.compiler.resolution_effect_templates"
-        },
-        {
           "fan_in": 1,
           "fan_out": 13,
           "module": "quorune.rules.activation.commit"
@@ -1719,7 +1718,7 @@
           "module": "quorune.rules.casting.commit"
         }
       ],
-      "internal_edges": 1413,
+      "internal_edges": 1424,
       "modules": [
         {
           "fan_in": 2,
@@ -2087,9 +2086,14 @@
           "module": "quorune.compiler.counter_placement_group_templates"
         },
         {
-          "fan_in": 6,
+          "fan_in": 5,
           "fan_out": 8,
           "module": "quorune.compiler.counter_placement_templates"
+        },
+        {
+          "fan_in": 1,
+          "fan_out": 2,
+          "module": "quorune.compiler.counter_removal_templates"
         },
         {
           "fan_in": 1,
@@ -2132,7 +2136,7 @@
           "module": "quorune.compiler.destruction_templates"
         },
         {
-          "fan_in": 9,
+          "fan_in": 10,
           "fan_out": 1,
           "module": "quorune.compiler.direct_target"
         },
@@ -2152,7 +2156,7 @@
           "module": "quorune.compiler.explore_templates"
         },
         {
-          "fan_in": 6,
+          "fan_in": 7,
           "fan_out": 0,
           "module": "quorune.compiler.fixed_numbers"
         },
@@ -2198,7 +2202,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 13,
+          "fan_out": 14,
           "module": "quorune.compiler.program_generation"
         },
         {
@@ -2208,7 +2212,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 13,
+          "fan_out": 14,
           "module": "quorune.compiler.resolution_effect_templates"
         },
         {
@@ -2248,7 +2252,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 10,
+          "fan_out": 9,
           "module": "quorune.compiler.target_effect_corpus_assurance"
         },
         {
@@ -2302,7 +2306,7 @@
           "module": "quorune.counter_placement_targets"
         },
         {
-          "fan_in": 3,
+          "fan_in": 5,
           "fan_out": 1,
           "module": "quorune.counter_removal"
         },
@@ -2468,7 +2472,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 6,
+          "fan_out": 7,
           "module": "quorune.effect_runtime.objects_stack_and_tokens"
         },
         {
@@ -2888,7 +2892,7 @@
         },
         {
           "fan_in": 38,
-          "fan_out": 6,
+          "fan_out": 7,
           "module": "quorune.rules.capabilities"
         },
         {
@@ -2932,6 +2936,11 @@
           "module": "quorune.rules.counter_capability_shapes"
         },
         {
+          "fan_in": 2,
+          "fan_out": 1,
+          "module": "quorune.rules.counter_removal_capabilities"
+        },
+        {
           "fan_in": 1,
           "fan_out": 1,
           "module": "quorune.rules.evidence"
@@ -2947,7 +2956,7 @@
           "module": "quorune.rules.library_scry"
         },
         {
-          "fan_in": 4,
+          "fan_in": 5,
           "fan_out": 13,
           "module": "quorune.rules.node_capability_shapes"
         },
@@ -3043,7 +3052,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 17,
+          "fan_out": 18,
           "module": "quorune.semantic_choices.intent_host"
         },
         {
@@ -3123,7 +3132,7 @@
         },
         {
           "fan_in": 15,
-          "fan_out": 34,
+          "fan_out": 35,
           "module": "quorune.semantic_runtime"
         },
         {
@@ -3172,7 +3181,7 @@
           "module": "quorune.semantic_runtime.conditional_entry_counters"
         },
         {
-          "fan_in": 41,
+          "fan_in": 42,
           "fan_out": 0,
           "module": "quorune.semantic_runtime.context"
         },
@@ -3185,6 +3194,11 @@
           "fan_in": 1,
           "fan_out": 4,
           "module": "quorune.semantic_runtime.counter_placement_handlers"
+        },
+        {
+          "fan_in": 1,
+          "fan_out": 3,
+          "module": "quorune.semantic_runtime.counter_removal_handlers"
         },
         {
           "fan_in": 5,
@@ -3212,7 +3226,7 @@
           "module": "quorune.semantic_runtime.destruction_handlers"
         },
         {
-          "fan_in": 7,
+          "fan_in": 8,
           "fan_out": 2,
           "module": "quorune.semantic_runtime.direct_target_fields"
         },
@@ -3267,7 +3281,7 @@
           "module": "quorune.semantic_runtime.handlers"
         },
         {
-          "fan_in": 28,
+          "fan_in": 29,
           "fan_out": 8,
           "module": "quorune.semantic_runtime.intents"
         },
@@ -3605,7 +3619,7 @@
       "structural_identity": "file, nearest symbol, literal value, conditional use"
     },
     "production": {
-      "file_count": 377,
+      "file_count": 380,
       "largest_functions_and_methods": [
         {
           "end_line": 1645,
@@ -3674,10 +3688,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 1825,
+          "end_line": 1804,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 1481,
+          "line": 1460,
           "logical_lines": 339,
           "name": "move_card",
           "physical_lines": 345,
@@ -3707,10 +3721,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 7453,
+          "end_line": 7432,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 7151,
+          "line": 7130,
           "logical_lines": 300,
           "name": "_prepare_stack_resolution",
           "physical_lines": 303,
@@ -3718,10 +3732,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 3076,
+          "end_line": 3055,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 2766,
+          "line": 2745,
           "logical_lines": 282,
           "name": "_enter_step",
           "physical_lines": 311,
@@ -3740,10 +3754,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 12059,
+          "end_line": 12038,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 11797,
+          "line": 11776,
           "logical_lines": 255,
           "name": "_stabilize",
           "physical_lines": 263,
@@ -3762,10 +3776,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 8911,
+          "end_line": 8890,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 8663,
+          "line": 8642,
           "logical_lines": 249,
           "name": "_complete_semantic_search",
           "physical_lines": 249,
@@ -3806,10 +3820,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 10086,
+          "end_line": 10065,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 9854,
+          "line": 9833,
           "logical_lines": 232,
           "name": "_declaration_restrictions",
           "physical_lines": 233,
@@ -3850,10 +3864,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 7039,
+          "end_line": 7018,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 6841,
+          "line": 6820,
           "logical_lines": 193,
           "name": "_begin_siege_defeated_resolution",
           "physical_lines": 199,
@@ -3905,10 +3919,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 10793,
+          "end_line": 10772,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 10629,
+          "line": 10608,
           "logical_lines": 164,
           "name": "_complete_attackers",
           "physical_lines": 165,
@@ -3938,20 +3952,20 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 133722,
+      "logical_lines": 134688,
       "methods": {
-        "dunder": 360,
-        "private": 685,
-        "public": 1372,
-        "total": 2417
+        "dunder": 368,
+        "private": 684,
+        "public": 1389,
+        "total": 2441
       },
       "modules": [
         {
           "file": "quorune/engine.py",
-          "functions_and_methods": 302,
+          "functions_and_methods": 301,
           "language": "python",
-          "logical_lines": 11763,
-          "physical_lines": 12465
+          "logical_lines": 11744,
+          "physical_lines": 12444
         },
         {
           "file": "quorune/report.py",
@@ -3992,8 +4006,8 @@
           "file": "quorune/rules/node_capability_shapes.py",
           "functions_and_methods": 28,
           "language": "python",
-          "logical_lines": 1475,
-          "physical_lines": 1567
+          "logical_lines": 1476,
+          "physical_lines": 1568
         },
         {
           "file": "quorune/oracle_ir.py",
@@ -4024,11 +4038,11 @@
           "physical_lines": 1478
         },
         {
-          "file": "quorune/compiler/counter_placement_templates.py",
-          "functions_and_methods": 52,
+          "file": "quorune/semantic_choices/intent_host.py",
+          "functions_and_methods": 48,
           "language": "python",
-          "logical_lines": 1332,
-          "physical_lines": 1451
+          "logical_lines": 1327,
+          "physical_lines": 1380
         },
         {
           "file": "quorune/damage_results.py",
@@ -4038,11 +4052,11 @@
           "physical_lines": 1422
         },
         {
-          "file": "quorune/semantic_choices/intent_host.py",
-          "functions_and_methods": 46,
+          "file": "quorune/compiler/counter_placement_templates.py",
+          "functions_and_methods": 51,
           "language": "python",
-          "logical_lines": 1228,
-          "physical_lines": 1279
+          "logical_lines": 1268,
+          "physical_lines": 1382
         },
         {
           "file": "server/app.py",
@@ -4074,10 +4088,17 @@
         },
         {
           "file": "quorune/compiler/program_generation.py",
-          "functions_and_methods": 39,
+          "functions_and_methods": 41,
           "language": "python",
-          "logical_lines": 1062,
-          "physical_lines": 1199
+          "logical_lines": 1104,
+          "physical_lines": 1247
+        },
+        {
+          "file": "quorune/semantic_runtime/intents.py",
+          "functions_and_methods": 33,
+          "language": "python",
+          "logical_lines": 1050,
+          "physical_lines": 1188
         },
         {
           "file": "quorune/arena.py",
@@ -4104,15 +4125,8 @@
           "file": "quorune/rules/capabilities.py",
           "functions_and_methods": 28,
           "language": "python",
-          "logical_lines": 1007,
-          "physical_lines": 1076
-        },
-        {
-          "file": "quorune/semantic_runtime/intents.py",
-          "functions_and_methods": 31,
-          "language": "python",
-          "logical_lines": 996,
-          "physical_lines": 1128
+          "logical_lines": 1017,
+          "physical_lines": 1086
         },
         {
           "file": "quorune/drawing/coordinator.py",
@@ -4123,10 +4137,10 @@
         },
         {
           "file": "quorune/compiler/unlock_frontier.py",
-          "functions_and_methods": 19,
+          "functions_and_methods": 20,
           "language": "python",
-          "logical_lines": 953,
-          "physical_lines": 1007
+          "logical_lines": 965,
+          "physical_lines": 1022
         },
         {
           "file": "quorune/preflight.py",
@@ -4141,6 +4155,13 @@
           "language": "python",
           "logical_lines": 882,
           "physical_lines": 929
+        },
+        {
+          "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
+          "functions_and_methods": 21,
+          "language": "python",
+          "logical_lines": 881,
+          "physical_lines": 949
         },
         {
           "file": "quorune/rules/casting/costs.py",
@@ -4162,13 +4183,6 @@
           "language": "python",
           "logical_lines": 867,
           "physical_lines": 931
-        },
-        {
-          "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
-          "functions_and_methods": 21,
-          "language": "python",
-          "logical_lines": 858,
-          "physical_lines": 926
         },
         {
           "file": "quorune/attack_transition_model.py",
@@ -4328,8 +4342,8 @@
           "file": "quorune/semantics.py",
           "functions_and_methods": 21,
           "language": "python",
-          "logical_lines": 656,
-          "physical_lines": 706
+          "logical_lines": 658,
+          "physical_lines": 708
         },
         {
           "file": "quorune/drawing/continuation.py",
@@ -4493,6 +4507,13 @@
           "physical_lines": 603
         },
         {
+          "file": "quorune/semantic_runtime/__init__.py",
+          "functions_and_methods": 2,
+          "language": "python",
+          "logical_lines": 542,
+          "physical_lines": 550
+        },
+        {
           "file": "quorune/semantic_choices/public_selection.py",
           "functions_and_methods": 7,
           "language": "python",
@@ -4505,13 +4526,6 @@
           "language": "web",
           "logical_lines": 532,
           "physical_lines": 545
-        },
-        {
-          "file": "quorune/semantic_runtime/__init__.py",
-          "functions_and_methods": 2,
-          "language": "python",
-          "logical_lines": 530,
-          "physical_lines": 538
         },
         {
           "file": "quorune/prevention_triggers.py",
@@ -4531,8 +4545,15 @@
           "file": "quorune/compiler/activated_mana_nodes.py",
           "functions_and_methods": 9,
           "language": "python",
-          "logical_lines": 513,
-          "physical_lines": 538
+          "logical_lines": 515,
+          "physical_lines": 540
+        },
+        {
+          "file": "quorune/semantic_runtime/executor.py",
+          "functions_and_methods": 48,
+          "language": "python",
+          "logical_lines": 512,
+          "physical_lines": 585
         },
         {
           "file": "quorune/effect_runtime/damage_modifiers.py",
@@ -4542,11 +4563,11 @@
           "physical_lines": 527
         },
         {
-          "file": "quorune/semantic_runtime/executor.py",
-          "functions_and_methods": 46,
+          "file": "quorune/counter_removal.py",
+          "functions_and_methods": 22,
           "language": "python",
-          "logical_lines": 494,
-          "physical_lines": 565
+          "logical_lines": 487,
+          "physical_lines": 558
         },
         {
           "file": "quorune/service.py",
@@ -4666,6 +4687,13 @@
           "language": "python",
           "logical_lines": 418,
           "physical_lines": 459
+        },
+        {
+          "file": "quorune/compiler/direct_target.py",
+          "functions_and_methods": 14,
+          "language": "python",
+          "logical_lines": 411,
+          "physical_lines": 460
         },
         {
           "file": "quorune/semantic_choices/token_and_copy.py",
@@ -4808,13 +4836,6 @@
           "physical_lines": 377
         },
         {
-          "file": "quorune/compiler/direct_target.py",
-          "functions_and_methods": 13,
-          "language": "python",
-          "logical_lines": 338,
-          "physical_lines": 377
-        },
-        {
           "file": "quorune/mana_ability_runtime.py",
           "functions_and_methods": 9,
           "language": "python",
@@ -4934,6 +4955,13 @@
           "physical_lines": 336
         },
         {
+          "file": "quorune/counter_state.py",
+          "functions_and_methods": 24,
+          "language": "python",
+          "logical_lines": 290,
+          "physical_lines": 347
+        },
+        {
           "file": "web/src/api.ts",
           "functions_and_methods": null,
           "language": "web",
@@ -4967,13 +4995,6 @@
           "language": "python",
           "logical_lines": 284,
           "physical_lines": 343
-        },
-        {
-          "file": "quorune/counter_state.py",
-          "functions_and_methods": 24,
-          "language": "python",
-          "logical_lines": 283,
-          "physical_lines": 340
         },
         {
           "file": "quorune/semantic_runtime/attached_continuous.py",
@@ -5403,13 +5424,6 @@
           "physical_lines": 197
         },
         {
-          "file": "quorune/counter_removal.py",
-          "functions_and_methods": 8,
-          "language": "python",
-          "logical_lines": 161,
-          "physical_lines": 189
-        },
-        {
           "file": "quorune/effect_contracts.py",
           "functions_and_methods": 2,
           "language": "python",
@@ -5466,11 +5480,25 @@
           "physical_lines": 175
         },
         {
+          "file": "quorune/compiler/resolution_effect_templates.py",
+          "functions_and_methods": 1,
+          "language": "python",
+          "logical_lines": 154,
+          "physical_lines": 163
+        },
+        {
           "file": "quorune/drawing/restrictions.py",
           "functions_and_methods": 12,
           "language": "python",
           "logical_lines": 154,
           "physical_lines": 188
+        },
+        {
+          "file": "quorune/compiler/counter_removal_templates.py",
+          "functions_and_methods": 14,
+          "language": "python",
+          "logical_lines": 153,
+          "physical_lines": 184
         },
         {
           "file": "quorune/compiler/return_to_hand_templates.py",
@@ -5543,13 +5571,6 @@
           "physical_lines": 184
         },
         {
-          "file": "quorune/compiler/resolution_effect_templates.py",
-          "functions_and_methods": 1,
-          "language": "python",
-          "logical_lines": 144,
-          "physical_lines": 153
-        },
-        {
           "file": "quorune/semantic_choices/ordering.py",
           "functions_and_methods": 2,
           "language": "python",
@@ -5611,6 +5632,13 @@
           "language": "python",
           "logical_lines": 135,
           "physical_lines": 151
+        },
+        {
+          "file": "quorune/semantic_runtime/counter_removal_handlers.py",
+          "functions_and_methods": 2,
+          "language": "python",
+          "logical_lines": 134,
+          "physical_lines": 147
         },
         {
           "file": "quorune/shortcuts.py",
@@ -6073,6 +6101,13 @@
           "language": "python",
           "logical_lines": 74,
           "physical_lines": 93
+        },
+        {
+          "file": "quorune/rules/counter_removal_capabilities.py",
+          "functions_and_methods": 2,
+          "language": "python",
+          "logical_lines": 71,
+          "physical_lines": 82
         },
         {
           "file": "quorune/compiler/self_counter_keyword_actions.py",
@@ -6655,10 +6690,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 1825,
+          "end_line": 1804,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 1481,
+          "line": 1460,
           "logical_lines": 339,
           "name": "move_card",
           "physical_lines": 345,
@@ -6688,10 +6723,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 7453,
+          "end_line": 7432,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 7151,
+          "line": 7130,
           "logical_lines": 300,
           "name": "_prepare_stack_resolution",
           "physical_lines": 303,
@@ -6699,10 +6734,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 3076,
+          "end_line": 3055,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 2766,
+          "line": 2745,
           "logical_lines": 282,
           "name": "_enter_step",
           "physical_lines": 311,
@@ -6721,10 +6756,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 12059,
+          "end_line": 12038,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 11797,
+          "line": 11776,
           "logical_lines": 255,
           "name": "_stabilize",
           "physical_lines": 263,
@@ -6743,10 +6778,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 8911,
+          "end_line": 8890,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 8663,
+          "line": 8642,
           "logical_lines": 249,
           "name": "_complete_semantic_search",
           "physical_lines": 249,
@@ -6787,10 +6822,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 10086,
+          "end_line": 10065,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 9854,
+          "line": 9833,
           "logical_lines": 232,
           "name": "_declaration_restrictions",
           "physical_lines": 233,
@@ -6831,10 +6866,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 7039,
+          "end_line": 7018,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 6841,
+          "line": 6820,
           "logical_lines": 193,
           "name": "_begin_siege_defeated_resolution",
           "physical_lines": 199,
@@ -6886,10 +6921,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 10793,
+          "end_line": 10772,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 10629,
+          "line": 10608,
           "logical_lines": 164,
           "name": "_complete_attackers",
           "physical_lines": 165,
@@ -6934,10 +6969,10 @@
       "oversized_modules": [
         {
           "file": "quorune/engine.py",
-          "functions_and_methods": 302,
+          "functions_and_methods": 301,
           "language": "python",
-          "logical_lines": 11763,
-          "physical_lines": 12465
+          "logical_lines": 11744,
+          "physical_lines": 12444
         },
         {
           "file": "quorune/report.py",
@@ -6968,8 +7003,8 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 146293,
-      "python_file_count": 361,
+      "physical_lines": 147379,
+      "python_file_count": 364,
       "review_thresholds": {
         "function_logical_lines_review": 150,
         "module_logical_lines_review": 1500
@@ -6986,7 +7021,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1807,
+      "top_level_functions": 1823,
       "web_file_count": 16
     },
     "semantic_handlers": {
@@ -8035,6 +8070,42 @@
           "schema_version": 1
         },
         {
+          "capability_dependencies": [
+            "counter.removal.all_effect"
+          ],
+          "family": "effect.counter-removal",
+          "handler_id": "generic.all-counter-removal.v1",
+          "operation": "remove_all_counters",
+          "rule_references": [
+            "101.3",
+            "115.3",
+            "115.6",
+            "122.1",
+            "608.2b",
+            "608.2c",
+            "609.3"
+          ],
+          "schema_version": 1
+        },
+        {
+          "capability_dependencies": [
+            "counter.removal.fixed_effect"
+          ],
+          "family": "effect.counter-removal",
+          "handler_id": "generic.fixed-counter-removal.v1",
+          "operation": "remove_counters",
+          "rule_references": [
+            "101.3",
+            "115.3",
+            "115.6",
+            "122.1",
+            "608.2b",
+            "608.2c",
+            "609.3"
+          ],
+          "schema_version": 1
+        },
+        {
           "capability_dependencies": [],
           "family": "effect.object-stack-token",
           "handler_id": "effect.object-stack-token.reorder_top.v1",
@@ -8185,8 +8256,8 @@
       ],
       "legacy_apply_effect_branch_count": 0,
       "read_only_context": "quorune.semantic_runtime.context.ReadOnlyHandlerContext",
-      "registered_handler_count": 95,
-      "registered_operation_count": 95,
+      "registered_handler_count": 97,
+      "registered_operation_count": 97,
       "registered_operations": [
         "add_counter_selected",
         "add_subtype",
@@ -8271,6 +8342,8 @@
         "pump_controlled_creatures",
         "reanimate",
         "reanimate_attached_creature_aura",
+        "remove_all_counters",
+        "remove_counters",
         "reorder_top",
         "return_graveyard_card_to_owner_hand",
         "return_transformed",
@@ -8286,7 +8359,7 @@
       ],
       "registered_operations_still_in_legacy_dispatch": [],
       "registered_runtime_handler_count": 38,
-      "registry_fingerprint": "d60774218d2077e15e7c398be3d398f16d59b335ba87b2189fada8660e08d423",
+      "registry_fingerprint": "e72c2e01885649f8bf8ea5307e67650ab347c1407e64ab597c20f0e99db289e5",
       "runtime_handlers": [
         {
           "capability_dependencies": [
@@ -8899,7 +8972,7 @@
       "card_specific_operation_branch_occurrences": {
         "remora_tax": 1
       },
-      "count": 239,
+      "count": 241,
       "limitations": "AST heuristic covers if/match conditions whose source names op or operation.",
       "locations": [
         {
@@ -9264,7 +9337,7 @@
         {
           "condition": "type(operation) is not str or not operation",
           "file": "quorune/compiler/direct_target.py",
-          "line": 267,
+          "line": 348,
           "string_literals": [],
           "symbol": "direct_target_effect"
         },
@@ -9647,7 +9720,7 @@
         {
           "condition": "effect.get(\"op\") == \"choose_cards_apnap\"",
           "file": "quorune/engine.py",
-          "line": 8262,
+          "line": 8241,
           "string_literals": [
             "choose_cards_apnap",
             "op"
@@ -9657,7 +9730,7 @@
         {
           "condition": "effect.get(\"op\") == \"search\"",
           "file": "quorune/engine.py",
-          "line": 8277,
+          "line": 8256,
           "string_literals": [
             "op",
             "search"
@@ -9667,7 +9740,7 @@
         {
           "condition": "str(effect.get(\"op\") or \"\") in default_semantic_choice_registry().operations",
           "file": "quorune/engine.py",
-          "line": 8328,
+          "line": 8307,
           "string_literals": [
             "",
             "op"
@@ -10142,7 +10215,7 @@
         {
           "condition": "isinstance(operation, str) and operation",
           "file": "quorune/rules/capabilities.py",
-          "line": 845,
+          "line": 851,
           "string_literals": [],
           "symbol": "nested_operations"
         },
@@ -10189,6 +10262,36 @@
             "source"
           ],
           "symbol": "fixed_counter_placement_group_node_capabilities"
+        },
+        {
+          "condition": "set(effect) != {\"op\", \"card\", \"counter\", \"amount\", \"source\"} or effect.get(\"op\") != \"remove_counters\" or effect.get(\"card\") != \"$target.0\" or type(effect.get(\"counter\")) is not str or not effect.get(\"counter\") or type(effect.get(\"amount\")) ",
+          "file": "quorune/rules/counter_removal_capabilities.py",
+          "line": 28,
+          "string_literals": [
+            "$source",
+            "$target.0",
+            "amount",
+            "card",
+            "counter",
+            "op",
+            "remove_counters",
+            "source"
+          ],
+          "symbol": "fixed_counter_removal_node_capabilities"
+        },
+        {
+          "condition": "set(effect) != {\"op\", \"card\", \"source\"} or effect.get(\"op\") != \"remove_all_counters\" or effect.get(\"card\") != \"$target.0\" or effect.get(\"source\") != \"$source\" or not fixed_counter_target_schema_is_closed(target_schema)",
+          "file": "quorune/rules/counter_removal_capabilities.py",
+          "line": 63,
+          "string_literals": [
+            "$source",
+            "$target.0",
+            "card",
+            "op",
+            "remove_all_counters",
+            "source"
+          ],
+          "symbol": "all_counter_removal_node_capabilities"
         },
         {
           "condition": "set(effect) != {\"op\", \"card\"} or effect.get(\"op\") != \"return_graveyard_card_to_owner_hand\" or effect.get(\"card\") != \"$target.0\"",
@@ -11098,7 +11201,7 @@
         {
           "condition": "operation not in VALID_EFFECT_OPERATIONS",
           "file": "quorune/semantics.py",
-          "line": 298,
+          "line": 300,
           "string_literals": [],
           "symbol": "__post_init__"
         },
@@ -11206,9 +11309,9 @@
         "": 8,
         " ": 1,
         "$controller": 5,
-        "$source": 15,
+        "$source": 17,
         "$source.controller": 1,
-        "$target.0": 15,
+        "$target.0": 17,
         "$targets": 1,
         "action": 1,
         "add": 4,
@@ -11218,7 +11321,7 @@
         "add_rules_text": 2,
         "add_types": 4,
         "all": 1,
-        "amount": 13,
+        "amount": 14,
         "animate_dead_prepare": 1,
         "animate_dead_reanimate": 1,
         "append": 1,
@@ -11226,7 +11329,7 @@
         "blockers": 2,
         "bounce": 1,
         "cap_result_life_loss": 1,
-        "card": 20,
+        "card": 22,
         "cards": 4,
         "choose_card_name": 1,
         "choose_cards_apnap": 1,
@@ -11242,7 +11345,7 @@
         "cost_per_counter": 1,
         "cost_position": 1,
         "count": 5,
-        "counter": 8,
+        "counter": 9,
         "counter_stack_target": 1,
         "counter_unless_pay": 1,
         "coverage": 4,
@@ -11306,7 +11409,7 @@
         "next": 2,
         "not_in": 1,
         "offer_draw": 2,
-        "op": 59,
+        "op": 61,
         "operation": 6,
         "overrides": 1,
         "parse": 1,
@@ -11335,7 +11438,9 @@
         "remove_ability": 2,
         "remove_ability_fragment": 2,
         "remove_all_abilities": 2,
+        "remove_all_counters": 1,
         "remove_colors": 2,
+        "remove_counters": 1,
         "remove_types": 3,
         "replace": 4,
         "replace_text": 2,
@@ -11354,7 +11459,7 @@
         "set_power_toughness": 2,
         "set_types": 4,
         "show": 2,
-        "source": 15,
+        "source": 17,
         "stack": 1,
         "stage": 2,
         "status": 1,
@@ -11621,14 +11726,14 @@
     "card_program_v2_present": true,
     "commander_legal_oracle": {
       "current_snapshot_complete": false,
-      "exact_fraction": 0.094014,
-      "material_residuals": 45252,
+      "exact_fraction": 0.094045,
+      "material_residuals": 45250,
       "residual_kinds": {
         "cost": 1756,
         "declaration_cost": 10,
         "declaration_restriction": 154,
         "dependency_contract": 4442,
-        "effect": 5991,
+        "effect": 5989,
         "mana_ability": 671,
         "replacement_effect": 1315,
         "spell_additional_cost": 131,
@@ -11650,29 +11755,29 @@
         "scryfall_rulings_updated_at": "2026-08-06T09:00:37.813+00:00"
       },
       "status_counts": {
-        "exact": 2973,
+        "exact": 2974,
         "partial": 12961,
-        "unresolved": 15689
+        "unresolved": 15688
       },
-      "template_count": 377,
+      "template_count": 379,
       "total_faces": 32431,
       "total_oracle_ids": 31623
     },
     "compiler_module": "quorune/oracle_ir.py",
     "compiler_module_logical_lines": 1473,
     "compiler_module_physical_lines": 1530,
-    "compiler_version": "oracle-ir-v75",
+    "compiler_version": "oracle-ir-v76",
     "current_ir": "OracleCardIR lowered to canonical CardProgram V2 with a derived SemanticProgram compatibility index",
     "full_oracle": {
       "current_snapshot_complete": false,
-      "exact_fraction": 0.154597,
-      "material_residuals": 52795,
+      "exact_fraction": 0.154623,
+      "material_residuals": 52793,
       "residual_kinds": {
         "cost": 1988,
         "declaration_cost": 11,
         "declaration_restriction": 170,
         "dependency_contract": 4790,
-        "effect": 6683,
+        "effect": 6681,
         "mana_ability": 767,
         "replacement_effect": 1538,
         "spell_additional_cost": 138,
@@ -11694,11 +11799,11 @@
         "scryfall_rulings_updated_at": "2026-08-06T09:00:37.813+00:00"
       },
       "status_counts": {
-        "exact": 5971,
+        "exact": 5972,
         "partial": 14094,
-        "unresolved": 18558
+        "unresolved": 18557
       },
-      "template_count": 384,
+      "template_count": 386,
       "total_faces": 41840,
       "total_oracle_ids": 38623
     },
@@ -11840,31 +11945,31 @@
         }
       ],
       "dependency_fail_closed_status_counts": {
-        "not_applicable": 45,
+        "not_applicable": 47,
         "not_run": 3,
         "passed": 82
       },
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 216,
-          "multiplayer": 125,
-          "mutation": 145,
-          "negative": 236,
-          "positive": 251,
+          "interaction": 218,
+          "multiplayer": 127,
+          "mutation": 149,
+          "negative": 242,
+          "positive": 255,
           "privacy": 107,
           "property": 14,
-          "replay": 159,
-          "rollback": 32
+          "replay": 161,
+          "rollback": 34
         },
-        "declaration_count": 1285,
-        "declaration_source_fingerprint": "8a57f62c4815be72dc9c30cfb79fa9e9e18f8e1448ce2c82ea41ccedb76b8d5e",
-        "fingerprint": "c164e4f8fdc1458f70af0d6d83dfc5bda3266d72937ceac0e01f59c7fd72a2d6",
-        "registry_fingerprint": "9e7a63fd5e08fd50fdd5d21af4bb9d5c9711a3f05f0fd36a1b96ae2c7a05595a"
+        "declaration_count": 1307,
+        "declaration_source_fingerprint": "78c0fdd7e0e6fe20dd4f7864b8fc5beb08c3329b2f6869b8172c4da64a7ae88d",
+        "fingerprint": "c1cb5b425d859a70f0f3de620ed756c67e0f754d6694001d8966e877a2882b8e",
+        "registry_fingerprint": "2b0fd414adcfe0b2d87c25e448235d68968a3321b33ab35022b8c6a6d97df93a"
       },
-      "fingerprint": "9e7a63fd5e08fd50fdd5d21af4bb9d5c9711a3f05f0fd36a1b96ae2c7a05595a",
+      "fingerprint": "2b0fd414adcfe0b2d87c25e448235d68968a3321b33ab35022b8c6a6d97df93a",
       "implementation_mutation_status_counts": {
-        "killed": 125,
+        "killed": 127,
         "not_run": 5
       },
       "profiles": [
@@ -11878,9 +11983,9 @@
       "status_counts": {
         "blocked": 4,
         "tested": 2,
-        "trusted": 124
+        "trusted": 126
       },
-      "total": 130
+      "total": 132
     },
     "stages": [
       {
@@ -12003,7 +12108,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:798",
+            "quorune/compiler/program_generation.py:846",
             "quorune/oracle_ir.py:1473"
           ]
         },
@@ -12035,7 +12140,7 @@
             "quorune/oracle_ir.py:85",
             "quorune/preflight.py:28",
             "quorune/rules/__init__.py:3",
-            "quorune/rules/capabilities.py:381"
+            "quorune/rules/capabilities.py:385"
           ],
           "explicit_capability_gate": [
             "quorune/compiler/cumulative_upkeep_nodes.py:8",
@@ -12047,7 +12152,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:798",
+            "quorune/compiler/program_generation.py:846",
             "quorune/oracle_ir.py:1473"
           ]
         },
@@ -12094,7 +12199,7 @@
             "quorune/engine.py:30"
           ],
           "register_generated_programs": [
-            "quorune/compiler/program_generation.py:1065",
+            "quorune/compiler/program_generation.py:1113",
             "quorune/oracle_ir.py:1496",
             "quorune/preflight.py:16",
             "quorune/session.py:14"
@@ -12113,8 +12218,8 @@
         "contract_fingerprint": "96c71595b0f4272296568ccdc6e0d54e27d8b92c6e33d4b4d7ed6aa5bf3b3b1c",
         "exact_cards_with_template": 319,
         "exact_nodes": 531,
-        "fingerprint": "18c2f2abb0c7dc02b4657c159bfcad7b6c18da104fc309e18404f860d436debe",
-        "grammar_source_fingerprint": "672c9e94f3423c26d366d03a27592dc8d015c98bb5d6fb72f62e10e23a71b698",
+        "fingerprint": "58a775de1b40f807eba3a523092678957bee61d7db5f1364fdc042b8e722deba",
+        "grammar_source_fingerprint": "639c101ba1a8f46015f0750827b288a6ccfcf1f54a209d3a5e110cc1a5ed5c53",
         "identity_fingerprint": "4cb336263711ecbb0b07462e7fb1e95582aa644ecc6f690569c702ee9448ed8e",
         "present": true,
         "shape_count": 106,
@@ -12125,8 +12230,8 @@
         "contract_fingerprint": "96c71595b0f4272296568ccdc6e0d54e27d8b92c6e33d4b4d7ed6aa5bf3b3b1c",
         "exact_cards_with_template": 332,
         "exact_nodes": 551,
-        "fingerprint": "a499e8ac91f15f0b164282ef2d5b4b0102f7c46bca587bc38901e14c57d2c9cf",
-        "grammar_source_fingerprint": "672c9e94f3423c26d366d03a27592dc8d015c98bb5d6fb72f62e10e23a71b698",
+        "fingerprint": "68734f765bfd6e405a05b7a0efd008c27b2b6ae9478ffa8a1394abe4e5de958d",
+        "grammar_source_fingerprint": "639c101ba1a8f46015f0750827b288a6ccfcf1f54a209d3a5e110cc1a5ed5c53",
         "identity_fingerprint": "abeb1b5f8e5c2e1884805da7b1cb5c4a237d38c10d4fdd928d5901e4ab925e79",
         "present": true,
         "shape_count": 109,
@@ -12957,7 +13062,7 @@
       "playwright_e2e_journeys": 10
     },
     "mutation_testing": {
-      "capability_mutation_declarations": 145,
+      "capability_mutation_declarations": 149,
       "configured_tools": [],
       "focused_executable_suite": true,
       "mutation_score": null
@@ -12985,18 +13090,18 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2481,
-      "discovered_total": 5781,
+      "conventional_ast_cases": 2501,
+      "discovered_total": 5801,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
-        "compiler_named": 93,
+        "compiler_named": 95,
         "fuzz_named": 1,
         "privacy_or_projection_named": 30,
-        "replay_named": 161,
+        "replay_named": 163,
         "server_named": 26
       },
       "reconciles": true,
-      "test_files": 242
+      "test_files": 243
     }
   }
 }

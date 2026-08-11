@@ -145,13 +145,16 @@ def _player_counter_value(host: CounterStateHost, seat: str, name: str) -> int:
     if player is None:
         raise CounterStateError("Counter-change player does not exist")
     attribute = _PLAYER_COUNTER_ATTRIBUTES.get(name)
-    value = (
-        int(getattr(player, attribute))
-        if attribute is not None
-        else int(player.counters.get(name, 0))
-    )
-    if value < 0:
-        raise CounterStateError("Player counters cannot be negative")
+    if attribute is not None:
+        value = getattr(player, attribute)
+    else:
+        if not isinstance(player.counters, Mapping):
+            raise CounterStateError("Player counter state must be a mapping")
+        value = player.counters.get(name, 0)
+    if type(value) is not int or value < 0:
+        raise CounterStateError(
+            "Player counters must be nonnegative integers"
+        )
     return value
 
 
@@ -173,9 +176,13 @@ def _permanent_counter_value(
         raise CounterStateError(
             "Counter-change permanent changed object identity"
         )
-    value = int(card.counters.get(change.counter_name, 0))
-    if value < 0:
-        raise CounterStateError("Permanent counters cannot be negative")
+    if not isinstance(card.counters, Mapping):
+        raise CounterStateError("Permanent counter state must be a mapping")
+    value = card.counters.get(change.counter_name, 0)
+    if type(value) is not int or value < 0:
+        raise CounterStateError(
+            "Permanent counters must be nonnegative integers"
+        )
     return value
 
 

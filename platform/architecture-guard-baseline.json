@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "c8ebbfb04e843cdc34bdd5638b30c7caba4c20de",
+  "baseline_commit": "bc19fd0c31c12879768b97b56e6b2bc248935540",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -723,7 +723,7 @@
     "quorune/record.py": 11
   },
   "engine": {
-    "logical_lines": 11765,
+    "logical_lines": 11744,
     "methods": [
       {
         "kind": "method",
@@ -953,11 +953,6 @@
       {
         "kind": "method",
         "name": "_cast_cost_options",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_change_permanent_counter",
         "visibility": "private"
       },
       {
@@ -2216,12 +2211,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 12468
+    "physical_lines": 12444
   },
   "exception_binding": {
-    "adr": "docs/adr/0053-typed-own-graveyard-return-to-hand.md",
-    "allowance_fingerprint": "46a06a74812c3a770149d1fc51977b1d5708904e00d74912c6d83d5c67766148",
-    "exception_id": "ARCH-EXC-0023"
+    "adr": "docs/adr/0055-typed-direct-counter-removal-effects.md",
+    "allowance_fingerprint": "cae683f3fa62c2946b5410e70ac521ab549b7e57469078de3788e50c445cdef5",
+    "exception_id": "ARCH-EXC-0024"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2446,7 +2441,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 11765
+      "logical_lines": 11744
     },
     {
       "file": "quorune/record.py",
@@ -2577,6 +2572,8 @@
     "reanimate",
     "reanimate_attached_creature_aura",
     "remora_tax",
+    "remove_all_counters",
+    "remove_counters",
     "reorder_top",
     "retarget_stack_item",
     "return_graveyard_card_to_owner_hand",

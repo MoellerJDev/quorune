@@ -14205,16 +14205,18 @@
       "effective_date": "2026-06-19",
       "executable_test_ids": [
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_quantity_component_changes_effect_generated_placement",
-        "tests.test_counter_state.CounterStateTests.test_generic_player_counter_round_trips_and_zero_is_omitted"
+        "tests.test_counter_state.CounterStateTests.test_generic_player_counter_round_trips_and_zero_is_omitted",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_does_as_much_as_possible"
       ],
       "implementation_components": [
         "model.CardInstance.counters",
         "model.PlayerState.counters",
         "counter_state.player_counter_snapshot",
-        "counter_placement.commit_prepared_counter_placements"
+        "counter_placement.commit_prepared_counter_placements",
+        "counter_removal.commit_counter_removal_effect"
       ],
       "notes": [
-        "Permanents and players carry normalized nonnegative named counter quantities. Poison and energy retain replay-compatible first-class player fields while other player counter kinds share one generic state owner."
+        "Permanents and players carry normalized nonnegative named counter quantities. Poison and energy retain replay-compatible first-class player fields while other player counter kinds share one generic state owner. Mandatory fixed named-counter removal and direct all-counter removal from one permanent delegate their typed effect results to that same permanent counter-state owner."
       ],
       "required_scenarios": [],
       "reviewed": true,
@@ -42683,7 +42685,9 @@
       "case_version": 1,
       "classification": "behavioral",
       "covered_scenarios": [
-        "positive"
+        "positive",
+        "negative",
+        "interaction"
       ],
       "dependency_rule_ids": [
         "609"
@@ -42691,14 +42695,19 @@
       "effective_date": "2026-06-19",
       "executable_test_ids": [
         "tests.test_rules_primitives.ReplacementOrderingTests.test_prevention_never_prevents_more_than_remaining_damage",
-        "tests.test_rules_primitives.EffectRuleTests.test_contract_traces_every_cr_609_rule"
+        "tests.test_rules_primitives.EffectRuleTests.test_contract_traces_every_cr_609_rule",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_does_as_much_as_possible",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_preserves_target_revalidation_and_siege_trigger"
       ],
       "implementation_components": [
         "CommanderEngine._apply_effect",
-        "replacement_effects.apply_replacement"
+        "replacement_effects.apply_replacement",
+        "quorune.counter_removal.plan_counter_removal_effect",
+        "quorune.counter_removal.commit_counter_removal_effect",
+        "quorune.semantic_runtime.counter_removal_handlers.FixedCounterRemovalHandler"
       ],
       "notes": [
-        "Prevention safely clamps to the remaining damage, but this witness cannot promote the general do-as-much-as-possible rule."
+        "Prevention safely clamps to the remaining damage, and mandatory fixed named-counter removal from one direct permanent target now removes the lesser of the requested and available quantities through a typed partial-result plan. Those bounded witnesses cannot promote the general do-as-much-as-possible rule."
       ],
       "required_scenarios": [
         "positive",

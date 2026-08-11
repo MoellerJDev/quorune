@@ -14,6 +14,10 @@ from .counter_capability_shapes import (
 from .graveyard_card_targets import (
     targeted_own_graveyard_return_node_capabilities,
 )
+from .counter_removal_capabilities import (
+    all_counter_removal_node_capabilities,
+    fixed_counter_removal_node_capabilities,
+)
 from .node_capability_shapes import (
     fixed_counter_additional_cost_node_capabilities,
     fixed_sacrifice_additional_cost_node_capabilities,
@@ -787,9 +791,11 @@ def _targeted_effect_capabilities(
 ) -> set[str]:
     dependencies: set[str] = set()
     for resolver in (
+        all_counter_removal_node_capabilities,
         fixed_counter_placement_batch_node_capabilities,
         fixed_counter_placement_group_node_capabilities,
         fixed_counter_placement_node_capabilities,
+        fixed_counter_removal_node_capabilities,
         fixed_counter_placement_set_node_capabilities,
         fixed_counter_placement_target_set_node_capabilities,
         fixed_player_counter_placement_node_capabilities,
@@ -1028,6 +1034,10 @@ def capability_covered_mechanics(
     if "damage.prevention.triggered_results" in supplied:
         covered.add("cr-615-prevention-effects")
     if "counter.placement.quantity_replacement" in supplied:
+        covered.add("cr-122-counters")
+    if "counter.removal.fixed_effect" in supplied:
+        covered.add("cr-122-counters")
+    if "counter.removal.all_effect" in supplied:
         covered.add("cr-122-counters")
     if "counter.producer.fixed_effect" in supplied:
         covered.add("cr-122-counters")
