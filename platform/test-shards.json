@@ -146,6 +146,7 @@
       "test_fixed_mass_damage",
       "test_indestructible_rules",
       "test_keyword_counter_composition",
+      "test_renown_rules",
       "test_rule_generated_counter_removals",
       "test_state_based_actions",
       "test_trample_assignment_integration"

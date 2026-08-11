@@ -518,6 +518,7 @@ def _keyword_node_for_mechanics(
         material_line=material_line,
         span=span,
         mechanics=mechanics,
+        trusted_mechanics=trusted_mechanics,
         capability_registry=capability_registry,
         capability_profile=capability_profile,
         residuals=residuals,

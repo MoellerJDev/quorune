@@ -40,6 +40,7 @@ def reset_card_after_zone_change(
     card.temporary_keywords.clear()
     card.goaded_by.clear()
     card.monstrous_value = None
+    card.renowned = False
     card.attacking = None
     card.blocking = None
     card.attached_to = None

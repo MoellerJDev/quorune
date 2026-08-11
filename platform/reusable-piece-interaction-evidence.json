@@ -725,6 +725,30 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_redirected_combat_damage_to_controller_still_triggers",
+      "piece_ids": ["capability.counter.producer.renown", "mechanic.cr-120-damage", "mechanic.renown"],
+      "capability_ids": ["counter.producer.renown"],
+      "interaction_order": 3,
+      "assertion": "Renown discovers its trigger from the final normalized combat-damage result, including damage redirected to the source's controller, rather than from the originally proposed recipient."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_counter_replacement_and_zero_result_still_create_renowned_designation",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.renown", "capability.permanent.designation.renowned", "mechanic.renown"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.renown", "permanent.designation.renowned"],
+      "interaction_order": 4,
+      "assertion": "Renown resolves through canonical counter quantity replacement and then applies its independent renowned designation even when replacement reduces the counter result to zero."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_intervening_condition_uses_same_logical_object_and_current_designation",
+      "piece_ids": ["capability.counter.producer.renown", "capability.permanent.designation.renowned", "mechanic.cr-400-general", "mechanic.renown"],
+      "capability_ids": ["counter.producer.renown", "permanent.designation.renowned"],
+      "interaction_order": 4,
+      "assertion": "Renown's intervening condition follows the original logical object and current public designation, so an old trigger cannot affect a returned incarnation or an object already made renowned."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_target_set_suspends_for_quantity_replacement_and_replays",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_permanent_target_set_effect"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_permanent_target_set_effect"],

@@ -48,8 +48,10 @@ from ..life_state import (
 )
 from ..permanent_designations import (
     BecomeMonstrousRequest,
+    BecomeRenownedRequest,
     PermanentDesignationError,
     become_monstrous,
+    become_renowned,
 )
 from ..rules.library_scry import ScryError, commit_scry_arrangement
 from ..replacement.immutable import thaw_value
@@ -58,6 +60,7 @@ from ..semantic_runtime import (
     AddSubtypeIntent,
     AmassIntent,
     BecomeMonstrousIntent,
+    BecomeRenownedIntent,
     ChooseOneRestBottomRandomIntent,
     CopyControlledTokensIntent,
     CopyStackItemIntent,
@@ -267,6 +270,24 @@ class SemanticChoiceIntentHostMixin:
                     object_ref=intent.object_ref,
                     logical_object_id=intent.logical_object_id,
                     value=intent.value,
+                    reason=intent.reason,
+                ),
+            )
+        except PermanentDesignationError as exc:
+            raise GameRuleError(str(exc)) from exc
+
+    def become_renowned_intent(
+        self,
+        intent: BecomeRenownedIntent,
+    ):
+        try:
+            return become_renowned(
+                self,
+                BecomeRenownedRequest(
+                    actor=intent.actor,
+                    object_id=intent.object_id,
+                    object_ref=intent.object_ref,
+                    logical_object_id=intent.logical_object_id,
                     reason=intent.reason,
                 ),
             )

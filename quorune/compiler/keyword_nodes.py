@@ -20,9 +20,15 @@ from ..unleash import (
     unleash_entry_handler_descriptor,
 )
 from ..riot import RIOT_MECHANIC, riot_entry_handler_descriptor
+from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
 from .cycling_nodes import ordinary_cycling_keyword_node
-from .dependency_gate import DependencyGate, explicit_capability_gate
+from .ability_keyword_fragments import lower_ability_keyword_fragments
+from .dependency_gate import (
+    DependencyGate,
+    explicit_capability_gate,
+    keyword_dependency_gate,
+)
 from .ir_model import (
     OracleNode,
     OracleResidual,
@@ -43,6 +49,7 @@ _MENTOR_MECHANIC = "men" + "tor"
 _PROWESS_MECHANIC = "prow" + "ess"
 _CONVOKE_MECHANIC = "con" + "voke"
 _BLOODTHIRST_MECHANIC = BLOODTHIRST_MECHANIC
+_RENOWN_MECHANIC = RENOWN_MECHANIC_ID
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,6 +100,7 @@ def keyword_node_plans(
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
             _PROWESS_MECHANIC,
+            _RENOWN_MECHANIC,
         }
     )
     if not split_mechanics:
@@ -116,9 +124,12 @@ def keyword_node_plans(
             if (
                 match.group().strip().rstrip(".").casefold() == mechanic
                 or (
-                    mechanic == _BLOODTHIRST_MECHANIC
+                    mechanic in {
+                        _BLOODTHIRST_MECHANIC,
+                        _RENOWN_MECHANIC,
+                    }
                     and re.fullmatch(
-                        rf"{re.escape(_BLOODTHIRST_MECHANIC)}\s+.+",
+                        rf"{re.escape(mechanic)}\s+.+",
                         match.group().strip().rstrip("."),
                         re.IGNORECASE,
                     )
@@ -134,6 +145,7 @@ def keyword_node_plans(
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
             _PROWESS_MECHANIC,
+            _RENOWN_MECHANIC,
             _CONVOKE_MECHANIC,
         )
     }
@@ -181,6 +193,7 @@ def keyword_node_plans(
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
             _PROWESS_MECHANIC,
+            _RENOWN_MECHANIC,
             _CONVOKE_MECHANIC,
         }
     )
@@ -198,6 +211,7 @@ def closed_special_keyword_node(
     material_line: str,
     span: SourceSpan,
     mechanics: tuple[str, ...],
+    trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
     residuals: list[OracleResidual],
@@ -214,6 +228,12 @@ def closed_special_keyword_node(
         "capability_profile": capability_profile,
         "residuals": residuals,
     }
+    renown = renown_keyword_node(
+        **values,
+        trusted_mechanics=trusted_mechanics,
+    )
+    if renown is not None:
+        return renown
     for lower in (
         ordinary_convoke_keyword_node,
         ordinary_cycling_keyword_node,
@@ -459,6 +479,94 @@ def prowess_keyword_node(
             ]
         },
         runtime_coverage=(CURRENT_ABILITY_FRAGMENT_COVERAGE,),
+        mechanics=mechanics,
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        capability_profile=(
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    )
+
+
+def renown_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    mechanics: tuple[str, ...],
+    trusted_mechanics: frozenset[str],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleNode | None:
+    match = re.fullmatch(
+        r"Renown\s+(?P<amount>[1-9]\d*)\.?",
+        material_line.strip(),
+        re.IGNORECASE,
+    )
+    if mechanics != (_RENOWN_MECHANIC,) or match is None:
+        return None
+    gate = keyword_dependency_gate(
+        material_line=material_line,
+        mechanics=mechanics,
+        trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    fragment_lowering = lower_ability_keyword_fragments(
+        material_line,
+        mechanics,
+    )
+    residual_id_values: list[str] = []
+    if gate.blockers:
+        residual_id_values.append(
+            append_residual(
+                residuals,
+                kind="dependency_contract",
+                text=line,
+                span=span,
+                reason="recognized keyword lacks a trusted mechanic contract",
+                blockers=gate.blockers,
+            )
+        )
+    if fragment_lowering.residual_kind is not None:
+        residual_id_values.append(
+            append_residual(
+                residuals,
+                kind=fragment_lowering.residual_kind,
+                text=line,
+                span=span,
+                reason=str(fragment_lowering.residual_reason),
+                blockers=fragment_lowering.residual_blockers,
+            )
+        )
+    residual_ids = tuple(residual_id_values)
+    spec = RenownSpec(amount=int(match.group("amount")))
+    return OracleNode(
+        node_id=node_id,
+        kind="triggered_ability",
+        text=line,
+        span=span,
+        active_zone="battlefield",
+        event="damage.dealt.self",
+        lowerable=True,
+        exact=not residual_ids,
+        template_id="renown-combat-damage-counter-designation-v1",
+        effects=(spec.effect_descriptor(),),
+        handlers=fragment_lowering.handlers,
+        event_condition=spec.event_condition(),
+        runtime_coverage=(
+            CURRENT_ABILITY_FRAGMENT_COVERAGE,
+            "intervening_condition",
+            "cr-122-counters",
+        ),
         mechanics=mechanics,
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,
@@ -821,6 +929,7 @@ __all__ = [
     "keyword_node_plans",
     "ordinary_convoke_keyword_node",
     "prowess_keyword_node",
+    "renown_keyword_node",
     "riot_keyword_node",
     "unleash_keyword_nodes",
 ]

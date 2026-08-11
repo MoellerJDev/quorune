@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-"""Typed ownership for noncopiable designations of a permanent.
+"""Typed ownership for public noncopiable permanent designations.
 
-The first represented designation is CR 701.37b's monstrous marker.  It is
-stored on the current logical object, is public, survives control changes and
-phasing, and is cleared by the canonical zone-change owner.
+CR 701.37b's monstrous value and CR 702.112b's renowned marker are stored on
+the current logical object, survive control changes and phasing, and are
+cleared only by the canonical zone-change owner.
 """
 
 from dataclasses import dataclass
@@ -74,6 +74,39 @@ class MonstrousDesignationResult:
     object_ref: str
     logical_object_id: str
     value: int | None
+    changed: bool
+
+
+@dataclass(frozen=True, slots=True)
+class BecomeRenownedRequest:
+    """One identity-pinned CR 702.112 designation transition."""
+
+    object_id: str
+    object_ref: str
+    logical_object_id: str
+    actor: str
+    reason: str
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (
+                self.object_id,
+                self.object_ref,
+                self.logical_object_id,
+                self.actor,
+                self.reason,
+            )
+        ):
+            raise PermanentDesignationError(
+                "Renowned designation identity and provenance are required"
+            )
+
+
+@dataclass(frozen=True, slots=True)
+class RenownedDesignationResult:
+    object_ref: str
+    logical_object_id: str
     changed: bool
 
 
@@ -152,10 +185,75 @@ def become_monstrous(
     )
 
 
+def become_renowned(
+    host: PermanentDesignationHost,
+    request: BecomeRenownedRequest,
+) -> RenownedDesignationResult:
+    """Apply one CR 702.112a-b transition to the pinned logical object."""
+
+    if not isinstance(request, BecomeRenownedRequest):
+        raise PermanentDesignationError(
+            "Renowned designation requires a typed request"
+        )
+    card = host.state.cards.get(request.object_id)
+    if (
+        card is None
+        or card.ref != request.object_ref
+        or card.logical_object_id != request.logical_object_id
+        or card.zone != "battlefield"
+        or card.phased_out
+    ):
+        return RenownedDesignationResult(
+            object_ref=request.object_ref,
+            logical_object_id=request.logical_object_id,
+            changed=False,
+        )
+    if type(card.renowned) is not bool:
+        raise PermanentDesignationError(
+            "The permanent's renowned designation is malformed"
+        )
+    if card.renowned:
+        return RenownedDesignationResult(
+            object_ref=card.ref,
+            logical_object_id=card.logical_object_id,
+            changed=False,
+        )
+
+    card.renowned = True
+    details = {
+        "object": card.ref,
+        "logical_object_id": card.logical_object_id,
+        "controller": card.controller,
+        "rea" + "son": request.reason,
+    }
+    host._log(
+        request.actor,
+        "permanent.renowned",
+        f"{card.ref} became renowned.",
+        details,
+        importance=2,
+        changed_objects=[card.object_id],
+        changed_players=[card.controller],
+    )
+    host._dispatch_semantic_event(
+        "permanent.becomes_renowned",
+        details,
+        sources=(card,),
+    )
+    return RenownedDesignationResult(
+        object_ref=card.ref,
+        logical_object_id=card.logical_object_id,
+        changed=True,
+    )
+
+
 __all__ = [
     "BecomeMonstrousRequest",
+    "BecomeRenownedRequest",
     "MonstrousDesignationResult",
     "PermanentDesignationError",
     "PermanentDesignationHost",
+    "RenownedDesignationResult",
     "become_monstrous",
+    "become_renowned",
 ]

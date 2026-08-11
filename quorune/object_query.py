@@ -35,10 +35,13 @@ class ObjectQueryResult:
     attached_to_ref: str | None = None
     logical_object_id: str = ""
     monstrous_value: int | None = None
+    renowned: bool = False
 
     def __post_init__(self) -> None:
         if not isinstance(self.counters, FrozenMap):
             object.__setattr__(self, "counters", FrozenMap(self.counters))
+        if type(self.renowned) is not bool:
+            raise ValueError("Object query renowned state must be a boolean")
 
 
 def exact_numeric_characteristic(
@@ -123,6 +126,7 @@ def object_query_result(
         known_to_actor=known_to_actor,
         attached_to_ref=attached_to_ref,
         monstrous_value=card.monstrous_value,
+        renowned=card.renowned,
     )
 
 

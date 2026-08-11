@@ -28,6 +28,11 @@ from .death_return import (
     death_return_counter_snapshot,
 )
 from .model import CardInstance, StackItem
+from .renown import (
+    RENOWN_EVENT_CONDITION_FIELD,
+    RenownError,
+    renown_condition_holds,
+)
 from .semantics import SemanticProgram
 from .semantic_runtime.ability_fragments import fragments_from_descriptors
 from .trigger_processing import enqueue_trigger_batch
@@ -171,6 +176,87 @@ def semantic_event_value(
     return value
 
 
+def _keyword_intervening_condition_actual(
+    host: TriggerDiscoveryHost,
+    field: str,
+    *,
+    source: CardInstance,
+    context: Mapping[str, Any],
+) -> bool:
+    """Evaluate typed keyword conditions outside the generic dispatcher."""
+
+    if field == RENOWN_EVENT_CONDITION_FIELD:
+        try:
+            return renown_condition_holds(source, context)
+        except RenownError as exc:
+            raise GameRuleError(str(exc)) from exc
+    if field != EVOLVE_EVENT_CONDITION_FIELD:
+        raise GameRuleError(
+            f"Unsupported typed keyword condition field {field!r}"
+        )
+    expected_source_identity = context.get("source_logical_object_id")
+    resolving = expected_source_identity is not None
+    if resolving and (
+        type(expected_source_identity) is not str
+        or not expected_source_identity
+    ):
+        raise GameRuleError(
+            "Evolve source logical identity must be a nonempty string"
+        )
+    if (
+        source.zone != "battlefield"
+        or source.phased_out
+        or (
+            resolving
+            and source.logical_object_id != expected_source_identity
+        )
+    ):
+        return False
+    entered_ref = context.get("card")
+    entered_incarnation = context.get("card_zone_change_counter")
+    if type(entered_ref) is not str or not entered_ref:
+        raise GameRuleError("Evolve event requires an entered card ref")
+    if type(entered_incarnation) is not int or entered_incarnation < 0:
+        raise GameRuleError(
+            "Evolve event requires a nonnegative zone-change counter"
+        )
+    entered = next(
+        (
+            card
+            for card in host.state.cards.values()
+            if card.ref == entered_ref
+        ),
+        None,
+    )
+    if (
+        entered is None
+        or entered.zone != "battlefield"
+        or entered.phased_out
+        or entered.zone_change_counter != entered_incarnation
+    ):
+        return False
+    if not resolving and context.get("controller") != source.controller:
+        return False
+    source_types, _, _ = host._type_parts(
+        str(host._effective_card_data(source).get("type_line") or "")
+    )
+    entered_types, _, _ = host._type_parts(
+        str(host._effective_card_data(entered).get("type_line") or "")
+    )
+    return evolve_condition_holds(
+        EvolveCharacteristics(
+            is_creature="creature" in source_types,
+            power=host._numeric_stat(source.object_id, "power"),
+            toughness=host._numeric_stat(source.object_id, "toughness"),
+        ),
+        EvolveCharacteristics(
+            is_creature="creature" in entered_types,
+            power=host._numeric_stat(entered.object_id, "power"),
+            toughness=host._numeric_stat(entered.object_id, "toughness"),
+        ),
+    )
+
+
 def _semantic_condition_actual(
     host: TriggerDiscoveryHost,
     condition: Mapping[str, Any],
@@ -230,70 +316,12 @@ def _semantic_condition_actual(
         return bool(
             controlled_values and max(controlled_values) == max(all_values)
         )
-    if field == EVOLVE_EVENT_CONDITION_FIELD:
-        expected_source_identity = context.get("source_logical_object_id")
-        resolving = expected_source_identity is not None
-        if resolving and (
-            type(expected_source_identity) is not str
-            or not expected_source_identity
-        ):
-            raise GameRuleError(
-                "Evolve source logical identity must be a nonempty string"
-            )
-        if (
-            source.zone != "battlefield"
-            or source.phased_out
-            or (
-                resolving
-                and source.logical_object_id != expected_source_identity
-            )
-        ):
-            return False
-        entered_ref = context.get("card")
-        entered_incarnation = context.get("card_zone_change_counter")
-        if type(entered_ref) is not str or not entered_ref:
-            raise GameRuleError("Evolve event requires an entered card ref")
-        if (
-            type(entered_incarnation) is not int
-            or entered_incarnation < 0
-        ):
-            raise GameRuleError(
-                "Evolve event requires a nonnegative zone-change counter"
-            )
-        entered = next(
-            (
-                card
-                for card in host.state.cards.values()
-                if card.ref == entered_ref
-            ),
-            None,
-        )
-        if (
-            entered is None
-            or entered.zone != "battlefield"
-            or entered.phased_out
-            or entered.zone_change_counter != entered_incarnation
-        ):
-            return False
-        if not resolving and context.get("controller") != source.controller:
-            return False
-        source_types, _, _ = host._type_parts(
-            str(host._effective_card_data(source).get("type_line") or "")
-        )
-        entered_types, _, _ = host._type_parts(
-            str(host._effective_card_data(entered).get("type_line") or "")
-        )
-        return evolve_condition_holds(
-            EvolveCharacteristics(
-                is_creature="creature" in source_types,
-                power=host._numeric_stat(source.object_id, "power"),
-                toughness=host._numeric_stat(source.object_id, "toughness"),
-            ),
-            EvolveCharacteristics(
-                is_creature="creature" in entered_types,
-                power=host._numeric_stat(entered.object_id, "power"),
-                toughness=host._numeric_stat(entered.object_id, "toughness"),
-            ),
+    if field in {EVOLVE_EVENT_CONDITION_FIELD, RENOWN_EVENT_CONDITION_FIELD}:
+        return _keyword_intervening_condition_actual(
+            host,
+            field,
+            source=source,
+            context=context,
         )
     if field == DEATH_RETURN_EVENT_CONDITION_FIELD:
         counter = condition.get("counter")

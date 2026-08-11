@@ -8,6 +8,8 @@ from ..ability_fragments import (
     AbilityFragmentError,
     CombatKeywordTriggerKind,
     CombatKeywordTriggerSpec,
+    DamageKeywordTriggerKind,
+    DamageKeywordTriggerSpec,
     ProtectionSpec,
     SpellCastKeywordTriggerKind,
     SpellCastKeywordTriggerSpec,
@@ -34,6 +36,7 @@ MELEE_FRAGMENT_HANDLER_ID = "ability.trigger.melee.v1"
 MENTOR_FRAGMENT_HANDLER_ID = "ability.trigger.mentor.v1"
 DETHRONE_FRAGMENT_HANDLER_ID = "ability.trigger.dethrone.v1"
 TRAINING_FRAGMENT_HANDLER_ID = "ability.trigger.training.v1"
+RENOWN_FRAGMENT_HANDLER_ID = "ability.trigger.renown.v1"
 PROWESS_FRAGMENT_HANDLER_ID = "ability.trigger.prowess.v1"
 
 
@@ -440,6 +443,46 @@ class TrainingAbilityFragmentHandler:
 
 
 @dataclass(frozen=True, slots=True)
+class RenownAbilityFragmentHandler:
+    handler_id: str = RENOWN_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.trigger.renown"
+    event: str = "damage.dealt.self"
+    rule_references: tuple[str, ...] = (
+        "702.112",
+        "702.112a",
+        "702.112b",
+        "702.112c",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "counter.producer.renown",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> DamageKeywordTriggerSpec:
+        fragment = _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=DamageKeywordTriggerSpec,
+        )
+        if fragment.kind is not DamageKeywordTriggerKind.RENOWN:
+            raise SemanticNodeError(
+                "The Renown runtime handler requires a Renown fragment"
+            )
+        return fragment
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
 class ProwessAbilityFragmentHandler:
     handler_id: str = PROWESS_FRAGMENT_HANDLER_ID
     schema_version: int = 1
@@ -500,6 +543,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             MentorAbilityFragmentHandler(),
             ProtectionAbilityFragmentHandler(),
             ProwessAbilityFragmentHandler(),
+            RenownAbilityFragmentHandler(),
             TrainingAbilityFragmentHandler(),
         )
     )
@@ -533,6 +577,7 @@ __all__ = [
     "MENTOR_FRAGMENT_HANDLER_ID",
     "DETHRONE_FRAGMENT_HANDLER_ID",
     "TRAINING_FRAGMENT_HANDLER_ID",
+    "RENOWN_FRAGMENT_HANDLER_ID",
     "PROWESS_FRAGMENT_HANDLER_ID",
     "EnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
@@ -544,6 +589,7 @@ __all__ = [
     "MentorAbilityFragmentHandler",
     "DethroneAbilityFragmentHandler",
     "TrainingAbilityFragmentHandler",
+    "RenownAbilityFragmentHandler",
     "ProwessAbilityFragmentHandler",
     "ProtectionAbilityFragmentHandler",
     "AbilityFragmentRegistry",

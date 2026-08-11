@@ -10,6 +10,7 @@ from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..bloodthirst import BLOODTHIRST_MECHANIC
 from ..object_predicate import ObjectQuerySpec
 from ..riot import RIOT_MECHANIC
+from ..renown import RENOWN_MECHANIC_ID
 from ..unleash import UNLEASH_MECHANIC
 from ..rules.capabilities import (
     CapabilityRegistry,
@@ -179,6 +180,7 @@ def _generated_ability_id(
                 _EVOLVE_MECHANIC,
                 _PROWESS_MECHANIC,
                 PERSIST_KEYWORD,
+                RENOWN_MECHANIC_ID,
                 UNDYING_KEYWORD,
             }
         ):
@@ -540,7 +542,7 @@ def _is_closed_fixed_counter_placement_group_program(
 def _is_closed_fixed_self_counter_keyword_action_program(
     program: SemanticProgram,
 ) -> bool:
-    """Recognize one capability-closed fixed Adapt or Monstrosity action."""
+    """Recognize one capability-closed fixed self-counter keyword action."""
 
     required = set(
         fixed_self_counter_keyword_action_node_capabilities(

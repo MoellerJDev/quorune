@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_renown_card_data",
+  "source": "Scryfall-compatible Oracle subset for Renown tests",
+  "cards": [
+    {
+      "oracle_id": "9e2cd0d5-1537-412b-9ecd-989ab4ac2700",
+      "name": "Topan Freeblade",
+      "mana_cost": "{1}{W}",
+      "cmc": 2.0,
+      "type_line": "Creature — Human Soldier",
+      "oracle_text": "Vigilance (Attacking doesn't cause this creature to tap.)\nRenown 1 (When this creature deals combat damage to a player, if it isn't renowned, put a +1/+1 counter on it and it becomes renowned.)",
+      "power": "2",
+      "toughness": "2",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["W"],
+      "color_identity": ["W"],
+      "keywords": ["Renown", "Vigilance"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2019-11-15",
+      "legalities": {"commander": "legal"}
+    },
+    {
+      "oracle_id": "b9e93832-93b7-409d-91aa-13757225824d",
+      "name": "Citadel Castellan",
+      "mana_cost": "{1}{G}{W}",
+      "cmc": 3.0,
+      "type_line": "Creature — Human Knight",
+      "oracle_text": "Vigilance (Attacking doesn't cause this creature to tap.)\nRenown 2 (When this creature deals combat damage to a player, if it isn't renowned, put two +1/+1 counters on it and it becomes renowned.)",
+      "power": "2",
+      "toughness": "3",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["G", "W"],
+      "color_identity": ["G", "W"],
+      "keywords": ["Renown", "Vigilance"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2015-07-17",
+      "legalities": {"commander": "legal"}
+    }
+  ],
+  "rulings": [
+    {
+      "oracle_id": "9e2cd0d5-1537-412b-9ecd-989ab4ac2700",
+      "source": "wotc",
+      "published_at": "2015-06-22",
+      "comment": "Renown won't trigger when a creature deals combat damage to a planeswalker or another creature. It also won't trigger when a creature deals noncombat damage to a player."
+    },
+    {
+      "oracle_id": "9e2cd0d5-1537-412b-9ecd-989ab4ac2700",
+      "source": "wotc",
+      "published_at": "2015-06-22",
+      "comment": "If a creature with renown deals combat damage to its controller because that damage was redirected, renown will trigger."
+    }
+  ]
+}

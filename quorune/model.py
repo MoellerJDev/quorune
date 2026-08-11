@@ -163,6 +163,9 @@ class CardInstance:
     # current logical object has not become monstrous.  The recorded value
     # supports rules text that later refers to the N used for monstrosity.
     monstrous_value: int | None = None
+    # CR 702.112b public noncopiable designation for this logical object.
+    # False is omitted from serialized state for historical replay parity.
+    renowned: bool = False
     annotations: dict[str, Any] = field(default_factory=dict)
     attached_to: str | None = None
     attachments: list[str] = field(default_factory=list)
@@ -207,6 +210,8 @@ class CardInstance:
             raise ValueError(
                 "A monstrous designation value must be a nonnegative integer"
             )
+        if type(self.renowned) is not bool:
+            raise ValueError("A renowned designation must be a boolean")
 
     @property
     def logical_object_id(self) -> str:
@@ -235,6 +240,9 @@ class CardInstance:
         if self.monstrous_value is None:
             # Keep historical Game Record v3 card payloads byte-compatible.
             payload.pop("monstrous_value")
+        if not self.renowned:
+            # Keep historical Game Record v3 card payloads byte-compatible.
+            payload.pop("renowned")
         return payload
 
     @classmethod

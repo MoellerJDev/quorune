@@ -7,6 +7,8 @@ from quorune.attachments import attach_objects
 from quorune.abilities import ActivatedAbility
 from quorune.ability_fragments import (
     AbilityFragmentError,
+    DamageKeywordTriggerKind,
+    DamageKeywordTriggerSpec,
     GrantedActivatedAbilitySpec,
     GrantedTriggeredAbilitySpec,
     ProtectionQualityKind,
@@ -140,6 +142,10 @@ class AbilityFragmentModelTests(unittest.TestCase):
             ),
             SimpleEnchantSpec("creature"),
             LinkedGraveyardCreatureEnchantSpec("linked_creature"),
+            DamageKeywordTriggerSpec(
+                kind=DamageKeywordTriggerKind.RENOWN,
+                amount=2,
+            ),
         )
         for value in values:
             with self.subTest(value=type(value).__name__):
@@ -201,7 +207,7 @@ class AbilityFragmentModelTests(unittest.TestCase):
             ),
         )
         self.assertEqual(
-            12,
+            13,
             len(default_ability_fragment_registry().inventory()),
         )
         with self.assertRaisesRegex(ValueError, "unknown"):

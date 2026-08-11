@@ -2946,6 +2946,18 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/renown.py",
+      "layer": "domain",
+      "owning_subsystem": "counter_placement",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/replacement/__init__.py",
       "layer": "rules",
       "owning_subsystem": "replacement_effects",
@@ -5294,5 +5306,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "3e877761c0757b2b725a62c9d848b3190d4bc070349151afb159e6bd9ff0c163"
+  "fingerprint": "de2f71dc15c62d13bb55267bde16b5c68957ec081f87fc7593968f7b5d1f7e23"
 }

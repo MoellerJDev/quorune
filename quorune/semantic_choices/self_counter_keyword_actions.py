@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-"""Resolution-time conditions for fixed Adapt and Monstrosity actions."""
+"""Resolution-time conditions for fixed self-counter keyword actions."""
 
 from dataclasses import dataclass
 from typing import Mapping
@@ -9,6 +9,7 @@ from ..object_query import ObjectQueryResult
 from ..replacement.immutable import FrozenMap
 from ..semantic_runtime import (
     BecomeMonstrousIntent,
+    BecomeRenownedIntent,
     PlaceCountersIntent,
 )
 from .context import SemanticChoiceContext, SemanticChoiceQuery
@@ -22,7 +23,7 @@ from .model import (
 
 
 _EFFECT_FIELDS = {"op", "action", "amount", "source"}
-_ACTIONS = {"adapt", "monstrosity"}
+_ACTIONS = {"adapt", "monstrosity", "renown"}
 _COUNTER_NAME = "+1/+1"
 
 
@@ -76,6 +77,9 @@ class FixedSelfCounterKeywordActionHandler:
         "CR 701.37b",
         "CR 701.37c",
         "CR 701.46a",
+        "CR 702.112a",
+        "CR 702.112b",
+        "CR 702.112c",
     )
     capability_dependencies: tuple[str, ...] = (
         "counter.placement.quantity_replacement",
@@ -92,10 +96,13 @@ class FixedSelfCounterKeywordActionHandler:
         "counter_placement.place_counters",
         "BecomeMonstrousIntent",
         "permanent_designations.become_monstrous",
+        "BecomeRenownedIntent",
+        "permanent_designations.become_renowned",
     )
     replay_fixture: str = "fixed-self-counter-keyword-actions"
     test_modules: tuple[str, ...] = (
         "tests.test_self_counter_keyword_actions",
+        "tests.test_renown_rules",
     )
 
     def prepare(
@@ -163,6 +170,20 @@ class FixedSelfCounterKeywordActionHandler:
                         reason="the permanent is already monstrous"
                     ),
                 )
+        if action == "renown":
+            if type(source.renowned) is not bool:
+                raise SemanticChoiceError(
+                    "The source permanent's renowned designation is malformed"
+                )
+            if source.renowned:
+                return SemanticChoicePreparation(
+                    request=None,
+                    continuation_effect=continuation_effect,
+                    preparation_intents=(),
+                    auto_continue=AutoContinue(
+                        reason="the permanent is already renowned"
+                    ),
+                )
 
         intents = [
             PlaceCountersIntent(
@@ -182,6 +203,16 @@ class FixedSelfCounterKeywordActionHandler:
                     object_ref=source.ref,
                     logical_object_id=source.logical_object_id,
                     value=amount,
+                    reason=context.stack_label,
+                )
+            )
+        if action == "renown":
+            intents.append(
+                BecomeRenownedIntent(
+                    actor=context.actor,
+                    object_id=source.object_id,
+                    object_ref=source.ref,
+                    logical_object_id=source.logical_object_id,
                     reason=context.stack_label,
                 )
             )

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.112 — Renown",
+  "cases": [
+    {
+      "rule_id": "702.112",
+      "rule_text_sha256": "538ff6fdc1e22e1228992c030d1e121151903fece828b6baf48e9937fb0557d1",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/renown.json"],
+      "executable_test_ids": ["tests.test_renown_rules.RenownCompilerTests.test_renown_model_and_compiler_are_strict_source_spanned_and_closed"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded ordinary printed behavior is owned by counter.producer.renown while granted, copied, nonkeyword, and renowned-matters variants remain separate residuals."]
+    },
+    {
+      "rule_id": "702.112a",
+      "rule_text_sha256": "70e8bc6e45be6c11dbbb777f4f2508e14ee18cdb72adc9e18dfc605cbcb71617",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["quorune.renown.RenownSpec", "quorune.renown.renown_condition_holds", "quorune.compiler.keyword_nodes.renown_keyword_node", "quorune.trigger_discovery.semantic_event_condition_matches", "quorune.semantic_choices.self_counter_keyword_actions.FixedSelfCounterKeywordActionHandler", "quorune.counter_placement.place_counters_on_refs", "quorune.permanent_designations.become_renowned"],
+      "executable_test_ids": ["tests.test_renown_rules.RenownCompilerTests.test_renown_model_and_compiler_are_strict_source_spanned_and_closed", "tests.test_renown_rules.RenownCompilerTests.test_unsupported_renown_values_remain_material_residuals", "tests.test_renown_rules.RenownCompilerTests.test_renown_dependencies_and_compiler_mutation_fail_closed", "tests.test_renown_rules.RenownRuntimeTests.test_combat_damage_to_player_triggers_counter_and_designation", "tests.test_renown_rules.RenownRuntimeTests.test_redirected_combat_damage_to_controller_still_triggers", "tests.test_renown_rules.RenownRuntimeTests.test_noncombat_permanent_prevented_and_already_renowned_do_not_trigger", "tests.test_renown_rules.RenownRuntimeTests.test_intervening_condition_uses_same_logical_object_and_current_designation", "tests.test_renown_rules.RenownRuntimeTests.test_trigger_uses_frozen_controller_and_current_source_after_control_change", "tests.test_renown_rules.RenownRuntimeTests.test_counter_replacement_and_zero_result_still_create_renowned_designation", "tests.test_renown_rules.RenownRuntimeTests.test_renown_designation_failure_rolls_back_counter_placement", "tests.test_renown_rules.RenownRuntimeTests.test_four_player_renown_trigger_is_public_and_replay_exact"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": [],
+      "notes": ["The bounded printed ability consumes final positive combat damage to a player, rechecks the not-renowned condition at resolution, and sequences canonical counter placement before the public designation independently of the committed counter quantity."]
+    },
+    {
+      "rule_id": "702.112b",
+      "rule_text_sha256": "c379fefec12c60f54e4b5a1325cdcf846a6b3d11cd459552932144ec1663e37a",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["quorune.model.CardInstance.renowned", "quorune.permanent_designations.BecomeRenownedRequest", "quorune.permanent_designations.become_renowned", "quorune.zone_object_state.clear_zone_object_state", "quorune.projection.StateProjector"],
+      "executable_test_ids": ["tests.test_renown_rules.RenownRuntimeTests.test_renowned_designation_survives_control_change_and_phasing", "tests.test_renown_rules.RenownRuntimeTests.test_renowned_designation_is_strict_identity_pinned_and_zone_scoped", "tests.test_renown_rules.RenownRuntimeTests.test_renown_designation_failure_rolls_back_counter_placement", "tests.test_renown_rules.RenownRuntimeTests.test_four_player_renown_trigger_is_public_and_replay_exact", "tests.test_renown_rules.RenownRuntimeTests.test_renowned_designation_runtime_mutant_is_killed"],
+      "required_scenarios": ["positive", "negative", "interaction", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "replay", "hidden_information"],
+      "blockers": [],
+      "notes": ["The renowned marker is a public noncopiable logical-object designation that survives control changes and phasing, clears on a real zone change, and has no independent rules meaning."]
+    },
+    {
+      "rule_id": "702.112c",
+      "rule_text_sha256": "6f5ab93ad4cc39967cfcac487a020a13244b381e6ce6293cb809e5af852ba313",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["quorune.ability_fragments.DamageKeywordTriggerSpec", "quorune.compiler.keyword_nodes.keyword_node_plans", "quorune.compiler.keyword_nodes.renown_keyword_node", "quorune.trigger_processing.enqueue_trigger_batch"],
+      "executable_test_ids": ["tests.test_renown_rules.RenownCompilerTests.test_renown_model_and_compiler_are_strict_source_spanned_and_closed", "tests.test_renown_rules.RenownRuntimeTests.test_multiple_renown_instances_only_first_resolution_changes_object"],
+      "required_scenarios": ["positive", "interaction", "replay"],
+      "covered_scenarios": ["positive", "interaction", "replay"],
+      "blockers": [],
+      "notes": ["Every printed instance retains an independent typed fragment, source span, trigger, and amount; after one resolves successfully, later instances fail the shared intervening condition."]
+    }
+  ]
+}

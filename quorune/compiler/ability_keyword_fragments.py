@@ -14,6 +14,7 @@ from ..ability_fragments import (
 )
 from ..aura import parse_simple_enchant_line
 from ..cast_timing import CastTimingPermission, PRINTED_FLASH_MECHANIC
+from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,6 +90,34 @@ def lower_ability_keyword_fragments(
                         )
                     ),
                 },
+            )
+        )
+    if mechanics == (RENOWN_MECHANIC_ID,):
+        matches = tuple(
+            match
+            for part in _keyword_parts(material_line)
+            if (
+                match := re.fullmatch(
+                    r"Renown (?P<amount>[1-9]\d*)",
+                    part,
+                    re.IGNORECASE,
+                )
+            )
+            is not None
+        )
+        if len(matches) != 1:
+            return AbilityKeywordFragmentLowering(
+                residual_kind="unsupported_renown_value",
+                residual_reason=(
+                    "Renown requires one printed positive integer value"
+                ),
+                residual_blockers=("positive integer Renown value",),
+            )
+        return AbilityKeywordFragmentLowering(
+            handlers=(
+                RenownSpec(
+                    amount=int(matches[0].group("amount"))
+                ).handler_descriptor(),
             )
         )
     combat = _lower_combat_keyword_fragments(material_line, mechanics)
