@@ -521,7 +521,7 @@
       "piece_ids": ["capability.activation.crew.fixed_power", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "mechanic.cr-205-type-line", "mechanic.cr-611-continuous-effects", "mechanic.crew"],
       "capability_ids": ["activation.crew.fixed_power", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
       "interaction_order": 5,
-      "assertion": "The Crew layer-4 result adds Artifact and Creature while retaining an existing Legendary supertype, Land type, and Island and Vehicle subtypes under CR 205.1b."
+      "assertion": "The Crew layer-4 result adds Artifact and Creature while retaining an existing Legendary supertype, Land type, Island and Vehicle subtypes, and intrinsic Island mana ability under CR 205.1b."
     },
     {
       "evidence_class": "interaction",

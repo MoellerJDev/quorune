@@ -416,6 +416,13 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
             {"legendary"},
             self.effective_supertypes(engine, source),
         )
+        self.assertTrue(
+            any(
+                ability.ability_id == "intrinsic_island"
+                and ability.mana_ability
+                for ability in engine._activated_abilities(source)
+            )
+        )
 
         result = session.act(
             "pilot:A",
@@ -441,6 +448,13 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
         self.assertEqual(
             {"legendary"},
             self.effective_supertypes(engine, source),
+        )
+        self.assertTrue(
+            any(
+                ability.ability_id == "intrinsic_island"
+                and ability.mana_ability
+                for ability in engine._activated_abilities(source)
+            )
         )
 
     def test_crew_zero_offer_and_commit_share_empty_cost_legality(self):

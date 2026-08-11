@@ -55,7 +55,7 @@
       "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_crew_retains_existing_card_types_and_subtypes",
       "official_rule_ids": ["205.1a", "205.1b", "602.1", "602.2", "702.122", "702.122a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Add Artifact and Creature as one layer-4 result while retaining a Vehicle source's existing Legendary supertype, Land type, and Island and Vehicle subtypes."
+      "applicability_note": "Add Artifact and Creature as one layer-4 result while retaining a Vehicle source's existing Legendary supertype, Land type, Island and Vehicle subtypes, and resulting intrinsic Island mana ability."
     },
     {
       "capability_id": "activation.crew.fixed_power",
