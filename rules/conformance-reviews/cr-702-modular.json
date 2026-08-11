@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.43 — Modular",
+  "cases": [
+    {
+      "rule_id": "702.43",
+      "rule_text_sha256": "50678f008324fc4b30037117e10d182fd993cb5186058b5a7f4547ef89db9521",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/modular.json"],
+      "executable_test_ids": ["tests.test_modular_rules.ModularCompilerTests.test_modular_model_compiler_and_multiple_instances_are_closed"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded fixed positive printed family is owned by counter.producer.modular while Modular—Sunburst and granted or nonkeyword forms remain explicit residuals."]
+    },
+    {
+      "rule_id": "702.43a",
+      "rule_text_sha256": "00bdfc3b7580d45e17704504437a1ce95a322079a9b2a503770c7e1a0b4b45a0",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.modular.ModularSpec", "quorune.compiler.keyword_nodes.modular_keyword_nodes", "quorune.semantic_runtime.self_entry_counters.SelfEntryCounterHandler", "quorune.trigger_discovery.dispatch_semantic_event", "quorune.semantic_choices.modular.ModularCounterTransferHandler", "quorune.counter_placement.place_counters_on_refs"],
+      "executable_test_ids": ["tests.test_modular_rules.ModularCompilerTests.test_modular_model_compiler_and_multiple_instances_are_closed", "tests.test_modular_rules.ModularCompilerTests.test_modular_sunburst_and_malformed_values_fail_closed", "tests.test_modular_rules.ModularCompilerTests.test_modular_dependency_and_compiler_mutations_fail_closed", "tests.test_modular_rules.ModularChoiceTests.test_modular_target_and_lki_identity_are_strict", "tests.test_modular_rules.ModularRuntimeTests.test_modular_entry_and_departure_transfer_use_canonical_counter_paths", "tests.test_modular_rules.ModularRuntimeTests.test_modular_source_departure_control_and_target_revalidation", "tests.test_modular_rules.ModularRuntimeTests.test_noncreature_modular_permanent_uses_permanent_graveyard_event", "tests.test_modular_rules.ModularRuntimeTests.test_four_player_modular_choice_is_controller_scoped_public_and_replays"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["Modular—Sunburst and nonpositive or variable values are outside the fixed-value grammar", "granted, copied, removed, and face-down keyword instances require trusted typed ability propagation", "ambient target-protection and counter-replacement families outside represented owners remain unsupported"],
+      "notes": ["Each fixed positive printed instance contributes one prospective self-entry counter replacement and one targeted battlefield-to-graveyard trigger. The trigger freezes the departing incarnation's complete public counter map and controller, chooses a legal artifact creature target before priority, and offers the counter placement on resolution through the canonical counter owner."]
+    },
+    {
+      "rule_id": "702.43b",
+      "rule_text_sha256": "c63c76b4799f26f785a657940c083a0078e60c95e198b55c56642a2b41ab672a",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.keyword_nodes.modular_keyword_nodes", "quorune.semantic_runtime.self_entry_counters.SelfEntryCounterHandler", "quorune.trigger_processing.enqueue_trigger_batch"],
+      "executable_test_ids": ["tests.test_modular_rules.ModularCompilerTests.test_modular_model_compiler_and_multiple_instances_are_closed", "tests.test_modular_rules.ModularRuntimeTests.test_multiple_modular_instances_enter_and_trigger_independently", "tests.test_modular_rules.ModularRuntimeTests.test_modular_entry_and_departure_transfer_use_canonical_counter_paths", "tests.test_modular_rules.ModularRuntimeTests.test_four_player_modular_choice_is_controller_scoped_public_and_replays"],
+      "required_scenarios": ["positive", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["positive", "interaction", "multiplayer", "replay"],
+      "blockers": ["mixed fixed and Modular—Sunburst instances remain outside the closed grammar", "granted or copied multiple instances require trusted typed ability propagation"],
+      "notes": ["Multiple fixed printed instances retain independent source-spanned entry replacements and departure triggers; unsupported mixed or granted variants fail closed rather than inheriting the fixed family mechanically."]
+    }
+  ]
+}

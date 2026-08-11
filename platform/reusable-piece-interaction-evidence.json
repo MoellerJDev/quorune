@@ -725,6 +725,38 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_modular_entry_and_departure_transfer_use_canonical_counter_paths",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.modular", "capability.trigger.event.normalized_zone_change", "mechanic.modular"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.modular", "trigger.event.normalized_zone_change"],
+      "interaction_order": 4,
+      "assertion": "One fixed Modular instance composes the prospective self-entry replacement, normalized battlefield-to-graveyard trigger, frozen counter LKI, and canonical target counter transaction without a card-specific mutation path."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_modular_source_departure_control_and_target_revalidation",
+      "piece_ids": ["capability.counter.producer.modular", "capability.target.permanent.characteristic_predicate", "capability.target.revalidate_resolution", "mechanic.modular"],
+      "capability_ids": ["counter.producer.modular", "target.permanent.characteristic_predicate", "target.revalidate_resolution"],
+      "interaction_order": 4,
+      "assertion": "The frozen Modular controller retains the optional choice while the artifact-creature target predicate is reevaluated at resolution and rejects a target that lost creature type."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_noncreature_modular_permanent_uses_permanent_graveyard_event",
+      "piece_ids": ["capability.counter.producer.modular", "capability.trigger.event.normalized_zone_change", "mechanic.modular"],
+      "capability_ids": ["counter.producer.modular", "trigger.event.normalized_zone_change"],
+      "interaction_order": 3,
+      "assertion": "A noncreature permanent with Modular uses the generic battlefield-to-graveyard permanent event and retains its counter LKI without borrowing creature-dies semantics."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_four_player_modular_choice_is_controller_scoped_public_and_replays",
+      "piece_ids": ["capability.counter.producer.modular", "capability.trigger.placement.apnap", "mechanic.modular"],
+      "capability_ids": ["counter.producer.modular", "trigger.placement.apnap"],
+      "interaction_order": 3,
+      "assertion": "A four-player Modular trigger uses ordinary controller-scoped trigger placement and exposes its public choice only to the frozen controller while preserving exact replay."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_redirected_combat_damage_to_controller_still_triggers",
       "piece_ids": ["capability.counter.producer.renown", "mechanic.cr-120-damage", "mechanic.renown"],
       "capability_ids": ["counter.producer.renown"],

@@ -1742,6 +1742,18 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/counter_snapshot.py",
+      "layer": "domain",
+      "owning_subsystem": "legacy_domain",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/counter_state.py",
       "layer": "rules",
       "owning_subsystem": "counter_state",
@@ -2646,6 +2658,18 @@
         "domain"
       ],
       "game_state_access": "model_definition",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/modular.py",
+      "layer": "domain",
+      "owning_subsystem": "counter_placement",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
       "card_specificity_policy": "generic_no_growth",
       "visibility_sensitivity": "authoritative_internal",
       "replay_participation": "none"
@@ -3903,6 +3927,21 @@
     },
     {
       "file": "quorune/semantic_choices/model.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_choices",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/semantic_choices/modular.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_choices",
       "allowed_dependency_layers": [
@@ -5306,5 +5345,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "de2f71dc15c62d13bb55267bde16b5c68957ec081f87fc7593968f7b5d1f7e23"
+  "fingerprint": "56ff2d59535613c8883d74c155b9e19059a5fde2cf593f95419e7c2f1ef6663a"
 }

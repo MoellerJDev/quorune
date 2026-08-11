@@ -4927,6 +4927,62 @@
       "applicability_note": "Replay the attack transition, target choice, target revalidation, and counter placement to the identical authoritative hash."
     },
     {
+      "capability_id": "counter.producer.modular",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_modular_rules.ModularRuntimeTests.test_modular_entry_and_departure_transfer_use_canonical_counter_paths",
+      "official_rule_ids": ["115.1d", "122.1", "122.1a", "122.6", "400.7", "603.3", "603.3d", "603.6c", "603.10a", "608.2b", "614.12", "614.16", "616.1", "702.43", "702.43a", "702.43b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose prospective entry replacement, departure LKI, mandatory artifact-creature targeting, optional resolution, and canonical counter placement."
+    },
+    {
+      "capability_id": "counter.producer.modular",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_modular_rules.ModularRuntimeTests.test_four_player_modular_choice_is_controller_scoped_public_and_replays",
+      "official_rule_ids": ["115.1d", "122.1", "122.1a", "122.6", "400.7", "603.3", "603.3d", "603.6c", "603.10a", "608.2b", "614.12", "614.16", "616.1", "702.43", "702.43a", "702.43b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Freeze the predeparture controller and route the public target and optional transfer choices only to that player in a four-player game."
+    },
+    {
+      "capability_id": "counter.producer.modular",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_modular_rules.ModularCompilerTests.test_modular_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["115.1d", "122.1", "122.1a", "122.6", "400.7", "603.3", "603.3d", "603.6c", "603.10a", "608.2b", "614.12", "614.16", "616.1", "702.43", "702.43a", "702.43b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of either typed Modular node and block trust whenever one lifecycle dependency is unavailable."
+    },
+    {
+      "capability_id": "counter.producer.modular",
+      "evidence_class": "negative",
+      "test_id": "tests.test_modular_rules.ModularCompilerTests.test_modular_sunburst_and_malformed_values_fail_closed",
+      "official_rule_ids": ["115.1d", "122.1", "122.1a", "122.6", "400.7", "603.3", "603.3d", "603.6c", "603.10a", "608.2b", "614.12", "614.16", "616.1", "702.43", "702.43a", "702.43b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject zero, variable, malformed, and Modular—Sunburst values without emitting executable entry or departure behavior."
+    },
+    {
+      "capability_id": "counter.producer.modular",
+      "evidence_class": "positive",
+      "test_id": "tests.test_modular_rules.ModularCompilerTests.test_modular_model_compiler_and_multiple_instances_are_closed",
+      "official_rule_ids": ["115.1d", "122.1", "122.1a", "122.6", "400.7", "603.3", "603.3d", "603.6c", "603.10a", "608.2b", "614.12", "614.16", "616.1", "702.43", "702.43a", "702.43b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile every fixed positive printed Modular instance into its independent entry and departure abilities with precise source spans."
+    },
+    {
+      "capability_id": "counter.producer.modular",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_modular_rules.ModularRuntimeTests.test_four_player_modular_choice_is_controller_scoped_public_and_replays",
+      "official_rule_ids": ["115.1d", "122.1", "122.1a", "122.6", "400.7", "603.3", "603.3d", "603.6c", "603.10a", "608.2b", "614.12", "614.16", "616.1", "702.43", "702.43a", "702.43b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project only public source counters, target candidates, and choice facts while preserving every opposing hidden card."
+    },
+    {
+      "capability_id": "counter.producer.modular",
+      "evidence_class": "replay",
+      "test_id": "tests.test_modular_rules.ModularRuntimeTests.test_four_player_modular_choice_is_controller_scoped_public_and_replays",
+      "official_rule_ids": ["115.1d", "122.1", "122.1a", "122.6", "400.7", "603.3", "603.3d", "603.6c", "603.10a", "608.2b", "614.12", "614.16", "616.1", "702.43", "702.43a", "702.43b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay target selection, optional acceptance, and replacement-aware counter commitment to the same authoritative hash."
+    },
+    {
       "capability_id": "counter.producer.optional_self_entry",
       "evidence_class": "interaction",
       "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_counter_uses_canonical_quantity_replacement_order",
@@ -13706,5 +13762,6 @@
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
+
   ]
 }

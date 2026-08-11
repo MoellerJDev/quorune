@@ -21,6 +21,7 @@ from ..unleash import (
 )
 from ..riot import RIOT_MECHANIC, riot_entry_handler_descriptor
 from ..renown import RENOWN_MECHANIC_ID, RenownSpec
+from ..modular import MODULAR_MECHANIC_ID, ModularSpec
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
 from .cycling_nodes import ordinary_cycling_keyword_node
 from .ability_keyword_fragments import lower_ability_keyword_fragments
@@ -50,6 +51,7 @@ _PROWESS_MECHANIC = "prow" + "ess"
 _CONVOKE_MECHANIC = "con" + "voke"
 _BLOODTHIRST_MECHANIC = BLOODTHIRST_MECHANIC
 _RENOWN_MECHANIC = RENOWN_MECHANIC_ID
+_MODULAR_MECHANIC = MODULAR_MECHANIC_ID
 
 
 @dataclass(frozen=True, slots=True)
@@ -101,6 +103,7 @@ def keyword_node_plans(
             _MENTOR_MECHANIC,
             _PROWESS_MECHANIC,
             _RENOWN_MECHANIC,
+            _MODULAR_MECHANIC,
         }
     )
     if not split_mechanics:
@@ -127,6 +130,7 @@ def keyword_node_plans(
                     mechanic in {
                         _BLOODTHIRST_MECHANIC,
                         _RENOWN_MECHANIC,
+                        _MODULAR_MECHANIC,
                     }
                     and re.fullmatch(
                         rf"{re.escape(mechanic)}\s+.+",
@@ -146,6 +150,7 @@ def keyword_node_plans(
             _MENTOR_MECHANIC,
             _PROWESS_MECHANIC,
             _RENOWN_MECHANIC,
+            _MODULAR_MECHANIC,
             _CONVOKE_MECHANIC,
         )
     }
@@ -194,6 +199,7 @@ def keyword_node_plans(
             _MENTOR_MECHANIC,
             _PROWESS_MECHANIC,
             _RENOWN_MECHANIC,
+            _MODULAR_MECHANIC,
             _CONVOKE_MECHANIC,
         }
     )
@@ -626,6 +632,122 @@ def death_return_keyword_node(
     )
 
 
+def modular_keyword_nodes(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    mechanics: tuple[str, ...],
+    trusted_mechanics: frozenset[str],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> tuple[OracleNode, ...]:
+    """Lower one fixed positive ``Modular N`` into both CR 702.43a abilities."""
+
+    if mechanics != (_MODULAR_MECHANIC,):
+        return ()
+    match = re.fullmatch(
+        r"Modular\s+(?P<amount>[1-9]\d*)\.?",
+        material_line.strip(),
+        re.IGNORECASE,
+    )
+    if match is None:
+        residual_id = append_residual(
+            residuals,
+            kind="unsupported_modular_value",
+            text=line,
+            span=span,
+            reason=(
+                "Modular requires one printed positive integer; "
+                "Modular—Sunburst remains a separate residual"
+            ),
+            blockers=("positive integer Modular value",),
+        )
+        return (
+            OracleNode(
+                node_id=node_id,
+                kind="keyword_ability",
+                text=line,
+                span=span,
+                active_zone="all",
+                event="unresolved",
+                lowerable=False,
+                exact=False,
+                mechanics=mechanics,
+                residual_ids=(residual_id,),
+            ),
+        )
+
+    gate = keyword_dependency_gate(
+        material_line=material_line,
+        mechanics=mechanics,
+        trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind="dependency_contract",
+                text=line,
+                span=span,
+                reason="Modular depends on a blocked typed lifecycle capability",
+                blockers=gate.blockers,
+            ),
+        )
+        if gate.blockers
+        else ()
+    )
+    spec = ModularSpec(amount=int(match.group("amount")))
+    common = {
+        "text": line,
+        "span": span,
+        "lowerable": True,
+        "exact": not residual_ids,
+        "mechanics": mechanics,
+        "residual_ids": residual_ids,
+        "capability_dependencies": gate.capabilities,
+        "capability_closure": (
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        "capability_profile": (
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        "capability_fingerprint": (
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    }
+    return (
+        OracleNode(
+            node_id=f"{node_id}:entry",
+            kind="static_ability",
+            active_zone="all",
+            event="zone.change",
+            template_id="modular-fixed-entry-counter-v1",
+            handlers=(spec.entry_handler_descriptor(),),
+            runtime_coverage=("replacement_aware_self_entry_counter",),
+            **common,
+        ),
+        OracleNode(
+            node_id=f"{node_id}:departure",
+            kind="triggered_ability",
+            active_zone="battlefield",
+            event="permanent.graveyard.self",
+            template_id="modular-lki-counter-transfer-v1",
+            effects=(spec.departure_effect_descriptor(),),
+            target_schema=spec.target_schema(),
+            runtime_coverage=(
+                "departure_counter_lki",
+                "optional_targeted_counter_placement",
+            ),
+            **common,
+        ),
+    )
+
+
 def unleash_keyword_nodes(
     *,
     node_id: str,
@@ -927,6 +1049,7 @@ __all__ = [
     "evolve_keyword_node",
     "fabricate_keyword_node",
     "keyword_node_plans",
+    "modular_keyword_nodes",
     "ordinary_convoke_keyword_node",
     "prowess_keyword_node",
     "renown_keyword_node",

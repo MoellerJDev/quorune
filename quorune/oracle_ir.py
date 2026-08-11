@@ -50,6 +50,7 @@ from .compiler.keyword_nodes import (
     evolve_keyword_node,
     fabricate_keyword_node,
     keyword_node_plans,
+    modular_keyword_nodes,
     prowess_keyword_node,
     riot_keyword_node,
     unleash_keyword_nodes,
@@ -705,6 +706,21 @@ def _keyword_nodes(
                     line=plan.line,
                     material_line=plan.material_line,
                     span=plan.span,
+                    capability_registry=capability_registry,
+                    capability_profile=capability_profile,
+                    residuals=residuals,
+                )
+            )
+            continue
+        if plan.mechanics == ("modular",):
+            nodes.extend(
+                modular_keyword_nodes(
+                    node_id=plan.node_id,
+                    line=plan.line,
+                    material_line=plan.material_line,
+                    span=plan.span,
+                    mechanics=plan.mechanics,
+                    trusted_mechanics=trusted_mechanics,
                     capability_registry=capability_registry,
                     capability_profile=capability_profile,
                     residuals=residuals,

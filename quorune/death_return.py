@@ -5,6 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from .counter_snapshot import (
+    CounterSnapshotError,
+    permanent_counter_snapshot,
+)
 from .replacement.immutable import FrozenMap
 
 
@@ -104,24 +108,12 @@ def death_return_counter_snapshot(
 ) -> FrozenMap:
     """Deep-freeze the public LKI counter map used by the intervening-if."""
 
-    if not isinstance(counters, Mapping):
+    try:
+        return permanent_counter_snapshot(counters)
+    except CounterSnapshotError as exc:
         raise DeathReturnError(
-            "Death-return last-known counters must be a mapping"
-        )
-    normalized: dict[str, int] = {}
-    for raw_name, amount in counters.items():
-        if type(raw_name) is not str or not raw_name.strip():
-            raise DeathReturnError(
-                "Death-return counter names must be nonempty strings"
-            )
-        if type(amount) is not int or amount < 0:
-            raise DeathReturnError(
-                "Death-return counter amounts must be nonnegative integers"
-            )
-        name = " ".join(raw_name.casefold().split())
-        if amount:
-            normalized[name] = amount
-    return FrozenMap(normalized)
+            f"Death-return last-known counters are malformed: {exc}"
+        ) from exc
 
 
 def death_return_condition_holds(

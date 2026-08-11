@@ -1,7 +1,7 @@
 ---
 title: "Counter placement and removal transactions"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
 verified: "2026-08-10"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -321,7 +321,20 @@ zero values, Oracle-equivalent prose, renowned-matters listeners, trigger
 multipliers, and granted or copied Renown outside trusted typed ability
 propagation remain explicit residuals.
 
-Oracle IR v70 lowers the closed reusable fixed-placement grammars through the
+Ordinary printed positive-integral Modular compiles as two source-spanned
+typed fragments per keyword instance. Its mandatory self-entry half reuses the
+generic prospective zone-change counter handler and canonical counter
+replacement transaction. Its battlefield-to-graveyard half snapshots the
+departing incarnation's complete public counter map and current controller
+before mutation, selects one currently legal artifact creature target through
+the ordinary trigger path, and offers the LKI-sized +1/+1 counter placement on
+resolution. Target legality is rechecked against current typed characteristics,
+and the counter result uses the same replacement-aware owner. Multiple fixed
+instances remain independent. Modular—Sunburst, nonpositive or variable
+values, Oracle-equivalent prose, trigger multipliers, and granted or copied
+Modular outside trusted typed ability propagation remain explicit residuals.
+
+Oracle IR v76 lowers the closed reusable fixed-placement grammars through the
 typed operation in spell, triggered, and activated contexts. It accepts one
 positive exact quantity of one named counter on the source, the exact named
 source, or one direct battlefield permanent target. Direct targets may use one
@@ -543,6 +556,9 @@ exact-replay evidence is isolated in `test_attack_counter_triggers.py`.
 Renown compiler, normalized damage, redirection, intervening-condition,
 designation, rollback, multiplayer privacy, and exact-replay evidence is
 isolated in `test_renown_rules.py`.
+Modular compiler, entry replacement, departure LKI, target revalidation,
+controller scoping, multiplayer privacy, and exact-replay evidence is isolated
+in `test_modular_rules.py`.
 Target-threaded counter and
 characteristic sequences, strict residuals, replacement suspension, rollback,
 four-player privacy, exact replay, keyword-counter projection, and focused
