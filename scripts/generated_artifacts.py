@@ -407,12 +407,26 @@ def validate_manifest_completeness(
             + ", ".join(sorted(missing))
         )
 
+    tracked = set(_tracked_paths(root))
+    untracked = sorted(set(owner_by_output) - tracked)
+    if untracked:
+        raise GeneratedArtifactManifestError(
+            "registered generated outputs are not tracked by Git: "
+            + ", ".join(untracked)
+        )
+
     discovered = discover_tracked_generated_artifacts(root, discovery)
     unowned = sorted(set(discovered) - set(owner_by_output))
     if unowned:
         raise GeneratedArtifactManifestError(
             "tracked generated artifacts have no manifest owner: "
             + ", ".join(unowned)
+        )
+    undiscovered = sorted(set(owner_by_output) - set(discovered))
+    if undiscovered:
+        raise GeneratedArtifactManifestError(
+            "registered generated outputs have no independent discovery "
+            "signal: " + ", ".join(undiscovered)
         )
     return GeneratedArtifactOwnershipReport(
         discovered=discovered,

@@ -184,8 +184,9 @@ This is also the required focused architecture check before the final commit.
 The finalizer runs `scripts/validate_architecture.py --check` after generation,
 so reviewed operation inventories, architecture exceptions, direct-write
 ratchets, and module boundaries cannot be deferred to CI. Do not make the final
-commit when this command fails. The tracked pre-push hook invokes the same
-finalizer as an automatic publication backstop.
+commit when this command fails. A successful write records a worktree-local
+receipt in Git metadata. The tracked pre-push hook verifies that receipt and
+falls back to the same complete finalizer when it is missing or stale.
 
 When compiler, capability, CardProgram, or card-support behavior changes, run
 the database-backed census in that same finalization step:
@@ -200,7 +201,8 @@ Its discovery policy recognizes the repository's generated path conventions,
 generated-document metadata, pinned rules indexes, and embedded third-party
 generator markers. Validation fails when a discovered artifact has no owner,
 an output has two owners, an output escapes the repository, or a registered
-output is absent. Pinned rules snapshots, browser protocol bindings, durable
+output is absent, untracked, or lacks an independent discovery signal. Pinned
+rules snapshots, browser protocol bindings, durable
 baseline history, and the protocol demo retain their specialized/manual
 generation workflows, but they still have exactly one manifest owner. Do not
 hand-order individual platform-status, architecture-audit, or coverage writers,
@@ -236,8 +238,12 @@ upstream corpus or hand-ordering generators:
 
 Resume mode runs the named manifest owner and every descendant, then still
 runs all registered freshness, architecture, documentation, and diff checks.
-The ordinary first finalization and the pre-push hook always run the complete
-manifest.
+The ordinary first finalization and a stale-receipt pre-push fallback always
+run the complete manifest. A current receipt skips only that redundant local
+rerun; it is bound to the tracked source tree, every registered output, the
+manifest discovery check, and the selected database file identity.
+Add new source, test, and documentation files to the Git index before this
+final run so the receipt fingerprints the files intended for the final commit.
 
 The worktree readiness command installs the repository-owned pre-push hook.
 The lower-level hook-only command remains available for repair:
@@ -257,9 +263,13 @@ The hook is a backstop, not the normal finalization point. It uses only the
 worktree-local CPython 3.12 environment. Before the corpus finalizer, it
 validates that every discovered `tests/test_*.py` module has exactly one
 primary shard, because a missing assignment prevents CI planning and skips the
-entire matrix. It may write missing generated outputs, but it aborts the push
-so they can be inspected and committed; it never amends or pushes a commit
-itself. Hooks are advisory, so public exact-head CI remains mandatory. Also
+entire matrix. It then accepts only an exact current local finalization receipt
+or runs the full writer/check itself. That fallback may write missing generated
+outputs, but it aborts the push so they can be inspected and committed; it
+never amends or pushes a commit itself. Committing the already-finalized file
+contents does not invalidate the receipt, while any later source, output,
+manifest, database, or ownership change does. Hooks are advisory, so public
+exact-head CI remains mandatory. Also
 execute every other applicable
 non-behavioral command identified by the plan, including changed-module
 compilation, JSON/schema parsing, architecture or repository validators, and

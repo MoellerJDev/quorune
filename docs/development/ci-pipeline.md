@@ -99,13 +99,19 @@ navigates the user's browser.
 
 ## Generated artifact finalization
 
+The finalizer is development-time certification, not an application runtime
+dependency. Neither the server nor browser invokes it. Its purpose is to keep
+tracked coverage, architecture, protocol, and status artifacts synchronized
+with their authoritative source before Git publishes a commit.
+
 `platform/generated-artifacts.json` is the canonical ownership and dependency
 manifest for every tracked generated artifact. Its versioned discovery policy
 finds artifacts through generated path prefixes, top-level pinned-rules JSON,
 generated-document metadata, explicit binary/report paths, and embedded
 third-party generator markers. The completeness validator rejects unowned
 discovered artifacts, duplicate owners, repository escapes, missing registered
-outputs, and dependency cycles before any writer runs.
+outputs, registered outputs that are not Git-tracked or independently
+discoverable, and dependency cycles before any writer runs.
 
 The manifest does not replace specialized source authorities. Pinned rules
 snapshots, browser protocol bindings, durable baseline history, and the public
@@ -167,8 +173,10 @@ The final verification phase includes the architecture policy validator, not
 only generated-file freshness. This closes the failure mode where every report
 was current but a new semantic operation, direct write, or oversized boundary
 had not been added to the reviewed architecture baseline. Run write mode before
-the final commit; the pre-push hook repeats it and blocks publication on either
-generated drift or architecture-policy failure.
+the final commit. A successful write stores a worktree-local receipt in Git
+metadata. The pre-push hook verifies that receipt and blocks publication on
+either generated drift or architecture-policy failure without repeating the
+full corpus when the finalized inputs and outputs are identical.
 
 The worktree readiness command installs and verifies the tracked pre-push hook.
 The hook-only installer remains available when repairing an existing setup:
@@ -181,9 +189,15 @@ This is deliberately a pre-push hook, not a pre-commit generator. Derived
 changes must be reviewed and committed with their authoritative source, while
 database-backed corpus generation is too expensive for every checkpoint
 commit. Maintainers and coding agents run the finalizer before the final commit;
-the hook repeats it with `--fail-on-change` and rejects publication if any
-writer still changes the tree. A configured worktree reports `.githooks` from
-`git config --get core.hooksPath`.
+the hook accepts an exact receipt or falls back to `--write --fail-on-change`
+and rejects publication if any writer still changes the tree. The receipt is
+bound to tracked source blobs, every registered output, manifest completeness,
+and the selected database file identity. A commit containing the already
+finalized bytes preserves the receipt; any later relevant edit invalidates it.
+New files intended for that commit must already be Git-tracked or staged when
+the finalizer runs so they participate in the source fingerprint.
+A configured worktree reports `.githooks` from `git config --get
+core.hooksPath`.
 
 The installer sets the local `core.hooksPath` to `.githooks` and refuses to
 overwrite another hook policy. The hook is a backstop that uses the

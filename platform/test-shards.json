@@ -250,6 +250,7 @@
       "test_continuous_effect_performance",
       "test_documentation_policy",
       "test_generated_artifacts",
+      "test_generated_finalization_receipt",
       "test_local_merge_gate",
       "test_platform_status",
       "test_pr_body_policy",
