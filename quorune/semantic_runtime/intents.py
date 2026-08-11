@@ -11,6 +11,7 @@ from ..drawing.model import (
 )
 from ..fixed_damage_set_model import FixedDamageSetSpec
 from ..entry_counter_model import EffectEntryCounter
+from ..creature_subtypes import canonical_creature_subtype
 from ..replacement.immutable import FrozenMap, freeze_value
 from ..rules.library_scry import ScryArrangement
 from ..zone_object_keyword_model import (
@@ -964,14 +965,58 @@ class CreateTokenIntent:
     temporary_keywords: tuple[str, ...] = ()
     sacrifice_at_end_step: bool = False
     sacrifice_on_controller_end_step: bool = False
+    replacement_selections: tuple[str | FrozenMap, ...] = ()
 
     def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.controller, self.reason)
+        ):
+            raise ValueError(
+                "Token-creation intents require actor, controller, and reason"
+            )
+        if type(self.quantity) is not int or self.quantity < 0:
+            raise ValueError(
+                "Token-creation quantity must be an exact nonnegative integer"
+            )
+        if self.copy_of is not None and (
+            type(self.copy_of) is not str or not self.copy_of
+        ):
+            raise ValueError("Token-copy source must be nonempty or null")
+        if type(self.name) is not str or (
+            not self.name and self.copy_of is None
+        ):
+            raise ValueError(
+                "Token-creation intents require a name unless copying an object"
+            )
+        keywords = tuple(self.temporary_keywords)
+        if (
+            any(type(value) is not str or not value for value in keywords)
+            or len(keywords) != len(set(keywords))
+        ):
+            raise ValueError(
+                "Temporary token keywords must be unique nonempty strings"
+            )
+        if (
+            type(self.sacrifice_at_end_step) is not bool
+            or type(self.sacrifice_on_controller_end_step) is not bool
+        ):
+            raise ValueError("Token sacrifice flags must be booleans")
+        object.__setattr__(self, "temporary_keywords", keywords)
         if not isinstance(self.characteristics, FrozenMap):
             object.__setattr__(
                 self,
                 "characteristics",
                 FrozenMap(self.characteristics),
             )
+        object.__setattr__(
+            self,
+            "replacement_selections",
+            _freeze_replacement_selections(
+                tuple(self.replacement_selections),
+                family="Token creation",
+            ),
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -984,21 +1029,36 @@ class CopyControlledTokensIntent:
 
 
 @dataclass(frozen=True, slots=True)
-class AmassIntent:
-    actor: str
-    controller: str
-    subtype: str
-    amount: int
-    reason: str
-    army_ref: str | None = None
-
-
-@dataclass(frozen=True, slots=True)
 class AddSubtypeIntent:
     actor: str
     object_ref: str
     subtype: str
+    source: SemanticSourceContext
     reason: str
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (
+                self.actor,
+                self.object_ref,
+                self.subtype,
+                self.reason,
+            )
+        ):
+            raise ValueError(
+                "Zone-object subtype intents require actor, object, subtype, and reason"
+            )
+        if not isinstance(self.source, SemanticSourceContext):
+            raise TypeError(
+                "Zone-object subtype intents require typed source context"
+            )
+        subtype = canonical_creature_subtype(self.subtype)
+        if subtype is None:
+            raise ValueError(
+                "Zone-object subtype intents require a pinned creature subtype"
+            )
+        object.__setattr__(self, "subtype", subtype.title())
 
 
 @dataclass(frozen=True, slots=True)
@@ -1190,7 +1250,6 @@ SemanticIntent: TypeAlias = (
     | RetargetStackItemIntent
     | CreateTokenIntent
     | CopyControlledTokensIntent
-    | AmassIntent
     | AddSubtypeIntent
     | GrantZoneObjectKeywordIntent
     | ProliferateIntent

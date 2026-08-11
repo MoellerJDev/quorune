@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 3,
+  "contract_version": 4,
   "mechanic_id": "cr-111-tokens",
   "official_name": "Tokens",
   "effective_date": "2026-06-19",
@@ -27,10 +27,11 @@
       "the first nonbattlefield destination before the next state check",
       "outside after cessation"
     ],
-    "objects": ["basic creature tokens with fixed printed characteristics"],
+    "objects": ["basic creature tokens with fixed printed characteristics", "fixed 0/0 black subtype Army tokens created by ordinary Amass"],
     "events": [
       "token creation and permanent entry",
       "mandatory fixed additional-token replacement through the immutable token event",
+      "staged Amass token creation before the current Army set is queried",
       "token zone change",
       "token cessation as a state-based action"
     ],
@@ -63,7 +64,7 @@
     ],
     "source_leaves": []
   },
-  "variants": ["fixed power/toughness colored creature token", "fixed artifact creature token"],
+  "variants": ["fixed power/toughness colored creature token", "fixed artifact creature token", "fixed black subtype Army token"],
   "witness_cards": [
     {
       "name": "Sprout",
@@ -81,15 +82,17 @@
     "test_generic_compiler_program_drives_runtime_without_name_dispatch",
     "test_four_player_replacement_choice_is_affected_seat_scoped",
     "test_additional_token_component_replays_exactly",
-    "test_generic_additional_token_program_replays_exactly"
+    "test_generic_additional_token_program_replays_exactly",
+    "test_amass_without_army_creates_then_counters_one_black_army",
+    "test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay"
   ],
   "implementation": {
-    "component": "oracle_ir._effect_template, compiler.token_templates, token_creation.create_tokens, CommanderEngine.move_card/_stabilize, and state_based_actions.evaluate_state_based_actions",
-    "version": "token-lifecycle-v3"
+    "component": "oracle_ir._effect_template, compiler.token_templates, semantic_runtime.intents.CreateTokenIntent, semantic_choices.preparation_coordination, token_creation.create_tokens, CommanderEngine.move_card/_stabilize, and state_based_actions.evaluate_state_based_actions",
+    "version": "token-lifecycle-v4"
   },
   "known_blockers": [
     "tokens with unrecognized abilities, dynamic values, predefined named characteristics outside the closed vocabulary, or linked choices remain residual",
-    "optional, multiplying, and mutable-state token replacements are not compiled",
+    "optional, multiplying beyond the represented fixed additional-token family, prevention, prohibition, and mutable-state token replacements are not compiled",
     "copy-token characteristic and entry replacement coverage is incomplete"
   ],
   "review_status": "reviewed"

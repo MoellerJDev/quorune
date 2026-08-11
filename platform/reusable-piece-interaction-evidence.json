@@ -1013,6 +1013,22 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.keyword_action.amass.fixed", "capability.token.creation.additional_replacement", "mechanic.amass", "mechanic.cr-111-tokens", "mechanic.cr-122-counters"],
+      "capability_ids": ["counter.placement.quantity_replacement", "keyword_action.amass.fixed", "token.creation.additional_replacement"],
+      "interaction_order": 6,
+      "assertion": "Fixed Amass exhausts additional-token replacements before discovering the resulting Army set, then exhausts counter-quantity replacements before completing, with both suspended choices replaying to the same authoritative state."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_amass_existing_army_uses_counters_before_zone_object_subtype",
+      "piece_ids": ["capability.keyword_action.amass.fixed", "mechanic.amass", "mechanic.cr-122-counters", "mechanic.cr-400-general", "mechanic.cr-611-continuous-effects"],
+      "capability_ids": ["keyword_action.amass.fixed"],
+      "interaction_order": 5,
+      "assertion": "Fixed Amass commits the counter result before one layer-4 subtype addition, and the subtype effect expires when the affected Army becomes a new zone object."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_monstrous_replacement_resume_replays_exactly",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.keyword_action.monstrosity.fixed", "capability.permanent.designation.monstrous", "mechanic.cr-122-counters", "mechanic.monstrosity"],
       "capability_ids": ["counter.placement.quantity_replacement", "keyword_action.monstrosity.fixed", "permanent.designation.monstrous"],

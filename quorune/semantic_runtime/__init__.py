@@ -189,7 +189,6 @@ from .handlers import SemanticNodeHandler
 from .intents import (
     AddManaIntent,
     AddSubtypeIntent,
-    AmassIntent,
     BecomeMonstrousIntent,
     BecomeRenownedIntent,
     BecomeMonarchIntent,
@@ -336,7 +335,6 @@ __all__ = [
     "AddBasicLandTypeNode",
     "AddManaIntent",
     "AddSubtypeIntent",
-    "AmassIntent",
     "BecomeMonstrousIntent",
     "BecomeRenownedIntent",
     "BecomeMonarchIntent",

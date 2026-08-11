@@ -38,6 +38,7 @@ from .node_capability_shapes import (
     single_proliferate_node_capabilities,
     fixed_self_counter_keyword_action_node_capabilities,
     fixed_bolster_node_capabilities,
+    fixed_amass_node_capabilities,
     targeted_counter_node_capabilities,
     targeted_destruction_node_capabilities,
     targeted_exile_node_capabilities,
@@ -818,6 +819,7 @@ def _targeted_effect_capabilities(
         single_proliferate_node_capabilities,
         fixed_self_counter_keyword_action_node_capabilities,
         fixed_bolster_node_capabilities,
+        fixed_amass_node_capabilities,
         targeted_counter_node_capabilities,
         targeted_destruction_node_capabilities,
         targeted_exile_node_capabilities,
@@ -1063,6 +1065,8 @@ def capability_covered_mechanics(
         covered.update({"cr-115-targets", "cr-122-counters", "support"})
     if "counter.producer.bolster" in supplied:
         covered.update({"cr-122-counters", "bolster"})
+    if "keyword_action.amass.fixed" in supplied:
+        covered.update({"amass", "cr-111-tokens", "cr-122-counters"})
     if "counter.producer.fixed_player_effect" in supplied:
         covered.add("cr-122-counters")
     if "casting.additional_cost.fixed_counter_placement" in supplied:

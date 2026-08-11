@@ -130,6 +130,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/amass.py",
+      "layer": "rules",
+      "owning_subsystem": "counter_placement",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/arena.py",
       "layer": "application",
       "owning_subsystem": "legacy_application",
@@ -1002,6 +1016,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/amass_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/bolster_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -1766,6 +1795,20 @@
       "card_specificity_policy": "generic_no_growth",
       "visibility_sensitivity": "authoritative_internal",
       "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/creature_subtypes.py",
+      "layer": "rules",
+      "owning_subsystem": "card_characteristics",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
     },
     {
       "file": "quorune/cumulative_upkeep.py",
@@ -3420,6 +3463,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/amass_capability_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/capabilities.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -3732,6 +3789,21 @@
     },
     {
       "file": "quorune/semantic_choices/__init__.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_choices",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/semantic_choices/amass.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_choices",
       "allowed_dependency_layers": [
@@ -5215,6 +5287,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/zone_object_subtype_grants.py",
+      "layer": "rules",
+      "owning_subsystem": "continuous_effects",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/zone_trigger_events.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -5345,5 +5431,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "56ff2d59535613c8883d74c155b9e19059a5fde2cf593f95419e7c2f1ef6663a"
+  "fingerprint": "eb71d2f3504311fd1a3319cda224765b97cecfd7a46cfe329dd50a7294090a98"
 }

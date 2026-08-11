@@ -270,6 +270,7 @@ def _activated_effect_dependency_gate(
         len(effects) == 1
         and str(effects[0].get("op") or "")
         in {
+            "amass",
             "bounce",
             "counter_stack_target",
             "damage",

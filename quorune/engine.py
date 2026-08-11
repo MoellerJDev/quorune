@@ -260,7 +260,6 @@ from .semantics import SemanticProgram, SemanticRegistry
 from .semantic_runtime import (
     AddManaIntent,
     AddSubtypeIntent,
-    AmassIntent,
     ChooseOneRestBottomRandomIntent,
     CounterStackIntent,
     CopyControlledTokensIntent,

@@ -12,7 +12,6 @@ from .context import SemanticNodeError
 from .intents import (
     AddManaIntent,
     AddSubtypeIntent,
-    AmassIntent,
     BecomeMonstrousIntent,
     BecomeRenownedIntent,
     BecomeMonarchIntent,
@@ -204,8 +203,6 @@ class SemanticIntentSink(
         self,
         intent: CopyControlledTokensIntent,
     ) -> tuple[str, ...]: ...
-
-    def apply_amass_intent(self, intent: AmassIntent) -> str: ...
 
     def add_subtype_intent(self, intent: AddSubtypeIntent) -> str: ...
 
@@ -562,10 +559,6 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
             continue
         if isinstance(intent, CopyControlledTokensIntent):
             result = sink.copy_controlled_tokens_intent(intent)
-            results.append((intent.controller, result))
-            continue
-        if isinstance(intent, AmassIntent):
-            result = sink.apply_amass_intent(intent)
             results.append((intent.controller, result))
             continue
         if isinstance(intent, AddSubtypeIntent):

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "f7c62faab16a34a968a7ef58153e841f2393b3b2e295a51095138b258820e795",
-  "declaration_source_fingerprint": "69b40c69f79550c1f04ee8657d8bd61605a9f97eb0bae6d7c11991b548934c24",
+  "registry_fingerprint": "1dcb25c3cf18968de7c7066987d2a5eca986971ad5b6b653897592e809280f62",
+  "declaration_source_fingerprint": "208d6b1eba6f732f5983d2394fd84dbe6c5c9576861efe7f08cb91b3955eaa20",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -18844,6 +18844,276 @@
       "applicability_note": "Exactly replay the chosen replacement order and final Adapt counter quantity."
     },
     {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_amass_rules.AmassRuntimeTests.test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Exhaust additional-token replacement ordering before Army discovery, then exhaust counter-quantity replacement ordering before the canonical Amass completion."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_amass_rules.AmassRuntimeTests.test_multiple_army_choice_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Offer a multiple-Army choice only to the resolving controller in a four-player game."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_amass_rules.AmassCompilerTests.test_amass_dependencies_shapes_and_compiler_mutation_fail_closed",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the closed Amass compiler production and reject malformed descriptor or missing-dependency mutations."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_amass_rules.AmassCompilerTests.test_unsupported_amass_variants_remain_material_residuals",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep variable, zero, negative, missing-subtype, non-subtype, repeated, conditional, and compound Amass wording residual."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_amass_rules.AmassRuntimeTests.test_amass_stale_army_choice_rolls_back",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a multiple-Army continuation when any offered Army became a new logical object, retaining no partial counter or subtype result."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_amass_rules.AmassCompilerTests.test_fixed_amass_compiles_in_spell_trigger_and_activated_contexts",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower ordinary fixed positive Amass instructions with pinned creature subtypes through one source-spanned descriptor in spell, trigger, and activated contexts."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_amass_rules.AmassRuntimeTests.test_amass_existing_army_uses_counters_before_zone_object_subtype",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Place counters before adding the named subtype through a layer-4 continuous effect that expires with the affected battlefield incarnation."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_amass_rules.AmassRuntimeTests.test_amass_without_army_creates_then_counters_one_black_army",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Create one 0/0 black subtype Army token when none exists, then place the fixed +1/+1 counter result on it."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_amass_rules.AmassRuntimeTests.test_multiple_army_choice_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project only public Army refs to the resolving controller and expose neither private hands nor authoritative object identities."
+    },
+    {
+      "capability_id": "keyword_action.amass.fixed",
+      "evidence_class": "replay",
+      "test_id": "tests.test_amass_rules.AmassRuntimeTests.test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay",
+      "official_rule_ids": [
+        "111.2",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "205.3m",
+        "611.2c",
+        "613.1d",
+        "614.16",
+        "616.1",
+        "701.47",
+        "701.47a",
+        "701.47b",
+        "701.47c",
+        "701.47d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the staged token and counter replacement selections to the same authoritative Amass state hash."
+    },
+    {
       "capability_id": "keyword_action.explore.single",
       "evidence_class": "interaction",
       "test_id": "tests.test_explore_rules.ExploreEngineTests.test_counter_and_zone_replacements_suspend_before_explore_mutation",
@@ -27258,5 +27528,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "fa8a567f55db6de57a40e7620c2f6c68e97edd3619829344d78945ecacf6655d"
+  "fingerprint": "0242c50495669c4161ab66ecc45a7f533d061807fc0da924dd2e7546a9bae401"
 }

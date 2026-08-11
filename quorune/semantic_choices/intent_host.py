@@ -58,7 +58,6 @@ from ..replacement.immutable import thaw_value
 from ..semantic_runtime import (
     AddManaIntent,
     AddSubtypeIntent,
-    AmassIntent,
     BecomeMonstrousIntent,
     BecomeRenownedIntent,
     ChooseOneRestBottomRandomIntent,
@@ -99,6 +98,10 @@ from ..semantic_runtime import (
 from ..zone_object_keyword_grants import (
     ZoneObjectKeywordGrantError,
     commit_zone_object_keyword_grant,
+)
+from ..zone_object_subtype_grants import (
+    ZoneObjectSubtypeGrantError,
+    commit_zone_object_subtype_addition,
 )
 from ..semantic_runtime.zone_replacements import (
     prepare_zone_change_replacement,
@@ -1068,6 +1071,7 @@ class SemanticChoiceIntentHostMixin:
                 characteristics=thaw_value(intent.characteristics),
                 temporary_keywords=intent.temporary_keywords,
                 reason=intent.reason,
+                replacement_selections=intent.replacement_selections,
             )
         )
         if not (
@@ -1150,62 +1154,37 @@ class SemanticChoiceIntentHostMixin:
         )
         return changed_refs
 
-    def apply_amass_intent(self, intent: AmassIntent) -> str:
-        army_ref = intent.army_ref
-        if army_ref is None:
-            created = self.create_token(
-                intent.controller,
-                name=f"{intent.subtype} Army",
-                characteristics={
-                    "type_line": (
-                        f"Token Creature — {intent.subtype} Army"
-                    ),
-                    "colors": ["B"],
-                    "power": "0",
-                    "toughness": "0",
-                },
-                reason=intent.reason,
-            )
-            if len(created) != 1:
-                raise GameRuleError("Amass must create exactly one Army")
-            army_ref = created[0]
-        self._apply_amass(
-            intent.controller,
-            army_ref,
-            subtype=intent.subtype,
-            amount=intent.amount,
-            reason=intent.reason,
-        )
-        return army_ref
-
     def add_subtype_intent(self, intent: AddSubtypeIntent) -> str:
         card = self._resolve_object(
             intent.actor,
             intent.object_ref,
             zones={"battlefield"},
         )
-        subtype = intent.subtype.strip().title()
-        if not subtype:
-            raise GameRuleError("Subtype changes require a subtype")
-        card.annotations["continuous_add_subtypes"] = (
-            unique_preserving_order(
-                [
-                    *list(
-                        card.annotations.get(
-                            "continuous_add_subtypes", []
-                        )
-                    ),
-                    subtype,
-                ]
+        try:
+            effect = commit_zone_object_subtype_addition(
+                self,
+                card=card,
+                source=ResolutionEffectSource(
+                    stack_ref=intent.source.stack_ref,
+                    object_id=intent.source.object_id,
+                    logical_object_id=intent.source.logical_object_id,
+                    card_ref=intent.source.card_ref,
+                ),
+                subtype=intent.subtype,
             )
-        )
+        except ZoneObjectSubtypeGrantError as exc:
+            raise GameRuleError(str(exc)) from exc
         self._log(
             intent.actor,
             "permanent.subtype",
-            f"{card.ref} became a {subtype} in addition to its other types.",
+            (
+                f"{card.ref} became a {intent.subtype} in addition to its "
+                "other types."
+            ),
             {
                 "object": card.ref,
-                "subtype": subtype,
+                "subtype": intent.subtype,
+                "continuous_effect": effect.effect_id,
                 "reason": intent.reason,
             },
             importance=1,
@@ -1343,59 +1322,4 @@ class SemanticChoiceIntentHostMixin:
             importance=2,
             changed_objects=changed_objects,
             changed_players=changed_players,
-        )
-
-    def _apply_amass(
-        self,
-        seat: str,
-        army_ref: str,
-        *,
-        subtype: str,
-        amount: int,
-        reason: str,
-    ) -> None:
-        army = self._resolve_object(
-            seat,
-            army_ref,
-            zones={"battlefield"},
-            controlled_only=True,
-        )
-        _, subtypes, _ = self._type_parts(
-            str(self._effective_card_data(army).get("type_line") or "")
-        )
-        if "army" not in subtypes:
-            raise GameRuleError("Amass requires an Army creature")
-        normalized_subtype = subtype.strip().title()
-        if normalized_subtype.casefold() not in subtypes:
-            self.add_subtype_intent(
-                AddSubtypeIntent(
-                    actor=seat,
-                    object_ref=army.ref,
-                    subtype=normalized_subtype,
-                    reason=reason,
-                )
-            )
-        if amount:
-            self.place_counters_intent(
-                PlaceCountersIntent(
-                    actor=seat,
-                    object_refs=(army.ref,),
-                    counter_name="+1/+1",
-                    amount=amount,
-                    reason=reason,
-                    source_ref=None,
-                )
-            )
-        self._log(
-            seat,
-            "keyword.amass",
-            f"{seat} amassed {normalized_subtype}s {amount} onto {army.ref}.",
-            {
-                "army": army.ref,
-                "subtype": normalized_subtype,
-                "amount": amount,
-                "reason": reason,
-            },
-            importance=2,
-            changed_objects=[army.object_id],
         )
