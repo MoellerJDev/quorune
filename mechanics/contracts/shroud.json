@@ -38,6 +38,7 @@
     "test_player_and_nonkeyword_shroud_wording_remain_residual",
     "test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
     "test_shroud_gained_after_selection_is_illegal_at_resolution",
+    "test_attached_continuous_shroud_updates_advertised_target_legality",
     "test_shroud_does_not_prohibit_nontarget_attachment_checks",
     "test_shroud_dependency_fails_closed_without_target_revalidation",
     "test_plain_shroud_target_protection_mutant_is_killed"

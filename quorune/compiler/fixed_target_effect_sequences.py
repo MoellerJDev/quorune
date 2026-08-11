@@ -136,9 +136,11 @@ class FixedTargetCharacteristicsTemplate:
     ]:
         # A granted keyword always carries its gameplay mechanic dependency.
         # Keyword-counter vocabulary is narrower (CR 122.1b) and must not be
-        # used to decide whether an independently granted ability is live.
+        # used to decide whether an independently granted ability is live,
+        # but its canonical IDs remain authoritative for shared keywords.
         keyword_mechanics = tuple(
-            keyword.casefold() for keyword in self.keywords
+            keyword_counter_mechanic(keyword) or keyword.casefold()
+            for keyword in self.keywords
         )
         return (
             "fixed-target-characteristics-until-end-of-turn-v1",

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "9304fc229abfa6f43de9dc35ad225fb4cc37ba6a216ed345ce7812bc7f59085a",
-  "declaration_source_fingerprint": "65d695a525786920ffb1af91db59a8a7235c0f489aef6ed0217f013ee7a74bba",
+  "registry_fingerprint": "05e26e02004c471b14e620f6260fefe4b7d73430232a97fceab5ab2d62ab6ffe",
+  "declaration_source_fingerprint": "a71d2775718f3457d9a5e41de4f1465ccee566dd91d8db116c5074dfbe26a1a4",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -24431,6 +24431,25 @@
     {
       "capability_id": "target.protection.shroud_permanent",
       "evidence_class": "interaction",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_attached_continuous_shroud_updates_advertised_target_legality",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Consume a generic attached layer-6 Shroud grant in advertised target legality and restore the target immediately after the attachment relation ends."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "interaction",
       "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_shroud_does_not_prohibit_nontarget_attachment_checks",
       "official_rule_ids": [
         "115.1",
@@ -27775,5 +27794,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "4d5e3784d41d6c37387dacee696eb4762ed91c9271f53343bf1fd27cc8e59e26"
+  "fingerprint": "5716a3c4ae3949ca1aca672f8b5cf2e7b9543080021f59e3e34c94f2541e549b"
 }

@@ -11356,6 +11356,14 @@
     {
       "capability_id": "target.protection.shroud_permanent",
       "evidence_class": "interaction",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_attached_continuous_shroud_updates_advertised_target_legality",
+      "official_rule_ids": ["115.1", "115.2", "608.2b", "702.18", "702.18a", "702.18b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Consume a generic attached layer-6 Shroud grant in advertised target legality and restore the target immediately after the attachment relation ends."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "interaction",
       "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_shroud_does_not_prohibit_nontarget_attachment_checks",
       "official_rule_ids": ["115.1", "115.2", "608.2b", "702.18", "702.18a", "702.18b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],

@@ -1149,6 +1149,14 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_attached_continuous_shroud_updates_advertised_target_legality",
+      "piece_ids": ["capability.continuous.attached.fixed_characteristics", "capability.target.protection.shroud_permanent", "mechanic.shroud"],
+      "capability_ids": ["continuous.attached.fixed_characteristics", "target.protection.shroud_permanent"],
+      "interaction_order": 3,
+      "assertion": "A generic attached layer-6 Shroud grant is consumed by ordinary target legality while attached and stops protecting the permanent immediately after the relation is detached."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_state_based_lethal_and_deathtouch_share_typed_destruction",
       "piece_ids": ["capability.permanent.destroy.state_based_damage", "capability.permanent.indestructible.ordinary", "mechanic.indestructible"],
       "capability_ids": ["permanent.destroy.state_based_damage", "permanent.indestructible.ordinary"],

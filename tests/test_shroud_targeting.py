@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
+from quorune.attachments import attach_objects, detach_object
 from quorune.keyword_abilities import normalized_characteristic_keywords
 from quorune.oracle_ir import compile_oracle_card
 from quorune.record import (
@@ -338,6 +339,53 @@ class ShroudTargetingIntegrationTests(unittest.TestCase):
             engine.state.cards[target.object_id].zone,
         )
         self.assertFalse(engine.state.stack)
+
+    def test_attached_continuous_shroud_updates_advertised_target_legality(self):
+        session = self.session(70218004)
+        engine = session.engine
+        greaves = self.card(engine, "A", "Lightning Greaves")
+        target = self.card(engine, "A", "Emry, Lurker of the Loch")
+        for card in (greaves, target):
+            engine.move_card(
+                card.object_id,
+                "battlefield",
+                controller="A",
+            )
+        attach_objects(
+            engine.state.cards,
+            greaves,
+            target,
+            source_timestamp=engine._next_zone_timestamp(),
+        )
+        legal_target = self.blue_token(
+            engine,
+            "B",
+            "Unprotected Blue Witness",
+            shroud=False,
+        )
+
+        self.assertIn("Shroud", engine._effective_card_data(target)["keywords"])
+        _, protected_action = self.prepare_reb(session)
+        self.assertNotIn(
+            target.ref,
+            protected_action["target_schema"]["legal_refs"],
+        )
+        self.assertIn(
+            legal_target.ref,
+            protected_action["target_schema"]["legal_refs"],
+        )
+
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        detach_object(engine.state.cards, greaves)
+
+        self.assertNotIn("Shroud", engine._effective_card_data(target)["keywords"])
+        _, unprotected_action = self.prepare_reb(session)
+        self.assertIn(
+            target.ref,
+            unprotected_action["target_schema"]["legal_refs"],
+        )
 
     def test_shroud_does_not_prohibit_nontarget_attachment_checks(self):
         session = self.session(70218003)
