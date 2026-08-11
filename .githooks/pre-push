@@ -18,16 +18,23 @@ fi
 # generated writer/check, so a new typed operation cannot first fail in CI.
 "$PYTHON" "$ROOT/scripts/test_shards.py" validate
 
+run_finalizer() {
+    if "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
+        --verify-receipt "$@"; then
+        echo "Quorune pre-push: generated-finalization receipt is current."
+        return 0
+    fi
+    echo "Quorune pre-push: receipt missing or stale; running full finalization." >&2
+    "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
+        --write --fail-on-change "$@"
+}
+
 if [ -n "${MTG_CARD_DB:-}" ]; then
-    "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
-        --write --fail-on-change --db "$MTG_CARD_DB"
+    run_finalizer --db "$MTG_CARD_DB"
 elif [ -f "$ROOT/data/scryfall-current.sqlite3" ]; then
-    "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
-        --write --fail-on-change \
-        --db "$ROOT/data/scryfall-current.sqlite3"
+    run_finalizer --db "$ROOT/data/scryfall-current.sqlite3"
 else
     echo "Quorune pre-push: no pinned card database found; database-backed compiler coverage can only be checked." >&2
     echo "Set MTG_CARD_DB or provide data/scryfall-current.sqlite3 when compiler, capability, or CardProgram behavior changed." >&2
-    "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
-        --write --fail-on-change
+    run_finalizer
 fi

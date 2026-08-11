@@ -22,6 +22,12 @@ from scripts.generated_artifacts import (
     topological_order,
     write_command,
 )
+from scripts.generated_finalization_receipt import (
+    GeneratedFinalizationReceiptError,
+    database_identity,
+    verify_finalization_receipt,
+    write_finalization_receipt,
+)
 from scripts.validate_python_runtime import require_supported_python
 
 
@@ -274,6 +280,7 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    mode.add_argument("--verify-receipt", action="store_true")
     parser.add_argument("--db")
     parser.add_argument("--include-manual", action="store_true")
     parser.add_argument("--max-passes", type=int, default=3)
@@ -297,9 +304,15 @@ def main() -> int:
     if args.resume_from and not args.write:
         parser.error("--resume-from requires --write")
     database = _database(args.db)
+    if args.write:
+        mode_name = "write"
+    elif args.verify_receipt:
+        mode_name = "receipt"
+    else:
+        mode_name = "check"
     result: dict[str, object] = {
         "ok": False,
-        "mode": "write" if args.write else "check",
+        "mode": mode_name,
         "manifest": "platform/generated-artifacts.json",
         "generator_count": None,
         "database": str(database) if database is not None else None,
@@ -307,6 +320,27 @@ def main() -> int:
     try:
         specs = load_manifest()
         result["generator_count"] = len(specs)
+        if args.verify_receipt:
+            receipt_path, receipt = verify_finalization_receipt(
+                specs,
+                database=database,
+                root=ROOT,
+            )
+            result["receipt"] = {
+                "path": str(receipt_path),
+                "source_tree_fingerprint": (
+                    receipt.source_tree_fingerprint
+                ),
+                "generated_outputs_fingerprint": (
+                    receipt.generated_outputs_fingerprint
+                ),
+            }
+            result["ok"] = True
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        initial_database_identity = (
+            database_identity(database) if args.write else None
+        )
         selected_ids: frozenset[str] | None = None
         if args.resume_from:
             resumed = next(
@@ -342,7 +376,28 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
-    except (GeneratedFinalizationError, OSError, ValueError) as exc:
+        if args.write:
+            receipt_path, receipt = write_finalization_receipt(
+                specs,
+                database=database,
+                root=ROOT,
+                expected_database_identity=initial_database_identity,
+            )
+            result["receipt"] = {
+                "path": str(receipt_path),
+                "source_tree_fingerprint": (
+                    receipt.source_tree_fingerprint
+                ),
+                "generated_outputs_fingerprint": (
+                    receipt.generated_outputs_fingerprint
+                ),
+            }
+    except (
+        GeneratedFinalizationError,
+        GeneratedFinalizationReceiptError,
+        OSError,
+        ValueError,
+    ) as exc:
         result["error"] = str(exc)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 1

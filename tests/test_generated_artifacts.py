@@ -313,6 +313,75 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
                     root=root,
                 )
 
+    def test_generated_completeness_rejects_untracked_registered_output(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            coverage = root / "coverage"
+            coverage.mkdir()
+            (coverage / "owned.json").write_text("{}\n", encoding="utf-8")
+            spec = GeneratorSpec(
+                id="owned",
+                depends_on=(),
+                outputs=("coverage/owned.json",),
+                check=("unused.py", "--check"),
+                write=("unused.py", "--write"),
+                write_with_database=None,
+                write_policy="automatic",
+            )
+            discovery = GeneratedArtifactDiscoverySpec(
+                path_prefixes=("coverage/",),
+                path_globs=("rules/*.json",),
+                explicit_paths=("platform/card-name-hash-index.json",),
+                markdown_statuses=("generated",),
+                content_markers=("automatically generated",),
+            )
+
+            with self.assertRaisesRegex(
+                GeneratedArtifactManifestError,
+                "not tracked by Git",
+            ):
+                validate_manifest_completeness(
+                    (spec,),
+                    discovery,
+                    root=root,
+                )
+
+    def test_generated_completeness_rejects_owner_without_discovery_signal(self):
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            notes = root / "notes"
+            notes.mkdir()
+            (notes / "owned.json").write_text("{}\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            spec = GeneratorSpec(
+                id="owned",
+                depends_on=(),
+                outputs=("notes/owned.json",),
+                check=("unused.py", "--check"),
+                write=("unused.py", "--write"),
+                write_with_database=None,
+                write_policy="automatic",
+            )
+            discovery = GeneratedArtifactDiscoverySpec(
+                path_prefixes=("coverage/",),
+                path_globs=("rules/*.json",),
+                explicit_paths=("platform/card-name-hash-index.json",),
+                markdown_statuses=("generated",),
+                content_markers=("automatically generated",),
+            )
+
+            with self.assertRaisesRegex(
+                GeneratedArtifactManifestError,
+                "no independent discovery signal",
+            ):
+                validate_manifest_completeness(
+                    (spec,),
+                    discovery,
+                    root=root,
+                )
+
     def test_separately_generated_protocol_assets_retain_their_sources(self):
         browser = validate_web_types()
         demo = validate_protocol_output(ROOT / "demo")
@@ -650,7 +719,12 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         self.assertIn(".venv/Scripts/python.exe", hook)
         self.assertIn("data/scryfall-current.sqlite3", hook)
         self.assertIn('"$ROOT/scripts/test_shards.py" validate', hook)
+        self.assertIn("--verify-receipt", hook)
         self.assertIn("--write --fail-on-change", hook)
+        self.assertLess(
+            hook.index("--verify-receipt"),
+            hook.index("--write --fail-on-change"),
+        )
         self.assertNotIn("python scripts/finalize_generated.py", hook)
 
     def test_finalizer_checks_the_architecture_policy_before_publication(self):
