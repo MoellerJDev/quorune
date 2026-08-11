@@ -11,7 +11,7 @@
       "column": 8,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 52,
+      "line": 54,
       "matched_printed_name": "Six",
       "symbol": null,
       "value": "six"
@@ -21,7 +21,7 @@
       "column": 19,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 149,
+      "line": 163,
       "matched_printed_name": "Life",
       "symbol": "compact",
       "value": "life"
@@ -31,7 +31,7 @@
       "column": 17,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 203,
+      "line": 219,
       "matched_printed_name": "Channel",
       "symbol": "_ability_zones",
       "value": "channel"
@@ -41,7 +41,7 @@
       "column": 31,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 203,
+      "line": 219,
       "matched_printed_name": "Channel",
       "symbol": "_ability_zones",
       "value": "channel"
@@ -51,7 +51,7 @@
       "column": 82,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 203,
+      "line": 219,
       "matched_printed_name": "Channel",
       "symbol": "_ability_zones",
       "value": "channel"
@@ -61,7 +61,7 @@
       "column": 17,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 205,
+      "line": 221,
       "matched_printed_name": "Cycling",
       "symbol": "_ability_zones",
       "value": "cycling"
@@ -71,7 +71,7 @@
       "column": 56,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 207,
+      "line": 223,
       "matched_printed_name": "Channel",
       "symbol": "_ability_zones",
       "value": "channel"
@@ -81,7 +81,7 @@
       "column": 50,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 217,
+      "line": 233,
       "matched_printed_name": "Unearth",
       "symbol": "_ability_zones",
       "value": "unearth"
@@ -91,7 +91,7 @@
       "column": 62,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 218,
+      "line": 234,
       "matched_printed_name": "Unearth",
       "symbol": "_ability_zones",
       "value": "unearth"
@@ -101,7 +101,7 @@
       "column": 16,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 221,
+      "line": 237,
       "matched_printed_name": "Exile",
       "symbol": "_ability_zones",
       "value": "exile"
@@ -111,7 +111,7 @@
       "column": 25,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 374,
+      "line": 396,
       "matched_printed_name": "Exile",
       "symbol": "_craft_keyword_abilities",
       "value": "exile"
@@ -121,7 +121,7 @@
       "column": 31,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 405,
+      "line": 427,
       "matched_printed_name": "Sacrifice",
       "symbol": "_parse_cost",
       "value": "sacrifice"
@@ -131,7 +131,7 @@
       "column": 51,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 405,
+      "line": 427,
       "matched_printed_name": "Exile",
       "symbol": "_parse_cost",
       "value": "exile"
@@ -141,47 +141,27 @@
       "column": 8,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 414,
+      "line": 437,
       "matched_printed_name": "Sacrifice",
       "symbol": "_parse_cost",
       "value": "sacrifice"
     },
     {
       "card_specificity_exempt": false,
-      "column": 14,
-      "file": "quorune/abilities.py",
-      "in_condition": false,
-      "line": 418,
-      "matched_printed_name": "Sacrifice",
-      "symbol": "_parse_cost",
-      "value": "sacrifice "
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 8,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 420,
+      "line": 442,
       "matched_printed_name": "Exile",
       "symbol": "_parse_cost",
       "value": "exile"
     },
     {
       "card_specificity_exempt": false,
-      "column": 14,
-      "file": "quorune/abilities.py",
-      "in_condition": false,
-      "line": 422,
-      "matched_printed_name": "Exile",
-      "symbol": "_parse_cost",
-      "value": "exile "
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 28,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 443,
+      "line": 464,
       "matched_printed_name": "Channel",
       "symbol": "_parse_cost",
       "value": "channel"
@@ -191,7 +171,7 @@
       "column": 31,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 471,
+      "line": 502,
       "matched_printed_name": "Sacrifice",
       "symbol": "_parse_cost",
       "value": "sacrifice"
@@ -201,7 +181,7 @@
       "column": 27,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 472,
+      "line": 503,
       "matched_printed_name": "Exile",
       "symbol": "_parse_cost",
       "value": "exile"
@@ -211,7 +191,7 @@
       "column": 17,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 485,
+      "line": 516,
       "matched_printed_name": "Sacrifice",
       "symbol": "_cost_choice",
       "value": "sacrifice"
@@ -221,7 +201,7 @@
       "column": 17,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 502,
+      "line": 533,
       "matched_printed_name": "Return",
       "symbol": "_cost_choice",
       "value": "return"
@@ -231,7 +211,7 @@
       "column": 9,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 513,
+      "line": 544,
       "matched_printed_name": "Cycling",
       "symbol": "_normalized_ability_line",
       "value": "Cycling"
@@ -241,7 +221,7 @@
       "column": 58,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 526,
+      "line": 557,
       "matched_printed_name": "Cycling",
       "symbol": "_normalized_ability_line",
       "value": "Cycling"
@@ -251,10 +231,30 @@
       "column": 12,
       "file": "quorune/ability_fragments.py",
       "in_condition": false,
-      "line": 35,
+      "line": 36,
       "matched_printed_name": "Melee",
       "symbol": null,
       "value": "melee"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 22,
+      "file": "quorune/additional_cost_vocabulary.py",
+      "in_condition": false,
+      "line": 6,
+      "matched_printed_name": "Sacrifice",
+      "symbol": null,
+      "value": "sacrifice"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 16,
+      "file": "quorune/architecture_cli.py",
+      "in_condition": false,
+      "line": 13,
+      "matched_printed_name": "Reason",
+      "symbol": null,
+      "value": "reason"
     },
     {
       "card_specificity_exempt": false,
@@ -421,7 +421,7 @@
       "column": 49,
       "file": "quorune/attack_transition_model.py",
       "in_condition": false,
-      "line": 703,
+      "line": 727,
       "matched_printed_name": "Battle Cry",
       "symbol": "label",
       "value": "Battle Cry"
@@ -431,7 +431,7 @@
       "column": 44,
       "file": "quorune/attack_transition_model.py",
       "in_condition": false,
-      "line": 704,
+      "line": 728,
       "matched_printed_name": "Melee",
       "symbol": "label",
       "value": "Melee"
@@ -461,7 +461,7 @@
       "column": 24,
       "file": "quorune/card_programs/commands.py",
       "in_condition": false,
-      "line": 365,
+      "line": 367,
       "matched_printed_name": "Error",
       "symbol": "card_program_coverage",
       "value": "error"
@@ -501,7 +501,7 @@
       "column": 21,
       "file": "quorune/choice_forms.py",
       "in_condition": true,
-      "line": 190,
+      "line": 215,
       "matched_printed_name": "Order",
       "symbol": "_field",
       "value": "order"
@@ -511,7 +511,7 @@
       "column": 18,
       "file": "quorune/choice_forms.py",
       "in_condition": false,
-      "line": 192,
+      "line": 217,
       "matched_printed_name": "Order",
       "symbol": "_field",
       "value": "order"
@@ -521,7 +521,7 @@
       "column": 39,
       "file": "quorune/choice_forms.py",
       "in_condition": false,
-      "line": 192,
+      "line": 217,
       "matched_printed_name": "Order",
       "symbol": "_field",
       "value": "order"
@@ -531,7 +531,7 @@
       "column": 20,
       "file": "quorune/choice_forms.py",
       "in_condition": false,
-      "line": 232,
+      "line": 257,
       "matched_printed_name": "Order",
       "symbol": "_schema_fields",
       "value": "order"
@@ -541,7 +541,7 @@
       "column": 43,
       "file": "quorune/choice_forms.py",
       "in_condition": false,
-      "line": 232,
+      "line": 257,
       "matched_printed_name": "Order",
       "symbol": "_schema_fields",
       "value": "order"
@@ -551,7 +551,7 @@
       "column": 59,
       "file": "quorune/choice_forms.py",
       "in_condition": true,
-      "line": 379,
+      "line": 404,
       "matched_printed_name": "Order",
       "symbol": "_special_fields",
       "value": "order"
@@ -561,7 +561,7 @@
       "column": 54,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 89,
+      "line": 93,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -571,7 +571,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 97,
+      "line": 101,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -581,7 +581,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 120,
+      "line": 124,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -591,7 +591,7 @@
       "column": 35,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 152,
+      "line": 156,
       "matched_printed_name": "Sensei's Divining Top",
       "symbol": "_scripted_choice",
       "value": "Sensei's Divining Top"
@@ -601,7 +601,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 166,
+      "line": 170,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -611,7 +611,7 @@
       "column": 20,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 173,
+      "line": 177,
       "matched_printed_name": "Recover",
       "symbol": "_scripted_choice",
       "value": "RECOVER"
@@ -621,7 +621,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 174,
+      "line": 178,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -631,7 +631,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 181,
+      "line": 185,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -641,7 +641,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 188,
+      "line": 192,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -651,7 +651,7 @@
       "column": 20,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 196,
+      "line": 200,
       "matched_printed_name": "Recover",
       "symbol": "_scripted_choice",
       "value": "RECOVER"
@@ -661,7 +661,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 197,
+      "line": 201,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -671,7 +671,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 216,
+      "line": 220,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -681,7 +681,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 227,
+      "line": 231,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -691,7 +691,7 @@
       "column": 33,
       "file": "quorune/cli.py",
       "in_condition": true,
-      "line": 288,
+      "line": 292,
       "matched_printed_name": "X",
       "symbol": "_scripted_choice",
       "value": "x"
@@ -701,7 +701,7 @@
       "column": 24,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 289,
+      "line": 293,
       "matched_printed_name": "X",
       "symbol": "_scripted_choice",
       "value": "x"
@@ -711,7 +711,7 @@
       "column": 34,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 290,
+      "line": 294,
       "matched_printed_name": "X",
       "symbol": "_scripted_choice",
       "value": "x"
@@ -721,7 +721,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 320,
+      "line": 324,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -731,7 +731,7 @@
       "column": 12,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 335,
+      "line": 339,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -741,7 +741,7 @@
       "column": 8,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 341,
+      "line": 345,
       "matched_printed_name": "Reason",
       "symbol": "_scripted_choice",
       "value": "reason"
@@ -751,7 +751,7 @@
       "column": 8,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 635,
+      "line": 643,
       "matched_printed_name": "Oracle",
       "symbol": "build_parser",
       "value": "oracle"
@@ -761,7 +761,7 @@
       "column": 17,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 825,
+      "line": 833,
       "matched_printed_name": "Status",
       "symbol": "build_parser",
       "value": "status"
@@ -771,7 +771,7 @@
       "column": 8,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 850,
+      "line": 858,
       "matched_printed_name": "Arena",
       "symbol": "build_parser",
       "value": "arena"
@@ -781,7 +781,7 @@
       "column": 22,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 853,
+      "line": 861,
       "matched_printed_name": "Status",
       "symbol": "build_parser",
       "value": "status"
@@ -791,7 +791,7 @@
       "column": 19,
       "file": "quorune/cli.py",
       "in_condition": true,
-      "line": 982,
+      "line": 990,
       "matched_printed_name": "Arena",
       "symbol": "main",
       "value": "arena"
@@ -801,7 +801,7 @@
       "column": 33,
       "file": "quorune/cli.py",
       "in_condition": true,
-      "line": 985,
+      "line": 993,
       "matched_printed_name": "Status",
       "symbol": "main",
       "value": "status"
@@ -811,7 +811,7 @@
       "column": 20,
       "file": "quorune/cli.py",
       "in_condition": false,
-      "line": 988,
+      "line": 996,
       "matched_printed_name": "Integrity",
       "symbol": "main",
       "value": "integrity"
@@ -821,7 +821,7 @@
       "column": 33,
       "file": "quorune/cli.py",
       "in_condition": true,
-      "line": 1120,
+      "line": 1128,
       "matched_printed_name": "Status",
       "symbol": "main",
       "value": "status"
@@ -831,7 +831,7 @@
       "column": 19,
       "file": "quorune/cli.py",
       "in_condition": true,
-      "line": 1141,
+      "line": 1149,
       "matched_printed_name": "Oracle",
       "symbol": "main",
       "value": "oracle"
@@ -921,7 +921,7 @@
       "column": 12,
       "file": "quorune/compiler/ability_keyword_fragments.py",
       "in_condition": false,
-      "line": 173,
+      "line": 269,
       "matched_printed_name": "Battle Cry",
       "symbol": "_lower_combat_keyword_fragments",
       "value": "battle cry"
@@ -931,7 +931,7 @@
       "column": 12,
       "file": "quorune/compiler/ability_keyword_fragments.py",
       "in_condition": false,
-      "line": 178,
+      "line": 274,
       "matched_printed_name": "Melee",
       "symbol": "_lower_combat_keyword_fragments",
       "value": "melee"
@@ -941,7 +941,7 @@
       "column": 4,
       "file": "quorune/compiler/counter_placement_templates.py",
       "in_condition": false,
-      "line": 535,
+      "line": 871,
       "matched_printed_name": "Artifacts",
       "symbol": null,
       "value": "artifacts"
@@ -951,7 +951,7 @@
       "column": 4,
       "file": "quorune/compiler/counter_placement_templates.py",
       "in_condition": false,
-      "line": 543,
+      "line": 879,
       "matched_printed_name": "Lands",
       "symbol": null,
       "value": "lands"
@@ -961,7 +961,7 @@
       "column": 15,
       "file": "quorune/compiler/counter_placement_templates.py",
       "in_condition": false,
-      "line": 611,
+      "line": 972,
       "matched_printed_name": "Lifelink",
       "symbol": null,
       "value": "lifelink"
@@ -971,10 +971,50 @@
       "column": 48,
       "file": "quorune/compiler/counter_placement_templates.py",
       "in_condition": false,
-      "line": 611,
+      "line": 972,
       "matched_printed_name": "Vigilance",
       "symbol": null,
       "value": "vigilance"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 20,
+      "file": "quorune/compiler/counter_replacement_templates.py",
+      "in_condition": false,
+      "line": 10,
+      "matched_printed_name": "Counters",
+      "symbol": null,
+      "value": "counters"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 25,
+      "file": "quorune/compiler/counter_replacement_templates.py",
+      "in_condition": false,
+      "line": 11,
+      "matched_printed_name": "Goblin",
+      "symbol": null,
+      "value": "goblin"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 26,
+      "file": "quorune/compiler/counter_replacement_templates.py",
+      "in_condition": false,
+      "line": 12,
+      "matched_printed_name": "Vehicle",
+      "symbol": null,
+      "value": "vehicle"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 41,
+      "file": "quorune/compiler/direct_target.py",
+      "in_condition": false,
+      "line": 34,
+      "matched_printed_name": "Vehicle",
+      "symbol": null,
+      "value": "vehicle"
     },
     {
       "card_specificity_exempt": true,
@@ -988,10 +1028,30 @@
     },
     {
       "card_specificity_exempt": true,
+      "column": 8,
+      "file": "quorune/compiler/fixed_target_effect_sequences.py",
+      "in_condition": false,
+      "line": 39,
+      "matched_printed_name": "Lifelink",
+      "symbol": null,
+      "value": "lifelink"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 8,
+      "file": "quorune/compiler/fixed_target_effect_sequences.py",
+      "in_condition": false,
+      "line": 44,
+      "matched_printed_name": "Vigilance",
+      "symbol": null,
+      "value": "vigilance"
+    },
+    {
+      "card_specificity_exempt": true,
       "column": 18,
       "file": "quorune/compiler/program_generation.py",
       "in_condition": false,
-      "line": 34,
+      "line": 61,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
@@ -1101,7 +1161,7 @@
       "column": 40,
       "file": "quorune/damage_results.py",
       "in_condition": false,
-      "line": 35,
+      "line": 43,
       "matched_printed_name": "Loss",
       "symbol": null,
       "value": "loss"
@@ -1111,7 +1171,7 @@
       "column": 12,
       "file": "quorune/damage_results.py",
       "in_condition": true,
-      "line": 554,
+      "line": 563,
       "matched_printed_name": "Toxic",
       "symbol": "_accumulate_player_damage",
       "value": "toxic"
@@ -1121,7 +1181,7 @@
       "column": 8,
       "file": "quorune/damage_results.py",
       "in_condition": false,
-      "line": 570,
+      "line": 579,
       "matched_printed_name": "Toxic",
       "symbol": "_accumulate_player_damage",
       "value": "toxic"
@@ -1131,7 +1191,7 @@
       "column": 24,
       "file": "quorune/damage_results.py",
       "in_condition": true,
-      "line": 659,
+      "line": 668,
       "matched_printed_name": "Lifelink",
       "symbol": "_accumulate_damage_event",
       "value": "lifelink"
@@ -1141,7 +1201,7 @@
       "column": 22,
       "file": "quorune/damage_results.py",
       "in_condition": false,
-      "line": 682,
+      "line": 691,
       "matched_printed_name": "Loss",
       "symbol": "_append_accumulated_player_results",
       "value": "loss"
@@ -1151,7 +1211,7 @@
       "column": 18,
       "file": "quorune/damage_results.py",
       "in_condition": false,
-      "line": 699,
+      "line": 708,
       "matched_printed_name": "Lifelink",
       "symbol": "_append_accumulated_player_results",
       "value": "lifelink"
@@ -1161,7 +1221,7 @@
       "column": 46,
       "file": "quorune/damage_results.py",
       "in_condition": false,
-      "line": 801,
+      "line": 810,
       "matched_printed_name": "Loss",
       "symbol": "_materialized_root",
       "value": "loss"
@@ -1171,7 +1231,7 @@
       "column": 41,
       "file": "quorune/damage_results.py",
       "in_condition": true,
-      "line": 912,
+      "line": 921,
       "matched_printed_name": "Loss",
       "symbol": "_result_record",
       "value": "loss"
@@ -1261,7 +1321,7 @@
       "column": 54,
       "file": "quorune/declaration_costs.py",
       "in_condition": false,
-      "line": 424,
+      "line": 429,
       "matched_printed_name": "Attacking",
       "symbol": "parse_declaration_cost_line",
       "value": "attacking"
@@ -1401,7 +1461,7 @@
       "column": 20,
       "file": "quorune/destruction.py",
       "in_condition": false,
-      "line": 580,
+      "line": 598,
       "matched_printed_name": "Reason",
       "symbol": "commit_destruction_plan",
       "value": "reason"
@@ -1411,7 +1471,7 @@
       "column": 20,
       "file": "quorune/destruction.py",
       "in_condition": false,
-      "line": 595,
+      "line": 613,
       "matched_printed_name": "Reason",
       "symbol": "commit_destruction_plan",
       "value": "reason"
@@ -1421,7 +1481,7 @@
       "column": 20,
       "file": "quorune/destruction.py",
       "in_condition": false,
-      "line": 610,
+      "line": 628,
       "matched_printed_name": "Reason",
       "symbol": "commit_destruction_plan",
       "value": "reason"
@@ -1461,7 +1521,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 113,
+      "line": 114,
       "matched_printed_name": "Reason",
       "symbol": "_apply_damage",
       "value": "reason"
@@ -1471,7 +1531,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 198,
+      "line": 199,
       "matched_printed_name": "Reason",
       "symbol": "_apply_damage_each_opponent",
       "value": "reason"
@@ -1481,7 +1541,7 @@
       "column": 13,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 237,
+      "line": 238,
       "matched_printed_name": "Treasure",
       "symbol": "_apply_create_treasure",
       "value": "Treasure"
@@ -1491,7 +1551,7 @@
       "column": 20,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 273,
+      "line": 275,
       "matched_printed_name": "Sacrifice",
       "symbol": "_apply_create_modified_token_copy",
       "value": "Sacrifice "
@@ -1501,7 +1561,7 @@
       "column": 27,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 281,
+      "line": 283,
       "matched_printed_name": "Sacrifice",
       "symbol": "_apply_create_modified_token_copy",
       "value": "Sacrifice "
@@ -1511,7 +1571,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 503,
+      "line": 505,
       "matched_printed_name": "Reason",
       "symbol": "_apply_control_next_turn",
       "value": "reason"
@@ -1521,7 +1581,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 536,
+      "line": 538,
       "matched_printed_name": "Reason",
       "symbol": "_apply_protection_from_everything_until_next_turn",
       "value": "reason"
@@ -1531,7 +1591,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 612,
+      "line": 614,
       "matched_printed_name": "Reason",
       "symbol": "_apply_grant_ability_marker",
       "value": "reason"
@@ -1541,7 +1601,7 @@
       "column": 15,
       "file": "quorune/effect_runtime/damage_life_and_turns.py",
       "in_condition": false,
-      "line": 634,
+      "line": 636,
       "matched_printed_name": "Exile",
       "symbol": "_apply_return_transformed",
       "value": "exile"
@@ -1551,7 +1611,7 @@
       "column": 29,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 103,
+      "line": 116,
       "matched_printed_name": "Attacking",
       "symbol": "_apply_create_token",
       "value": "attacking"
@@ -1561,17 +1621,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 203,
-      "matched_printed_name": "Reason",
-      "symbol": "_apply_add_type_until_end_of_turn",
-      "value": "reason"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
-      "in_condition": false,
-      "line": 263,
+      "line": 342,
       "matched_printed_name": "Reason",
       "symbol": "_apply_add_subtype_until_end_of_turn",
       "value": "reason"
@@ -1581,7 +1631,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 322,
+      "line": 401,
       "matched_printed_name": "Reason",
       "symbol": "_apply_copy_until_end_of_turn",
       "value": "reason"
@@ -1591,7 +1641,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 401,
+      "line": 480,
       "matched_printed_name": "Reason",
       "symbol": "_apply_add_type",
       "value": "reason"
@@ -1601,7 +1651,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 449,
+      "line": 528,
       "matched_printed_name": "Reason",
       "symbol": "_apply_add_subtype",
       "value": "reason"
@@ -1611,7 +1661,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 491,
+      "line": 570,
       "matched_printed_name": "Reason",
       "symbol": "_apply_grant_keyword_until_end_of_turn",
       "value": "reason"
@@ -1621,7 +1671,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 551,
+      "line": 630,
       "matched_printed_name": "Reason",
       "symbol": "_apply_modify_stats_until_end_of_turn",
       "value": "reason"
@@ -1631,7 +1681,7 @@
       "column": 15,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 572,
+      "line": 651,
       "matched_printed_name": "Exile",
       "symbol": "_apply_grant_play_without_mana_cost",
       "value": "exile"
@@ -1641,7 +1691,7 @@
       "column": 29,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": true,
-      "line": 578,
+      "line": 657,
       "matched_printed_name": "Void",
       "symbol": "_apply_grant_play_without_mana_cost",
       "value": "void"
@@ -1651,7 +1701,7 @@
       "column": 16,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 584,
+      "line": 663,
       "matched_printed_name": "Exile",
       "symbol": "_apply_grant_play_without_mana_cost",
       "value": "exile"
@@ -1661,7 +1711,7 @@
       "column": 20,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 601,
+      "line": 680,
       "matched_printed_name": "Exile",
       "symbol": "_apply_grant_play_without_mana_cost",
       "value": "exile"
@@ -1671,7 +1721,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 604,
+      "line": 683,
       "matched_printed_name": "Reason",
       "symbol": "_apply_grant_play_without_mana_cost",
       "value": "reason"
@@ -1681,7 +1731,7 @@
       "column": 12,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 671,
+      "line": 750,
       "matched_printed_name": "Reason",
       "symbol": "_apply_grant_cast_permission",
       "value": "reason"
@@ -1691,7 +1741,7 @@
       "column": 45,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 794,
+      "line": 890,
       "matched_printed_name": "Library",
       "symbol": "_apply_look_top",
       "value": "library"
@@ -1701,7 +1751,7 @@
       "column": 59,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 822,
+      "line": 918,
       "matched_printed_name": "Library",
       "symbol": "_apply_reorder_top",
       "value": "library"
@@ -1711,7 +1761,7 @@
       "column": 45,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 823,
+      "line": 919,
       "matched_printed_name": "Library",
       "symbol": "_apply_reorder_top",
       "value": "library"
@@ -1721,7 +1771,7 @@
       "column": 67,
       "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
       "in_condition": false,
-      "line": 876,
+      "line": 972,
       "matched_printed_name": "Reason",
       "symbol": "_apply_note",
       "value": "reason"
@@ -1731,7 +1781,7 @@
       "column": 16,
       "file": "quorune/effect_runtime/state_and_permissions.py",
       "in_condition": false,
-      "line": 45,
+      "line": 46,
       "matched_printed_name": "Reason",
       "symbol": "_apply_goad",
       "value": "reason"
@@ -1741,7 +1791,7 @@
       "column": 16,
       "file": "quorune/effect_runtime/state_and_permissions.py",
       "in_condition": false,
-      "line": 66,
+      "line": 67,
       "matched_printed_name": "Reason",
       "symbol": "_apply_goad",
       "value": "reason"
@@ -1751,7 +1801,7 @@
       "column": 39,
       "file": "quorune/effect_runtime/state_and_permissions.py",
       "in_condition": false,
-      "line": 120,
+      "line": 121,
       "matched_printed_name": "Reason",
       "symbol": "_apply_next_spell_improvise_or_next_spell_uncounterable",
       "value": "reason"
@@ -1761,7 +1811,7 @@
       "column": 36,
       "file": "quorune/effect_runtime/state_and_permissions.py",
       "in_condition": false,
-      "line": 267,
+      "line": 268,
       "matched_printed_name": "Reason",
       "symbol": "_apply_mana",
       "value": "reason"
@@ -1991,7 +2041,7 @@
       "column": 44,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 349,
+      "line": 377,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
@@ -2001,7 +2051,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 350,
+      "line": 378,
       "matched_printed_name": "Library",
       "symbol": null,
       "value": "library"
@@ -2011,7 +2061,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 733,
+      "line": 755,
       "matched_printed_name": "Reason",
       "symbol": "become_monarch",
       "value": "reason"
@@ -2021,7 +2071,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 837,
+      "line": 859,
       "matched_printed_name": "Library",
       "symbol": "_assert_invariants",
       "value": "library"
@@ -2031,7 +2081,7 @@
       "column": 52,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 837,
+      "line": 859,
       "matched_printed_name": "Exile",
       "symbol": "_assert_invariants",
       "value": "exile"
@@ -2041,7 +2091,7 @@
       "column": 63,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 946,
+      "line": 968,
       "matched_printed_name": "Life",
       "symbol": "_effective_card_data",
       "value": "life"
@@ -2051,27 +2101,17 @@
       "column": 26,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1283,
+      "line": 1305,
       "matched_printed_name": "Exile",
       "symbol": "_reset_zone_change",
       "value": "exile"
     },
     {
       "card_specificity_exempt": false,
-      "column": 26,
-      "file": "quorune/engine.py",
-      "in_condition": true,
-      "line": 1540,
-      "matched_printed_name": "Library",
-      "symbol": "move_card",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 31,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 1544,
+      "line": 1497,
       "matched_printed_name": "Library",
       "symbol": "move_card",
       "value": "library"
@@ -2081,7 +2121,7 @@
       "column": 42,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 1544,
+      "line": 1497,
       "matched_printed_name": "Exile",
       "symbol": "move_card",
       "value": "exile"
@@ -2091,7 +2131,7 @@
       "column": 21,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 1606,
+      "line": 1559,
       "matched_printed_name": "Library",
       "symbol": "move_card",
       "value": "library"
@@ -2101,7 +2141,7 @@
       "column": 60,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 1606,
+      "line": 1559,
       "matched_printed_name": "Library",
       "symbol": "move_card",
       "value": "library"
@@ -2111,7 +2151,7 @@
       "column": 59,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1607,
+      "line": 1560,
       "matched_printed_name": "Library",
       "symbol": "move_card",
       "value": "library"
@@ -2121,7 +2161,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1627,
+      "line": 1580,
       "matched_printed_name": "Reason",
       "symbol": "move_card",
       "value": "reason"
@@ -2131,7 +2171,7 @@
       "column": 30,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 1758,
+      "line": 1713,
       "matched_printed_name": "Library",
       "symbol": "move_card",
       "value": "library"
@@ -2141,7 +2181,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1795,
+      "line": 1750,
       "matched_printed_name": "Reason",
       "symbol": "move_card",
       "value": "reason"
@@ -2151,7 +2191,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1816,
+      "line": 1771,
       "matched_printed_name": "Reason",
       "symbol": "move_card",
       "value": "reason"
@@ -2161,19 +2201,9 @@
       "column": 70,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1828,
+      "line": 1783,
       "matched_printed_name": "Reason",
       "symbol": "move_card",
-      "value": "reason"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 16,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 2051,
-      "matched_printed_name": "Reason",
-      "symbol": "_add_saga_lore",
       "value": "reason"
     },
     {
@@ -2181,7 +2211,7 @@
       "column": 40,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2195,
+      "line": 2095,
       "matched_printed_name": "Library",
       "symbol": "shuffle_library",
       "value": "library"
@@ -2191,7 +2221,7 @@
       "column": 38,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2196,
+      "line": 2096,
       "matched_printed_name": "Library",
       "symbol": "shuffle_library",
       "value": "library"
@@ -2201,7 +2231,7 @@
       "column": 65,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2200,
+      "line": 2100,
       "matched_printed_name": "Reason",
       "symbol": "shuffle_library",
       "value": "reason"
@@ -2211,7 +2241,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2431,
+      "line": 2331,
       "matched_printed_name": "Lands",
       "symbol": "_opening_hand_signals",
       "value": "lands"
@@ -2221,7 +2251,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2508,
+      "line": 2408,
       "matched_printed_name": "Pilot",
       "symbol": "_issue_mulligan_declaration",
       "value": "pilot"
@@ -2231,7 +2261,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2516,
+      "line": 2416,
       "matched_printed_name": "Index",
       "symbol": "_issue_mulligan_declaration",
       "value": "index"
@@ -2241,7 +2271,7 @@
       "column": 51,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2572,
+      "line": 2472,
       "matched_printed_name": "Index",
       "symbol": "_complete_mulligan_declaration",
       "value": "index"
@@ -2251,7 +2281,7 @@
       "column": 42,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2588,
+      "line": 2488,
       "matched_printed_name": "Library",
       "symbol": "_perform_mulligan_redraws",
       "value": "library"
@@ -2261,7 +2291,7 @@
       "column": 21,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2608,
+      "line": 2508,
       "matched_printed_name": "Pilot",
       "symbol": "_perform_mulligan_redraws",
       "value": "pilot"
@@ -2271,7 +2301,7 @@
       "column": 42,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2649,
+      "line": 2549,
       "matched_printed_name": "Library",
       "symbol": "_complete_mulligan_bottom",
       "value": "library"
@@ -2281,7 +2311,7 @@
       "column": 35,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2675,
+      "line": 2575,
       "matched_printed_name": "X",
       "symbol": "schedule_extra_turn",
       "value": "X"
@@ -2291,7 +2321,7 @@
       "column": 99,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2683,
+      "line": 2583,
       "matched_printed_name": "Turn",
       "symbol": "schedule_extra_turn",
       "value": "turn"
@@ -2301,7 +2331,7 @@
       "column": 14,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2749,
+      "line": 2649,
       "matched_printed_name": "Turn",
       "symbol": "_begin_turn",
       "value": "Turn "
@@ -2311,7 +2341,7 @@
       "column": 93,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2797,
+      "line": 2697,
       "matched_printed_name": "Reason",
       "symbol": "_clear_mana",
       "value": "reason"
@@ -2321,7 +2351,7 @@
       "column": 39,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 2974,
+      "line": 2874,
       "matched_printed_name": "Seedborn Muse",
       "symbol": "_enter_step",
       "value": "Seedborn Muse"
@@ -2331,7 +2361,7 @@
       "column": 32,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2993,
+      "line": 2893,
       "matched_printed_name": "Reason",
       "symbol": "_enter_step",
       "value": "reason"
@@ -2341,7 +2371,7 @@
       "column": 42,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2993,
+      "line": 2893,
       "matched_printed_name": "Seedborn Muse",
       "symbol": "_enter_step",
       "value": "Seedborn Muse"
@@ -2351,7 +2381,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3007,
+      "line": 2907,
       "matched_printed_name": "Reason",
       "symbol": "_enter_step",
       "value": "reason"
@@ -2361,7 +2391,7 @@
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3040,
+      "line": 2943,
       "matched_printed_name": "Pilot",
       "symbol": "_enter_step",
       "value": "pilot"
@@ -2371,7 +2401,7 @@
       "column": 32,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3089,
+      "line": 2992,
       "matched_printed_name": "Reason",
       "symbol": "_enter_step",
       "value": "reason"
@@ -2381,7 +2411,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3285,
+      "line": 3182,
       "matched_printed_name": "Reason",
       "symbol": "_remove_object_from_combat",
       "value": "reason"
@@ -2391,7 +2421,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3511,
+      "line": 3409,
       "matched_printed_name": "Exile",
       "symbol": "_end_turn_now",
       "value": "exile"
@@ -2401,7 +2431,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3537,
+      "line": 3432,
       "matched_printed_name": "Reason",
       "symbol": "_end_turn_now",
       "value": "reason"
@@ -2411,7 +2441,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3598,
+      "line": 3494,
       "matched_printed_name": "Pilot",
       "symbol": "_issue_priority",
       "value": "pilot"
@@ -2421,7 +2451,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3701,
+      "line": 3597,
       "matched_printed_name": "X",
       "symbol": "_stack_signature",
       "value": "x"
@@ -2431,47 +2461,17 @@
       "column": 47,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3885,
+      "line": 3781,
       "matched_printed_name": "Lands",
       "symbol": "_signature_has_actions",
       "value": "lands"
     },
     {
       "card_specificity_exempt": false,
-      "column": 17,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 4219,
-      "matched_printed_name": "Pilot",
-      "symbol": "_process_trigger_groups",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 29,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 4221,
-      "matched_printed_name": "Order",
-      "symbol": "_process_trigger_groups",
-      "value": "order"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 107,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 4236,
-      "matched_printed_name": "Order",
-      "symbol": "_complete_trigger_order",
-      "value": "order"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 45,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 4659,
+      "line": 4428,
       "matched_printed_name": "Life",
       "symbol": "_land_enters_tapped",
       "value": "life"
@@ -2481,7 +2481,7 @@
       "column": 31,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 4728,
+      "line": 4497,
       "matched_printed_name": "Life",
       "symbol": "_land_entry_life_amount",
       "value": "life"
@@ -2491,7 +2491,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 4888,
+      "line": 4657,
       "matched_printed_name": "Zombie",
       "symbol": "_compiled_zone_cast_permission",
       "value": "zombie"
@@ -2501,7 +2501,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5059,
+      "line": 4760,
       "matched_printed_name": "Return",
       "symbol": "_pay_ability_choice_costs",
       "value": "return"
@@ -2511,7 +2511,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5060,
+      "line": 4761,
       "matched_printed_name": "Exile",
       "symbol": "_pay_ability_choice_costs",
       "value": "exile"
@@ -2521,7 +2521,7 @@
       "column": 29,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5060,
+      "line": 4761,
       "matched_printed_name": "Exile",
       "symbol": "_pay_ability_choice_costs",
       "value": "exile"
@@ -2531,7 +2531,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5157,
+      "line": 4858,
       "matched_printed_name": "Plains",
       "symbol": "_fetch_land_types",
       "value": "plains"
@@ -2541,7 +2541,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5158,
+      "line": 4859,
       "matched_printed_name": "Island",
       "symbol": "_fetch_land_types",
       "value": "island"
@@ -2551,7 +2551,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5159,
+      "line": 4860,
       "matched_printed_name": "Swamp",
       "symbol": "_fetch_land_types",
       "value": "swamp"
@@ -2561,7 +2561,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5160,
+      "line": 4861,
       "matched_printed_name": "Mountain",
       "symbol": "_fetch_land_types",
       "value": "mountain"
@@ -2571,7 +2571,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5161,
+      "line": 4862,
       "matched_printed_name": "Forest",
       "symbol": "_fetch_land_types",
       "value": "forest"
@@ -2581,7 +2581,7 @@
       "column": 56,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5167,
+      "line": 4868,
       "matched_printed_name": "Library",
       "symbol": "_fetch_land_options",
       "value": "library"
@@ -2591,7 +2591,7 @@
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 5774,
+      "line": 5320,
       "matched_printed_name": "X",
       "symbol": "_compiled_printed_cost_options",
       "value": "X"
@@ -2601,7 +2601,7 @@
       "column": 60,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 5855,
+      "line": 5401,
       "matched_printed_name": "X",
       "symbol": "_compiled_printed_cost_options",
       "value": "X"
@@ -2611,7 +2611,7 @@
       "column": 55,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5864,
+      "line": 5410,
       "matched_printed_name": "X",
       "symbol": "_compiled_printed_cost_options",
       "value": "X"
@@ -2621,7 +2621,7 @@
       "column": 58,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 6029,
+      "line": 5488,
       "matched_printed_name": "Lands",
       "symbol": "_priority_window_empty",
       "value": "lands"
@@ -2631,57 +2631,17 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 6226,
+      "line": 5667,
       "matched_printed_name": "Exile",
       "symbol": "_target_candidate_rows",
       "value": "exile"
     },
     {
       "card_specificity_exempt": false,
-      "column": 42,
-      "file": "quorune/engine.py",
-      "in_condition": true,
-      "line": 6470,
-      "matched_printed_name": "Exile",
-      "symbol": "_target_row_matches",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 45,
-      "file": "quorune/engine.py",
-      "in_condition": true,
-      "line": 6471,
-      "matched_printed_name": "Void",
-      "symbol": "_target_row_matches",
-      "value": "void"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 26,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6994,
-      "matched_printed_name": "Pilot",
-      "symbol": "_begin_pending_trigger_target_selection",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 29,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6995,
-      "matched_printed_name": "Reason",
-      "symbol": "_begin_pending_trigger_target_selection",
-      "value": "reason"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 21,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7029,
+      "line": 6345,
       "matched_printed_name": "Pilot",
       "symbol": "_program_can_auto_resolve",
       "value": "pilot"
@@ -2691,7 +2651,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7130,
+      "line": 6446,
       "matched_printed_name": "Pilot",
       "symbol": "_begin_battle_entry_protector_choice",
       "value": "pilot"
@@ -2701,7 +2661,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7285,
+      "line": 6601,
       "matched_printed_name": "Exile",
       "symbol": "_begin_siege_defeated_resolution",
       "value": "exile"
@@ -2711,7 +2671,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 7289,
+      "line": 6605,
       "matched_printed_name": "Exile",
       "symbol": "_begin_siege_defeated_resolution",
       "value": "exile"
@@ -2721,7 +2681,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7351,
+      "line": 6667,
       "matched_printed_name": "Reason",
       "symbol": "_begin_siege_defeated_resolution",
       "value": "reason"
@@ -2731,7 +2691,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7418,
+      "line": 6734,
       "matched_printed_name": "Pilot",
       "symbol": "_begin_siege_defeated_resolution",
       "value": "pilot"
@@ -2741,7 +2701,7 @@
       "column": 28,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 7486,
+      "line": 6802,
       "matched_printed_name": "Exile",
       "symbol": "_complete_siege_defeated_choice",
       "value": "exile"
@@ -2751,7 +2711,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7535,
+      "line": 6851,
       "matched_printed_name": "Exile",
       "symbol": "_complete_siege_defeated_choice",
       "value": "exile"
@@ -2761,7 +2721,7 @@
       "column": 33,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7543,
+      "line": 6859,
       "matched_printed_name": "Exile",
       "symbol": "_complete_siege_defeated_choice",
       "value": "exile"
@@ -2771,7 +2731,7 @@
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7594,
+      "line": 6910,
       "matched_printed_name": "Pilot",
       "symbol": "_prepare_stack_resolution",
       "value": "pilot"
@@ -2781,7 +2741,7 @@
       "column": 30,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7701,
+      "line": 7017,
       "matched_printed_name": "Return",
       "symbol": "_prepare_stack_resolution",
       "value": "Return "
@@ -2791,7 +2751,7 @@
       "column": 34,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7710,
+      "line": 7026,
       "matched_printed_name": "Return",
       "symbol": "_prepare_stack_resolution",
       "value": "Return "
@@ -2801,7 +2761,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7761,
+      "line": 7077,
       "matched_printed_name": "Reason",
       "symbol": "_prepare_stack_resolution",
       "value": "reason"
@@ -2811,7 +2771,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 7912,
+      "line": 7228,
       "matched_printed_name": "Pilot",
       "symbol": "_prepare_storm_resolution",
       "value": "pilot"
@@ -2821,7 +2781,7 @@
       "column": 62,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8009,
+      "line": 7325,
       "matched_printed_name": "Copy",
       "symbol": "_complete_storm_choice",
       "value": " copy"
@@ -2831,7 +2791,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 8090,
+      "line": 7406,
       "matched_printed_name": "Library",
       "symbol": "_create_copy_object",
       "value": "library"
@@ -2841,7 +2801,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 8094,
+      "line": 7410,
       "matched_printed_name": "Exile",
       "symbol": "_create_copy_object",
       "value": "exile"
@@ -2851,7 +2811,7 @@
       "column": 63,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8104,
+      "line": 7420,
       "matched_printed_name": "Copy",
       "symbol": "_create_copy_object",
       "value": "Copy"
@@ -2861,7 +2821,7 @@
       "column": 34,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8247,
+      "line": 7561,
       "matched_printed_name": "Copy",
       "symbol": "_copy_stack_item",
       "value": " copy"
@@ -2871,7 +2831,7 @@
       "column": 26,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8289,
+      "line": 7603,
       "matched_printed_name": "Copied",
       "symbol": "_copy_stack_item",
       "value": " copied "
@@ -2881,7 +2841,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8294,
+      "line": 7608,
       "matched_printed_name": "Reason",
       "symbol": "_copy_stack_item",
       "value": "reason"
@@ -2891,7 +2851,7 @@
       "column": 27,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8373,
+      "line": 7687,
       "matched_printed_name": "Library",
       "symbol": "_resolve_fetch_land",
       "value": "library"
@@ -2901,7 +2861,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8566,
+      "line": 7880,
       "matched_printed_name": "Reason",
       "symbol": "_revalidate_resolution_targets",
       "value": "reason"
@@ -2911,7 +2871,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8676,
+      "line": 7990,
       "matched_printed_name": "Reason",
       "symbol": "_continue_resolution",
       "value": "reason"
@@ -2921,7 +2881,7 @@
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8901,
+      "line": 8215,
       "matched_printed_name": "Plains",
       "symbol": "_search_candidate_matches",
       "value": "plains"
@@ -2931,7 +2891,7 @@
       "column": 35,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8901,
+      "line": 8215,
       "matched_printed_name": "Island",
       "symbol": "_search_candidate_matches",
       "value": "island"
@@ -2941,7 +2901,7 @@
       "column": 45,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8901,
+      "line": 8215,
       "matched_printed_name": "Swamp",
       "symbol": "_search_candidate_matches",
       "value": "swamp"
@@ -2951,7 +2911,7 @@
       "column": 54,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8901,
+      "line": 8215,
       "matched_printed_name": "Mountain",
       "symbol": "_search_candidate_matches",
       "value": "mountain"
@@ -2961,7 +2921,7 @@
       "column": 66,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8901,
+      "line": 8215,
       "matched_printed_name": "Forest",
       "symbol": "_search_candidate_matches",
       "value": "forest"
@@ -2971,7 +2931,7 @@
       "column": 41,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8912,
+      "line": 8226,
       "matched_printed_name": "Library",
       "symbol": "_semantic_search_options",
       "value": "library"
@@ -2981,7 +2941,7 @@
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 8920,
+      "line": 8234,
       "matched_printed_name": "Library",
       "symbol": "_semantic_search_options",
       "value": "library"
@@ -2991,7 +2951,7 @@
       "column": 57,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 8920,
+      "line": 8234,
       "matched_printed_name": "Exile",
       "symbol": "_semantic_search_options",
       "value": "exile"
@@ -3001,7 +2961,7 @@
       "column": 48,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8971,
+      "line": 8285,
       "matched_printed_name": "Library",
       "symbol": "_begin_semantic_search",
       "value": "library"
@@ -3011,7 +2971,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8979,
+      "line": 8293,
       "matched_printed_name": "Library",
       "symbol": "_begin_semantic_search",
       "value": "library"
@@ -3021,7 +2981,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9035,
+      "line": 8349,
       "matched_printed_name": "Pilot",
       "symbol": "_begin_semantic_search",
       "value": "pilot"
@@ -3031,7 +2991,7 @@
       "column": 48,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9141,
+      "line": 8455,
       "matched_printed_name": "Library",
       "symbol": "_complete_semantic_search",
       "value": "library"
@@ -3041,7 +3001,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9149,
+      "line": 8463,
       "matched_printed_name": "Library",
       "symbol": "_complete_semantic_search",
       "value": "library"
@@ -3051,7 +3011,7 @@
       "column": 36,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9198,
+      "line": 8512,
       "matched_printed_name": "Library",
       "symbol": "_complete_semantic_search",
       "value": "library"
@@ -3061,7 +3021,7 @@
       "column": 36,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9200,
+      "line": 8514,
       "matched_printed_name": "Library",
       "symbol": "_complete_semantic_search",
       "value": "library"
@@ -3071,7 +3031,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 9205,
+      "line": 8519,
       "matched_printed_name": "Exile",
       "symbol": "_complete_semantic_search",
       "value": "exile"
@@ -3081,7 +3041,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 9206,
+      "line": 8520,
       "matched_printed_name": "Library",
       "symbol": "_complete_semantic_search",
       "value": "library"
@@ -3091,7 +3051,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9277,
+      "line": 8591,
       "matched_printed_name": "Exile",
       "symbol": "_complete_semantic_search",
       "value": "exile"
@@ -3101,7 +3061,7 @@
       "column": 50,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9292,
+      "line": 8606,
       "matched_printed_name": "Library",
       "symbol": "_complete_semantic_search",
       "value": "library"
@@ -3111,7 +3071,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9429,
+      "line": 8713,
       "matched_printed_name": "Pilot",
       "symbol": "_issue_next_apnap_choice",
       "value": "pilot"
@@ -3121,7 +3081,7 @@
       "column": 41,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9467,
+      "line": 8751,
       "matched_printed_name": "Sacrifice",
       "symbol": "_apply_apnap_choices",
       "value": "sacrifice"
@@ -3131,7 +3091,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9476,
+      "line": 8760,
       "matched_printed_name": "Sacrifice",
       "symbol": "_apply_apnap_choices",
       "value": "sacrifice"
@@ -3141,7 +3101,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9478,
+      "line": 8762,
       "matched_printed_name": "Exile",
       "symbol": "_apply_apnap_choices",
       "value": "exile"
@@ -3151,7 +3111,7 @@
       "column": 21,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9478,
+      "line": 8762,
       "matched_printed_name": "Exile",
       "symbol": "_apply_apnap_choices",
       "value": "exile"
@@ -3161,7 +3121,7 @@
       "column": 27,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9486,
+      "line": 8770,
       "matched_printed_name": "Exile",
       "symbol": "_apply_apnap_choices",
       "value": "exile"
@@ -3171,7 +3131,7 @@
       "column": 40,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 9624,
+      "line": 8908,
       "matched_printed_name": "Prohibit",
       "symbol": "_can_block",
       "value": "prohibit"
@@ -3181,7 +3141,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10867,
+      "line": 10156,
       "matched_printed_name": "Pilot",
       "symbol": "_issue_attackers",
       "value": "pilot"
@@ -3191,7 +3151,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 11340,
+      "line": 10629,
       "matched_printed_name": "Pilot",
       "symbol": "_issue_next_blocker",
       "value": "pilot"
@@ -3201,7 +3161,7 @@
       "column": 21,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 11533,
+      "line": 10822,
       "matched_printed_name": "Pilot",
       "symbol": "_continue_combat_damage_assignments",
       "value": "pilot"
@@ -3211,7 +3171,7 @@
       "column": 32,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12167,
+      "line": 11439,
       "matched_printed_name": "Reason",
       "symbol": "_repair_battle_protectors",
       "value": "reason"
@@ -3221,7 +3181,7 @@
       "column": 28,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12215,
+      "line": 11487,
       "matched_printed_name": "Reason",
       "symbol": "_repair_battle_protectors",
       "value": "reason"
@@ -3231,7 +3191,7 @@
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12223,
+      "line": 11495,
       "matched_printed_name": "Pilot",
       "symbol": "_repair_battle_protectors",
       "value": "pilot"
@@ -3241,7 +3201,7 @@
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12509,
+      "line": 11781,
       "matched_printed_name": "Pilot",
       "symbol": "_stabilize",
       "value": "pilot"
@@ -3251,7 +3211,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12590,
+      "line": 11862,
       "matched_printed_name": "Reason",
       "symbol": "_complete_battle_protector_choice",
       "value": "reason"
@@ -3261,7 +3221,7 @@
       "column": 55,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12651,
+      "line": 11923,
       "matched_printed_name": "Exile",
       "symbol": "_eliminate_players",
       "value": "exile"
@@ -3271,7 +3231,7 @@
       "column": 86,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12655,
+      "line": 11927,
       "matched_printed_name": "Reason",
       "symbol": "_eliminate_players",
       "value": "reason"
@@ -3281,7 +3241,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12669,
+      "line": 11941,
       "matched_printed_name": "Reason",
       "symbol": "_eliminate_players",
       "value": "reason"
@@ -3291,7 +3251,7 @@
       "column": 32,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12724,
+      "line": 11996,
       "matched_printed_name": "Reason",
       "symbol": "apply_effect",
       "value": "reason"
@@ -3301,7 +3261,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12843,
+      "line": 12115,
       "matched_printed_name": "Reason",
       "symbol": "create_emblem",
       "value": "reason"
@@ -3311,10 +3271,50 @@
       "column": 160,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 12900,
+      "line": 12172,
       "matched_printed_name": "Reason",
       "symbol": "change_control",
       "value": "reason"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 8,
+      "file": "quorune/keyword_counters.py",
+      "in_condition": false,
+      "line": 28,
+      "matched_printed_name": "Lifelink",
+      "symbol": null,
+      "value": "lifelink"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 20,
+      "file": "quorune/keyword_counters.py",
+      "in_condition": false,
+      "line": 28,
+      "matched_printed_name": "Lifelink",
+      "symbol": null,
+      "value": "lifelink"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 8,
+      "file": "quorune/keyword_counters.py",
+      "in_condition": false,
+      "line": 33,
+      "matched_printed_name": "Vigilance",
+      "symbol": null,
+      "value": "vigilance"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 21,
+      "file": "quorune/keyword_counters.py",
+      "in_condition": false,
+      "line": 33,
+      "matched_printed_name": "Vigilance",
+      "symbol": null,
+      "value": "vigilance"
     },
     {
       "card_specificity_exempt": false,
@@ -3341,7 +3341,7 @@
       "column": 4,
       "file": "quorune/model.py",
       "in_condition": false,
-      "line": 18,
+      "line": 20,
       "matched_printed_name": "Library",
       "symbol": null,
       "value": "library"
@@ -3351,7 +3351,7 @@
       "column": 4,
       "file": "quorune/model.py",
       "in_condition": false,
-      "line": 22,
+      "line": 24,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
@@ -3361,7 +3361,7 @@
       "column": 24,
       "file": "quorune/model.py",
       "in_condition": false,
-      "line": 36,
+      "line": 38,
       "matched_printed_name": "Pilot",
       "symbol": null,
       "value": "pilot"
@@ -3371,7 +3371,7 @@
       "column": 24,
       "file": "quorune/model.py",
       "in_condition": false,
-      "line": 41,
+      "line": 43,
       "matched_printed_name": "Counters",
       "symbol": null,
       "value": "counters"
@@ -3381,7 +3381,7 @@
       "column": 12,
       "file": "quorune/model.py",
       "in_condition": false,
-      "line": 284,
+      "line": 320,
       "matched_printed_name": "Library",
       "symbol": null,
       "value": "library"
@@ -3391,7 +3391,7 @@
       "column": 12,
       "file": "quorune/model.py",
       "in_condition": false,
-      "line": 288,
+      "line": 324,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
@@ -3401,7 +3401,7 @@
       "column": 37,
       "file": "quorune/object_query.py",
       "in_condition": false,
-      "line": 38,
+      "line": 42,
       "matched_printed_name": "Counters",
       "symbol": "__post_init__",
       "value": "counters"
@@ -3411,7 +3411,7 @@
       "column": 26,
       "file": "quorune/oracle_ir.py",
       "in_condition": false,
-      "line": 178,
+      "line": 267,
       "matched_printed_name": "Life",
       "symbol": "_effect_template",
       "value": "life"
@@ -3761,7 +3761,7 @@
       "column": 27,
       "file": "quorune/preflight.py",
       "in_condition": true,
-      "line": 651,
+      "line": 672,
       "matched_printed_name": "When",
       "symbol": "card_semantic_status",
       "value": "when "
@@ -3771,7 +3771,7 @@
       "column": 8,
       "file": "quorune/preflight.py",
       "in_condition": false,
-      "line": 713,
+      "line": 734,
       "matched_printed_name": "Status",
       "symbol": "card_semantic_status",
       "value": "status"
@@ -3781,7 +3781,7 @@
       "column": 12,
       "file": "quorune/preflight.py",
       "in_condition": false,
-      "line": 727,
+      "line": 748,
       "matched_printed_name": "Status",
       "symbol": "card_semantic_status",
       "value": "status"
@@ -3791,7 +3791,7 @@
       "column": 20,
       "file": "quorune/preflight.py",
       "in_condition": false,
-      "line": 734,
+      "line": 755,
       "matched_printed_name": "Reason",
       "symbol": "card_semantic_status",
       "value": "reason"
@@ -3801,7 +3801,7 @@
       "column": 23,
       "file": "quorune/preflight.py",
       "in_condition": false,
-      "line": 847,
+      "line": 868,
       "matched_printed_name": "Status",
       "symbol": "semantic_preflight",
       "value": "status"
@@ -3811,7 +3811,7 @@
       "column": 36,
       "file": "quorune/preflight.py",
       "in_condition": false,
-      "line": 861,
+      "line": 882,
       "matched_printed_name": "Status",
       "symbol": "semantic_preflight",
       "value": "status"
@@ -3821,7 +3821,7 @@
       "column": 49,
       "file": "quorune/preflight.py",
       "in_condition": false,
-      "line": 863,
+      "line": 884,
       "matched_printed_name": "Status",
       "symbol": "semantic_preflight",
       "value": "status"
@@ -3831,7 +3831,7 @@
       "column": 25,
       "file": "quorune/preflight.py",
       "in_condition": false,
-      "line": 876,
+      "line": 897,
       "matched_printed_name": "Status",
       "symbol": "semantic_preflight",
       "value": "status"
@@ -3841,7 +3841,7 @@
       "column": 29,
       "file": "quorune/preflight.py",
       "in_condition": false,
-      "line": 975,
+      "line": 996,
       "matched_printed_name": "Status",
       "symbol": "semantic_preflight",
       "value": "status"
@@ -3861,7 +3861,7 @@
       "column": 16,
       "file": "quorune/projection.py",
       "in_condition": false,
-      "line": 368,
+      "line": 372,
       "matched_printed_name": "Protect",
       "symbol": "_obj",
       "value": "protect"
@@ -3871,7 +3871,7 @@
       "column": 16,
       "file": "quorune/projection.py",
       "in_condition": false,
-      "line": 442,
+      "line": 446,
       "matched_printed_name": "Life",
       "symbol": "_snapshot",
       "value": "life"
@@ -3881,7 +3881,7 @@
       "column": 37,
       "file": "quorune/projection.py",
       "in_condition": false,
-      "line": 447,
+      "line": 451,
       "matched_printed_name": "Library",
       "symbol": "_snapshot",
       "value": "library"
@@ -3891,7 +3891,7 @@
       "column": 16,
       "file": "quorune/projection.py",
       "in_condition": false,
-      "line": 449,
+      "line": 453,
       "matched_printed_name": "Lands",
       "symbol": "_snapshot",
       "value": "lands"
@@ -3901,7 +3901,7 @@
       "column": 41,
       "file": "quorune/projection.py",
       "in_condition": false,
-      "line": 452,
+      "line": 456,
       "matched_printed_name": "Exile",
       "symbol": "_snapshot",
       "value": "exile"
@@ -3911,7 +3911,7 @@
       "column": 54,
       "file": "quorune/projection.py",
       "in_condition": false,
-      "line": 488,
+      "line": 492,
       "matched_printed_name": "Library",
       "symbol": "_snapshot",
       "value": "library"
@@ -3921,7 +3921,7 @@
       "column": 12,
       "file": "quorune/projection.py",
       "in_condition": false,
-      "line": 566,
+      "line": 570,
       "matched_printed_name": "Turn",
       "symbol": "_snapshot",
       "value": "turn"
@@ -3981,7 +3981,7 @@
       "column": 4,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 41,
+      "line": 38,
       "matched_printed_name": "Corrupt",
       "symbol": null,
       "value": "corrupt"
@@ -3991,7 +3991,7 @@
       "column": 8,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 155,
+      "line": 152,
       "matched_printed_name": "Turn",
       "symbol": "event_for_trace",
       "value": "turn"
@@ -4001,7 +4001,7 @@
       "column": 35,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 176,
+      "line": 173,
       "matched_printed_name": "Turn",
       "symbol": "event_from_record",
       "value": "turn"
@@ -4011,7 +4011,7 @@
       "column": 30,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 246,
+      "line": 243,
       "matched_printed_name": "Pilot",
       "symbol": "provider_telemetry",
       "value": "pilot"
@@ -4021,7 +4021,7 @@
       "column": 28,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 313,
+      "line": 310,
       "matched_printed_name": "Reason",
       "symbol": "inspect",
       "value": "reason"
@@ -4031,7 +4031,7 @@
       "column": 20,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 348,
+      "line": 345,
       "matched_printed_name": "Reason",
       "symbol": "inspect",
       "value": "reason"
@@ -4041,7 +4041,7 @@
       "column": 30,
       "file": "quorune/record.py",
       "in_condition": true,
-      "line": 354,
+      "line": 351,
       "matched_printed_name": "Pilot",
       "symbol": "hidden_information_audit",
       "value": "pilot"
@@ -4051,7 +4051,7 @@
       "column": 32,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 651,
+      "line": 648,
       "matched_printed_name": "Pilot",
       "symbol": "pause_reason_for_state",
       "value": "pilot"
@@ -4061,7 +4061,7 @@
       "column": 8,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 768,
+      "line": 763,
       "matched_printed_name": "Status",
       "symbol": "build_manifest",
       "value": "status"
@@ -4071,7 +4071,7 @@
       "column": 32,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1206,
+      "line": 1197,
       "matched_printed_name": "Status",
       "symbol": "verify_record_suffix",
       "value": "status"
@@ -4081,7 +4081,7 @@
       "column": 8,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1373,
+      "line": 1364,
       "matched_printed_name": "Status",
       "symbol": "refresh_record",
       "value": "status"
@@ -4091,7 +4091,7 @@
       "column": 31,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1373,
+      "line": 1364,
       "matched_printed_name": "Status",
       "symbol": "refresh_record",
       "value": "status"
@@ -4101,7 +4101,7 @@
       "column": 20,
       "file": "quorune/record.py",
       "in_condition": true,
-      "line": 1475,
+      "line": 1466,
       "matched_printed_name": "Status",
       "symbol": "verify_record_integrity",
       "value": "status"
@@ -4111,7 +4111,7 @@
       "column": 8,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1507,
+      "line": 1498,
       "matched_printed_name": "Status",
       "symbol": "verify_record_integrity",
       "value": "status"
@@ -4121,7 +4121,7 @@
       "column": 31,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1507,
+      "line": 1498,
       "matched_printed_name": "Status",
       "symbol": "verify_record_integrity",
       "value": "status"
@@ -4131,7 +4131,7 @@
       "column": 24,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1600,
+      "line": 1591,
       "matched_printed_name": "Pilot",
       "symbol": "migrate_v2_game",
       "value": "pilot"
@@ -4141,7 +4141,7 @@
       "column": 16,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1610,
+      "line": 1601,
       "matched_printed_name": "Reason",
       "symbol": "migrate_v2_game",
       "value": "reason"
@@ -4151,7 +4151,7 @@
       "column": 16,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1620,
+      "line": 1611,
       "matched_printed_name": "Turn",
       "symbol": "migrate_v2_game",
       "value": "turn"
@@ -4161,7 +4161,7 @@
       "column": 12,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1653,
+      "line": 1644,
       "matched_printed_name": "Status",
       "symbol": "inspect_game",
       "value": "status"
@@ -4171,7 +4171,7 @@
       "column": 35,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1653,
+      "line": 1644,
       "matched_printed_name": "Status",
       "symbol": "inspect_game",
       "value": "status"
@@ -4181,7 +4181,7 @@
       "column": 8,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1681,
+      "line": 1672,
       "matched_printed_name": "Status",
       "symbol": "inspect_game",
       "value": "status"
@@ -4191,7 +4191,7 @@
       "column": 8,
       "file": "quorune/record.py",
       "in_condition": false,
-      "line": 1705,
+      "line": 1696,
       "matched_printed_name": "Warning",
       "symbol": "inspect_game",
       "value": "warning"
@@ -4201,7 +4201,7 @@
       "column": 16,
       "file": "quorune/replacement/application.py",
       "in_condition": false,
-      "line": 279,
+      "line": 280,
       "matched_printed_name": "Reason",
       "symbol": "_create_result_draw_instruction",
       "value": "reason"
@@ -4211,7 +4211,7 @@
       "column": 38,
       "file": "quorune/replacement/application.py",
       "in_condition": false,
-      "line": 279,
+      "line": 280,
       "matched_printed_name": "Reason",
       "symbol": "_create_result_draw_instruction",
       "value": "reason"
@@ -4827,13 +4827,13 @@
       "value": "reason"
     },
     {
-      "card_specificity_exempt": false,
-      "column": 12,
+      "card_specificity_exempt": true,
+      "column": 16,
       "file": "quorune/return_to_hand.py",
       "in_condition": false,
-      "line": 135,
+      "line": 20,
       "matched_printed_name": "Reason",
-      "symbol": "commit_return_to_owner_hand",
+      "symbol": null,
       "value": "reason"
     },
     {
@@ -4851,7 +4851,7 @@
       "column": 25,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 358,
+      "line": 379,
       "matched_printed_name": "Status",
       "symbol": "_capability_statuses",
       "value": "status"
@@ -4861,7 +4861,7 @@
       "column": 37,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 477,
+      "line": 498,
       "matched_printed_name": "Status",
       "symbol": "_build_card_relations",
       "value": "status"
@@ -4871,7 +4871,7 @@
       "column": 8,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 827,
+      "line": 848,
       "matched_printed_name": "Status",
       "symbol": "_piece_record",
       "value": "status"
@@ -4881,7 +4881,7 @@
       "column": 16,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 873,
+      "line": 894,
       "matched_printed_name": "Status",
       "symbol": "_build_rule_index",
       "value": "status"
@@ -4891,7 +4891,7 @@
       "column": 21,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 876,
+      "line": 897,
       "matched_printed_name": "Status",
       "symbol": "_build_rule_index",
       "value": "status"
@@ -4901,7 +4901,7 @@
       "column": 12,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 894,
+      "line": 915,
       "matched_printed_name": "Status",
       "symbol": "_system_status",
       "value": "status"
@@ -4911,7 +4911,7 @@
       "column": 30,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 899,
+      "line": 920,
       "matched_printed_name": "Status",
       "symbol": "_system_status",
       "value": "status"
@@ -4921,7 +4921,7 @@
       "column": 32,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 902,
+      "line": 923,
       "matched_printed_name": "Status",
       "symbol": "_system_status",
       "value": "status"
@@ -4931,7 +4931,7 @@
       "column": 15,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 918,
+      "line": 939,
       "matched_printed_name": "Status",
       "symbol": "_system_status",
       "value": "status"
@@ -4941,7 +4941,7 @@
       "column": 15,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 919,
+      "line": 940,
       "matched_printed_name": "Status",
       "symbol": "_system_status",
       "value": "status"
@@ -4951,7 +4951,7 @@
       "column": 8,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 922,
+      "line": 943,
       "matched_printed_name": "Status",
       "symbol": "_system_status",
       "value": "status"
@@ -4961,7 +4961,7 @@
       "column": 32,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 934,
+      "line": 955,
       "matched_printed_name": "Status",
       "symbol": "_status_counts",
       "value": "status"
@@ -4971,7 +4971,7 @@
       "column": 16,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 1049,
+      "line": 1070,
       "matched_printed_name": "Sentinel",
       "symbol": "_build_complex_card_benchmark",
       "value": "sentinel"
@@ -4981,7 +4981,7 @@
       "column": 15,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 1060,
+      "line": 1081,
       "matched_printed_name": "Sentinel",
       "symbol": "_build_complex_card_benchmark",
       "value": "sentinel"
@@ -4991,7 +4991,7 @@
       "column": 39,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 1108,
+      "line": 1129,
       "matched_printed_name": "Status",
       "symbol": "build_program_baseline",
       "value": "status"
@@ -5001,7 +5001,7 @@
       "column": 39,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 1121,
+      "line": 1144,
       "matched_printed_name": "Oracle",
       "symbol": "build_program_baseline",
       "value": "oracle"
@@ -5011,7 +5011,7 @@
       "column": 34,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 1214,
+      "line": 1237,
       "matched_printed_name": "Status",
       "symbol": "build_reusable_piece_delta",
       "value": "status"
@@ -5021,7 +5021,7 @@
       "column": 8,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": true,
-      "line": 1279,
+      "line": 1302,
       "matched_printed_name": "Oracle",
       "symbol": "_pinned_snapshot",
       "value": "oracle"
@@ -5031,7 +5031,7 @@
       "column": 43,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 1285,
+      "line": 1308,
       "matched_printed_name": "Oracle",
       "symbol": "_pinned_snapshot",
       "value": "oracle"
@@ -5041,7 +5041,7 @@
       "column": 40,
       "file": "quorune/reusable_pieces/generation.py",
       "in_condition": false,
-      "line": 1501,
+      "line": 1524,
       "matched_printed_name": "Oracle",
       "symbol": "build_reusable_piece_artifacts",
       "value": "oracle"
@@ -5091,7 +5091,7 @@
       "column": 16,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 348,
+      "line": 364,
       "matched_printed_name": "Sentinel",
       "symbol": "validate_complex_card_benchmark",
       "value": "sentinel"
@@ -5101,7 +5101,7 @@
       "column": 58,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 353,
+      "line": 369,
       "matched_printed_name": "Sentinel",
       "symbol": "validate_complex_card_benchmark",
       "value": "sentinel"
@@ -5111,7 +5111,7 @@
       "column": 38,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 469,
+      "line": 485,
       "matched_printed_name": "Status",
       "symbol": "render_reusable_piece_matrix_markdown",
       "value": "status"
@@ -5121,7 +5121,7 @@
       "column": 20,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 495,
+      "line": 511,
       "matched_printed_name": "Status",
       "symbol": "render_reusable_piece_matrix_markdown",
       "value": "status"
@@ -5131,7 +5131,7 @@
       "column": 51,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 495,
+      "line": 511,
       "matched_printed_name": "Status",
       "symbol": "render_reusable_piece_matrix_markdown",
       "value": "status"
@@ -5141,7 +5141,7 @@
       "column": 37,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 619,
+      "line": 635,
       "matched_printed_name": "Status",
       "symbol": "diff_reusable_piece_matrices",
       "value": "status"
@@ -5151,7 +5151,7 @@
       "column": 35,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 620,
+      "line": 636,
       "matched_printed_name": "Status",
       "symbol": "diff_reusable_piece_matrices",
       "value": "status"
@@ -5161,7 +5161,7 @@
       "column": 26,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 623,
+      "line": 639,
       "matched_printed_name": "Status",
       "symbol": "diff_reusable_piece_matrices",
       "value": "status"
@@ -5171,7 +5171,7 @@
       "column": 55,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 623,
+      "line": 639,
       "matched_printed_name": "Status",
       "symbol": "diff_reusable_piece_matrices",
       "value": "status"
@@ -5181,7 +5181,7 @@
       "column": 16,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 794,
+      "line": 810,
       "matched_printed_name": "Status",
       "symbol": "_next_pieces",
       "value": "status"
@@ -5191,7 +5191,7 @@
       "column": 30,
       "file": "quorune/reusable_pieces/reporting.py",
       "in_condition": false,
-      "line": 794,
+      "line": 810,
       "matched_printed_name": "Status",
       "symbol": "_next_pieces",
       "value": "status"
@@ -5361,7 +5361,7 @@
       "column": 33,
       "file": "quorune/rules/activation/availability.py",
       "in_condition": true,
-      "line": 145,
+      "line": 143,
       "matched_printed_name": "Stun",
       "symbol": "_source_cost_availability",
       "value": "stun"
@@ -5371,7 +5371,7 @@
       "column": 22,
       "file": "quorune/rules/activation/commit.py",
       "in_condition": false,
-      "line": 242,
+      "line": 330,
       "matched_printed_name": "Exile",
       "symbol": "_commit_source_cost",
       "value": "exile"
@@ -5431,7 +5431,7 @@
       "column": 4,
       "file": "quorune/rules/capabilities.py",
       "in_condition": false,
-      "line": 186,
+      "line": 274,
       "matched_printed_name": "Status",
       "symbol": null,
       "value": "status"
@@ -5441,7 +5441,7 @@
       "column": 29,
       "file": "quorune/rules/capabilities.py",
       "in_condition": false,
-      "line": 423,
+      "line": 511,
       "matched_printed_name": "Status",
       "symbol": "_validate_capability",
       "value": "status"
@@ -5451,7 +5451,7 @@
       "column": 19,
       "file": "quorune/rules/capabilities.py",
       "in_condition": true,
-      "line": 649,
+      "line": 737,
       "matched_printed_name": "Status",
       "symbol": "visit",
       "value": "status"
@@ -5461,7 +5461,7 @@
       "column": 59,
       "file": "quorune/rules/capabilities.py",
       "in_condition": false,
-      "line": 650,
+      "line": 738,
       "matched_printed_name": "Status",
       "symbol": "visit",
       "value": "status"
@@ -5471,7 +5471,7 @@
       "column": 20,
       "file": "quorune/rules/capabilities.py",
       "in_condition": false,
-      "line": 668,
+      "line": 756,
       "matched_printed_name": "Status",
       "symbol": "closure",
       "value": "status"
@@ -5481,7 +5481,7 @@
       "column": 64,
       "file": "quorune/rules/capabilities.py",
       "in_condition": false,
-      "line": 668,
+      "line": 756,
       "matched_printed_name": "Status",
       "symbol": "closure",
       "value": "status"
@@ -5491,7 +5491,7 @@
       "column": 30,
       "file": "quorune/rules/casting/commit.py",
       "in_condition": false,
-      "line": 158,
+      "line": 176,
       "matched_printed_name": "X",
       "symbol": "_pay_life_additional_cost",
       "value": "x"
@@ -5501,7 +5501,7 @@
       "column": 12,
       "file": "quorune/rules/casting/commit.py",
       "in_condition": false,
-      "line": 199,
+      "line": 474,
       "matched_printed_name": "Exile",
       "symbol": "_commit_additional_costs",
       "value": "exile"
@@ -5511,7 +5511,7 @@
       "column": 12,
       "file": "quorune/rules/casting/commit.py",
       "in_condition": false,
-      "line": 460,
+      "line": 775,
       "matched_printed_name": "X",
       "symbol": "_record_cast",
       "value": "x"
@@ -5521,7 +5521,7 @@
       "column": 32,
       "file": "quorune/rules/casting/commit.py",
       "in_condition": false,
-      "line": 556,
+      "line": 899,
       "matched_printed_name": "X",
       "symbol": "commit_cast",
       "value": "x"
@@ -5531,7 +5531,7 @@
       "column": 27,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": false,
-      "line": 108,
+      "line": 115,
       "matched_printed_name": "X",
       "symbol": "_initial_options",
       "value": "x"
@@ -5541,7 +5541,7 @@
       "column": 38,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": false,
-      "line": 398,
+      "line": 738,
       "matched_printed_name": "X",
       "symbol": "_apply_additional_costs",
       "value": "x"
@@ -5551,7 +5551,7 @@
       "column": 60,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": false,
-      "line": 398,
+      "line": 738,
       "matched_printed_name": "X",
       "symbol": "_apply_additional_costs",
       "value": "x"
@@ -5561,7 +5561,7 @@
       "column": 26,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": false,
-      "line": 403,
+      "line": 743,
       "matched_printed_name": "X",
       "symbol": "_apply_additional_costs",
       "value": "x"
@@ -5571,7 +5571,7 @@
       "column": 27,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": false,
-      "line": 407,
+      "line": 747,
       "matched_printed_name": "Life",
       "symbol": "_apply_additional_costs",
       "value": "life"
@@ -5581,7 +5581,7 @@
       "column": 24,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": true,
-      "line": 410,
+      "line": 750,
       "matched_printed_name": "Sacrifice",
       "symbol": "_apply_additional_costs",
       "value": "sacrifice"
@@ -5591,7 +5591,7 @@
       "column": 64,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": false,
-      "line": 441,
+      "line": 786,
       "matched_printed_name": "Index",
       "symbol": "_apply_additional_costs",
       "value": "index"
@@ -5601,7 +5601,7 @@
       "column": 22,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": false,
-      "line": 499,
+      "line": 850,
       "matched_printed_name": "X",
       "symbol": "_finalize_option",
       "value": "x"
@@ -5611,7 +5611,7 @@
       "column": 27,
       "file": "quorune/rules/casting/costs.py",
       "in_condition": false,
-      "line": 516,
+      "line": 867,
       "matched_printed_name": "Exile",
       "symbol": "_finalize_option",
       "value": "exile"
@@ -5641,7 +5641,7 @@
       "column": 18,
       "file": "quorune/rules/node_capability_shapes.py",
       "in_condition": false,
-      "line": 24,
+      "line": 53,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
@@ -5651,7 +5651,7 @@
       "column": 12,
       "file": "quorune/rules/single_object_zone_transition.py",
       "in_condition": false,
-      "line": 30,
+      "line": 31,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
@@ -5841,7 +5841,7 @@
       "column": 69,
       "file": "quorune/semantic_choices/engine_coordination.py",
       "in_condition": false,
-      "line": 369,
+      "line": 372,
       "matched_printed_name": "Library",
       "symbol": "_semantic_choice_query",
       "value": "library"
@@ -5851,7 +5851,7 @@
       "column": 16,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 217,
+      "line": 257,
       "matched_printed_name": "Reason",
       "symbol": "set_card_designation_intent",
       "value": "reason"
@@ -5861,7 +5861,7 @@
       "column": 58,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 366,
+      "line": 466,
       "matched_printed_name": "Library",
       "symbol": "choose_one_rest_bottom_random_intent",
       "value": "library"
@@ -5871,7 +5871,7 @@
       "column": 23,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 371,
+      "line": 471,
       "matched_printed_name": "Library",
       "symbol": "choose_one_rest_bottom_random_intent",
       "value": "library"
@@ -5881,7 +5881,7 @@
       "column": 16,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 440,
+      "line": 540,
       "matched_printed_name": "Library",
       "symbol": "return_cards_to_library_top_intent",
       "value": "library"
@@ -5891,7 +5891,7 @@
       "column": 16,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 482,
+      "line": 582,
       "matched_printed_name": "Reason",
       "symbol": "apply_life_change_intent",
       "value": "reason"
@@ -5901,7 +5901,7 @@
       "column": 16,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 503,
+      "line": 603,
       "matched_printed_name": "Reason",
       "symbol": "pay_life_intent",
       "value": "reason"
@@ -5911,7 +5911,7 @@
       "column": 58,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 516,
+      "line": 616,
       "matched_printed_name": "Library",
       "symbol": "reveal_library_cards_intent",
       "value": "library"
@@ -5921,7 +5921,7 @@
       "column": 23,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 529,
+      "line": 629,
       "matched_printed_name": "Library",
       "symbol": "reveal_library_cards_intent",
       "value": "library"
@@ -5931,7 +5931,7 @@
       "column": 58,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 561,
+      "line": 661,
       "matched_printed_name": "Library",
       "symbol": "move_library_cards_to_bottom_intent",
       "value": "library"
@@ -5941,7 +5941,7 @@
       "column": 23,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 567,
+      "line": 667,
       "matched_printed_name": "Library",
       "symbol": "move_library_cards_to_bottom_intent",
       "value": "library"
@@ -5951,7 +5951,7 @@
       "column": 23,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 600,
+      "line": 715,
       "matched_printed_name": "Library",
       "symbol": "reorder_library_top_intent",
       "value": "library"
@@ -5961,7 +5961,7 @@
       "column": 58,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 604,
+      "line": 719,
       "matched_printed_name": "Library",
       "symbol": "reorder_library_top_intent",
       "value": "library"
@@ -5971,7 +5971,7 @@
       "column": 24,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 859,
+      "line": 1099,
       "matched_printed_name": "Sacrifice",
       "symbol": "create_token_intent",
       "value": "Sacrifice "
@@ -5981,7 +5981,7 @@
       "column": 31,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 863,
+      "line": 1103,
       "matched_printed_name": "Sacrifice",
       "symbol": "create_token_intent",
       "value": "Sacrifice "
@@ -5991,19 +5991,9 @@
       "column": 16,
       "file": "quorune/semantic_choices/intent_host.py",
       "in_condition": false,
-      "line": 975,
+      "line": 1190,
       "matched_printed_name": "Reason",
       "symbol": "add_subtype_intent",
-      "value": "reason"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 16,
-      "file": "quorune/semantic_choices/intent_host.py",
-      "in_condition": false,
-      "line": 1118,
-      "matched_printed_name": "Reason",
-      "symbol": "_apply_amass",
       "value": "reason"
     },
     {
@@ -6117,31 +6107,31 @@
       "value": "order"
     },
     {
+      "card_specificity_exempt": true,
+      "column": 16,
+      "file": "quorune/semantic_choices/modular.py",
+      "in_condition": false,
+      "line": 33,
+      "matched_printed_name": "Reason",
+      "symbol": null,
+      "value": "reason"
+    },
+    {
       "card_specificity_exempt": false,
       "column": 51,
       "file": "quorune/semantic_choices/ordering.py",
       "in_condition": false,
-      "line": 71,
+      "line": 65,
       "matched_printed_name": "Library",
       "symbol": "prepare",
       "value": "library"
     },
     {
       "card_specificity_exempt": false,
-      "column": 23,
+      "column": 37,
       "file": "quorune/semantic_choices/ordering.py",
       "in_condition": false,
-      "line": 89,
-      "matched_printed_name": "Library",
-      "symbol": "prepare",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 41,
-      "file": "quorune/semantic_choices/ordering.py",
-      "in_condition": false,
-      "line": 106,
+      "line": 83,
       "matched_printed_name": "Order",
       "symbol": "prepare",
       "value": "order"
@@ -6151,7 +6141,7 @@
       "column": 60,
       "file": "quorune/semantic_choices/ordering.py",
       "in_condition": false,
-      "line": 169,
+      "line": 126,
       "matched_printed_name": "Order",
       "symbol": "complete",
       "value": "order"
@@ -6241,10 +6231,30 @@
       "column": 21,
       "file": "quorune/semantic_choices/token_and_copy.py",
       "in_condition": false,
-      "line": 141,
+      "line": 140,
       "matched_printed_name": "Servo",
       "symbol": "complete",
       "value": "Servo"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 25,
+      "file": "quorune/semantic_runtime/counter_replacements.py",
+      "in_condition": false,
+      "line": 31,
+      "matched_printed_name": "Goblin",
+      "symbol": null,
+      "value": "goblin"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 26,
+      "file": "quorune/semantic_runtime/counter_replacements.py",
+      "in_condition": false,
+      "line": 32,
+      "matched_printed_name": "Vehicle",
+      "symbol": null,
+      "value": "vehicle"
     },
     {
       "card_specificity_exempt": true,
@@ -6281,7 +6291,7 @@
       "column": 8,
       "file": "quorune/semantic_runtime/executor.py",
       "in_condition": false,
-      "line": 224,
+      "line": 264,
       "matched_printed_name": "Reason",
       "symbol": "draw_intent_effect",
       "value": "reason"
@@ -6311,7 +6321,7 @@
       "column": 4,
       "file": "quorune/semantics.py",
       "in_condition": false,
-      "line": 82,
+      "line": 88,
       "matched_printed_name": "Explore",
       "symbol": null,
       "value": "explore"
@@ -6321,7 +6331,7 @@
       "column": 4,
       "file": "quorune/semantics.py",
       "in_condition": false,
-      "line": 83,
+      "line": 89,
       "matched_printed_name": "Fabricate",
       "symbol": null,
       "value": "fabricate"
@@ -6331,7 +6341,7 @@
       "column": 4,
       "file": "quorune/semantics.py",
       "in_condition": false,
-      "line": 85,
+      "line": 93,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
@@ -6341,7 +6351,7 @@
       "column": 4,
       "file": "quorune/semantics.py",
       "in_condition": false,
-      "line": 93,
+      "line": 102,
       "matched_printed_name": "Life",
       "symbol": null,
       "value": "life"
@@ -6351,7 +6361,7 @@
       "column": 4,
       "file": "quorune/semantics.py",
       "in_condition": false,
-      "line": 117,
+      "line": 126,
       "matched_printed_name": "Sacrifice",
       "symbol": null,
       "value": "sacrifice"
@@ -6361,7 +6371,7 @@
       "column": 4,
       "file": "quorune/semantics.py",
       "in_condition": false,
-      "line": 131,
+      "line": 140,
       "matched_printed_name": "Reanimate",
       "symbol": null,
       "value": "reanimate"
@@ -6561,7 +6571,7 @@
       "column": 16,
       "file": "quorune/stack_counter.py",
       "in_condition": false,
-      "line": 99,
+      "line": 97,
       "matched_printed_name": "Reason",
       "symbol": "counter_stack_item",
       "value": "reason"
@@ -6571,7 +6581,7 @@
       "column": 12,
       "file": "quorune/stack_counter.py",
       "in_condition": false,
-      "line": 138,
+      "line": 135,
       "matched_printed_name": "Reason",
       "symbol": "counter_stack_item",
       "value": "reason"
@@ -6581,7 +6591,7 @@
       "column": 4,
       "file": "quorune/state_based_actions.py",
       "in_condition": false,
-      "line": 18,
+      "line": 19,
       "matched_printed_name": "Six",
       "symbol": null,
       "value": "six"
@@ -6591,30 +6601,100 @@
       "column": 4,
       "file": "quorune/targets.py",
       "in_condition": false,
-      "line": 11,
+      "line": 16,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 8,
+      "file": "quorune/targets.py",
+      "in_condition": false,
+      "line": 96,
+      "matched_printed_name": "Attacking",
+      "symbol": null,
+      "value": "attacking"
     },
     {
       "card_specificity_exempt": false,
       "column": 45,
       "file": "quorune/targets.py",
       "in_condition": false,
-      "line": 202,
+      "line": 328,
       "matched_printed_name": "Attacking",
       "symbol": "from_mapping",
       "value": "attacking"
     },
     {
+      "card_specificity_exempt": false,
+      "column": 17,
+      "file": "quorune/trigger_processing.py",
+      "in_condition": false,
+      "line": 183,
+      "matched_printed_name": "Pilot",
+      "symbol": "issue_trigger_order",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 29,
+      "file": "quorune/trigger_processing.py",
+      "in_condition": false,
+      "line": 185,
+      "matched_printed_name": "Order",
+      "symbol": "issue_trigger_order",
+      "value": "order"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 63,
+      "file": "quorune/trigger_processing.py",
+      "in_condition": false,
+      "line": 201,
+      "matched_printed_name": "Order",
+      "symbol": "complete_trigger_order_decision",
+      "value": "order"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 26,
+      "file": "quorune/trigger_processing.py",
+      "in_condition": false,
+      "line": 270,
+      "matched_printed_name": "Pilot",
+      "symbol": "begin_target_selection",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 29,
+      "file": "quorune/trigger_processing.py",
+      "in_condition": false,
+      "line": 271,
+      "matched_printed_name": "Reason",
+      "symbol": "begin_target_selection",
+      "value": "reason"
+    },
+    {
       "card_specificity_exempt": true,
-      "column": 5,
+      "column": 8,
+      "file": "quorune/zone_object_keyword_model.py",
+      "in_condition": false,
+      "line": 18,
+      "matched_printed_name": "Vigilance",
+      "symbol": null,
+      "value": "vigilance"
+    },
+    {
+      "card_specificity_exempt": true,
+      "column": 29,
       "file": "quorune/zone_trigger_events.py",
       "in_condition": false,
-      "line": 35,
-      "matched_printed_name": "Library",
+      "line": 20,
+      "matched_printed_name": "Sacrifice",
       "symbol": null,
-      "value": "library"
+      "value": "sacrifice"
     },
     {
       "card_specificity_exempt": false,
@@ -7019,7 +7099,7 @@
   ],
   "generator": "scripts/update_architecture_audit.py --write --card-db <path>",
   "limitations": "Exact full printed-name literals only. Card-named helpers and semantic operations are separately reviewed in architecture-audit-source.json.",
-  "review_adr": "docs/adr/0037-typed-fixed-target-set-counter-placement.md",
+  "review_adr": "docs/adr/0058-typed-trigger-processing-owner.md",
   "schema_version": 1,
   "scope": [
     "quorune/__init__.py",
@@ -7027,10 +7107,16 @@
     "quorune/abilities.py",
     "quorune/ability_fragment_host.py",
     "quorune/ability_fragments.py",
+    "quorune/activation_usage.py",
+    "quorune/additional_cost_vocabulary.py",
     "quorune/aerial_blocking.py",
     "quorune/affected_permanents.py",
+    "quorune/amass.py",
+    "quorune/architecture_cli.py",
     "quorune/arena.py",
+    "quorune/attachment_references.py",
     "quorune/attachments.py",
+    "quorune/attack_counter_triggers.py",
     "quorune/attack_transition_engine_adapter.py",
     "quorune/attack_transition_model.py",
     "quorune/attack_transition_resolution.py",
@@ -7042,6 +7128,7 @@
     "quorune/aura/runtime.py",
     "quorune/block_transition_engine_adapter.py",
     "quorune/block_transitions.py",
+    "quorune/bloodthirst.py",
     "quorune/bulk.py",
     "quorune/card_programs/__init__.py",
     "quorune/card_programs/adapters.py",
@@ -7076,28 +7163,41 @@
     "quorune/commander.py",
     "quorune/compiled_ability_fragments.py",
     "quorune/compiled_activated_abilities.py",
+    "quorune/compiled_cast_costs.py",
     "quorune/compiled_cast_timing.py",
+    "quorune/compiled_crew_abilities.py",
     "quorune/compiled_cycling_abilities.py",
     "quorune/compiled_mana_abilities.py",
     "quorune/compiler/__init__.py",
     "quorune/compiler/ability_keyword_fragments.py",
     "quorune/compiler/activated_costs.py",
     "quorune/compiler/activated_mana_nodes.py",
+    "quorune/compiler/amass_templates.py",
+    "quorune/compiler/bolster_templates.py",
     "quorune/compiler/card_form_rules.py",
     "quorune/compiler/continuous_templates.py",
     "quorune/compiler/corpus_reporting.py",
+    "quorune/compiler/counter_placement_group_templates.py",
     "quorune/compiler/counter_placement_templates.py",
+    "quorune/compiler/counter_removal_templates.py",
+    "quorune/compiler/counter_replacement_templates.py",
     "quorune/compiler/counter_templates.py",
     "quorune/compiler/creature_subtypes.py",
+    "quorune/compiler/crew_nodes.py",
+    "quorune/compiler/cumulative_upkeep_nodes.py",
     "quorune/compiler/cycling_nodes.py",
     "quorune/compiler/damage_templates.py",
     "quorune/compiler/dependency_gate.py",
     "quorune/compiler/destruction_templates.py",
     "quorune/compiler/direct_target.py",
     "quorune/compiler/draw_templates.py",
+    "quorune/compiler/echo_nodes.py",
     "quorune/compiler/exile_templates.py",
     "quorune/compiler/explore_templates.py",
     "quorune/compiler/fixed_numbers.py",
+    "quorune/compiler/fixed_source_effect_sequences.py",
+    "quorune/compiler/fixed_target_effect_sequences.py",
+    "quorune/compiler/intrinsic_counter_nodes.py",
     "quorune/compiler/ir_model.py",
     "quorune/compiler/keyword_nodes.py",
     "quorune/compiler/keyword_templates.py",
@@ -7108,18 +7208,30 @@
     "quorune/compiler/resolution_effect_templates.py",
     "quorune/compiler/return_to_hand_templates.py",
     "quorune/compiler/runtime_templates.py",
+    "quorune/compiler/self_counter_keyword_actions.py",
+    "quorune/compiler/spell_additional_cost_nodes.py",
+    "quorune/compiler/spell_additional_cost_templates.py",
+    "quorune/compiler/static_runtime_nodes.py",
     "quorune/compiler/tap_state_templates.py",
+    "quorune/compiler/target_effect_corpus_assurance.py",
     "quorune/compiler/token_templates.py",
+    "quorune/compiler/trigger_participation_templates.py",
     "quorune/compiler/unlock_frontier.py",
     "quorune/compiler/zone_templates.py",
     "quorune/continuous_effect_model.py",
     "quorune/continuous_effect_state.py",
     "quorune/continuous_effects.py",
+    "quorune/control_history.py",
+    "quorune/convoke.py",
     "quorune/counter_placement.py",
     "quorune/counter_placement_sets.py",
     "quorune/counter_placement_targets.py",
     "quorune/counter_removal.py",
+    "quorune/counter_snapshot.py",
     "quorune/counter_state.py",
+    "quorune/creature_subtypes.py",
+    "quorune/crew.py",
+    "quorune/cumulative_upkeep.py",
     "quorune/cycling_abilities.py",
     "quorune/damage.py",
     "quorune/damage_modifier_state.py",
@@ -7130,6 +7242,7 @@
     "quorune/damage_source.py",
     "quorune/damage_transaction.py",
     "quorune/damage_values.py",
+    "quorune/death_return.py",
     "quorune/deathtouch.py",
     "quorune/deck.py",
     "quorune/declaration_costs.py",
@@ -7144,6 +7257,7 @@
     "quorune/drawing/model.py",
     "quorune/drawing/restrictions.py",
     "quorune/drawing/transaction.py",
+    "quorune/echo.py",
     "quorune/effect_contracts.py",
     "quorune/effect_runtime/__init__.py",
     "quorune/effect_runtime/damage_life_and_turns.py",
@@ -7158,12 +7272,16 @@
     "quorune/entry_counter_coordination.py",
     "quorune/entry_counter_model.py",
     "quorune/entry_counters.py",
+    "quorune/entry_keyword_grants.py",
+    "quorune/entry_results.py",
     "quorune/errors.py",
+    "quorune/evolve.py",
     "quorune/fixed_damage_set.py",
     "quorune/fixed_damage_set_model.py",
     "quorune/fixed_mana_abilities.py",
     "quorune/haste.py",
     "quorune/keyword_abilities.py",
+    "quorune/keyword_counters.py",
     "quorune/landwalk.py",
     "quorune/life_change.py",
     "quorune/life_state.py",
@@ -7176,10 +7294,13 @@
     "quorune/mana_undo.py",
     "quorune/mechanic_contracts.py",
     "quorune/menace.py",
+    "quorune/mentor.py",
     "quorune/model.py",
+    "quorune/modular.py",
     "quorune/object_predicate.py",
     "quorune/object_query.py",
     "quorune/oracle_ir.py",
+    "quorune/permanent_designations.py",
     "quorune/permanent_exile.py",
     "quorune/permissions.py",
     "quorune/persistence.py",
@@ -7193,8 +7314,12 @@
     "quorune/python_runtime.py",
     "quorune/record.py",
     "quorune/record_commander_identity.py",
+    "quorune/record_control_history.py",
     "quorune/record_decks.py",
+    "quorune/record_state_provenance.py",
     "quorune/record_trust.py",
+    "quorune/relative_power_target.py",
+    "quorune/renown.py",
     "quorune/replacement/__init__.py",
     "quorune/replacement/applicability.py",
     "quorune/replacement/application.py",
@@ -7212,6 +7337,7 @@
     "quorune/reusable_pieces/interactions.py",
     "quorune/reusable_pieces/reporting.py",
     "quorune/review_artifacts.py",
+    "quorune/riot.py",
     "quorune/rule_conformance.py",
     "quorune/rules/__init__.py",
     "quorune/rules/action_catalog.py",
@@ -7225,30 +7351,46 @@
     "quorune/rules/activation/proposal.py",
     "quorune/rules/activation/query.py",
     "quorune/rules/activation/resolution.py",
+    "quorune/rules/amass_capability_shapes.py",
     "quorune/rules/capabilities.py",
     "quorune/rules/casting/__init__.py",
     "quorune/rules/casting/commit.py",
     "quorune/rules/casting/costs.py",
     "quorune/rules/casting/model.py",
     "quorune/rules/casting/proposal.py",
+    "quorune/rules/casting_additional_costs.py",
     "quorune/rules/component_resolution.py",
+    "quorune/rules/counter_capability_shapes.py",
+    "quorune/rules/counter_removal_capabilities.py",
+    "quorune/rules/crew_capability_shapes.py",
+    "quorune/rules/echo_capability_shapes.py",
     "quorune/rules/evidence.py",
+    "quorune/rules/graveyard_card_targets.py",
+    "quorune/rules/library_scry.py",
     "quorune/rules/node_capability_shapes.py",
     "quorune/rules/single_object_zone_transition.py",
+    "quorune/rules/source_references.py",
+    "quorune/rules/spell_cast_events.py",
     "quorune/rules_corpus.py",
     "quorune/runtime.py",
+    "quorune/saga_lifecycle.py",
+    "quorune/saga_progression.py",
     "quorune/semantic_choices/__init__.py",
+    "quorune/semantic_choices/amass.py",
     "quorune/semantic_choices/artifact_exchange.py",
+    "quorune/semantic_choices/bolster.py",
     "quorune/semantic_choices/conditional_draw.py",
     "quorune/semantic_choices/context.py",
     "quorune/semantic_choices/counter_coordination.py",
     "quorune/semantic_choices/damage_prevention.py",
+    "quorune/semantic_choices/death_return.py",
     "quorune/semantic_choices/defaults.py",
     "quorune/semantic_choices/engine_coordination.py",
     "quorune/semantic_choices/intent_host.py",
     "quorune/semantic_choices/intent_replacement.py",
     "quorune/semantic_choices/library_and_hand.py",
     "quorune/semantic_choices/model.py",
+    "quorune/semantic_choices/modular.py",
     "quorune/semantic_choices/object_selection.py",
     "quorune/semantic_choices/optional_draw.py",
     "quorune/semantic_choices/ordering.py",
@@ -7257,19 +7399,26 @@
     "quorune/semantic_choices/public_selection.py",
     "quorune/semantic_choices/registry.py",
     "quorune/semantic_choices/scalar.py",
+    "quorune/semantic_choices/scry.py",
+    "quorune/semantic_choices/self_counter_keyword_actions.py",
     "quorune/semantic_choices/stack_targets.py",
     "quorune/semantic_choices/token_and_copy.py",
     "quorune/semantic_runtime/__init__.py",
     "quorune/semantic_runtime/ability_fragments.py",
     "quorune/semantic_runtime/attached_continuous.py",
+    "quorune/semantic_runtime/block_restrictions.py",
+    "quorune/semantic_runtime/cast_costs.py",
     "quorune/semantic_runtime/cast_permissions.py",
     "quorune/semantic_runtime/color_set_mana_abilities.py",
     "quorune/semantic_runtime/component_registry.py",
     "quorune/semantic_runtime/components.py",
+    "quorune/semantic_runtime/conditional_entry_counters.py",
     "quorune/semantic_runtime/context.py",
     "quorune/semantic_runtime/continuous_components.py",
     "quorune/semantic_runtime/counter_placement_handlers.py",
+    "quorune/semantic_runtime/counter_removal_handlers.py",
     "quorune/semantic_runtime/counter_replacements.py",
+    "quorune/semantic_runtime/crew_abilities.py",
     "quorune/semantic_runtime/cycling_abilities.py",
     "quorune/semantic_runtime/damage_replacements.py",
     "quorune/semantic_runtime/damage_results.py",
@@ -7279,6 +7428,7 @@
     "quorune/semantic_runtime/draw_restrictions.py",
     "quorune/semantic_runtime/draw_reveals.py",
     "quorune/semantic_runtime/effect_handlers.py",
+    "quorune/semantic_runtime/entry_choices.py",
     "quorune/semantic_runtime/executor.py",
     "quorune/semantic_runtime/explore.py",
     "quorune/semantic_runtime/fixed_damage_set_handlers.py",
@@ -7292,10 +7442,12 @@
     "quorune/semantic_runtime/permanent_exile_handlers.py",
     "quorune/semantic_runtime/registry.py",
     "quorune/semantic_runtime/return_to_hand_handlers.py",
+    "quorune/semantic_runtime/self_entry_counters.py",
     "quorune/semantic_runtime/stack_counter_handlers.py",
     "quorune/semantic_runtime/tap_state_handlers.py",
     "quorune/semantic_runtime/token_replacements.py",
     "quorune/semantic_runtime/values.py",
+    "quorune/semantic_runtime/zone_object_keyword_handlers.py",
     "quorune/semantic_runtime/zone_replacement_model.py",
     "quorune/semantic_runtime/zone_replacements.py",
     "quorune/semantics.py",
@@ -7308,14 +7460,26 @@
     "quorune/state_based_execution.py",
     "quorune/state_planner.py",
     "quorune/tap_state.py",
+    "quorune/target_characteristics.py",
+    "quorune/target_predicates.py",
+    "quorune/target_protection.py",
+    "quorune/target_protection_engine_adapter.py",
     "quorune/targets.py",
     "quorune/token_creation.py",
     "quorune/trigger_batches.py",
     "quorune/trigger_discovery.py",
+    "quorune/trigger_participation.py",
     "quorune/trigger_processing.py",
     "quorune/trigger_targeting.py",
+    "quorune/turn_counter_coordination.py",
+    "quorune/turn_history.py",
+    "quorune/unleash.py",
     "quorune/util.py",
     "quorune/version.py",
+    "quorune/zone_object_keyword_grants.py",
+    "quorune/zone_object_keyword_model.py",
+    "quorune/zone_object_state.py",
+    "quorune/zone_object_subtype_grants.py",
     "quorune/zone_trigger_events.py",
     "quorune/zone_trigger_processing.py",
     "server/__init__.py",

@@ -562,6 +562,29 @@
         "tests.test_architecture_cli.ArchitectureCliTests.test_show_returns_one_bounded_complete_capsule",
         "tests.test_architecture_cli.ArchitectureCliTests.test_simctl_architecture_owners_reports_live_coordinates"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0027",
+      "adr": "docs/adr/0058-typed-trigger-processing-owner.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "db0f757a718bfe4ccd38fd6e684d7a24953ef1db52e6af75803a1cfa66dbc129",
+      "exact_allowance": "Only the reduced schema-3 structural state-write identities, owner classifications, prohibited runtime Oracle-text access identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, legacy helpers, and module classifications serialized after the typed trigger-processing extraction.",
+      "rationale": "The trigger-processing owner removes delayed-trigger scheduling, Ward occurrence construction, pending-batch clearing, and ordering coordination from CommanderEngine; replaces two live Oracle-text interpretations with compiled typed multiplier and Ward fragments; and preserves Game Record v3 through narrow adapters. The reviewed generic protocol words conservatively matched by the printed-name scanner are not card-identity dispatch.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact reduced structural identities and counts serialized at implementation head 7d6f65b5 plus the closed trigger multiplier, fixed-generic Ward, immutable TriggerOccurrence, and compatibility surfaces described by ADR 0058; new runtime Oracle interpretation, unowned mutation, engine-local writes, oversized symbols, or card-identity behavior remain forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered engine write and prohibited runtime-text interpretation has migrated to declared typed owners; retain the trigger owner only while it preserves strict occurrence validation, server-issued decisions, APNAP placement, privacy, rollback, and exact replay.",
+      "target_milestone": "typed trigger processing, zone ownership, and turn-priority-decision convergence",
+      "replay_implications": "Game Record v3 payloads remain compatible through the PendingTriggerItem alias and historical engine adapters; newly created occurrence and multiplier provenance is canonical and exact-replay tested.",
+      "privacy_implications": "Trigger placement and Ward decisions remain fixed-seat capabilities; projections contain public source and occurrence facts only, and tests reject opposing hidden-card leakage.",
+      "security_implications": "Runtime consumers accept only closed immutable fragment and occurrence values; no Oracle-text compiler, card-name dispatch, arbitrary callback, cross-seat capability, or unrestricted GameState mutation is introduced.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_direct_writes_are_classified_by_actual_owner",
+        "tests.test_architecture_cli.ArchitectureCliTests.test_debt_writes_and_runtime_text_are_current_generated_views",
+        "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiplier_occurrence_replays_exactly",
+        "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiple_ward_instances_and_control_change_use_current_state",
+        "tests.test_trigger_processing_owner.TriggerOccurrenceTests.test_occurrence_is_immutable_canonical_and_game_record_compatible"
+      ]
     }
   ]
 }

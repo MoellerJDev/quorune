@@ -51,6 +51,19 @@ dispatch on printed card identity.
 Specialized combat, prevention, and zone modules remain typed producers of
 normalized occurrences. They do not become competing placement owners.
 
+## Alternatives
+
+- Keep delayed scheduling, APNAP placement, Ward discovery, and target
+  coordination in `CommanderEngine`. Rejected because it preserves split
+  mutation ownership and prevents the trigger-processing boundary from being
+  independently validated.
+- Continue interpreting Ward and additional-trigger Oracle text during live
+  play. Rejected because runtime Oracle parsing would remain a second semantic
+  authority beside the compiled CardProgram.
+- Introduce card-specific trigger handlers for the currently covered witness
+  cards. Rejected because printed identity is not a reusable rules boundary and
+  would not provide capability closure for equivalent wording.
+
 ## Consequences
 
 - Three authoritative writes leave `CommanderEngine` and are visible as
