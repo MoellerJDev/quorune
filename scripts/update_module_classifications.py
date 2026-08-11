@@ -119,6 +119,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
             "quorune/drawing/",
             "quorune/replacement/",
             "quorune/rules/",
+            "quorune/selection/",
         )
     ) or relative in {
         "quorune/activation_usage.py",
@@ -243,6 +244,8 @@ def _owner(relative: str, layer: str) -> str:
         return "semantic_runtime"
     if relative.startswith("quorune/semantic_choices/"):
         return "semantic_choices"
+    if relative.startswith("quorune/selection/"):
+        return "search_target_and_choice"
     if relative.startswith("quorune/effect_runtime/"):
         return "effect_runtime"
     if relative.startswith("quorune/card_overrides/"):

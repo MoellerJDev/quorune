@@ -150,6 +150,7 @@ from .selection.targeting import TargetSelectionOwnerMixin
 from .selection.searching import HiddenSearchOwnerMixin
 from .selection.apnap import ApnapChoiceOwnerMixin
 from .selection.storm import StormTargetChoiceOwnerMixin
+from .selection.public_choice import PublicChoiceOwnerMixin
 from . import turn_counter_coordination
 from .saga_progression import saga_final_chapter_snapshot
 from .life_state import (
@@ -354,6 +355,7 @@ class CommanderEngine(
     HiddenSearchOwnerMixin,
     ApnapChoiceOwnerMixin,
     StormTargetChoiceOwnerMixin,
+    PublicChoiceOwnerMixin,
     SemanticChoiceCoordinationMixin,
     SemanticChoiceIntentHostMixin,
 ):
@@ -4284,153 +4286,6 @@ class CommanderEngine(
                 )
         return False
 
-    def _begin_battle_entry_protector_choice(
-        self,
-        item: StackItem,
-    ) -> bool:
-        """Request the CR 310.8a protector choice as a Battle enters."""
-
-        if (
-            item.default_destination != "battlefield"
-            or item.card_object_id not in self.state.cards
-        ):
-            return False
-        card = self.state.cards[item.card_object_id]
-        if card.zone != "stack":
-            return False
-        card_types, subtypes, _ = self._type_parts(
-            str(
-                self._effective_card_data(card).get("type_line")
-                or ""
-            )
-        )
-        if "battle" not in card_types:
-            return False
-        if not subtypes:
-            card.battle_protector = card.controller
-            return False
-        if "siege" not in subtypes:
-            raise GameRuleError(
-                "The protector predicate for Battle type(s) "
-                f"{sorted(subtypes)} is not compiled"
-            )
-        if (
-            card.battle_protector in self.active_seats
-            and card.battle_protector != card.controller
-        ):
-            return False
-        candidates = [
-            opponent
-            for opponent in self.active_seats
-            if opponent != card.controller
-        ]
-        if not candidates:
-            raise GameRuleError(
-                "No opponent is available to protect this Siege"
-            )
-        self.permissions.issue(
-            kind="battle.enter_protector",
-            role="pilot",
-            actors=[card.controller],
-            allowed_actions=["choose"],
-            payload_by_actor={
-                card.controller: {
-                    "stack": item.ref,
-                    "battle": card.ref,
-                    "name": self.display_name(card.object_id),
-                    "protectors": candidates,
-                    "instruction": (
-                        "Choose an opponent to protect this Siege as "
-                        "it enters."
-                    ),
-                    "legal_actions": [
-                        {
-                            "id": "choose",
-                            "action": "choose",
-                            "choice_schema": {
-                                "protector": {
-                                    "type": "seat",
-                                    "legal_seats": candidates,
-                                    "required": True,
-                                }
-                            },
-                        }
-                    ],
-                }
-            },
-            continuation={
-                "stack_ref": item.ref,
-                "object_id": card.object_id,
-                "source_logical_object_id": card.logical_object_id,
-                "candidates": candidates,
-            },
-        )
-        return True
-
-    def _complete_battle_entry_protector_choice(
-        self,
-        decision: Any,
-    ) -> None:
-        seat = decision.actors[0]
-        stack_ref = str(decision.continuation["stack_ref"])
-        item = next(
-            (
-                candidate
-                for candidate in self.state.stack
-                if candidate.ref == stack_ref
-            ),
-            None,
-        )
-        card = self.state.cards.get(
-            str(decision.continuation["object_id"])
-        )
-        if (
-            item is None
-            or card is None
-            or item.card_object_id != card.object_id
-            or card.zone != "stack"
-            or card.controller != seat
-            or card.logical_object_id
-            != str(
-                decision.continuation[
-                    "source_logical_object_id"
-                ]
-            )
-        ):
-            raise GameRuleError(
-                "The Battle entry choice no longer matches that spell"
-            )
-        protector = str(
-            decision.responses[seat].get("protector")
-            or decision.responses[seat].get("player")
-            or ""
-        )
-        candidates = {
-            str(value)
-            for value in decision.continuation.get(
-                "candidates", []
-            )
-        }
-        if protector not in candidates or protector not in self.active_seats:
-            raise GameRuleError(
-                "Choose one of the legal Siege protectors"
-            )
-        card.battle_protector = protector
-        self._log(
-            seat,
-            "battle.protector.chosen",
-            f"{seat} chose {protector} to protect {card.ref}.",
-            {
-                "stack": item.ref,
-                "battle": card.ref,
-                "protector": protector,
-            },
-            importance=2,
-            changed_objects=[card.object_id],
-            changed_players=[seat, protector],
-        )
-        self._prepare_stack_resolution()
-
     def _finish_siege_defeated_resolution(
         self,
         item: StackItem,
@@ -4616,159 +4471,12 @@ class CommanderEngine(
             )
             return
 
-        self.permissions.issue(
-            kind="battle.siege_defeated",
-            role="pilot",
-            actors=[item.controller],
-            allowed_actions=["choose"],
-            payload_by_actor={
-                item.controller: {
-                    "stack": item.ref,
-                    "battle": card.ref,
-                    "name": record.name,
-                    "transformed_face": transformed_face,
-                    "cast_options": public_options,
-                    "prompt": (
-                        "Cast this card transformed without paying its "
-                        "mana cost?"
-                    ),
-                    "legal_actions": [
-                        {
-                            "id": "cast",
-                            "action": "choose",
-                            "choice": "cast",
-                            "choice_schema": {
-                                "choice": "cast",
-                                "cast_options": public_options,
-                            },
-                        },
-                        {
-                            "id": "decline",
-                            "action": "choose",
-                            "choice": "decline",
-                            "choice_schema": {
-                                "choice": "decline",
-                            },
-                        },
-                    ],
-                }
-            },
-            continuation={
-                "stack_ref": item.ref,
-                "object_id": card.object_id,
-                "exile_logical_object_id": card.logical_object_id,
-                "transformed_face": transformed_face,
-            },
-        )
-
-    def _complete_siege_defeated_choice(
-        self,
-        decision: Any,
-    ) -> None:
-        seat = decision.actors[0]
-        stack_ref = str(decision.continuation.get("stack_ref") or "")
-        item = next(
-            (
-                candidate
-                for candidate in self.state.stack
-                if candidate.ref == stack_ref
-                and candidate.semantic_key
-                == "builtin:siege-defeated"
-            ),
-            None,
-        )
-        card = self.state.cards.get(
-            str(decision.continuation.get("object_id") or "")
-        )
-        if item is None:
-            raise GameRuleError(
-                "The Siege defeated trigger is no longer on the stack"
-            )
-        if (
-            card is None
-            or card.zone != "exile"
-            or card.logical_object_id
-            != str(
-                decision.continuation.get(
-                    "exile_logical_object_id"
-                )
-                or ""
-            )
-        ):
-            raise GameRuleError(
-                "The exiled Siege is no longer the object offered for "
-                "the transformed cast"
-            )
-        choice = str(
-            decision.responses[seat].get("choice")
-            or decision.responses[seat].get("option")
-            or ""
-        )
-        if choice not in {"cast", "decline"}:
-            raise GameRuleError(
-                "Choose whether to cast the defeated Siege transformed"
-            )
-        if choice == "decline":
-            self._finish_siege_defeated_resolution(
-                item,
-                outcome="declined",
-                card=card,
-            )
-            return
-
-        transformed_face = str(
-            decision.continuation.get("transformed_face") or ""
-        )
-        before_stack_refs = {
-            candidate.ref for candidate in self.state.stack
-        }
-        cast_response = dict(
-            decision.responses[seat].get("cast") or {}
-        )
-        cast_response.update(
-            {
-                key: copy.deepcopy(value)
-                for key, value in decision.responses[seat].items()
-                if key not in {"action", "cast", "choice", "option"}
-            }
-        )
-        cast_response.update(
-            {
-                "card": card.ref,
-                "from": "exile",
-                "face": transformed_face,
-                "auto_pay": True,
-            }
-        )
-        self._cast(
-            seat,
-            cast_response,
-            authorized_from_zone="exile",
-            required_face=transformed_face,
-            force_without_mana_cost=True,
-            ignore_priority=True,
-            ignore_timing=True,
-            during_resolution=True,
-        )
-        cast_item = next(
-            (
-                candidate
-                for candidate in reversed(self.state.stack)
-                if candidate.ref not in before_stack_refs
-                and candidate.kind == "spell"
-                and candidate.card_object_id == card.object_id
-            ),
-            None,
-        )
-        if cast_item is None:
-            raise StateInvariantError(
-                "The transformed Siege cast did not create a spell"
-            )
-        self._finish_siege_defeated_resolution(
-            item,
-            outcome="cast_transformed",
+        self._begin_siege_defeated_choice(
+            item=item,
             card=card,
-            cast_stack_ref=cast_item.ref,
+            name=record.name,
+            transformed_face=transformed_face,
+            public_options=public_options,
         )
 
     def _prepare_stack_resolution(self) -> None:
@@ -8298,40 +8006,9 @@ class CommanderEngine(
                         changed_objects=[battle.object_id],
                     )
                     return "changed"
-                self.permissions.issue(
-                    kind="state.battle_protector",
-                    role="pilot",
-                    actors=[battle.controller],
-                    allowed_actions=["choose"],
-                    payload_by_actor={
-                        battle.controller: {
-                            "battle": battle.ref,
-                            "name": self.display_name(
-                                battle.object_id
-                            ),
-                            "protectors": candidates,
-                            "legal_actions": [
-                                {
-                                    "id": "choose",
-                                    "action": "choose",
-                                    "choice_schema": {
-                                        "protector": {
-                                            "type": "seat",
-                                            "legal_seats": candidates,
-                                            "required": True,
-                                        }
-                                    },
-                                }
-                            ],
-                        }
-                    },
-                    continuation={
-                        "object_id": battle.object_id,
-                        "source_logical_object_id": (
-                            battle.logical_object_id
-                        ),
-                        "candidates": candidates,
-                    },
+                self._begin_battle_protector_repair_choice(
+                    battle,
+                    candidates,
                 )
                 return "waiting"
         return None
@@ -8584,14 +8261,7 @@ class CommanderEngine(
             legends = self._legend_groups()
             if legends:
                 seat, name, ids = legends[0]
-                self.permissions.issue(
-                    kind="state.legend",
-                    role="pilot",
-                    actors=[seat],
-                    allowed_actions=["choose"],
-                    payload_by_actor={seat: {"name": name, "keep_one": [self.state.cards[oid].ref for oid in ids]}},
-                    continuation={"object_ids": ids},
-                )
+                self._begin_legend_choice(seat, name, ids)
                 return True
             if begin_pending_trigger_batch(self):
                 return True
@@ -8599,81 +8269,6 @@ class CommanderEngine(
                 return True
             return False
         raise StateInvariantError("State-based action loop did not stabilize")
-
-    def _complete_legend_choice(self, decision: Any) -> None:
-        seat = decision.actors[0]
-        value = decision.responses[seat].get("card") or decision.responses[seat].get("keep")
-        ids = list(decision.continuation["object_ids"])
-        card = self._resolve_object(seat, str(value), zones={"battlefield"}, controlled_only=True)
-        if card.object_id not in ids:
-            raise GameRuleError("Legend choice must keep one of the listed permanents")
-        moved = []
-        moved = [
-            object_id
-            for object_id in ids
-            if object_id != card.object_id
-            and self.state.cards[object_id].zone == "battlefield"
-        ]
-        self._move_cards_simultaneously(
-            [(object_id, "graveyard") for object_id in moved],
-            reason="legend rule",
-            log=False,
-        )
-        self._log(seat, "state.legend", f"{seat} kept {card.ref}; {len(moved)} legendary permanent(s) went to graveyards.", {"kept": card.ref, "moved": [self.state.cards[oid].ref for oid in moved]}, importance=2, changed_objects=[card.object_id, *moved])
-        self._stabilize()
-
-    def _complete_battle_protector_choice(
-        self,
-        decision: Any,
-    ) -> None:
-        seat = decision.actors[0]
-        object_id = str(decision.continuation["object_id"])
-        battle = self.state.cards.get(object_id)
-        if (
-            battle is None
-            or battle.zone != "battlefield"
-            or battle.controller != seat
-            or battle.logical_object_id
-            != str(
-                decision.continuation[
-                    "source_logical_object_id"
-                ]
-            )
-        ):
-            raise GameRuleError(
-                "The Battle protector choice no longer matches that "
-                "battlefield object"
-            )
-        protector = str(
-            decision.responses[seat].get("protector")
-            or decision.responses[seat].get("player")
-            or ""
-        )
-        candidates = {
-            str(value)
-            for value in decision.continuation.get(
-                "candidates", []
-            )
-        }
-        if protector not in candidates or protector not in self.active_seats:
-            raise GameRuleError(
-                "Choose one of the legal Battle protectors"
-            )
-        battle.battle_protector = protector
-        self._log(
-            seat,
-            "state.battle_protector",
-            f"{protector} became protector of {battle.ref}.",
-            {
-                "battle": battle.ref,
-                "protector": protector,
-                "reason": "state-based protector repair",
-            },
-            importance=2,
-            changed_objects=[battle.object_id],
-            changed_players=[seat, protector],
-        )
-        self._stabilize()
 
     def _eliminate_players(self, seats: Sequence[str], *, reason: str) -> None:
         unique = [seat for seat in unique_preserving_order(seats) if seat in self.active_seats]

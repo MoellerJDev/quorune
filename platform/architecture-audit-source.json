@@ -69,6 +69,10 @@
       ,"quorune/zone_transition_journal.py"
       ,"quorune/zone_transition_model.py"
       ,"quorune/zone_transitions.py"
+      ,"quorune/selection/public_choice.py"
+      ,"quorune/selection/searching.py"
+      ,"quorune/selection/storm.py"
+      ,"quorune/selection/targeting.py"
     ],
     "state_parameter_modules": [
       "quorune/record.py",
@@ -264,15 +268,24 @@
     },
     {
       "id": "search_target_and_choice",
-      "status": "split_with_engine_as_executor",
+      "status": "dedicated_typed_owners_with_record_v3_adapters",
       "owners": [
         "quorune/engine.py",
+        "quorune/selection/model.py",
+        "quorune/selection/target_query.py",
+        "quorune/selection/targeting.py",
+        "quorune/selection/searching.py",
+        "quorune/selection/apnap.py",
+        "quorune/selection/storm.py",
+        "quorune/selection/public_choice.py",
+        "quorune/semantic_choices",
+        "quorune/object_query.py",
         "quorune/target_protection.py",
         "quorune/target_protection_engine_adapter.py",
         "quorune/targets.py",
         "quorune/choice_forms.py"
       ],
-      "missing_dedicated_owner": true,
+      "missing_dedicated_owner": false,
       "context": {
         "responsibility": "Own targeting, nontarget public choices, hidden-zone searches, cost selections, ordering, distributions, and versioned continuations without conflating their rules contracts.",
         "public_ports_and_protocols": [
@@ -301,9 +314,12 @@
         ],
         "replay_behavior": "Choice actor, legal references, revision, source/stack identity, and completion are replay-critical.",
         "privacy_sensitivity": "Hidden-zone candidates and private choice payloads must never cross principal projections.",
-        "adrs": [],
-        "current_debt": "Typed predicate and protection helpers coexist with large engine begin/complete search, target, and choice switches.",
-        "removal_condition": "Dedicated target, search, and choice owners must consume one versioned continuation envelope and remove duplicate engine execution paths."
+        "adrs": [
+          "docs/adr/0014-typed-semantic-choice-and-effect-ownership.md",
+          "docs/adr/0061-typed-search-target-choice-owner.md"
+        ],
+        "current_debt": "SelectionContinuation v1 is the shared immutable envelope for represented target, search, APNAP, Storm, legend, and Battle choices. Distinct operation owners preserve target, hidden-search, public-nontarget, and cost-selection contracts. Existing SemanticChoiceContinuation v2 remains the typed Game Record v3 handler payload for already-extracted semantic choice operations rather than being reinterpreted or duplicated. CommanderEngine retains high-level decision dispatch, domain-specific candidate calculation, and explicit historical continuation adapters.",
+        "removal_condition": "No missing-owner condition remains. Historical Game Record v3 adapters may be removed only after supported records no longer require their prior continuation shapes; future choices must use a typed contract and immutable operation payload without restoring engine-local begin/complete execution."
       }
     },
     {
