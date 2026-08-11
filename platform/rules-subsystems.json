@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "scheduler_version": 1,
-  "policy": "dependency_ordered_behavioral_rules_v1",
+  "scheduler_version": 2,
+  "policy": "dependency_ordered_behavioral_rules_with_cross_program_reranking_v2",
   "active_profile_priority": [
     "commander_review",
     "commander_duel",
@@ -334,6 +334,47 @@
       ]
     }
   ],
+  "work_selection": {
+    "policy_version": 1,
+    "priority_classes": [
+      "ci_correctness",
+      "replay_privacy_defect",
+      "architecture_owner_extraction",
+      "runtime_oracle_removal",
+      "interaction_assurance",
+      "architecture_debt",
+      "rules_foundation",
+      "compiler_harvest",
+      "card_family"
+    ],
+    "interaction_assurance": {
+      "starting_uncovered_high_risk_pairs": 81
+    },
+    "coverage_family": {
+      "minimum_complete_card_gain": 50,
+      "candidate_limit": 5,
+      "excluded_efforts": [
+        "very_large"
+      ]
+    },
+    "reviewed_rerank_history": [
+      {
+        "candidate_id": "rules:ordinary-shroud-target-legality",
+        "selected_over": "rules:counter-producer-replacement-closure",
+        "reason": "Shroud established a shared target-advertisement and resolution-revalidation boundary with privacy-sensitive multiplayer behavior; that universal legality dependency was more urgent than the already dependency-ready counter-producer harvest."
+      },
+      {
+        "candidate_id": "rules:ordinary-echo-upkeep-trigger",
+        "selected_over": "rules:counter-producer-replacement-closure",
+        "reason": "Echo exercised upkeep ownership, source control and departure, trigger placement, payment, compact-CI data closure, and exact replay across several universal systems; the cross-owner correctness value outweighed its smaller card gain."
+      },
+      {
+        "candidate_id": "rules:ordinary-fixed-threshold-crew",
+        "selected_over": "rules:counter-producer-replacement-closure",
+        "reason": "Crew became an architecture sentinel for advertised and submitted activation parity, effective power, summoning sickness, atomic tap commitment, layer-4 type results, projection, rollback, and replay; that foundation justified reranking it ahead of the counter queue."
+      }
+    ]
+  },
   "selected_batch": {
     "batch_id": "counter-producer-replacement-closure",
     "subsystem_id": "replacement-prevention",

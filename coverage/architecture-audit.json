@@ -2878,7 +2878,7 @@
     "imports": {
       "highest_fan_in": [
         {
-          "fan_in": 77,
+          "fan_in": 78,
           "fan_out": 0,
           "module": "quorune.util"
         },
@@ -3030,7 +3030,7 @@
           "module": "quorune.semantic_choices.engine_coordination"
         }
       ],
-      "internal_edges": 1602,
+      "internal_edges": 1604,
       "modules": [
         {
           "fan_in": 2,
@@ -4399,7 +4399,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 2,
+          "fan_out": 3,
           "module": "quorune.rules_scheduler"
         },
         {
@@ -4968,7 +4968,7 @@
           "module": "quorune.unleash"
         },
         {
-          "fan_in": 77,
+          "fan_in": 78,
           "fan_out": 0,
           "module": "quorune.util"
         },
@@ -4976,6 +4976,11 @@
           "fan_in": 4,
           "fan_out": 0,
           "module": "quorune.version"
+        },
+        {
+          "fan_in": 1,
+          "fan_out": 1,
+          "module": "quorune.work_selection"
         },
         {
           "fan_in": 1,
@@ -5137,7 +5142,7 @@
       "structural_identity": "file, nearest symbol, literal value, conditional use"
     },
     "production": {
-      "file_count": 420,
+      "file_count": 421,
       "largest_functions_and_methods": [
         {
           "end_line": 1645,
@@ -5470,7 +5475,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 142242,
+      "logical_lines": 143043,
       "methods": {
         "dunder": 395,
         "private": 755,
@@ -5766,6 +5771,13 @@
           "physical_lines": 912
         },
         {
+          "file": "quorune/rules_scheduler.py",
+          "functions_and_methods": 22,
+          "language": "python",
+          "logical_lines": 816,
+          "physical_lines": 868
+        },
+        {
           "file": "quorune/zone_transitions.py",
           "functions_and_methods": 22,
           "language": "python",
@@ -5836,18 +5848,18 @@
           "physical_lines": 825
         },
         {
-          "file": "quorune/rules_scheduler.py",
-          "functions_and_methods": 21,
-          "language": "python",
-          "logical_lines": 741,
-          "physical_lines": 791
-        },
-        {
           "file": "quorune/damage_prevention_creation.py",
           "functions_and_methods": 20,
           "language": "python",
           "logical_lines": 739,
           "physical_lines": 803
+        },
+        {
+          "file": "quorune/work_selection.py",
+          "functions_and_methods": 16,
+          "language": "python",
+          "logical_lines": 726,
+          "physical_lines": 766
         },
         {
           "file": "quorune/effect_runtime/damage_life_and_turns.py",
@@ -8790,8 +8802,8 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 155838,
-      "python_file_count": 404,
+      "physical_lines": 156681,
+      "python_file_count": 405,
       "review_thresholds": {
         "function_logical_lines_review": 150,
         "module_logical_lines_review": 1500
@@ -8808,7 +8820,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1937,
+      "top_level_functions": 1954,
       "web_file_count": 16
     },
     "runtime_oracle_text_access": {
@@ -19642,7 +19654,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "951302a949286060289f27de36b33a9c9243069b1944321590ada7e6b7cf0cae",
+      "fingerprint": "ac8a76b9c373420a5486fbd399d1be8b51365c82c04738c779301ca354ff6cb6",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -20502,8 +20514,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2654,
-      "discovered_total": 5954,
+      "conventional_ast_cases": 2657,
+      "discovered_total": 5957,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 105,

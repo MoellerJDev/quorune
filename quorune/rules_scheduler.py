@@ -10,9 +10,14 @@ from typing import Any, Mapping, Sequence
 
 from .rules.component_resolution import implementation_component_resolves
 from .util import stable_json
+from .work_selection import (
+    WorkSelectionError,
+    build_work_selection,
+    load_work_selection_inputs,
+)
 
 
-RULES_SCHEDULER_SCHEMA_VERSION = 1
+RULES_SCHEDULER_SCHEMA_VERSION = 2
 _RULE_KEY = re.compile(r"^(?P<number>\d+)(?P<suffix>[a-z]*)$")
 
 
@@ -629,6 +634,7 @@ def build_rules_dependency_queue(
     capability_registry: Mapping[str, Any],
     *,
     repository_root: str | Path | None = None,
+    work_selection_inputs: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     context = _scheduler_context(rule_index, conformance, catalog)
     repository = (
@@ -647,6 +653,11 @@ def build_rules_dependency_queue(
             "select an incomplete dependency-ready bounded batch"
         )
     queue_items = _queue_items(context, capability_registry)
+    selected_batch = _selected_batch(context, queue_items)
+    if work_selection_inputs is None:
+        raise RulesSchedulerError(
+            "Cross-program work-selection inputs are required"
+        )
     payload: dict[str, Any] = {
         "schema_version": RULES_SCHEDULER_SCHEMA_VERSION,
         "scheduler_version": int(catalog.get("scheduler_version") or 0),
@@ -664,9 +675,14 @@ def build_rules_dependency_queue(
             catalog.get("unclassified_policy") or ""
         ),
         "summary": _queue_summary(context),
-        "selected_batch": _selected_batch(context, queue_items),
+        "selected_batch": selected_batch,
         "subsystems": _subsystem_rows(context, queue_items),
     }
+    payload["work_selection"] = build_work_selection(
+        selected_batch=selected_batch,
+        policy=dict(catalog.get("work_selection") or {}),
+        inputs=work_selection_inputs,
+    )
     payload["fingerprint"] = _hash(payload)
     return payload
 
@@ -686,12 +702,22 @@ def build_rules_dependency_queue_from_root(
             / "capability-registry.json"
         ),
         repository_root=repository,
+        work_selection_inputs=load_work_selection_inputs(repository),
     )
 
 
 def load_rules_dependency_queue(root: str | Path) -> dict[str, Any]:
     path = Path(root) / "coverage" / "rules-dependency-queue.json"
     value = _load(path)
+    if int(value.get("schema_version") or 0) != RULES_SCHEDULER_SCHEMA_VERSION:
+        raise RulesSchedulerError("Unsupported generated rules scheduler schema")
+    work_selection = value.get("work_selection")
+    if not isinstance(work_selection, Mapping) or not work_selection.get(
+        "selected_candidate_id"
+    ):
+        raise RulesSchedulerError(
+            "Generated rules queue lacks cross-program work selection"
+        )
     fingerprint = str(value.get("fingerprint") or "")
     unsigned = dict(value)
     unsigned.pop("fingerprint", None)
@@ -700,6 +726,31 @@ def load_rules_dependency_queue(root: str | Path) -> dict[str, Any]:
             "Rules dependency queue fingerprint does not match"
         )
     return value
+
+
+def _compact_work_candidate(candidate: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "candidate_id": candidate.get("candidate_id"),
+        "candidate_class": candidate.get("candidate_class"),
+        "rank": candidate.get("rank"),
+        "selection_state": candidate.get("selection_state"),
+        "universal_subsystem": candidate.get("universal_subsystem"),
+        "reusable_piece_count": len(candidate.get("reusable_piece_ids", [])),
+        "rules_dependency_count": len(candidate.get("rules_dependency_ids", [])),
+        "compiler_readiness": candidate.get("compiler_readiness"),
+        "runtime_readiness": candidate.get("runtime_readiness"),
+        "assurance_readiness": candidate.get("assurance_readiness"),
+        "expected_complete_card_gain": candidate.get(
+            "expected_complete_card_gain"
+        ),
+        "expected_material_residual_reduction": candidate.get(
+            "expected_material_residual_reduction"
+        ),
+        "architecture_debt_removed": candidate.get(
+            "architecture_debt_removed"
+        ),
+        "reranking_reason": candidate.get("reranking_reason"),
+    }
 
 
 def rules_next_work(
@@ -713,11 +764,32 @@ def rules_next_work(
         queue = load_rules_dependency_queue(repository)
         selected = dict(queue["selected_batch"])
         next_rules = list(selected.pop("rules", []))
+        work_selection = dict(queue.get("work_selection") or {})
+        selected_work_id = work_selection.get("selected_candidate_id")
+        selected_work = next(
+            (
+                dict(candidate)
+                for candidate in work_selection.get("candidates", [])
+                if candidate.get("candidate_id") == selected_work_id
+            ),
+            None,
+        )
         return {
             "schema_version": RULES_SCHEDULER_SCHEMA_VERSION,
             "effective_date": queue.get("effective_date"),
             "scheduler_fingerprint": queue.get("fingerprint"),
             "selected_batch": selected,
+            "selected_work": (
+                _compact_work_candidate(selected_work)
+                if selected_work is not None
+                else None
+            ),
+            "work_candidates": [
+                _compact_work_candidate(candidate)
+                for candidate in list(work_selection.get("candidates", []))[
+                    : max(1, int(limit))
+                ]
+            ],
             "next": next_rules[: max(1, int(limit))],
         }
 
@@ -781,7 +853,12 @@ def rules_dependency_queue_errors(root: str | Path) -> list[str]:
     try:
         expected = build_rules_dependency_queue_from_root(root)
         actual = load_rules_dependency_queue(root)
-    except (OSError, json.JSONDecodeError, RulesSchedulerError) as exc:
+    except (
+        OSError,
+        json.JSONDecodeError,
+        RulesSchedulerError,
+        WorkSelectionError,
+    ) as exc:
         return [str(exc)]
     if stable_json(actual) != stable_json(expected):
         return [
