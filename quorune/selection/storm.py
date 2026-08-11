@@ -3,6 +3,7 @@ from __future__ import annotations
 """Typed target-choice owner for represented Storm copy creation."""
 
 import copy
+from dataclasses import dataclass
 from typing import Any, Mapping, Protocol
 
 from ..errors import GameRuleError
@@ -17,6 +18,15 @@ from .model import (
 
 
 STORM_OPERATION_ID = "selection.target.storm.v1"
+
+
+@dataclass(frozen=True, slots=True)
+class StormCompletionContext:
+    seat: str
+    response: Mapping[str, Any]
+    trigger: StackItem
+    count: int
+    template: dict[str, Any]
 
 
 class StormTargetChoiceHost(Protocol):
@@ -122,7 +132,10 @@ class StormTargetChoiceOwnerMixin:
             },
         )
 
-    def _complete_storm_choice(self, decision: Any) -> None:
+    def _storm_completion_context(
+        self,
+        decision: Any,
+    ) -> StormCompletionContext:
         seat = decision.actors[0]
         response = decision.responses[seat]
         raw_continuation = decision.continuation
@@ -204,6 +217,23 @@ class StormTargetChoiceOwnerMixin:
                 "copy_template"
             ) != template:
                 raise GameRuleError("Storm copy specification changed")
+        return StormCompletionContext(
+            seat=seat,
+            response=response,
+            trigger=trigger,
+            count=count,
+            template=template,
+        )
+
+    def _build_storm_copies(
+        self,
+        context: StormCompletionContext,
+    ) -> list[StackItem]:
+        seat = context.seat
+        response = context.response
+        trigger = context.trigger
+        count = context.count
+        template = context.template
         submitted = response.get("copy_targets")
         if submitted is None:
             submitted = [
@@ -277,6 +307,16 @@ class StormTargetChoiceOwnerMixin:
                     },
                 )
             )
+        return copies
+
+    def _commit_storm_copies(
+        self,
+        context: StormCompletionContext,
+        copies: list[StackItem],
+    ) -> None:
+        seat = context.seat
+        trigger = context.trigger
+        template = context.template
         source_card = self.state.cards.get(
             str(template.get("card_object_id") or "")
         )
@@ -314,6 +354,11 @@ class StormTargetChoiceOwnerMixin:
             importance=2,
         )
         self._grant_priority(self.state.active_player)
+
+    def _complete_storm_choice(self, decision: Any) -> None:
+        context = self._storm_completion_context(decision)
+        copies = self._build_storm_copies(context)
+        self._commit_storm_copies(context, copies)
 
 
 __all__ = ["StormTargetChoiceOwnerMixin"]

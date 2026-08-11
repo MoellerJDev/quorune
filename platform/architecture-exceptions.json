@@ -634,6 +634,31 @@
         "tests.test_turn_priority_owner.TurnPriorityDecisionOwnerTests.test_turn_owner_step_entry_sets_boundary_before_callback",
         "tests.test_decision_opportunities.DecisionOpportunityTests.test_private_draw_invalidates_yield"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0030",
+      "adr": "docs/adr/0061-typed-search-target-choice-owner.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "8b596db8dd834cfae4c4a6c2d5adc539e851e07a2a82c526cc26e4ed64c5c4b4",
+      "exact_allowance": "Only the reduced schema-3 structural state-write identities, owner classifications, prohibited runtime Oracle-text access identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, legacy helpers, and module classifications serialized after typed search, target, and choice ownership.",
+      "rationale": "The selection owners move target proposal and revalidation, hidden-zone search, APNAP coordination, Storm target and copy commitment, legend selection, and represented Battle choices out of CommanderEngine. Three engine-local stack-write identities become declared canonical owner writes, engine size and runtime Oracle-text interpretation decrease, unowned mutation remains zero, and reviewed generic zone and protocol literals do not introduce card-identity dispatch.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact reduced structural identities and counts serialized at implementation head 5044a180 plus the immutable selection envelope, distinct selection contracts, target and hidden-search privacy ports, explicit Game Record v3 adapters, and canonical owner surfaces described by ADR 0061; new runtime Oracle interpretation, unowned mutation, engine-local writes, oversized symbols, or card-identity behavior remain forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered engine write and prohibited runtime-text interpretation has migrated to declared typed owners; retain selection owners only while they preserve strict actor, revision, identity, visibility, rollback, privacy, and exact-replay validation.",
+      "target_milestone": "typed search-target-choice ownership and interaction-assurance recovery",
+      "replay_implications": "Game Record v3 state and commands remain compatible through explicit operation-local adapters; new selections pin actor, state revision, source and stack identity, visibility, and immutable operation payloads.",
+      "privacy_implications": "Hidden search candidates remain actor-private, public nontarget choices expose only public references and seats, and target projection retains represented protection and effective-characteristic restrictions.",
+      "security_implications": "Selection owners consume closed typed contracts and server-issued decisions only; they grant no arbitrary callback, raw capability access, runtime Oracle compiler, card-name dispatch, or cross-seat authority.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_direct_writes_are_classified_by_actual_owner",
+        "tests.test_architecture_cli.ArchitectureCliTests.test_debt_writes_and_runtime_text_are_current_generated_views",
+        "tests.test_selection_ownership.SelectionContinuationTests.test_round_trip_is_deeply_immutable_and_canonical",
+        "tests.test_semantic_searches.SemanticPrivateSearchTests.test_search_envelope_tampering_fails_before_mutation",
+        "tests.test_semantic_searches.SemanticPrivateSearchTests.test_entomb_private_search_continuation_and_exact_replay",
+        "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_protector_choice_replays_exactly",
+        "tests.test_interactions_v070.InteractionKernelTests.test_flusterstorm_storm_and_target_reassignment"
+      ]
     }
   ]
 }

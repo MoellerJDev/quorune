@@ -187,13 +187,7 @@ def _semantic_coverage(engine: CommanderEngine) -> dict[str, Any]:
             preflight_status["status"] == "fully_playable"
         )
         oracle = record.oracle_text.casefold()
-        builtin_fetch = bool(
-            card
-            and any(
-                ability.library_search_types
-                for ability in engine._activated_abilities(card)
-            )
-        )
+        builtin_fetch = bool(card and any(ability.library_search_types for ability in engine._activated_abilities(card)))
         builtin_land_entry = operations == {"land.play"} and any(
             marker in oracle
             for marker in (

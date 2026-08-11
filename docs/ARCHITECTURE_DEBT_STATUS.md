@@ -2,7 +2,7 @@
 title: "Architecture debt status"
 status: "generated"
 authoritative_source: "coverage/architecture-audit.json"
-verified: "23ae81117142b2685be9e6b8a3d524bed088df4b5796a4d71a87fce5ddf86bad"
+verified: "66be4e9f7336bfd58ad866ab9937e16e6b55dfec27836682f6da72328f571dcb"
 audience: "maintainers and rules contributors"
 maintenance: "generated"
 generated_source: "coverage/architecture-audit.json"
@@ -11,12 +11,12 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_architecture_audi
 
 # Architecture debt status
 
-Source fingerprint: `23ae81117142b2685be9e6b8a3d524bed088df4b5796a4d71a87fce5ddf86bad`
+Source fingerprint: `66be4e9f7336bfd58ad866ab9937e16e6b55dfec27836682f6da72328f571dcb`
 
 ## Current top-level state
 
-- Production logical lines: `140732`
-- Engine logical lines: `10244`
+- Production logical lines: `141870`
+- Engine logical lines: `8005`
 - Direct GameState-write heuristic: `83`
 - Registered typed semantic handlers: `98`
 - Registered runtime components: `44`
@@ -24,7 +24,7 @@ Source fingerprint: `23ae81117142b2685be9e6b8a3d524bed088df4b5796a4d71a87fce5ddf
 
 ## Top blockers
 
-- Missing dedicated owner: `search_target_and_choice`.
+- None detected by the configured architecture policy.
 
 Complete module, symbol, ownership, test, and documentation inventories are in the [machine-readable architecture audit](../coverage/architecture-audit.json).
 

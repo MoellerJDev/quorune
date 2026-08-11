@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from dataclasses import dataclass
 import re
 from typing import Any, Mapping, Protocol, Sequence
 
@@ -18,6 +19,18 @@ from .model import (
 
 SEARCH_OPERATION_ID = "selection.search.semantic.v1"
 FETCH_OPERATION_ID = "selection.search.fetch.v1"
+
+
+@dataclass(frozen=True, slots=True)
+class SemanticSearchCompletionContext:
+    seat: str
+    response: Mapping[str, Any]
+    continuation: dict[str, Any]
+    stack_ref: str
+    item: StackItem
+    frame: dict[str, Any]
+    effect: dict[str, Any]
+    options: frozenset[str]
 
 
 class HiddenSearchHost(Protocol):
@@ -608,7 +621,10 @@ class HiddenSearchOwnerMixin:
             ).to_dict()
         )
 
-    def _complete_semantic_search(self, decision: Any) -> None:
+    def _semantic_search_completion_context(
+        self,
+        decision: Any,
+    ) -> SemanticSearchCompletionContext:
         seat = decision.actors[0]
         response = decision.responses[seat]
         raw_continuation = decision.continuation
@@ -673,6 +689,25 @@ class HiddenSearchOwnerMixin:
         }
         if "selection" in raw_continuation and issued_options != options:
             raise GameRuleError("Semantic search candidates changed")
+        return SemanticSearchCompletionContext(
+            seat=seat,
+            response=response,
+            continuation=continuation,
+            stack_ref=stack_ref,
+            item=item,
+            frame=frame,
+            effect=effect,
+            options=frozenset(options),
+        )
+
+    def _semantic_search_selected_values(
+        self,
+        context: SemanticSearchCompletionContext,
+    ) -> tuple[list[str], list[str]]:
+        response = context.response
+        effect = context.effect
+        options = context.options
+        seat = context.seat
         explicit_search_cards = response.get("search_cards")
         if explicit_search_cards is not None and (
             not isinstance(explicit_search_cards, Sequence)
@@ -755,6 +790,12 @@ class HiddenSearchOwnerMixin:
                     "Selected search cards do not satisfy the aggregate "
                     "mana-value constraint"
                 )
+        return values, search_zones
+
+    @staticmethod
+    def _semantic_search_destination(
+        effect: Mapping[str, Any],
+    ) -> tuple[str, str, str | int]:
         destination_spec = str(effect.get("destination") or "hand")
         position: str | int = effect.get(
             "destination_position",
@@ -777,6 +818,21 @@ class HiddenSearchOwnerMixin:
             raise GameRuleError(
                 f"Unsupported semantic search destination {destination_spec!r}"
             )
+        return destination_spec, destination, position
+
+    def _move_semantic_search_results(
+        self,
+        context: SemanticSearchCompletionContext,
+        *,
+        values: Sequence[str],
+        search_zones: Sequence[str],
+        destination: str,
+        position: str | int,
+    ) -> list[CardInstance]:
+        seat = context.seat
+        response = context.response
+        effect = context.effect
+        item = context.item
         reveal = bool(effect.get("reveal", False))
         moved: list[CardInstance] = []
         for ref in values:
@@ -843,6 +899,21 @@ class HiddenSearchOwnerMixin:
                     semantic_events=destination == "battlefield",
                 )
             )
+        return moved
+
+    def _record_semantic_search_result(
+        self,
+        decision: Any,
+        context: SemanticSearchCompletionContext,
+        *,
+        destination_spec: str,
+        destination: str,
+        moved: Sequence[CardInstance],
+    ) -> None:
+        seat = context.seat
+        effect = context.effect
+        item = context.item
+        reveal = bool(effect.get("reveal", False))
         public_choice = reveal or destination in {
             "battlefield",
             "graveyard",
@@ -885,19 +956,42 @@ class HiddenSearchOwnerMixin:
             self.shuffle_library(seat, reason=f"{item.label} resolved")
         item.context.setdefault("semantic_continuations", []).append(
             {
-                **frame,
+                **context.frame,
                 "pending_choice_id": decision.decision_id,
                 "choice_result": [card.ref for card in moved],
                 "resumed": True,
             }
         )
         self._continue_resolution(
-            stack_ref=stack_ref,
+            stack_ref=context.stack_ref,
             effects=[
                 dict(value)
-                for value in continuation.get("remaining", [])
+                for value in context.continuation.get("remaining", [])
             ],
-            destination=continuation.get("destination"),
-            note=str(continuation.get("note") or ""),
-            instruction_pointer=int(frame.get("instruction_pointer", 0)) + 1,
+            destination=context.continuation.get("destination"),
+            note=str(context.continuation.get("note") or ""),
+            instruction_pointer=(
+                int(context.frame.get("instruction_pointer", 0)) + 1
+            ),
+        )
+
+    def _complete_semantic_search(self, decision: Any) -> None:
+        context = self._semantic_search_completion_context(decision)
+        values, search_zones = self._semantic_search_selected_values(context)
+        destination_spec, destination, position = (
+            self._semantic_search_destination(context.effect)
+        )
+        moved = self._move_semantic_search_results(
+            context,
+            values=values,
+            search_zones=search_zones,
+            destination=destination,
+            position=position,
+        )
+        self._record_semantic_search_result(
+            decision,
+            context,
+            destination_spec=destination_spec,
+            destination=destination,
+            moved=moved,
         )

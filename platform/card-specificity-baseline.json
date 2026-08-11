@@ -11,7 +11,57 @@
       "column": 8,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 54,
+      "line": 57,
+      "matched_printed_name": "Plains",
+      "symbol": null,
+      "value": "plains"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 8,
+      "file": "quorune/abilities.py",
+      "in_condition": false,
+      "line": 58,
+      "matched_printed_name": "Island",
+      "symbol": null,
+      "value": "island"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 8,
+      "file": "quorune/abilities.py",
+      "in_condition": false,
+      "line": 59,
+      "matched_printed_name": "Swamp",
+      "symbol": null,
+      "value": "swamp"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 8,
+      "file": "quorune/abilities.py",
+      "in_condition": false,
+      "line": 60,
+      "matched_printed_name": "Mountain",
+      "symbol": null,
+      "value": "mountain"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 8,
+      "file": "quorune/abilities.py",
+      "in_condition": false,
+      "line": 61,
+      "matched_printed_name": "Forest",
+      "symbol": null,
+      "value": "forest"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 8,
+      "file": "quorune/abilities.py",
+      "in_condition": false,
+      "line": 70,
       "matched_printed_name": "Six",
       "symbol": null,
       "value": "six"
@@ -21,7 +71,7 @@
       "column": 19,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 163,
+      "line": 189,
       "matched_printed_name": "Life",
       "symbol": "compact",
       "value": "life"
@@ -31,7 +81,7 @@
       "column": 17,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 219,
+      "line": 247,
       "matched_printed_name": "Channel",
       "symbol": "_ability_zones",
       "value": "channel"
@@ -41,7 +91,7 @@
       "column": 31,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 219,
+      "line": 247,
       "matched_printed_name": "Channel",
       "symbol": "_ability_zones",
       "value": "channel"
@@ -51,7 +101,7 @@
       "column": 82,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 219,
+      "line": 247,
       "matched_printed_name": "Channel",
       "symbol": "_ability_zones",
       "value": "channel"
@@ -61,7 +111,7 @@
       "column": 17,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 221,
+      "line": 249,
       "matched_printed_name": "Cycling",
       "symbol": "_ability_zones",
       "value": "cycling"
@@ -71,7 +121,7 @@
       "column": 56,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 223,
+      "line": 251,
       "matched_printed_name": "Channel",
       "symbol": "_ability_zones",
       "value": "channel"
@@ -81,7 +131,7 @@
       "column": 50,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 233,
+      "line": 261,
       "matched_printed_name": "Unearth",
       "symbol": "_ability_zones",
       "value": "unearth"
@@ -91,7 +141,7 @@
       "column": 62,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 234,
+      "line": 262,
       "matched_printed_name": "Unearth",
       "symbol": "_ability_zones",
       "value": "unearth"
@@ -101,7 +151,7 @@
       "column": 16,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 237,
+      "line": 265,
       "matched_printed_name": "Exile",
       "symbol": "_ability_zones",
       "value": "exile"
@@ -111,7 +161,7 @@
       "column": 25,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 396,
+      "line": 442,
       "matched_printed_name": "Exile",
       "symbol": "_craft_keyword_abilities",
       "value": "exile"
@@ -121,7 +171,7 @@
       "column": 31,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 427,
+      "line": 473,
       "matched_printed_name": "Sacrifice",
       "symbol": "_parse_cost",
       "value": "sacrifice"
@@ -131,7 +181,7 @@
       "column": 51,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 427,
+      "line": 473,
       "matched_printed_name": "Exile",
       "symbol": "_parse_cost",
       "value": "exile"
@@ -141,7 +191,7 @@
       "column": 8,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 437,
+      "line": 483,
       "matched_printed_name": "Sacrifice",
       "symbol": "_parse_cost",
       "value": "sacrifice"
@@ -151,7 +201,7 @@
       "column": 8,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 442,
+      "line": 488,
       "matched_printed_name": "Exile",
       "symbol": "_parse_cost",
       "value": "exile"
@@ -161,7 +211,7 @@
       "column": 28,
       "file": "quorune/abilities.py",
       "in_condition": true,
-      "line": 464,
+      "line": 510,
       "matched_printed_name": "Channel",
       "symbol": "_parse_cost",
       "value": "channel"
@@ -171,7 +221,7 @@
       "column": 31,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 502,
+      "line": 548,
       "matched_printed_name": "Sacrifice",
       "symbol": "_parse_cost",
       "value": "sacrifice"
@@ -181,7 +231,7 @@
       "column": 27,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 503,
+      "line": 549,
       "matched_printed_name": "Exile",
       "symbol": "_parse_cost",
       "value": "exile"
@@ -191,7 +241,7 @@
       "column": 17,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 516,
+      "line": 562,
       "matched_printed_name": "Sacrifice",
       "symbol": "_cost_choice",
       "value": "sacrifice"
@@ -201,7 +251,7 @@
       "column": 17,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 533,
+      "line": 579,
       "matched_printed_name": "Return",
       "symbol": "_cost_choice",
       "value": "return"
@@ -211,7 +261,7 @@
       "column": 9,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 544,
+      "line": 590,
       "matched_printed_name": "Cycling",
       "symbol": "_normalized_ability_line",
       "value": "Cycling"
@@ -221,7 +271,7 @@
       "column": 58,
       "file": "quorune/abilities.py",
       "in_condition": false,
-      "line": 557,
+      "line": 603,
       "matched_printed_name": "Cycling",
       "symbol": "_normalized_ability_line",
       "value": "Cycling"
@@ -2041,7 +2091,7 @@
       "column": 44,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 333,
+      "line": 338,
       "matched_printed_name": "Exile",
       "symbol": null,
       "value": "exile"
@@ -2051,7 +2101,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 334,
+      "line": 339,
       "matched_printed_name": "Library",
       "symbol": null,
       "value": "library"
@@ -2061,7 +2111,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 657,
+      "line": 667,
       "matched_printed_name": "Reason",
       "symbol": "become_monarch",
       "value": "reason"
@@ -2071,7 +2121,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 761,
+      "line": 771,
       "matched_printed_name": "Library",
       "symbol": "_assert_invariants",
       "value": "library"
@@ -2081,7 +2131,7 @@
       "column": 52,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 761,
+      "line": 771,
       "matched_printed_name": "Exile",
       "symbol": "_assert_invariants",
       "value": "exile"
@@ -2091,7 +2141,7 @@
       "column": 63,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 870,
+      "line": 880,
       "matched_printed_name": "Life",
       "symbol": "_effective_card_data",
       "value": "life"
@@ -2101,7 +2151,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1760,
+      "line": 1770,
       "matched_printed_name": "Lands",
       "symbol": "_opening_hand_signals",
       "value": "lands"
@@ -2111,7 +2161,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1837,
+      "line": 1847,
       "matched_printed_name": "Pilot",
       "symbol": "_issue_mulligan_declaration",
       "value": "pilot"
@@ -2121,7 +2171,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1845,
+      "line": 1855,
       "matched_printed_name": "Index",
       "symbol": "_issue_mulligan_declaration",
       "value": "index"
@@ -2131,7 +2181,7 @@
       "column": 51,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1901,
+      "line": 1911,
       "matched_printed_name": "Index",
       "symbol": "_complete_mulligan_declaration",
       "value": "index"
@@ -2141,7 +2191,7 @@
       "column": 42,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1917,
+      "line": 1927,
       "matched_printed_name": "Library",
       "symbol": "_perform_mulligan_redraws",
       "value": "library"
@@ -2151,7 +2201,7 @@
       "column": 21,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1937,
+      "line": 1947,
       "matched_printed_name": "Pilot",
       "symbol": "_perform_mulligan_redraws",
       "value": "pilot"
@@ -2161,7 +2211,7 @@
       "column": 42,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 1978,
+      "line": 1988,
       "matched_printed_name": "Library",
       "symbol": "_complete_mulligan_bottom",
       "value": "library"
@@ -2171,7 +2221,7 @@
       "column": 93,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2050,
+      "line": 2060,
       "matched_printed_name": "Reason",
       "symbol": "_clear_mana",
       "value": "reason"
@@ -2181,7 +2231,7 @@
       "column": 39,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 2232,
+      "line": 2234,
       "matched_printed_name": "Seedborn Muse",
       "symbol": "_enter_step",
       "value": "Seedborn Muse"
@@ -2191,7 +2241,7 @@
       "column": 32,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2251,
+      "line": 2253,
       "matched_printed_name": "Reason",
       "symbol": "_enter_step",
       "value": "reason"
@@ -2201,7 +2251,7 @@
       "column": 42,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2251,
+      "line": 2253,
       "matched_printed_name": "Seedborn Muse",
       "symbol": "_enter_step",
       "value": "Seedborn Muse"
@@ -2211,7 +2261,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2265,
+      "line": 2267,
       "matched_printed_name": "Reason",
       "symbol": "_enter_step",
       "value": "reason"
@@ -2221,7 +2271,7 @@
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2301,
+      "line": 2303,
       "matched_printed_name": "Pilot",
       "symbol": "_enter_step",
       "value": "pilot"
@@ -2231,7 +2281,7 @@
       "column": 32,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2350,
+      "line": 2352,
       "matched_printed_name": "Reason",
       "symbol": "_enter_step",
       "value": "reason"
@@ -2241,7 +2291,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 2489,
+      "line": 2491,
       "matched_printed_name": "Reason",
       "symbol": "_remove_object_from_combat",
       "value": "reason"
@@ -2251,7 +2301,7 @@
       "column": 45,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3124,
+      "line": 3126,
       "matched_printed_name": "Life",
       "symbol": "_land_enters_tapped",
       "value": "life"
@@ -2261,7 +2311,7 @@
       "column": 31,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3193,
+      "line": 3195,
       "matched_printed_name": "Life",
       "symbol": "_land_entry_life_amount",
       "value": "life"
@@ -2271,7 +2321,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3353,
+      "line": 3355,
       "matched_printed_name": "Zombie",
       "symbol": "_compiled_zone_cast_permission",
       "value": "zombie"
@@ -2281,7 +2331,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3456,
+      "line": 3458,
       "matched_printed_name": "Return",
       "symbol": "_pay_ability_choice_costs",
       "value": "return"
@@ -2291,7 +2341,7 @@
       "column": 20,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3457,
+      "line": 3459,
       "matched_printed_name": "Exile",
       "symbol": "_pay_ability_choice_costs",
       "value": "exile"
@@ -2301,77 +2351,17 @@
       "column": 29,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 3457,
+      "line": 3459,
       "matched_printed_name": "Exile",
       "symbol": "_pay_ability_choice_costs",
       "value": "exile"
     },
     {
       "card_specificity_exempt": false,
-      "column": 16,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 3554,
-      "matched_printed_name": "Plains",
-      "symbol": "_fetch_land_types",
-      "value": "plains"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 16,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 3555,
-      "matched_printed_name": "Island",
-      "symbol": "_fetch_land_types",
-      "value": "island"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 16,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 3556,
-      "matched_printed_name": "Swamp",
-      "symbol": "_fetch_land_types",
-      "value": "swamp"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 16,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 3557,
-      "matched_printed_name": "Mountain",
-      "symbol": "_fetch_land_types",
-      "value": "mountain"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 16,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 3558,
-      "matched_printed_name": "Forest",
-      "symbol": "_fetch_land_types",
-      "value": "forest"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 56,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 3564,
-      "matched_printed_name": "Library",
-      "symbol": "_fetch_land_options",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 25,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 4016,
+      "line": 3949,
       "matched_printed_name": "X",
       "symbol": "_compiled_printed_cost_options",
       "value": "X"
@@ -2381,7 +2371,7 @@
       "column": 60,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 4097,
+      "line": 4030,
       "matched_printed_name": "X",
       "symbol": "_compiled_printed_cost_options",
       "value": "X"
@@ -2391,7 +2381,7 @@
       "column": 55,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 4106,
+      "line": 4039,
       "matched_printed_name": "X",
       "symbol": "_compiled_printed_cost_options",
       "value": "X"
@@ -2401,47 +2391,27 @@
       "column": 58,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 4184,
+      "line": 4117,
       "matched_printed_name": "Lands",
       "symbol": "_priority_window_empty",
       "value": "lands"
     },
     {
       "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 4363,
-      "matched_printed_name": "Exile",
-      "symbol": "_target_candidate_rows",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 21,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5041,
+      "line": 4228,
       "matched_printed_name": "Pilot",
       "symbol": "_program_can_auto_resolve",
       "value": "pilot"
     },
     {
       "card_specificity_exempt": false,
-      "column": 17,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 5142,
-      "matched_printed_name": "Pilot",
-      "symbol": "_begin_battle_entry_protector_choice",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5297,
+      "line": 4343,
       "matched_printed_name": "Exile",
       "symbol": "_begin_siege_defeated_resolution",
       "value": "exile"
@@ -2451,7 +2421,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 5301,
+      "line": 4347,
       "matched_printed_name": "Exile",
       "symbol": "_begin_siege_defeated_resolution",
       "value": "exile"
@@ -2461,67 +2431,17 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5363,
+      "line": 4409,
       "matched_printed_name": "Reason",
       "symbol": "_begin_siege_defeated_resolution",
       "value": "reason"
     },
     {
       "card_specificity_exempt": false,
-      "column": 17,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 5430,
-      "matched_printed_name": "Pilot",
-      "symbol": "_begin_siege_defeated_resolution",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 28,
-      "file": "quorune/engine.py",
-      "in_condition": true,
-      "line": 5498,
-      "matched_printed_name": "Exile",
-      "symbol": "_complete_siege_defeated_choice",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 24,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 5547,
-      "matched_printed_name": "Exile",
-      "symbol": "_complete_siege_defeated_choice",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 33,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 5555,
-      "matched_printed_name": "Exile",
-      "symbol": "_complete_siege_defeated_choice",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 25,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 5606,
-      "matched_printed_name": "Pilot",
-      "symbol": "_prepare_stack_resolution",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 30,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5713,
+      "line": 4581,
       "matched_printed_name": "Return",
       "symbol": "_prepare_stack_resolution",
       "value": "Return "
@@ -2531,7 +2451,7 @@
       "column": 34,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5722,
+      "line": 4590,
       "matched_printed_name": "Return",
       "symbol": "_prepare_stack_resolution",
       "value": "Return "
@@ -2541,37 +2461,17 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 5773,
+      "line": 4641,
       "matched_printed_name": "Reason",
       "symbol": "_prepare_stack_resolution",
       "value": "reason"
     },
     {
       "card_specificity_exempt": false,
-      "column": 17,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 5924,
-      "matched_printed_name": "Pilot",
-      "symbol": "_prepare_storm_resolution",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 62,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6021,
-      "matched_printed_name": "Copy",
-      "symbol": "_complete_storm_choice",
-      "value": " copy"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 6102,
+      "line": 4775,
       "matched_printed_name": "Library",
       "symbol": "_create_copy_object",
       "value": "library"
@@ -2581,7 +2481,7 @@
       "column": 12,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 6106,
+      "line": 4779,
       "matched_printed_name": "Exile",
       "symbol": "_create_copy_object",
       "value": "exile"
@@ -2591,7 +2491,7 @@
       "column": 63,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 6116,
+      "line": 4789,
       "matched_printed_name": "Copy",
       "symbol": "_create_copy_object",
       "value": "Copy"
@@ -2601,7 +2501,7 @@
       "column": 34,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 6257,
+      "line": 4930,
       "matched_printed_name": "Copy",
       "symbol": "_copy_stack_item",
       "value": " copy"
@@ -2611,7 +2511,7 @@
       "column": 26,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 6299,
+      "line": 4972,
       "matched_printed_name": "Copied",
       "symbol": "_copy_stack_item",
       "value": " copied "
@@ -2621,297 +2521,27 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 6304,
+      "line": 4977,
       "matched_printed_name": "Reason",
       "symbol": "_copy_stack_item",
       "value": "reason"
     },
     {
       "card_specificity_exempt": false,
-      "column": 27,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6383,
-      "matched_printed_name": "Library",
-      "symbol": "_resolve_fetch_land",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 6576,
-      "matched_printed_name": "Reason",
-      "symbol": "_revalidate_resolution_targets",
-      "value": "reason"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 24,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6686,
+      "line": 5116,
       "matched_printed_name": "Reason",
       "symbol": "_continue_resolution",
       "value": "reason"
     },
     {
       "card_specificity_exempt": false,
-      "column": 25,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6911,
-      "matched_printed_name": "Plains",
-      "symbol": "_search_candidate_matches",
-      "value": "plains"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 35,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6911,
-      "matched_printed_name": "Island",
-      "symbol": "_search_candidate_matches",
-      "value": "island"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 45,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6911,
-      "matched_printed_name": "Swamp",
-      "symbol": "_search_candidate_matches",
-      "value": "swamp"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 54,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6911,
-      "matched_printed_name": "Mountain",
-      "symbol": "_search_candidate_matches",
-      "value": "mountain"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 66,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6911,
-      "matched_printed_name": "Forest",
-      "symbol": "_search_candidate_matches",
-      "value": "forest"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 41,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6922,
-      "matched_printed_name": "Library",
-      "symbol": "_semantic_search_options",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 25,
-      "file": "quorune/engine.py",
-      "in_condition": true,
-      "line": 6930,
-      "matched_printed_name": "Library",
-      "symbol": "_semantic_search_options",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 57,
-      "file": "quorune/engine.py",
-      "in_condition": true,
-      "line": 6930,
-      "matched_printed_name": "Exile",
-      "symbol": "_semantic_search_options",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 48,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6981,
-      "matched_printed_name": "Library",
-      "symbol": "_begin_semantic_search",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 6989,
-      "matched_printed_name": "Library",
-      "symbol": "_begin_semantic_search",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 17,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7045,
-      "matched_printed_name": "Pilot",
-      "symbol": "_begin_semantic_search",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 48,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7151,
-      "matched_printed_name": "Library",
-      "symbol": "_complete_semantic_search",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7159,
-      "matched_printed_name": "Library",
-      "symbol": "_complete_semantic_search",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 36,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7208,
-      "matched_printed_name": "Library",
-      "symbol": "_complete_semantic_search",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 36,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7210,
-      "matched_printed_name": "Library",
-      "symbol": "_complete_semantic_search",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/engine.py",
-      "in_condition": true,
-      "line": 7215,
-      "matched_printed_name": "Exile",
-      "symbol": "_complete_semantic_search",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/engine.py",
-      "in_condition": true,
-      "line": 7216,
-      "matched_printed_name": "Library",
-      "symbol": "_complete_semantic_search",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7287,
-      "matched_printed_name": "Exile",
-      "symbol": "_complete_semantic_search",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 50,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7302,
-      "matched_printed_name": "Library",
-      "symbol": "_complete_semantic_search",
-      "value": "library"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 17,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7409,
-      "matched_printed_name": "Pilot",
-      "symbol": "_issue_next_apnap_choice",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 41,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7447,
-      "matched_printed_name": "Sacrifice",
-      "symbol": "_apply_apnap_choices",
-      "value": "sacrifice"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7456,
-      "matched_printed_name": "Sacrifice",
-      "symbol": "_apply_apnap_choices",
-      "value": "sacrifice"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 12,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7458,
-      "matched_printed_name": "Exile",
-      "symbol": "_apply_apnap_choices",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 21,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7458,
-      "matched_printed_name": "Exile",
-      "symbol": "_apply_apnap_choices",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 27,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 7466,
-      "matched_printed_name": "Exile",
-      "symbol": "_apply_apnap_choices",
-      "value": "exile"
-    },
-    {
-      "card_specificity_exempt": false,
       "column": 40,
       "file": "quorune/engine.py",
       "in_condition": true,
-      "line": 7604,
+      "line": 5424,
       "matched_printed_name": "Prohibit",
       "symbol": "_can_block",
       "value": "prohibit"
@@ -2921,7 +2551,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 8852,
+      "line": 6672,
       "matched_printed_name": "Pilot",
       "symbol": "_issue_attackers",
       "value": "pilot"
@@ -2931,7 +2561,7 @@
       "column": 17,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9325,
+      "line": 7145,
       "matched_printed_name": "Pilot",
       "symbol": "_issue_next_blocker",
       "value": "pilot"
@@ -2941,7 +2571,7 @@
       "column": 21,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 9518,
+      "line": 7338,
       "matched_printed_name": "Pilot",
       "symbol": "_continue_combat_damage_assignments",
       "value": "pilot"
@@ -2951,7 +2581,7 @@
       "column": 32,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10135,
+      "line": 7955,
       "matched_printed_name": "Reason",
       "symbol": "_repair_battle_protectors",
       "value": "reason"
@@ -2961,39 +2591,9 @@
       "column": 28,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10183,
+      "line": 8003,
       "matched_printed_name": "Reason",
       "symbol": "_repair_battle_protectors",
-      "value": "reason"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 25,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 10191,
-      "matched_printed_name": "Pilot",
-      "symbol": "_repair_battle_protectors",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 25,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 10477,
-      "matched_printed_name": "Pilot",
-      "symbol": "_stabilize",
-      "value": "pilot"
-    },
-    {
-      "card_specificity_exempt": false,
-      "column": 16,
-      "file": "quorune/engine.py",
-      "in_condition": false,
-      "line": 10558,
-      "matched_printed_name": "Reason",
-      "symbol": "_complete_battle_protector_choice",
       "value": "reason"
     },
     {
@@ -3001,7 +2601,7 @@
       "column": 55,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10619,
+      "line": 8326,
       "matched_printed_name": "Exile",
       "symbol": "_eliminate_players",
       "value": "exile"
@@ -3011,7 +2611,7 @@
       "column": 86,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10623,
+      "line": 8330,
       "matched_printed_name": "Reason",
       "symbol": "_eliminate_players",
       "value": "reason"
@@ -3021,7 +2621,7 @@
       "column": 24,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10637,
+      "line": 8344,
       "matched_printed_name": "Reason",
       "symbol": "_eliminate_players",
       "value": "reason"
@@ -3031,7 +2631,7 @@
       "column": 32,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10692,
+      "line": 8399,
       "matched_printed_name": "Reason",
       "symbol": "apply_effect",
       "value": "reason"
@@ -3041,7 +2641,7 @@
       "column": 16,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10811,
+      "line": 8518,
       "matched_printed_name": "Reason",
       "symbol": "create_emblem",
       "value": "reason"
@@ -3051,7 +2651,7 @@
       "column": 160,
       "file": "quorune/engine.py",
       "in_condition": false,
-      "line": 10868,
+      "line": 8575,
       "matched_printed_name": "Reason",
       "symbol": "change_control",
       "value": "reason"
@@ -5031,7 +4631,7 @@
       "column": 42,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 51,
+      "line": 49,
       "matched_printed_name": "Exile",
       "symbol": "_cast_candidates",
       "value": "exile"
@@ -5041,7 +4641,7 @@
       "column": 16,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 84,
+      "line": 82,
       "matched_printed_name": "Status",
       "symbol": "_cast_offers",
       "value": "status"
@@ -5051,7 +4651,7 @@
       "column": 16,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 85,
+      "line": 83,
       "matched_printed_name": "Reason",
       "symbol": "_cast_offers",
       "value": "reason"
@@ -5061,7 +4661,7 @@
       "column": 38,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 107,
+      "line": 105,
       "matched_printed_name": "Exile",
       "symbol": "_land_candidates",
       "value": "exile"
@@ -5071,7 +4671,7 @@
       "column": 20,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 157,
+      "line": 155,
       "matched_printed_name": "Life",
       "symbol": "_land_offers",
       "value": "life"
@@ -5081,7 +4681,7 @@
       "column": 53,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 211,
+      "line": 209,
       "matched_printed_name": "Exile",
       "symbol": "_ability_offers",
       "value": "exile"
@@ -5091,7 +4691,7 @@
       "column": 32,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 230,
+      "line": 228,
       "matched_printed_name": "Status",
       "symbol": "_ability_offers",
       "value": "status"
@@ -5101,7 +4701,7 @@
       "column": 32,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 231,
+      "line": 229,
       "matched_printed_name": "Reason",
       "symbol": "_ability_offers",
       "value": "reason"
@@ -5111,7 +4711,7 @@
       "column": 8,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 294,
+      "line": 292,
       "matched_printed_name": "Lands",
       "symbol": "build_priority_action_catalog",
       "value": "lands"
@@ -5121,7 +4721,7 @@
       "column": 23,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 302,
+      "line": 300,
       "matched_printed_name": "Status",
       "symbol": "build_priority_action_catalog",
       "value": "status"
@@ -5131,7 +4731,7 @@
       "column": 23,
       "file": "quorune/rules/action_catalog.py",
       "in_condition": false,
-      "line": 307,
+      "line": 305,
       "matched_printed_name": "Status",
       "symbol": "build_priority_action_catalog",
       "value": "status"
@@ -5171,7 +4771,7 @@
       "column": 16,
       "file": "quorune/rules/activation/proposal.py",
       "in_condition": false,
-      "line": 411,
+      "line": 409,
       "matched_printed_name": "Life",
       "symbol": "build_activation_offer",
       "value": "life"
@@ -5465,6 +5065,436 @@
       "matched_printed_name": "Status",
       "symbol": "_lifecycle_summary",
       "value": "status"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 17,
+      "file": "quorune/selection/apnap.py",
+      "in_condition": false,
+      "line": 106,
+      "matched_printed_name": "Pilot",
+      "symbol": "_issue_next_apnap_choice",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 41,
+      "file": "quorune/selection/apnap.py",
+      "in_condition": false,
+      "line": 227,
+      "matched_printed_name": "Sacrifice",
+      "symbol": "_apply_apnap_choices",
+      "value": "sacrifice"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/apnap.py",
+      "in_condition": false,
+      "line": 236,
+      "matched_printed_name": "Sacrifice",
+      "symbol": "_apply_apnap_choices",
+      "value": "sacrifice"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/apnap.py",
+      "in_condition": false,
+      "line": 238,
+      "matched_printed_name": "Exile",
+      "symbol": "_apply_apnap_choices",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 21,
+      "file": "quorune/selection/apnap.py",
+      "in_condition": false,
+      "line": 238,
+      "matched_printed_name": "Exile",
+      "symbol": "_apply_apnap_choices",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 27,
+      "file": "quorune/selection/apnap.py",
+      "in_condition": false,
+      "line": 246,
+      "matched_printed_name": "Exile",
+      "symbol": "_apply_apnap_choices",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 20,
+      "file": "quorune/selection/model.py",
+      "in_condition": false,
+      "line": 67,
+      "matched_printed_name": "Contract",
+      "symbol": "__post_init__",
+      "value": "contract"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/model.py",
+      "in_condition": false,
+      "line": 91,
+      "matched_printed_name": "Contract",
+      "symbol": "to_dict",
+      "value": "contract"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/model.py",
+      "in_condition": false,
+      "line": 118,
+      "matched_printed_name": "Contract",
+      "symbol": "from_dict",
+      "value": "contract"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 51,
+      "file": "quorune/selection/model.py",
+      "in_condition": false,
+      "line": 141,
+      "matched_printed_name": "Contract",
+      "symbol": "from_dict",
+      "value": "contract"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 17,
+      "file": "quorune/selection/public_choice.py",
+      "in_condition": false,
+      "line": 79,
+      "matched_printed_name": "Pilot",
+      "symbol": "_begin_legend_choice",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 17,
+      "file": "quorune/selection/public_choice.py",
+      "in_condition": false,
+      "line": 240,
+      "matched_printed_name": "Pilot",
+      "symbol": "_issue_battle_protector_choice",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 16,
+      "file": "quorune/selection/public_choice.py",
+      "in_condition": false,
+      "line": 416,
+      "matched_printed_name": "Reason",
+      "symbol": "_complete_battle_protector_selection",
+      "value": "reason"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 17,
+      "file": "quorune/selection/public_choice.py",
+      "in_condition": false,
+      "line": 471,
+      "matched_printed_name": "Pilot",
+      "symbol": "_begin_siege_defeated_choice",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 28,
+      "file": "quorune/selection/public_choice.py",
+      "in_condition": true,
+      "line": 560,
+      "matched_printed_name": "Exile",
+      "symbol": "_complete_siege_defeated_choice",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 24,
+      "file": "quorune/selection/public_choice.py",
+      "in_condition": false,
+      "line": 598,
+      "matched_printed_name": "Exile",
+      "symbol": "_complete_siege_defeated_choice",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 33,
+      "file": "quorune/selection/public_choice.py",
+      "in_condition": false,
+      "line": 606,
+      "matched_printed_name": "Exile",
+      "symbol": "_complete_siege_defeated_choice",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 56,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 93,
+      "matched_printed_name": "Library",
+      "symbol": "_fetch_land_options",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 17,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 161,
+      "matched_printed_name": "Pilot",
+      "symbol": "_begin_fetch_search",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 27,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 289,
+      "matched_printed_name": "Library",
+      "symbol": "_resolve_fetch_land",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 25,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 429,
+      "matched_printed_name": "Plains",
+      "symbol": "_search_candidate_matches",
+      "value": "plains"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 35,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 429,
+      "matched_printed_name": "Island",
+      "symbol": "_search_candidate_matches",
+      "value": "island"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 45,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 429,
+      "matched_printed_name": "Swamp",
+      "symbol": "_search_candidate_matches",
+      "value": "swamp"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 54,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 429,
+      "matched_printed_name": "Mountain",
+      "symbol": "_search_candidate_matches",
+      "value": "mountain"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 66,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 429,
+      "matched_printed_name": "Forest",
+      "symbol": "_search_candidate_matches",
+      "value": "forest"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 41,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 440,
+      "matched_printed_name": "Library",
+      "symbol": "_semantic_search_options",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 25,
+      "file": "quorune/selection/searching.py",
+      "in_condition": true,
+      "line": 448,
+      "matched_printed_name": "Library",
+      "symbol": "_semantic_search_options",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 57,
+      "file": "quorune/selection/searching.py",
+      "in_condition": true,
+      "line": 448,
+      "matched_printed_name": "Exile",
+      "symbol": "_semantic_search_options",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 48,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 499,
+      "matched_printed_name": "Library",
+      "symbol": "_begin_semantic_search",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 507,
+      "matched_printed_name": "Library",
+      "symbol": "_begin_semantic_search",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 17,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 562,
+      "matched_printed_name": "Pilot",
+      "symbol": "_begin_semantic_search",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 48,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 745,
+      "matched_printed_name": "Library",
+      "symbol": "_semantic_search_selected_values",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 753,
+      "matched_printed_name": "Library",
+      "symbol": "_semantic_search_selected_values",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 36,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 808,
+      "matched_printed_name": "Library",
+      "symbol": "_semantic_search_destination",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 36,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 810,
+      "matched_printed_name": "Library",
+      "symbol": "_semantic_search_destination",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/searching.py",
+      "in_condition": true,
+      "line": 815,
+      "matched_printed_name": "Exile",
+      "symbol": "_semantic_search_destination",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/searching.py",
+      "in_condition": true,
+      "line": 816,
+      "matched_printed_name": "Library",
+      "symbol": "_semantic_search_destination",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 920,
+      "matched_printed_name": "Exile",
+      "symbol": "_record_semantic_search_result",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 50,
+      "file": "quorune/selection/searching.py",
+      "in_condition": false,
+      "line": 935,
+      "matched_printed_name": "Library",
+      "symbol": "_record_semantic_search_result",
+      "value": "library"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 17,
+      "file": "quorune/selection/storm.py",
+      "in_condition": false,
+      "line": 102,
+      "matched_printed_name": "Pilot",
+      "symbol": "_prepare_storm_resolution",
+      "value": "pilot"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 62,
+      "file": "quorune/selection/storm.py",
+      "in_condition": false,
+      "line": 287,
+      "matched_printed_name": "Copy",
+      "symbol": "_build_storm_copies",
+      "value": " copy"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 12,
+      "file": "quorune/selection/targeting.py",
+      "in_condition": false,
+      "line": 172,
+      "matched_printed_name": "Exile",
+      "symbol": "_target_candidate_rows",
+      "value": "exile"
+    },
+    {
+      "card_specificity_exempt": false,
+      "column": 24,
+      "file": "quorune/selection/targeting.py",
+      "in_condition": false,
+      "line": 909,
+      "matched_printed_name": "Reason",
+      "symbol": "_revalidate_resolution_targets",
+      "value": "reason"
     },
     {
       "card_specificity_exempt": false,
@@ -6521,7 +6551,7 @@
       "column": 16,
       "file": "quorune/turn_step_owner.py",
       "in_condition": false,
-      "line": 511,
+      "line": 527,
       "matched_printed_name": "Exile",
       "symbol": "end_turn_now",
       "value": "exile"
@@ -6531,7 +6561,7 @@
       "column": 16,
       "file": "quorune/turn_step_owner.py",
       "in_condition": false,
-      "line": 534,
+      "line": 550,
       "matched_printed_name": "Reason",
       "symbol": "end_turn_now",
       "value": "reason"
@@ -6959,7 +6989,7 @@
   ],
   "generator": "scripts/update_architecture_audit.py --write --card-db <path>",
   "limitations": "Exact full printed-name literals only. Card-named helpers and semantic operations are separately reviewed in architecture-audit-source.json.",
-  "review_adr": "docs/adr/0060-typed-turn-priority-decision-owner.md",
+  "review_adr": "docs/adr/0061-typed-search-target-choice-owner.md",
   "schema_version": 1,
   "scope": [
     "quorune/__init__.py",
@@ -7235,6 +7265,14 @@
     "quorune/runtime.py",
     "quorune/saga_lifecycle.py",
     "quorune/saga_progression.py",
+    "quorune/selection/__init__.py",
+    "quorune/selection/apnap.py",
+    "quorune/selection/model.py",
+    "quorune/selection/public_choice.py",
+    "quorune/selection/searching.py",
+    "quorune/selection/storm.py",
+    "quorune/selection/target_query.py",
+    "quorune/selection/targeting.py",
     "quorune/semantic_choices/__init__.py",
     "quorune/semantic_choices/amass.py",
     "quorune/semantic_choices/artifact_exchange.py",
