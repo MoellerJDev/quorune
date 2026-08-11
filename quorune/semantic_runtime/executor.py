@@ -14,6 +14,7 @@ from .intents import (
     AddSubtypeIntent,
     AmassIntent,
     BecomeMonstrousIntent,
+    BecomeRenownedIntent,
     BecomeMonarchIntent,
     CounterStackIntent,
     ChooseOneRestBottomRandomIntent,
@@ -90,6 +91,11 @@ class SemanticIntentSink(
     def become_monstrous_intent(
         self,
         intent: BecomeMonstrousIntent,
+    ) -> object: ...
+
+    def become_renowned_intent(
+        self,
+        intent: BecomeRenownedIntent,
     ) -> object: ...
 
     def record_choice_intent(self, intent: RecordChoiceIntent) -> None: ...
@@ -487,6 +493,10 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
             continue
         if isinstance(intent, BecomeMonstrousIntent):
             result = sink.become_monstrous_intent(intent)
+            results.append((intent.object_ref, result))
+            continue
+        if isinstance(intent, BecomeRenownedIntent):
+            result = sink.become_renowned_intent(intent)
             results.append((intent.object_ref, result))
             continue
         if isinstance(intent, RECORDING_INTENT_TYPES):

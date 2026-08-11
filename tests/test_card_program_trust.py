@@ -198,6 +198,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.trigger.melee",
                 "ability.trigger.mentor",
                 "ability.trigger.prowess",
+                "ability.trigger.renown",
                 "ability.trigger.training",
                 "casting.payment.convoke",
                 "combat.block.self-counter-prohibition",

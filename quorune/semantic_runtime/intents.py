@@ -338,6 +338,30 @@ class BecomeMonstrousIntent:
 
 
 @dataclass(frozen=True, slots=True)
+class BecomeRenownedIntent:
+    actor: str
+    object_id: str
+    object_ref: str
+    logical_object_id: str
+    reason: str
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (
+                self.actor,
+                self.object_id,
+                self.object_ref,
+                self.logical_object_id,
+                self.reason,
+            )
+        ):
+            raise ValueError(
+                "Renowned intents require complete object identity"
+            )
+
+
+@dataclass(frozen=True, slots=True)
 class RecordChoiceIntent:
     actor: str
     event_code: str
@@ -1138,6 +1162,7 @@ SemanticIntent: TypeAlias = (
     | AddManaIntent
     | SetCardDesignationIntent
     | BecomeMonstrousIntent
+    | BecomeRenownedIntent
     | RecordChoiceIntent
     | ZoneMoveIntent
     | MoveObjectsSimultaneouslyIntent

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "renown",
+  "official_name": "Renown",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["120.4", "122.1", "122.1a", "122.6", "400.7", "603.3", "603.4", "603.6d", "608.2h", "614.16", "616.1", "702.112", "702.112a", "702.112b", "702.112c"],
+  "glossary_references": ["renown", "renowned"],
+  "dependencies": ["combat-damage-step", "handling-triggered-abilities", "replacement-effects", "counters"],
+  "coverage_status": "tested",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["battlefield", "stack"],
+    "objects": ["phased-in source permanent with one typed printed Renown instance", "player dealt positive combat damage by that source"],
+    "events": ["final normalized damage result", "one ordinary trigger per qualifying Renown instance", "replacement-aware +1/+1 counter placement", "public becomes-renowned event"],
+    "state_reads": ["source physical and logical identity", "source creature type in the damage snapshot", "combat and player-recipient facts", "current renowned designation at trigger creation and resolution"],
+    "state_writes": ["ordinary APNAP trigger batch", "canonical +1/+1 permanent-counter transaction", "typed public noncopiable renowned designation"],
+    "costs": [],
+    "timing": ["the not-renowned intervening condition is checked at trigger creation and again at resolution"],
+    "targets": [],
+    "choices": ["same-controller trigger ordering uses the ordinary trigger continuation", "represented counter-replacement ordering remains scoped to the affected permanent controller"],
+    "hidden_information": [],
+    "apnap": ["simultaneous Renown occurrences use ordinary trigger placement"],
+    "layers": ["the ability must remain a current typed ability fragment when the final damage event is dispatched"],
+    "replacement_effects": ["damage replacement and prevention finish before trigger discovery", "counter quantity replacements finish before the renowned designation is applied"],
+    "copy": ["the renowned designation is not copied", "granted or copied Renown requires separately trusted typed ability propagation"],
+    "control_change": ["the trigger controller is frozen at creation while the same source object may later change control"],
+    "zone_change": ["a source that leaves and returns is a new logical object, is no longer renowned, and cannot receive the old trigger result"],
+    "source_leaves": ["a source that leaves or phases out before resolution causes the intervening condition to fail"]
+  },
+  "variants": ["positive integral values", "multiple printed instances", "noncombat damage", "damage to a permanent", "fully prevented damage", "redirected combat damage to the source controller", "source control change", "source leaves or phases out", "counter quantity replacement", "zero committed counter result", "four-player trigger ordering"],
+  "witness_cards": [{"name": "Topan Freeblade", "oracle_id": "9e2cd0d5-1537-412b-9ecd-989ab4ac2700"}],
+  "rulings": [
+    "Topan Freeblade — 2015-06-22 — Renown does not trigger for combat damage to a planeswalker or creature, or for noncombat damage to a player.",
+    "Topan Freeblade — 2015-06-22 — Redirected combat damage dealt to the source's controller still triggers Renown."
+  ],
+  "test_ids": ["test_renown_model_and_compiler_are_strict_source_spanned_and_closed", "test_unsupported_renown_values_remain_material_residuals", "test_renown_dependencies_and_compiler_mutation_fail_closed", "test_combat_damage_to_player_triggers_counter_and_designation", "test_redirected_combat_damage_to_controller_still_triggers", "test_noncombat_permanent_prevented_and_already_renowned_do_not_trigger", "test_intervening_condition_uses_same_logical_object_and_current_designation", "test_trigger_uses_frozen_controller_and_current_source_after_control_change", "test_multiple_renown_instances_only_first_resolution_changes_object", "test_counter_replacement_and_zero_result_still_create_renowned_designation", "test_renown_designation_failure_rolls_back_counter_placement", "test_renowned_designation_survives_control_change_and_phasing", "test_renowned_designation_is_strict_identity_pinned_and_zone_scoped", "test_four_player_renown_trigger_is_public_and_replay_exact", "test_renowned_designation_runtime_mutant_is_killed", "test_renown_condition_rejects_malformed_normalized_damage"],
+  "implementation": {"component": "quorune.renown, quorune.permanent_designations, typed damage-result trigger dispatch, and the canonical counter-placement transaction", "version": "typed-renown-counter-designation-v1"},
+  "known_blockers": ["becomes-renowned listeners remain separate compiler families", "conditional renowned-matters static and triggered abilities remain separate residuals", "granted, copied, lost, and face-down Renown requires trusted typed ability propagation", "Oracle-equivalent nonkeyword wording remains unsupported", "trigger-doubling policies remain outside this bounded capability", "aggregate combat damage, counter placement, and triggered abilities remain incomplete"],
+  "review_status": "reviewed"
+}

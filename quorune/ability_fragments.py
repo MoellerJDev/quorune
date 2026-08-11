@@ -44,6 +44,12 @@ class SpellCastKeywordTriggerKind(str, Enum):
     PROWESS = "prowess"
 
 
+class DamageKeywordTriggerKind(str, Enum):
+    """Closed printed keywords tied to a normalized damage result."""
+
+    RENOWN = "renown"
+
+
 CURRENT_ABILITY_FRAGMENT_COVERAGE = "current_ability_fragment_required"
 
 
@@ -452,6 +458,61 @@ class SpellCastKeywordTriggerSpec:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class DamageKeywordTriggerSpec:
+    """One executable printed damage-result keyword ability instance."""
+
+    kind: DamageKeywordTriggerKind
+    amount: int
+    schema_version: int = 1
+
+    def __post_init__(self) -> None:
+        if type(self.schema_version) is not int or self.schema_version != 1:
+            raise AbilityFragmentError(
+                "Unsupported damage keyword-trigger fragment schema version"
+            )
+        if not isinstance(self.kind, DamageKeywordTriggerKind):
+            raise AbilityFragmentError(
+                "Unsupported damage keyword-trigger kind"
+            )
+        if type(self.amount) is not int or self.amount <= 0:
+            raise AbilityFragmentError(
+                "Damage keyword-trigger amounts must be positive integers"
+            )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "kind": self.kind.value,
+            "amount": self.amount,
+        }
+
+    @classmethod
+    def from_dict(
+        cls, value: Mapping[str, Any]
+    ) -> "DamageKeywordTriggerSpec":
+        expected = {"schema_version", "kind", "amount"}
+        if not isinstance(value, Mapping) or set(value) != expected:
+            raise AbilityFragmentError(
+                "Damage keyword-trigger fragments have a closed schema"
+            )
+        if not isinstance(value["kind"], str):
+            raise AbilityFragmentError(
+                "Damage keyword-trigger kind must be a string"
+            )
+        try:
+            kind = DamageKeywordTriggerKind(value["kind"])
+        except ValueError as exc:
+            raise AbilityFragmentError(
+                "Unsupported damage keyword-trigger kind"
+            ) from exc
+        return cls(
+            schema_version=value["schema_version"],
+            kind=kind,
+            amount=value["amount"],
+        )
+
+
 StaticAbilityFragment: TypeAlias = (
     SimpleEnchantSpec
     | LinkedGraveyardCreatureEnchantSpec
@@ -459,6 +520,7 @@ StaticAbilityFragment: TypeAlias = (
     | GrantedActivatedAbilitySpec
     | GrantedTriggeredAbilitySpec
     | CombatKeywordTriggerSpec
+    | DamageKeywordTriggerSpec
     | SpellCastKeywordTriggerSpec
 )
 
@@ -478,6 +540,8 @@ def ability_fragment_to_dict(
         kind = "granted_triggered"
     elif isinstance(fragment, CombatKeywordTriggerSpec):
         kind = "combat_keyword_trigger"
+    elif isinstance(fragment, DamageKeywordTriggerSpec):
+        kind = "damage_keyword_trigger"
     elif isinstance(fragment, SpellCastKeywordTriggerSpec):
         kind = "spell_cast_keyword_trigger"
     else:
@@ -512,6 +576,8 @@ def ability_fragment_from_dict(
         return GrantedTriggeredAbilitySpec.from_dict(value["value"])
     if value["kind"] == "combat_keyword_trigger":
         return CombatKeywordTriggerSpec.from_dict(value["value"])
+    if value["kind"] == "damage_keyword_trigger":
+        return DamageKeywordTriggerSpec.from_dict(value["value"])
     if value["kind"] == "spell_cast_keyword_trigger":
         return SpellCastKeywordTriggerSpec.from_dict(value["value"])
     raise AbilityFragmentError(
@@ -533,6 +599,7 @@ def canonical_ability_fragments(
                 GrantedActivatedAbilitySpec,
                 GrantedTriggeredAbilitySpec,
                 CombatKeywordTriggerSpec,
+                DamageKeywordTriggerSpec,
                 SpellCastKeywordTriggerSpec,
             ),
         )
@@ -657,11 +724,23 @@ def spell_cast_keyword_trigger_specs(
     )
 
 
+def damage_keyword_trigger_specs(
+    fragments: Iterable[StaticAbilityFragment],
+) -> tuple[DamageKeywordTriggerSpec, ...]:
+    return tuple(
+        fragment
+        for fragment in fragments
+        if isinstance(fragment, DamageKeywordTriggerSpec)
+    )
+
+
 __all__ = [
     "AbilityFragmentError",
     "CombatKeywordTriggerKind",
     "CombatKeywordTriggerSpec",
     "CURRENT_ABILITY_FRAGMENT_COVERAGE",
+    "DamageKeywordTriggerKind",
+    "DamageKeywordTriggerSpec",
     "GrantedActivatedAbilitySpec",
     "GrantedTriggeredAbilitySpec",
     "ProtectionQualityKind",
@@ -673,6 +752,7 @@ __all__ = [
     "ability_fragment_to_dict",
     "canonical_ability_fragments",
     "combat_keyword_trigger_specs",
+    "damage_keyword_trigger_specs",
     "enchant_specs",
     "granted_activated_specs",
     "granted_triggered_specs",

@@ -599,7 +599,7 @@ def fixed_self_counter_keyword_action_node_capabilities(
     target_schema: Mapping[str, Any] | None,
     mechanic_ids: Iterable[str],
 ) -> tuple[str, ...]:
-    """Return ownership for one exact fixed Adapt or Monstrosity action."""
+    """Return ownership for one exact fixed self-counter keyword action."""
 
     mechanics = {str(value).casefold() for value in mechanic_ids}
     if (
@@ -621,6 +621,8 @@ def fixed_self_counter_keyword_action_node_capabilities(
         return ("keyword_action.adapt.fixed",)
     if action == "monstrosity" and "monstrosity" in mechanics:
         return ("keyword_action.monstrosity.fixed",)
+    if action == "renown" and "renown" in mechanics:
+        return ("counter.producer.renown",)
     return ()
 
 

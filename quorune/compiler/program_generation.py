@@ -540,7 +540,7 @@ def _is_closed_fixed_counter_placement_group_program(
 def _is_closed_fixed_self_counter_keyword_action_program(
     program: SemanticProgram,
 ) -> bool:
-    """Recognize one capability-closed fixed Adapt or Monstrosity action."""
+    """Recognize one capability-closed fixed self-counter keyword action."""
 
     required = set(
         fixed_self_counter_keyword_action_node_capabilities(

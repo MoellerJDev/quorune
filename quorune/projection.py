@@ -366,6 +366,8 @@ class StateProjector:
             )
         if card.monstrous_value is not None:
             obj["monstrous"] = card.monstrous_value
+        if card.renowned:
+            obj["renowned"] = True
         if card.battle_protector:
             obj["protect"] = card.battle_protector
         return obj
