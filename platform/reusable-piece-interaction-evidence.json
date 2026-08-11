@@ -1133,6 +1133,30 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_shroud_blocks_every_controller_and_multiple_instances_are_redundant",
+      "piece_ids": ["capability.target.protection.shroud_permanent", "mechanic.shroud"],
+      "capability_ids": ["target.protection.shroud_permanent"],
+      "interaction_order": 2,
+      "assertion": "The ordinary Shroud mechanic consumes one controller-independent targeting prohibition, and redundant represented instances produce the same closed verdict for every acting and protected controller relation."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_shroud_gained_after_selection_is_illegal_at_resolution",
+      "piece_ids": ["capability.target.protection.shroud_permanent", "capability.target.revalidate_resolution", "mechanic.shroud"],
+      "capability_ids": ["target.protection.shroud_permanent", "target.revalidate_resolution"],
+      "interaction_order": 3,
+      "assertion": "A target that gains ordinary Shroud after selection becomes illegal through the same current-characteristic CR 608.2b revalidation boundary before any resolution mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_attached_continuous_shroud_updates_advertised_target_legality",
+      "piece_ids": ["capability.continuous.attached.fixed_characteristics", "capability.target.protection.shroud_permanent", "mechanic.shroud"],
+      "capability_ids": ["continuous.attached.fixed_characteristics", "target.protection.shroud_permanent"],
+      "interaction_order": 3,
+      "assertion": "A generic attached layer-6 Shroud grant is consumed by ordinary target legality while attached and stops protecting the permanent immediately after the relation is detached."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_state_based_lethal_and_deathtouch_share_typed_destruction",
       "piece_ids": ["capability.permanent.destroy.state_based_damage", "capability.permanent.indestructible.ordinary", "mechanic.indestructible"],
       "capability_ids": ["permanent.destroy.state_based_damage", "permanent.indestructible.ordinary"],

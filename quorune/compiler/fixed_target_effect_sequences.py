@@ -39,6 +39,7 @@ FIXED_TARGET_CHARACTERISTIC_KEYWORDS = frozenset(
         "lifelink",
         "menace",
         "reach",
+        "shroud",
         "trample",
         "vigilance",
     }
@@ -133,10 +134,13 @@ class FixedTargetCharacteristicsTemplate:
         Mapping[str, Any] | None,
         tuple[str, ...],
     ]:
+        # A granted keyword always carries its gameplay mechanic dependency.
+        # Keyword-counter vocabulary is narrower (CR 122.1b) and must not be
+        # used to decide whether an independently granted ability is live,
+        # but its canonical IDs remain authoritative for shared keywords.
         keyword_mechanics = tuple(
-            mechanic
+            keyword_counter_mechanic(keyword) or keyword.casefold()
             for keyword in self.keywords
-            if (mechanic := keyword_counter_mechanic(keyword)) is not None
         )
         return (
             "fixed-target-characteristics-until-end-of-turn-v1",

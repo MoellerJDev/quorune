@@ -240,6 +240,36 @@ class CapabilityRegistryTests(unittest.TestCase):
             )
         )
 
+    def test_shroud_dependency_fails_closed_without_target_revalidation(self):
+        registry = load_default_capability_registry()
+        trusted = registry.closure(
+            ["target.protection.shroud_permanent"],
+            profile="commander_review",
+        )
+        self.assertTrue(trusted.trusted)
+        self.assertIn("target.revalidate_resolution", trusted.reachable)
+
+        value = _registry_value()
+        revalidation = next(
+            row
+            for row in value["capabilities"]
+            if row["id"] == "target.revalidate_resolution"
+        )
+        revalidation["status"] = "blocked"
+        revalidation["blockers"] = ["dependency mutation"]
+        closure = CapabilityRegistry(value).closure(
+            ["target.protection.shroud_permanent"],
+            profile="commander_review",
+        )
+
+        self.assertFalse(closure.trusted)
+        self.assertTrue(
+            any(
+                "status:target.revalidate_resolution:blocked" in blocker
+                for blocker in closure.blockers
+            )
+        )
+
     def test_draw_subcapabilities_fail_closed_without_base(self):
         registry = load_default_capability_registry()
         for capability_id in (

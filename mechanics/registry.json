@@ -1,5 +1,5 @@
 {
-  "contract_count": 101,
+  "contract_count": 102,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -509,6 +509,12 @@
       "mechanic_id": "shadow",
       "path": "mechanics/contracts/shadow.json",
       "sha256": "0afd9512e3ec1f66d25277d1d1a9b660e8f817368e1047249cd388a30ad7ac2c",
+      "version": 1
+    },
+    {
+      "mechanic_id": "shroud",
+      "path": "mechanics/contracts/shroud.json",
+      "sha256": "45417a793c9add61f9d0d0d57319659ac047bfe4ed39a4a71058f570ecce4b89",
       "version": 1
     },
     {
@@ -4065,19 +4071,38 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/shroud.json",
+      "contract_sha256": "45417a793c9add61f9d0d0d57319659ac047bfe4ed39a4a71058f570ecce4b89",
+      "contract_version": 1,
+      "coverage_status": "partial",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.target_protection.target_protection_verdict",
+      "implementation_version": "ordinary-permanent-shroud-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Shroud on players",
+        "effects that allow targeting as though Shroud were absent",
+        "unrepresented ability-removing, copy, face-down, merged-object, and hidden-zone keyword producers",
+        "aggregate targeting and continuous-effect coverage remains incomplete"
+      ],
       "mechanic_id": "shroud",
       "official_name": "Shroud",
       "rule_references": [
         "702.18"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_shroud_blocks_every_controller_and_multiple_instances_are_redundant",
+        "test_shroud_compiles_source_spanned_and_capability_closed",
+        "test_player_and_nonkeyword_shroud_wording_remain_residual",
+        "test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
+        "test_shroud_gained_after_selection_is_illegal_at_resolution",
+        "test_attached_continuous_shroud_updates_advertised_target_legality",
+        "test_shroud_does_not_prohibit_nontarget_attachment_checks",
+        "test_shroud_dependency_fails_closed_without_target_revalidation",
+        "test_plain_shroud_target_protection_mutant_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {

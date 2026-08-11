@@ -61357,23 +61357,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.18",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_shroud_targeting.ShroudCompilerTests.test_shroud_compiles_source_spanned_and_capability_closed"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/shroud.json"
+      ],
+      "notes": [
+        "Keyword heading; ordinary permanent behavior is capability-closed separately from unsupported player Shroud and targeting-exception effects."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.18",
       "rule_text_sha256": "8deaf148791634ebf89ab1ddf0537018996dac262cf9e1b7b3991e9da8462b1f",
       "schema_version": 1,
@@ -61382,26 +61386,53 @@
         "end_line": 4080,
         "start_line": 4079
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "player_shroud_and_targeting_exception_effects_not_implemented"
       ],
       "case_id": "cr-702.18a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.18"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_shroud_targeting.ShroudTargetProtectionTests.test_shroud_blocks_every_controller_and_multiple_instances_are_redundant",
+        "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
+        "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_shroud_gained_after_selection_is_illegal_at_resolution",
+        "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_shroud_does_not_prohibit_nontarget_attachment_checks",
+        "tests.test_shroud_targeting.ShroudCompilerTests.test_player_and_nonkeyword_shroud_wording_remain_residual"
+      ],
+      "implementation_components": [
+        "quorune.target_protection.TargetProtectionSnapshot",
+        "quorune.target_protection.target_protection_verdict",
+        "quorune.target_protection_engine_adapter.target_protection_verdict_for_row",
+        "quorune.engine.CommanderEngine._target_row_matches"
+      ],
+      "notes": [
+        "The ordinary permanent slice rejects every controller at offer, command, and resolution through one current typed target-protection snapshot. Player Shroud and effects that permit targeting despite Shroud remain fail-closed, so the complete rule is not promoted."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.18a",
       "rule_text_sha256": "f53769f49fdfb357e8de8ec0403eece246119cd01d702faaf59567dcd60cdb6c",
       "schema_version": 1,
@@ -61410,26 +61441,39 @@
         "end_line": 4082,
         "start_line": 4081
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "player_shroud_not_implemented"
       ],
       "case_id": "cr-702.18b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "interaction"
+      ],
       "dependency_rule_ids": [
         "702.18"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_shroud_targeting.ShroudTargetProtectionTests.test_shroud_blocks_every_controller_and_multiple_instances_are_redundant"
+      ],
+      "implementation_components": [
+        "quorune.keyword_abilities.normalized_characteristic_keywords",
+        "quorune.target_protection.target_protection_verdict"
+      ],
+      "notes": [
+        "Represented permanent keyword instances normalize to one redundant current ability. Complete player-object coverage remains blocked with CR 702.18a."
+      ],
+      "required_scenarios": [
+        "positive",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.18b",
       "rule_text_sha256": "01b1de835ef74ac30da9ec584235868cd158b584d589c5fdea3395dbc229a20c",
       "schema_version": 1,
@@ -61438,7 +61482,7 @@
         "end_line": 4084,
         "start_line": 4083
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

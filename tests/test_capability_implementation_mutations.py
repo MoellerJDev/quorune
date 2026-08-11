@@ -299,6 +299,28 @@ class CapabilityImplementationMutationTests(unittest.TestCase):
             with self.assertRaises(AssertionError):
                 assert_opponent_target_is_blocked()
 
+    def test_plain_shroud_target_protection_mutant_is_killed(self):
+        snapshot = TargetProtectionSnapshot(
+            acting_controller="A",
+            protected_controller="A",
+            target_keywords=frozenset({"shroud"}),
+        )
+
+        def assert_controller_target_is_blocked() -> None:
+            self.assertEqual(
+                TargetProtectionVerdict.SHROUD,
+                target_protection_module.target_protection_verdict(snapshot),
+            )
+
+        assert_controller_target_is_blocked()
+        with patch.object(
+            target_protection_module,
+            "target_protection_verdict",
+            return_value=TargetProtectionVerdict.ALLOWED,
+        ):
+            with self.assertRaises(AssertionError):
+                assert_controller_target_is_blocked()
+
     def test_object_query_string_coercion_mutant_is_killed(self):
         def assert_malformed_term_rejected() -> None:
             with self.assertRaises(ObjectQueryError):

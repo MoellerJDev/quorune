@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "shroud",
+  "official_name": "Shroud",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["115.1", "115.2", "608.2b", "702.18", "702.18a", "702.18b"],
+  "glossary_references": ["shroud"],
+  "dependencies": ["targeting", "continuous-effects"],
+  "coverage_status": "partial",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["battlefield"],
+    "objects": ["permanent with the ordinary current represented Shroud keyword"],
+    "events": ["target offer generation", "target proposal validation", "resolution-time target revalidation"],
+    "state_reads": ["acting spell or ability controller", "target current represented effective keywords", "target current logical identity"],
+    "state_writes": [],
+    "costs": [],
+    "timing": ["target selection", "CR 608.2b target revalidation immediately before resolution"],
+    "targets": ["no spell or ability may target the permanent, including one controlled by that permanent's controller"],
+    "choices": ["the server exposes only currently legal public target references"],
+    "hidden_information": ["the represented ordinary-permanent capability applies only to public battlefield permanents"],
+    "apnap": [],
+    "layers": ["consume the current represented layer-6 keyword result; unsupported ability-changing producers fail trusted closure"],
+    "replacement_effects": [],
+    "copy": ["the current represented copied keyword state is consumed; unsupported copy and face-down producers fail trusted closure"],
+    "control_change": ["ordinary Shroud remains controller-independent and is recomputed from current effective characteristics"],
+    "zone_change": ["a new battlefield incarnation is re-evaluated from its current represented characteristics"],
+    "source_leaves": ["resolution revalidation consumes current target characteristics and the pinned acting controller"]
+  },
+  "variants": ["ordinary permanent Shroud", "multiple instances are redundant", "keyword comparison is case-insensitive", "represented temporary and attached grants", "Shroud on players remains outside this bounded capability"],
+  "witness_cards": [],
+  "rulings": [],
+  "test_ids": [
+    "test_shroud_blocks_every_controller_and_multiple_instances_are_redundant",
+    "test_shroud_compiles_source_spanned_and_capability_closed",
+    "test_player_and_nonkeyword_shroud_wording_remain_residual",
+    "test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
+    "test_shroud_gained_after_selection_is_illegal_at_resolution",
+    "test_attached_continuous_shroud_updates_advertised_target_legality",
+    "test_shroud_does_not_prohibit_nontarget_attachment_checks",
+    "test_shroud_dependency_fails_closed_without_target_revalidation",
+    "test_plain_shroud_target_protection_mutant_is_killed"
+  ],
+  "implementation": {
+    "component": "quorune.target_protection.target_protection_verdict",
+    "version": "ordinary-permanent-shroud-v1"
+  },
+  "known_blockers": ["Shroud on players", "effects that allow targeting as though Shroud were absent", "unrepresented ability-removing, copy, face-down, merged-object, and hidden-zone keyword producers", "aggregate targeting and continuous-effect coverage remains incomplete"],
+  "review_status": "reviewed"
+}

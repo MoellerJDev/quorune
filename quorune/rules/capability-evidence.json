@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "1dcb25c3cf18968de7c7066987d2a5eca986971ad5b6b653897592e809280f62",
-  "declaration_source_fingerprint": "208d6b1eba6f732f5983d2394fd84dbe6c5c9576861efe7f08cb91b3955eaa20",
+  "registry_fingerprint": "05e26e02004c471b14e620f6260fefe4b7d73430232a97fceab5ab2d62ab6ffe",
+  "declaration_source_fingerprint": "a71d2775718f3457d9a5e41de4f1465ccee566dd91d8db116c5074dfbe26a1a4",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -24429,6 +24429,272 @@
       "applicability_note": "Reject an injected opponent Hexproof target without changing the authoritative state hash."
     },
     {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_attached_continuous_shroud_updates_advertised_target_legality",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Consume a generic attached layer-6 Shroud grant in advertised target legality and restore the target immediately after the attachment relation ends."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_shroud_does_not_prohibit_nontarget_attachment_checks",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply Shroud only to targeting while preserving the distinct non-target attachment-legality query."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_shroud_gained_after_selection_is_illegal_at_resolution",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate current layer-6 abilities immediately before resolution and make a formerly legal target illegal after it gains Shroud."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply the same controller-independent Shroud exclusion across a four-player public battlefield without issuing tasks to other seats."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_plain_shroud_target_protection_mutant_is_killed",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject an implementation mutant that allows a spell or ability controlled by the permanent's controller to target ordinary Shroud."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "negative",
+      "test_id": "tests.test_hexproof_targeting.TargetProtectionTests.test_malformed_snapshot_fails_closed",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed controller, boolean, color, keyword, and snapshot values before ordinary Shroud legality is evaluated."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "negative",
+      "test_id": "tests.test_rule_capabilities.CapabilityRegistryTests.test_shroud_dependency_fails_closed_without_target_revalidation",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Block exact Shroud capability closure when canonical resolution-time target revalidation is unavailable."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "negative",
+      "test_id": "tests.test_shroud_targeting.ShroudCompilerTests.test_player_and_nonkeyword_shroud_wording_remain_residual",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep player Shroud and nonkeyword-equivalent targeting prohibitions outside the bounded ordinary-permanent compiler grammar."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "positive",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetProtectionTests.test_shroud_blocks_every_controller_and_multiple_instances_are_redundant",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject targeting of an ordinary Shroud permanent regardless of which player controls the spell or ability, with redundant keyword instances producing the same verdict."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "positive",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Exclude both controlled and opposing Shroud permanents from the acting seat's public target offer and reject injected selections transactionally."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the legal public target set only to the acting seat and expose no decision packet to the other three seats."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "property",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetProtectionTests.test_shroud_blocks_every_controller_and_multiple_instances_are_redundant",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Across the bounded acting-controller, protected-controller, and redundant-keyword grid, always return the same ordinary Shroud prohibition."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "replay",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the accepted unprotected target and resulting resolution to the exact authoritative final hash after Shroud alternatives were excluded."
+    },
+    {
+      "capability_id": "target.protection.shroud_permanent",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_shroud_targeting.ShroudTargetingIntegrationTests.test_offer_command_privacy_rollback_and_replay_share_shroud_legality",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "608.2b",
+        "702.18",
+        "702.18a",
+        "702.18b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject injected controlled and opposing Shroud targets without changing the authoritative state hash."
+    },
+    {
       "capability_id": "target.public.player_or_damageable_permanent",
       "evidence_class": "interaction",
       "test_id": "tests.test_exact_mishra_closure.ExactMishraClosureTests.test_stasis_coffin_protection_blocks_targeting_and_damage",
@@ -27528,5 +27794,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "0242c50495669c4161ab66ecc45a7f533d061807fc0da924dd2e7546a9bae401"
+  "fingerprint": "5716a3c4ae3949ca1aca672f8b5cf2e7b9543080021f59e3e34c94f2541e549b"
 }

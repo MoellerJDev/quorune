@@ -2,7 +2,7 @@
 title: "Target legality and protection"
 status: "current"
 authoritative_source: "quorune/targets.py, quorune/target_predicates.py, quorune/target_protection.py, quorune/target_protection_engine_adapter.py, and CommanderEngine._target_row_matches"
-verified: "2026-08-10"
+verified: "2026-08-11"
 audience: "rules, compiler, replay, and architecture contributors"
 maintenance: "hand-maintained"
 ---
@@ -39,43 +39,49 @@ Malformed controller, keyword, color, boolean, and typed-verdict values fail
 before legality is evaluated.
 
 Ordinary permanent Hexproof is controller-relative: an opponent's spell or
-ability cannot target the permanent, while its current controller may. The
-same current-controller calculation is repeated at CR 608.2b resolution
-revalidation. Shroud, represented Protection, player protection, and the
-existing temporary color-qualified player/controller restriction remain
-cumulative in the same typed decision boundary. Non-target selection and
-attachment legality deliberately bypass targeting prohibitions and use their
-own rules owners.
+ability cannot target the permanent, while its current controller may.
+Ordinary permanent Shroud is controller-independent: no spell or ability may
+target the permanent, including one controlled by that permanent's controller.
+The same current-controller and effective-keyword calculation is repeated at
+CR 608.2b resolution revalidation. Shroud, Hexproof, represented Protection,
+player protection, and the existing temporary color-qualified
+player/controller restriction remain cumulative in the same typed decision
+boundary. Non-target selection and attachment legality deliberately bypass
+targeting prohibitions and use their own rules owners.
 
 ## Compiler, capabilities, and reusable pieces
 
-A source-spanned bare `Hexproof` keyword lowers through CardProgram V2 with the
-fine-grained `target.protection.hexproof_permanent` capability. That capability
-depends on `target.revalidate_resolution` and maps to reusable pieces
-`capability.target.protection.hexproof_permanent`,
-`capability.target.revalidate_resolution`, `mechanic.hexproof`, and
+A source-spanned bare `Hexproof` or `Shroud` keyword lowers through CardProgram
+V2 with the fine-grained `target.protection.hexproof_permanent` or
+`target.protection.shroud_permanent` capability. Both capabilities depend on
+`target.revalidate_resolution` and map to their corresponding capability and
+mechanic reusable pieces plus `capability.target.revalidate_resolution` and
 `mechanic.cr-115-targets`.
 
-The compiler recognizes ordinary permanent Hexproof case-insensitively and
-composes it with sibling keyword nodes. Player Hexproof, Hexproof from a
-quality, multiple or each-quality variants, and rules-text equivalents remain
-precise material residuals. Runtime code does not reinterpret those variants.
+The compiler recognizes ordinary permanent Hexproof and Shroud
+case-insensitively and composes them with sibling keyword nodes. It also lowers
+the bounded temporary grant "target creature gains shroud until end of turn"
+through the same typed characteristic and target-revalidation path. Player
+Hexproof, player Shroud, Hexproof from a quality, targeting-exception effects,
+multiple or each-quality variants, and rules-text equivalents remain precise
+material residuals. Runtime code does not reinterpret those variants.
 
 ## Replay, privacy, rollback, and performance
 
 Target schemas persist selected public references and logical identities; they
-do not persist a separate Hexproof journal. Replay rebuilds the same current
-target predicate at offer, command, and resolution boundaries. An injected
-illegal reference is rejected before mutation, so the authoritative state hash
-is unchanged.
+do not persist a separate Hexproof or Shroud journal. Replay rebuilds the same
+current target predicate at offer, command, and resolution boundaries. An
+injected illegal reference is rejected before mutation, so the authoritative
+state hash is unchanged.
 
-Only the acting principal receives its decision. Hexproof uses public current
-battlefield characteristics and does not expose hidden-zone candidates or
-another seat's decision. The pure verdict is constant in the number of game
+Only the acting principal receives its decision. Hexproof and Shroud use public
+current battlefield characteristics and do not expose hidden-zone candidates
+or another seat's decision. The pure verdict is constant in the number of game
 objects; candidate enumeration remains owned by the surrounding target query.
 
-Primary evidence is in `test_hexproof_targeting.py`, `test_oracle_ir.py`, and
-`test_capability_implementation_mutations.py`. Broader player Hexproof,
-Hexproof-from-quality, effects that ignore Hexproof, hidden-zone targets, and
-unsupported ability-changing, copying, face-down, or merged-object keyword
-producers remain outside this trusted slice.
+Primary evidence is in `test_hexproof_targeting.py`,
+`test_shroud_targeting.py`, `test_oracle_ir.py`, and
+`test_capability_implementation_mutations.py`. Broader player Hexproof, player
+Shroud, Hexproof-from-quality, effects that ignore either ability, hidden-zone
+targets, and unsupported ability-changing, copying, face-down, or merged-object
+keyword producers remain outside these trusted slices.
