@@ -26,6 +26,15 @@ class TriggerTargetingHost(Protocol):
 
     def _stack_source_ref(self, item: Any) -> str: ...
 
+    def _target_selection_continuation(
+        self,
+        *,
+        actor: str,
+        item: Any,
+        public_schema: Mapping[str, Any],
+        trigger_creation: bool = False,
+    ) -> Any: ...
+
     def _log(self, *args: Any, **kwargs: Any) -> None: ...
 
 
@@ -95,8 +104,12 @@ def begin_pending_trigger_target_selection(
                     }
                 },
                 continuation={
-                    "stack_ref": item.ref,
-                    "trigger_creation": True,
+                    "selection": host._target_selection_continuation(
+                        actor=item.controller,
+                        item=item,
+                        public_schema=public_schema,
+                        trigger_creation=True,
+                    ).to_dict()
                 },
             )
             return True

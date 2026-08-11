@@ -110,7 +110,11 @@ def _debt_view(report: Mapping[str, Any]) -> dict[str, Any]:
         ],
         "interaction_assurance": interaction,
         "migration_queue": architecture["migration_queue"],
-        "next_owner_migration": architecture["migration_queue"][0],
+        "next_owner_migration": (
+            architecture["migration_queue"][0]
+            if architecture["migration_queue"]
+            else None
+        ),
     }
 
 

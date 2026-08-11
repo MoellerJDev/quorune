@@ -45,6 +45,22 @@ _RETURN_CHOICE = re.compile(
     r"(?:\s+you\s+control)?\s+to\s+its\s+owner'?s\s+hand$",
     re.IGNORECASE,
 )
+_LIBRARY_LAND_SEARCH = re.compile(
+    r"search your library for (?:an?|up to one) "
+    r"(?P<types>[A-Za-z ]+?(?: or [A-Za-z ]+?)*) card, "
+    r"put (?:it|that card) onto the battlefield",
+    re.IGNORECASE,
+)
+_SUPPORTED_LIBRARY_LAND_SEARCH_TYPES = frozenset(
+    {
+        "basic land",
+        "plains",
+        "island",
+        "swamp",
+        "mountain",
+        "forest",
+    }
+)
 
 _NUMBER_WORDS = {"a": 1, "an": 1, "one": 1, "two": 2, "three": 3}
 _NUMBER_WORDS.update(
@@ -106,6 +122,7 @@ class ActivatedAbility:
     fixed_mana_outputs: tuple[FixedManaMode, ...] = ()
     color_set_mana_output: ColorSetActivatedManaAbilitySpec | None = None
     activation_limit: ActivationLimit | None = None
+    library_search_types: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if self.target_schema is not None and not isinstance(
@@ -136,6 +153,15 @@ class ActivatedAbility:
                 )
             except (TypeError, ValueError) as exc:
                 raise ValueError("activation_limit is unsupported") from exc
+        if (
+            len(self.library_search_types)
+            != len(set(self.library_search_types))
+            or any(
+                value not in _SUPPORTED_LIBRARY_LAND_SEARCH_TYPES
+                for value in self.library_search_types
+            )
+        ):
+            raise ValueError("library_search_types are unsupported")
 
     @property
     def compiled_cost(self) -> bool:
@@ -181,6 +207,8 @@ class ActivatedAbility:
             result["crew"] = self.crew_threshold
         if self.activation_limit is not None:
             result["activation_limit"] = self.activation_limit.value
+        if self.library_search_types:
+            result["search_types"] = list(self.library_search_types)
         return result
 
 
@@ -298,6 +326,24 @@ def _builtin_effect_descriptor(
     if gain is not None:
         return f"builtin:gain-life:{int(gain.group('amount'))}", None
     return None, None
+
+
+def _library_search_types(effect_text: str) -> tuple[str, ...]:
+    """Compile the closed ordinary fetch-land search descriptor once."""
+
+    match = _LIBRARY_LAND_SEARCH.search(effect_text)
+    if match is None:
+        return ()
+    values = tuple(
+        part.strip()
+        for part in re.split(r"\s+or\s+", match.group("types").casefold())
+    )
+    if not values or any(
+        value not in _SUPPORTED_LIBRARY_LAND_SEARCH_TYPES
+        for value in values
+    ):
+        return ()
+    return values
 
 
 def _equip_effect_descriptor() -> tuple[str, FrozenMap]:
@@ -647,6 +693,7 @@ def _parse_activated_line(
             builtin_semantic_key=builtin_semantic_key,
             target_schema=target_schema,
             activation_limit=activation_limit,
+            library_search_types=_library_search_types(effect_text),
         ),
     )
 

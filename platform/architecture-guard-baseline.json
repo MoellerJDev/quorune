@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "4c005397c643bebfcdbc4be709a710133aad811f",
+  "baseline_commit": "f484b2ceb573cb0868da5c6bb4374cfcde3766f1",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -8,9 +8,9 @@
     }
   ],
   "direct_game_state_write_classification_counts": {
-    "canonical_mutation_owner_write": 13,
+    "canonical_mutation_owner_write": 16,
     "compatibility_adapter_write": 11,
-    "grandfathered_engine_debt": 58,
+    "grandfathered_engine_debt": 55,
     "orchestration_root_replacement": 1
   },
   "direct_game_state_write_identities": [
@@ -73,18 +73,6 @@
       "kind": "augmented_assignment",
       "state_path": "combat.blocker_cursor",
       "symbol": "_complete_blockers"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:extend",
-      "state_path": "stack",
-      "symbol": "_complete_storm_choice"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:remove",
-      "state_path": "stack",
-      "symbol": "_complete_storm_choice"
     },
     {
       "file": "quorune/engine.py",
@@ -253,12 +241,6 @@
       "kind": "mutating_call:remove",
       "state_path": "stack",
       "symbol": "_prepare_stack_resolution"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:remove",
-      "state_path": "stack",
-      "symbol": "_prepare_storm_resolution"
     },
     {
       "file": "quorune/engine.py",
@@ -447,6 +429,24 @@
       "symbol": "verify_record_suffix"
     },
     {
+      "file": "quorune/selection/storm.py",
+      "kind": "mutating_call:extend",
+      "state_path": "stack",
+      "symbol": "_commit_storm_copies"
+    },
+    {
+      "file": "quorune/selection/storm.py",
+      "kind": "mutating_call:remove",
+      "state_path": "stack",
+      "symbol": "_commit_storm_copies"
+    },
+    {
+      "file": "quorune/selection/storm.py",
+      "kind": "mutating_call:remove",
+      "state_path": "stack",
+      "symbol": "_prepare_storm_resolution"
+    },
+    {
       "file": "quorune/trigger_processing.py",
       "kind": "mutating_call:clear",
       "state_path": "pending_trigger_batches",
@@ -478,14 +478,15 @@
     }
   ],
   "direct_game_state_writes_by_file": {
-    "quorune/engine.py": 59,
+    "quorune/engine.py": 56,
     "quorune/permissions.py": 8,
     "quorune/record.py": 11,
+    "quorune/selection/storm.py": 3,
     "quorune/trigger_processing.py": 2,
     "quorune/zone_transitions.py": 3
   },
   "engine": {
-    "logical_lines": 10244,
+    "logical_lines": 8005,
     "methods": [
       {
         "kind": "method",
@@ -550,11 +551,6 @@
       {
         "kind": "method",
         "name": "_alternate_cost_condition_met",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_apply_apnap_choices",
         "visibility": "private"
       },
       {
@@ -639,11 +635,6 @@
       },
       {
         "kind": "method",
-        "name": "_begin_battle_entry_protector_choice",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_begin_blocker_decisions",
         "visibility": "private"
       },
@@ -660,11 +651,6 @@
       {
         "kind": "method",
         "name": "_begin_resolve_item",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_begin_semantic_search",
         "visibility": "private"
       },
       {
@@ -715,11 +701,6 @@
       {
         "kind": "method",
         "name": "_check_priority",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_choice_options",
         "visibility": "private"
       },
       {
@@ -794,27 +775,12 @@
       },
       {
         "kind": "method",
-        "name": "_complete_apnap_choice",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_complete_arbiter_resolution",
         "visibility": "private"
       },
       {
         "kind": "method",
         "name": "_complete_attackers",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_complete_battle_entry_protector_choice",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_complete_battle_protector_choice",
         "visibility": "private"
       },
       {
@@ -844,16 +810,6 @@
       },
       {
         "kind": "method",
-        "name": "_complete_fetch_choice",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_complete_legend_choice",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_complete_mulligan_bottom",
         "visibility": "private"
       },
@@ -865,26 +821,6 @@
       {
         "kind": "method",
         "name": "_complete_priority",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_complete_semantic_search",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_complete_semantic_target",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_complete_siege_defeated_choice",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_complete_storm_choice",
         "visibility": "private"
       },
       {
@@ -1064,21 +1000,6 @@
       },
       {
         "kind": "method",
-        "name": "_fetch_context",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_fetch_land_options",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_fetch_land_types",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_finish_cleanup",
         "visibility": "private"
       },
@@ -1109,11 +1030,6 @@
       },
       {
         "kind": "method",
-        "name": "_group_target_submission",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_has_world_supertype",
         "visibility": "private"
       },
@@ -1139,22 +1055,12 @@
       },
       {
         "kind": "method",
-        "name": "_issue_apnap_choice",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_issue_attackers",
         "visibility": "private"
       },
       {
         "kind": "method",
         "name": "_issue_mulligan_declaration",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_issue_next_apnap_choice",
         "visibility": "private"
       },
       {
@@ -1299,11 +1205,6 @@
       },
       {
         "kind": "method",
-        "name": "_normalize_target_submission",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_numeric_stat",
         "visibility": "private"
       },
@@ -1389,11 +1290,6 @@
       },
       {
         "kind": "method",
-        "name": "_prepare_storm_resolution",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_priority_action_hints",
         "visibility": "private"
       },
@@ -1405,11 +1301,6 @@
       {
         "kind": "method",
         "name": "_program_can_auto_resolve",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_public_target_schema",
         "visibility": "private"
       },
       {
@@ -1440,11 +1331,6 @@
       {
         "kind": "method",
         "name": "_refresh_world_supertype_timestamp",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_relation_matches",
         "visibility": "private"
       },
       {
@@ -1484,11 +1370,6 @@
       },
       {
         "kind": "method",
-        "name": "_resolve_fetch_land",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_resolve_object",
         "visibility": "private"
       },
@@ -1510,26 +1391,6 @@
       {
         "kind": "method",
         "name": "_resume_after_draw",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_revalidate_resolution_targets",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_search_candidate_matches",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_search_is_restrictive",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_search_type_words",
         "visibility": "private"
       },
       {
@@ -1580,16 +1441,6 @@
       {
         "kind": "method",
         "name": "_semantic_pause_annotation",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_semantic_search_options",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_semantic_target_options",
         "visibility": "private"
       },
       {
@@ -1654,16 +1505,6 @@
       },
       {
         "kind": "method",
-        "name": "_stack_source_ref",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_stack_target_schema",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
         "name": "_start_game",
         "visibility": "private"
       },
@@ -1680,41 +1521,6 @@
       {
         "kind": "method",
         "name": "_tap_payment_plan",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_target_candidate_map",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_target_candidate_rows",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_target_candidates",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_target_identity_matches_snapshot",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_target_plan_feasible",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_target_row_matches",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_target_snapshot",
         "visibility": "private"
       },
       {
@@ -1765,11 +1571,6 @@
       {
         "kind": "method",
         "name": "_validate_semantic_frame",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_validate_semantic_targets",
         "visibility": "private"
       },
       {
@@ -1928,12 +1729,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 10887
+    "physical_lines": 8602
   },
   "exception_binding": {
-    "adr": "docs/adr/0060-typed-turn-priority-decision-owner.md",
-    "allowance_fingerprint": "a39581bb487a6e128b52bd636fdaea3bfb075f0a05459e675e8b8d8782ccb642",
-    "exception_id": "ARCH-EXC-0029"
+    "adr": "docs/adr/0061-typed-search-target-choice-owner.md",
+    "allowance_fingerprint": "8b596db8dd834cfae4c4a6c2d5adc539e851e07a2a82c526cc26e4ed64c5c4b4",
+    "exception_id": "ARCH-EXC-0030"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2042,18 +1843,13 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 193,
+      "logical_lines": 156,
       "symbol": "CommanderEngine._begin_siege_defeated_resolution"
     },
     {
       "file": "quorune/engine.py",
       "logical_lines": 164,
       "symbol": "CommanderEngine._complete_attackers"
-    },
-    {
-      "file": "quorune/engine.py",
-      "logical_lines": 249,
-      "symbol": "CommanderEngine._complete_semantic_search"
     },
     {
       "file": "quorune/engine.py",
@@ -2072,12 +1868,12 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 300,
+      "logical_lines": 269,
       "symbol": "CommanderEngine._prepare_stack_resolution"
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 255,
+      "logical_lines": 248,
       "symbol": "CommanderEngine._stabilize"
     },
     {
@@ -2158,7 +1954,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 10244
+      "logical_lines": 8005
     },
     {
       "file": "quorune/record.py",
@@ -2373,12 +2169,6 @@
       "symbol": "_complete_legacy_draw_replacement"
     },
     {
-      "access_kind": "attribute",
-      "file": "quorune/engine.py",
-      "member": "oracle_text",
-      "symbol": "CommanderEngine._begin_semantic_search"
-    },
-    {
       "access_kind": "mapping_get",
       "file": "quorune/engine.py",
       "member": "oracle_text",
@@ -2401,12 +2191,6 @@
       "file": "quorune/engine.py",
       "member": "oracle_text",
       "symbol": "CommanderEngine._complete_attackers"
-    },
-    {
-      "access_kind": "attribute",
-      "file": "quorune/engine.py",
-      "member": "oracle_text",
-      "symbol": "CommanderEngine._complete_semantic_search"
     },
     {
       "access_kind": "mapping_get",
@@ -2627,6 +2411,6 @@
   ],
   "schema_version": 3,
   "source_fingerprints": {
-    "printed_name_allowances_sha256": "befc9a65a8fc0abbd2f7e57d26bc0a8c34497071c7652d8e7102aa6edc2e82f3"
+    "printed_name_allowances_sha256": "4fb6e563d473217d3d25b08e7a882ab30989e2b12a9272753e92da8e2a15bc63"
   }
 }

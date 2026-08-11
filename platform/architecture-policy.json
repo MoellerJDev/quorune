@@ -100,6 +100,7 @@
     "quorune/compiler/",
     "quorune/semantic_runtime/",
     "quorune/semantic_choices/",
+    "quorune/selection/",
     "quorune/effect_runtime/",
     "quorune/rules/",
     "quorune/replacement/",
@@ -205,6 +206,10 @@
       ,"quorune/relative_power_target.py": "typed pending-target last-known-information snapshot owner for departing relative-power sources"
       ,"quorune/zone_object_state.py": "typed object-local CR 400.7 reset owner behind the canonical zone transition"
       ,"quorune/zone_transitions.py": "typed authoritative single and simultaneous zone-membership, logical-incarnation, timestamp, LKI, and announcement owner"
+      ,"quorune/selection/public_choice.py": "typed represented public nontarget choice projection, continuation validation, and authoritative result coordination"
+      ,"quorune/selection/searching.py": "typed hidden-zone search projection, continuation validation, result binding, and canonical zone-transition coordination"
+      ,"quorune/selection/storm.py": "typed Storm copy-target selection and authoritative stack-copy commit owner"
+      ,"quorune/selection/targeting.py": "typed target proposal, projection, completion, and resolution revalidation owner"
     },
     "read_only_consumers": {
       "quorune/projection.py": "principal-scoped projection",
@@ -243,6 +248,9 @@
       ,"quorune/target_protection.py": "closed immutable target-protection legality over already-derived current characteristics"
       ,"quorune/target_protection_engine_adapter.py": "narrow read-only CommanderEngine compatibility query for immutable target-protection snapshots"
       ,"quorune/target_predicates.py": "closed read-only target-predicate evaluation over current and pinned characteristics"
+      ,"quorune/selection/apnap.py": "typed read-only APNAP and simultaneous-choice coordinator delegating result mutation to canonical owners"
+      ,"quorune/selection/model.py": "immutable versioned selection contract and continuation model"
+      ,"quorune/selection/target_query.py": "narrow read-only target identity and last-known-information query"
       ,"quorune/zone_transition_model.py": "typed read-only zone-transition host protocol, plan, and departure snapshot definitions"
     },
     "model_definition": "quorune/model.py"

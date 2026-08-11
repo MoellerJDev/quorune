@@ -6,6 +6,7 @@ import unittest
 from quorune.trigger_targeting import (
     begin_pending_trigger_target_selection,
 )
+from quorune.selection import SelectionContinuation, SelectionContract
 
 
 class _Semantics:
@@ -24,7 +25,7 @@ class _Permissions:
 
 class _Host:
     def __init__(self, items, schemas):
-        self.state = SimpleNamespace(stack=list(items))
+        self.state = SimpleNamespace(stack=list(items), revision=12)
         self.semantics = _Semantics()
         self.permissions = _Permissions()
         self.schemas = dict(schemas)
@@ -41,6 +42,27 @@ class _Host:
     @staticmethod
     def _stack_source_ref(item):
         return item.ref
+
+    def _target_selection_continuation(
+        self,
+        *,
+        actor,
+        item,
+        public_schema,
+        trigger_creation=False,
+    ):
+        return SelectionContinuation(
+            contract=SelectionContract.TARGETING,
+            operation_id="selection.target.semantic.v1",
+            actor=actor,
+            state_revision=self.state.revision,
+            stack_ref=item.ref,
+            source_ref=self._stack_source_ref(item),
+            payload={
+                "public_schema": dict(public_schema),
+                "trigger_creation": trigger_creation,
+            },
+        )
 
     def _log(self, *args, **kwargs):
         self.logs.append((args, kwargs))
@@ -77,7 +99,11 @@ class TriggerTargetingTests(unittest.TestCase):
         self.assertEqual(1, len(host.permissions.issued))
         issued = host.permissions.issued[0]
         self.assertEqual(["B"], issued["actors"])
-        self.assertEqual("S1", issued["continuation"]["stack_ref"])
+        selection = issued["continuation"]["selection"]
+        self.assertEqual("targeting", selection["contract"])
+        self.assertEqual("B", selection["actor"])
+        self.assertEqual("S1", selection["stack_ref"])
+        self.assertTrue(selection["payload"]["trigger_creation"])
         self.assertEqual(
             "Choose legal targets for Trigger S1.",
             issued["payload_by_actor"]["B"]["prompt"],
@@ -106,7 +132,9 @@ class TriggerTargetingTests(unittest.TestCase):
         self.assertEqual(1, len(host.logs))
         self.assertEqual(
             "S2",
-            host.permissions.issued[0]["continuation"]["stack_ref"],
+            host.permissions.issued[0]["continuation"]["selection"][
+                "stack_ref"
+            ],
         )
 
 

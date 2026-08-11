@@ -451,7 +451,7 @@ class DecisionOpportunityTests(unittest.TestCase):
         fetch_ability = next(
             ability
             for ability in engine._activated_abilities(flooded)
-            if engine._fetch_land_types(ability.effect_text)
+            if ability.library_search_types
         )
         response = PilotResponse.from_mapping(
             {
