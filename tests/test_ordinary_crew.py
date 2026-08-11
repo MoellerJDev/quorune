@@ -289,6 +289,7 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
         *,
         seat: str = "A",
         powers: tuple[int, ...] = (1, 1),
+        power_counters: tuple[int, ...] = (),
         source_type_line: str | None = None,
     ):
         engine = session.engine
@@ -307,6 +308,22 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
             self.creature(engine, seat, f"Crew Pilot {index}", power)
             for index, power in enumerate(powers, start=1)
         )
+        if power_counters:
+            self.assertEqual(len(candidates), len(power_counters))
+            changes = tuple(
+                CounterChange(
+                    "permanent",
+                    candidate.object_id,
+                    "+1/+1",
+                    amount,
+                    expected_zone="battlefield",
+                    expected_logical_object_id=candidate.logical_object_id,
+                )
+                for candidate, amount in zip(candidates, power_counters, strict=True)
+                if amount
+            )
+            if changes:
+                commit_counter_changes(engine, plan_counter_changes(engine, changes))
         engine.state.active_player = seat
         engine.state.started = True
         engine.state.phase = "precombat_main"
@@ -477,7 +494,10 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
                 ]["legal"]["actions"]
                 if row["id"] == action_id
             )
-            self.assertEqual(0, action["choose_cost"][0]["minimum"])
+            self.assertEqual(
+                0,
+                action["cost_summary"]["choose_cost"][0]["minimum"],
+            )
 
             result = session.act("pilot:A", {"action_id": action_id})
 
@@ -665,24 +685,12 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
     def test_current_effective_power_and_source_exclusion_share_one_cost_owner(self):
         session = self.session(70212203)
         engine = session.engine
-        source, candidates, action_id = self.prepare(session, powers=(1,))
-        candidate = candidates[0]
-        commit_counter_changes(
-            engine,
-            plan_counter_changes(
-                engine,
-                (
-                    CounterChange(
-                        "permanent",
-                        candidate.object_id,
-                        "+1/+1",
-                        1,
-                        expected_zone="battlefield",
-                        expected_logical_object_id=candidate.logical_object_id,
-                    ),
-                ),
-            ),
+        source, candidates, action_id = self.prepare(
+            session,
+            powers=(1,),
+            power_counters=(1,),
         )
+        candidate = candidates[0]
         self.assertEqual(2, engine._numeric_stat(candidate.object_id, "power"))
 
         result = session.act(

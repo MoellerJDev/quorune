@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "0aaaeae05d58e4e58ffc7e318cd61a5b79840bb5eebd549b53438b4e24c53b75"
+verified: "e44ff80dbacccd19a7ee74626f9b06c231b3663b9e93475cbf5d188728a53424"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -22,9 +22,9 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Twists and Turns // Mycoid Maze | 189 | 24 | 6 | 6 | 8 | 7 | `blocked` |
 | Vorinclex // The Grand Evolution | 188 | 22 | 7 | 7 | 9 | 4 | `blocked` |
 | Sheoldred // The True Scriptures | 187 | 21 | 7 | 7 | 10 | 4 | `blocked` |
-| Conqueror's Galleon // Conqueror's Foothold | 186 | 24 | 6 | 7 | 6 | 14 | `blocked` |
 | Dion, Bahamut's Dominant // Bahamut, Warden of Light | 186 | 22 | 6 | 7 | 8 | 10 | `blocked` |
 | Elesh Norn // The Argent Etchings | 182 | 20 | 7 | 7 | 11 | 2 | `blocked` |
+| Conqueror's Galleon // Conqueror's Foothold | 181 | 23 | 6 | 7 | 5 | 14 | `blocked` |
 | Invasion of Zendikar // Awakened Skyclave | 178 | 20 | 5 | 5 | 6 | 18 | `blocked` |
 | Ojer Axonil, Deepest Might // Temple of Power | 178 | 22 | 7 | 6 | 8 | 6 | `blocked` |
 | Sorin of House Markov // Sorin, Ravenous Neonate | 178 | 19 | 4 | 7 | 10 | 19 | `blocked` |
@@ -32,6 +32,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Urabrask // The Great Work | 176 | 19 | 6 | 7 | 10 | 4 | `blocked` |
 | Invasion of Fiora // Marchesa, Resolute Monarch | 175 | 17 | 5 | 7 | 6 | 17 | `blocked` |
 | Grist, Voracious Larva // Grist, the Plague Swarm | 170 | 22 | 5 | 5 | 8 | 14 | `blocked` |
+| Invasion of Kaladesh // Aetherwing, Golden-Scale Flagship | 170 | 18 | 5 | 5 | 6 | 17 | `blocked` |
 | Ojer Taq, Deepest Foundation // Temple of Civilization | 170 | 22 | 7 | 6 | 8 | 2 | `blocked` |
 | Nicol Bolas, the Ravager // Nicol Bolas, the Arisen | 169 | 24 | 6 | 7 | 5 | 11 | `blocked` |
 | Invasion of Kaldheim // Pyre of the World Tree | 168 | 16 | 5 | 4 | 5 | 22 | `blocked` |
@@ -43,7 +44,6 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Ajani, Nacatl Pariah // Ajani, Nacatl Avenger | 163 | 22 | 4 | 5 | 10 | 15 | `blocked` |
 | Gwen Stacy // Ghost-Spider | 163 | 21 | 5 | 5 | 7 | 13 | `blocked` |
 | Blaster, Combat DJ // Blaster, Morale Booster | 161 | 16 | 5 | 6 | 8 | 16 | `blocked` |
-| Invasion of Kaladesh // Aetherwing, Golden-Scale Flagship | 161 | 16 | 4 | 5 | 7 | 17 | `blocked` |
 | Dr. Madison Li | 160 | 21 | 7 | 4 | 5 | 10 | `blocked` |
 | Devoted Grafkeeper // Departed Soulkeeper | 159 | 19 | 5 | 6 | 7 | 7 | `blocked` |
 | Faithbound Judge // Sinner's Judgment | 159 | 21 | 5 | 7 | 8 | 1 | `blocked` |

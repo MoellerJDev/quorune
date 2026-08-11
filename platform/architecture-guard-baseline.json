@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "bc19fd0c31c12879768b97b56e6b2bc248935540",
+  "baseline_commit": "177596c2",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -723,7 +723,7 @@
     "quorune/record.py": 11
   },
   "engine": {
-    "logical_lines": 11744,
+    "logical_lines": 11696,
     "methods": [
       {
         "kind": "method",
@@ -2211,12 +2211,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 12444
+    "physical_lines": 12396
   },
   "exception_binding": {
-    "adr": "docs/adr/0055-typed-direct-counter-removal-effects.md",
-    "allowance_fingerprint": "cae683f3fa62c2946b5410e70ac521ab549b7e57469078de3788e50c445cdef5",
-    "exception_id": "ARCH-EXC-0024"
+    "adr": "docs/adr/0056-typed-ordinary-crew-activation.md",
+    "allowance_fingerprint": "368eee738c034ec2d828911f1e0cfe1fa86c01749e2afef30defa2df9ff19ccf",
+    "exception_id": "ARCH-EXC-0025"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2345,7 +2345,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 282,
+      "logical_lines": 280,
       "symbol": "CommanderEngine._enter_step"
     },
     {
@@ -2441,11 +2441,11 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 11744
+      "logical_lines": 11696
     },
     {
       "file": "quorune/record.py",
-      "logical_lines": 1605
+      "logical_lines": 1596
     },
     {
       "file": "quorune/report.py",
@@ -2463,6 +2463,7 @@
     "add_subtype_until_end_of_turn",
     "add_type",
     "add_type_until_end_of_turn",
+    "add_types_until_end_of_turn",
     "amass",
     "attach",
     "become_monarch",
