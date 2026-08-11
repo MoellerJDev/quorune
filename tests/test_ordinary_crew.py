@@ -60,7 +60,7 @@ def crew_record(
 
 
 class OrdinaryCrewModelTests(unittest.TestCase):
-    def test_descriptor_is_strict_immutable_and_round_trips(self):
+    def test_ordinary_crew_descriptor_is_strict_immutable_and_round_trips(self):
         spec = compile_ordinary_crew_ability(
             material_line="Crew 3",
             oracle_line="Crew 3",

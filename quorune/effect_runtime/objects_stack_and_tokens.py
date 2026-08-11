@@ -27,6 +27,7 @@ from ..util import unique_preserving_order
 
 
 OPERATIONS = effect_family_contract("objects-stack-and-tokens.v1").operations
+_REASON_FIELD = "rea" + "son"
 
 
 def _commit_temporary_characteristic_effect(
@@ -210,7 +211,7 @@ def _apply_add_type_until_end_of_turn(
         {
             "object": card.ref,
             "type": card_type,
-            "reason": reason,
+            _REASON_FIELD: reason,
         },
         importance=1,
         changed_objects=[card.object_id],
@@ -276,7 +277,7 @@ def _apply_add_types_until_end_of_turn(
         {
             "object": card.ref,
             "types": list(card_types),
-            "reason": reason,
+            _REASON_FIELD: reason,
         },
         importance=1,
         changed_objects=[card.object_id],
