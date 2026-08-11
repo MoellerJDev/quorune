@@ -6,6 +6,7 @@ from ..counter_placement import CounterPlacementError, place_counters_on_refs
 from ..errors import GameRuleError
 from ..effect_contracts import effect_family_contract
 from ..model import GoadDesignation
+from ..trigger_processing import schedule_delayed_trigger
 
 
 OPERATIONS = effect_family_contract("state-and-permissions.v1").operations
@@ -283,7 +284,8 @@ def _apply_delayed_mana(
     op = operation
     seat = str(effect.get("player") or actor)
     amount = int(effect.get("amount", 0))
-    return host.schedule_delayed_trigger(
+    return schedule_delayed_trigger(
+        host,
         controller=seat,
         label=str(effect.get("label") or "Delayed mana"),
         event_kind="step.begin",
@@ -321,7 +323,8 @@ def _apply_delayed_pact_payment(
     op = operation
     seat = str(effect.get("player") or actor)
     cost = dict(effect.get("cost") or {})
-    return host.schedule_delayed_trigger(
+    return schedule_delayed_trigger(
+        host,
         controller=seat,
         label=str(
             effect.get("label")

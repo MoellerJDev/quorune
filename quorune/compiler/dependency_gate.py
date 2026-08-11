@@ -214,6 +214,21 @@ def keyword_dependency_gate(
             blockers=("mechanic:prowess-unsupported-wording",),
             capabilities=("trigger.keyword.prowess",),
         )
+    if mechanics == ("ward",):
+        if re.fullmatch(
+            r"Ward\s+\{\d+\}\.?",
+            material_line.strip(),
+            re.IGNORECASE,
+        ):
+            return explicit_capability_gate(
+                "trigger.keyword.ward.fixed_generic",
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+            )
+        return DependencyGate(
+            blockers=("mechanic:ward-unsupported-cost",),
+            capabilities=("trigger.keyword.ward.fixed_generic",),
+        )
     if mechanics in {(_PERSIST_MECHANIC,), (_UNDYING_MECHANIC,)}:
         mechanic = mechanics[0]
         if material_line.strip().rstrip(".").casefold() == mechanic:

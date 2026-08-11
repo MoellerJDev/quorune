@@ -18,7 +18,7 @@ from ...model import StackItem, YieldPolicy
 from ..spell_cast_events import SpellCastEvent
 from ...stack_counter import oracle_has_intrinsic_counter_prohibition
 from ...tap_state import set_permanent_tapped
-from ...trigger_processing import enqueue_trigger_batch
+from ...trigger_processing import collect_ward_occurrences, enqueue_trigger_batch
 from ..action_proposals import CastProposal, thaw_json
 from ..casting_additional_costs import (
     AdditionalCostError,
@@ -88,8 +88,6 @@ class CastCommitHost(Protocol):
     def _record_turn_history(self, kind: str, **kwargs: Any) -> None: ...
 
     def _dispatch_semantic_event(self, event: str, context: Mapping[str, Any], **kwargs: Any) -> None: ...
-
-    def _queue_ward_triggers_for_targets(self, item: Any) -> Any: ...
 
     def _stabilize(self) -> bool: ...
 
@@ -911,7 +909,7 @@ def commit_cast(
         host, proposal, card, item, spent, activations, selected_option, costs
     )
     _dispatch_cast_events(host, proposal, card, item, costs)
-    host._queue_ward_triggers_for_targets(item)
+    collect_ward_occurrences(host, item)
     host.state.players[proposal.seat].yield_policy = YieldPolicy()
     if bool(details.get("during_resolution")):
         return

@@ -31,6 +31,7 @@ from ..counter_removal import (
 from ..counter_state import player_counter_snapshot
 from ..continuous_effect_state import ResolutionEffectSource
 from ..errors import GameRuleError
+from ..trigger_processing import schedule_delayed_trigger
 from ..fixed_damage_set import (
     FixedDamageSetError,
     resolve_fixed_damage_set,
@@ -1092,7 +1093,8 @@ class SemanticChoiceIntentHostMixin:
             }
             if intent.sacrifice_on_controller_end_step:
                 condition["player"] = "controller"
-            self.schedule_delayed_trigger(
+            schedule_delayed_trigger(
+                self,
                 controller=intent.controller,
                 label=f"Sacrifice {created.ref}",
                 event_kind="step.begin",

@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, replace
+import hashlib
 from typing import Any
 
 from .replacement.immutable import FrozenMap, thaw_value
+from .util import stable_json
 
 
 class TriggerBatchError(ValueError):
@@ -70,8 +72,14 @@ def _string_tuple(value: Any, *, field: str) -> tuple[str, ...]:
 
 
 @dataclass(frozen=True, slots=True)
-class PendingTriggerItem(Mapping[str, Any]):
-    """One immutable ordinary stack object waiting for CR 603.3 placement."""
+class TriggerOccurrence(Mapping[str, Any]):
+    """Canonical immutable represented trigger before CR 603.3 placement.
+
+    ``payload`` retains the historical Game Record v3 StackItem shape so old
+    checkpoints replay byte-for-byte.  The typed properties expose the one
+    occurrence envelope used by current discovery, batching, targeting, and
+    placement code instead of requiring consumers to interpret that payload.
+    """
 
     payload: FrozenMap
 
@@ -126,6 +134,28 @@ class PendingTriggerItem(Mapping[str, Any]):
         context = data.get("context", FrozenMap())
         if not isinstance(context, FrozenMap):
             raise TriggerBatchError("trigger_item.context must be a mapping")
+        for field in (
+            "event",
+            "source_logical_object_id",
+            "source_zone",
+            "one_or_more_aggregation_id",
+        ):
+            value = context.get(field)
+            if value is not None:
+                _exact_string(value, field=f"trigger_item.context.{field}")
+        target_pending = context.get(
+            "trigger_target_selection_pending", False
+        )
+        if type(target_pending) is not bool:
+            raise TriggerBatchError(
+                "trigger target-selection marker must be a boolean"
+            )
+        for field in ("intervening_condition", "additional_trigger_source"):
+            value = context.get(field, FrozenMap())
+            if not isinstance(value, FrozenMap):
+                raise TriggerBatchError(
+                    f"trigger_item.context.{field} must be a mapping"
+                )
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> "PendingTriggerItem":
@@ -143,6 +173,112 @@ class PendingTriggerItem(Mapping[str, Any]):
     def controller(self) -> str:
         return self.payload["controller"]
 
+    @property
+    def occurrence_id(self) -> str:
+        return self.payload["stack_id"]
+
+    @property
+    def source_object_id(self) -> str | None:
+        value = self.payload.get("source_object_id")
+        return str(value) if value is not None else None
+
+    @property
+    def source_logical_object_id(self) -> str | None:
+        value = self.event_facts.get("source_logical_object_id")
+        return str(value) if value is not None else None
+
+    @property
+    def source_ability_id(self) -> str | None:
+        value = self.payload.get("semantic_key")
+        return str(value) if value is not None else None
+
+    @property
+    def normalized_event_id(self) -> str | None:
+        value = self.event_facts.get("event")
+        return str(value) if value is not None else None
+
+    @property
+    def source_zone(self) -> str | None:
+        value = self.event_facts.get("source_zone")
+        return str(value) if value is not None else None
+
+    @property
+    def event_facts(self) -> FrozenMap:
+        value = self.payload.get("context", FrozenMap())
+        if not isinstance(value, FrozenMap):
+            raise TriggerBatchError("trigger_item.context must be a mapping")
+        return value
+
+    @property
+    def intervening_condition(self) -> FrozenMap:
+        value = self.event_facts.get("intervening_condition", FrozenMap())
+        if not isinstance(value, FrozenMap):
+            raise TriggerBatchError(
+                "trigger_item intervening condition must be a mapping"
+            )
+        return value
+
+    @property
+    def target_selection_required(self) -> bool:
+        value = self.event_facts.get(
+            "trigger_target_selection_pending", False
+        )
+        if type(value) is not bool:
+            raise TriggerBatchError(
+                "trigger target-selection marker must be a boolean"
+            )
+        return value
+
+    @property
+    def copy_provenance(self) -> FrozenMap:
+        value = self.event_facts.get("additional_trigger_source", FrozenMap())
+        if not isinstance(value, FrozenMap):
+            raise TriggerBatchError(
+                "trigger copy provenance must be a mapping"
+            )
+        return value
+
+    @property
+    def aggregation_id(self) -> str | None:
+        value = self.event_facts.get("one_or_more_aggregation_id")
+        return str(value) if value is not None else None
+
+    @property
+    def visibility(self) -> tuple[str, ...]:
+        value = self.payload.get("visibility", ())
+        if not isinstance(value, tuple):
+            raise TriggerBatchError("trigger_item.visibility must be an array")
+        return tuple(str(item) for item in value)
+
+    def typed_dict(self) -> dict[str, Any]:
+        """Return the closed occurrence view used for audit fingerprints."""
+
+        return {
+            "schema_version": 1,
+            "occurrence_id": self.occurrence_id,
+            "ref": self.ref,
+            "controller": self.controller,
+            "label": self.label,
+            "normalized_event_id": self.normalized_event_id,
+            "source_object_id": self.source_object_id,
+            "source_logical_object_id": self.source_logical_object_id,
+            "source_ability_id": self.source_ability_id,
+            "source_zone": self.source_zone,
+            "event_facts": thaw_value(self.event_facts),
+            "intervening_condition": thaw_value(self.intervening_condition),
+            "target_selection_required": self.target_selection_required,
+            "mode_requirements": list(self.payload.get("modes", ())),
+            "copy_provenance": thaw_value(self.copy_provenance),
+            "aggregation_id": self.aggregation_id,
+            "visibility": list(self.visibility),
+        }
+
+    @property
+    def fingerprint(self) -> str:
+        return hashlib.sha256(
+            stable_json(self.typed_dict()).encode("utf-8")
+        ).hexdigest()
+
     def to_dict(self) -> dict[str, Any]:
         return thaw_value(self.payload)
 
@@ -154,6 +290,11 @@ class PendingTriggerItem(Mapping[str, Any]):
 
     def __len__(self) -> int:
         return len(self.payload)
+
+
+# Game Record v3 checkpoints and external imports retain the historical class
+# name.  It is an alias, not a second authoritative occurrence model.
+PendingTriggerItem = TriggerOccurrence
 
 
 @dataclass(frozen=True, slots=True)
@@ -484,6 +625,7 @@ def complete_pending_trigger_group(
 __all__ = [
     "PendingTriggerBatch",
     "PendingTriggerItem",
+    "TriggerOccurrence",
     "TriggerBatchError",
     "TriggerControllerGroup",
     "begin_pending_trigger_placement",

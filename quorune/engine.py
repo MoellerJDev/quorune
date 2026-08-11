@@ -128,14 +128,17 @@ from .drawing import (
     QueuedDraw,
     resume_after_draw,
 )
-from .delayed_triggers import materialize_delayed_trigger
-from .trigger_targeting import begin_pending_trigger_target_selection
 from .trigger_processing import (
     begin_pending_trigger_batch,
+    begin_trigger_target_selection,
+    clear_pending_trigger_batches,
     collect_trigger_items,
-    complete_trigger_order,
+    collect_ward_occurrences,
+    complete_trigger_order_decision,
     enqueue_trigger_batch,
+    matching_delayed_triggers,
     start_delayed_trigger_batch,
+    TriggerProcessingHostMixin,
 )
 from .trigger_discovery import (
     dispatch_semantic_event,
@@ -210,7 +213,6 @@ from .mana_payment_continuations import (
 from .model import (
     CardInstance,
     CombatState,
-    DelayedTrigger,
     Event,
     GameConfig,
     GameState,
@@ -387,6 +389,7 @@ class ActionResult:
 
 class CommanderEngine(
     AbilityFragmentHostMixin,
+    TriggerProcessingHostMixin,
     SemanticChoiceCoordinationMixin,
     SemanticChoiceIntentHostMixin,
 ):
@@ -2271,7 +2274,7 @@ class CommanderEngine(
                 error_type=GameRuleError,
             )
         elif kind == "trigger.order":
-            self._complete_trigger_order(decision)
+            complete_trigger_order_decision(self, decision)
         elif kind == "arbiter.resolve":
             self._complete_arbiter_resolution(decision)
         elif kind == "search.fetch":
@@ -3262,7 +3265,8 @@ class CommanderEngine(
             for event in self.state.events
         )
         cleanup_delayed = (
-            self._matching_delayed_triggers(
+            matching_delayed_triggers(
+                self,
                 "step.begin",
                 {
                     "phase": "ending",
@@ -3410,7 +3414,7 @@ class CommanderEngine(
             exiled_cards.append(card.object_id)
         removed_stack = [item.ref for item in self.state.stack]
         self.state.stack.clear()
-        self.state.pending_trigger_batches.clear()
+        clear_pending_trigger_batches(self)
         self.permissions.invalidate_current()
         self.state.priority_player = None
         self.state.priority_passes = []
@@ -3462,7 +3466,8 @@ class CommanderEngine(
                 if trigger.trigger_id in delayed_ids
             ]
             if delayed:
-                self._start_trigger_batch(
+                start_delayed_trigger_batch(
+                    self,
                     delayed,
                     after="grant_priority",
                 )
@@ -4021,133 +4026,6 @@ class CommanderEngine(
             ),
             annotation,
             importance=3,
-        )
-
-    # ------------------------------------------------------------------
-    # Delayed triggers and trigger ordering
-    # ------------------------------------------------------------------
-    def schedule_delayed_trigger(
-        self,
-        *,
-        controller: str,
-        label: str,
-        event_kind: str,
-        condition: Mapping[str, Any],
-        stack_template: Mapping[str, Any],
-        source_object_id: str | None = None,
-        referred_object_ids: Sequence[str] = (),
-        once: bool = True,
-        expires_turn_sequence: int | None = None,
-    ) -> DelayedTrigger:
-        ref = self._next_ref("DT")
-        trigger = DelayedTrigger(
-            trigger_id=self._stable_runtime_id("delayed-trigger", ref),
-            ref=ref,
-            controller=controller,
-            label=label,
-            source_object_id=source_object_id,
-            event_kind=event_kind,
-            condition=dict(condition),
-            stack_template=dict(stack_template),
-            once=once,
-            created_turn_sequence=self.state.turn_sequence,
-            expires_turn_sequence=expires_turn_sequence,
-            referred_object_ids=list(referred_object_ids),
-        )
-        self.state.delayed_triggers.append(trigger)
-        self._log(controller, "trigger.delayed.created", f"Created delayed trigger {trigger.ref}: {label}.", {"trigger": trigger.ref, "condition": dict(condition)}, importance=1)
-        return trigger
-
-    def _trigger_matches(self, trigger: DelayedTrigger, event_kind: str, context: Mapping[str, Any]) -> bool:
-        if not trigger.active or trigger.event_kind != event_kind:
-            return False
-        if trigger.expires_turn_sequence is not None and self.state.turn_sequence > trigger.expires_turn_sequence:
-            trigger.active = False
-            return False
-        for key, expected in trigger.condition.items():
-            if key == "after_turn_sequence":
-                if self.state.turn_sequence <= int(expected):
-                    return False
-                continue
-            if (
-                key == "player"
-                and expected in {"controller", "$controller"}
-            ):
-                expected = trigger.controller
-            if isinstance(expected, (list, tuple, set)):
-                if context.get(key) not in expected:
-                    return False
-                continue
-            if context.get(key) != expected:
-                return False
-        return True
-
-    def _matching_delayed_triggers(self, event_kind: str, context: Mapping[str, Any]) -> list[DelayedTrigger]:
-        matches = [trigger for trigger in self.state.delayed_triggers if self._trigger_matches(trigger, event_kind, context)]
-        for trigger in matches:
-            if trigger.once:
-                trigger.active = False
-        return matches
-
-    def _start_trigger_batch(self, triggers: Sequence[DelayedTrigger], *, after: str) -> None:
-        start_delayed_trigger_batch(self, triggers, after=after)
-
-    def _process_trigger_groups(
-        self,
-        controller: str,
-        options: Sequence[tuple[str, str]],
-        continuation: Mapping[str, Any],
-    ) -> None:
-        """Issue the one seat-scoped trigger-order capability.
-
-        The historical method name preserves architecture and Game Record v3
-        compatibility; typed grouping and continuation validation live in the
-        trigger-processing subsystem.
-        """
-
-        self.permissions.issue(
-            kind="trigger.order",
-            role="pilot",
-            actors=[controller],
-            allowed_actions=["order"],
-            payload_by_actor={
-                controller: {
-                    "triggers": [
-                        {"id": ref, "label": label}
-                        for ref, label in options
-                    ],
-                    "instruction": "Order bottom-to-top on the stack.",
-                }
-            },
-            continuation=dict(continuation),
-        )
-
-    def _complete_trigger_order(self, decision: Any) -> None:
-        controller = decision.actors[0]
-        values = list(decision.responses[controller].get("triggers") or decision.responses[controller].get("order") or [])
-        complete_trigger_order(
-            self,
-            controller=controller,
-            values=values,
-            continuation=decision.continuation,
-        )
-
-    def _delayed_trigger_stack_item(
-        self,
-        trigger: DelayedTrigger,
-    ) -> StackItem:
-        """Materialize a delayed ability without choosing its stack order.
-
-        Every delayed ability becomes the same ordinary ``StackItem``
-        representation used by static-source and prevention-result triggers
-        before the single APNAP/controller ordering boundary.
-        """
-        ref = self._next_ref("S")
-        return materialize_delayed_trigger(
-            trigger,
-            ref=ref,
-            stack_id=self._stable_runtime_id("stack", ref),
-            visibility=self.seats,
         )
 
     # ------------------------------------------------------------------
@@ -4824,74 +4702,6 @@ class CommanderEngine(
 
     def _activated_abilities(self, card: CardInstance) -> tuple[ActivatedAbility, ...]:
         return activated_abilities(self, card)
-
-    def _queue_ward_triggers_for_targets(
-        self,
-        targeted_item: StackItem,
-    ) -> list[str]:
-        queued: list[str] = []
-        seen: set[str] = set()
-        for target_ref in targeted_item.targets:
-            if target_ref in seen:
-                continue
-            seen.add(target_ref)
-            try:
-                permanent = self._resolve_object(
-                    targeted_item.controller,
-                    str(target_ref),
-                    zones={"battlefield"},
-                )
-            except GameRuleError:
-                continue
-            if permanent.controller == targeted_item.controller:
-                continue
-            oracle = str(
-                self._effective_card_data(permanent).get(
-                    "oracle_text"
-                )
-                or ""
-            )
-            match = re.search(
-                r"\bWard\s+\{(?P<generic>\d+)\}",
-                oracle,
-                re.IGNORECASE,
-            )
-            if match is None:
-                continue
-            ref = self._next_ref("S")
-            ward = StackItem(
-                stack_id=self._stable_runtime_id("stack", ref),
-                ref=ref,
-                kind="triggered_ability",
-                controller=permanent.controller,
-                label=f"{self.display_name(permanent.object_id)} — Ward",
-                source_object_id=permanent.object_id,
-                semantic_key="builtin:ward",
-                visibility=list(self.seats),
-                context={
-                    "target_stack": targeted_item.ref,
-                    "payer": targeted_item.controller,
-                    "cost": {
-                        "GENERIC": int(match.group("generic"))
-                    },
-                    "targeted_permanent": permanent.ref,
-                },
-            )
-            self.state.stack.append(ward)
-            queued.append(ward.ref)
-            self._log(
-                permanent.controller,
-                "stack.trigger",
-                f"Queued {ward.ref}: {ward.label}.",
-                {
-                    "stack": ward.ref,
-                    "source": permanent.ref,
-                    "target_stack": targeted_item.ref,
-                    "payer": targeted_item.controller,
-                },
-                importance=2,
-            )
-        return queued
 
     @staticmethod
     def _semantic_key_for_ability(
@@ -6500,13 +6310,6 @@ class CommanderEngine(
         ):
             return self.state.cards[item.card_object_id].ref
         return item.ref
-
-    def _begin_pending_trigger_target_selection(self) -> bool:
-        return begin_pending_trigger_target_selection(
-            self,
-            decision_role="pilot",
-            log_reason_field="reason",
-        )
 
     def _program_can_auto_resolve(self, item: StackItem) -> bool:
         if is_builtin_activation_semantic(item.semantic_key) or item.semantic_key in {
@@ -11984,7 +11787,7 @@ class CommanderEngine(
                 return True
             if begin_pending_trigger_batch(self):
                 return True
-            if self._begin_pending_trigger_target_selection():
+            if begin_trigger_target_selection(self):
                 return True
             return False
         raise StateInvariantError("State-based action loop did not stabilize")

@@ -4,8 +4,12 @@ import copy
 from collections.abc import Mapping, Sequence
 from typing import Any, Protocol
 
+from .ability_fragments import canonical_ability_fragments
+from .delayed_triggers import materialize_delayed_trigger
 from .errors import GameRuleError, StateInvariantError
-from .model import DelayedTrigger, StackItem
+from .model import CardInstance, DelayedTrigger, StackItem
+from .trigger_participation import WardSpec
+from .trigger_targeting import begin_pending_trigger_target_selection
 from .trigger_batches import (
     PendingTriggerItem,
     TriggerBatchError,
@@ -22,6 +26,7 @@ class TriggerProcessingHost(Protocol):
     state: Any
     active_seats: Sequence[str]
     seats: Sequence[str]
+    permissions: Any
 
     def apnap_order(self) -> Sequence[str]: ...
 
@@ -35,31 +40,240 @@ class TriggerProcessingHost(Protocol):
 
     def _semantic_pause_annotation(self) -> Any: ...
 
-    def _matching_delayed_triggers(
-        self,
-        event_kind: str,
-        context: Mapping[str, Any],
-    ) -> list[DelayedTrigger]: ...
-
-    def _delayed_trigger_stack_item(
-        self,
-        trigger: DelayedTrigger,
-    ) -> StackItem: ...
-
-    def _process_trigger_groups(
-        self,
-        controller: str,
-        options: Sequence[tuple[str, str]],
-        continuation: Mapping[str, Any],
-    ) -> None: ...
-
     def _next_ref(self, prefix: str) -> str: ...
 
     def _stable_runtime_id(self, kind: str, ref: str) -> str: ...
 
     def _grant_priority(self, seat: str | None) -> None: ...
 
+    def _effective_card_data(
+        self, card: str | CardInstance
+    ) -> Mapping[str, Any]: ...
+
+    def _resolve_object(
+        self, actor: str, ref: str, *, zones: set[str]
+    ) -> CardInstance: ...
+
+    def display_name(self, object_id: str) -> str: ...
+
     def _log(self, *args: Any, **kwargs: Any) -> None: ...
+
+
+class TriggerProcessingOwner:
+    """Authoritative owner for represented CR 603 trigger transitions."""
+
+    def __init__(self, host: TriggerProcessingHost) -> None:
+        self.host = host
+
+    def schedule_delayed_trigger(
+        self,
+        *,
+        controller: str,
+        label: str,
+        event_kind: str,
+        condition: Mapping[str, Any],
+        stack_template: Mapping[str, Any],
+        source_object_id: str | None = None,
+        referred_object_ids: Sequence[str] = (),
+        once: bool = True,
+        expires_turn_sequence: int | None = None,
+    ) -> DelayedTrigger:
+        ref = self.host._next_ref("DT")
+        source = (
+            self.host.state.cards.get(source_object_id)
+            if source_object_id is not None
+            else None
+        )
+        trigger = DelayedTrigger(
+            trigger_id=self.host._stable_runtime_id("delayed-trigger", ref),
+            ref=ref,
+            controller=controller,
+            label=label,
+            source_object_id=source_object_id,
+            source_logical_object_id=(
+                source.logical_object_id if source is not None else None
+            ),
+            event_kind=event_kind,
+            condition=dict(condition),
+            stack_template=dict(stack_template),
+            once=once,
+            created_turn_sequence=self.host.state.turn_sequence,
+            expires_turn_sequence=expires_turn_sequence,
+            referred_object_ids=list(referred_object_ids),
+        )
+        self.host.state.delayed_triggers.append(trigger)
+        self.host._log(
+            controller,
+            "trigger.delayed.created",
+            f"Created delayed trigger {trigger.ref}: {label}.",
+            {"trigger": trigger.ref, "condition": dict(condition)},
+            importance=1,
+        )
+        return trigger
+
+    def trigger_matches(
+        self,
+        trigger: DelayedTrigger,
+        event_kind: str,
+        context: Mapping[str, Any],
+    ) -> bool:
+        if not trigger.active or trigger.event_kind != event_kind:
+            return False
+        if (
+            trigger.expires_turn_sequence is not None
+            and self.host.state.turn_sequence > trigger.expires_turn_sequence
+        ):
+            trigger.active = False
+            return False
+        for key, original_expected in trigger.condition.items():
+            expected = original_expected
+            if key == "after_turn_sequence":
+                if self.host.state.turn_sequence <= int(expected):
+                    return False
+                continue
+            if key == "player" and expected in {"controller", "$controller"}:
+                expected = trigger.controller
+            if isinstance(expected, (list, tuple, set)):
+                if context.get(key) not in expected:
+                    return False
+            elif context.get(key) != expected:
+                return False
+        return True
+
+    def matching_delayed_triggers(
+        self,
+        event_kind: str,
+        context: Mapping[str, Any],
+    ) -> list[DelayedTrigger]:
+        matches = [
+            trigger
+            for trigger in self.host.state.delayed_triggers
+            if self.trigger_matches(trigger, event_kind, context)
+        ]
+        for trigger in matches:
+            if trigger.once:
+                trigger.active = False
+        return matches
+
+    def materialize_delayed_trigger(
+        self, trigger: DelayedTrigger
+    ) -> StackItem:
+        ref = self.host._next_ref("S")
+        return materialize_delayed_trigger(
+            trigger,
+            ref=ref,
+            stack_id=self.host._stable_runtime_id("stack", ref),
+            visibility=self.host.seats,
+        )
+
+    def issue_trigger_order(
+        self,
+        controller: str,
+        options: Sequence[tuple[str, str]],
+        continuation: Mapping[str, Any],
+    ) -> None:
+        self.host.permissions.issue(
+            kind="trigger.order",
+            role="pilot",
+            actors=[controller],
+            allowed_actions=["order"],
+            payload_by_actor={
+                controller: {
+                    "triggers": [
+                        {"id": ref, "label": label}
+                        for ref, label in options
+                    ],
+                    "instruction": "Order bottom-to-top on the stack.",
+                }
+            },
+            continuation=dict(continuation),
+        )
+
+    def complete_trigger_order_decision(self, decision: Any) -> None:
+        controller = decision.actors[0]
+        response = decision.responses[controller]
+        values = list(response.get("triggers") or response.get("order") or [])
+        complete_trigger_order(
+            self.host,
+            controller=controller,
+            values=values,
+            continuation=decision.continuation,
+        )
+
+    def collect_ward_occurrences(self, targeted_item: StackItem) -> list[str]:
+        """Collect current typed Ward abilities into the ordinary batch."""
+
+        occurrences: list[StackItem] = []
+        seen: set[str] = set()
+        for target_ref in targeted_item.targets:
+            normalized_target_ref = str(target_ref)
+            if normalized_target_ref in seen:
+                continue
+            seen.add(normalized_target_ref)
+            try:
+                permanent = self.host._resolve_object(
+                    targeted_item.controller,
+                    normalized_target_ref,
+                    zones={"battlefield"},
+                )
+            except GameRuleError:
+                continue
+            if permanent.controller == targeted_item.controller:
+                continue
+            fragments = canonical_ability_fragments(
+                self.host._effective_card_data(permanent).get(
+                    "ability_fragments", ()
+                )
+            )
+            for ward_spec in fragments:
+                if not isinstance(ward_spec, WardSpec):
+                    continue
+                ref = self.host._next_ref("S")
+                occurrences.append(
+                    StackItem(
+                        stack_id=self.host._stable_runtime_id("stack", ref),
+                        ref=ref,
+                        kind="triggered_ability",
+                        controller=permanent.controller,
+                        label=(
+                            f"{self.host.display_name(permanent.object_id)} — Ward"
+                        ),
+                        source_object_id=permanent.object_id,
+                        semantic_key="builtin:ward",
+                        visibility=list(self.host.seats),
+                        context={
+                            "event": "object.became_target",
+                            "source_logical_object_id": (
+                                permanent.logical_object_id
+                            ),
+                            "source_zone": "battlefield",
+                            "target_stack": targeted_item.ref,
+                            "payer": targeted_item.controller,
+                            "cost": {"GENERIC": ward_spec.generic_cost},
+                            "targeted_permanent": permanent.ref,
+                            "ward_spec": ward_spec.to_dict(),
+                        },
+                    )
+                )
+        enqueue_trigger_batch(self.host, occurrences)
+        return [item.ref for item in occurrences]
+
+    def begin_target_selection(self) -> bool:
+        return begin_pending_trigger_target_selection(
+            self.host,
+            decision_role="pilot",
+            log_reason_field="reason",
+        )
+
+    def clear_pending_batches(self) -> None:
+        self.host.state.pending_trigger_batches.clear()
+
+
+class TriggerProcessingHostMixin:
+    """Compatibility surface whose implementation authority remains the owner."""
+
+    def schedule_delayed_trigger(self, **kwargs: Any) -> DelayedTrigger:
+        return schedule_delayed_trigger(self, **kwargs)  # type: ignore[arg-type]
 
 
 def collect_trigger_items(
@@ -79,9 +293,10 @@ def collect_trigger_items(
     )
     if host._semantic_pause_annotation() is not None:
         return triggered
+    owner = TriggerProcessingOwner(host)
     triggered.extend(
-        host._delayed_trigger_stack_item(trigger)
-        for trigger in host._matching_delayed_triggers(event_kind, context)
+        owner.materialize_delayed_trigger(trigger)
+        for trigger in owner.matching_delayed_triggers(event_kind, context)
     )
     return triggered
 
@@ -187,7 +402,7 @@ def begin_pending_trigger_batch(host: TriggerProcessingHost) -> bool:
         batch = started
         group = batch.groups[0]
         if len(group.items) > 1:
-            host._process_trigger_groups(
+            TriggerProcessingOwner(host).issue_trigger_order(
                 group.controller,
                 [(item.ref, item.label) for item in group.items],
                 {
@@ -226,7 +441,10 @@ def start_delayed_trigger_batch(
         )
     enqueue_trigger_batch(
         host,
-        [host._delayed_trigger_stack_item(trigger) for trigger in triggers],
+        [
+            TriggerProcessingOwner(host).materialize_delayed_trigger(trigger)
+            for trigger in triggers
+        ],
     )
     if begin_pending_trigger_batch(host):
         return
@@ -362,7 +580,9 @@ def _complete_legacy_delayed_trigger_order(
         host,
         [
             PendingTriggerItem.from_dict(
-                host._delayed_trigger_stack_item(available[trigger_id]).to_dict()
+                TriggerProcessingOwner(host)
+                .materialize_delayed_trigger(available[trigger_id])
+                .to_dict()
             )
             for trigger_id in resolved
         ],
@@ -427,7 +647,7 @@ def _resume_legacy_delayed_trigger_groups(
             for trigger_id in ids
         ]
         if len(triggers) > 1:
-            host._process_trigger_groups(
+            TriggerProcessingOwner(host).issue_trigger_order(
                 controller,
                 [(trigger.ref, trigger.label) for trigger in triggers],
                 {
@@ -441,19 +661,68 @@ def _resume_legacy_delayed_trigger_groups(
             host,
             [
                 PendingTriggerItem.from_dict(
-                    host._delayed_trigger_stack_item(triggers[0]).to_dict()
+                    TriggerProcessingOwner(host)
+                    .materialize_delayed_trigger(triggers[0])
+                    .to_dict()
                 )
             ],
         )
     host._grant_priority(host.state.active_player)
 
 
+def schedule_delayed_trigger(
+    host: TriggerProcessingHost,
+    **kwargs: Any,
+) -> DelayedTrigger:
+    return TriggerProcessingOwner(host).schedule_delayed_trigger(**kwargs)
+
+
+def matching_delayed_triggers(
+    host: TriggerProcessingHost,
+    event_kind: str,
+    context: Mapping[str, Any],
+) -> list[DelayedTrigger]:
+    return TriggerProcessingOwner(host).matching_delayed_triggers(
+        event_kind, context
+    )
+
+
+def collect_ward_occurrences(
+    host: TriggerProcessingHost,
+    targeted_item: StackItem,
+) -> list[str]:
+    return TriggerProcessingOwner(host).collect_ward_occurrences(targeted_item)
+
+
+def complete_trigger_order_decision(
+    host: TriggerProcessingHost,
+    decision: Any,
+) -> None:
+    TriggerProcessingOwner(host).complete_trigger_order_decision(decision)
+
+
+def begin_trigger_target_selection(host: TriggerProcessingHost) -> bool:
+    return TriggerProcessingOwner(host).begin_target_selection()
+
+
+def clear_pending_trigger_batches(host: TriggerProcessingHost) -> None:
+    TriggerProcessingOwner(host).clear_pending_batches()
+
+
 __all__ = [
+    "TriggerProcessingOwner",
+    "TriggerProcessingHostMixin",
     "TriggerProcessingHost",
     "begin_pending_trigger_batch",
+    "begin_trigger_target_selection",
+    "clear_pending_trigger_batches",
+    "collect_ward_occurrences",
     "collect_trigger_items",
     "complete_trigger_order",
+    "complete_trigger_order_decision",
     "enqueue_trigger_batch",
+    "matching_delayed_triggers",
     "place_trigger_items",
+    "schedule_delayed_trigger",
     "start_delayed_trigger_batch",
 ]
