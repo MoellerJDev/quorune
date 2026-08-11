@@ -16,6 +16,11 @@ class QuickGatePlanTests(unittest.TestCase):
         self.assertEqual(1, plan["test_modules"].count("test_life_change"))
         names = [step.name for step in plan["steps"]]
         self.assertIn("affected-tests", names)
+        self.assertIn("compact-ci-dependencies", names)
+        self.assertLess(
+            names.index("compact-ci-dependencies"),
+            names.index("affected-tests"),
+        )
         self.assertIn("architecture", names)
         self.assertEqual(1, names.count("generated-finalization"))
         build = next(
@@ -52,6 +57,23 @@ class QuickGatePlanTests(unittest.TestCase):
         names = [step.name for step in plan["steps"]]
         self.assertIn("generated-finalization", names)
         self.assertNotIn("reusable-pieces", names)
+
+    def test_compact_card_dependency_sources_select_early_closure(self):
+        for path in (
+            "tests/fixtures/echo-rules-cards.json",
+            "examples/mishra-eminent-one.txt",
+            "platform/test-shards.json",
+            "quorune/carddb.py",
+        ):
+            with self.subTest(path=path):
+                plan = build_plan((path,))
+                names = [step.name for step in plan["steps"]]
+                self.assertIn("compact-ci-dependencies", names)
+                if "affected-tests" in names:
+                    self.assertLess(
+                        names.index("compact-ci-dependencies"),
+                        names.index("affected-tests"),
+                    )
 
 
 if __name__ == "__main__":

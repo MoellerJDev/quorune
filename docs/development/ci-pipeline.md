@@ -203,9 +203,12 @@ The installer sets the local `core.hooksPath` to `.githooks` and refuses to
 overwrite another hook policy. The hook is a backstop that uses the
 worktree-local Python. It first runs `scripts/test_shards.py validate`, because
 an unassigned discovered test module makes PR planning fail before any matrix
-job can run. It then automatically uses `data/scryfall-current.sqlite3` when
-present (or `MTG_CARD_DB` when set), runs generated write mode, and rejects the
-push when generated outputs need a commit. It never amends a commit.
+job can run. It next runs
+`scripts/build_test_database.py validate-ci-dependencies`, so a compact-database
+card, Oracle ID, deck, fixture, or shard-closure omission fails before the push.
+It then automatically uses `data/scryfall-current.sqlite3` when present (or
+`MTG_CARD_DB` when set), runs generated write mode, and rejects the push when
+generated outputs need a commit. It never amends a commit.
 Pull-request CI remains check-only and authoritative.
 
 Keep generated-governance tests tied to identities from the canonical manifest
@@ -229,6 +232,31 @@ malformed, contains duplicate, missing, escaping, or noncanonical paths, or a
 registered consumer reintroduces its own `--fixture` list. Add a required
 fixture once to the manifest; all consumers retain isolated output paths while
 receiving the same composed card set automatically.
+
+`python scripts/build_test_database.py validate-ci-dependencies` proves that
+the set is sufficient. The structural analyzer discovers exact `CardDatabase`
+name and Oracle-ID lookups, helper wrappers (including keyword/default values),
+and `DeckLoader` paths from every module assigned by
+`platform/test-shards.json`. It then builds a fresh database from the canonical
+manifest, loads every discovered deck, resolves every dependency, and verifies
+that no `full_database_only` module is assigned to a compact shard. It also
+indexes fixture ownership and rejects conflicting canonical names, aliases, or
+Oracle IDs.
+
+Genuinely dynamic requirements must be declared in the existing manifest by
+exact source path and symbol, with sorted card, Oracle-ID, deck, or fixture
+requirements and a nonempty rationale. Undeclared dynamics and stale
+declarations both fail closed. Do not add another fixture list or compact
+database builder. The generated
+`coverage/compact-ci-card-dependencies.json` and `.md` companions record the
+current identities, owners, source provenance, and per-shard closure; they do
+not duplicate card payloads.
+
+Pull-request planning runs this validation before functional matrices are
+released, and Windows, main-smoke, nightly, quick-gate, local-gate, and
+pre-push paths enforce the same closure. A missing fixture therefore fails at
+the dependency boundary instead of surfacing much later as unrelated runtime
+test errors.
 
 The full `scripts/local_merge_gate.py` is not a default development step. Run a
 broad local gate only when the user explicitly asks or while diagnosing a

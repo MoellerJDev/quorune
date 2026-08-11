@@ -63,6 +63,24 @@
       "write_policy": "automatic"
     },
     {
+      "id": "compact-ci-card-dependencies",
+      "depends_on": [],
+      "outputs": [
+        "coverage/compact-ci-card-dependencies.json",
+        "coverage/compact-ci-card-dependencies.md"
+      ],
+      "check": [
+        "scripts/update_compact_ci_dependencies.py",
+        "--check"
+      ],
+      "write": [
+        "scripts/update_compact_ci_dependencies.py",
+        "--write"
+      ],
+      "write_with_database": null,
+      "write_policy": "automatic"
+    },
+    {
       "id": "compiler-corpus-coverage",
       "depends_on": [
         "capability-evidence"

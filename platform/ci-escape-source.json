@@ -231,6 +231,31 @@
       ],
       "impact_edge_status": "added",
       "resolution": "The canonical compact-CI fixture manifest now includes one generated three-card Amass fixture, token lookup uses the exact Scryfall name, and the full Amass module passes against a freshly built compact database."
+    },
+    {
+      "id": "ci-20260811-17",
+      "run_id": 31483829105,
+      "head_sha": "2b14465c42f2ed504c820fc24b739eec502ef1d6",
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "summary": "Ordinary Echo runtime tests resolved Karmic Guide and Shah of Naar Isle from the full local card database, but those cards were absent from the canonical compact CI database; this was a recurrence of the Amass fixture-omission class.",
+      "failed_surfaces": [
+        "rules-events-replacements",
+        "windows-rules-events-replacements"
+      ],
+      "regressions": [
+        "test_echo_rules.EchoRuntimeTests.test_control_change_and_zone_change_preserve_trigger_time_echo_facts",
+        "test_echo_rules.EchoRuntimeTests.test_control_history_version_preserves_legacy_record_hash_mode",
+        "test_echo_rules.EchoRuntimeTests.test_engine_upkeep_step_records_boundary_before_echo_discovery",
+        "test_echo_rules.EchoRuntimeTests.test_four_player_echo_choice_is_seat_scoped_private_and_replays",
+        "test_echo_rules.EchoRuntimeTests.test_multiple_echo_sources_share_apnap_trigger_placement",
+        "test_echo_rules.EchoRuntimeTests.test_pay_keeps_and_decline_sacrifices_through_typed_intents",
+        "test_echo_rules.EchoRuntimeTests.test_prior_upkeep_control_history_triggers_once",
+        "test_echo_rules.EchoRuntimeTests.test_stale_source_and_malformed_history_fail_before_mutation",
+        "test_echo_rules.EchoRuntimeTests.test_zero_echo_is_payable_without_mana"
+      ],
+      "impact_edge_status": "added",
+      "resolution": "The immediate Echo correction added the two cards to the canonical fixture set. The compact dependency closure now structurally discovers card, Oracle-ID, helper, and deck requirements and blocks pull-request matrices before long shards when the canonical manifest is incomplete."
     }
   ],
   "recent_pull_requests": [

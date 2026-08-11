@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "95e0f22394172094b10616a3f6660b8deb16bb1ba3a578ee3653f15c58d40e90"
+verified: "c1d935170d18e5c29cd5e1bb4a8e47d3aab040c07d83de4f113f2321bb4c3065"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 16
-- Deterministic escapes: 11
+- Escapes: 17
+- Deterministic escapes: 12
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -42,6 +42,7 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260809-14` | [31260380655](https://github.com/MoellerJDev/quorune/actions/runs/31260380655) | `generated_artifact_drift` | `added` | A strict ownership manifest now orders all tracked generators, one finalizer writes them to a bounded fixed point, AGENTS.md requires that command before the final commit, and a repository pre-push hook rejects omitted generated changes. |
 | `ci-20260810-15` | [31416024863](https://github.com/MoellerJDev/quorune/actions/runs/31416024863) | `missing_affected_test` | `added` | The Bloodthirst-focused module now verifies exact component registration, while the global trust test checks unique handler identities and the complete family set instead of a maintenance-only total count. |
 | `ci-20260811-16` | [31472531758](https://github.com/MoellerJDev/quorune/actions/runs/31472531758) | `missing_affected_test` | `added` | The canonical compact-CI fixture manifest now includes one generated three-card Amass fixture, token lookup uses the exact Scryfall name, and the full Amass module passes against a freshly built compact database. |
+| `ci-20260811-17` | [31483829105](https://github.com/MoellerJDev/quorune/actions/runs/31483829105) | `missing_affected_test` | `added` | The immediate Echo correction added the two cards to the canonical fixture set. The compact dependency closure now structurally discovers card, Oracle-ID, helper, and deck requirements and blocks pull-request matrices before long shards when the canonical manifest is incomplete. |
 
 ## Measurement limitations
 

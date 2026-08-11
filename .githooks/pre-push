@@ -17,6 +17,7 @@ fi
 # The finalizer also validates the reviewed architecture baseline after every
 # generated writer/check, so a new typed operation cannot first fail in CI.
 "$PYTHON" "$ROOT/scripts/test_shards.py" validate
+"$PYTHON" "$ROOT/scripts/build_test_database.py" validate-ci-dependencies
 
 run_finalizer() {
     if "$PYTHON" "$ROOT/scripts/finalize_generated.py" \

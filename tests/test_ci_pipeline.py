@@ -288,6 +288,13 @@ class CiPipelineTests(unittest.TestCase):
             pr.index("python scripts/validate_pr_body.py"),
             pr.index("python scripts/ci_plan.py"),
         )
+        self.assertIn(
+            "python scripts/build_test_database.py validate-ci-dependencies", pr
+        )
+        self.assertLess(
+            pr.index("python scripts/build_test_database.py validate-ci-dependencies"),
+            pr.index("\n  python:"),
+        )
         self.assertIn("fromJSON(needs.plan.outputs.browser_matrix)", pr)
         self.assertIn("fromJSON(needs.plan.outputs.windows_matrix)", pr)
         self.assertIn("needs.plan.outputs.browser_focus_grep", pr)
@@ -310,6 +317,7 @@ class CiPipelineTests(unittest.TestCase):
         )
         self.assertIn("python -m pip install -e .", package)
         self.assertIn("max-parallel: 5", windows_full)
+        self.assertIn("validate-ci-dependencies", windows_full)
         self.assertIn('python scripts/test_shards.py run "${{ matrix.shard }}"', windows_full)
         self.assertNotIn("unittest discover", windows_full)
         self.assertIn("PR / Windows Certification", pr)
@@ -318,9 +326,11 @@ class CiPipelineTests(unittest.TestCase):
         self.assertIn("actions: read", main)
         self.assertIn("pull-requests: read", main)
         self.assertIn("certification_receipt.py verify-main", main)
+        self.assertIn("validate-ci-dependencies", main)
         self.assertNotIn("test_*.py", main)
         self.assertIn("schedule:", nightly)
         self.assertIn("MTG_PROPERTY_TRANSITIONS: \"33334\"", nightly)
+        self.assertGreaterEqual(nightly.count("validate-ci-dependencies"), 4)
         self.assertIn("test_*.py", nightly)
         combined = "\n".join((pr, main, nightly))
         self.assertNotIn("--fixture tests/fixtures/", combined)

@@ -160,6 +160,22 @@ def build_steps(
             ),
         ),
         GateStep(
+            "compact_ci_dependency_closure",
+            (
+                python,
+                "scripts/build_test_database.py",
+                "validate-ci-dependencies",
+            ),
+        ),
+        GateStep(
+            "generated_compact_ci_dependency_freshness",
+            (
+                python,
+                "scripts/update_compact_ci_dependencies.py",
+                "--check",
+            ),
+        ),
+        GateStep(
             "build_test_database",
             (
                 python,

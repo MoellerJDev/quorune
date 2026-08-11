@@ -114,6 +114,7 @@ define rules authority or become a production runtime dependency.
 - [Rules conformance coverage](../coverage/rules-conformance.md)
 - [Rules delta](../coverage/rules-delta.md)
 - [CI escape report](../coverage/ci-escape-report.md)
+- [Compact CI card dependencies](../coverage/compact-ci-card-dependencies.md)
 
 ## Decision and compatibility records
 
