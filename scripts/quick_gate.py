@@ -81,6 +81,17 @@ def build_plan(
             ),
         ),
     ]
+    if "compact-ci-dependencies" in impact.checks:
+        steps.append(
+            QuickStep(
+                "compact-ci-dependencies",
+                (
+                    python,
+                    "scripts/build_test_database.py",
+                    "validate-ci-dependencies",
+                ),
+            )
+        )
     if selected_modules:
         steps.extend(
             (
@@ -154,6 +165,8 @@ def build_plan(
     }
     finalizer_selected = "generated-finalization" in impact.checks
     for check in impact.checks:
+        if check == "compact-ci-dependencies":
+            continue
         if finalizer_selected and check in _GENERATED_CHECK_ALIASES:
             continue
         command = check_commands.get(check)

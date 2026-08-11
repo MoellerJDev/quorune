@@ -78,9 +78,11 @@ class LocalMergeGateTests(unittest.TestCase):
                     manifest.write_text(
                         json.dumps(
                             {
-                                "schema_version": 1,
+                                "schema_version": 2,
                                 "fixture_kind": "compact_ci_card_database_inputs",
                                 "fixtures": entries,
+                                "dynamic_requirements": [],
+                                "full_database_only": [],
                             }
                         ),
                         encoding="utf-8",
@@ -97,9 +99,11 @@ class LocalMergeGateTests(unittest.TestCase):
             (fixture.parent / "compact-ci-fixtures.json").write_text(
                 json.dumps(
                     {
-                        "schema_version": 1,
+                        "schema_version": 2,
                         "fixture_kind": "compact_ci_card_database_inputs",
                         "fixtures": ["tests/fixtures/cards.json"],
+                        "dynamic_requirements": [],
+                        "full_database_only": [],
                     }
                 ),
                 encoding="utf-8",
@@ -148,6 +152,8 @@ class LocalMergeGateTests(unittest.TestCase):
                 "continuous_effect_work_budget",
                 "generated_platform_freshness",
                 "compile",
+                "compact_ci_dependency_closure",
+                "generated_compact_ci_dependency_freshness",
                 "build_test_database",
                 "full_deterministic_suite",
                 "rules_corpus_verify",

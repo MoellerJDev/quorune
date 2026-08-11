@@ -20,6 +20,25 @@
       "collect_test_module": true
     },
     {
+      "id": "compact-ci-dependency-sources",
+      "patterns": [
+        ".github/workflows/**",
+        "examples/*.txt",
+        "platform/test-shards.json",
+        "quorune/carddb.py",
+        "quorune/deck.py",
+        "scripts/build_test_database.py",
+        "scripts/compact_ci_dependencies.py",
+        "scripts/compact_ci_report.py",
+        "scripts/update_compact_ci_dependencies.py",
+        "tests/*.py",
+        "tests/fixtures/**"
+      ],
+      "checks": [
+        "compact-ci-dependencies"
+      ]
+    },
+    {
       "id": "python-architecture-sources",
       "patterns": [
         "quorune/**",

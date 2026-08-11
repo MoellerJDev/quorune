@@ -276,6 +276,31 @@
       "resolution": "The canonical compact-CI fixture manifest now includes one generated three-card Amass fixture, token lookup uses the exact Scryfall name, and the full Amass module passes against a freshly built compact database.",
       "run_id": 31472531758,
       "summary": "Ordinary Amass runtime tests resolved three token and replacement-component records from the full local card database, while those records were absent from the canonical compact CI database."
+    },
+    {
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "failed_surfaces": [
+        "rules-events-replacements",
+        "windows-rules-events-replacements"
+      ],
+      "head_sha": "2b14465c42f2ed504c820fc24b739eec502ef1d6",
+      "id": "ci-20260811-17",
+      "impact_edge_status": "added",
+      "regressions": [
+        "test_echo_rules.EchoRuntimeTests.test_control_change_and_zone_change_preserve_trigger_time_echo_facts",
+        "test_echo_rules.EchoRuntimeTests.test_control_history_version_preserves_legacy_record_hash_mode",
+        "test_echo_rules.EchoRuntimeTests.test_engine_upkeep_step_records_boundary_before_echo_discovery",
+        "test_echo_rules.EchoRuntimeTests.test_four_player_echo_choice_is_seat_scoped_private_and_replays",
+        "test_echo_rules.EchoRuntimeTests.test_multiple_echo_sources_share_apnap_trigger_placement",
+        "test_echo_rules.EchoRuntimeTests.test_pay_keeps_and_decline_sacrifices_through_typed_intents",
+        "test_echo_rules.EchoRuntimeTests.test_prior_upkeep_control_history_triggers_once",
+        "test_echo_rules.EchoRuntimeTests.test_stale_source_and_malformed_history_fail_before_mutation",
+        "test_echo_rules.EchoRuntimeTests.test_zero_echo_is_payable_without_mana"
+      ],
+      "resolution": "The immediate Echo correction added the two cards to the canonical fixture set. The compact dependency closure now structurally discovers card, Oracle-ID, helper, and deck requirements and blocks pull-request matrices before long shards when the canonical manifest is incomplete.",
+      "run_id": 31483829105,
+      "summary": "Ordinary Echo runtime tests resolved Karmic Guide and Shah of Naar Isle from the full local card database, but those cards were absent from the canonical compact CI database; this was a recurrence of the Amass fixture-omission class."
     }
   ],
   "known_flaky_tests": [],
@@ -328,7 +353,7 @@
   ],
   "repository": "MoellerJDev/quorune",
   "schema_version": 1,
-  "source_fingerprint": "95e0f22394172094b10616a3f6660b8deb16bb1ba3a578ee3653f15c58d40e90",
+  "source_fingerprint": "c1d935170d18e5c29cd5e1bb4a8e47d3aab040c07d83de4f113f2321bb4c3065",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -338,12 +363,12 @@
       "flaky_test": 6,
       "generated_artifact_drift": 2,
       "infrastructure": 1,
-      "missing_affected_test": 4,
+      "missing_affected_test": 5,
       "source_correctness": 2
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 11,
-    "escape_count": 16,
+    "deterministic_escape_count": 12,
+    "escape_count": 17,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

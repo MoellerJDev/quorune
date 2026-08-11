@@ -13542,18 +13542,18 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2590,
-      "discovered_total": 5890,
+      "conventional_ast_cases": 2602,
+      "discovered_total": 5902,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
-        "compiler_named": 103,
+        "compiler_named": 104,
         "fuzz_named": 1,
         "privacy_or_projection_named": 31,
         "replay_named": 171,
         "server_named": 26
       },
       "reconciles": true,
-      "test_files": 251
+      "test_files": 252
     }
   }
 }
