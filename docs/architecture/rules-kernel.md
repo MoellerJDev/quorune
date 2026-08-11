@@ -97,8 +97,8 @@ offer only while its source, cost, target, timing, and payability facts remain
 equivalent, then commits through `rules/casting/commit.py` or
 `rules/activation/commit.py`. Stale offers fail before mutation.
 
-`abilities.py` generically lowers represented colon abilities, Crew, the
-supported Craft reminder grammar, and one typed activation-usage limit per
+`abilities.py` generically lowers represented colon abilities, the supported
+Craft reminder grammar, and one typed activation-usage limit per
 printed Exhaust ability. `activation_usage.py` is the single owner for the
 usage journal: the use persists across turns, control changes, and phasing for
 the same object, and the ordinary zone-change reset clears it for the new
@@ -109,6 +109,23 @@ tap-mana and automatic-payment paths. Effects that permit another Exhaust use
 remain unsupported. CardPrograms may grant an activated ability through a
 serialized descriptor; historical card-named markers are interpreted only by
 the Game Record v3 compatibility adapter.
+
+Ordinary printed `Crew N` is compiled once into a source-spanned activated-
+ability descriptor. `crew.py` owns the immutable current-characteristic
+candidate set and aggregate-power cost plan; activation offers and commits use
+that same typed owner. The plan permits creatures with summoning sickness
+because Crew does not use their own tap-symbol abilities, excludes the source
+even if it is already a creature, counts the signed power of every selected
+creature, revalidates each physical and logical identity before tapping, and
+permits an empty selection for Crew 0. Resolution adds the Artifact and
+Creature types without changing
+supertypes and while retaining the source's existing card types and subtypes,
+as required for an "artifact creature" result, and binds that layer-4 effect
+to the source incarnation that created the stack object. A Vehicle that leaves
+and returns is not affected.
+Crew prohibitions, alternative costs, becomes-crewed triggers, granted or
+copied Crew, and effects that crew without activating the ability remain
+explicitly unsupported.
 
 Mandatory fixed nonmana casting costs use source-spanned typed descriptors.
 The counter-placement and single-object zone-change families share the ordinary

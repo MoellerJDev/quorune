@@ -1388,7 +1388,7 @@ class ExactMishraClosureTests(unittest.TestCase):
         crew_hint = next(
             hint
             for hint in engine._priority_action_hints("A")["abilities"]
-            if hint["s"] == junker.ref and hint["a"] == "crew"
+            if hint["s"] == junker.ref and hint["a"] == "ab3"
         )
         self.assertEqual(
             2, crew_hint["choose_cost"][0]["minimum_total_power"]
@@ -1400,7 +1400,7 @@ class ExactMishraClosureTests(unittest.TestCase):
             "A",
             {
                 "source": junker.ref,
-                "ability": "crew",
+                "ability": "ab3",
                 "cost_cards": [crew.ref],
             },
         )

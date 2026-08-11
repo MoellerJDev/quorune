@@ -926,6 +926,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiled_crew_abilities.py",
+      "layer": "semantics",
+      "owning_subsystem": "activated_abilities",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/compiled_cycling_abilities.py",
       "layer": "semantics",
       "owning_subsystem": "activated_abilities",
@@ -1167,6 +1182,21 @@
     },
     {
       "file": "quorune/compiler/creature_subtypes.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/compiler/crew_nodes.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
       "allowed_dependency_layers": [
@@ -1838,6 +1868,20 @@
       "card_specificity_policy": "generic_no_growth",
       "visibility_sensitivity": "authoritative_internal",
       "replay_participation": "none"
+    },
+    {
+      "file": "quorune/crew.py",
+      "layer": "rules",
+      "owning_subsystem": "activated_abilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
     },
     {
       "file": "quorune/cumulative_upkeep.py",
@@ -3692,6 +3736,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/crew_capability_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/echo_capability_shapes.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -4508,6 +4566,21 @@
     },
     {
       "file": "quorune/semantic_runtime/counter_replacements.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/semantic_runtime/crew_abilities.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
       "allowed_dependency_layers": [
@@ -5520,5 +5593,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "1770f67b13c0ed67a9a87992fefb593ceba9c4095e2250ed0ae44464ad2f8b7f"
+  "fingerprint": "d7427ec9546eda2b67ec2e5554fe3ed2b08642ab89d2c4e4c6993d8eeb9bce87"
 }

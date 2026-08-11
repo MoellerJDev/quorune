@@ -70,3 +70,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0053 — typed own-graveyard return to hand](0053-typed-own-graveyard-return-to-hand.md)
 - [ADR 0054 — replacement-aware Saga turn action](0054-replacement-aware-saga-turn-action.md)
 - [ADR 0055 — typed direct counter-removal effects](0055-typed-direct-counter-removal-effects.md)
+- [ADR 0056 — typed ordinary Crew activation](0056-typed-ordinary-crew-activation.md)

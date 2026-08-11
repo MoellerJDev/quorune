@@ -323,10 +323,16 @@ def _equip_effect_descriptor() -> tuple[str, FrozenMap]:
     )
 
 
-def _crew_keyword_ability(
+def _legacy_crew_keyword_ability(
     line: str,
     line_index: int,
 ) -> ActivatedAbility | None:
+    """Interpret historical Game Record v3 Crew text.
+
+    Current source-pinned programs use ``OrdinaryCrewAbilitySpec`` and mask
+    their owned Oracle line before this compatibility parser runs.
+    """
+
     match = re.fullmatch(r"Crew\s+(?P<power>\d+)", line, re.IGNORECASE)
     if match is None:
         return None
@@ -560,7 +566,7 @@ def _parse_activated_line(
     keywords: Sequence[str],
 ) -> tuple[ActivatedAbility, ...]:
     raw = raw_line.strip()
-    crew = _crew_keyword_ability(raw, line_index)
+    crew = _legacy_crew_keyword_ability(raw, line_index)
     if crew is not None:
         return (crew,)
     craft = _craft_keyword_abilities(raw, line_index)

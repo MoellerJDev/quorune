@@ -25,6 +25,8 @@ def activated_ability_cost(ability: ActivatedAbility) -> dict[str, Any]:
     }
     if ability.activation_limit is not None:
         result["activation_limit"] = ability.activation_limit.value
+    if ability.crew_threshold is not None:
+        result["crew"] = ability.crew_threshold
     return result
 
 

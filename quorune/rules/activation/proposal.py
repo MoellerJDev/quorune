@@ -385,7 +385,7 @@ def build_activation_offer(
             {
                 "k": "crew",
                 "z": "battlefield",
-                "minimum": 1,
+                "minimum": 0 if threshold == 0 else 1,
                 "minimum_total_power": threshold,
                 "legal_refs": [
                     candidate.ref

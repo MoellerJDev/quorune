@@ -518,6 +518,28 @@
         "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_does_as_much_as_possible",
         "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_all_counter_removal_revalidates_target_and_replays_in_four_player_game"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0025",
+      "adr": "docs/adr/0056-typed-ordinary-crew-activation.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "368eee738c034ec2d828911f1e0cfe1fa86c01749e2afef30defa2df9ff19ccf",
+      "exact_allowance": "Only the reduced structural write identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, legacy helpers, and module classifications serialized after typed ordinary Crew extraction.",
+      "rationale": "The ordinary fixed-power Crew family adds one closed additive type operation while shrinking CommanderEngine, keeping direct GameState writes, oversized symbols, and Oracle-ID literals flat, and reducing printed-name specificity. Its immutable cost plan shares current effective characteristics and physical and logical identities between offers and commits; the existing tap-state and continuous-effect owners retain mutation, rollback, replay, and cleanup.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "Existing serialized residual allowances plus the reviewed add_types_until_end_of_turn operation and focused Crew model, compiler, capability-shape, source-pinned handler, and runtime-access modules described by ADR 0056; removals are allowed and additions or growth are forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered allowance has migrated to a reviewed owner; remove add_types_until_end_of_turn only if a successor typed result model preserves a closed canonical type set, one additive layer-4 result, source physical and logical identity, existing types and subtypes, rollback, privacy, replay, and fail-closed residuals.",
+      "target_milestone": "typed ordinary Crew activation and shared aggregate activation-cost and additive type-result closure",
+      "replay_implications": "Game Record v3 and public protocol schemas remain compatible; newly compiled games pin the source-spanned descriptor, selected cost identities, crewed-by stack context, and continuous-effect journal for exact replay.",
+      "privacy_implications": "Crew candidates and results are public battlefield information, while only the current source controller receives the activation capability; hidden zones, opposing private state, and authoritative continuation payloads are neither queried nor projected.",
+      "security_implications": "The strict operation accepts only a closed nonempty set of canonical card types and an identity-pinned battlefield source; it grants no callback, arbitrary mutation, runtime Oracle parsing, transport access, or card-identity dispatch.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint",
+        "tests.test_ordinary_crew.OrdinaryCrewCompilerTests.test_fixed_ordinary_crew_compiles_source_spanned_activation",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_generic_crew_taps_exact_creatures_and_resolves_type_effect",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_four_player_crew_context_is_public_seat_scoped_and_replays"
+      ]
     }
   ]
 }

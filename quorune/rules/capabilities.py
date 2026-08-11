@@ -11,6 +11,7 @@ from .component_resolution import implementation_component_resolves
 from .counter_capability_shapes import (
     fixed_counter_placement_group_node_capabilities,
 )
+from .crew_capability_shapes import ordinary_crew_node_capabilities
 from .graveyard_card_targets import (
     targeted_own_graveyard_return_node_capabilities,
 )
@@ -116,6 +117,7 @@ _RENOWN_MECHANIC = "re" + "nown"
 _MODULAR_MECHANIC = "mod" + "ular"
 _EXHAUST_MECHANIC = "ex" + "haust"
 _CYCLING_MECHANIC = "cyc" + "ling"
+_CREW_MECHANIC = "cr" + "ew"
 _EVOLVE_MECHANIC = "evo" + "lve"
 _PROWESS_MECHANIC = "prow" + "ess"
 _PERSIST_MECHANIC = "per" + "sist"
@@ -138,6 +140,7 @@ _FIXED_TARGET_SEQUENCE_MECHANIC = "fixed-target-effect-sequence"
 _FIXED_SOURCE_SEQUENCE_MECHANIC = "fixed-source-effect-sequence"
 MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _CYCLING_MECHANIC: ("activation.cycling.hand",),
+    _CREW_MECHANIC: ("activation.crew.fixed_power",),
     _EVOLVE_MECHANIC: ("counter.producer.evolve",),
     _PROWESS_MECHANIC: ("trigger.keyword.prowess",),
     _PERSIST_MECHANIC: ("counter.producer.persist",),
@@ -233,6 +236,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         "monstrosity",
         "bolster",
         _ECHO_MECHANIC,
+        _CREW_MECHANIC,
     }
 )
 _CAPABILITY_ID = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$")
@@ -912,6 +916,14 @@ def capability_dependencies_for_node(
             cost_schema=cost_schema
         )
     )
+    dependencies.update(
+        ordinary_crew_node_capabilities(
+            effects=effects,
+            target_schema=target_schema,
+            mechanic_ids=mechanics,
+            cost_schema=cost_schema,
+        )
+    )
     for mechanic in mechanics:
         if mechanic not in _SHAPE_GATED_MECHANICS:
             dependencies.update(
@@ -928,6 +940,7 @@ def capability_dependencies_for_node(
             {
                 "add_subtype_until_end_of_turn",
                 "add_type_until_end_of_turn",
+                "add_types_until_end_of_turn",
                 "grant_keyword_until_end_of_turn",
                 "modify_all_matching_permanents_until_end_of_turn",
                 "modify_stats_until_end_of_turn",

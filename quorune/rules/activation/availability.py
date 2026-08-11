@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Protocol
 
 from ...abilities import ActivatedAbility, reduced_requirements
+from ...crew import available_crew_power
 from ...haste import summoning_sickness_prohibits_tap_or_untap_cost
 from .conditions import activation_condition_status
 
@@ -25,8 +26,6 @@ class ActivationAvailabilityHost(Protocol):
     def _crew_threshold(self, ability: ActivatedAbility) -> int | None: ...
 
     def _crew_candidates(self, seat: str, source: Any) -> list[Any]: ...
-
-    def _numeric_stat(self, object_id: str, stat: str) -> int: ...
 
     def _legendary_creatures_controlled(self, seat: str) -> int: ...
 
@@ -76,9 +75,8 @@ def activation_availability(
     if ability.choices and not host._ability_choice_payable(seat, card, ability):
         return "unpayable", "mandatory_cost_object_unavailable"
     crew_threshold = host._crew_threshold(ability)
-    if crew_threshold is not None and sum(
-        max(0, host._numeric_stat(candidate.object_id, "power"))
-        for candidate in host._crew_candidates(seat, card)
+    if crew_threshold is not None and available_crew_power(
+        host._crew_candidates(seat, card)
     ) < crew_threshold:
         return "unpayable", "insufficient_crew_power"
     requirements = reduced_requirements(

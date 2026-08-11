@@ -73638,23 +73638,27 @@
       "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.122",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_ordinary_crew.OrdinaryCrewCompilerTests.test_fixed_ordinary_crew_compiles_source_spanned_activation"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/crew.json"
+      ],
+      "notes": [
+        "Keyword heading; activation.crew.fixed_power owns the bounded printed ordinary family while the aggregate mechanic remains partial."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.122",
       "rule_text_sha256": "5d285367ec5de396d937d06d0458799b4cc7c8bb030e4935bff36c84fec95782",
       "schema_version": 1,
@@ -73663,26 +73667,58 @@
         "end_line": 4881,
         "start_line": 4880
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "granted, copied, removed, text-changing, and alternative-cost Crew remain outside the source-pinned ordinary descriptor",
+        "ambient type-changing dependencies outside the represented fixed layer-4 result remain fail-closed"
       ],
       "case_id": "cr-702.122a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.122"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_generic_crew_taps_exact_creatures_and_resolves_type_effect",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_crew_retains_existing_card_types_and_subtypes",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_crew_zero_offer_and_commit_share_empty_cost_legality",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_selected_negative_power_counts_against_crew_total_and_rolls_back",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_unresolved_effective_power_fails_closed",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_phased_source_is_unavailable_before_cost_commitment",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_current_effective_power_and_source_exclusion_share_one_cost_owner",
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_source_control_change_and_phasing_use_zone_object_identity",
+        "tests.test_ordinary_crew.OrdinaryCrewCompilerTests.test_unsupported_crew_variants_remain_precise_residuals"
+      ],
+      "implementation_components": [
+        "quorune.crew.OrdinaryCrewAbilitySpec",
+        "quorune.crew.CrewCostPlan",
+        "quorune.rules.activation.commit.commit_activation",
+        "quorune.tap_state.set_permanent_tapped",
+        "quorune.effect_runtime.objects_stack_and_tokens._apply_add_types_until_end_of_turn"
+      ],
+      "notes": [
+        "The supported slice uses one current effective-characteristic query, exact signed selected power, immutable logical identities, canonical tap-state costs, and an additive Artifact and Creature result that retains existing card types and subtypes under CR 205.1b.",
+        "Aggregate CR 702.122a remains blocked rather than inheriting the fine-grained capability's narrower trust."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.122a",
       "rule_text_sha256": "e1a6b82e980751503dd8d56f2527840e4749018ed6d97507453ed7e159a7d663",
       "schema_version": 1,
@@ -73691,26 +73727,39 @@
         "end_line": 4883,
         "start_line": 4882
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "generic effect and trigger conditions that query whether a creature crewed a Vehicle are not yet compiled"
       ],
       "case_id": "cr-702.122b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.122"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_generic_crew_taps_exact_creatures_and_resolves_type_effect"
+      ],
+      "implementation_components": [
+        "quorune.crew.CrewCostPlan",
+        "quorune.rules.activation.commit._activation_stack_item"
+      ],
+      "notes": [
+        "The selected creatures and their physical/logical snapshots are pinned on the activation, but arbitrary consumers of the relationship remain a separate compiler family."
+      ],
+      "required_scenarios": [
+        "positive",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.122b",
       "rule_text_sha256": "2c33a0f07b18497c9eb88cf021f529e342a610ebdc912399e87a31581d19be3a",
       "schema_version": 1,
@@ -73719,26 +73768,41 @@
         "end_line": 4885,
         "start_line": 4884
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "generic effect and trigger conditions that query which creatures crewed a Vehicle are not yet compiled"
       ],
       "case_id": "cr-702.122c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.122"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_four_player_crew_context_is_public_seat_scoped_and_replays"
+      ],
+      "implementation_components": [
+        "quorune.crew.CrewCostPlan",
+        "quorune.rules.activation.commit._activation_stack_item"
+      ],
+      "notes": [
+        "The activation journal retains the exact Vehicle and crewed-by snapshots; arbitrary Oracle consumers remain residual."
+      ],
+      "required_scenarios": [
+        "positive",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.122c",
       "rule_text_sha256": "df4cb3c33c70e11f5a3e8c0d60683983a0a398b2b706a8d634fa455807083816",
       "schema_version": 1,
@@ -73747,26 +73811,36 @@
         "end_line": 4887,
         "start_line": 4886
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "can't-crew continuous prohibitions are not represented"
       ],
       "case_id": "cr-702.122d",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.122"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_ordinary_crew.OrdinaryCrewCompilerTests.test_unsupported_crew_variants_remain_precise_residuals"
+      ],
+      "implementation_components": [
+        "quorune.crew.crew_candidates"
+      ],
+      "notes": [
+        "Cards with material can't-crew behavior retain an explicit residual; ordinary candidate discovery does not claim this rule."
+      ],
+      "required_scenarios": [
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "702.122d",
       "rule_text_sha256": "06adce96d9db5911e6ec780b1a242409b1d2a825f274dcd79cc2e9dc203a7824",
       "schema_version": 1,
@@ -73775,26 +73849,37 @@
         "end_line": 4889,
         "start_line": 4888
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "becomes-crewed event binding, trigger discovery, and intervening-condition grammar are not represented"
       ],
       "case_id": "cr-702.122e",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive"
+      ],
       "dependency_rule_ids": [
         "702.122"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_generic_crew_taps_exact_creatures_and_resolves_type_effect"
+      ],
+      "implementation_components": [
+        "quorune.rules.activation.commit._activation_stack_item"
+      ],
+      "notes": [
+        "The exact crewed-by snapshots required by future trigger work are preserved, but no trigger is fabricated from unsupported Oracle wording."
+      ],
+      "required_scenarios": [
+        "positive",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.122e",
       "rule_text_sha256": "bb8bbb8117c82bcff4c5bac8c569ea0fe4d5db093719a8406c13ac37ea495ca2",
       "schema_version": 1,
@@ -73803,7 +73888,7 @@
         "end_line": 4891,
         "start_line": 4890
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "static_traceability",

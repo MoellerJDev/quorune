@@ -2728,7 +2728,7 @@
       "effects": [],
       "destination": "battlefield",
       "trust_level": "trusted",
-      "coverage": ["spell_resolution", "affinity", "keyword_ability", "crew"],
+      "coverage": ["spell_resolution", "affinity", "keyword_ability"],
       "tests": ["test_demonic_junker_targets_per_player_and_crews"],
       "provenance": {
         "source_oracle_hash": "907271a8ca15afbe327acb87e04f0aef17bc859a18d591b1d9df59064e0be866",
@@ -2762,24 +2762,6 @@
       }],
       "trust_level": "trusted",
       "coverage": ["triggered_ability", "enters_trigger", "per_player_optional_targets", "simultaneous_destroy", "conditional_counters"],
-      "tests": ["test_demonic_junker_targets_per_player_and_crews"],
-      "provenance": {
-        "source_oracle_hash": "907271a8ca15afbe327acb87e04f0aef17bc859a18d591b1d9df59064e0be866",
-        "source_rulings_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-        "authored_by": "v0.8-exact-deck-closure",
-        "review_status": "reviewed"
-      }
-    },
-    {
-      "key": "88075828-a76e-412d-b738-182f50e3a133:ability:crew",
-      "label": "Demonic Junker crew",
-      "oracle_id": "88075828-a76e-412d-b738-182f50e3a133",
-      "ability_id": "ability:crew",
-      "active_zone": "battlefield",
-      "event": "activate",
-      "effects": [{"op": "add_type_until_end_of_turn", "card": "$source", "type": "Creature"}],
-      "trust_level": "trusted",
-      "coverage": ["activated_ability", "crew", "aggregate_power_cost", "temporary_type"],
       "tests": ["test_demonic_junker_targets_per_player_and_crews"],
       "provenance": {
         "source_oracle_hash": "907271a8ca15afbe327acb87e04f0aef17bc859a18d591b1d9df59064e0be866",

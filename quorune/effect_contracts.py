@@ -135,6 +135,7 @@ EFFECT_FAMILY_CONTRACTS = (
                 "add_subtype_until_end_of_turn",
                 "add_type",
                 "add_type_until_end_of_turn",
+                "add_types_until_end_of_turn",
                 "change_control",
                 "change_control_until_end_of_turn",
                 "copy_until_end_of_turn",

@@ -444,6 +444,26 @@ def _status_source_hashes(
     return _card_source_hashes(db, record) if db is not None else (None, None)
 
 
+def _trusted_activated_ability_is_covered(
+    ability: Any,
+    trusted_programs: list[Any],
+    trusted_ids: set[str],
+) -> bool:
+    if f"ability:{ability.ability_id}" in trusted_ids:
+        return True
+    if ability.crew_threshold is None:
+        return False
+    source_line = ability.line_index + 1
+    return any(
+        "activation.crew.fixed_power" in program.capability_dependencies
+        and int(
+            dict(program.provenance.get("source_span") or {}).get("line", -1)
+        )
+        == source_line
+        for program in trusted_programs
+    )
+
+
 def card_semantic_status(
     record: CardRecord,
     registry: SemanticRegistry,
@@ -528,11 +548,12 @@ def card_semantic_status(
         for program in trusted_programs
         for value in program.coverage
     }
-    trusted_ability_ids = {
+    trusted_ids = {
         program.ability_id
         for program in trusted_programs
         if program.ability_id.startswith("ability:")
     }
+
     for ability in abilities:
         if ability.mana_ability:
             if (
@@ -541,7 +562,7 @@ def card_semantic_status(
                     effect_text=ability.effect_text,
                 )
                 and f"ability:{ability.ability_id}"
-                not in trusted_ability_ids
+                not in trusted_ids
                 and "restricted_mana" not in trusted_coverage
                 and "mana_side_effect" not in trusted_coverage
             ):
@@ -559,7 +580,7 @@ def card_semantic_status(
         )
         if (
             not builtin_fetch
-            and f"ability:{ability.ability_id}" not in trusted_ability_ids
+            and not _trusted_activated_ability_is_covered(ability, trusted_programs, trusted_ids)
         ):
             unresolved.append(f"activated_ability:{ability.ability_id}")
     if (

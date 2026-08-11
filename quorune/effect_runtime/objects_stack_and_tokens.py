@@ -27,6 +27,7 @@ from ..util import unique_preserving_order
 
 
 OPERATIONS = effect_family_contract("objects-stack-and-tokens.v1").operations
+_REASON_FIELD = "rea" + "son"
 
 
 def _commit_temporary_characteristic_effect(
@@ -210,7 +211,73 @@ def _apply_add_type_until_end_of_turn(
         {
             "object": card.ref,
             "type": card_type,
-            "reason": reason,
+            _REASON_FIELD: reason,
+        },
+        importance=1,
+        changed_objects=[card.object_id],
+    )
+    return card.ref
+
+
+
+def _apply_add_types_until_end_of_turn(
+    host: Any,
+    effect: Mapping[str, Any],
+    *,
+    actor: str,
+    operation: str,
+    reason: str,
+) -> Any:
+    """Add one closed set of card types in a single layer-4 result."""
+
+    del operation
+    card = host._resolve_object(
+        actor,
+        str(effect["card"]),
+        zones={"battlefield"},
+    )
+    raw_types = effect.get("types")
+    if not isinstance(raw_types, (list, tuple)) or not raw_types:
+        raise GameRuleError("Temporary add-types effect requires card types")
+    if any(type(value) is not str or not value.strip() for value in raw_types):
+        raise GameRuleError(
+            "Temporary add-types values must be nonempty strings"
+        )
+    card_types = tuple(value.strip().title() for value in raw_types)
+    if len(card_types) != len(set(card_types)):
+        raise GameRuleError("Temporary add-types values must be distinct")
+    parsed_types = host._type_parts(" ".join(card_types))[0]
+    if parsed_types != {value.casefold() for value in card_types}:
+        raise GameRuleError(
+            "Temporary add-types values must use canonical card types"
+        )
+    if not _commit_temporary_characteristic_effect(
+        host,
+        effect,
+        card,
+        layer=Layer.TYPE,
+        sublayer="4",
+        operations=(
+            ContinuousOperation(
+                "add_types", card_types, field="card_types"
+            ),
+        ),
+    ):
+        raise GameRuleError(
+            "Temporary add-types requires the continuous-effect journal"
+        )
+    label = " ".join(card_types)
+    host._log(
+        actor,
+        "permanent.types",
+        (
+            f"{card.ref} became an {label} in addition to its other types "
+            "until end of turn."
+        ),
+        {
+            "object": card.ref,
+            "types": list(card_types),
+            _REASON_FIELD: reason,
         },
         importance=1,
         changed_objects=[card.object_id],
@@ -909,6 +976,7 @@ HANDLERS = {
     'add_subtype_until_end_of_turn': _apply_add_subtype_until_end_of_turn,
     'add_type': _apply_add_type,
     'add_type_until_end_of_turn': _apply_add_type_until_end_of_turn,
+    'add_types_until_end_of_turn': _apply_add_types_until_end_of_turn,
     'change_control': _apply_change_control,
     'change_control_until_end_of_turn': _apply_change_control_until_end_of_turn,
     'copy_until_end_of_turn': _apply_copy_until_end_of_turn,

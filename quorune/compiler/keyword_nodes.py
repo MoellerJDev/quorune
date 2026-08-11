@@ -25,6 +25,7 @@ from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from ..modular import MODULAR_MECHANIC_ID, ModularSpec
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
 from .echo_nodes import fixed_mana_echo_node
+from .crew_nodes import ordinary_crew_keyword_node
 from .cycling_nodes import ordinary_cycling_keyword_node
 from .ability_keyword_fragments import lower_ability_keyword_fragments
 from .dependency_gate import (
@@ -249,6 +250,7 @@ def closed_special_keyword_node(
         return renown
     for lower in (
         ordinary_convoke_keyword_node,
+        ordinary_crew_keyword_node,
         ordinary_cycling_keyword_node,
         fixed_mana_cumulative_upkeep_node,
         fixed_mana_echo_node,

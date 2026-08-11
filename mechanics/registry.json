@@ -1,5 +1,5 @@
 {
-  "contract_count": 103,
+  "contract_count": 104,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -125,6 +125,12 @@
       "mechanic_id": "counter",
       "path": "mechanics/contracts/counter.json",
       "sha256": "de7e4e249820db72778e5cfb443ac249bab42d97d657b0247ed1df5a9be9fca9",
+      "version": 1
+    },
+    {
+      "mechanic_id": "crew",
+      "path": "mechanics/contracts/crew.json",
+      "sha256": "28eaa4c025f4e49c049e0335677482088bcfe17f13b3cf96083d67d90ba1f9eb",
       "version": 1
     },
     {
@@ -1278,19 +1284,50 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/crew.json",
+      "contract_sha256": "28eaa4c025f4e49c049e0335677482088bcfe17f13b3cf96083d67d90ba1f9eb",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "OrdinaryCrewAbilitySpec, CrewCostPlan, OrdinaryCrewAbilityHandler, activation query/commit, tap-state owner, and fixed resolution continuous-effect owner",
+      "implementation_version": "typed-ordinary-crew-activation-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "can't-crew prohibitions from CR 702.122d",
+        "becomes-crewed triggers and their intervening conditions from CR 702.122e",
+        "effects that crew without activating Crew",
+        "alternative and additional Crew costs",
+        "granted, copied, removed, and text-changing Crew",
+        "ambient type-changing dependencies outside the represented fixed layer-4 result",
+        "aggregate activated-ability and continuous-effect coverage remains incomplete"
+      ],
       "mechanic_id": "crew",
       "official_name": "Crew",
       "rule_references": [
         "702.122"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_ordinary_crew_descriptor_is_strict_immutable_and_round_trips",
+        "test_fixed_ordinary_crew_compiles_source_spanned_activation",
+        "test_unsupported_crew_variants_remain_precise_residuals",
+        "test_generated_crew_program_is_capability_closed",
+        "test_generic_crew_taps_exact_creatures_and_resolves_type_effect",
+        "test_crew_retains_existing_card_types_and_subtypes",
+        "test_crew_zero_offer_and_commit_share_empty_cost_legality",
+        "test_equivalent_selection_order_produces_one_canonical_cost_plan",
+        "test_selected_negative_power_counts_against_crew_total_and_rolls_back",
+        "test_noncontrolled_tapped_and_duplicate_cost_objects_are_rejected",
+        "test_unresolved_effective_power_fails_closed",
+        "test_phased_source_is_unavailable_before_cost_commitment",
+        "test_current_effective_power_and_source_exclusion_share_one_cost_owner",
+        "test_source_departure_before_resolution_does_not_affect_returned_object",
+        "test_source_control_change_and_phasing_use_zone_object_identity",
+        "test_changed_crew_oracle_fails_closed_without_runtime_reparse",
+        "test_four_player_crew_context_is_public_seat_scoped_and_replays",
+        "test_ordinary_crew_compiler_mutant_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {

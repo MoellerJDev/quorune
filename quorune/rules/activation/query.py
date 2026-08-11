@@ -22,6 +22,10 @@ from ...compiled_cycling_abilities import (
     compiled_ordinary_cycling_abilities,
     compiled_ordinary_cycling_family_present,
 )
+from ...compiled_crew_abilities import (
+    compiled_ordinary_crew_abilities,
+    compiled_ordinary_crew_family_present,
+)
 from ...fixed_mana_abilities import FixedManaMode
 from ...mana import BASIC_LAND_MANA
 from ...util import normalize_mana_bundle
@@ -66,6 +70,11 @@ def activated_abilities(
         card,
         executable_oracle_text=executable_oracle_text,
     )
+    compiled_crew = compiled_ordinary_crew_abilities(
+        host,
+        card,
+        executable_oracle_text=executable_oracle_text,
+    )
     stale_compiled_family = (
         (
             not compiled_mana
@@ -79,6 +88,10 @@ def activated_abilities(
             not compiled_cycling
             and compiled_ordinary_cycling_family_present(host, card)
         )
+        or (
+            not compiled_crew
+            and compiled_ordinary_crew_family_present(host, card)
+        )
     )
     owned_lines = {
         spec.line_index
@@ -86,6 +99,7 @@ def activated_abilities(
             *compiled_mana,
             *compiled_color_set_mana,
             *compiled_cycling,
+            *compiled_crew,
         )
     }
     runtime_lines = executable_oracle_text.splitlines()
@@ -110,6 +124,9 @@ def activated_abilities(
     )
     abilities.extend(
         spec.to_activated_ability() for spec in compiled_cycling
+    )
+    abilities.extend(
+        spec.to_activated_ability() for spec in compiled_crew
     )
     abilities.sort(key=lambda ability: ability.line_index)
     _append_intrinsic_land_abilities(host, data, abilities)
