@@ -677,6 +677,54 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_dethrone_uses_complete_four_player_life_snapshot_and_quantity_replacement",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.dethrone", "mechanic.dethrone"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.dethrone"],
+      "interaction_order": 3,
+      "assertion": "A qualified Dethrone occurrence preserves its declaration-time life comparison and delegates the resolving +1/+1 result to canonical counter quantity replacement."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_attack_counter_source_identity_handles_departure_control_and_phasing",
+      "piece_ids": ["capability.counter.producer.dethrone", "mechanic.cr-400-general", "mechanic.dethrone"],
+      "capability_ids": ["counter.producer.dethrone"],
+      "interaction_order": 3,
+      "assertion": "Dethrone affects the original physical and logical source after a control change but not a returned new incarnation or phased-out object."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+      "piece_ids": ["capability.counter.producer.dethrone", "capability.trigger.placement.apnap", "mechanic.dethrone"],
+      "capability_ids": ["counter.producer.dethrone", "trigger.placement.apnap"],
+      "interaction_order": 3,
+      "assertion": "Dethrone occurrences join the ordinary declaration-time trigger batch and same-controller ordering continuation before priority."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_training_uses_declaration_power_and_quantity_replacement",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.training", "mechanic.training"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.training"],
+      "interaction_order": 3,
+      "assertion": "A qualified Training occurrence preserves its declaration-time power comparison and delegates the resolving +1/+1 result to canonical counter quantity replacement."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_training_uses_declaration_power_and_quantity_replacement",
+      "piece_ids": ["capability.counter.producer.training", "mechanic.cr-208-power-toughness", "mechanic.training"],
+      "capability_ids": ["counter.producer.training"],
+      "interaction_order": 3,
+      "assertion": "Training qualification compares the canonical effective power snapshot for every creature declared as an attacker."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+      "piece_ids": ["capability.counter.producer.training", "capability.trigger.placement.apnap", "mechanic.training"],
+      "capability_ids": ["counter.producer.training", "trigger.placement.apnap"],
+      "interaction_order": 3,
+      "assertion": "Training occurrences join the ordinary declaration-time trigger batch and same-controller ordering continuation before priority."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_target_set_suspends_for_quantity_replacement_and_replays",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_permanent_target_set_effect"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_permanent_target_set_effect"],

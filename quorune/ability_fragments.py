@@ -34,6 +34,8 @@ class CombatKeywordTriggerKind(str, Enum):
     BATTLE_CRY = "battle_cry"
     MELEE = "melee"
     MENTOR = "mentor"
+    DETHRONE = "dethrone"
+    TRAINING = "training"
 
 
 class SpellCastKeywordTriggerKind(str, Enum):

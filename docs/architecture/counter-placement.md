@@ -1,7 +1,7 @@
 ---
 title: "Counter placement and removal transactions"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
 verified: "2026-08-10"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -285,6 +285,24 @@ prose equivalents, attackers put onto the battlefield outside declaration,
 source phasing without a typed phase-out snapshot, unsupported characteristic
 families, and trigger-doubling policies remain explicit residuals.
 
+Ordinary printed Dethrone and Training now share a second typed
+declaration-time counter-trigger owner. The completed attack transition pins
+public recipient relationships and exact source identity once. Dethrone adds a
+canonical snapshot of every active player's public life total and qualifies
+only a direct attack against a player tied for greatest life; attacks against
+planeswalkers or Battles do not qualify. Training adds a canonical effective
+power snapshot for every declared attacker and requires another creature with
+strictly greater power. Later life or power changes do not alter a trigger that
+already exists. Each printed instance creates an independently identified
+occurrence in the ordinary trigger batch. Resolution affects only the same
+logical source incarnation, still on the battlefield and not phased out, but a
+control change does not change that identity. The +1/+1 result delegates to the
+same replacement-aware counter transaction as other fixed results. CR
+702.149c's distinct “trains” event and listeners, granted or copied keyword
+propagation, nonkeyword equivalents, attackers put onto the battlefield, and
+trigger multipliers remain explicit residuals; neither aggregate mechanic is
+trusted by this bounded family.
+
 Oracle IR v70 lowers the closed reusable fixed-placement grammars through the
 typed operation in spell, triggered, and activated contexts. It accepts one
 positive exact quantity of one named counter on the source, the exact named
@@ -501,7 +519,10 @@ removal, no-rediscovery, rollback, and focused owner-mutation evidence is in
 `test_damage_result_events.py`; the standalone exact-removal transaction is in
 `test_rule_generated_counter_removals.py`. Mentor compiler, targeting,
 last-known-information, replacement, rollback, multiplayer, and exact-replay
-evidence is isolated in `test_mentor_rules.py`. Target-threaded counter and
+evidence is isolated in `test_mentor_rules.py`. Dethrone and Training snapshot,
+qualification, source-identity, replacement, ordering, privacy, mutation, and
+exact-replay evidence is isolated in `test_attack_counter_triggers.py`.
+Target-threaded counter and
 characteristic sequences, strict residuals, replacement suspension, rollback,
 four-player privacy, exact replay, keyword-counter projection, and focused
 mutation evidence are isolated in `test_fixed_target_effect_sequences.py`.

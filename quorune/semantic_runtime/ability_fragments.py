@@ -32,6 +32,8 @@ EXALTED_FRAGMENT_HANDLER_ID = "ability.trigger.exalted.v1"
 BATTLE_CRY_FRAGMENT_HANDLER_ID = "ability.trigger.battle_cry.v1"
 MELEE_FRAGMENT_HANDLER_ID = "ability.trigger.melee.v1"
 MENTOR_FRAGMENT_HANDLER_ID = "ability.trigger.mentor.v1"
+DETHRONE_FRAGMENT_HANDLER_ID = "ability.trigger.dethrone.v1"
+TRAINING_FRAGMENT_HANDLER_ID = "ability.trigger.training.v1"
 PROWESS_FRAGMENT_HANDLER_ID = "ability.trigger.prowess.v1"
 
 
@@ -368,6 +370,76 @@ class MentorAbilityFragmentHandler:
 
 
 @dataclass(frozen=True, slots=True)
+class DethroneAbilityFragmentHandler:
+    handler_id: str = DETHRONE_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.trigger.dethrone"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("702.105", "702.105a", "702.105b")
+    capability_dependencies: tuple[str, ...] = (
+        "counter.producer.dethrone",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> CombatKeywordTriggerSpec:
+        fragment = _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=CombatKeywordTriggerSpec,
+        )
+        if fragment.kind is not CombatKeywordTriggerKind.DETHRONE:
+            raise SemanticNodeError(
+                "The Dethrone runtime handler requires a Dethrone fragment"
+            )
+        return fragment
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
+class TrainingAbilityFragmentHandler:
+    handler_id: str = TRAINING_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.trigger.training"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("702.149", "702.149a", "702.149b")
+    capability_dependencies: tuple[str, ...] = (
+        "counter.producer.training",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> CombatKeywordTriggerSpec:
+        fragment = _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=CombatKeywordTriggerSpec,
+        )
+        if fragment.kind is not CombatKeywordTriggerKind.TRAINING:
+            raise SemanticNodeError(
+                "The Training runtime handler requires a Training fragment"
+            )
+        return fragment
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
 class ProwessAbilityFragmentHandler:
     handler_id: str = PROWESS_FRAGMENT_HANDLER_ID
     schema_version: int = 1
@@ -419,6 +491,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
         (
             BattleCryAbilityFragmentHandler(),
             BushidoAbilityFragmentHandler(),
+            DethroneAbilityFragmentHandler(),
             EnchantAbilityFragmentHandler(),
             ExaltedAbilityFragmentHandler(),
             FlankingAbilityFragmentHandler(),
@@ -427,6 +500,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             MentorAbilityFragmentHandler(),
             ProtectionAbilityFragmentHandler(),
             ProwessAbilityFragmentHandler(),
+            TrainingAbilityFragmentHandler(),
         )
     )
     registry.require_registered_capabilities(
@@ -457,6 +531,8 @@ __all__ = [
     "PROTECTION_FRAGMENT_HANDLER_ID",
     "MELEE_FRAGMENT_HANDLER_ID",
     "MENTOR_FRAGMENT_HANDLER_ID",
+    "DETHRONE_FRAGMENT_HANDLER_ID",
+    "TRAINING_FRAGMENT_HANDLER_ID",
     "PROWESS_FRAGMENT_HANDLER_ID",
     "EnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
@@ -466,6 +542,8 @@ __all__ = [
     "LinkedGraveyardEnchantFragmentHandler",
     "MeleeAbilityFragmentHandler",
     "MentorAbilityFragmentHandler",
+    "DethroneAbilityFragmentHandler",
+    "TrainingAbilityFragmentHandler",
     "ProwessAbilityFragmentHandler",
     "ProtectionAbilityFragmentHandler",
     "AbilityFragmentRegistry",

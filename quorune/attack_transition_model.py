@@ -18,6 +18,8 @@ ATTACK_TRIGGER_KINDS = frozenset(
         CombatKeywordTriggerKind.BATTLE_CRY,
         CombatKeywordTriggerKind.MELEE,
         CombatKeywordTriggerKind.MENTOR,
+        CombatKeywordTriggerKind.DETHRONE,
+        CombatKeywordTriggerKind.TRAINING,
     }
 )
 
