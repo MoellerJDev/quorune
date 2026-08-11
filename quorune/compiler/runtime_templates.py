@@ -31,6 +31,21 @@ class StaticRuntimeTemplate:
     dependency_reason: str
 
 
+def _trigger_multiplier_template(text: str) -> StaticRuntimeTemplate | None:
+    compiled = static_trigger_multiplier_handler(text)
+    if compiled is None:
+        return None
+    return StaticRuntimeTemplate(
+        compiled=compiled,
+        kind="static_ability",
+        event="continuous",
+        dependency_reason=(
+            "generic trigger multiplication depends on an untrusted "
+            "rules capability"
+        ),
+    )
+
+
 def static_runtime_template(
     text: str,
     *,
@@ -41,17 +56,9 @@ def static_runtime_template(
     """Select one closed static runtime production for an Oracle line."""
 
     if source_permanent:
-        trigger_multiplier = static_trigger_multiplier_handler(text)
+        trigger_multiplier = _trigger_multiplier_template(text)
         if trigger_multiplier is not None:
-            return StaticRuntimeTemplate(
-                compiled=trigger_multiplier,
-                kind="static_ability",
-                event="continuous",
-                dependency_reason=(
-                    "generic trigger multiplication depends on an untrusted "
-                    "rules capability"
-                ),
-            )
+            return trigger_multiplier
         counter_quantity = (
             None
             if source_is_class

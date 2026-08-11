@@ -657,8 +657,11 @@ def build_subsystem_capsules(
 def build_migration_queue(capsules: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
     by_id = {str(row["id"]): row for row in capsules}
     queue = []
-    for priority, subsystem in enumerate(MISSING_OWNER_PRIORITY, start=1):
+    for subsystem in MISSING_OWNER_PRIORITY:
         row = by_id[subsystem]
+        if not row["missing_dedicated_owner"]:
+            continue
+        priority = len(queue) + 1
         risk = 3 if row["privacy_sensitivity"] != "not explicitly declared" else 1
         score = (
             len(row["engine_methods_still_assigned"]) * 5

@@ -65,6 +65,7 @@
       ,"quorune/activation_usage.py"
       ,"quorune/permanent_designations.py"
       ,"quorune/zone_object_state.py"
+      ,"quorune/trigger_processing.py"
     ],
     "state_parameter_modules": [
       "quorune/record.py",
@@ -291,7 +292,7 @@
     },
     {
       "id": "trigger_processing",
-      "status": "fragmented_across_engine_and_trigger_helpers",
+      "status": "dedicated_typed_owner_with_compatibility_adapters",
       "owners": [
         "quorune/engine.py",
         "quorune/attack_counter_triggers.py",
@@ -303,7 +304,7 @@
         "quorune/zone_trigger_events.py",
         "quorune/zone_trigger_processing.py"
       ],
-      "missing_dedicated_owner": true,
+      "missing_dedicated_owner": false,
       "context": {
         "responsibility": "Own normalized event subscription, immutable trigger occurrences, simultaneous collection, APNAP placement, target/mode selection, stack commitment, and pending batches.",
         "public_ports_and_protocols": [
@@ -332,10 +333,11 @@
         "replay_behavior": "Controller-at-trigger-time, LKI, occurrence identity, ordering, and pending batches are authoritative replay state.",
         "privacy_sensitivity": "Trigger placement choices are seat scoped; public occurrence facts must not reveal hidden source data.",
         "adrs": [
-          "docs/adr/0018-unified-trigger-batch-ownership.md"
+          "docs/adr/0018-unified-trigger-batch-ownership.md",
+          "docs/adr/0058-typed-trigger-processing-owner.md"
         ],
-        "current_debt": "Trigger helpers and batch models exist, but engine coordination remains authoritative and trigger discovery still reads live Oracle text.",
-        "removal_condition": "One dedicated occurrence/discovery/placement owner must remove runtime Oracle-text interpretation and supersede engine trigger-specific transitions."
+        "current_debt": "TriggerProcessingOwner owns delayed scheduling and matching, immutable occurrence materialization, typed Ward discovery, APNAP batching, ordering, and pending-target coordination. CommanderEngine retains narrow compatibility adapters and high-level stabilization calls; specialized combat, prevention, and zone producers remain separate typed event sources.",
+        "removal_condition": "No missing-owner condition remains. Future trigger work must migrate specialized producers through the normalized occurrence port without restoring runtime Oracle-text interpretation or moving decision authority out of the server-issued capability path."
       }
     },
     {

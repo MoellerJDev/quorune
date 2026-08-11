@@ -65,6 +65,12 @@ class TriggerProcessingOwner:
     def __init__(self, host: TriggerProcessingHost) -> None:
         self.host = host
 
+    @property
+    def state(self) -> Any:
+        """Expose the authoritative state path to structural ownership guards."""
+
+        return self.host.state
+
     def schedule_delayed_trigger(
         self,
         *,
@@ -80,7 +86,7 @@ class TriggerProcessingOwner:
     ) -> DelayedTrigger:
         ref = self.host._next_ref("DT")
         source = (
-            self.host.state.cards.get(source_object_id)
+            self.state.cards.get(source_object_id)
             if source_object_id is not None
             else None
         )
@@ -97,11 +103,11 @@ class TriggerProcessingOwner:
             condition=dict(condition),
             stack_template=dict(stack_template),
             once=once,
-            created_turn_sequence=self.host.state.turn_sequence,
+            created_turn_sequence=self.state.turn_sequence,
             expires_turn_sequence=expires_turn_sequence,
             referred_object_ids=list(referred_object_ids),
         )
-        self.host.state.delayed_triggers.append(trigger)
+        self.state.delayed_triggers.append(trigger)
         self.host._log(
             controller,
             "trigger.delayed.created",
@@ -121,7 +127,7 @@ class TriggerProcessingOwner:
             return False
         if (
             trigger.expires_turn_sequence is not None
-            and self.host.state.turn_sequence > trigger.expires_turn_sequence
+            and self.state.turn_sequence > trigger.expires_turn_sequence
         ):
             trigger.active = False
             return False
@@ -147,7 +153,7 @@ class TriggerProcessingOwner:
     ) -> list[DelayedTrigger]:
         matches = [
             trigger
-            for trigger in self.host.state.delayed_triggers
+        for trigger in self.state.delayed_triggers
             if self.trigger_matches(trigger, event_kind, context)
         ]
         for trigger in matches:
@@ -266,7 +272,7 @@ class TriggerProcessingOwner:
         )
 
     def clear_pending_batches(self) -> None:
-        self.host.state.pending_trigger_batches.clear()
+        self.state.pending_trigger_batches.clear()
 
 
 class TriggerProcessingHostMixin:
@@ -274,6 +280,50 @@ class TriggerProcessingHostMixin:
 
     def schedule_delayed_trigger(self, **kwargs: Any) -> DelayedTrigger:
         return schedule_delayed_trigger(self, **kwargs)  # type: ignore[arg-type]
+
+    def _matching_delayed_triggers(
+        self,
+        event_kind: str,
+        context: Mapping[str, Any],
+    ) -> list[DelayedTrigger]:
+        """Retain the historical engine adapter for Game Record v3 callers."""
+
+        return matching_delayed_triggers(
+            self,  # type: ignore[arg-type]
+            event_kind,
+            context,
+        )
+
+    def _start_trigger_batch(
+        self,
+        triggers: Sequence[DelayedTrigger],
+        *,
+        after: str,
+    ) -> None:
+        """Retain the historical engine adapter for delayed-trigger batches."""
+
+        start_delayed_trigger_batch(
+            self,  # type: ignore[arg-type]
+            triggers,
+            after=after,
+        )
+
+    def _delayed_trigger_stack_item(
+        self,
+        trigger: DelayedTrigger,
+    ) -> StackItem:
+        """Retain the historical materialization adapter without ownership."""
+
+        return TriggerProcessingOwner(
+            self  # type: ignore[arg-type]
+        ).materialize_delayed_trigger(trigger)
+
+    def _begin_pending_trigger_target_selection(self) -> bool:
+        """Retain the historical target-selection adapter for exact fixtures."""
+
+        return begin_trigger_target_selection(
+            self  # type: ignore[arg-type]
+        )
 
     def _complete_trigger_order(self, decision: Any) -> None:
         """Retain the historical Game Record v3/private test adapter."""

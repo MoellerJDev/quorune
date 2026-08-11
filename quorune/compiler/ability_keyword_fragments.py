@@ -26,6 +26,39 @@ class AbilityKeywordFragmentLowering:
     residual_blockers: tuple[str, ...] = ()
 
 
+def _lower_fixed_generic_ward(
+    material_line: str,
+    mechanics: tuple[str, ...],
+) -> AbilityKeywordFragmentLowering | None:
+    if mechanics != ("ward",):
+        return None
+    match = re.fullmatch(
+        r"Ward\s+\{(?P<generic>\d+)\}\.?",
+        material_line.strip(),
+        re.IGNORECASE,
+    )
+    if match is None:
+        return AbilityKeywordFragmentLowering(
+            residual_kind="unsupported_ward_cost",
+            residual_reason=(
+                "Ward cost is outside the closed fixed-generic grammar"
+            ),
+            residual_blockers=("fixed generic Ward cost",),
+        )
+    return AbilityKeywordFragmentLowering(
+        handlers=(
+            {
+                "handler_id": "ability.trigger.ward.v1",
+                "schema_version": 1,
+                "event": "continuous",
+                "fragment": ability_fragment_to_dict(
+                    WardSpec(generic_cost=int(match.group("generic")))
+                ),
+            },
+        )
+    )
+
+
 def lower_ability_keyword_fragments(
     material_line: str,
     mechanics: tuple[str, ...],
@@ -93,32 +126,9 @@ def lower_ability_keyword_fragments(
                 },
             )
         )
-    if mechanics == ("ward",):
-        match = re.fullmatch(
-            r"Ward\s+\{(?P<generic>\d+)\}\.?",
-            material_line.strip(),
-            re.IGNORECASE,
-        )
-        if match is None:
-            return AbilityKeywordFragmentLowering(
-                residual_kind="unsupported_ward_cost",
-                residual_reason=(
-                    "Ward cost is outside the closed fixed-generic grammar"
-                ),
-                residual_blockers=("fixed generic Ward cost",),
-            )
-        return AbilityKeywordFragmentLowering(
-            handlers=(
-                {
-                    "handler_id": "ability.trigger.ward.v1",
-                    "schema_version": 1,
-                    "event": "continuous",
-                    "fragment": ability_fragment_to_dict(
-                        WardSpec(generic_cost=int(match.group("generic")))
-                    ),
-                },
-            )
-        )
+    ward = _lower_fixed_generic_ward(material_line, mechanics)
+    if ward is not None:
+        return ward
     if mechanics == (RENOWN_MECHANIC_ID,):
         matches = tuple(
             match

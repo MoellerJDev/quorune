@@ -139,6 +139,8 @@ class TriggerDiscoveryHost(Protocol):
 
     def _numeric_stat(self, object_id: str, stat: str) -> int: ...
 
+    def card_record(self, card: CardInstance) -> Any: ...
+
     def semantic_program_is_current_trusted(
         self, program: SemanticProgram
     ) -> bool: ...
@@ -355,9 +357,12 @@ def _semantic_condition_actual(
     if field.startswith("source_annotation."):
         return source.annotations.get(field.removeprefix("source_annotation."))
     if field == "source_active_face":
-        return source.active_face or host._effective_card_data(source).get(
-            "name"
-        )
+        if source.active_face:
+            return source.active_face
+        record = host.card_record(source)
+        if record is not None and record.faces:
+            return str(record.faces[0].get("name") or "")
+        return host._effective_card_data(source).get("name")
     return context.get(field)
 
 
@@ -762,6 +767,103 @@ def _event_programs_for_source(
     return active_zone, characteristics, programs
 
 
+def _semantic_trigger_context(
+    host: TriggerDiscoveryHost,
+    *,
+    source: CardInstance,
+    program: SemanticProgram,
+    event: str,
+    context: Mapping[str, Any],
+    active_zone: str,
+) -> dict[str, Any]:
+    stack_context = {
+        "event": event,
+        **copy.deepcopy(dict(context)),
+        **_trigger_attachment_context(host, source, program),
+        "source_zone": active_zone,
+        "intervening_condition": (
+            copy.deepcopy(dict(program.event_condition))
+            if isinstance(program.event_condition, Mapping)
+            else {}
+        ),
+        **_echo_control_context(source, program.event_condition),
+        **(
+            {"trigger_target_selection_pending": True}
+            if program.target_schema
+            else {}
+        ),
+    }
+    if "one_or_more_event_batch" in program.coverage:
+        stack_context["one_or_more_aggregation_id"] = hashlib.sha256(
+            stable_json(
+                {
+                    "event": event,
+                    "event_id": context.get("event_id"),
+                    "source_logical_object_id": source.logical_object_id,
+                    "source_ability_id": program.key,
+                }
+            ).encode("utf-8")
+        ).hexdigest()
+    if (
+        isinstance(program.event_condition, Mapping)
+        and program.event_condition.get("field")
+        == DEATH_RETURN_EVENT_CONDITION_FIELD
+    ):
+        try:
+            stack_context["death_return_counter_snapshot"] = dict(
+                death_return_counter_snapshot(source.counters)
+            )
+        except DeathReturnError as exc:
+            raise GameRuleError(str(exc)) from exc
+    if any(
+        effect.get("op") == "offer_modular_counter_transfer"
+        for effect in program.effects
+    ):
+        try:
+            counter_snapshot = modular_counter_snapshot(source.counters)
+            stack_context[MODULAR_COUNTER_SNAPSHOT_FIELD] = dict(
+                counter_snapshot
+            )
+            stack_context[MODULAR_COUNTER_COUNT_FIELD] = (
+                modular_counter_count(counter_snapshot)
+            )
+        except ModularError as exc:
+            raise GameRuleError(str(exc)) from exc
+    return stack_context
+
+
+def _trigger_multiplier_copies(
+    host: TriggerDiscoveryHost,
+    *,
+    item: StackItem,
+    source: CardInstance,
+    event: str,
+    context: Mapping[str, Any],
+) -> list[StackItem]:
+    copies: list[StackItem] = []
+    for copy_index, participation in enumerate(
+        applicable_trigger_multipliers(
+            host,
+            source=source,
+            controller=item.controller,
+            event=event,
+            context=context,
+        ),
+        start=1,
+    ):
+        copy_ref = host._next_ref("S")
+        copied = StackItem.from_dict(item.to_dict())
+        copied.stack_id = host._stable_runtime_id("stack", copy_ref)
+        copied.ref = copy_ref
+        copied.context = {
+            **copy.deepcopy(item.context),
+            "additional_trigger_copy": copy_index,
+            "additional_trigger_source": participation.to_dict(),
+        }
+        copies.append(copied)
+    return copies
+
+
 def dispatch_semantic_event(
     host: TriggerDiscoveryHost,
     event: str,
@@ -819,59 +921,14 @@ def dispatch_semantic_event(
                 )
                 return [item.ref for item in triggered]
             ref = host._next_ref("S")
-            stack_context = {
-                "event": event,
-                **copy.deepcopy(dict(context)),
-                **_trigger_attachment_context(host, source, program),
-                "source_zone": active_zone,
-                "intervening_condition": (
-                    copy.deepcopy(dict(program.event_condition))
-                    if isinstance(program.event_condition, Mapping)
-                    else {}
-                ),
-                **_echo_control_context(source, program.event_condition),
-                **(
-                    {"trigger_target_selection_pending": True}
-                    if program.target_schema
-                    else {}
-                ),
-            }
-            if "one_or_more_event_batch" in program.coverage:
-                stack_context["one_or_more_aggregation_id"] = hashlib.sha256(
-                    stable_json(
-                        {
-                            "event": event,
-                            "event_id": context.get("event_id"),
-                            "source_logical_object_id": source.logical_object_id,
-                            "source_ability_id": program.key,
-                        }
-                    ).encode("utf-8")
-                ).hexdigest()
-            if (
-                isinstance(program.event_condition, Mapping)
-                and program.event_condition.get("field")
-                == DEATH_RETURN_EVENT_CONDITION_FIELD
-            ):
-                try:
-                    stack_context["death_return_counter_snapshot"] = dict(
-                        death_return_counter_snapshot(source.counters)
-                    )
-                except DeathReturnError as exc:
-                    raise GameRuleError(str(exc)) from exc
-            if any(
-                effect.get("op") == "offer_modular_counter_transfer"
-                for effect in program.effects
-            ):
-                try:
-                    counter_snapshot = modular_counter_snapshot(source.counters)
-                    stack_context[MODULAR_COUNTER_SNAPSHOT_FIELD] = dict(
-                        counter_snapshot
-                    )
-                    stack_context[MODULAR_COUNTER_COUNT_FIELD] = (
-                        modular_counter_count(counter_snapshot)
-                    )
-                except ModularError as exc:
-                    raise GameRuleError(str(exc)) from exc
+            stack_context = _semantic_trigger_context(
+                host,
+                source=source,
+                program=program,
+                event=event,
+                context=context,
+                active_zone=active_zone,
+            )
             item = StackItem(
                 stack_id=host._stable_runtime_id("stack", ref),
                 ref=ref,
@@ -895,26 +952,15 @@ def dispatch_semantic_event(
             ):
                 continue
             triggered.append(item)
-            for copy_index, participation in enumerate(
-                applicable_trigger_multipliers(
+            triggered.extend(
+                _trigger_multiplier_copies(
                     host,
+                    item=item,
                     source=source,
-                    controller=item.controller,
                     event=event,
                     context=context,
-                ),
-                start=1,
-            ):
-                copy_ref = host._next_ref("S")
-                copied = StackItem.from_dict(item.to_dict())
-                copied.stack_id = host._stable_runtime_id("stack", copy_ref)
-                copied.ref = copy_ref
-                copied.context = {
-                    **copy.deepcopy(item.context),
-                    "additional_trigger_copy": copy_index,
-                    "additional_trigger_source": participation.to_dict(),
-                }
-                triggered.append(copied)
+                )
+            )
             if "consume_evoked_marker" in program.coverage:
                 source.annotations.pop("evoked", None)
     if trigger_batch is not None:

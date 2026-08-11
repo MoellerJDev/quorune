@@ -105,6 +105,12 @@ class ArchitectureGuardTests(unittest.TestCase):
                 "state_path": "players.life",
             },
             {
+                "file": "quorune/trigger_processing.py",
+                "symbol": "schedule_delayed_trigger",
+                "kind": "mutating_call:append",
+                "state_path": "delayed_triggers",
+            },
+            {
                 "file": "quorune/unowned_fixture.py",
                 "symbol": "commit",
                 "kind": "assignment",
@@ -119,11 +125,12 @@ class ArchitectureGuardTests(unittest.TestCase):
             module_classifications={"modules": []},
         )
         self.assertEqual(inventory["writes_in_commander_engine"], 1)
-        self.assertEqual(inventory["writes_in_canonical_owners"], 1)
+        self.assertEqual(inventory["writes_in_canonical_owners"], 2)
         self.assertEqual(inventory["unowned_writes"], 1)
         self.assertEqual(
             [row["classification"] for row in inventory["locations"]],
             [
+                "canonical_mutation_owner_write",
                 "canonical_mutation_owner_write",
                 "grandfathered_engine_debt",
                 "unowned_write",
