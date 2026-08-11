@@ -7,7 +7,7 @@
       "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_generic_crew_taps_exact_creatures_and_resolves_type_effect",
       "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Commit the exact aggregate-power tap cost, preserve crewed-by snapshots, and resolve the source-pinned layer-4 effect."
+      "applicability_note": "Commit the exact aggregate-power tap cost using other untapped creatures even when they have summoning sickness, preserve crewed-by snapshots, and resolve the source-pinned layer-4 effect."
     },
     {
       "capability_id": "activation.crew.fixed_power",

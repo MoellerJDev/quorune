@@ -113,10 +113,12 @@ the Game Record v3 compatibility adapter.
 Ordinary printed `Crew N` is compiled once into a source-spanned activated-
 ability descriptor. `crew.py` owns the immutable current-characteristic
 candidate set and aggregate-power cost plan; activation offers and commits use
-that same typed owner. The plan excludes the source even if it is already a
-creature, counts the signed power of every selected creature, revalidates each
-physical and logical identity before tapping, and permits an empty selection
-for Crew 0. Resolution adds the Artifact and Creature types without changing
+that same typed owner. The plan permits creatures with summoning sickness
+because Crew does not use their own tap-symbol abilities, excludes the source
+even if it is already a creature, counts the signed power of every selected
+creature, revalidates each physical and logical identity before tapping, and
+permits an empty selection for Crew 0. Resolution adds the Artifact and
+Creature types without changing
 supertypes and while retaining the source's existing card types and subtypes,
 as required for an "artifact creature" result, and binds that layer-4 effect
 to the source incarnation that created the stack object. A Vehicle that leaves

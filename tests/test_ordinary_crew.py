@@ -24,6 +24,7 @@ from quorune.crew import (
     ordinary_crew_handler_descriptor,
     prepare_crew_cost,
 )
+from quorune.haste import is_summoning_sick
 from quorune.oracle_ir import (
     compile_oracle_card,
     register_generated_programs,
@@ -367,6 +368,9 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
         session = self.session(70212201)
         engine = session.engine
         source, candidates, action_id = self.prepare(session)
+        self.assertTrue(
+            all(is_summoning_sick(engine, card) for card in candidates)
+        )
 
         result = session.act(
             "pilot:A",
