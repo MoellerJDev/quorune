@@ -66,6 +66,9 @@
       ,"quorune/permanent_designations.py"
       ,"quorune/zone_object_state.py"
       ,"quorune/trigger_processing.py"
+      ,"quorune/zone_transition_journal.py"
+      ,"quorune/zone_transition_model.py"
+      ,"quorune/zone_transitions.py"
     ],
     "state_parameter_modules": [
       "quorune/record.py",
@@ -179,12 +182,18 @@
     },
     {
       "id": "zones_and_object_identity",
-      "status": "split_with_engine_as_mutation_owner",
+      "status": "dedicated_typed_owner_with_compatibility_adapters",
       "owners": [
         "quorune/engine.py",
-        "quorune/model.py"
+        "quorune/model.py",
+        "quorune/zone_object_state.py",
+        "quorune/zone_transition_journal.py",
+        "quorune/zone_transition_model.py",
+        "quorune/zone_transitions.py",
+        "quorune/zone_trigger_events.py",
+        "quorune/zone_trigger_processing.py"
       ],
-      "missing_dedicated_owner": true,
+      "missing_dedicated_owner": false,
       "context": {
         "responsibility": "Own physical identity, logical incarnations, zone membership, destination replacement, LKI, attachment cleanup, and normalized zone events.",
         "public_ports_and_protocols": [
@@ -212,9 +221,11 @@
         ],
         "replay_behavior": "Physical identity and logical incarnation transitions are serialized in Game Record v3 state and event journals.",
         "privacy_sensitivity": "Hand and library destinations require owner-scoped projection while public references preserve only legal continuity.",
-        "adrs": [],
-        "current_debt": "Represented transition helpers exist, but CommanderEngine.move_card and direct zone-list writes remain authoritative paths.",
-        "removal_condition": "Every represented move path must commit through one typed transition owner and delete superseded engine and direct-list mutation paths."
+        "adrs": [
+          "docs/adr/0059-typed-zone-transition-owner.md"
+        ],
+        "current_debt": "ZoneTransitionOwner owns represented single and simultaneous zone-list mutation, CR 400.7 logical-incarnation reset, timestamp allocation, LKI capture, hidden-zone journaling, and normalized zone-event announcement. CommanderEngine retains narrow Game Record v3 compatibility facades; destination replacement, entry results, Aura legality, attachment legality, and trigger placement remain separate typed collaborators.",
+        "removal_condition": "No missing-owner condition remains. Compatibility facades may be removed only after historical callers use the typed transition port and exact Game Record v3 replay remains unchanged; future move producers must not restore direct engine zone-list mutation."
       }
     },
     {

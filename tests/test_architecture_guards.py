@@ -111,6 +111,12 @@ class ArchitectureGuardTests(unittest.TestCase):
                 "state_path": "delayed_triggers",
             },
             {
+                "file": "quorune/zone_transitions.py",
+                "symbol": "move_card",
+                "kind": "assignment",
+                "state_path": "cards.*.zone",
+            },
+            {
                 "file": "quorune/unowned_fixture.py",
                 "symbol": "commit",
                 "kind": "assignment",
@@ -125,7 +131,7 @@ class ArchitectureGuardTests(unittest.TestCase):
             module_classifications={"modules": []},
         )
         self.assertEqual(inventory["writes_in_commander_engine"], 1)
-        self.assertEqual(inventory["writes_in_canonical_owners"], 2)
+        self.assertEqual(inventory["writes_in_canonical_owners"], 3)
         self.assertEqual(inventory["unowned_writes"], 1)
         self.assertEqual(
             {
@@ -143,6 +149,9 @@ class ArchitectureGuardTests(unittest.TestCase):
                     "quorune/trigger_processing.py",
                     "schedule_delayed_trigger",
                 ): "canonical_mutation_owner_write",
+                ("quorune/zone_transitions.py", "move_card"): (
+                    "canonical_mutation_owner_write"
+                ),
                 ("quorune/unowned_fixture.py", "commit"): "unowned_write",
             },
         )
