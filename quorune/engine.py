@@ -2124,14 +2124,6 @@ class CommanderEngine(
                 "A step callback requires phase, step, and active player"
             )
 
-        if step == "beginning_combat":
-            # CR 802.2 uses the attack-multiple-players option for the supported
-            # Commander profile. Unsupported CR 507.1 variants fail at setup.
-            self.state.combat = CombatState(
-                damage_sequence_id=self._next_ref("CD"),
-                defending_players=[s for s in self.active_seats if s != active],
-            )
-
         if step == "untap":
             unsupported_phasing = (
                 self._unsupported_phasing_source_at_untap(active)

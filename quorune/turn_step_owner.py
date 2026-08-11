@@ -278,6 +278,17 @@ class TurnStepOwner:
             f"{self.state.turn_sequence}:{phase}/{step}.",
             importance=0,
         )
+        if step == "beginning_combat":
+            # CR 802.2 uses attack-multiple-players in the supported profile.
+            # Unsupported CR 507.1 variants fail during game setup.
+            self.state.combat = CombatState(
+                damage_sequence_id=self._host._next_ref("CD"),
+                defending_players=[
+                    seat
+                    for seat in self._host.active_seats
+                    if seat != active
+                ],
+            )
         self._host._enter_step(
             held_triggers=held_triggers,
             phase=phase,
