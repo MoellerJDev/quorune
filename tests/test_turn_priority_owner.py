@@ -6,6 +6,7 @@ from common import keep_all, load_assets, make_session
 from quorune.errors import GameRuleError, StateInvariantError
 from quorune.record import authoritative_state_hash
 from quorune.turn_priority_model import PriorityGrantPlan, PriorityPassPlan
+from quorune.turn_step_owner import TURN_STEPS
 
 
 class TurnPriorityDecisionOwnerTests(unittest.TestCase):
@@ -163,6 +164,47 @@ class TurnPriorityDecisionOwnerTests(unittest.TestCase):
                 "auto_if_no_response",
             ],
             decision.payload_by_actor["A"]["yield_modes"],
+        )
+
+    def test_turn_owner_selects_extra_turns_lifo_then_normal_order(self):
+        engine = self.make_engine(5001006)
+        engine.schedule_extra_turn("B", source="first")
+        engine.schedule_extra_turn("A", source="second")
+
+        self.assertEqual("A", engine._select_next_turn().player)
+        self.assertEqual("B", engine._select_next_turn().player)
+        self.assertEqual("B", engine._select_next_turn().player)
+
+    def test_turn_owner_rejects_invalid_step_index_before_mutation(self):
+        engine = self.make_engine(5001007)
+        engine.state.phase_index = len(TURN_STEPS)
+        before = authoritative_state_hash(engine.state)
+
+        with self.assertRaisesRegex(StateInvariantError, "turn-step index"):
+            engine._enter_step()
+
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+
+    def test_turn_owner_step_entry_sets_boundary_before_callback(self):
+        engine = self.make_engine(5001008)
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.phase_index = TURN_STEPS.index(
+            ("precombat_main", "main")
+        )
+        engine.state.phase = "beginning"
+        engine.state.step = "draw"
+
+        engine._enter_step()
+
+        self.assertEqual("precombat_main", engine.state.phase)
+        self.assertEqual("main", engine.state.step)
+        self.assertTrue(
+            any(
+                event.code == "step.begin"
+                and event.summary.endswith("precombat_main/main.")
+                for event in engine.state.events
+            )
         )
 
 

@@ -141,12 +141,15 @@
     },
     {
       "id": "turn_priority_and_decisions",
-      "status": "embedded_in_commander_engine",
+      "status": "dedicated_typed_owners_with_engine_rule_callbacks",
       "owners": [
         "quorune/engine.py",
-        "quorune/permissions.py"
+        "quorune/permissions.py",
+        "quorune/turn_priority_model.py",
+        "quorune/turn_priority_owner.py",
+        "quorune/turn_step_owner.py"
       ],
-      "missing_dedicated_owner": true,
+      "missing_dedicated_owner": false,
       "context": {
         "responsibility": "Own turn selection, phase and step progression, turn-based actions, priority, yield policy, and player-decision lifecycle.",
         "public_ports_and_protocols": [
@@ -175,9 +178,11 @@
         "compiler_cardprogram_representations": [],
         "replay_behavior": "Turn, priority, yield, and decision transitions participate in the authoritative command journal and save/load state.",
         "privacy_sensitivity": "Decision capabilities and private projected alternatives are principal scoped.",
-        "adrs": [],
-        "current_debt": "CommanderEngine still owns the state machine and most direct writes for turn, phase, priority, yield, mulligan, and cleanup progression.",
-        "removal_condition": "A dedicated typed state-machine owner must replace engine-local transitions while preserving action advertisement/submission parity, replay, reconnect, and Full Control behavior."
+        "adrs": [
+          "docs/adr/0060-typed-turn-priority-decision-owner.md"
+        ],
+        "current_debt": "TurnStepOwner owns normal and extra-turn selection, active-player and turn-start state, phase/step boundaries, cleanup iteration, and end-the-turn coordination. TurnPriorityDecisionOwner owns priority grants and passes, yield invalidation, meaningful-action opportunity journaling, and deterministic pumping. CapabilityManager remains the typed single-use decision credential owner. CommanderEngine retains narrow compatibility facades and step-specific rules callbacks.",
+        "removal_condition": "No missing-owner condition remains. Compatibility facades may be removed only after historical callers and Game Record v3 replay use the typed ports directly; future work must not restore turn, phase, priority, yield, or decision-capability mutation to engine-local scheduler code."
       }
     },
     {

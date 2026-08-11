@@ -189,6 +189,8 @@
       "quorune/stack_counter.py": "typed stack-counter legality, removal, ordinary spell destination, telemetry, and public journal owner",
       "quorune/trigger_processing.py": "typed CR 603.3 occurrence batching, APNAP placement, stack commit, and historical continuation owner behind CommanderEngine",
       "quorune/trigger_discovery.py": "normalized semantic trigger detection and immutable ordinary occurrence construction behind CommanderEngine"
+      ,"quorune/turn_priority_owner.py": "typed priority grant/pass, yield invalidation, action-opportunity audit, and deterministic pump owner"
+      ,"quorune/turn_step_owner.py": "typed turn selection, phase/step progression, cleanup iteration, and end-turn coordination owner"
       ,"quorune/mana_activation.py": "activated mana ability and reversible activation transaction owner"
       ,"quorune/semantic_choices/intent_host.py": "typed semantic-choice intent application behind the immutable choice registry"
       ,"quorune/effect_runtime/state_and_permissions.py": "registry-owned state and permission effect family"
