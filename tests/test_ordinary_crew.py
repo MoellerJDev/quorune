@@ -507,6 +507,30 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
                 response={"cost_cards": [own.ref]},
             )
 
+    def test_unresolved_effective_power_fails_closed(self):
+        session = self.session(70212212)
+        engine = session.engine
+        source = self.card(engine, "A", "Demonic Junker")
+        engine.move_card(
+            source.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+        )
+        engine.create_token(
+            "A",
+            name="Unresolved Crew Pilot",
+            characteristics={
+                "type_line": "Token Creature — Pilot",
+                "power": "*",
+                "toughness": "4",
+            },
+            reason="ordinary Crew unresolved-power fixture",
+        )
+
+        with self.assertRaisesRegex(CrewAbilityError, "power is unresolved"):
+            crew_candidates(engine, "A", source)
+
     def test_current_effective_power_and_source_exclusion_share_one_cost_owner(self):
         session = self.session(70212203)
         engine = session.engine

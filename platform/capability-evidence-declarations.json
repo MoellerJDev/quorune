@@ -35,6 +35,14 @@
     },
     {
       "capability_id": "activation.crew.fixed_power",
+      "evidence_class": "negative",
+      "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_unresolved_effective_power_fails_closed",
+      "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject an unresolved effective-power characteristic instead of guessing zero while constructing Crew candidates."
+    },
+    {
+      "capability_id": "activation.crew.fixed_power",
       "evidence_class": "interaction",
       "test_id": "tests.test_ordinary_crew.OrdinaryCrewRuntimeTests.test_current_effective_power_and_source_exclusion_share_one_cost_owner",
       "official_rule_ids": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],

@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import re
 from typing import Any, Mapping, Protocol, Sequence
 
+from .object_query import exact_numeric_characteristic
 from .replacement.immutable import FrozenMap
 from .tap_state import set_permanent_tapped
 from .util import normalize_mana_bundle
@@ -157,8 +158,6 @@ class CrewCostHost(Protocol):
         self, type_line: str
     ) -> tuple[set[str], set[str], set[str]]: ...
 
-    def _numeric_stat(self, object_id: str, field: str) -> int: ...
-
     def _log(
         self,
         actor: str | None,
@@ -272,13 +271,14 @@ def crew_candidates(
             or card.tapped
         ):
             continue
+        effective = host._effective_card_data(card)
         card_types = host._type_parts(
-            str(host._effective_card_data(card).get("type_line") or "")
+            str(effective.get("type_line") or "")
         )[0]
         if "creature" not in card_types:
             continue
-        power = host._numeric_stat(card.object_id, "power")
-        if type(power) is not int:
+        power = exact_numeric_characteristic(card, effective, "power")
+        if power is None:
             raise CrewAbilityError("Effective Crew power is unresolved")
         result.append(
             CrewCandidate(
