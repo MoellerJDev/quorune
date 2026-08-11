@@ -285,20 +285,24 @@ class ActivatedDrawCompilerTests(unittest.TestCase):
         self.assertFalse(draw.requires_arbiter)
         self.assertEqual(1, result["exact_fixed_draw_programs_promoted"])
 
-        partial_registry = SemanticRegistry(include_builtin_packs=False)
-        partial = register_generated_programs(
+        sequence_registry = SemanticRegistry(include_builtin_packs=False)
+        sequence = register_generated_programs(
             self.db,
-            partial_registry,
+            sequence_registry,
             (self.db.lookup("Resupply"),),
             capability_registry=self.capabilities,
             capability_profile="commander_review",
             promote_exact_effect_programs=True,
         )
-        self.assertEqual(0, partial["exact_fixed_draw_programs_promoted"])
+        self.assertEqual(0, sequence["exact_fixed_draw_programs_promoted"])
+        self.assertEqual(1, sequence["exact_effect_programs_promoted"])
+        sequence_program = next(iter(sequence_registry.programs()))
         self.assertEqual(
-            {"provisional"},
-            {program.trust_level for program in partial_registry.programs()},
+            ("life", "draw"),
+            tuple(effect["op"] for effect in sequence_program.effects),
         )
+        self.assertEqual("trusted", sequence_program.trust_level)
+        self.assertFalse(sequence_program.requires_arbiter)
 
 
 class ActivatedDrawRuntimeTests(unittest.TestCase):

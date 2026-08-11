@@ -39,9 +39,13 @@ from .compiler.draw_templates import (
     draw_reveal_or_trigger_nodes,
     fixed_draw_effect_template,
 )
+from .compiler.fixed_controller_effect_sequences import (
+    fixed_controller_effect_sequence_template,
+)
 from .compiler.explore_templates import single_explore_effect_template
 from .compiler.fixed_numbers import fixed_number as _number
 from .compiler.keyword_templates import keyword_mechanics
+from .compiler.life_templates import fixed_life_effect_template
 from .compiler.keyword_nodes import (
     bloodthirst_keyword_node,
     closed_special_keyword_node,
@@ -73,6 +77,7 @@ from .compiler.prevention_templates import (
 from .compiler.resolution_effect_templates import (
     typed_resolution_effect_template,
 )
+from .compiler.scry_templates import fixed_scry_effect_template
 from .compiler.static_runtime_nodes import (
     runtime_handler_node,
     static_runtime_node,
@@ -254,44 +259,12 @@ def _effect_template(
     draw_template = fixed_draw_effect_template(normalized)
     if draw_template is not None:
         return draw_template
-    match = re.fullmatch(
-        r"you gain (?P<count>\d+) life\.?",
-        normalized,
-        re.IGNORECASE,
-    )
-    if match:
-        return (
-            "gain-life-controller-v1",
-            (
-                {
-                    "op": "life",
-                    "player": "$controller",
-                    "delta": int(match.group("count")),
-                },
-            ),
-            None,
-            ("cr-119-life",),
-        )
-    match = re.fullmatch(
-        r"each opponent loses (?P<count>\d+) life\.?",
-        normalized,
-        re.IGNORECASE,
-    )
-    if match:
-        return (
-            "lose-life-each-opponent-v1",
-            (
-                {
-                    "op": "lose_life_each_opponent",
-                    "amount": int(match.group("count")),
-                },
-            ),
-            None,
-            (
-                "cr-119-life",
-                "cr-101-the-magic-golden-rules",
-            ),
-        )
+    life_template = fixed_life_effect_template(normalized)
+    if life_template is not None:
+        return life_template.compiled()
+    sequence = fixed_controller_effect_sequence_template(normalized)
+    if sequence is not None:
+        return sequence.compiled()
     typed = typed_resolution_effect_template(normalized, card_name=card_name, source_is_permanent=source_is_permanent, source_attachment_relation=source_attachment_relation)
     if typed is not None:
         return typed
@@ -450,24 +423,9 @@ def _effect_template(
             None,
             ("cr-111-tokens",),
         )
-    match = re.fullmatch(
-        r"scry (?P<count>\d+)\.?",
-        normalized,
-        re.IGNORECASE,
-    )
-    if match:
-        return (
-            "scry-controller-v1",
-            (
-                {
-                    "op": "scry",
-                    "player": "$controller",
-                    "count": int(match.group("count")),
-                },
-            ),
-            None,
-            ("scry",),
-        )
+    scry_template = fixed_scry_effect_template(normalized)
+    if scry_template is not None:
+        return scry_template.compiled()
     return None, (), None, ()
 
 

@@ -2902,6 +2902,33 @@
       "status": "tested"
     },
     {
+      "id": "resolution.effect_sequence.fixed_controller",
+      "version": 1,
+      "official_rules": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve exactly two mandatory fixed controller instructions in printed order, with exactly one ordinary card draw and one represented fixed controller life change or Scry instruction.",
+        "inputs": ["one complete source-spanned effect body", "exactly two mandatory fixed instructions", "one positive fixed controller draw", "one positive fixed controller life gain, life loss, or Scry instruction", "the canonical semantic continuation"],
+        "outputs": ["one capability-closed CardProgram node", "printed-order execution", "replacement-aware iterative card draws", "replacement-aware fixed life change or private Scry choice", "replay-stable suspension and resume"],
+        "exclusions": ["targets, optional, modal, conditional, repeated, variable, linked-result, or more-than-two-instruction sequences", "multiple draw instructions", "table-wide or opponent life effects in a sequence", "life payments, life-total setting or exchange", "dynamic draw, life, or Scry values", "Surveil and non-Scry library ordering"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.fixed_controller_effect_sequences.FixedControllerEffectSequenceTemplate", "quorune.rules.fixed_controller_effect_shapes.fixed_controller_effect_sequence_node_capabilities", "CommanderEngine._continue_resolution", "quorune.drawing.coordinator.begin_draw_sequence", "quorune.semantic_choices.scry.ScryChoiceHandler", "quorune.effect_runtime.life_effects._commit"],
+      "positive_tests": ["test_spell_trigger_and_activated_contexts_share_sequence_lowering", "test_draw_then_life_commits_in_printed_order"],
+      "negative_tests": ["test_sequence_shape_rejects_open_and_malformed_variants", "test_unsupported_sequence_wording_remains_a_precise_residual"],
+      "interaction_tests": ["test_scry_then_draw_resumes_privately_and_replays_exactly", "test_invalid_remaining_effect_rolls_back_the_choice_command"],
+      "multiplayer_tests": ["test_scry_then_draw_resumes_privately_and_replays_exactly"],
+      "privacy_tests": ["test_scry_then_draw_resumes_privately_and_replays_exactly"],
+      "replay_tests": ["test_scry_then_draw_resumes_privately_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Every sequence node separately declares the exact draw and life or Scry capability used by its strict payload; malformed or blocked component shapes therefore prevent the composite node from closing.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_sequence_compiler_and_shape_mutants_are_killed removes the closed sequence production, while strict shape mutants alter counts, visibility, actors, arity, and operation composition; exact compiler and closure assertions reject each survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "resolution.effect_sequence.fixed_source",
       "version": 1,
       "official_rules": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],

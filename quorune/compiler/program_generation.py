@@ -43,6 +43,7 @@ from ..rules.node_capability_shapes import (
     fixed_damage_node_capabilities,
     mass_destruction_node_capabilities,
     fixed_draw_node_capabilities,
+    fixed_scry_node_capabilities,
     single_explore_node_capabilities,
     single_proliferate_node_capabilities,
     targeted_counter_node_capabilities,
@@ -50,6 +51,10 @@ from ..rules.node_capability_shapes import (
     targeted_exile_node_capabilities,
     targeted_return_to_hand_node_capabilities,
     targeted_tap_state_node_capabilities,
+)
+from ..rules.fixed_controller_effect_shapes import (
+    fixed_controller_effect_sequence_node_capabilities,
+    fixed_life_node_capabilities,
 )
 from ..rules.echo_capability_shapes import fixed_mana_echo_node_capabilities
 from ..semantics import SemanticProgram, SemanticRegistry
@@ -400,6 +405,53 @@ def _is_closed_fixed_draw_program(program: SemanticProgram) -> bool:
                 for value in program.coverage
                 if value.startswith("cr-")
             ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_life_program(program: SemanticProgram) -> bool:
+    """Recognize only reviewed fixed controller or opponent life effects."""
+
+    required = set(
+        fixed_life_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_scry_program(program: SemanticProgram) -> bool:
+    """Recognize only one reviewed fixed controller Scry instruction."""
+
+    required = set(
+        fixed_scry_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_controller_effect_sequence_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize the ordered fixed controller draw sequence family."""
+
+    required = set(
+        fixed_controller_effect_sequence_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
         )
     )
     return bool(required) and required.issubset(
@@ -898,6 +950,9 @@ def _closed_effect_recognizers():
     return (
         _is_closed_fixed_damage_program,
         _is_closed_fixed_draw_program,
+        _is_closed_fixed_life_program,
+        _is_closed_fixed_scry_program,
+        _is_closed_fixed_controller_effect_sequence_program,
         _is_closed_single_explore_program,
         _is_closed_single_proliferate_program,
         _is_closed_fixed_counter_placement_program,

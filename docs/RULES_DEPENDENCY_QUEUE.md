@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "a969d4140b030b34d3cb33d4606e77579fcc8ee6272963ed0e226de9cd94e2a4"
+verified: "c83c68c9fdb58731e37ebe0d7d1c09d801c1b385adb87cd19b4b9236ed96dbf0"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `78e749dc020cc308d47ec1f2bead1f905a13eee8f4cc74923100e8c9485f9dfb`
+Source fingerprint: `07fbb57ba146dbb45ecf0f62975b333a8fa149e887c5d494def300d18f4cc68c`
 
 ## Current top-level state
 
@@ -40,10 +40,10 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 7 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
 | 8 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
 | 9 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 10 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 197 | 346 | 0 | 0 |
-| 11 | blocked | `frontier:mechanic_dependency:cr-614-replacement-effects` | `rules_foundation` | 196 | 539 | 0 | 0 |
+| 10 | blocked | `frontier:mechanic_dependency:cr-614-replacement-effects` | `rules_foundation` | 203 | 539 | 0 | 0 |
+| 11 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 197 | 346 | 0 | 0 |
 | 12 | blocked | `frontier:mechanic_dependency:cr-509-declare-blockers-step` | `rules_foundation` | 157 | 392 | 0 | 0 |
-| 13 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 117 | 338 | 0 | 0 |
+| 13 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 119 | 338 | 0 | 0 |
 
 Selected reason: 1 prohibited runtime-text accesses remain in the existing turn_priority_and_decisions typed owner and outrank card expansion.
 

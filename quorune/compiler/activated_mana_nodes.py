@@ -294,6 +294,10 @@ def _activated_effect_dependency_gate(
             "return_graveyard_card_to_owner_hand",
             "fixed_self_counter_keyword_action",
             "fixed_bolster",
+            "li" + "fe",
+            "lose_life",
+            "lose_life_each_opponent",
+            "scry",
             "tap",
             "untap",
         }
@@ -303,6 +307,7 @@ def _activated_effect_dependency_gate(
             {
                 "fixed-target-effect-sequence",
                 "fixed-source-effect-sequence",
+                "fixed-controller-effect-sequence",
             }.intersection(mechanics)
         )
         or (

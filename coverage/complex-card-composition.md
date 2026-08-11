@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "fb7199a51047e35fd38c24fcc795796de99e7924f924038faed20cd4bbfd4b9d"
+verified: "018f82bf566ced2e3a447acc4242bc2445a18e171bb411257a9eb7cab79cdb32"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -38,11 +38,11 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Invasion of Kaldheim // Pyre of the World Tree | 168 | 16 | 5 | 4 | 5 | 22 | `blocked` |
 | Stay Hidden, Stay Silent | 168 | 15 | 6 | 4 | 5 | 17 | `blocked` |
 | Flamewar, Brash Veteran // Flamewar, Streetwise Operative | 166 | 19 | 5 | 6 | 7 | 15 | `blocked` |
-| Jace, Mirror Mage | 165 | 22 | 4 | 4 | 11 | 13 | `blocked` |
 | Jill, Shiva's Dominant // Shiva, Warden of Ice | 165 | 16 | 6 | 5 | 9 | 8 | `blocked` |
 | Starscream, Power Hungry // Starscream, Seeker Leader | 165 | 17 | 4 | 8 | 4 | 19 | `blocked` |
 | Ajani, Nacatl Pariah // Ajani, Nacatl Avenger | 163 | 22 | 4 | 5 | 10 | 15 | `blocked` |
 | Gwen Stacy // Ghost-Spider | 163 | 21 | 5 | 5 | 7 | 13 | `blocked` |
+| Jace, Mirror Mage | 163 | 22 | 4 | 4 | 10 | 13 | `blocked` |
 | Blaster, Combat DJ // Blaster, Morale Booster | 161 | 16 | 5 | 6 | 8 | 16 | `blocked` |
 | Dr. Madison Li | 160 | 21 | 7 | 4 | 5 | 10 | `blocked` |
 | Devoted Grafkeeper // Departed Soulkeeper | 159 | 19 | 5 | 6 | 7 | 7 | `blocked` |
