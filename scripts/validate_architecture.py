@@ -11,12 +11,18 @@ import sys
 from typing import Any, Iterable, Mapping
 
 try:
+    from scripts.architecture_observability import (
+        classify_state_writes,
+        runtime_text_accesses,
+        runtime_text_growth,
+    )
     from scripts.architecture_support import (
         decode_card_name_hash_index,
         printed_name_digest,
     )
     from scripts.update_architecture_audit import (
         CARD_BASELINE,
+        MODULE_CLASSIFICATIONS,
         ROOT,
         _engine_metrics,
         _production_metrics,
@@ -25,12 +31,18 @@ try:
         card_specificity_scope,
     )
 except ModuleNotFoundError:  # Direct `python scripts/...` execution.
+    from architecture_observability import (
+        classify_state_writes,
+        runtime_text_accesses,
+        runtime_text_growth,
+    )
     from architecture_support import (
         decode_card_name_hash_index,
         printed_name_digest,
     )
     from update_architecture_audit import (
         CARD_BASELINE,
+        MODULE_CLASSIFICATIONS,
         ROOT,
         _engine_metrics,
         _production_metrics,
@@ -54,6 +66,8 @@ def _baseline_allowance_fingerprint(baseline: Mapping[str, Any]) -> str:
             "engine",
             "direct_game_state_writes_by_file",
             "direct_game_state_write_identities",
+            "direct_game_state_write_classification_counts",
+            "runtime_oracle_text_access_identities",
             "oracle_id_literals",
             "registered_effect_operations",
             "legacy_card_specific_operations",
@@ -333,6 +347,16 @@ def build_baseline(baseline_commit: str) -> dict[str, Any]:
     production = _production_metrics(paths, analyses, source)
     engine = _engine_metrics(analyses, source)
     state = _state_and_dispatch_metrics(analyses, source)
+    policy = _load_json(POLICY)
+    module_classifications = _load_json(MODULE_CLASSIFICATIONS)
+    write_inventory = classify_state_writes(
+        state["direct_game_state_write_heuristic"]["locations"],
+        source=source,
+        policy=policy,
+        baseline={},
+        module_classifications=module_classifications,
+    )
+    runtime_text = runtime_text_accesses(analyses)
     methods = [
         {
             "name": item["name"],
@@ -343,7 +367,7 @@ def build_baseline(baseline_commit: str) -> dict[str, Any]:
         if item["kind"] == "method"
     ]
     result = {
-        "schema_version": 2,
+        "schema_version": 3,
         "baseline_commit": baseline_commit,
         "purpose": "Phase 1 non-growth allowances; removals remain allowed.",
         "engine": {
@@ -382,6 +406,18 @@ def build_baseline(baseline_commit: str) -> dict[str, Any]:
                 },
                 key=repr,
             )
+        ],
+        "direct_game_state_write_classification_counts": write_inventory[
+            "by_classification"
+        ],
+        "runtime_oracle_text_access_identities": [
+            {
+                "file": row["file"],
+                "symbol": row["symbol"],
+                "access_kind": row["access_kind"],
+                "member": row["member"],
+            }
+            for row in runtime_text["prohibited_runtime_interpretation"]
         ],
         "oracle_id_literals": state["oracle_id_literals"]["locations"],
         "registered_effect_operations": sorted(VALID_EFFECT_OPERATIONS),
@@ -549,6 +585,8 @@ def _dependency_and_mutation_failures(
     baseline: Mapping[str, Any],
     analyses: Mapping[str, Any],
     state: Mapping[str, Any],
+    write_inventory: Mapping[str, Any],
+    runtime_text: Mapping[str, Any],
 ) -> list[dict[str, Any]]:
     failures: list[dict[str, Any]] = []
     import_violations = forbidden_import_violations(analyses, policy)
@@ -624,6 +662,42 @@ def _dependency_and_mutation_failures(
                 "mutation_non_growth",
                 "Direct GameState write sites grew beyond the Phase 1 baseline.",
                 write_growth,
+            )
+        )
+    baseline_classifications = baseline[
+        "direct_game_state_write_classification_counts"
+    ]
+    engine_write_growth = int(write_inventory["writes_in_commander_engine"]) - int(
+        baseline_classifications.get("grandfathered_engine_debt", 0)
+        + baseline_classifications.get("orchestration_root_replacement", 0)
+    )
+    if engine_write_growth > 0:
+        failures.append(
+            _failure(
+                "engine_mutation_non_growth",
+                "CommanderEngine gained a direct GameState-write identity.",
+                {"delta": engine_write_growth},
+            )
+        )
+    if int(write_inventory["unowned_writes"]):
+        failures.append(
+            _failure(
+                "unowned_state_mutation",
+                "A direct GameState write has no declared owner.",
+                [
+                    row
+                    for row in write_inventory["locations"]
+                    if row["classification"] == "unowned_write"
+                ],
+            )
+        )
+    runtime_growth = runtime_text_growth(runtime_text, baseline)
+    if runtime_growth:
+        failures.append(
+            _failure(
+                "runtime_oracle_text_interpretation_growth",
+                "A new production runtime Oracle-text interpretation site appeared.",
+                runtime_growth,
             )
         )
     return failures
@@ -863,6 +937,8 @@ def _guard_metrics(
     engine: Mapping[str, Any],
     state: Mapping[str, Any],
     specificity: Mapping[str, int],
+    write_inventory: Mapping[str, Any],
+    runtime_text: Mapping[str, Any],
 ) -> dict[str, Any]:
     state_locations = state["direct_game_state_write_heuristic"]["locations"]
     baseline_writes = sum(baseline["direct_game_state_writes_by_file"].values())
@@ -877,6 +953,55 @@ def _guard_metrics(
             "baseline": baseline_writes,
             "current": len(state_locations),
             "delta": len(state_locations) - baseline_writes,
+        },
+        "engine_local_direct_game_state_writes": {
+            "baseline": int(
+                baseline["direct_game_state_write_classification_counts"].get(
+                    "grandfathered_engine_debt", 0
+                )
+            )
+            + int(
+                baseline["direct_game_state_write_classification_counts"].get(
+                    "orchestration_root_replacement", 0
+                )
+            ),
+            "current": write_inventory["writes_in_commander_engine"],
+            "delta": write_inventory["writes_in_commander_engine"]
+            - int(
+                baseline["direct_game_state_write_classification_counts"].get(
+                    "grandfathered_engine_debt", 0
+                )
+            )
+            - int(
+                baseline["direct_game_state_write_classification_counts"].get(
+                    "orchestration_root_replacement", 0
+                )
+            ),
+        },
+        "canonical_owner_direct_game_state_writes": {
+            "baseline": int(
+                baseline["direct_game_state_write_classification_counts"].get(
+                    "canonical_mutation_owner_write", 0
+                )
+            ),
+            "current": write_inventory["writes_in_canonical_owners"],
+            "delta": write_inventory["writes_in_canonical_owners"]
+            - int(
+                baseline["direct_game_state_write_classification_counts"].get(
+                    "canonical_mutation_owner_write", 0
+                )
+            ),
+        },
+        "unowned_direct_game_state_writes": {
+            "baseline": 0,
+            "current": write_inventory["unowned_writes"],
+            "delta": write_inventory["unowned_writes"],
+        },
+        "prohibited_runtime_oracle_text_accesses": {
+            "baseline": len(baseline["runtime_oracle_text_access_identities"]),
+            "current": runtime_text["prohibited_runtime_interpretation_count"],
+            "delta": runtime_text["prohibited_runtime_interpretation_count"]
+            - len(baseline["runtime_oracle_text_access_identities"]),
         },
         "printed_name_literals": {
             "baseline": specificity["allowed_card_literals"],
@@ -907,8 +1032,17 @@ def evaluate_architecture() -> dict[str, Any]:
     production = _production_metrics(paths, analyses, source)
     engine = _engine_metrics(analyses, source)
     state = _state_and_dispatch_metrics(analyses, source)
+    module_classifications = _load_json(MODULE_CLASSIFICATIONS)
+    write_inventory = classify_state_writes(
+        state["direct_game_state_write_heuristic"]["locations"],
+        source=source,
+        policy=policy,
+        baseline=baseline,
+        module_classifications=module_classifications,
+    )
+    runtime_text = runtime_text_accesses(analyses)
     failures = _dependency_and_mutation_failures(
-        policy, baseline, analyses, state
+        policy, baseline, analyses, state, write_inventory, runtime_text
     )
     failures.extend(exception_binding_failures(policy, baseline))
     failures.extend(module_classification_failures(analyses, policy))
@@ -923,7 +1057,9 @@ def evaluate_architecture() -> dict[str, Any]:
         "baseline_commit": baseline["baseline_commit"],
         "evaluated_commit": _git_head(),
         "status": "pass" if not failures else "fail",
-        "metrics": _guard_metrics(baseline, engine, state, specificity),
+        "metrics": _guard_metrics(
+            baseline, engine, state, specificity, write_inventory, runtime_text
+        ),
         "failures": failures,
     }
 
