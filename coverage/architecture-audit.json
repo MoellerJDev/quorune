@@ -1694,7 +1694,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 14,
+          "fan_out": 15,
           "module": "quorune.compiler.program_generation"
         },
         {
@@ -1718,7 +1718,7 @@
           "module": "quorune.rules.casting.commit"
         }
       ],
-      "internal_edges": 1434,
+      "internal_edges": 1435,
       "modules": [
         {
           "fan_in": 2,
@@ -2207,7 +2207,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 14,
+          "fan_out": 15,
           "module": "quorune.compiler.program_generation"
         },
         {
@@ -2741,7 +2741,7 @@
           "module": "quorune.relative_power_target"
         },
         {
-          "fan_in": 3,
+          "fan_in": 4,
           "fan_out": 1,
           "module": "quorune.renown"
         },
@@ -3962,7 +3962,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 136129,
+      "logical_lines": 136131,
       "methods": {
         "dunder": 378,
         "private": 686,
@@ -4100,8 +4100,8 @@
           "file": "quorune/compiler/program_generation.py",
           "functions_and_methods": 41,
           "language": "python",
-          "logical_lines": 1104,
-          "physical_lines": 1247
+          "logical_lines": 1106,
+          "physical_lines": 1249
         },
         {
           "file": "quorune/semantic_runtime/intents.py",
@@ -7027,7 +7027,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 148956,
+      "physical_lines": 148958,
       "python_file_count": 366,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -12175,7 +12175,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:846",
+            "quorune/compiler/program_generation.py:848",
             "quorune/oracle_ir.py:1474"
           ]
         },
@@ -12200,7 +12200,7 @@
             "quorune/compiler/draw_templates.py:6",
             "quorune/compiler/intrinsic_counter_nodes.py:3",
             "quorune/compiler/keyword_nodes.py:38",
-            "quorune/compiler/program_generation.py:14",
+            "quorune/compiler/program_generation.py:15",
             "quorune/compiler/spell_additional_cost_nodes.py:20",
             "quorune/compiler/static_runtime_nodes.py:7",
             "quorune/compiler/unlock_frontier.py:13",
@@ -12219,7 +12219,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:846",
+            "quorune/compiler/program_generation.py:848",
             "quorune/oracle_ir.py:1474"
           ]
         },
@@ -12266,7 +12266,7 @@
             "quorune/engine.py:30"
           ],
           "register_generated_programs": [
-            "quorune/compiler/program_generation.py:1113",
+            "quorune/compiler/program_generation.py:1115",
             "quorune/oracle_ir.py:1497",
             "quorune/preflight.py:16",
             "quorune/session.py:14"

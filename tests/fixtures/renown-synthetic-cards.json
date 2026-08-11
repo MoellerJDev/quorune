@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "synthetic_renown_rule_witnesses",
+  "source": "Synthetic records used only to exercise rule shapes absent from the public fixture subset",
+  "cards": [
+    {
+      "oracle_id": "00000000-0000-4000-8000-000000007021",
+      "name": "Renown Twin Fixture",
+      "mana_cost": "{1}{W}",
+      "cmc": 2.0,
+      "type_line": "Creature — Human Soldier",
+      "oracle_text": "Renown 1, Renown 1",
+      "power": "2",
+      "toughness": "2",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["W"],
+      "color_identity": ["W"],
+      "keywords": ["Renown"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2026-06-19",
+      "legalities": {"commander": "not_legal"}
+    }
+  ],
+  "rulings": []
+}

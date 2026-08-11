@@ -18,6 +18,7 @@ from quorune.damage_prevention import (
     PreventionMode,
 )
 from quorune.deck import DeckLoader
+from quorune.errors import GameRuleError
 from quorune.model import CardInstance
 from quorune.oracle_ir import compile_oracle_card, generated_programs
 from quorune.permanent_designations import (
@@ -49,6 +50,7 @@ def focused_card_database(directory: str) -> CardDatabase:
             ROOT / "tests" / "fixtures" / "scryfall-exact-lists.json",
             ROOT / "tests" / "fixtures" / "counter-replacement-cards.json",
             ROOT / "tests" / "fixtures" / "renown-cards.json",
+            ROOT / "tests" / "fixtures" / "renown-synthetic-cards.json",
         ],
         database,
     )
@@ -99,6 +101,19 @@ class RenownCompilerTests(unittest.TestCase):
             [text[node.span.start : node.span.end].casefold() for node in nodes],
         )
         self.assertEqual([1, 2], [node.effects[0]["amount"] for node in nodes])
+        programs = [
+            program
+            for program in generated_programs(
+                self.db,
+                record,
+                trust_level="trusted",
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+            )
+            if program.provenance.get("template_id")
+            == "renown-combat-damage-counter-designation-v1"
+        ]
+        self.assertEqual(2, len({program.key for program in programs}))
         for node in nodes:
             self.assertTrue(node.exact)
             self.assertEqual("damage.dealt.self", node.event)
@@ -154,7 +169,10 @@ class RenownCompilerTests(unittest.TestCase):
             )
         )
 
-        with patch("quorune.oracle_ir.renown_keyword_node", return_value=None):
+        with patch(
+            "quorune.compiler.keyword_nodes.renown_keyword_node",
+            return_value=None,
+        ):
             ir = compile_oracle_card(
                 self.record,
                 capability_registry=self.capabilities,
@@ -245,15 +263,9 @@ class RenownRuntimeTests(unittest.TestCase):
         engine,
         source: CardInstance,
         *,
-        repeated: bool = False,
+        expected_instances: int = 1,
     ):
         record = self.db.by_oracle_id(source.oracle_id)
-        if repeated:
-            record = replace(
-                record,
-                oracle_text="Renown 1, Renown 1",
-                keywords=("Renown",),
-            )
         programs = [
             program
             for program in generated_programs(
@@ -266,7 +278,7 @@ class RenownRuntimeTests(unittest.TestCase):
             if program.provenance.get("template_id")
             == "renown-combat-damage-counter-designation-v1"
         ]
-        self.assertEqual(2 if repeated else 1, len(programs))
+        self.assertEqual(expected_instances, len(programs))
         for program in programs:
             engine.semantics.put(program)
         return programs
@@ -463,10 +475,10 @@ class RenownRuntimeTests(unittest.TestCase):
         source = self.add_card(
             engine,
             seat="A",
-            name="Topan Freeblade",
+            name="Renown Twin Fixture",
             ref="double-renown",
         )
-        self.register_renown(engine, source, repeated=True)
+        self.register_renown(engine, source, expected_instances=2)
         self.deal(engine, source, "B", combat=True, suffix="double")
         self.assertEqual("trigger.order", engine.state.pending_decision.kind)
         session.initial_checkpoint = checkpoint_envelope(engine.state)
@@ -529,20 +541,14 @@ class RenownRuntimeTests(unittest.TestCase):
         self.register_renown(engine, source)
         self.deal(engine, source, "B", combat=True, suffix="rollback")
 
-        result = None
         with patch(
             "quorune.semantic_choices.intent_host.become_renowned",
             side_effect=PermanentDesignationError("designation mutation"),
         ):
-            for _ in range(12):
-                principals = session.pending_principals()
-                self.assertTrue(principals)
-                result = session.act(principals[0], {"action_id": "pass"})
-                if not result.ok:
-                    break
+            with self.assertRaises(GameRuleError):
+                with engine.transaction():
+                    engine._prepare_stack_resolution()
 
-        self.assertIsNotNone(result)
-        self.assertFalse(result.ok)
         current = session.state.cards[source.object_id]
         self.assertEqual({}, current.counters)
         self.assertFalse(current.renowned)
@@ -577,7 +583,7 @@ class RenownRuntimeTests(unittest.TestCase):
             row
             for player in projected["players"].values()
             for row in player["bf"]
-            if row["r"] == source.ref
+            if row["id"] == source.ref
         )
         self.assertTrue(card["renowned"])
 
