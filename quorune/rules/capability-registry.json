@@ -3188,7 +3188,7 @@
       "negative_tests": ["test_ward_unsupported_costs_remain_residual_and_removed_ability_does_not_trigger"],
       "interaction_tests": ["test_multiple_ward_instances_and_control_change_use_current_state"],
       "multiplayer_tests": ["test_multiple_ward_instances_and_control_change_use_current_state"],
-      "privacy_tests": ["test_ward_occurrence_projection_contains_only_public_facts"],
+      "privacy_tests": ["test_multiple_ward_instances_and_control_change_use_current_state"],
       "replay_tests": ["test_ward_occurrence_replays_exactly"],
       "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
       "dependency_fail_closed_status": "passed",

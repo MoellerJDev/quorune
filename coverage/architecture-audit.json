@@ -6315,7 +6315,7 @@
       "covered_high_risk_pairs": 24,
       "covered_piece_pairs": 444,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "ddfd66df8359013198c017842eb80b0c86b399f721f43676cdca4501db9ba08c",
+      "source_fingerprint": "970ee22f81c919f3163cb56b8d381cb042e30781f308fa1b06c94fa8ffc52606",
       "uncovered_high_risk_pairs": 81
     },
     "migration_queue": [
@@ -6774,7 +6774,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 139800,
+      "logical_lines": 139801,
       "methods": {
         "dunder": 389,
         "private": 684,
@@ -7850,8 +7850,8 @@
           "file": "quorune/architecture_cli.py",
           "functions_and_methods": 13,
           "language": "python",
-          "logical_lines": 277,
-          "physical_lines": 309
+          "logical_lines": 278,
+          "physical_lines": 310
         },
         {
           "file": "quorune/semantic_runtime/attached_continuous.py",
@@ -10011,7 +10011,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 153135,
+      "physical_lines": 153136,
       "python_file_count": 389,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -14148,7 +14148,7 @@
         {
           "condition": "operation == \"show\"",
           "file": "quorune/architecture_cli.py",
-          "line": 244,
+          "line": 245,
           "string_literals": [
             "show"
           ],
@@ -14157,7 +14157,7 @@
         {
           "condition": "operation == \"changed\"",
           "file": "quorune/architecture_cli.py",
-          "line": 249,
+          "line": 250,
           "string_literals": [
             "changed"
           ],
@@ -14166,7 +14166,7 @@
         {
           "condition": "operation == \"debt\"",
           "file": "quorune/architecture_cli.py",
-          "line": 255,
+          "line": 256,
           "string_literals": [
             "debt"
           ],
@@ -14175,7 +14175,7 @@
         {
           "condition": "operation == \"writes\"",
           "file": "quorune/architecture_cli.py",
-          "line": 257,
+          "line": 258,
           "string_literals": [
             "writes"
           ],
@@ -14184,7 +14184,7 @@
         {
           "condition": "operation == \"runtime-text\"",
           "file": "quorune/architecture_cli.py",
-          "line": 259,
+          "line": 260,
           "string_literals": [
             "runtime-text"
           ],
@@ -14193,7 +14193,7 @@
         {
           "condition": "operation == \"owners\"",
           "file": "quorune/architecture_cli.py",
-          "line": 261,
+          "line": 262,
           "string_literals": [
             "owners"
           ],
@@ -20513,10 +20513,10 @@
         },
         "declaration_count": 1426,
         "declaration_source_fingerprint": "99c4084005bae90efe9f8ba86a2bc2a76c88deefe5238129300b1d21c446a970",
-        "fingerprint": "4662b9d8c095716b67db2465599cae05b4fbb7b9d38beca167cbc7562a63e79a",
-        "registry_fingerprint": "8c80ebad3fd4caf664b79d8b01d66c7462839ed0dee7524fa33d9e92675a1ee6"
+        "fingerprint": "2a42963aae08ac4bf1a798f9433ed6c06f2ba534b6f9728640c10edcdb605c55",
+        "registry_fingerprint": "248ee4c14543155f2599125a6bf30f28b5293c9dbabdba7610f3371a5a128d14"
       },
-      "fingerprint": "8c80ebad3fd4caf664b79d8b01d66c7462839ed0dee7524fa33d9e92675a1ee6",
+      "fingerprint": "248ee4c14543155f2599125a6bf30f28b5293c9dbabdba7610f3371a5a128d14",
       "implementation_mutation_status_counts": {
         "killed": 139,
         "not_run": 5
@@ -20773,7 +20773,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 323,
         "exact_nodes": 535,
-        "fingerprint": "ebad58cacda0bd31f0ab082d6ad3a81ddd2fdd4dfdd9693166f445eebe294a32",
+        "fingerprint": "032035a56ea5e36044e1710619c8a3505640976aead9ac2855e9a38affd3fe15",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "dd4d9586ad713a5a8faa8bf705ed92a0ec9cfd8bc218315e28dc8d55fbaa415b",
         "present": true,
@@ -20785,7 +20785,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 336,
         "exact_nodes": 555,
-        "fingerprint": "ebb03b8e1735fda22e93968455b26125095f6586eaab190b09088d6385a1f341",
+        "fingerprint": "cc517902be5b045212a8c01c26d5dc782142a80fea5a6a51e944869cbb9e08be",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "d9cb9f014328fcef11de5e5faa8935a758cfad2cfbf0800e01fe4a890443f114",
         "present": true,
@@ -20804,7 +20804,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "97d62c84122cf12fab853a1787f459bb1aad7d18f0f1ca63456a98b26c858019",
+      "fingerprint": "f35c381cc2f75f97be072802bedece3b684e76c3fd3f94585e58503995e5cf18",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "8c80ebad3fd4caf664b79d8b01d66c7462839ed0dee7524fa33d9e92675a1ee6",
+  "registry_fingerprint": "248ee4c14543155f2599125a6bf30f28b5293c9dbabdba7610f3371a5a128d14",
   "declaration_source_fingerprint": "99c4084005bae90efe9f8ba86a2bc2a76c88deefe5238129300b1d21c446a970",
   "declarations": [
     {
@@ -28608,5 +28608,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "4662b9d8c095716b67db2465599cae05b4fbb7b9d38beca167cbc7562a63e79a"
+  "fingerprint": "2a42963aae08ac4bf1a798f9433ed6c06f2ba534b6f9728640c10edcdb605c55"
 }
