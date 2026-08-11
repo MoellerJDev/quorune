@@ -506,7 +506,7 @@ class AmassRuntimeTests(unittest.TestCase):
             engine, owner="A", name="Zombie Army", ref="first-army"
         )
         second = self.add_permanent(
-            engine, owner="A", name="Goblin Army Token", ref="second-army"
+            engine, owner="A", name="Goblin Army", ref="second-army"
         )
         self.stack_amass(engine)
 
@@ -553,7 +553,7 @@ class AmassRuntimeTests(unittest.TestCase):
             engine, owner="A", name="Zombie Army", ref="first-army"
         )
         self.add_permanent(
-            engine, owner="A", name="Goblin Army Token", ref="second-army"
+            engine, owner="A", name="Goblin Army", ref="second-army"
         )
         self.stack_amass(engine)
         engine.move_card(first.object_id, "graveyard")
