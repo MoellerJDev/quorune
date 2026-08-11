@@ -13,6 +13,7 @@ from .aura import (
     prepare_aura_entry,
 )
 from .model import CardInstance
+from .control_history import record_battlefield_acquisition
 from .counter_placement import (
     commit_prepared_counter_placements,
     CounterPlacementError,
@@ -481,7 +482,7 @@ def _card_from_token_plan(
     controller: str,
     plan: PreparedTokenObject,
 ) -> CardInstance:
-    return CardInstance(
+    card = CardInstance(
         object_id=plan.object_id,
         ref=plan.ref,
         oracle_id=plan.oracle_id,
@@ -494,15 +495,14 @@ def _card_from_token_plan(
         tapped=plan.tapped,
         temporary_keywords=list(plan.temporary_keywords),
         annotations=thaw_value(plan.annotations),
-        acquired_control_turn_count=host.state.players[
-            controller
-        ].turns_begun,
         entered_battlefield_turn_sequence=host.state.turn_sequence,
         known_to=list(host.seats),
         revealed_to=list(host.seats),
         attacking=plan.attacking,
         battle_protector=plan.battle_protector,
     )
+    record_battlefield_acquisition(host.state, card, plan.zone_timestamp)
+    return card
 
 
 def _commit_token_object(

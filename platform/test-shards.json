@@ -42,6 +42,7 @@
       "test_draw_reveal_as_drawn",
       "test_draw_transaction_commit",
       "test_draw_transaction_model",
+      "test_echo_rules",
       "test_fixed_counter_placement_effects",
       "test_fixed_counter_placement_groups",
       "test_fixed_counter_placement_sets",

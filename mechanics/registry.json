@@ -1,5 +1,5 @@
 {
-  "contract_count": 102,
+  "contract_count": 103,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -198,6 +198,12 @@
       "path": "mechanics/contracts/drawing-a-card.json",
       "sha256": "7d67e3f9c63d53c991cd90f526f947441b055878685b7b124fb60ee042cd0b9a",
       "version": 6
+    },
+    {
+      "mechanic_id": "echo",
+      "path": "mechanics/contracts/echo.json",
+      "sha256": "47fa7bafec4025a7cc771dfb796345eba1bfe70fa2395722175aa493f14dd513",
+      "version": 1
     },
     {
       "mechanic_id": "cr-609-effects",
@@ -1657,19 +1663,41 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/echo.json",
+      "contract_sha256": "47fa7bafec4025a7cc771dfb796345eba1bfe70fa2395722175aa493f14dd513",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.control_history, quorune.echo, quorune.compiler.echo_nodes, trigger discovery, and the shared optional pay-or-sacrifice handler",
+      "implementation_version": "typed-fixed-mana-echo-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "hybrid, Phyrexian, snow, variable, alternative, and nonmana Echo costs remain outside the closed grammar",
+        "cost modification and restricted-mana interactions remain bounded by the canonical payment subsystem's current coverage",
+        "granted, copied, face-down, and merged-object Echo need trusted typed ability propagation",
+        "aggregate triggered-ability, control-history, cost-payment, and sacrifice coverage remains incomplete"
+      ],
       "mechanic_id": "echo",
       "official_name": "Echo",
       "rule_references": [
         "702.30"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_mana_echo_is_source_spanned_and_capability_closed",
+        "test_unsupported_echo_variants_remain_precise_residuals",
+        "test_descriptor_shape_and_dependency_mutations_fail_closed",
+        "test_prior_upkeep_control_history_triggers_once",
+        "test_engine_upkeep_step_records_boundary_before_echo_discovery",
+        "test_pay_keeps_and_decline_sacrifices_through_typed_intents",
+        "test_zero_echo_is_payable_without_mana",
+        "test_control_change_and_zone_change_preserve_trigger_time_echo_facts",
+        "test_control_history_version_preserves_legacy_record_hash_mode",
+        "test_stale_source_and_malformed_history_fail_before_mutation",
+        "test_multiple_echo_sources_share_apnap_trigger_placement",
+        "test_four_player_echo_choice_is_seat_scoped_private_and_replays"
+      ],
       "trust_level": "untrusted"
     },
     {

@@ -79,6 +79,12 @@ meaning where the schema allows it. A current runtime never silently recompiles
 or reinterprets an old record as if it used current Oracle, rules, or
 CardPrograms.
 
+Upkeep-relative control history is one such additive boundary. New records pin
+its version in both the initial checkpoint and manifest; records without the
+marker remain in the historical no-history mode so later replay does not add
+control-acquisition or upkeep timestamps that were absent from their command
+hashes.
+
 ## Lifecycle and atomicity
 
 Lifecycle values are `created`, `in_progress`, `paused`, `complete`, `aborted`,

@@ -14,6 +14,7 @@ from ..death_return import (
     UNDYING_KEYWORD,
 )
 from ..evolve import EVOLVE_EVENT_CONDITION_FIELD
+from ..echo import ECHO_MECHANIC_ID
 from ..unleash import (
     UNLEASH_MECHANIC,
     unleash_block_handler_descriptor,
@@ -23,6 +24,7 @@ from ..riot import RIOT_MECHANIC, riot_entry_handler_descriptor
 from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from ..modular import MODULAR_MECHANIC_ID, ModularSpec
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
+from .echo_nodes import fixed_mana_echo_node
 from .cycling_nodes import ordinary_cycling_keyword_node
 from .ability_keyword_fragments import lower_ability_keyword_fragments
 from .dependency_gate import (
@@ -52,6 +54,7 @@ _CONVOKE_MECHANIC = "con" + "voke"
 _BLOODTHIRST_MECHANIC = BLOODTHIRST_MECHANIC
 _RENOWN_MECHANIC = RENOWN_MECHANIC_ID
 _MODULAR_MECHANIC = MODULAR_MECHANIC_ID
+_ECHO_MECHANIC = ECHO_MECHANIC_ID
 
 
 @dataclass(frozen=True, slots=True)
@@ -104,6 +107,7 @@ def keyword_node_plans(
             _PROWESS_MECHANIC,
             _RENOWN_MECHANIC,
             _MODULAR_MECHANIC,
+            _ECHO_MECHANIC,
         }
     )
     if not split_mechanics:
@@ -131,6 +135,7 @@ def keyword_node_plans(
                         _BLOODTHIRST_MECHANIC,
                         _RENOWN_MECHANIC,
                         _MODULAR_MECHANIC,
+                        _ECHO_MECHANIC,
                     }
                     and re.fullmatch(
                         rf"{re.escape(mechanic)}\s+.+",
@@ -151,6 +156,7 @@ def keyword_node_plans(
             _PROWESS_MECHANIC,
             _RENOWN_MECHANIC,
             _MODULAR_MECHANIC,
+            _ECHO_MECHANIC,
             _CONVOKE_MECHANIC,
         )
     }
@@ -200,6 +206,7 @@ def keyword_node_plans(
             _PROWESS_MECHANIC,
             _RENOWN_MECHANIC,
             _MODULAR_MECHANIC,
+            _ECHO_MECHANIC,
             _CONVOKE_MECHANIC,
         }
     )
@@ -244,6 +251,7 @@ def closed_special_keyword_node(
         ordinary_convoke_keyword_node,
         ordinary_cycling_keyword_node,
         fixed_mana_cumulative_upkeep_node,
+        fixed_mana_echo_node,
     ):
         node = lower(**values)
         if node is not None:

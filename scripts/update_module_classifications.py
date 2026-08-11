@@ -383,6 +383,11 @@ def _owner(relative: str, layer: str) -> str:
     if relative == "quorune/cumulative_upkeep.py":
         return "cumulative_upkeep"
     if relative in {
+        "quorune/control_history.py",
+        "quorune/echo.py",
+    }:
+        return "echo"
+    if relative in {
         "quorune/destruction.py",
         "quorune/destruction_sets.py",
         "quorune/state_based_execution.py",

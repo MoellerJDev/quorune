@@ -37,6 +37,7 @@
       "quorune/counter_placement.py",
       "quorune/counter_removal.py",
       "quorune/counter_state.py",
+      "quorune/control_history.py",
       "quorune/damage.py",
       "quorune/damage_prevention_creation.py",
       "quorune/damage_results.py",

@@ -33,30 +33,35 @@ def _requirements(value: Mapping[str, Any]) -> dict[str, int]:
     return result
 
 
-def _strict_cumulative_requirements(value: Any) -> dict[str, int]:
+def _strict_fixed_mana_requirements(
+    value: Any,
+    *,
+    label: str,
+    require_positive: bool,
+) -> dict[str, int]:
     if not isinstance(value, Mapping):
         raise SemanticChoiceError(
-            "Cumulative upkeep requires a fixed mana cost per age counter"
+            f"{label} requires a fixed mana cost"
         )
     unknown = sorted(set(value) - set(_MANA_KEYS))
     if unknown:
         raise SemanticChoiceError(
-            "Cumulative upkeep cost has unknown mana fields: "
+            f"{label} cost has unknown mana fields: "
             + ", ".join(str(field) for field in unknown)
         )
     if any(type(amount) is not int or amount < 0 for amount in value.values()):
         raise SemanticChoiceError(
-            "Cumulative upkeep mana amounts must be nonnegative integers"
+            f"{label} mana amounts must be nonnegative integers"
         )
     result = {key: int(value.get(key, 0)) for key in _MANA_KEYS}
-    if not any(result.values()):
+    if require_positive and not any(result.values()):
         raise SemanticChoiceError(
-            "Cumulative upkeep fixed mana cost must be positive"
+            f"{label} fixed mana cost must be positive"
         )
     return result
 
 
-def _current_cumulative_source(
+def _current_pay_or_sacrifice_source(
     query: SemanticChoiceQuery,
     source_ref: str,
     logical_object_id: str | None,
@@ -67,6 +72,86 @@ def _current_cumulative_source(
     if logical_object_id and source.logical_object_id != logical_object_id:
         return None
     return source
+
+
+def _completion_requirements(
+    mode: str,
+    effect: Mapping[str, Any],
+) -> dict[str, int]:
+    value = effect.get("_requirements", FrozenMap())
+    if mode not in {"cumulative", "echo"}:
+        return _requirements(value)
+    return _strict_fixed_mana_requirements(
+        value,
+        label=(
+            "Cumulative upkeep continuation"
+            if mode == "cumulative"
+            else "Echo continuation"
+        ),
+        require_positive=False,
+    )
+
+
+def _payment_choice(response: Mapping[str, Any]) -> bool:
+    value = response.get("pay", False)
+    if type(value) is not bool:
+        raise SemanticChoiceError("Optional payment choice must be boolean")
+    return value
+
+
+def _pay_or_sacrifice_details(
+    mode: str,
+    effect: Mapping[str, Any],
+    query: SemanticChoiceQuery,
+    source_ref: str,
+) -> dict[str, Any]:
+    expected_logical = str(effect.get("_source_logical_object_id") or "")
+    source = _current_pay_or_sacrifice_source(
+        query,
+        source_ref,
+        expected_logical,
+    )
+    if source is None:
+        raise SemanticChoiceError(
+            f"The {mode.replace('_', '-')} source condition changed during its choice"
+        )
+    details: dict[str, Any] = {"source": source_ref}
+    if mode == "cumulative":
+        details["age_counters"] = source.counters.get("age", 0)
+    return details
+
+
+def _declined_pay_or_sacrifice(
+    mode: str,
+    effect: Mapping[str, Any],
+    actor: str,
+    query: SemanticChoiceQuery,
+) -> SemanticChoiceCompletion:
+    source_ref = str(effect.get("_source_ref") or "")
+    expected_logical = str(effect.get("_source_logical_object_id") or "")
+    source = _current_pay_or_sacrifice_source(
+        query,
+        source_ref,
+        expected_logical,
+    )
+    if source is None or source.controller != actor:
+        return SemanticChoiceCompletion()
+    return SemanticChoiceCompletion(
+        intents=(
+            ZoneMoveIntent(
+                actor=actor,
+                object_ref=source_ref,
+                expected_zones=("battlefield",),
+                destination="graveyard",
+                reason=(
+                    "cumulative upkeep not paid"
+                    if mode == "cumulative"
+                    else "Echo not paid"
+                ),
+                controlled_only=True,
+            ),
+        )
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,7 +199,7 @@ class OptionalPaymentHandler:
         effect: Mapping[str, Any],
         context: SemanticChoiceContext,
     ) -> tuple[dict[str, int], str | None, int | None]:
-        if self.mode != "cumulative":
+        if self.mode not in {"cumulative", "echo"}:
             return (
                 _requirements(
                     effect.get("cost")
@@ -125,17 +210,29 @@ class OptionalPaymentHandler:
                 None,
             )
         source_ref = str(effect.get("source") or "")
-        source = _current_cumulative_source(
+        source = _current_pay_or_sacrifice_source(
             context.query,
             source_ref,
             context.source_logical_object_id,
         )
         if source is None:
             raise SemanticChoiceError(
-                "The cumulative-upkeep source condition is no longer true"
+                "The pay-or-sacrifice source condition is no longer true"
             )
-        per_counter = _strict_cumulative_requirements(
-            effect.get("cost_per_counter")
+        if self.mode == "echo":
+            return (
+                _strict_fixed_mana_requirements(
+                    effect.get("cost"),
+                    label="Echo",
+                    require_positive=False,
+                ),
+                source.ref,
+                None,
+            )
+        per_counter = _strict_fixed_mana_requirements(
+            effect.get("cost_per_counter"),
+            label="Cumulative upkeep",
+            require_positive=True,
         )
         age = int(source.counters.get("age", 0))
         return (
@@ -166,11 +263,13 @@ class OptionalPaymentHandler:
             stage = effect.get("stage")
             if stage not in {None, "pay"}:
                 raise SemanticChoiceError("Unknown cumulative upkeep stage")
-            per_counter = _strict_cumulative_requirements(
-                effect.get("cost_per_counter")
+            _strict_fixed_mana_requirements(
+                effect.get("cost_per_counter"),
+                label="Cumulative upkeep",
+                require_positive=True,
             )
             source_ref = str(effect.get("source") or "")
-            source = _current_cumulative_source(
+            source = _current_pay_or_sacrifice_source(
                 context.query,
                 source_ref,
                 context.source_logical_object_id,
@@ -203,6 +302,34 @@ class OptionalPaymentHandler:
                     auto_continue=AutoContinue(
                         reason="age counter placement committed",
                         prepend_effects=(pay_effect,),
+                    ),
+                )
+        elif self.mode == "echo":
+            allowed = {"op", "player", "source", "cost"}
+            unknown = sorted(set(effect) - allowed)
+            required = allowed
+            missing = sorted(required - set(effect))
+            if missing or unknown:
+                details = []
+                if missing:
+                    details.append("missing " + ", ".join(missing))
+                if unknown:
+                    details.append("unknown " + ", ".join(unknown))
+                raise SemanticChoiceError(
+                    "Malformed Echo effect: " + "; ".join(details)
+                )
+            source_ref = str(effect.get("source") or "")
+            source = _current_pay_or_sacrifice_source(
+                context.query,
+                source_ref,
+                context.source_logical_object_id,
+            )
+            if source is None:
+                return SemanticChoicePreparation(
+                    request=None,
+                    continuation_effect=FrozenMap(effect),
+                    auto_continue=AutoContinue(
+                        reason="Echo source is no longer the same permanent"
                     ),
                 )
         requirements, source_ref, age = self._cost_and_source(effect, context)
@@ -239,11 +366,21 @@ class OptionalPaymentHandler:
                 f"Pay cumulative upkeep {requirements} or sacrifice "
                 f"{source.printed_name if source else source_ref}."
             )
+        elif self.mode == "echo":
+            source = context.query.object(source_ref or "")
+            prompt = (
+                f"Pay Echo {requirements} or sacrifice "
+                f"{source.printed_name if source else source_ref}."
+            )
         else:
             prompt = self.prompt
         return SemanticChoicePreparation(
             request=SemanticChoiceRequest(
-                prompt=prompt if self.mode == "cumulative" else self.prompt,
+                prompt=(
+                    prompt
+                    if self.mode in {"cumulative", "echo"}
+                    else self.prompt
+                ),
                 choice=ScalarChoice(
                     field_name="pay",
                     legal_values=(True, False) if payable else (False,),
@@ -262,8 +399,8 @@ class OptionalPaymentHandler:
     ) -> SemanticChoiceCompletion:
         effect = continuation.effect
         actor = str(effect["_choice_actor"])
-        requirements = _requirements(effect.get("_requirements", FrozenMap()))
-        pay = bool(response.get("pay", False))
+        requirements = _completion_requirements(self.mode, effect)
+        pay = _payment_choice(response)
         if pay and not query.cost_is_affordable(actor, requirements):
             raise SemanticChoiceError(
                 "The optional payment is no longer payable"
@@ -273,6 +410,7 @@ class OptionalPaymentHandler:
             event_code = {
                 "counter": "counter.unless.paid",
                 "cumulative": "cumulative_upkeep.paid",
+                "echo": "echo.paid",
                 "remora": "mystic_remora.paid",
                 "pact": "pact.paid",
             }[self.mode]
@@ -282,30 +420,21 @@ class OptionalPaymentHandler:
                     f"{actor} paid to prevent {effect.get('stack')} from being countered."
                 ),
                 "cumulative": f"{actor} paid cumulative upkeep for {source_ref}.",
+                "echo": f"{actor} paid Echo for {source_ref}.",
                 "remora": f"{actor} paid for Mystic Remora.",
                 "pact": f"{actor} paid the delayed Pact cost.",
             }[self.mode]
             details: dict[str, Any] = {"cost": requirements}
             if self.mode == "counter":
                 details["stack"] = effect.get("stack")
-            elif self.mode == "cumulative":
-                expected_logical = str(
-                    effect.get("_source_logical_object_id") or ""
-                )
-                source = _current_cumulative_source(
-                    query,
-                    source_ref or "",
-                    expected_logical,
-                )
-                if source is None:
-                    raise SemanticChoiceError(
-                        "The cumulative-upkeep source condition changed during its choice"
-                    )
+            elif self.mode in {"cumulative", "echo"}:
                 details.update(
-                    {
-                        "source": source_ref,
-                        "age_counters": source.counters.get("age", 0),
-                    }
+                    _pay_or_sacrifice_details(
+                        self.mode,
+                        effect,
+                        query,
+                        source_ref or "",
+                    )
                 )
             else:
                 details["stack"] = continuation.stack_ref
@@ -337,29 +466,12 @@ class OptionalPaymentHandler:
                     ),
                 )
             )
-        if self.mode == "cumulative":
-            source_ref = str(effect.get("_source_ref") or "")
-            expected_logical = str(
-                effect.get("_source_logical_object_id") or ""
-            )
-            source = _current_cumulative_source(
+        if self.mode in {"cumulative", "echo"}:
+            return _declined_pay_or_sacrifice(
+                self.mode,
+                effect,
+                actor,
                 query,
-                source_ref,
-                expected_logical,
-            )
-            if source is None or source.controller != actor:
-                return SemanticChoiceCompletion()
-            return SemanticChoiceCompletion(
-                intents=(
-                    ZoneMoveIntent(
-                        actor=actor,
-                        object_ref=source_ref,
-                        expected_zones=("battlefield",),
-                        destination="graveyard",
-                        reason="cumulative upkeep not paid",
-                        controlled_only=True,
-                    ),
-                )
             )
         if self.mode == "pact":
             return SemanticChoiceCompletion(
@@ -419,6 +531,15 @@ PAYMENT_CHOICE_HANDLERS = (
         capability_dependencies=(
             "counter.producer.cumulative_upkeep_fixed_mana",
         ),
+    ),
+    OptionalPaymentHandler(
+        operation="echo_upkeep",
+        handler_id="choice.payment.echo.v1",
+        mode="echo",
+        prompt="Pay Echo or sacrifice the permanent.",
+        default_cost=FrozenMap(),
+        capability_dependencies=("trigger.keyword.echo.fixed_mana",),
+        rule_references=("CR 118.12", "CR 603.4", "CR 702.30"),
     ),
     OptionalPaymentHandler(
         operation="remora_tax",

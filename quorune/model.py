@@ -14,6 +14,8 @@ from .continuous_effect_model import ContinuousEffect
 from .trigger_batches import PendingTriggerBatch, TriggerBatchError
 from .util import normalize_mana_bundle, stable_json
 
+CONTROL_HISTORY_VERSION = 1
+
 ZoneName = Literal[
     "library",
     "hand",
@@ -170,6 +172,7 @@ class CardInstance:
     attached_to: str | None = None
     attachments: list[str] = field(default_factory=list)
     acquired_control_turn_count: int = 0
+    acquired_control_timestamp: int = 0
     entered_battlefield_turn_sequence: int = 0
     revealed_to: list[str] = field(default_factory=list)
     known_to: list[str] = field(default_factory=list)
@@ -212,6 +215,13 @@ class CardInstance:
             )
         if type(self.renowned) is not bool:
             raise ValueError("A renowned designation must be a boolean")
+        if (
+            type(self.acquired_control_timestamp) is not int
+            or self.acquired_control_timestamp < 0
+        ):
+            raise ValueError(
+                "Control-acquisition timestamp must be a nonnegative integer"
+            )
 
     @property
     def logical_object_id(self) -> str:
@@ -243,6 +253,10 @@ class CardInstance:
         if not self.renowned:
             # Keep historical Game Record v3 card payloads byte-compatible.
             payload.pop("renowned")
+        if not self.acquired_control_timestamp:
+            # Preserve historical records that predate upkeep-relative
+            # control history. New battlefield acquisitions serialize it.
+            payload.pop("acquired_control_timestamp")
         return payload
 
     @classmethod
@@ -315,6 +329,7 @@ class PlayerState:
     commander_casts: dict[str, int] = field(default_factory=dict)
     commander_damage_received: dict[str, int] = field(default_factory=dict)
     turns_begun: int = 0
+    last_upkeep_timestamp: int = 0
     land_plays_remaining: int = 1
     max_hand_size: int = 7
     mulligans_taken: int = 0
@@ -329,6 +344,13 @@ class PlayerState:
     yield_policy: YieldPolicy = field(default_factory=YieldPolicy)
 
     def __post_init__(self) -> None:
+        if (
+            type(self.last_upkeep_timestamp) is not int
+            or self.last_upkeep_timestamp < 0
+        ):
+            raise ValueError(
+                "Last-upkeep timestamp must be a nonnegative integer"
+            )
         normalized: dict[str, int] = {}
         for raw_name, raw_amount in self.counters.items():
             name = " ".join(str(raw_name).casefold().split())
@@ -357,6 +379,10 @@ class PlayerState:
             # Preserve historical Game Record v3 checkpoint payloads until a
             # represented non-legacy player counter actually exists.
             payload.pop(PLAYER_COUNTERS_FIELD)
+        if not self.last_upkeep_timestamp:
+            # Preserve historical records until an upkeep boundary with a
+            # nonzero timestamp has been observed.
+            payload.pop("last_upkeep_timestamp")
         return payload
 
     @classmethod
@@ -645,6 +671,9 @@ class GameState:
     # whose commander-damage ledgers were keyed by Oracle ID. New games use
     # physical commander designation identity version 2.
     commander_damage_identity_version: int | None = None
+    # ``None`` preserves historical Game Record v3 command hashes. New games
+    # use version 1 upkeep-relative control-acquisition history.
+    control_history_version: int | None = None
     extra_turns: list[TurnEntry] = field(default_factory=list)
     active_player: str | None = None
     priority_player: str | None = None
@@ -716,6 +745,11 @@ class GameState:
                     )
                 }
                 if self.commander_damage_identity_version is not None
+                else {}
+            ),
+            **(
+                {"control_history_version": self.control_history_version}
+                if self.control_history_version is not None
                 else {}
             ),
             "turn_order": list(self.turn_order),
@@ -793,6 +827,9 @@ class GameState:
                 if data.get("commander_damage_identity_version") is not None
                 else None
             ),
+            control_history_version=(
+                cls._control_history_version_from_dict(data)
+            ),
             extra_turns=[TurnEntry.from_dict(turn) for turn in data.get("extra_turns", [])],
             active_player=data.get("active_player"),
             priority_player=data.get("priority_player"),
@@ -845,6 +882,17 @@ class GameState:
             mulligan_round=int(data.get("mulligan_round", 0)),
             ref_counters=dict(data.get("ref_counters", {})),
         )
+
+    @staticmethod
+    def _control_history_version_from_dict(data: Mapping[str, Any]) -> int | None:
+        value = data.get("control_history_version")
+        if value is None:
+            return None
+        if type(value) is not int:
+            raise ValueError("Control-history version must be an integer")
+        if value != CONTROL_HISTORY_VERSION:
+            raise ValueError("Unsupported control-history version")
+        return value
 
     @staticmethod
     def _pending_trigger_batches_from_dict(

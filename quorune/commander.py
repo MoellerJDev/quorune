@@ -7,7 +7,13 @@ from typing import Any, Mapping, Protocol
 
 from .carddb import CardDatabase
 from .deck import DeckDefinition
-from .model import CardInstance, GameConfig, GameState, PlayerState
+from .model import (
+    CONTROL_HISTORY_VERSION,
+    CardInstance,
+    GameConfig,
+    GameState,
+    PlayerState,
+)
 
 
 COMMANDER_DAMAGE_IDENTITY_VERSION = 2
@@ -266,6 +272,7 @@ def initial_commander_state(
         commander_damage_identity_version=(
             COMMANDER_DAMAGE_IDENTITY_VERSION
         ),
+        control_history_version=CONTROL_HISTORY_VERSION,
         active_player=None,
         phase="setup",
         step="mulligan",

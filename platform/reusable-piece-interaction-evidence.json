@@ -1242,6 +1242,22 @@
       "capability_ids": ["casting.additional_cost.fixed_sacrifice", "trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
       "interaction_order": 3,
       "assertion": "A fixed sacrifice casting cost suspends before mutation, survives restart, commits only the replacement-selected exile transition, and dispatches one normalized final-destination zone event rather than a false graveyard event before exact replay."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_control_change_and_zone_change_preserve_trigger_time_echo_facts",
+      "piece_ids": ["capability.trigger.keyword.echo.fixed_mana", "mechanic.cr-400-general", "mechanic.echo"],
+      "capability_ids": ["trigger.keyword.echo.fixed_mana"],
+      "interaction_order": 3,
+      "assertion": "Ordinary Echo freezes its trigger controller and control-acquisition fact while retaining logical-object revalidation, so control change does not retarget the choice and a departed-and-returned source cannot satisfy the old trigger."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_multiple_echo_sources_share_apnap_trigger_placement",
+      "piece_ids": ["capability.trigger.keyword.echo.fixed_mana", "capability.trigger.placement.apnap", "mechanic.cr-603-handling-triggered-abilities", "mechanic.echo"],
+      "capability_ids": ["trigger.keyword.echo.fixed_mana", "trigger.placement.apnap"],
+      "interaction_order": 4,
+      "assertion": "Simultaneous ordinary Echo occurrences enter the canonical APNAP and same-controller ordering batch before any pay-or-sacrifice choice resolves."
     }
   ]
 }

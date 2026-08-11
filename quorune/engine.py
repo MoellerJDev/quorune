@@ -65,6 +65,7 @@ from .continuous_effect_state import (
     active_resolution_effects,
     expire_end_of_turn_continuous_effects,
 )
+from . import control_history
 from .counter_placement import (
     CounterPlacementError,
     place_counters_on_controlled_subtype,
@@ -1659,7 +1660,7 @@ class CommanderEngine(
                 if tapped is None
                 else bool(tapped)
             )
-            card.acquired_control_turn_count = self.state.players[card.controller].turns_begun
+            control_history.record_battlefield_acquisition(self.state, card, card.zone_timestamp)
             card.entered_battlefield_turn_sequence = self.state.turn_sequence
             card.battle_protector = prospective_battle_protector
             self.state.players[card.controller].zones["battlefield"].append(
@@ -3002,11 +3003,9 @@ class CommanderEngine(
             # A delayed trigger must not suppress permanent-based upkeep
             # triggers, and trigger time within the no-priority interval must
             # not determine stack order.
-            context = {
-                "phase": phase,
-                "step": step,
-                "player": active,
-            }
+            context = control_history.upkeep_trigger_context(
+                self.state, phase, step, active
+            )
             waiting_triggers = collect_trigger_items(
                 self,
                 "step.begin",
@@ -7709,9 +7708,7 @@ class CommanderEngine(
                 object_id
             )
         if zone == "battlefield":
-            card.acquired_control_turn_count = self.state.players[
-                controller
-            ].turns_begun
+            control_history.record_battlefield_acquisition(self.state, card, card.zone_timestamp)
             card.entered_battlefield_turn_sequence = (
                 self.state.turn_sequence
             )
@@ -12412,7 +12409,7 @@ class CommanderEngine(
         self.state.players[old].zones["battlefield"].remove(object_id)
         self.state.players[new_controller].zones["battlefield"].append(object_id)
         card.controller = new_controller
-        card.acquired_control_turn_count = self.state.players[new_controller].turns_begun
+        control_history.record_control_change(self.state, card, self._next_zone_timestamp)
         self._log(None, "control.change", f"Control of {card.ref} changed {old} → {new_controller}.", {"object": card.ref, "from": old, "to": new_controller, "reason": reason}, importance=2, changed_objects=[object_id], changed_players=[old, new_controller])
 
     def apply_shortcut(

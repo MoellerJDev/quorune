@@ -1,8 +1,8 @@
 ---
 title: "Rules kernel"
 status: "current"
-authoritative_source: "quorune engine and rules modules, including quorune/saga_progression.py, quorune/mentor.py, quorune/relative_power_target.py, and quorune/target_predicates.py"
-verified: "2026-08-10"
+authoritative_source: "quorune engine and rules modules, including quorune/control_history.py, quorune/echo.py, quorune/saga_progression.py, quorune/mentor.py, quorune/relative_power_target.py, and quorune/target_predicates.py"
+verified: "2026-08-11"
 audience: "rules and engine contributors"
 maintenance: "hand-maintained"
 ---
@@ -171,6 +171,18 @@ the identity-pinned +1/+1-until-end-of-turn result to the continuous-effect
 owner. Removing abilities suppresses future triggers but does not erase a
 trigger already on the stack. Rules-text equivalents, qualified variants,
 unsupported grants or copies, and trigger multiplication remain fail closed.
+
+Ordinary printed fixed-mana Echo uses one source-spanned trigger descriptor.
+`control_history.py` owns the public acquisition timestamp and per-player upkeep
+boundary used by its intervening condition; ordinary summoning-sickness turn
+counts remain part of that same control-acquisition write. Trigger discovery
+freezes the ability controller, logical source identity, and acquisition fact,
+then the shared payment choice emits only typed mana-payment or controlled-source
+sacrifice intents. The additive control-history version is explicit in new Game
+Record v3 checkpoints and manifests. Historical records without that version do
+not acquire new hashed timestamps during replay. Nonordinary costs, cost and
+restricted-mana interactions outside the current payment owner, granted or
+copied Echo, and broader control-history mechanics remain fail closed.
 
 For represented CR 611 object modifications, resolution-created effects lock
 the affected physical/logical object set after successful preparation. Static

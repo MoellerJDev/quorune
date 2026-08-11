@@ -12,10 +12,7 @@ from typing import Any, Iterable, Mapping, Sequence
 from .carddb import CardDatabase
 from .engine import CommanderEngine
 from .model import Event, GameState
-from .record_commander_identity import (
-    commander_damage_identity_version,
-    validate_commander_damage_identity_provenance,
-)
+from . import record_state_provenance
 from .record_decks import deck_fingerprints, deck_list_fingerprints
 from .record_trust import (
     card_program_trust_provenance,
@@ -720,9 +717,7 @@ def build_manifest(
             "starting_life": state.config.starting_life,
             "free_mulligans": state.config.effective_free_mulligans(len(state.turn_order)),
             "first_player_draws": state.config.effective_first_player_draws(len(state.turn_order)),
-            "commander_damage_identity_version": commander_damage_identity_version(
-                state.commander_damage_identity_version
-            ),
+            **record_state_provenance.format_state_versions(state),
         },
         "player_count": len(state.turn_order),
         "turn_order": list(state.turn_order),
@@ -991,9 +986,7 @@ def replay_record(
         }
 
     state = GameState.from_dict(initial["state"])
-    validate_commander_damage_identity_provenance(
-        manifest, state.commander_damage_identity_version
-    )
+    record_state_provenance.validate_state_versions(manifest, state)
     engine = CommanderEngine(card_db, state, semantics)
     engine.permissions.reissue_pending()
     applied = _apply_replay_commands(
@@ -1148,9 +1141,7 @@ def verify_record_suffix(
     state_payload = copy.deepcopy(dict(baseline_state))
     state_payload["capabilities"] = {}
     state = GameState.from_dict(state_payload)
-    validate_commander_damage_identity_provenance(
-        manifest, state.commander_damage_identity_version
-    )
+    record_state_provenance.validate_state_versions(manifest, state)
     base_state_hash = authoritative_state_hash(state)
     if baseline_commands:
         recorded_base_hash = commands[baseline_commands - 1].get(

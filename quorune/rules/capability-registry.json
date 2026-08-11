@@ -3037,6 +3037,33 @@
       "status": "trusted"
     },
     {
+      "id": "trigger.keyword.echo.fixed_mana",
+      "version": 1,
+      "official_rules": ["118.12", "603.3", "603.4", "701.17", "702.30", "702.30a", "702.30b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve each ordinary fixed-mana Echo instance as an identity-pinned intervening-if upkeep trigger using canonical control-acquisition and prior-upkeep timestamps, followed by one seat-scoped pay-or-sacrifice choice.",
+        "inputs": ["one printed Echo keyword instance", "fixed ordinary mana cost including zero", "source logical identity", "control-acquisition timestamp and controller", "controller's previous upkeep timestamp"],
+        "outputs": ["source-spanned upkeep trigger", "intervening-condition recheck from trigger-time control history", "seat-scoped fixed-mana payment choice", "typed mana-payment or sacrifice zone-move intent", "exact replay"],
+        "exclusions": ["alternative, snow, hybrid, Phyrexian, variable, or nonmana Echo costs", "cost modification and restricted-mana families beyond the represented canonical payment owner", "granted or copied Echo outside trusted typed ability-fragment propagation", "compound nonkeyword Echo wording"]
+      },
+      "dependencies": ["trigger.placement.apnap"],
+      "implementation_components": ["quorune.control_history.record_control_acquisition", "quorune.control_history.begin_upkeep_control_epoch", "quorune.record_state_provenance.validate_state_versions", "quorune.echo.FixedManaEchoSpec", "quorune.echo.echo_control_condition_holds", "quorune.compiler.echo_nodes.fixed_mana_echo_node", "quorune.rules.echo_capability_shapes.fixed_mana_echo_node_capabilities", "quorune.trigger_discovery.semantic_event_condition_matches", "quorune.semantic_choices.payments.OptionalPaymentHandler", "quorune.semantic_runtime.intents.PayManaCostIntent", "quorune.semantic_runtime.intents.ZoneMoveIntent"],
+      "positive_tests": ["test_fixed_mana_echo_is_source_spanned_and_capability_closed", "test_prior_upkeep_control_history_triggers_once", "test_pay_keeps_and_decline_sacrifices_through_typed_intents"],
+      "negative_tests": ["test_unsupported_echo_variants_remain_precise_residuals", "test_control_history_version_preserves_legacy_record_hash_mode", "test_stale_source_and_malformed_history_fail_before_mutation"],
+      "interaction_tests": ["test_control_change_and_zone_change_preserve_trigger_time_echo_facts", "test_multiple_echo_sources_share_apnap_trigger_placement"],
+      "multiplayer_tests": ["test_four_player_echo_choice_is_seat_scoped_private_and_replays"],
+      "privacy_tests": ["test_four_player_echo_choice_is_seat_scoped_private_and_replays"],
+      "replay_tests": ["test_four_player_echo_choice_is_seat_scoped_private_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The explicit compiler gate retains a material dependency residual unless ordinary APNAP trigger placement and this bounded Echo capability are trusted for the active profile.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and history mutations remove typed Echo lowering or collapse the prior-upkeep comparison; source-span, trigger-suppression, and second-upkeep assertions reject the survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "trigger.keyword.prowess",
       "version": 1,
       "official_rules": ["601.2i", "603.2", "603.3", "702.108", "702.108a", "702.108b"],

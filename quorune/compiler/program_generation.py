@@ -51,6 +51,7 @@ from ..rules.node_capability_shapes import (
     targeted_return_to_hand_node_capabilities,
     targeted_tap_state_node_capabilities,
 )
+from ..rules.echo_capability_shapes import fixed_mana_echo_node_capabilities
 from ..semantics import SemanticProgram, SemanticRegistry
 from ..util import stable_json
 
@@ -702,6 +703,26 @@ def _is_closed_fixed_mana_cumulative_upkeep_program(
     )
 
 
+def _is_closed_fixed_mana_echo_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize exactly one ordinary fixed-mana Echo trigger."""
+
+    required = set(
+        fixed_mana_echo_node_capabilities(
+            effects=program.effects,
+            event_condition=program.event_condition,
+            target_schema=program.target_schema,
+            mechanic_ids=(
+                value for value in program.coverage if value == "echo"
+            ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
 def _is_closed_fixed_counter_placement_set_program(
     program: SemanticProgram,
 ) -> bool:
@@ -872,6 +893,7 @@ def _is_closed_effect_program(program: SemanticProgram) -> bool:
         _is_closed_fixed_counter_placement_target_set_program,
         _is_closed_fixed_player_counter_placement_program,
         _is_closed_fixed_mana_cumulative_upkeep_program,
+        _is_closed_fixed_mana_echo_program,
         _is_closed_targeted_counter_program,
         _is_closed_targeted_destruction_program,
         _is_closed_mass_destruction_program,

@@ -123,6 +123,7 @@ _UNDYING_MECHANIC = "un" + "dying"
 _UNLEASH_MECHANIC = "un" + "leash"
 _RIOT_MECHANIC = "ri" + "ot"
 _BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
+_ECHO_MECHANIC = "ec" + "ho"
 _BASIC_LANDWALK_MECHANICS = (
     "pl" + "ainswalk",
     "is" + "landwalk",
@@ -147,6 +148,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     ),
     _RIOT_MECHANIC: ("counter.producer.riot",),
     _BLOODTHIRST_MECHANIC: ("counter.producer.bloodthirst",),
+    _ECHO_MECHANIC: ("trigger.keyword.echo.fixed_mana",),
     **{
         mechanic: ("combat.block.landwalk.basic_type",)
         for mechanic in _BASIC_LANDWALK_MECHANICS
@@ -230,6 +232,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         "adapt",
         "monstrosity",
         "bolster",
+        _ECHO_MECHANIC,
     }
 )
 _CAPABILITY_ID = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$")
@@ -1085,6 +1088,8 @@ def capability_covered_mechanics(
         covered.add("cr-601-casting-spells")
     if "counter.producer.cumulative_upkeep_fixed_mana" in supplied:
         covered.update({"cr-122-counters", "cumulative upkeep"})
+    if "trigger.keyword.echo.fixed_mana" in supplied:
+        covered.add(_ECHO_MECHANIC)
     if "keyword_action.explore.single" in supplied:
         covered.add("ex" + "plore")
     if "counter.producer.proliferate" in supplied:
