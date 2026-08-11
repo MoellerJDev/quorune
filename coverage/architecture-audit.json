@@ -8,7 +8,7 @@
       }
     ],
     "debt_trend": {
-      "baseline_commit": "7d6f65b5",
+      "baseline_commit": "d793bbd8",
       "dimensions": {
         "card_named_helpers": {
           "baseline": 1,
@@ -20804,7 +20804,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "895f49c6ea81a6a0d4ffdc950728af4b572d5fae54b22db0ae3eacf4378b7416",
+      "fingerprint": "97d62c84122cf12fab853a1787f459bb1aad7d18f0f1ca63456a98b26c858019",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -21664,8 +21664,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2626,
-      "discovered_total": 5926,
+      "conventional_ast_cases": 2628,
+      "discovered_total": 5928,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 105,
