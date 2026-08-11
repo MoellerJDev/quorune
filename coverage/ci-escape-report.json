@@ -257,6 +257,25 @@
       "resolution": "The Bloodthirst-focused module now verifies exact component registration, while the global trust test checks unique handler identities and the complete family set instead of a maintenance-only total count.",
       "run_id": 31416024863,
       "summary": "The Bloodthirst family registered a new runtime component, but its focused tests did not assert global registration and a fragile hard-coded component count failed only in the compiler-cardprogram shard."
+    },
+    {
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "failed_surfaces": [
+        "rules-events-replacements"
+      ],
+      "head_sha": "13e39efb6854fd0b3409ac70607645ffbab04a9a",
+      "id": "ci-20260811-16",
+      "impact_edge_status": "added",
+      "regressions": [
+        "test_amass_rules.AmassRuntimeTests.test_amass_existing_army_uses_counters_before_zone_object_subtype",
+        "test_amass_rules.AmassRuntimeTests.test_amass_stale_army_choice_rolls_back",
+        "test_amass_rules.AmassRuntimeTests.test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay",
+        "test_amass_rules.AmassRuntimeTests.test_multiple_army_choice_is_seat_scoped_and_replays_exactly"
+      ],
+      "resolution": "The canonical compact-CI fixture manifest now includes one generated three-card Amass fixture, token lookup uses the exact Scryfall name, and the full Amass module passes against a freshly built compact database.",
+      "run_id": 31472531758,
+      "summary": "Ordinary Amass runtime tests resolved three token and replacement-component records from the full local card database, while those records were absent from the canonical compact CI database."
     }
   ],
   "known_flaky_tests": [],
@@ -264,7 +283,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-10T18:03:45Z",
+  "observed_at": "2026-08-11T09:04:00Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -309,7 +328,7 @@
   ],
   "repository": "MoellerJDev/quorune",
   "schema_version": 1,
-  "source_fingerprint": "c536ec11c3dcbeb9a1d9aeeaf9db4b41f51d8f2e5edf2893427e2686086727f3",
+  "source_fingerprint": "95e0f22394172094b10616a3f6660b8deb16bb1ba3a578ee3653f15c58d40e90",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -319,12 +338,12 @@
       "flaky_test": 6,
       "generated_artifact_drift": 2,
       "infrastructure": 1,
-      "missing_affected_test": 3,
+      "missing_affected_test": 4,
       "source_correctness": 2
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 10,
-    "escape_count": 15,
+    "deterministic_escape_count": 11,
+    "escape_count": 16,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

@@ -808,6 +808,7 @@ def _decode_semantic_intent_continuation(
         or (resume_kind == "semantic_intent_completion" and not isinstance(response, Mapping))
         or not isinstance(semantic_intent, Mapping)
         or intent_kind not in {
+            "create_token",
             "place_counter_batch",
             "place_counters",
             "place_counters_on_set",

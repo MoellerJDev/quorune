@@ -55569,23 +55569,27 @@
       "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-701.47",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "701"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_amass_rules.AmassCompilerTests.test_fixed_amass_compiles_in_spell_trigger_and_activated_contexts"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword-action heading; keyword_action.amass.fixed owns only the bounded ordinary fixed positive instruction."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "701.47",
       "rule_text_sha256": "5c43e24583c4f3d87678837975f88486a456acb9eb1824f3a2e28020eee4691e",
       "schema_version": 1,
@@ -55594,26 +55598,51 @@
         "end_line": 3690,
         "start_line": 3689
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-701.47a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "701.47"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_amass_rules.AmassRuntimeTests.test_amass_without_army_creates_then_counters_one_black_army",
+        "tests.test_amass_rules.AmassRuntimeTests.test_amass_existing_army_uses_counters_before_zone_object_subtype",
+        "tests.test_amass_rules.AmassRuntimeTests.test_multiple_army_choice_is_seat_scoped_and_replays_exactly",
+        "tests.test_amass_rules.AmassRuntimeTests.test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay"
+      ],
+      "implementation_components": [
+        "quorune.amass.FixedAmassSpec",
+        "quorune.semantic_choices.amass.FixedAmassChoiceHandler",
+        "quorune.semantic_runtime.intents.CreateTokenIntent",
+        "quorune.semantic_runtime.intents.PlaceCountersIntent",
+        "quorune.zone_object_subtype_grants.commit_zone_object_subtype_addition"
+      ],
+      "notes": [
+        "The typed action exhausts represented token replacements before choosing one current Army, then exhausts represented counter replacements before adding the named subtype through a zone-object layer-4 effect."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "701.47a",
       "rule_text_sha256": "f5f454ee02cb97304c67b11d191629e78032fe56519a21dadb412f26b01d7869",
       "schema_version": 1,
@@ -55622,26 +55651,41 @@
         "end_line": 3692,
         "start_line": 3691
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "complete effects that prohibit or replace every Amass action are outside the represented token and counter vocabularies"
       ],
       "case_id": "cr-701.47b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "interaction",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "701.47"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_amass_rules.AmassRuntimeTests.test_amass_without_army_creates_then_counters_one_black_army"
+      ],
+      "implementation_components": [
+        "quorune.semantic_choices.amass.FixedAmassChoiceHandler"
+      ],
+      "notes": [
+        "The handler has an explicit completion result when no Army remains after preparation, but aggregate impossible-action coverage is not claimed until every relevant prohibition and replacement family is represented."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.47b",
       "rule_text_sha256": "4959ccde976b393e1142b03b83502c0d9f0d4a685df31fd07dfb6c8220685618",
       "schema_version": 1,
@@ -55650,26 +55694,38 @@
         "end_line": 3694,
         "start_line": 3693
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "the linked Army-you-amassed object reference has no typed result binding shared by later instructions"
       ],
       "case_id": "cr-701.47c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "701.47"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_amass_rules.AmassCompilerTests.test_unsupported_amass_variants_remain_material_residuals"
+      ],
+      "implementation_components": [
+        "quorune.compiler.amass_templates.fixed_amass_effect_template"
+      ],
+      "notes": [
+        "Standalone Amass is supported; clauses that refer to the Army amassed remain material residuals rather than guessing which object the later instruction means."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.47c",
       "rule_text_sha256": "2f87eaa9cdf0ab7c5bfc007bd363d2e44a309ca6aa4806b16880a398b40e8fa9",
       "schema_version": 1,
@@ -55678,26 +55734,40 @@
         "end_line": 3696,
         "start_line": 3695
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-701.47d",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "701.47"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_amass_rules.AmassCompilerTests.test_fixed_amass_compiles_in_spell_trigger_and_activated_contexts",
+        "tests.test_amass_rules.AmassCompilerTests.test_unsupported_amass_variants_remain_material_residuals"
+      ],
+      "implementation_components": [
+        "quorune.amass.canonical_amass_subtype",
+        "quorune.compiler.amass_templates.fixed_amass_effect_template"
+      ],
+      "notes": [
+        "Pinned current Oracle text must contain an explicit validated creature subtype; obsolete unqualified Amass wording is not reinterpreted by a runtime Oracle parser."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.47d",
       "rule_text_sha256": "48f22eac658f862be1e5df1339ec09cb13bd2340e8433b519252918c7ca9cbe6",
       "schema_version": 1,
@@ -55706,7 +55776,7 @@
         "end_line": 3698,
         "start_line": 3697
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
       "assertion_kind": "inventory_only",

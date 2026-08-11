@@ -48,6 +48,10 @@ def keyword_mechanics(
             # Bolster is a resolution-time keyword action whose eligible
             # creature set depends on current effective toughness.
             return None
+        if re.fullmatch(r"amass\s+.+", lower):
+            # Amass is a staged resolution-time keyword action. The closed
+            # effect grammar owns its subtype and amount.
+            return None
         if lower in _KNOWN_BARE_KEYWORDS or lower in known:
             mechanics.append(lower)
             continue

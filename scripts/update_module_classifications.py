@@ -121,6 +121,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/activation_usage.py",
         "quorune/abilities.py",
         "quorune/affected_permanents.py",
+        "quorune/amass.py",
         "quorune/ability_fragments.py",
         "quorune/attachment_references.py",
         "quorune/attachments.py",
@@ -149,12 +150,14 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/continuous_effects.py",
         "quorune/zone_object_keyword_model.py",
         "quorune/zone_object_keyword_grants.py",
+        "quorune/zone_object_subtype_grants.py",
         "quorune/counter_placement.py",
         "quorune/counter_placement_sets.py",
         "quorune/counter_snapshot.py",
         "quorune/keyword_counters.py",
         "quorune/counter_removal.py",
         "quorune/counter_state.py",
+        "quorune/creature_subtypes.py",
         "quorune/cumulative_upkeep.py",
         "quorune/damage.py",
         "quorune/damage_prevention.py",
@@ -327,8 +330,11 @@ def _owner(relative: str, layer: str) -> str:
     if relative in {
         "quorune/zone_object_keyword_model.py",
         "quorune/zone_object_keyword_grants.py",
+        "quorune/zone_object_subtype_grants.py",
     }:
         return "continuous_effects"
+    if relative == "quorune/creature_subtypes.py":
+        return "card_characteristics"
     if relative in {
         "quorune/mana.py",
         "quorune/mana_activation.py",
@@ -357,6 +363,7 @@ def _owner(relative: str, layer: str) -> str:
     }:
         return "state_based_actions"
     if relative in {
+        "quorune/amass.py",
         "quorune/counter_placement.py",
         "quorune/counter_placement_sets.py",
         "quorune/keyword_counters.py",

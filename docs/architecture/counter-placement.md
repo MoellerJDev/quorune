@@ -1,8 +1,8 @@
 ---
 title: "Counter placement and removal transactions"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
-verified: "2026-08-10"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+verified: "2026-08-11"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
 ---
@@ -434,6 +434,21 @@ then resolves as one +1/+1 counter on each surviving creature target through
 the existing APNAP-canonical, quantity-replacement-aware transaction; it adds
 no runtime Oracle parser, Support-specific mutation, or card identity branch.
 
+The fixed positive Amass subtype N family composes three existing owners rather
+than introducing an Army-specific state write. If the resolving controller has
+no Army, one typed token-creation intent first traverses represented additional-
+token replacements. The handler then requeries the public battlefield and
+either selects the only Army or issues the controller a stale-safe choice among
+multiple current Army incarnations. Its +1/+1 result enters the canonical
+counter-placement transaction; only after that replacement-aware result
+commits does a separate locked layer-4 effect add the named creature subtype to
+the same battlefield object. The effect expires when that Army leaves, while
+control changes preserve the affected zone object. Current Oracle plural forms
+are validated against the pinned CR 205.3m subtype registry and lower to one
+singular typed value. Amass X, zero, conditional, repeated, compound, and linked
+“Army you amassed” clauses remain explicit residuals, as do unrepresented token
+prohibitions and replacement families.
+
 The same compiler boundary now lowers one mandatory fixed player-counter
 instruction in spell, triggered, and activated contexts. Its closed relations
 are the controller, one direct active-player target, each active player, and
@@ -507,6 +522,9 @@ The following producers and wordings remain deliberately outside this slice:
   subtype-qualified, combat-qualified, modal, conditional, compound, and
   multiple-counter target-set clauses, plus fixed player-counter variants
   outside the closed relations;
+- Amass X or zero and conditional, optional, repeated, copied, granted, modal,
+  compound, linked-result, or non-subtype forms, plus unrepresented token
+  prohibition and replacement families;
 - conditional targets and non-creature subtype predicates;
 - attachment-relative players, cards outside the battlefield, dynamic or
   compound attached-object predicates, and attachment creation or movement;
@@ -538,7 +556,9 @@ Primary assurance is in `test_counter_placement_replacements.py`,
 coverage in `test_fixed_counter_placement_sets.py` and
 `test_fixed_counter_placement_target_sets.py`, plus intrinsic entry coverage
 in `test_intrinsic_entry_counters.py`, Support coverage in
-`test_support_counter_placement.py`, attachment-relative result coverage in
+`test_support_counter_placement.py`, Amass compiler, staged replacement,
+choice, subtype-duration, privacy, rollback, and replay coverage in
+`test_amass_rules.py`, attachment-relative result coverage in
 `test_attached_counter_placement.py`, shared event-order coverage in
 `test_replacement_event_tree.py`, and focused mutation evidence in
 `test_capability_implementation_mutations.py`. Fixed named and direct

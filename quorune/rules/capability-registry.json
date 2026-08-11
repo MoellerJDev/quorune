@@ -1120,6 +1120,33 @@
       "status": "trusted"
     },
     {
+      "id": "keyword_action.amass.fixed",
+      "version": 1,
+      "official_rules": ["111.2", "122.1", "122.1a", "122.6", "205.3m", "611.2c", "613.1d", "614.16", "616.1", "701.47", "701.47a", "701.47b", "701.47c", "701.47d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one ordinary fixed positive Amass subtype N keyword action through staged token creation, Army choice, counter placement, and zone-object subtype addition.",
+        "inputs": ["one source-spanned Amass subtype N instruction", "one pinned creature subtype", "positive fixed integral N", "current controlled Army creatures", "complete represented token-creation and counter-placement replacement sets", "typed resolving-source identity"],
+        "outputs": ["replacement-aware 0/0 black subtype Army token creation when needed", "one seat-scoped Army choice after token creation", "replacement-aware +1/+1 counter placement", "layer-4 subtype addition pinned to the chosen battlefield incarnation", "canonical completion journal", "exact replay"],
+        "exclusions": ["Amass X, zero, negative, missing, arbitrary, or non-creature subtypes", "conditional, optional, repeated, copied, granted, modal, or compound Amass instructions outside ordinary effect sequencing", "token or counter replacement families outside the typed vocabularies", "continuous-effect dependencies outside the represented locked zone-object subtype addition", "linked references to the Army amassed outside the current typed result vocabulary"]
+      },
+      "dependencies": ["token.creation.additional_replacement", "counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.amass.FixedAmassSpec", "quorune.compiler.amass_templates.FixedAmassTemplate", "quorune.compiler.amass_templates.fixed_amass_effect_template", "quorune.rules.node_capability_shapes.fixed_amass_node_capabilities", "quorune.semantic_choices.amass.FixedAmassChoiceHandler", "quorune.semantic_choices.preparation_coordination.continue_semantic_preparation", "quorune.semantic_choices.counter_coordination.continue_semantic_completion", "quorune.semantic_runtime.intents.CreateTokenIntent", "quorune.semantic_runtime.intents.PlaceCountersIntent", "quorune.zone_object_subtype_grants.commit_zone_object_subtype_addition"],
+      "positive_tests": ["test_fixed_amass_compiles_in_spell_trigger_and_activated_contexts", "test_amass_without_army_creates_then_counters_one_black_army", "test_amass_existing_army_uses_counters_before_zone_object_subtype"],
+      "negative_tests": ["test_unsupported_amass_variants_remain_material_residuals", "test_amass_dependencies_shapes_and_compiler_mutation_fail_closed", "test_amass_stale_army_choice_rolls_back"],
+      "interaction_tests": ["test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay"],
+      "multiplayer_tests": ["test_multiple_army_choice_is_seat_scoped_and_replays_exactly"],
+      "privacy_tests": ["test_multiple_army_choice_is_seat_scoped_and_replays_exactly"],
+      "replay_tests": ["test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay", "test_multiple_army_choice_is_seat_scoped_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Amass CardPrograms fail closed when either represented token-creation replacement ordering or canonical counter quantity replacement is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and shape mutations remove Amass lowering or alter its closed descriptor and prevent exact trusted promotion.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "counter.producer.support",
       "version": 1,
       "official_rules": ["101.4", "115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "614.16", "616.1", "701.41", "701.41a"],

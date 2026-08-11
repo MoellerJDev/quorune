@@ -5,7 +5,6 @@ from typing import Any, Mapping
 
 from ..replacement.immutable import FrozenMap
 from ..semantic_runtime.intents import (
-    AmassIntent,
     CopyControlledTokensIntent,
     CreateTokenIntent,
     PlaceCountersIntent,
@@ -273,144 +272,6 @@ class TokenCopyChoiceHandler:
         return SemanticChoiceCompletion(intents=(intent,))
 
 
-@dataclass(frozen=True, slots=True)
-class AmassChoiceHandler:
-    operation: str = "amass"
-    handler_id: str = "choice.token.amass.v1"
-    schema_version: int = 1
-    rule_references: tuple[str, ...] = ("CR 701.44",)
-    capability_dependencies: tuple[str, ...] = ()
-    continuation_fields: tuple[str, ...] = (
-        "subtype",
-        "amount",
-        "_choice_actor",
-        "_legal_refs",
-        "_subtype",
-        "_amount",
-        "_stack_label",
-    )
-    private_data: tuple[str, ...] = ()
-    projected_fields: tuple[str, ...] = (
-        "prompt",
-        "objects",
-        "legal_actions.choice_schema.legal_refs",
-    )
-    mutation_path: tuple[str, ...] = ("AmassIntent",)
-    replay_fixture: str = "semantic-choice-amass"
-    test_modules: tuple[str, ...] = ("tests.test_interactions_v070",)
-
-    def prepare(
-        self,
-        effect: Mapping[str, Any],
-        context: SemanticChoiceContext,
-    ) -> SemanticChoicePreparation:
-        subtype = str(effect.get("subtype") or "Orc").strip().title()
-        amount = int(effect.get("amount", 1))
-        if not subtype or amount < 0:
-            raise SemanticChoiceError(
-                "Amass requires a subtype and nonnegative amount"
-            )
-        armies = tuple(
-            row
-            for row in context.query.objects(
-                zones=("battlefield",),
-                controller=context.actor,
-            )
-            if "creature" in row.types and "army" in row.subtypes
-        )
-        if len(armies) <= 1:
-            return SemanticChoicePreparation(
-                request=None,
-                continuation_effect=FrozenMap(effect),
-                preparation_intents=(
-                    AmassIntent(
-                        actor=context.actor,
-                        controller=context.actor,
-                        subtype=subtype,
-                        amount=amount,
-                        army_ref=armies[0].ref if armies else None,
-                        reason=context.stack_label,
-                    ),
-                ),
-                auto_continue=AutoContinue(
-                    reason="amass has at most one Army"
-                ),
-            )
-        refs = tuple(row.ref for row in armies)
-        return SemanticChoicePreparation(
-            request=SemanticChoiceRequest(
-                prompt=f"Choose an Army to amass {subtype}s {amount}.",
-                choice=ObjectChoice(
-                    field_name="objects",
-                    legal_refs=refs,
-                    zones=("battlefield",),
-                    controller_relation="actor",
-                    predicates=FrozenMap(
-                        {"types": ["creature"], "subtypes": ["army"]}
-                    ),
-                ),
-                public_context=FrozenMap(
-                    {
-                        "stack": context.stack_ref,
-                        "operation": self.operation,
-                        "objects": [
-                            {"id": row.ref, "name": row.printed_name}
-                            for row in armies
-                        ],
-                    }
-                ),
-            ),
-            continuation_effect=FrozenMap(
-                {
-                    **dict(effect),
-                    "_choice_actor": context.actor,
-                    "_legal_refs": refs,
-                    "_subtype": subtype,
-                    "_amount": amount,
-                    "_stack_label": context.stack_label,
-                }
-            ),
-        )
-
-    def complete(
-        self,
-        continuation: SemanticChoiceContinuation,
-        response: Mapping[str, Any],
-        query: SemanticChoiceQuery,
-    ) -> SemanticChoiceCompletion:
-        selected = tuple(
-            str(value)
-            for value in response.get("objects", response.get("cards", ()))
-        )
-        legal = {
-            str(value)
-            for value in continuation.effect.get("_legal_refs", ())
-        }
-        if len(selected) != 1 or selected[0] not in legal:
-            raise SemanticChoiceError("Choose exactly one legal Army to amass")
-        actor = str(continuation.effect["_choice_actor"])
-        row = query.object(selected[0], zones=("battlefield",))
-        if (
-            row is None
-            or row.controller != actor
-            or "creature" not in row.types
-            or "army" not in row.subtypes
-        ):
-            raise SemanticChoiceError("The selected Army is no longer legal")
-        return SemanticChoiceCompletion(
-            intents=(
-                AmassIntent(
-                    actor=actor,
-                    controller=actor,
-                    subtype=str(continuation.effect["_subtype"]),
-                    amount=int(continuation.effect["_amount"]),
-                    army_ref=row.ref,
-                    reason=str(continuation.effect["_stack_label"]),
-                ),
-            )
-        )
-
-
 TOKEN_AND_COPY_CHOICE_HANDLERS = (
     FabricateChoiceHandler(),
     TokenCopyChoiceHandler(
@@ -423,5 +284,4 @@ TOKEN_AND_COPY_CHOICE_HANDLERS = (
         handler_id="choice.token.copy-all.v1",
         mode="all",
     ),
-    AmassChoiceHandler(),
 )

@@ -11,6 +11,7 @@ from ..entry_counter_model import EntryCounterError, EffectEntryCounter
 from ..replacement.immutable import FrozenMap, thaw_value
 from ..semantic_runtime import (
     CounterPlacementAmount,
+    CreateTokenIntent,
     PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
@@ -95,6 +96,18 @@ _PROLIFERATE_SUBJECT_FIELDS = {
     "ref",
     "counter_names",
     "logical_object_id",
+}
+_CREATE_TOKEN_FIELDS = {
+    "actor",
+    "controller",
+    "name",
+    "quantity",
+    _REASON_FIELD,
+    "characteristics",
+    "copy_of",
+    "temporary_keywords",
+    "sacrifice_at_end_step",
+    "sacrifice_on_controller_end_step",
 }
 
 
@@ -234,6 +247,24 @@ def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
                 ],
                 _REASON_FIELD: intent.reason,
                 "source_ref": intent.source_ref,
+            },
+        )
+    if isinstance(intent, CreateTokenIntent):
+        return (
+            "create_token",
+            {
+                "actor": intent.actor,
+                "controller": intent.controller,
+                "name": intent.name,
+                "quantity": intent.quantity,
+                _REASON_FIELD: intent.reason,
+                "characteristics": thaw_value(intent.characteristics),
+                "copy_of": intent.copy_of,
+                "temporary_keywords": list(intent.temporary_keywords),
+                "sacrifice_at_end_step": intent.sacrifice_at_end_step,
+                "sacrifice_on_controller_end_step": (
+                    intent.sacrifice_on_controller_end_step
+                ),
             },
         )
     if isinstance(intent, ZoneMoveIntent):
@@ -461,6 +492,8 @@ def validate_semantic_intent_identity(
         return _validate_player_counter_intent_identity(value)
     if kind == "proliferate":
         return _validate_proliferate_intent_identity(value)
+    if kind == "create_token":
+        return _validate_create_token_intent_identity(value)
     if kind != "zone_move":
         raise SemanticChoiceError("Unknown semantic intent continuation kind")
     if not isinstance(value, Mapping):
@@ -697,6 +730,56 @@ def _validate_proliferate_intent_identity(
     }
 
 
+def _validate_create_token_intent_identity(
+    value: Mapping[str, Any],
+) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or set(value) != _CREATE_TOKEN_FIELDS:
+        raise SemanticChoiceError(
+            "Token-creation intent identity fields are malformed"
+        )
+    characteristics = value["characteristics"]
+    temporary_keywords = value["temporary_keywords"]
+    if not isinstance(characteristics, Mapping) or not isinstance(
+        temporary_keywords, (list, tuple)
+    ):
+        raise SemanticChoiceError(
+            "Token-creation intent identity is malformed"
+        )
+    try:
+        intent = CreateTokenIntent(
+            actor=value["actor"],
+            controller=value["controller"],
+            name=value["name"],
+            quantity=value["quantity"],
+            reason=value[_REASON_FIELD],
+            characteristics=FrozenMap(characteristics),
+            copy_of=value["copy_of"],
+            temporary_keywords=tuple(temporary_keywords),
+            sacrifice_at_end_step=value["sacrifice_at_end_step"],
+            sacrifice_on_controller_end_step=(
+                value["sacrifice_on_controller_end_step"]
+            ),
+        )
+    except (TypeError, ValueError) as exc:
+        raise SemanticChoiceError(
+            "Token-creation intent identity is malformed"
+        ) from exc
+    return {
+        "actor": intent.actor,
+        "controller": intent.controller,
+        "name": intent.name,
+        "quantity": intent.quantity,
+        _REASON_FIELD: intent.reason,
+        "characteristics": thaw_value(intent.characteristics),
+        "copy_of": intent.copy_of,
+        "temporary_keywords": list(intent.temporary_keywords),
+        "sacrifice_at_end_step": intent.sacrifice_at_end_step,
+        "sacrifice_on_controller_end_step": (
+            intent.sacrifice_on_controller_end_step
+        ),
+    }
+
+
 def with_replacement_selections(
     intent: Any,
     selections: Sequence[str | FrozenMap | Mapping[str, Any]],
@@ -707,6 +790,7 @@ def with_replacement_selections(
     | PlaceCountersOnTargetsIntent
     | PlacePlayerCountersIntent
     | ProliferateIntent
+    | CreateTokenIntent
     | ZoneMoveIntent
 ):
     if not isinstance(
@@ -718,6 +802,7 @@ def with_replacement_selections(
             PlaceCountersOnTargetsIntent,
             PlacePlayerCountersIntent,
             ProliferateIntent,
+            CreateTokenIntent,
             ZoneMoveIntent,
         ),
     ):

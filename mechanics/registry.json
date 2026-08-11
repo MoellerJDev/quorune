@@ -1,5 +1,5 @@
 {
-  "contract_count": 100,
+  "contract_count": 101,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -14,6 +14,12 @@
       "version": 1
     },
     {
+      "mechanic_id": "amass",
+      "path": "mechanics/contracts/amass.json",
+      "sha256": "6641c200e1518f7b0ef33fd5876c0db6e430123ab45b142bc530d06412f1da4c",
+      "version": 1
+    },
+    {
       "mechanic_id": "cr-407-ante",
       "path": "mechanics/contracts/ante.json",
       "sha256": "faecdde543bd72d13cf2f39fee5aec8a48bf12a3075212e0793e16caee95b0b1",
@@ -22,14 +28,14 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "6ac6e7256df727700827af20c5f5ea62d2f7b14fb60255316349405d1232c627",
-      "version": 13
+      "sha256": "1791938a1c12259ed4fadd875b0f5f1ea77fd00e0b3f3486bc62123869ae36c7",
+      "version": 14
     },
     {
       "mechanic_id": "cr-111-tokens",
       "path": "mechanics/contracts/basic-token-creation.json",
-      "sha256": "47889000fea03308ffa1e9bd475820a1ae44f5918229e9c8d6fc8beb93ff1d7d",
-      "version": 3
+      "sha256": "d4037754d6a822e68f4b7ae16824e0891034408e7e78b67e9e296bcdaa1f417f",
+      "version": 4
     },
     {
       "mechanic_id": "battle-cry",
@@ -4960,19 +4966,37 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/amass.json",
+      "contract_sha256": "6641c200e1518f7b0ef33fd5876c0db6e430123ab45b142bc530d06412f1da4c",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "701"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.amass, quorune.compiler.amass_templates, quorune.semantic_choices.amass, canonical token/counter transactions, and quorune.zone_object_subtype_grants",
+      "implementation_version": "typed-fixed-amass-v1",
       "kind": "keyword_action",
+      "known_blockers": [
+        "Amass X, zero, negative, repeated, conditional, optional, modal, copied, granted, and compound instructions remain outside the closed compiler family",
+        "linked references to the Army you amassed remain outside the current typed result vocabulary",
+        "unrepresented token creation, token prohibition, counter prevention, and continuous-effect interactions remain fail-closed",
+        "aggregate token, counter, replacement, layer, and keyword-action coverage remains incomplete"
+      ],
       "mechanic_id": "amass",
       "official_name": "Amass",
       "rule_references": [
         "701.47"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_amass_compiles_in_spell_trigger_and_activated_contexts",
+        "test_unsupported_amass_variants_remain_material_residuals",
+        "test_amass_dependencies_shapes_and_compiler_mutation_fail_closed",
+        "test_amass_without_army_creates_then_counters_one_black_army",
+        "test_amass_existing_army_uses_counters_before_zone_object_subtype",
+        "test_multiple_army_choice_is_seat_scoped_and_replays_exactly",
+        "test_amass_stale_army_choice_rolls_back",
+        "test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay"
+      ],
       "trust_level": "untrusted"
     },
     {
@@ -6451,16 +6475,16 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-token-creation.json",
-      "contract_sha256": "47889000fea03308ffa1e9bd475820a1ae44f5918229e9c8d6fc8beb93ff1d7d",
-      "contract_version": 3,
+      "contract_sha256": "d4037754d6a822e68f4b7ae16824e0891034408e7e78b67e9e296bcdaa1f417f",
+      "contract_version": 4,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "oracle_ir._effect_template, compiler.token_templates, token_creation.create_tokens, CommanderEngine.move_card/_stabilize, and state_based_actions.evaluate_state_based_actions",
-      "implementation_version": "token-lifecycle-v3",
+      "implementation_component": "oracle_ir._effect_template, compiler.token_templates, semantic_runtime.intents.CreateTokenIntent, semantic_choices.preparation_coordination, token_creation.create_tokens, CommanderEngine.move_card/_stabilize, and state_based_actions.evaluate_state_based_actions",
+      "implementation_version": "token-lifecycle-v4",
       "kind": "rules_section",
       "known_blockers": [
         "tokens with unrecognized abilities, dynamic values, predefined named characteristics outside the closed vocabulary, or linked choices remain residual",
-        "optional, multiplying, and mutable-state token replacements are not compiled",
+        "optional, multiplying beyond the represented fixed additional-token family, prevention, prohibition, and mutable-state token replacements are not compiled",
         "copy-token characteristic and entry replacement coverage is incomplete"
       ],
       "mechanic_id": "cr-111-tokens",
@@ -6478,7 +6502,9 @@
         "test_generic_compiler_program_drives_runtime_without_name_dispatch",
         "test_four_player_replacement_choice_is_affected_seat_scoped",
         "test_additional_token_component_replays_exactly",
-        "test_generic_additional_token_program_replays_exactly"
+        "test_generic_additional_token_program_replays_exactly",
+        "test_amass_without_army_creates_then_counters_one_black_army",
+        "test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay"
       ],
       "trust_level": "untrusted"
     },
@@ -6734,15 +6760,15 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "6ac6e7256df727700827af20c5f5ea62d2f7b14fb60255316349405d1232c627",
-      "contract_version": 13,
+      "contract_sha256": "1791938a1c12259ed4fadd875b0f5f1ea77fd00e0b3f3486bc62123869ae36c7",
+      "contract_version": 14,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, fixed target or source counter-and-characteristic sequence, bounded target-set, Bolster, Support, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v15",
+      "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, fixed target or source counter-and-characteristic sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
+      "implementation_version": "counter-placement-transaction-v16",
       "kind": "rules_section",
       "known_blockers": [
-        "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual, along with variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions",
+        "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual; Amass X, zero, copied, granted, optional, repeated, conditional, modal, compound, and linked-result forms remain residual; variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions remain residual",
         "alternative, snow, hybrid, Phyrexian, zero, variable, nonmana, multiple-instance, copied, and granted cumulative upkeep remain residual; combined or modified loyalty costs and other rule-action counter producers are not yet migrated to the shared transaction",
         "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Planeswalker or Battle token entry remains outside the prospective-token boundary",
         "Read Ahead and effective copied, gained, removed, or layer-modified Saga chapter abilities remain unsupported",
@@ -6876,7 +6902,9 @@
         "test_group_handler_rejects_malformed_inputs_without_mutation",
         "test_source_departure_skips_source_and_preserves_target_result",
         "test_partial_target_revalidation_preserves_remaining_subject",
-        "test_four_player_group_replacement_is_seat_scoped_and_replays"
+        "test_four_player_group_replacement_is_seat_scoped_and_replays",
+        "test_amass_existing_army_uses_counters_before_zone_object_subtype",
+        "test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay"
       ],
       "trust_level": "untrusted"
     },

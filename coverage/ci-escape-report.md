@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "c536ec11c3dcbeb9a1d9aeeaf9db4b41f51d8f2e5edf2893427e2686086727f3"
+verified: "95e0f22394172094b10616a3f6660b8deb16bb1ba3a578ee3653f15c58d40e90"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 15
-- Deterministic escapes: 10
+- Escapes: 16
+- Deterministic escapes: 11
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -41,6 +41,7 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260806-13` | [31132735817](https://github.com/MoellerJDev/quorune/actions/runs/31132735817) | `flaky_test` | `not_applicable` | The journey now arms the defender's stop before each preceding turn-transition command, advances only intervening responses, and holds a seat-qualified precombat main phase while its exact land action settles instead of submitting the pass under observation. |
 | `ci-20260809-14` | [31260380655](https://github.com/MoellerJDev/quorune/actions/runs/31260380655) | `generated_artifact_drift` | `added` | A strict ownership manifest now orders all tracked generators, one finalizer writes them to a bounded fixed point, AGENTS.md requires that command before the final commit, and a repository pre-push hook rejects omitted generated changes. |
 | `ci-20260810-15` | [31416024863](https://github.com/MoellerJDev/quorune/actions/runs/31416024863) | `missing_affected_test` | `added` | The Bloodthirst-focused module now verifies exact component registration, while the global trust test checks unique handler identities and the complete family set instead of a maintenance-only total count. |
+| `ci-20260811-16` | [31472531758](https://github.com/MoellerJDev/quorune/actions/runs/31472531758) | `missing_affected_test` | `added` | The canonical compact-CI fixture manifest now includes one generated three-card Amass fixture, token lookup uses the exact Scryfall name, and the full Amass module passes against a freshly built compact database. |
 
 ## Measurement limitations
 

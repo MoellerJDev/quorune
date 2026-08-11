@@ -2,6 +2,7 @@
   "schema_version": 1,
   "fixture_kind": "compact_ci_card_database_inputs",
   "fixtures": [
+    "tests/fixtures/amass-rules-cards.json",
     "tests/fixtures/scryfall-exact-lists.json",
     "tests/fixtures/browser-lifecycle-cards.json",
     "tests/fixtures/browser-ordered-scry-cards.json",

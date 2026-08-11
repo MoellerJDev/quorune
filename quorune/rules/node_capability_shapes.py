@@ -33,10 +33,10 @@ from ..compiler.fixed_source_effect_sequences import (
     FIXED_SOURCE_SEQUENCE_MECHANIC,
     SOURCE_ZONE_OBJECT,
 )
-from ..compiler.creature_subtypes import canonical_creature_subtype
 from ..compiler.direct_target import DirectPermanentTargetSpec
 from ..keyword_counters import keyword_counter_mechanic
 from ..zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
+from .amass_capability_shapes import fixed_amass_node_capabilities
 from ..affected_permanents import (
     AffectedPermanentSetError,
     AffectedPermanentSetSpec,
@@ -1562,6 +1562,7 @@ __all__ = [
     "single_proliferate_node_capabilities",
     "fixed_self_counter_keyword_action_node_capabilities",
     "fixed_bolster_node_capabilities",
+    "fixed_amass_node_capabilities",
     "targeted_destruction_node_capabilities",
     "targeted_exile_node_capabilities",
     "targeted_return_to_hand_node_capabilities",

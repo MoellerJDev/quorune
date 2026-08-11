@@ -22,6 +22,7 @@ from .self_counter_keyword_actions import (
 )
 from .bolster import BOLSTER_CHOICE_HANDLERS
 from .modular import MODULAR_CHOICE_HANDLERS
+from .amass import AMASS_CHOICE_HANDLERS
 
 
 @lru_cache(maxsize=1)
@@ -45,5 +46,6 @@ def default_semantic_choice_registry() -> SemanticChoiceRegistry:
             *SELF_COUNTER_KEYWORD_ACTION_HANDLERS,
             *BOLSTER_CHOICE_HANDLERS,
             *MODULAR_CHOICE_HANDLERS,
+            *AMASS_CHOICE_HANDLERS,
         )
     ).freeze()
