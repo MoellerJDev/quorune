@@ -15,6 +15,10 @@ from .counter_placement_templates import (
     fixed_player_counter_placement_effect_template,
     support_counter_placement_effect_template,
 )
+from .counter_removal_templates import (
+    all_counter_removal_effect_template,
+    fixed_counter_removal_effect_template,
+)
 from .counter_templates import targeted_counter_effect_template
 from .damage_templates import fixed_damage_effect_template
 from .destruction_templates import destruction_effect_template
@@ -111,6 +115,12 @@ def typed_resolution_effect_template(
     )
     if fixed_counter_placement is not None:
         return fixed_counter_placement.compiled()
+    all_counter_removal = all_counter_removal_effect_template(text)
+    if all_counter_removal is not None:
+        return all_counter_removal.compiled()
+    fixed_counter_removal = fixed_counter_removal_effect_template(text)
+    if fixed_counter_removal is not None:
+        return fixed_counter_removal.compiled()
     fixed_target_characteristics = (
         fixed_target_characteristics_effect_template(text)
     )

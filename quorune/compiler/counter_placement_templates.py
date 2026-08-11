@@ -20,8 +20,9 @@ from ..keyword_counters import keyword_counter_mechanic
 from ..rules.source_references import SourceReferenceSpec
 from .creature_subtypes import canonical_creature_subtype
 from .direct_target import (
-    DIRECT_NONCREATURE_SUBTYPES,
+    DIRECT_PERMANENT_TYPES,
     DirectPermanentTargetSpec,
+    direct_permanent_target_spec,
 )
 from .fixed_numbers import fixed_number
 
@@ -37,17 +38,7 @@ _PLACEMENT = re.compile(
     r"(?P<plural>counter|counters) on (?P<subject>.+?)\.?",
     re.IGNORECASE,
 )
-_PERMANENT_TYPES = frozenset(
-    {
-        "artifact",
-        "battle",
-        "creature",
-        "enchantment",
-        "land",
-        "permanent",
-        "planeswalker",
-    }
-)
+_PERMANENT_TYPES = DIRECT_PERMANENT_TYPES
 
 
 class CounterPlacementSubject(str, Enum):
@@ -722,66 +713,6 @@ class FixedCounterPlacementSetTemplate:
         )
 
 
-def _target_subject(subject: str) -> DirectPermanentTargetSpec | None:
-    """Parse one closed direct-permanent target predicate."""
-
-    phrase = " ".join(subject.casefold().split())
-    exclude_source = phrase.startswith("another target ")
-    if exclude_source:
-        phrase = phrase[len("another target ") :]
-    elif phrase.startswith("target "):
-        phrase = phrase[len("target ") :]
-    else:
-        return None
-
-    relation = "any"
-    for suffix, candidate in (
-        (" an opponent controls", "opponent"),
-        (" you don't control", "opponent"),
-        (" you control", "you"),
-    ):
-        if phrase.endswith(suffix):
-            phrase = phrase[: -len(suffix)]
-            relation = candidate
-            break
-
-    kwargs: dict[str, Any] = {
-        "controller_relation": relation,
-        "source_exclusion": exclude_source,
-    }
-    if phrase == "artifact or creature":
-        kwargs["types_any"] = ("artifact", "creature")
-    elif phrase == "enchantment creature":
-        kwargs["types_all"] = ("enchantment", "creature")
-    elif phrase == "creature with flying":
-        kwargs["types_all"] = ("creature",)
-        kwargs["keywords_all"] = ("flying",)
-    elif phrase in _PERMANENT_TYPES:
-        if phrase != "permanent":
-            kwargs["types_any"] = (phrase,)
-    else:
-        if phrase.endswith(" creature"):
-            phrase = phrase[: -len(" creature")]
-        raw_subtypes = tuple(
-            value.strip()
-            for value in re.split(r",\s*(?:or\s+)?|\s+or\s+", phrase)
-            if value.strip()
-        )
-        if not raw_subtypes:
-            return None
-        subtypes: list[str] = []
-        for value in raw_subtypes:
-            subtype = canonical_creature_subtype(value)
-            if subtype is None and value not in DIRECT_NONCREATURE_SUBTYPES:
-                return None
-            subtypes.append(subtype or value)
-        kwargs["subtypes_any"] = tuple(subtypes)
-    try:
-        return DirectPermanentTargetSpec(**kwargs)
-    except ValueError:
-        return None
-
-
 def fixed_counter_placement_effect_template(
     text: str,
     *,
@@ -841,7 +772,7 @@ def fixed_counter_placement_effect_template(
             permanent_type=attached.group("kind").casefold(),
             attachment_relation=relation,
         )
-    target = _target_subject(subject)
+    target = direct_permanent_target_spec(subject)
     if target is None:
         return None
     return FixedCounterPlacementTemplate(

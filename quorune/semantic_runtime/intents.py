@@ -593,6 +593,64 @@ class PlaceCountersIntent:
 
 
 @dataclass(frozen=True, slots=True)
+class RemoveCountersIntent:
+    actor: str
+    object_ref: str
+    counter_name: str
+    amount: int
+    reason: str
+    source_ref: str | None = None
+
+    def __post_init__(self) -> None:
+        normalized = (
+            " ".join(self.counter_name.casefold().split())
+            if type(self.counter_name) is str
+            else ""
+        )
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.object_ref, normalized, self.reason)
+        ):
+            raise ValueError(
+                "Counter-removal intents require actor, object, counter, and reason"
+            )
+        if type(self.amount) is not int or self.amount <= 0:
+            raise ValueError(
+                "Counter-removal intent amount must be a positive exact integer"
+            )
+        if self.source_ref is not None and (
+            type(self.source_ref) is not str or not self.source_ref
+        ):
+            raise ValueError(
+                "Counter-removal intent source must be a nonempty reference"
+            )
+        object.__setattr__(self, "counter_name", normalized)
+
+
+@dataclass(frozen=True, slots=True)
+class RemoveAllCountersIntent:
+    actor: str
+    object_ref: str
+    reason: str
+    source_ref: str | None = None
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.object_ref, self.reason)
+        ):
+            raise ValueError(
+                "All-counter removal intents require actor, object, and reason"
+            )
+        if self.source_ref is not None and (
+            type(self.source_ref) is not str or not self.source_ref
+        ):
+            raise ValueError(
+                "All-counter removal intent source must be a nonempty reference"
+            )
+
+
+@dataclass(frozen=True, slots=True)
 class CounterPlacementAmount:
     counter_name: str
     amount: int
@@ -1095,6 +1153,8 @@ SemanticIntent: TypeAlias = (
     | ReorderLibraryTopIntent
     | PayManaCostIntent
     | PlaceCountersIntent
+    | RemoveCountersIntent
+    | RemoveAllCountersIntent
     | PlaceCounterBatchIntent
     | PlaceCountersOnSetIntent
     | PlaceCountersOnTargetsIntent

@@ -581,6 +581,22 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_all_counter_removal_revalidates_target_and_replays_in_four_player_game",
+      "piece_ids": ["capability.counter.removal.all_effect", "capability.target.revalidate_resolution"],
+      "capability_ids": ["counter.removal.all_effect", "target.revalidate_resolution"],
+      "interaction_order": 2,
+      "assertion": "The direct all-counter removal family revalidates its one public permanent target before committing every present counter kind through one canonical batch."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_fixed_counter_removal_preserves_target_revalidation_and_siege_trigger",
+      "piece_ids": ["capability.counter.removal.fixed_effect", "capability.target.revalidate_resolution"],
+      "capability_ids": ["counter.removal.fixed_effect", "target.revalidate_resolution"],
+      "interaction_order": 2,
+      "assertion": "The fixed named-counter removal family revalidates its one public permanent target before committing partial removal through the canonical typed owner."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_partial_target_revalidation_places_only_on_still_legal_targets",
       "piece_ids": ["capability.counter.producer.fixed_permanent_target_set_effect", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.producer.fixed_permanent_target_set_effect", "target.revalidate_resolution"],

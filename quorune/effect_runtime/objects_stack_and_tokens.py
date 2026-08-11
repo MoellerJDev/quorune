@@ -9,6 +9,12 @@ from ..counter_placement import (
     place_counters_on_controlled_subtype,
     place_counters_on_refs,
 )
+from ..counter_removal import (
+    commit_counter_removal_effect,
+    CounterRemoval,
+    CounterRemovalError,
+    plan_counter_removal_effect,
+)
 from ..continuous_effects import ContinuousOperation, Layer
 from ..continuous_effect_state import (
     ContinuousEffectStateError,
@@ -712,27 +718,44 @@ def _apply_counter(
         except CounterPlacementError as exc:
             raise GameRuleError(str(exc)) from exc
         return results[0].after
-    before, after = host._change_permanent_counter(
-        card,
-        name,
-        delta,
-    )
+    try:
+        result = commit_counter_removal_effect(
+            host,
+            plan_counter_removal_effect(
+                host,
+                CounterRemoval(
+                    object_id=card.object_id,
+                    counter_name=name,
+                    amount=-delta,
+                    expected_zone="battlefield",
+                    expected_logical_object_id=card.logical_object_id,
+                ),
+            ),
+        )
+    except CounterRemovalError as exc:
+        raise GameRuleError(str(exc)) from exc
     host._log(
         actor,
         "permanent.counter",
-        f"{card.ref} {name} changed by {after - before}.",
+        f"{card.ref} {name} changed by {-result.removed}.",
         {
             "object": card.ref,
-            "counter": " ".join(name.casefold().split()),
+            "counter": result.counter_name,
             "requested_delta": delta,
-            "delta": after - before,
-            "before": before,
-            "after": after,
+            "delta": -result.removed,
+            "before": result.before,
+            "after": result.after,
         },
         importance=1,
         changed_objects=[card.object_id],
     )
-    return after
+    if (
+        result.counter_name == "defense"
+        and result.before > 0
+        and result.after == 0
+    ):
+        host._queue_siege_defeated_trigger(card)
+    return result.after
 
 
 

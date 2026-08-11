@@ -3,6 +3,7 @@ from __future__ import annotations
 """Typed structural helpers for independently owned direct-target grammars."""
 
 from dataclasses import dataclass
+import re
 from typing import Any, Mapping, Sequence
 
 from .creature_subtypes import canonical_creature_subtype
@@ -31,6 +32,17 @@ _DIRECT_TYPE_ALL_SHAPES = frozenset(
     {("creature",), ("creature", "enchantment")}
 )
 DIRECT_NONCREATURE_SUBTYPES = frozenset({"vehicle"})
+DIRECT_PERMANENT_TYPES = frozenset(
+    {
+        "artifact",
+        "battle",
+        "creature",
+        "enchantment",
+        "land",
+        "permanent",
+        "planeswalker",
+    }
+)
 _DIRECT_KEYWORDS = frozenset({"flying"})
 
 
@@ -231,6 +243,75 @@ class DirectPermanentTargetSpec:
         return spec
 
 
+def direct_permanent_target_spec(
+    subject: str,
+) -> DirectPermanentTargetSpec | None:
+    """Parse one closed direct-permanent target predicate.
+
+    Effect-family compilers share this grammar so counter placement, counter
+    removal, and other direct-target clauses cannot disagree about the same
+    Oracle subject.
+    """
+
+    if type(subject) is not str:
+        return None
+    phrase = " ".join(subject.casefold().split())
+    exclude_source = phrase.startswith("another target ")
+    if exclude_source:
+        phrase = phrase[len("another target ") :]
+    elif phrase.startswith("target "):
+        phrase = phrase[len("target ") :]
+    else:
+        return None
+
+    relation = "any"
+    for suffix, candidate in (
+        (" an opponent controls", "opponent"),
+        (" you don't control", "opponent"),
+        (" you control", "you"),
+    ):
+        if phrase.endswith(suffix):
+            phrase = phrase[: -len(suffix)]
+            relation = candidate
+            break
+
+    kwargs: dict[str, Any] = {
+        "controller_relation": relation,
+        "source_exclusion": exclude_source,
+    }
+    if phrase == "artifact or creature":
+        kwargs["types_any"] = ("artifact", "creature")
+    elif phrase == "enchantment creature":
+        kwargs["types_all"] = ("enchantment", "creature")
+    elif phrase == "creature with flying":
+        kwargs["types_all"] = ("creature",)
+        kwargs["keywords_all"] = ("flying",)
+    elif phrase in DIRECT_PERMANENT_TYPES:
+        if phrase != "permanent":
+            kwargs["types_any"] = (phrase,)
+    else:
+        if phrase.endswith(" creature"):
+            phrase = phrase[: -len(" creature")]
+        raw_subtypes = tuple(
+            value.strip()
+            for value in re.split(r",\s*(?:or\s+)?|\s+or\s+", phrase)
+            if value.strip()
+        )
+        if not raw_subtypes:
+            return None
+        subtypes: list[str] = []
+        for value in raw_subtypes:
+            subtype = canonical_creature_subtype(value)
+            if subtype is None and value not in DIRECT_NONCREATURE_SUBTYPES:
+                return None
+            subtypes.append(subtype or value)
+        kwargs["subtypes_any"] = tuple(subtypes)
+    try:
+        return DirectPermanentTargetSpec(**kwargs)
+    except ValueError:
+        return None
+
+
 def _closed_values(
     values: Sequence[str],
     *,
@@ -368,8 +449,10 @@ def compiled_direct_target(
 __all__ = [
     "CompiledDirectTarget",
     "DIRECT_NONCREATURE_SUBTYPES",
+    "DIRECT_PERMANENT_TYPES",
     "DirectPermanentTargetSpec",
     "compiled_direct_target",
+    "direct_permanent_target_spec",
     "direct_target_effect",
     "direct_target_slug",
     "permanent_target_schema",

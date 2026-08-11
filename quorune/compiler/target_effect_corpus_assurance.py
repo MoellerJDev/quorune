@@ -16,10 +16,10 @@ from ..rules.node_capability_shapes import (
     fixed_target_effect_sequence_node_capabilities,
 )
 from ..util import stable_json
-from .counter_placement_templates import _target_subject
 from .direct_target import (
     DIRECT_NONCREATURE_SUBTYPES,
     DirectPermanentTargetSpec,
+    direct_permanent_target_spec,
 )
 from .fixed_target_effect_sequences import (
     FIXED_TARGET_CHARACTERISTIC_KEYWORDS,
@@ -459,7 +459,7 @@ def grammar_source_fingerprint() -> str:
         DirectPermanentTargetSpec.__post_init__,
         DirectPermanentTargetSpec.from_target_schema,
         DirectPermanentTargetSpec.to_target_schema,
-        _target_subject,
+        direct_permanent_target_spec,
         fixed_target_characteristics_effect_template,
         fixed_target_effect_sequence_template,
         fixed_target_characteristics_node_capabilities,

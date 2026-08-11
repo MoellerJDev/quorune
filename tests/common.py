@@ -4,6 +4,11 @@ import os
 from pathlib import Path
 
 from quorune import CardDatabase, CommanderSession, DeckLoader, GameConfig
+from quorune.counter_removal import (
+    commit_counter_removal_effect,
+    CounterRemoval,
+    plan_counter_removal_effect,
+)
 from quorune.model import TurnHistory
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,3 +66,26 @@ def set_fixture_turn(engine, turn_sequence: int) -> None:
 
 def advance_fixture_turn(engine, count: int = 1) -> None:
     set_fixture_turn(engine, engine.state.turn_sequence + int(count))
+
+
+def change_permanent_counter(engine, card, name: str, delta: int) -> tuple[int, int]:
+    """Apply a negative fixture delta through the production removal owner."""
+
+    if type(delta) is not int or delta >= 0:
+        raise ValueError("Fixture counter removal requires a negative integer")
+    result = commit_counter_removal_effect(
+        engine,
+        plan_counter_removal_effect(
+            engine,
+            CounterRemoval(
+                card.object_id,
+                name,
+                -delta,
+                expected_zone=card.zone,
+                expected_logical_object_id=card.logical_object_id,
+            ),
+        ),
+    )
+    if result.counter_name == "defense" and result.before and not result.after:
+        engine._queue_siege_defeated_trigger(card)
+    return result.before, result.after

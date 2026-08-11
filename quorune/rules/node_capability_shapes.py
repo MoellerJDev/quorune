@@ -861,7 +861,7 @@ def fixed_counter_target_schema_is_closed(
     return True
 
 
-def _direct_target_predicate_capabilities(
+def direct_target_predicate_capabilities(
     target_schema: Mapping[str, Any],
 ) -> tuple[str, ...]:
     target_spec = DirectPermanentTargetSpec.from_target_schema(target_schema)
@@ -919,7 +919,7 @@ def fixed_counter_placement_node_capabilities(
         and fixed_counter_target_schema_is_closed(target_schema)
     ):
         assert target_schema is not None
-        target_capabilities = _direct_target_predicate_capabilities(target_schema)
+        target_capabilities = direct_target_predicate_capabilities(target_schema)
         return (
             "counter.producer.fixed_effect",
             *characteristic_capabilities,
@@ -991,7 +991,7 @@ def fixed_counter_placement_batch_node_capabilities(
         assert target_schema is not None
         return (
             *result,
-            *_direct_target_predicate_capabilities(target_schema),
+            *direct_target_predicate_capabilities(target_schema),
             "target.revalidate_resolution",
         )
     return ()
@@ -1049,7 +1049,7 @@ def fixed_target_effect_sequence_node_capabilities(
             *(("counter.characteristic.keyword",) if counter_mechanic else ()),
             "counter.producer.fixed_effect",
             "resolution.effect_sequence.fixed_target",
-            *_direct_target_predicate_capabilities(target_schema),
+            *direct_target_predicate_capabilities(target_schema),
             "target.revalidate_resolution",
         )
     if not {
@@ -1117,7 +1117,7 @@ def fixed_target_effect_sequence_node_capabilities(
         *(("counter.characteristic.keyword",) if keyword_counter else ()),
         "counter.producer.fixed_effect",
         "resolution.effect_sequence.fixed_target",
-        *_direct_target_predicate_capabilities(target_schema),
+        *direct_target_predicate_capabilities(target_schema),
         "target.revalidate_resolution",
     )
 
@@ -1539,6 +1539,7 @@ def fixed_mana_cumulative_upkeep_node_capabilities(
 
 
 __all__ = [
+    "direct_target_predicate_capabilities",
     "fixed_counter_additional_cost_node_capabilities",
     "fixed_sacrifice_additional_cost_node_capabilities",
     "fixed_zone_change_additional_cost_node_capabilities",

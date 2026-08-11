@@ -85,11 +85,16 @@
       "reviewed": true,
       "implementation_components": [
         "CommanderEngine._apply_effect",
-        "replacement_effects.apply_replacement"
+        "replacement_effects.apply_replacement",
+        "quorune.counter_removal.plan_counter_removal_effect",
+        "quorune.counter_removal.commit_counter_removal_effect",
+        "quorune.semantic_runtime.counter_removal_handlers.FixedCounterRemovalHandler"
       ],
       "executable_test_ids": [
         "tests.test_rules_primitives.ReplacementOrderingTests.test_prevention_never_prevents_more_than_remaining_damage",
-        "tests.test_rules_primitives.EffectRuleTests.test_contract_traces_every_cr_609_rule"
+        "tests.test_rules_primitives.EffectRuleTests.test_contract_traces_every_cr_609_rule",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_does_as_much_as_possible",
+        "tests.test_fixed_counter_removal_effects.FixedCounterRemovalRuntimeTests.test_fixed_counter_removal_preserves_target_revalidation_and_siege_trigger"
       ],
       "required_scenarios": [
         "positive",
@@ -97,7 +102,9 @@
         "interaction"
       ],
       "covered_scenarios": [
-        "positive"
+        "positive",
+        "negative",
+        "interaction"
       ],
       "blockers": [
         "partial completion is implemented separately by individual operations rather than a universal typed instruction executor",
@@ -105,7 +112,7 @@
         "the Oracle compiler cannot yet prove that every remaining instruction is attempted in order"
       ],
       "notes": [
-        "Prevention safely clamps to the remaining damage, but this witness cannot promote the general do-as-much-as-possible rule."
+        "Prevention safely clamps to the remaining damage, and mandatory fixed named-counter removal from one direct permanent target now removes the lesser of the requested and available quantities through a typed partial-result plan. Those bounded witnesses cannot promote the general do-as-much-as-possible rule."
       ]
     },
     {

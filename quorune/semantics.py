@@ -25,6 +25,8 @@ VALID_EFFECT_OPERATIONS = {
     "place_counters_on_set",
     "place_counters_on_targets",
     "place_player_counters",
+    "remove_counters",
+    "remove_all_counters",
     "add_type",
     "add_subtype",
     "add_type_until_end_of_turn",

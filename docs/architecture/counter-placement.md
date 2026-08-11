@@ -1,13 +1,13 @@
 ---
-title: "Counter-placement transaction"
+title: "Counter placement and removal transactions"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
 verified: "2026-08-10"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
 ---
 
-# Counter-placement transaction
+# Counter placement and removal transactions
 
 `counter_placement.py` is the focused authoritative owner for represented
 effect-generated, cost-generated, and typed rule-result counters placed on
@@ -77,6 +77,29 @@ remain residual rather than being inferred at runtime.
 protocols. It delegates the one atomic write plan to `counter_state.py`, which
 owns poison, energy, arbitrary normalized player counters, and permanent
 counter maps.
+
+`counter_removal.py` owns three deliberately distinct permanent-counter
+transactions over that same state boundary. Rule requirements and costs use
+the exact batch plan and fail before mutation unless every requested counter
+exists. The fixed effect-result plan instead snapshots one named counter kind,
+removes the lesser of the requested and available quantities, and permits a
+zero-change result. The all-counter effect-result plan snapshots every positive
+counter kind in canonical order and commits them as one exact batch, including
+an empty no-op result. These effect plans implement the represented CR
+101.3/609.3 result boundary without weakening exact payment semantics. Every
+plan pins the permanent's current logical identity and expected zone and
+validates again at commit.
+
+Oracle IR lowers mandatory fixed named-counter removal and mandatory removal of
+all counters from one direct battlefield permanent target through spell,
+triggered, and activated CardProgram contexts. Both share the closed target
+grammar with fixed counter placement, use the existing target offer and
+resolution-time revalidation owner, and emit typed `RemoveCountersIntent` or
+`RemoveAllCountersIntent` values; no handler interprets Oracle text or knows
+card identities at runtime. Removing the last defense counter uses the
+existing intrinsic Siege trigger boundary. Optional, variable, distributed,
+repeated, named-kind all-counter, unspecified-kind fixed, player-counter,
+movement, cost, linked, modal, and compound variants remain residual.
 `counter_placement_sets.py` and `counter_placement_targets.py` are read-only
 coordinators: they snapshot a represented public battlefield set or the
 still-legal members of a submitted bounded target set, canonicalize it by
@@ -425,8 +448,8 @@ as a cost-free action.
 
 The following producers and wordings remain deliberately outside this slice:
 
-- Read Ahead, nonordinary Saga progression, and stun-counter removal;
-- negative loyalty counter-removal costs and damage-counter removal;
+- Read Ahead and nonordinary Saga progression;
+- negative loyalty counter-removal costs and player-counter removal;
 - optional, variable, alternate, compound, multiple, noncreature, and
   non-counter casting costs outside the bounded fixed creature-counter family;
 - cumulative-upkeep forms outside the fixed positive ordinary mana family;
@@ -444,9 +467,10 @@ The following producers and wordings remain deliberately outside this slice:
   the represented prospective-token boundary;
 - unsupported Battle subtype protector procedures and unrepresented
   copy-layer, face-down, or dynamic entry-characteristic interactions;
-- effect- and cost-generated counter removal, counter movement, unrepresented
-  rule-generated removals, and card-specific continuation paths such as
-  Demonic Junker.
+- counter-removal costs, counter movement, player-counter removal,
+  unrepresented rule-generated removals, and effect variants outside the
+  mandatory fixed named and direct all-counter permanent families, including
+  card-specific continuation paths such as Demonic Junker.
 
 Several of those operations occur inside a larger semantic continuation after
 earlier instructions have already mutated state. Routing them through a choice
@@ -468,7 +492,11 @@ in `test_intrinsic_entry_counters.py`, Support coverage in
 `test_support_counter_placement.py`, attachment-relative result coverage in
 `test_attached_counter_placement.py`, shared event-order coverage in
 `test_replacement_event_tree.py`, and focused mutation evidence in
-`test_capability_implementation_mutations.py`. Damage-result placement,
+`test_capability_implementation_mutations.py`. Fixed named and direct
+all-counter removal compiler, target, partial-result, strict result-shape,
+rollback, Siege, multiplayer replay, and mutation evidence is isolated in
+`test_fixed_counter_removal_effects.py`.
+Damage-result placement,
 removal, no-rediscovery, rollback, and focused owner-mutation evidence is in
 `test_damage_result_events.py`; the standalone exact-removal transaction is in
 `test_rule_generated_counter_removals.py`. Mentor compiler, targeting,

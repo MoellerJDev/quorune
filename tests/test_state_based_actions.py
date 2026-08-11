@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from common import keep_all, load_assets, make_session
+from common import change_permanent_counter, keep_all, load_assets, make_session
 from quorune.aura import (
     SimpleEnchantSpec,
     simple_enchant_spec_from_oracle,
@@ -783,7 +783,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
         )[0]
         original = self.card(engine, original_ref)
         self.assertEqual(4, original.counters["defense"])
-        engine._change_permanent_counter(original, "defense", -3)
+        change_permanent_counter(engine, original, "defense", -3)
         self.assertEqual(
             "1",
             engine._effective_card_data(original)["defense"],
@@ -1393,7 +1393,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
             },
         )
         engine.state.stack.append(trigger)
-        engine._change_permanent_counter(battle, "defense", -1)
+        change_permanent_counter(engine, battle, "defense", -1)
 
         self.assertFalse(engine._stabilize())
         self.assertEqual("battlefield", battle.zone)
@@ -1427,7 +1427,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
                 },
             )
         )
-        engine._change_permanent_counter(battle, "defense", -1)
+        change_permanent_counter(engine, battle, "defense", -1)
 
         self.assertFalse(engine._battle_trigger_pending(battle))
         self.assertFalse(engine._stabilize())
@@ -1497,7 +1497,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
         engine.state.active_player = "B"
         engine.state.phase = "combat"
         engine.state.step = "combat_damage"
-        engine._change_permanent_counter(siege, "defense", -1)
+        change_permanent_counter(engine, siege, "defense", -1)
         self.assertFalse(engine._stabilize())
 
         trigger = next(
@@ -1574,7 +1574,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
     def test_siege_defeated_may_be_declined_after_exile(self):
         engine = self.make_engine(7065)
         siege = self.transforming_siege(engine)
-        engine._change_permanent_counter(siege, "defense", -1)
+        change_permanent_counter(engine, siege, "defense", -1)
         self.assertFalse(engine._stabilize())
         engine._prepare_stack_resolution()
         capability = next(
@@ -1639,7 +1639,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
                 return targeted_record
             return original_card_record(value)
 
-        engine._change_permanent_counter(siege, "defense", -1)
+        change_permanent_counter(engine, siege, "defense", -1)
         self.assertFalse(engine._stabilize())
         with patch.object(
             engine,
@@ -1720,7 +1720,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
                 return targeted_record
             return original_card_record(value)
 
-        engine._change_permanent_counter(siege, "defense", -1)
+        change_permanent_counter(engine, siege, "defense", -1)
         self.assertFalse(engine._stabilize())
         with patch.object(
             engine,
@@ -1769,7 +1769,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
     def test_siege_trigger_does_not_follow_a_changed_object(self):
         engine = self.make_engine(7066)
         siege = self.transforming_siege(engine)
-        engine._change_permanent_counter(siege, "defense", -1)
+        change_permanent_counter(engine, siege, "defense", -1)
         self.assertFalse(engine._stabilize())
         engine.move_card(
             siege.object_id,
@@ -1856,7 +1856,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
         engine.permissions.invalidate_current()
         engine.state.pending_decision = None
         siege = self.transforming_siege(engine)
-        engine._change_permanent_counter(siege, "defense", -1)
+        change_permanent_counter(engine, siege, "defense", -1)
         self.assertFalse(engine._stabilize())
         engine._prepare_stack_resolution()
         session.initial_checkpoint = checkpoint_envelope(engine.state)

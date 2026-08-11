@@ -191,6 +191,9 @@ def _capability_id(blocker: str) -> str:
 
 def _clause_signature(text: str, *, kind: str, reason: str) -> str:
     material = " ".join(text.casefold().split())
+    counter_signatures = _counter_clause_signatures(material)
+    if "remove-counter" in counter_signatures:
+        return "remove-counter"
     put_signatures = _put_clause_signatures(material)
     if "put-counter" in put_signatures:
         return "put-counter"
@@ -222,6 +225,7 @@ def _clause_families(text: str, *, kind: str, reason: str) -> set[str]:
         for signature, markers in _CLAUSE_SIGNATURES
         if any(marker in material for marker in markers)
     }
+    signatures.update(_counter_clause_signatures(material))
     signatures.update(_put_clause_signatures(material))
     if "destroy " in material:
         signatures.discard("destroy")
@@ -268,6 +272,17 @@ def _put_clause_signatures(material: str) -> set[str]:
     ):
         signatures.add("put-onto-battlefield")
     return signatures
+
+
+def _counter_clause_signatures(material: str) -> set[str]:
+    """Classify counter removal separately from unrelated removal wording."""
+
+    if re.search(
+        r"\bremove\b[^.!?]{0,160}\bcounters?\s+from\b",
+        material,
+    ):
+        return {"remove-counter"}
+    return set()
 
 
 def canonical_residual_families(

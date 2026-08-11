@@ -246,7 +246,7 @@ class CounterTargetPredicateCompilerTests(unittest.TestCase):
 
         exact()
         with patch(
-            "quorune.compiler.counter_placement_templates._target_subject",
+            "quorune.compiler.counter_placement_templates.direct_permanent_target_spec",
             return_value=None,
         ):
             with self.assertRaises(AssertionError):
