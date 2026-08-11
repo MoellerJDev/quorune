@@ -29,6 +29,7 @@ from quorune.oracle_ir import (
     compile_oracle_card,
     register_generated_programs,
 )
+from quorune.preflight import card_semantic_status
 from quorune.record import (
     authoritative_state_hash,
     checkpoint_envelope,
@@ -223,6 +224,14 @@ class OrdinaryCrewCompilerTests(unittest.TestCase):
             program.capability_dependencies,
         )
         self.assertEqual(1, result["runtime_handlers_promoted"])
+        status = card_semantic_status(
+            record,
+            registry,
+            db=self.db,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+        )
+        self.assertNotIn("activated_ability:crew", status["unresolved"])
 
     def test_ordinary_crew_compiler_mutant_is_killed(self):
         def assert_exact() -> None:

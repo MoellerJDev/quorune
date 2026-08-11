@@ -3820,13 +3820,13 @@
           "visibility": "public"
         },
         {
-          "end_line": 748,
+          "end_line": 769,
           "file": "quorune/preflight.py",
           "kind": "function",
-          "line": 447,
+          "line": 467,
           "logical_lines": 302,
           "name": "card_semantic_status",
-          "physical_lines": 302,
+          "physical_lines": 303,
           "symbol": "card_semantic_status",
           "visibility": "public"
         },
@@ -4040,10 +4040,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 981,
+          "end_line": 1002,
           "file": "quorune/preflight.py",
           "kind": "function",
-          "line": 821,
+          "line": 842,
           "logical_lines": 161,
           "name": "semantic_preflight",
           "physical_lines": 161,
@@ -4062,7 +4062,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 138717,
+      "logical_lines": 138735,
       "methods": {
         "dunder": 385,
         "private": 690,
@@ -4268,10 +4268,10 @@
         },
         {
           "file": "quorune/preflight.py",
-          "functions_and_methods": 18,
+          "functions_and_methods": 19,
           "language": "python",
-          "logical_lines": 908,
-          "physical_lines": 981
+          "logical_lines": 926,
+          "physical_lines": 1002
         },
         {
           "file": "quorune/replacement/replay.py",
@@ -6976,13 +6976,13 @@
           "visibility": "public"
         },
         {
-          "end_line": 748,
+          "end_line": 769,
           "file": "quorune/preflight.py",
           "kind": "function",
-          "line": 447,
+          "line": 467,
           "logical_lines": 302,
           "name": "card_semantic_status",
-          "physical_lines": 302,
+          "physical_lines": 303,
           "symbol": "card_semantic_status",
           "visibility": "public"
         },
@@ -7196,10 +7196,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 981,
+          "end_line": 1002,
           "file": "quorune/preflight.py",
           "kind": "function",
-          "line": 821,
+          "line": 842,
           "logical_lines": 161,
           "name": "semantic_preflight",
           "physical_lines": 161,
@@ -7267,7 +7267,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 151902,
+      "physical_lines": 151923,
       "python_file_count": 386,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -7285,7 +7285,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1893,
+      "top_level_functions": 1894,
       "web_file_count": 16
     },
     "semantic_handlers": {
