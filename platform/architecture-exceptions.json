@@ -610,6 +610,30 @@
         "tests.test_zone_transition_owner.ZoneTransitionOwnerTests.test_simultaneous_moves_share_one_timestamp_and_keep_physical_identity",
         "tests.test_command_zone_rules.CommandZoneRuleTests.test_daretti_emblem_creation_exact_replays"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0029",
+      "adr": "docs/adr/0060-typed-turn-priority-decision-owner.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "a39581bb487a6e128b52bd636fdaea3bfb075f0a05459e675e8b8d8782ccb642",
+      "exact_allowance": "Only the reduced schema-3 structural state-write identities, owner classifications, prohibited runtime Oracle-text access identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, effect operations, legacy helpers, and module classifications serialized after typed turn, priority, yield, cleanup, and decision-capability ownership.",
+      "rationale": "TurnStepOwner and TurnPriorityDecisionOwner move turn selection, turn-start mutation, phase and step boundaries, cleanup iteration, priority grants and passes, yield invalidation, action-opportunity journaling, and deterministic pumping out of CommanderEngine. CapabilityManager remains the closed single-use decision credential owner. Engine-local writes fall materially, the engine shrinks, unowned mutation remains zero, and existing runtime Oracle interpretation is not expanded.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact reduced structural identities and counts serialized at implementation head 4c005397 plus the immutable priority plans, typed scheduler and cleanup owner, historical yield keys, compatibility facades, and principal-scoped capability surfaces described by ADR 0060; new runtime Oracle interpretation, unowned mutation, engine-local writes, oversized symbols, or card-identity behavior remain forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered engine write and prohibited runtime-text interpretation has migrated to declared typed owners; retain the turn and priority owners only while they preserve strict transitions, Full Control and auto-pass parity, multiplayer ordering, cleanup exceptions, rollback, privacy, reconnect, and exact replay.",
+      "target_milestone": "typed turn-priority-decision ownership and search-target-choice convergence",
+      "replay_implications": "Game Record v3 state, commands, yield counter keys, event ordering, and persisted capability behavior remain compatible; immutable priority plans and typed turn transitions preserve deterministic command replay.",
+      "privacy_implications": "Decision alternatives and capabilities remain principal scoped; action-opportunity telemetry contains no opposing hand, library, capability token, or analyst-only state.",
+      "security_implications": "The owners accept closed typed transition data and server-derived principals only; they grant no client mutation authority, arbitrary callback, runtime Oracle compiler, card-name dispatch, or cross-seat capability.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_direct_writes_are_classified_by_actual_owner",
+        "tests.test_architecture_cli.ArchitectureCliTests.test_debt_writes_and_runtime_text_are_current_generated_views",
+        "tests.test_turn_priority_owner.TurnPriorityDecisionOwnerTests.test_engine_facade_commits_through_typed_priority_owner",
+        "tests.test_turn_priority_owner.TurnPriorityDecisionOwnerTests.test_owner_mutation_rolls_back_and_remains_bound_to_live_state",
+        "tests.test_turn_priority_owner.TurnPriorityDecisionOwnerTests.test_turn_owner_step_entry_sets_boundary_before_callback",
+        "tests.test_decision_opportunities.DecisionOpportunityTests.test_private_draw_invalidates_yield"
+      ]
     }
   ]
 }

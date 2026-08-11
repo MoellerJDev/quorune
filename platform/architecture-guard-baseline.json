@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "38171017d1944ceeb23f857e595ab58520ba944b",
+  "baseline_commit": "4c005397c643bebfcdbc4be709a710133aad811f",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -10,7 +10,7 @@
   "direct_game_state_write_classification_counts": {
     "canonical_mutation_owner_write": 13,
     "compatibility_adapter_write": 11,
-    "grandfathered_engine_debt": 102,
+    "grandfathered_engine_debt": 58,
     "orchestration_root_replacement": 1
   },
   "direct_game_state_write_identities": [
@@ -19,24 +19,6 @@
       "kind": "assignment",
       "state_path": "<state-root>",
       "symbol": "__init__"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "combat.damage_step_index",
-      "symbol": "_advance_step"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "phase_index",
-      "symbol": "_advance_step"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "augmented_assignment",
-      "state_path": "phase_index",
-      "symbol": "_advance_step"
     },
     {
       "file": "quorune/engine.py",
@@ -67,66 +49,6 @@
       "kind": "assignment",
       "state_path": "combat.blockers_declared",
       "symbol": "_begin_blocker_decisions"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "active_player",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "combat",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "current_turn",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "last_normal_turn_player",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "phase_index",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_passes",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_player",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "turn_history",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "augmented_assignment",
-      "state_path": "turn_sequence",
-      "symbol": "_begin_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "players.yield_policy",
-      "symbol": "_can_auto_pass"
     },
     {
       "file": "quorune/engine.py",
@@ -246,78 +168,6 @@
       "file": "quorune/engine.py",
       "kind": "assignment",
       "state_path": "combat",
-      "symbol": "_end_turn_now"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "phase_index",
-      "symbol": "_end_turn_now"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_passes",
-      "symbol": "_end_turn_now"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_player",
-      "symbol": "_end_turn_now"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:clear",
-      "state_path": "stack",
-      "symbol": "_end_turn_now"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "combat",
-      "symbol": "_enter_step"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "phase",
-      "symbol": "_enter_step"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_passes",
-      "symbol": "_enter_step"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_player",
-      "symbol": "_enter_step"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "step",
-      "symbol": "_enter_step"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:append",
-      "state_path": "annotations",
-      "symbol": "_finish_cleanup"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:pop",
-      "state_path": "players.stats",
-      "symbol": "_finish_cleanup"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "combat",
       "symbol": "_finish_combat_phase"
     },
     {
@@ -325,30 +175,6 @@
       "kind": "mutating_call:remove",
       "state_path": "stack",
       "symbol": "_finish_siege_defeated_resolution"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_passes",
-      "symbol": "_grant_priority"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_player",
-      "symbol": "_grant_priority"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "augmented_assignment",
-      "state_path": "priority_epoch",
-      "symbol": "_grant_priority"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "ref_counters",
-      "symbol": "_increment_yield_change_epoch"
     },
     {
       "file": "quorune/engine.py",
@@ -400,30 +226,6 @@
     },
     {
       "file": "quorune/engine.py",
-      "kind": "mutating_call:setdefault",
-      "state_path": "players.stats",
-      "symbol": "_optimization_stats"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_passes",
-      "symbol": "_pass_priority"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "priority_player",
-      "symbol": "_pass_priority"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:append",
-      "state_path": "priority_passes",
-      "symbol": "_pass_priority"
-    },
-    {
-      "file": "quorune/engine.py",
       "kind": "assignment",
       "state_path": "priority_player",
       "symbol": "_pause_for_unsupported_semantic"
@@ -460,27 +262,9 @@
     },
     {
       "file": "quorune/engine.py",
-      "kind": "augmented_assignment",
-      "state_path": "opportunity_sequence",
-      "symbol": "_record_action_opportunity"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:append",
-      "state_path": "action_opportunities",
-      "symbol": "_record_action_opportunity"
-    },
-    {
-      "file": "quorune/engine.py",
       "kind": "assignment",
       "state_path": "turn_history",
       "symbol": "_record_turn_history"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "annotations",
-      "symbol": "_remove_cleanup_frames"
     },
     {
       "file": "quorune/engine.py",
@@ -490,27 +274,9 @@
     },
     {
       "file": "quorune/engine.py",
-      "kind": "mutating_call:pop",
-      "state_path": "extra_turns",
-      "symbol": "_select_next_turn"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "players.yield_policy",
-      "symbol": "_set_yield"
-    },
-    {
-      "file": "quorune/engine.py",
       "kind": "assignment",
       "state_path": "stack",
       "symbol": "_stabilize"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "assignment",
-      "state_path": "started",
-      "symbol": "_start_game"
     },
     {
       "file": "quorune/engine.py",
@@ -559,12 +325,6 @@
       "kind": "mutating_call:append",
       "state_path": "players.zones",
       "symbol": "create_emblem"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:insert",
-      "state_path": "extra_turns",
-      "symbol": "schedule_extra_turn"
     },
     {
       "file": "quorune/engine.py",
@@ -718,14 +478,14 @@
     }
   ],
   "direct_game_state_writes_by_file": {
-    "quorune/engine.py": 103,
+    "quorune/engine.py": 59,
     "quorune/permissions.py": 8,
     "quorune/record.py": 11,
     "quorune/trigger_processing.py": 2,
     "quorune/zone_transitions.py": 3
   },
   "engine": {
-    "logical_lines": 11043,
+    "logical_lines": 10244,
     "methods": [
       {
         "kind": "method",
@@ -2168,12 +1928,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 11704
+    "physical_lines": 10887
   },
   "exception_binding": {
-    "adr": "docs/adr/0059-typed-zone-transition-owner.md",
-    "allowance_fingerprint": "b34f7d8da64a5c3ac8dd3e129bcf71b5fee1f63a1620458a8852b9b540c836ff",
-    "exception_id": "ARCH-EXC-0028"
+    "adr": "docs/adr/0060-typed-turn-priority-decision-owner.md",
+    "allowance_fingerprint": "a39581bb487a6e128b52bd636fdaea3bfb075f0a05459e675e8b8d8782ccb642",
+    "exception_id": "ARCH-EXC-0029"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2398,7 +2158,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 11043
+      "logical_lines": 10244
     },
     {
       "file": "quorune/record.py",
@@ -2867,6 +2627,6 @@
   ],
   "schema_version": 3,
   "source_fingerprints": {
-    "printed_name_allowances_sha256": "29f824a276e89dda4074e4b741aa256d2a4ff76be58565f5f5e9f243f4f12426"
+    "printed_name_allowances_sha256": "befc9a65a8fc0abbd2f7e57d26bc0a8c34497071c7652d8e7102aa6edc2e82f3"
   }
 }
