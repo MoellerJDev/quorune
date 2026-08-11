@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "05e26e02004c471b14e620f6260fefe4b7d73430232a97fceab5ab2d62ab6ffe",
-  "declaration_source_fingerprint": "a71d2775718f3457d9a5e41de4f1465ccee566dd91d8db116c5074dfbe26a1a4",
+  "registry_fingerprint": "8374a64a3bde87c20e784a4f90ca646bb60059a3e90ac605b2c29adafba1a987",
+  "declaration_source_fingerprint": "e0adbef953e83d16cb11f80114d8eb023e794a89bace68972a88a5d78021626a",
   "declarations": [
     {
       "capability_id": "activation.cycling.hand",
@@ -25951,6 +25951,226 @@
       "applicability_note": "Replay the countered-spell transition, normalized event ordering, trigger journal inputs, and final state hash exactly."
     },
     {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_echo_rules.EchoRuntimeTests.test_control_change_and_zone_change_preserve_trigger_time_echo_facts",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preserve trigger-time controller and acquisition facts through control change while rejecting a departed and returned source incarnation."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_echo_rules.EchoRuntimeTests.test_multiple_echo_sources_share_apnap_trigger_placement",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Collect simultaneous ordinary Echo triggers into the existing APNAP/controller-order placement boundary."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_echo_rules.EchoRuntimeTests.test_four_player_echo_choice_is_seat_scoped_private_and_replays",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Issue one four-player Echo choice only to the frozen trigger controller."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_echo_rules.EchoCompilerTests.test_descriptor_shape_and_dependency_mutations_fail_closed",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of typed Echo lowering and require ordinary APNAP trigger placement to remain trusted."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_echo_rules.EchoCompilerTests.test_unsupported_echo_variants_remain_precise_residuals",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep hybrid, snow, variable, nonmana, alternative, and compound Echo costs outside the fixed ordinary mana grammar."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_echo_rules.EchoRuntimeTests.test_control_history_version_preserves_legacy_record_hash_mode",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep historical Game Record v3 state in an explicit no-control-history mode, reject malformed version fields, and avoid introducing new hashed timestamps during legacy replay."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_echo_rules.EchoRuntimeTests.test_stale_source_and_malformed_history_fail_before_mutation",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed prior-upkeep history without mutating state and pin the intervening condition to one logical source."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_echo_rules.EchoCompilerTests.test_fixed_mana_echo_is_source_spanned_and_capability_closed",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower fixed ordinary mana Echo, including Echo {0}, to one source-spanned capability-closed intervening-if upkeep trigger."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_echo_rules.EchoRuntimeTests.test_pay_keeps_and_decline_sacrifices_through_typed_intents",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Offer only a payable fixed-mana Echo choice and commit payment or the controlled-source sacrifice through typed intents."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_echo_rules.EchoRuntimeTests.test_four_player_echo_choice_is_seat_scoped_private_and_replays",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the Echo choice only to its seat and expose no authoritative object ID or opposing hidden state."
+    },
+    {
+      "capability_id": "trigger.keyword.echo.fixed_mana",
+      "evidence_class": "replay",
+      "test_id": "tests.test_echo_rules.EchoRuntimeTests.test_four_player_echo_choice_is_seat_scoped_private_and_replays",
+      "official_rule_ids": [
+        "118.12",
+        "603.3",
+        "603.4",
+        "701.17",
+        "702.30",
+        "702.30a",
+        "702.30b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the seat-scoped refusal and typed sacrifice to the identical authoritative state hash."
+    },
+    {
       "capability_id": "trigger.keyword.prowess",
       "evidence_class": "interaction",
       "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_and_opponent_cast_trigger_share_one_apnap_batch",
@@ -27794,5 +28014,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "5716a3c4ae3949ca1aca672f8b5cf2e7b9543080021f59e3e34c94f2541e549b"
+  "fingerprint": "d066b419c0b47331d093f4c243f24e53d1003c75923bc02dda7fb5f1e0e4446b"
 }
