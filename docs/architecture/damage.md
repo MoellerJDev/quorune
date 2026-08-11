@@ -1,7 +1,7 @@
 ---
 title: "Damage transaction"
 status: "current"
-authoritative_source: "quorune/damage.py, quorune/damage_values.py, quorune/damage_results.py, quorune/fixed_damage_set*, and quorune/combat_damage_*"
+authoritative_source: "quorune/damage.py, quorune/damage_values.py, quorune/damage_results.py, quorune/counter_placement.py, quorune/counter_removal.py, quorune/life_state.py, quorune/fixed_damage_set*, and quorune/combat_damage_*"
 verified: "2026-08-07"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -57,8 +57,15 @@ Only positive final damage produces result events. The result planner derives
 the typed consequences for life, marked damage, defense, loyalty, commander
 damage, lifelink, deathtouch, infect, wither, toxic, and other represented
 families. It validates all recipients and source snapshots before any state
-changes. The commit is atomic; a malformed event or stale continuation leaves
-the state unchanged.
+changes. Resolved Infect, Wither, and Toxic leaves delegate their final
+placement plan to `counter_placement.py` without rediscovering replacement
+effects already exhausted by the containing damage-result tree. Planeswalker
+loyalty and Battle defense delegate exact removals to `counter_removal.py`;
+life changes remain with `life_state.py`. `damage_results.py` coordinates those
+typed plans with marked-damage and deathtouch state, but no longer owns a
+parallel generic counter-state commit. Every owner validates before the first
+write, so a malformed event or stale logical incarnation leaves the complete
+life, placement, removal, and permanent-result batch unchanged.
 
 State-based actions consume temporal damage markers according to their own
 owner. Damage code does not perform unrelated state-based checks or bypass

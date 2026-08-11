@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "a0dfe52417fda225906fb7e9e255d08255c3071071b7ed9ed6335f5343a0163b",
+    "evaluated_input_fingerprint": "e03cb166809c13a9baa82ce4a22c4197cb14424122115e8bf070a6a924e394a0",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -74,7 +74,7 @@
       "status": "integrated_on_certified_main"
     },
     {
-      "evidence": "The certified counter foundation routes represented single-permanent, player, intrinsic-entry, Proliferate, closed affected-set, bounded direct target-set, and fixed multi-kind single-permanent producers through typed prepare/commit owners with fixed integral quantity replacement, affected-controller selection, simultaneous APNAP traversal, rollback, privacy, and replay. It also owns represented stun-counter untap replacement plus exact CR 704.5q and bounded CR 704.5r rule-generated removals. The current source additionally lowers fixed positive Support N using exact permanent-versus-instant/sorcery source context, fixed placements on a typed enchanted, equipped, or fortified permanent through an immutable current-or-last-known attachment reference, and one mandatory fixed creature-counter casting-cost family that suspends and resumes the whole cast before mutation. It does not claim player-counter replacement or prevention, general target grammar, attachment creation or movement, variable or alternate casting costs, removal, variable quantities, or continuation-sensitive legacy producers.",
+      "evidence": "The certified counter foundation routes represented single-permanent, player, intrinsic-entry, Proliferate, closed affected-set, bounded direct target-set, and fixed multi-kind single-permanent producers through typed prepare/commit owners with fixed integral quantity replacement, affected-controller selection, simultaneous APNAP traversal, rollback, privacy, and replay. It also owns represented stun-counter untap replacement plus exact CR 704.5q and bounded CR 704.5r rule-generated removals. The current source additionally lowers fixed positive Support N using exact permanent-versus-instant/sorcery source context, fixed placements on a typed enchanted, equipped, or fortified permanent through an immutable current-or-last-known attachment reference, and one mandatory fixed creature-counter casting-cost family that suspends and resumes the whole cast before mutation. It does not claim general player-counter prevention or unrepresented replacement grammar, general target grammar, attachment creation or movement, variable or alternate casting costs, effect- or cost-generated removal, variable quantities, or continuation-sensitive legacy producers.",
       "id": "counter_placement_replacement_events",
       "name": "Effect-generated counter-placement replacement boundary",
       "status": "integrated_on_certified_main"
@@ -542,9 +542,15 @@
       "status": "integrated_on_certified_main"
     },
     {
-      "evidence": "The current source tree routes ordinary non-Read-Ahead Saga precombat lore progression through one simultaneous immutable counter-placement batch marked effect_generated=false. Unqualified quantity replacements apply; effect-qualified replacements such as Doubling Season do not. Competing CR 616 orders suspend before mutation through a strict seat-scoped continuation that preserves event IDs and held trigger identity, survives save/load, and resumes step entry exactly once. CommanderEngine shrinks by two logical lines and direct writes remain flat. Read Ahead, arbitrary lore movement, copied or gained chapter abilities, unsupported replacement grammar, and other turn-based counter producers remain fail-closed.",
+      "evidence": "Certified main routes ordinary non-Read-Ahead Saga precombat lore progression through one simultaneous immutable counter-placement batch marked effect_generated=false. Unqualified quantity replacements apply; effect-qualified replacements such as Doubling Season do not. Competing CR 616 orders suspend before mutation through a strict seat-scoped continuation that preserves event IDs and held trigger identity, survives save/load, and resumes step entry exactly once. CommanderEngine shrinks by two logical lines and direct writes remain flat. Read Ahead, arbitrary lore movement, copied or gained chapter abilities, unsupported replacement grammar, and other turn-based counter producers remain fail-closed.",
       "id": "replacement_aware_saga_turn_counter_action",
       "name": "Replacement-aware Saga lore turn action",
+      "status": "integrated_on_certified_main"
+    },
+    {
+      "evidence": "The current source tree delegates resolved Infect, Wither, and Toxic counter-placement leaves to the canonical replacement-aware placement owner without rediscovering an already exhausted replacement tree. Planeswalker loyalty and Battle defense damage use the exact typed removal owner. The damage coordinator validates placement, removal, life, and permanent-result plans before the first write, pins permanent logical identity, rejects malformed leaves, and preserves atomic rollback. Existing generic keyword CardPrograms remain unchanged; effect- and cost-generated removal, counter movement, unrepresented damage-result families, and broader damage interactions remain fail-closed.",
+      "id": "damage_result_counter_owner_harvest",
+      "name": "Typed damage-result counter ownership",
       "status": "implemented_on_current_source_tree"
     }
   ],

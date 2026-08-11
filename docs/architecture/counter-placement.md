@@ -1,7 +1,7 @@
 ---
 title: "Counter-placement transaction"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/death_return.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
 verified: "2026-08-10"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -10,9 +10,9 @@ maintenance: "hand-maintained"
 # Counter-placement transaction
 
 `counter_placement.py` is the focused authoritative owner for represented
-effect-generated counters placed on players, battlefield permanents, and the
-already modeled card-zone counter children. It separates the operation into
-preparation and commit:
+effect-generated, cost-generated, and typed rule-result counters placed on
+players, battlefield permanents, and the already modeled card-zone counter
+children. It separates the operation into preparation and commit:
 
 1. Resolve each subject and build immutable player- or object-affected
    `counter.place` events.
@@ -39,6 +39,13 @@ may restrict the placing player, affected player/permanent relation, counter
 name, and a small validated set of effective card-type or subtype predicates.
 `replacement.counter.quantity.v1` remains registered only for replay and
 reviewed-pack compatibility; new compiler output uses v2.
+
+A containing typed replacement tree may exhaust counter replacement ordering
+before it reaches this owner. `plan_resolved_counter_placement_commit` accepts
+only immutable, childless `counter.place` leaves with unique event identities
+and performs no rediscovery. Damage results use that boundary so a quantity
+replacement applies exactly once; the final placement still receives the same
+logical-object validation and counter-state commit as an ordinary placement.
 
 The generic compiler lowers exact ordinary "an effect would put," "you would
 put," and passive "would be put" quantity-replacement sentences. It rejects
@@ -82,13 +89,21 @@ loyalty-symbol costs enter this same transaction through the typed activation
 commit owner with `effect_generated=false`. A stable private cost-event ID and
 strict priority-action continuation allow competing replacements to suspend
 before any cost or stack mutation and resume with exact replay. Client commands
-cannot supply those internal continuation fields.
+cannot supply those internal continuation fields. Infect, Wither, and Toxic
+damage-result leaves also enter the placement owner with their final containing-
+tree result and pinned logical identity.
+
+`counter_removal.py` is the distinct exact-removal owner. Represented
+Planeswalker loyalty and Battle defense damage results share it with stun and
+state-based counter removals; replacement-aware placement and exact removal do
+not compete for the final counter-map write boundary.
 
 The engine retains compatibility facades and supplies the host protocol. New
 positive fixed counter operations must enter the transaction instead of adding
-another direct engine write. Counter removal, effects that prohibit placement,
-combined or modified loyalty-symbol costs, and other unrepresented rule actions
-remain distinct and fail closed until their ordering semantics are modeled.
+another direct engine write. Effect- or cost-generated removal, effects that
+prohibit placement, combined or modified loyalty-symbol costs, counter
+movement, and other unrepresented rule actions remain distinct and fail closed
+until their ordering semantics are modeled.
 
 Fixed positive Adapt and Monstrosity use the same transaction. Their activation
 remains available independently of the current resolution condition. The
@@ -429,8 +444,9 @@ The following producers and wordings remain deliberately outside this slice:
   the represented prospective-token boundary;
 - unsupported Battle subtype protector procedures and unrepresented
   copy-layer, face-down, or dynamic entry-characteristic interactions;
-- counter removal and movement, state-based removals, and card-specific
-  continuation paths such as Demonic Junker.
+- effect- and cost-generated counter removal, counter movement, unrepresented
+  rule-generated removals, and card-specific continuation paths such as
+  Demonic Junker.
 
 Several of those operations occur inside a larger semantic continuation after
 earlier instructions have already mutated state. Routing them through a choice
@@ -452,7 +468,10 @@ in `test_intrinsic_entry_counters.py`, Support coverage in
 `test_support_counter_placement.py`, attachment-relative result coverage in
 `test_attached_counter_placement.py`, shared event-order coverage in
 `test_replacement_event_tree.py`, and focused mutation evidence in
-`test_capability_implementation_mutations.py`. Mentor compiler, targeting,
+`test_capability_implementation_mutations.py`. Damage-result placement,
+removal, no-rediscovery, rollback, and focused owner-mutation evidence is in
+`test_damage_result_events.py`; the standalone exact-removal transaction is in
+`test_rule_generated_counter_removals.py`. Mentor compiler, targeting,
 last-known-information, replacement, rollback, multiplayer, and exact-replay
 evidence is isolated in `test_mentor_rules.py`. Target-threaded counter and
 characteristic sequences, strict residuals, replacement suspension, rollback,

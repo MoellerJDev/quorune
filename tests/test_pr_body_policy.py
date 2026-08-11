@@ -199,6 +199,33 @@ class PullRequestBodyPolicyTests(unittest.TestCase):
         )
         self.assertEqual({"volatile-status-provenance"}, {row.code for row in failures})
 
+    def test_source_paths_under_branch_named_directories_are_not_provenance(self) -> None:
+        before = {"scope": {"state_owner_modules": []}}
+        after = {
+            "scope": {
+                "state_owner_modules": [
+                    "quorune/rules/casting/commit.py",
+                    "quorune/rules/activation/commit.py",
+                ]
+            }
+        }
+        self.assertEqual(
+            (),
+            validate_status_changes(
+                before,
+                after,
+                source="platform/architecture-audit-source.json",
+            ),
+        )
+
+    def test_standalone_feature_branch_remains_volatile_provenance(self) -> None:
+        failures = validate_status_changes(
+            {"milestones": []},
+            {"milestones": [{"source": "rules/example-branch"}]},
+            source="platform/readiness-source.json",
+        )
+        self.assertEqual({"volatile-status-provenance"}, {row.code for row in failures})
+
     def test_unchanged_historical_provenance_is_not_reinterpreted(self) -> None:
         value = {
             "audit": {"baseline_main_commit": "a" * 40},

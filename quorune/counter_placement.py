@@ -481,6 +481,10 @@ def plan_prepared_counter_placement_commit(
         )
     validated: list[CounterPlacementCommitRow] = []
     for event in prepared.events:
+        if event.kind != "counter.place" or event.children:
+            raise CounterPlacementError(
+                "Counter placement commits require resolved placement leaves"
+            )
         name, requested, amount = _resolved_amount(event)
         target_kind = str(event.payload.get("target_kind") or "")
         if target_kind == "player":
@@ -563,6 +567,40 @@ def plan_prepared_counter_placement_commit(
         prepared=prepared,
         rows=tuple(validated),
         state_plan=state_plan,
+    )
+
+
+def plan_resolved_counter_placement_commit(
+    host: CounterPlacementHost,
+    events: Sequence[ReplaceableEvent],
+) -> CounterPlacementCommitPlan:
+    """Plan leaves already resolved by a containing replacement tree.
+
+    This boundary is for typed event coordinators such as damage results. It
+    deliberately performs no replacement discovery: the containing tree owns
+    that ordering and supplies its final immutable ``counter.place`` leaves.
+    """
+
+    stable = tuple(events)
+    if any(not isinstance(event, ReplaceableEvent) for event in stable):
+        raise CounterPlacementError(
+            "Resolved counter placements must be typed events"
+        )
+    event_ids = tuple(event.event_id for event in stable)
+    if (
+        any(not event_id for event_id in event_ids)
+        or len(event_ids) != len(set(event_ids))
+    ):
+        raise CounterPlacementError(
+            "Resolved counter-placement event IDs must be nonempty and unique"
+        )
+    return plan_prepared_counter_placement_commit(
+        host,
+        PreparedCounterPlacements(
+            events=stable,
+            effects=(),
+            journal=(),
+        ),
     )
 
 

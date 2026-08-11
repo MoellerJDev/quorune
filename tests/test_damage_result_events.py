@@ -4,11 +4,19 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from common import ROOT, keep_all, make_session
 from property_budget import property_transitions
 from scripts.build_test_database import build_fixture_database
+from quorune import damage_results as damage_results_module
 from quorune.carddb import CardDatabase
+from quorune.counter_placement import (
+    CounterPlacementCommitPlan,
+    CounterPlacementError,
+    plan_resolved_counter_placement_commit,
+)
+from quorune.counter_removal import CounterRemovalPlan
 from quorune.damage import (
     DamageError,
     commit_prepared_damage_batch,
@@ -723,6 +731,251 @@ class DamageResultEventTests(unittest.TestCase):
         self.assertEqual(3, target.counters["loyalty"])
         self.assertEqual(2, target.counters["defense"])
         self.assertEqual(0, target.marked_damage)
+
+    def test_damage_counter_results_use_canonical_typed_owners(self):
+        engine = self.session(120_300_027).engine
+        source = self.token(engine, "A", "Infect Source", keywords=("Infect",))
+        toxic_source = self.token(
+            engine,
+            "A",
+            "Toxic Source",
+            keywords=("Toxic",),
+            oracle_text="Toxic 2",
+        )
+        wither_source = self.token(
+            engine,
+            "A",
+            "Wither Source",
+            keywords=("Wither",),
+        )
+        target = self.token(
+            engine,
+            "B",
+            "Every Damageable Type",
+            type_line="Token Creature Planeswalker Battle — Siege",
+            toughness=8,
+            loyalty=5,
+            defense=4,
+            battle_protector="A",
+        )
+        wither_target = self.token(
+            engine,
+            "B",
+            "Wither Counter Subject",
+            toughness=8,
+        )
+        prepared_damage = prepare_damage_batch(
+            engine,
+            (
+                self.proposal(
+                    engine,
+                    source,
+                    target,
+                    2,
+                    event_id="damage:typed-counter-owners",
+                ),
+                self.proposal(
+                    engine,
+                    toxic_source,
+                    "B",
+                    1,
+                    event_id="damage:typed-player-counter-owner",
+                    combat=True,
+                ),
+                self.proposal(
+                    engine,
+                    wither_source,
+                    wither_target,
+                    1,
+                    event_id="damage:typed-wither-counter-owner",
+                ),
+            ),
+        )
+        prepared_results = PreparedDamageResults(
+            events=prepared_damage.result_events,
+            effects=prepared_damage.result_effects,
+            journal=prepared_damage.result_journal,
+        )
+
+        plan = plan_damage_result_commit(engine, prepared_results)
+
+        self.assertIsInstance(
+            plan.counter_placements,
+            CounterPlacementCommitPlan,
+        )
+        self.assertIsInstance(plan.counter_removals, CounterRemovalPlan)
+        self.assertEqual(
+            {"-1/-1", "poison"},
+            {row.counter_name for row in plan.counter_placements.rows},
+        )
+        self.assertEqual(
+            ("defense", "loyalty"),
+            tuple(
+                removal.counter_name
+                for removal in plan.counter_removals.removals
+            ),
+        )
+        self.assertEqual(0, target.counters.get("-1/-1", 0))
+        self.assertEqual(0, wither_target.counters.get("-1/-1", 0))
+        self.assertEqual(5, target.counters["loyalty"])
+        self.assertEqual(4, target.counters["defense"])
+        self.assertEqual(0, engine.state.players["B"].poison)
+
+        commit_damage_result_plan(engine, plan)
+
+        self.assertEqual(2, target.counters["-1/-1"])
+        self.assertEqual(1, wither_target.counters["-1/-1"])
+        self.assertEqual(3, target.counters["loyalty"])
+        self.assertEqual(2, target.counters["defense"])
+        self.assertEqual(2, engine.state.players["B"].poison)
+
+    def test_stale_damage_counter_subject_rolls_back_every_result(self):
+        engine = self.session(120_300_028).engine
+        source = self.token(
+            engine,
+            "A",
+            "Infect Lifelink Source",
+            keywords=("Infect", "Lifelink"),
+        )
+        target = self.token(engine, "B", "Counter Subject", toughness=8)
+        engine.state.players["A"].life = 20
+        prepared_damage = prepare_damage_batch(
+            engine,
+            (
+                self.proposal(
+                    engine,
+                    source,
+                    target,
+                    2,
+                    event_id="damage:stale-counter-owner",
+                ),
+            ),
+        )
+        plan = plan_damage_result_commit(
+            engine,
+            PreparedDamageResults(
+                events=prepared_damage.result_events,
+                effects=prepared_damage.result_effects,
+                journal=prepared_damage.result_journal,
+            ),
+        )
+        target.zone_change_counter += 1
+
+        with self.assertRaisesRegex(ValueError, "changed object identity"):
+            commit_damage_result_plan(engine, plan)
+
+        self.assertEqual(20, engine.state.players["A"].life)
+        self.assertNotIn("-1/-1", target.counters)
+
+    def test_damage_counter_replacement_is_not_rediscovered_at_commit(self):
+        engine = self.session(120_300_029).engine
+        source = self.token(engine, "A", "Infect Source", keywords=("Infect",))
+        target = self.token(engine, "B", "Counter Subject", toughness=8)
+        damage = self.proposal(
+            engine,
+            source,
+            target,
+            2,
+            event_id="damage:single-counter-replacement",
+        ).event()
+        replacement = result_effect(
+            "double-counter-result",
+            "counter.place",
+            {"op": "multiply", "field": "amount", "factor": 2},
+        )
+
+        prepared = prepare_damage_results(
+            engine,
+            (damage,),
+            effects=(replacement,),
+        )
+        plan = plan_damage_result_commit(engine, prepared)
+
+        self.assertEqual(4, plan.counter_placements.rows[0].amount)
+        commit_damage_result_plan(engine, plan)
+        self.assertEqual(4, target.counters["-1/-1"])
+
+    def test_resolved_counter_owner_rejects_nonplacement_event(self):
+        engine = self.session(120_300_030).engine
+        invalid = ReplaceableEvent(
+            event_id="not-a-counter-placement",
+            kind="life.change",
+            affected_player="B",
+            payload={
+                "target_kind": "player",
+                "player": "B",
+                "direction": "loss",
+                "amount": 1,
+                "requested_amount": 1,
+            },
+        )
+
+        with self.assertRaisesRegex(
+            CounterPlacementError,
+            "resolved placement leaves",
+        ):
+            plan_resolved_counter_placement_commit(engine, (invalid,))
+
+    def test_damage_counter_owner_mutants_are_killed(self):
+        engine = self.session(120_300_031).engine
+        source = self.token(engine, "A", "Infect Source", keywords=("Infect",))
+        target = self.token(
+            engine,
+            "B",
+            "Every Damageable Type",
+            type_line="Token Creature Planeswalker Battle — Siege",
+            toughness=8,
+            loyalty=5,
+            defense=4,
+            battle_protector="A",
+        )
+        invocation = 0
+
+        def assert_typed_owner_results() -> None:
+            nonlocal invocation
+            invocation += 1
+            target.counters.clear()
+            target.counters.update({"loyalty": 5, "defense": 4})
+            prepared_damage = prepare_damage_batch(
+                engine,
+                (
+                    self.proposal(
+                        engine,
+                        source,
+                        target,
+                        2,
+                        event_id=f"damage:counter-owner-mutation:{invocation}",
+                    ),
+                ),
+            )
+            plan = plan_damage_result_commit(
+                engine,
+                PreparedDamageResults(
+                    events=prepared_damage.result_events,
+                    effects=prepared_damage.result_effects,
+                    journal=prepared_damage.result_journal,
+                ),
+            )
+            commit_damage_result_plan(engine, plan)
+            self.assertEqual(2, target.counters["-1/-1"])
+            self.assertEqual(3, target.counters["loyalty"])
+            self.assertEqual(2, target.counters["defense"])
+
+        assert_typed_owner_results()
+        with patch.object(
+            damage_results_module,
+            "commit_counter_placement_plan",
+            lambda *_args, **_kwargs: (),
+        ):
+            with self.assertRaises((AssertionError, KeyError)):
+                assert_typed_owner_results()
+        with patch.object(
+            damage_results_module,
+            "commit_counter_removals",
+            lambda *_args, **_kwargs: (),
+        ):
+            with self.assertRaises(AssertionError):
+                assert_typed_owner_results()
 
     def test_wither_damage_still_records_deathtouch_result(self):
         engine = self.session(120_300_008).engine

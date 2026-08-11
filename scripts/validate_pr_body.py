@@ -137,8 +137,8 @@ _VOLATILE_TEXT = (
         re.IGNORECASE,
     ),
     re.compile(
-        r"\b(?:assurance|automation|brand|browser|chore|ci|docs|feat|fix|rules|test)"
-        r"/[a-z0-9._/-]+\b",
+        r"^(?:assurance|automation|brand|browser|chore|ci|docs|feat|fix|rules|test)"
+        r"/[a-z0-9._/-]+$",
         re.IGNORECASE,
     ),
 )

@@ -12,6 +12,7 @@ from .counter_state import (
     CounterTransition,
     normalized_counter_name,
     plan_counter_changes,
+    validate_counter_changes,
 )
 
 
@@ -148,9 +149,22 @@ def commit_counter_removals(
 ) -> tuple[CounterTransition, ...]:
     """Commit an exact preflighted removal batch through counter state."""
 
+    validate_counter_removal_plan(host, plan)
+    try:
+        return commit_counter_changes(host, plan.counter_plan)
+    except CounterStateError as exc:
+        raise CounterRemovalError(str(exc)) from exc
+
+
+def validate_counter_removal_plan(
+    host: CounterRemovalHost,
+    plan: CounterRemovalPlan,
+) -> None:
+    """Fail before mutation when an exact removal plan became stale."""
+
     if not isinstance(plan, CounterRemovalPlan):
         raise CounterRemovalError(
-            "Counter-removal commit requires a typed plan"
+            "Counter-removal validation requires a typed plan"
         )
     for removal, transition in zip(
         plan.removals,
@@ -159,7 +173,7 @@ def commit_counter_removals(
     ):
         _validate_exact_removal(removal, transition)
     try:
-        return commit_counter_changes(host, plan.counter_plan)
+        validate_counter_changes(host, plan.counter_plan)
     except CounterStateError as exc:
         raise CounterRemovalError(str(exc)) from exc
 
@@ -171,4 +185,5 @@ __all__ = [
     "CounterRemovalHost",
     "CounterRemovalPlan",
     "plan_counter_removals",
+    "validate_counter_removal_plan",
 ]

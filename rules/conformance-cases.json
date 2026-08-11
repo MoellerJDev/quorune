@@ -12544,13 +12544,15 @@
         "tests.test_damage_result_events.DamageResultEventTests.test_prevented_infect_and_toxic_create_no_counter_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_source_pinned_keyword_witnesses_follow_damage_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_four_player_keyword_results_keep_source_attribution",
-        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment"
+        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_replacement_is_not_rediscovered_at_commit"
       ],
       "implementation_components": [
         "damage_results.materialize_damage_results",
         "damage_results.plan_damage_result_commit",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "notes": [
         "Final infect damage to a player creates source-controller-attributed poison-counter results, including simultaneous multiplayer batches and exact command replay."
@@ -12589,13 +12591,15 @@
       "executable_test_ids": [
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_planeswalker_damage_removes_loyalty_counters",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_damage_to_multityped_permanent_applies_every_result",
-        "tests.test_damage_result_events.DamageResultEventTests.test_multitype_permanent_receives_every_applicable_result"
+        "tests.test_damage_result_events.DamageResultEventTests.test_multitype_permanent_receives_every_applicable_result",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners"
       ],
       "implementation_components": [
         "damage_results.materialize_damage_results",
         "damage_results.plan_damage_result_commit",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_removal.plan_counter_removals",
+        "counter_removal.commit_counter_removals"
       ],
       "notes": [
         "Damage dealt to a derived planeswalker removes that many loyalty counters, including when the permanent has multiple damageable card types."
@@ -12634,13 +12638,15 @@
         "tests.test_damage_result_events.DamageResultEventTests.test_infect_and_wither_use_minus_counters_only_on_creatures",
         "tests.test_damage_result_events.DamageResultEventTests.test_source_pinned_keyword_witnesses_follow_damage_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_wither_damage_still_records_deathtouch_result",
-        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment"
+        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners"
       ],
       "implementation_components": [
         "damage_results.materialize_damage_results",
         "damage_results.plan_damage_result_commit",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "notes": [
         "Final infect or wither damage to a creature creates source-controller-attributed -1/-1 counter results instead of marked damage while retaining applicable deathtouch results."
@@ -12777,13 +12783,15 @@
         "tests.test_damage_result_events.DamageResultEventTests.test_unresolved_toxic_value_fails_before_mutation",
         "tests.test_damage_result_events.DamageResultEventTests.test_prevented_infect_and_toxic_create_no_counter_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_four_player_keyword_results_keep_source_attribution",
-        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment"
+        "tests.test_damage_result_events.DamageResultEventTests.test_keyword_damage_results_replay_from_combat_assignment",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners"
       ],
       "implementation_components": [
         "damage._total_toxic_value",
         "damage_results.materialize_damage_results",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "notes": [
         "A creature's fixed total toxic value creates additional source-controller-attributed poison counters only after positive combat damage to a player; dynamic unresolved values fail before mutation."
@@ -12824,13 +12832,15 @@
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_damage_removes_defense_instead_of_marking_damage",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_damage_to_multityped_permanent_applies_every_result",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_damage_and_state_action_replay_exactly",
-        "tests.test_damage_result_events.DamageResultEventTests.test_multitype_permanent_receives_every_applicable_result"
+        "tests.test_damage_result_events.DamageResultEventTests.test_multitype_permanent_receives_every_applicable_result",
+        "tests.test_damage_result_events.DamageResultEventTests.test_damage_counter_results_use_canonical_typed_owners"
       ],
       "implementation_components": [
         "damage_results.materialize_damage_results",
         "damage_results.plan_damage_result_commit",
         "damage_results.commit_damage_result_plan",
-        "counter_state.commit_counter_changes"
+        "counter_removal.plan_counter_removals",
+        "counter_removal.commit_counter_removals"
       ],
       "notes": [
         "Damage dealt to a Battle removes that many defense counters, including on a multi-typed permanent, and the resulting state command-replays exactly."
@@ -68679,7 +68689,8 @@
       ],
       "implementation_components": [
         "damage_results.materialize_damage_results",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "notes": [
         "Wither damage to a creature creates source-controller-attributed -1/-1 counter placement instead of marked damage through the canonical counter owner."
@@ -69760,7 +69771,8 @@
       ],
       "implementation_components": [
         "damage_results.materialize_damage_results",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "notes": [
         "Infect damage to a player creates source-controller-attributed poison placement instead of life loss through the canonical counter owner."
@@ -69802,7 +69814,8 @@
       ],
       "implementation_components": [
         "damage_results.materialize_damage_results",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "notes": [
         "Infect damage to a creature creates -1/-1 counter placement instead of marked damage."
@@ -77904,7 +77917,8 @@
       ],
       "implementation_components": [
         "damage_results.materialize_damage_results",
-        "counter_state.commit_counter_changes"
+        "counter_placement.plan_resolved_counter_placement_commit",
+        "counter_placement.commit_counter_placement_plan"
       ],
       "notes": [
         "Positive creature combat damage to a player creates additional poison placement equal to total toxic value; noncombat or prevented damage does not."

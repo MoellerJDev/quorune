@@ -1719,7 +1719,7 @@
           "module": "quorune.rules.casting.commit"
         }
       ],
-      "internal_edges": 1411,
+      "internal_edges": 1413,
       "modules": [
         {
           "fan_in": 2,
@@ -2287,7 +2287,7 @@
           "module": "quorune.convoke"
         },
         {
-          "fan_in": 15,
+          "fan_in": 16,
           "fan_out": 4,
           "module": "quorune.counter_placement"
         },
@@ -2302,7 +2302,7 @@
           "module": "quorune.counter_placement_targets"
         },
         {
-          "fan_in": 2,
+          "fan_in": 3,
           "fan_out": 1,
           "module": "quorune.counter_removal"
         },
@@ -2348,7 +2348,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 4,
+          "fan_out": 6,
           "module": "quorune.damage_results"
         },
         {
@@ -3938,7 +3938,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 133612,
+      "logical_lines": 133722,
       "methods": {
         "dunder": 360,
         "private": 685,
@@ -4032,10 +4032,10 @@
         },
         {
           "file": "quorune/damage_results.py",
-          "functions_and_methods": 45,
+          "functions_and_methods": 47,
           "language": "python",
-          "logical_lines": 1235,
-          "physical_lines": 1346
+          "logical_lines": 1303,
+          "physical_lines": 1422
         },
         {
           "file": "quorune/semantic_choices/intent_host.py",
@@ -4227,6 +4227,13 @@
           "physical_lines": 848
         },
         {
+          "file": "quorune/counter_placement.py",
+          "functions_and_methods": 28,
+          "language": "python",
+          "logical_lines": 766,
+          "physical_lines": 860
+        },
+        {
           "file": "quorune/semantic_runtime/counter_replacements.py",
           "functions_and_methods": 20,
           "language": "python",
@@ -4267,13 +4274,6 @@
           "language": "python",
           "logical_lines": 739,
           "physical_lines": 803
-        },
-        {
-          "file": "quorune/counter_placement.py",
-          "functions_and_methods": 27,
-          "language": "python",
-          "logical_lines": 736,
-          "physical_lines": 822
         },
         {
           "file": "quorune/trigger_discovery.py",
@@ -5403,6 +5403,13 @@
           "physical_lines": 197
         },
         {
+          "file": "quorune/counter_removal.py",
+          "functions_and_methods": 8,
+          "language": "python",
+          "logical_lines": 161,
+          "physical_lines": 189
+        },
+        {
           "file": "quorune/effect_contracts.py",
           "functions_and_methods": 2,
           "language": "python",
@@ -5499,13 +5506,6 @@
           "language": "python",
           "logical_lines": 150,
           "physical_lines": 165
-        },
-        {
-          "file": "quorune/counter_removal.py",
-          "functions_and_methods": 7,
-          "language": "python",
-          "logical_lines": 149,
-          "physical_lines": 174
         },
         {
           "file": "quorune/rules/casting/model.py",
@@ -6968,7 +6968,7 @@
           "physical_lines": 1706
         }
       ],
-      "physical_lines": 146164,
+      "physical_lines": 146293,
       "python_file_count": 361,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -6986,7 +6986,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1803,
+      "top_level_functions": 1807,
       "web_file_count": 16
     },
     "semantic_handlers": {
@@ -11496,10 +11496,12 @@
         "owners": [
           "quorune/damage.py",
           "quorune/damage_results.py",
+          "quorune/counter_placement.py",
+          "quorune/counter_removal.py",
           "quorune/counter_state.py",
           "quorune/life_state.py"
         ],
-        "status": "typed_precommit_owners_with_damage_coordinator"
+        "status": "typed_delegated_result_owners_with_damage_coordinator"
       },
       {
         "id": "continuous_effects",
@@ -11597,8 +11599,8 @@
   "audit": {
     "baseline_main_commit": "d416230850dd68f7ddbb71e8978eb22f0bfce15d",
     "baseline_worktree_clean": true,
-    "phase": "replacement_aware_saga_turn_counter_action",
-    "scope_note": "The evaluated source tree migrates ordinary non-Read-Ahead Saga precombat lore progression from a direct counter-state plan to the canonical immutable counter-placement transaction. One simultaneous effect_generated=false batch applies unqualified quantity replacements but excludes effect-qualified replacements such as Doubling Season, suspends competing CR 616 choices before mutation through a strict seat-scoped continuation, preserves held trigger identity, and resumes step entry exactly once. The engine imports a narrow typed rules coordinator and shrinks by two logical lines; direct GameState writes remain flat. Read Ahead, arbitrary lore movement, copied or gained chapter abilities, unsupported quantity replacements, and broader turn-based counter producers remain fail-closed.",
+    "phase": "damage_result_counter_owner_harvest",
+    "scope_note": "The evaluated source tree delegates represented damage-result counter placement and removal to the existing typed transaction owners. Infect, Wither, and Toxic consume resolved childless counter-placement leaves without rediscovering replacement effects, while Planeswalker loyalty and Battle defense use exact typed counter removal. The damage-result coordinator validates placement, removal, life, and permanent-result plans before the first write and retains atomic rollback. The family adds no card-name, Oracle-ID, runtime Oracle-text, or parallel GameState mutation path. Effect- and cost-generated removal, counter movement, unrepresented rule-result counters, unsupported keyword variants, and broader damage interactions remain fail-closed material residuals.",
     "verified_at": "2026-08-10"
   },
   "compiler": {
@@ -11845,22 +11847,22 @@
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 210,
+          "interaction": 216,
           "multiplayer": 125,
-          "mutation": 138,
-          "negative": 235,
-          "positive": 249,
+          "mutation": 145,
+          "negative": 236,
+          "positive": 251,
           "privacy": 107,
           "property": 14,
           "replay": 159,
-          "rollback": 30
+          "rollback": 32
         },
-        "declaration_count": 1267,
-        "declaration_source_fingerprint": "f46f6d0ead8952be2514ded2dffbfc25a902e92fff09871396fd189813e9002b",
-        "fingerprint": "59ce0abac1a17967b9e6ac592f5757e75784b6161d5104648354ada76e9d135d",
-        "registry_fingerprint": "9b1a40f3ce8c74f0db38a51e8df7d65abfb737987fbebf9eb09d8b9d68c41dba"
+        "declaration_count": 1285,
+        "declaration_source_fingerprint": "8a57f62c4815be72dc9c30cfb79fa9e9e18f8e1448ce2c82ea41ccedb76b8d5e",
+        "fingerprint": "c164e4f8fdc1458f70af0d6d83dfc5bda3266d72937ceac0e01f59c7fd72a2d6",
+        "registry_fingerprint": "9e7a63fd5e08fd50fdd5d21af4bb9d5c9711a3f05f0fd36a1b96ae2c7a05595a"
       },
-      "fingerprint": "9b1a40f3ce8c74f0db38a51e8df7d65abfb737987fbebf9eb09d8b9d68c41dba",
+      "fingerprint": "9e7a63fd5e08fd50fdd5d21af4bb9d5c9711a3f05f0fd36a1b96ae2c7a05595a",
       "implementation_mutation_status_counts": {
         "killed": 125,
         "not_run": 5
@@ -12111,7 +12113,7 @@
         "contract_fingerprint": "96c71595b0f4272296568ccdc6e0d54e27d8b92c6e33d4b4d7ed6aa5bf3b3b1c",
         "exact_cards_with_template": 319,
         "exact_nodes": 531,
-        "fingerprint": "f71b881b7a8750ce6ed577a35b2f101f336e6780878e3de04d1e16555426dd77",
+        "fingerprint": "18c2f2abb0c7dc02b4657c159bfcad7b6c18da104fc309e18404f860d436debe",
         "grammar_source_fingerprint": "672c9e94f3423c26d366d03a27592dc8d015c98bb5d6fb72f62e10e23a71b698",
         "identity_fingerprint": "4cb336263711ecbb0b07462e7fb1e95582aa644ecc6f690569c702ee9448ed8e",
         "present": true,
@@ -12123,7 +12125,7 @@
         "contract_fingerprint": "96c71595b0f4272296568ccdc6e0d54e27d8b92c6e33d4b4d7ed6aa5bf3b3b1c",
         "exact_cards_with_template": 332,
         "exact_nodes": 551,
-        "fingerprint": "e22c40abd2fa955b2f1280bebe55e918e3c3ba8c639d0a895c9f50fe3a40f802",
+        "fingerprint": "a499e8ac91f15f0b164282ef2d5b4b0102f7c46bca587bc38901e14c57d2c9cf",
         "grammar_source_fingerprint": "672c9e94f3423c26d366d03a27592dc8d015c98bb5d6fb72f62e10e23a71b698",
         "identity_fingerprint": "abeb1b5f8e5c2e1884805da7b1cb5c4a237d38c10d4fdd928d5901e4ab925e79",
         "present": true,
@@ -12629,7 +12631,7 @@
   "generated": {
     "card_specificity_source": "platform/card-specificity-baseline.json",
     "generator": "scripts/update_architecture_audit.py",
-    "scope_note": "The evaluated source tree migrates ordinary non-Read-Ahead Saga precombat lore progression from a direct counter-state plan to the canonical immutable counter-placement transaction. One simultaneous effect_generated=false batch applies unqualified quantity replacements but excludes effect-qualified replacements such as Doubling Season, suspends competing CR 616 choices before mutation through a strict seat-scoped continuation, preserves held trigger identity, and resumes step entry exactly once. The engine imports a narrow typed rules coordinator and shrinks by two logical lines; direct GameState writes remain flat. Read Ahead, arbitrary lore movement, copied or gained chapter abilities, unsupported quantity replacements, and broader turn-based counter producers remain fail-closed.",
+    "scope_note": "The evaluated source tree delegates represented damage-result counter placement and removal to the existing typed transaction owners. Infect, Wither, and Toxic consume resolved childless counter-placement leaves without rediscovering replacement effects, while Planeswalker loyalty and Battle defense use exact typed counter removal. The damage-result coordinator validates placement, removal, life, and permanent-result plans before the first write and retains atomic rollback. The family adds no card-name, Oracle-ID, runtime Oracle-text, or parallel GameState mutation path. Effect- and cost-generated removal, counter movement, unrepresented rule-result counters, unsupported keyword variants, and broader damage interactions remain fail-closed material residuals.",
     "source": "platform/architecture-audit-source.json",
     "stale_check": "python scripts/update_architecture_audit.py --check"
   },
@@ -12955,7 +12957,7 @@
       "playwright_e2e_journeys": 10
     },
     "mutation_testing": {
-      "capability_mutation_declarations": 138,
+      "capability_mutation_declarations": 145,
       "configured_tools": [],
       "focused_executable_suite": true,
       "mutation_score": null
@@ -12983,8 +12985,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2474,
-      "discovered_total": 5774,
+      "conventional_ast_cases": 2481,
+      "discovered_total": 5781,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 93,

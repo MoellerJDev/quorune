@@ -182,6 +182,22 @@ async function advanceToDecision(
   );
 }
 
+async function advanceOtherSeats(
+  pages: readonly Page[],
+  heldPage: Page,
+): Promise<boolean> {
+  for (const page of pages) {
+    if (page === heldPage) continue;
+    const result = await submitAuthorizedPass(page);
+    if (result !== "unavailable") return true;
+  }
+  // Returning true tells driveUntil not to fall back to an all-seat pass. The
+  // held seat may already own the strategic decision while its surrounding
+  // phase projection is still settling.
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  return true;
+}
+
 async function declineSeatOpportunity(
   pages: readonly Page[],
   seatPage: Page,
@@ -211,13 +227,12 @@ async function declineSeatOpportunity(
       label: `expose ${expectedStep} seat opportunity`,
       noProgressMs: durabilityTimeout,
       advance: async () => {
-        if (!(await atExpectedWindow())) return false;
-        // The phase projection can arrive before React has made the exact
-        // strategic offer actionable. Hold this phase instead of submitting
-        // the pass that the helper is meant to verify only after the offer is
-        // visible and enabled.
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        return true;
+        const opportunityReady = await actionIsReady(opportunity);
+        if (!opportunityReady && !(await atExpectedWindow())) return false;
+        // Decision controls and phase labels are projected independently. Hold
+        // this seat as soon as either proves the intended window, but continue
+        // advancing an authorized pass owned by another seat.
+        return advanceOtherSeats(pages, seatPage);
       },
     },
   );
@@ -243,6 +258,7 @@ async function passUntilProjection(
 async function advanceToActionReady(
   pages: readonly Page[],
   action: Locator,
+  actionPage: Page,
   testInfo: TestInfo,
   durabilityTimeout = 45_000,
   holdWindow?: () => Promise<boolean>,
@@ -260,8 +276,10 @@ async function advanceToActionReady(
       // turn where this durability witness retained eight cards. Resolve that
       // scripted single-card choice before searching for the next land offer.
       if (await submitSingleCleanupDiscard(pages)) return true;
-      if (await action.count()) return true;
-      if (holdWindow && await holdWindow()) return true;
+      if (await action.count()) return advanceOtherSeats(pages, actionPage);
+      if (holdWindow && await holdWindow()) {
+        return advanceOtherSeats(pages, actionPage);
+      }
       for (const page of pages) {
         const result = await submitAuthorizedPass(page);
         if (result !== "unavailable") return true;
@@ -670,7 +688,7 @@ test("@browser-lifecycle a shared-cookie 1v1 lobby can replace rooms, remove a p
     // appears. Submit the exact current capability and certify zone outcomes;
     // an unrelated delayed revision is not evidence that a drag succeeded.
     const playSwamp = host.getByTestId(`action-play-land:${swampRef}`);
-    await advanceToActionReady([host, opponent], playSwamp, testInfo);
+    await advanceToActionReady([host, opponent], playSwamp, host, testInfo);
     await playSwamp.click();
     const dialog = host.getByTestId("choice-dialog");
     await expect.poll(async () =>
@@ -771,6 +789,7 @@ test("@browser-rules @turn-draw an isolated-context duel presents exact turn sta
     await advanceToActionReady(
       [host, opponent],
       playSpire,
+      host,
       testInfo,
       45_000,
       async () =>
@@ -916,7 +935,7 @@ test("@browser-rules @mana-action a duel stabilizes land ETBs, permits a stack r
         .locator(".card-tile");
       const battlefieldCount = await battlefieldCards.count();
       const playAction = page.getByTestId(`action-play-land:${landRef}`);
-      await advanceToActionReady([host, opponent], playAction, testInfo);
+      await advanceToActionReady([host, opponent], playAction, page, testInfo);
       await playAction.click();
       await expect(cards.locator(`[data-card-ref="${landRef}"]`)).toHaveCount(0);
       await expect(battlefieldCards).toHaveCount(battlefieldCount + 1);
@@ -1052,6 +1071,7 @@ test("@browser-rules @combat a duel declares an attacker in the browser and appl
       await advanceToActionReady(
         [host, opponent],
         playAction,
+        page,
         testInfo,
         90_000,
         async () => {
@@ -1193,7 +1213,7 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
       const expectedActiveSeat = page === host ? "A" : "B";
       const table = page.locator(".game-shell");
       await advanceToActionReady(
-        [host, opponent], playAction, testInfo, durableTransitionTimeout,
+        [host, opponent], playAction, page, testInfo, durableTransitionTimeout,
         async () => (
           (await table.getAttribute("data-active-player")) === expectedActiveSeat
           && (await table.getAttribute("data-phase")) === "precombat_main"
@@ -1335,7 +1355,7 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
     // starting an unbounded click against its disabled projection.
     const turnEndingPass = host.getByTestId("action-pass");
     await advanceToActionReady(
-      [host, opponent], turnEndingPass, testInfo, durableTransitionTimeout,
+      [host, opponent], turnEndingPass, host, testInfo, durableTransitionTimeout,
     );
     // Auto-pass may win the narrow race after readiness is observed. That is
     // already the desired transition: the following exact Seat B land offer,
