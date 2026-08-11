@@ -259,7 +259,10 @@ def crew_candidates(
 
     if not isinstance(seat, str) or seat not in host.state.players:
         raise CrewAbilityError("Crew seat is unavailable")
-    if getattr(source, "zone", None) != "battlefield":
+    if (
+        getattr(source, "zone", None) != "battlefield"
+        or bool(getattr(source, "phased_out", False))
+    ):
         return ()
     result: list[CrewCandidate] = []
     for object_id in host.state.players[seat].zones["battlefield"]:
@@ -331,8 +334,12 @@ def prepare_crew_cost(
 
     if type(threshold) is not int or threshold < 0:
         raise CrewAbilityError("Crew threshold is not compiled")
-    if source.zone != "battlefield" or source.controller != seat:
-        raise CrewAbilityError("Crew source is no longer controlled")
+    if (
+        source.zone != "battlefield"
+        or source.controller != seat
+        or source.phased_out
+    ):
+        raise CrewAbilityError("Crew source is no longer available")
     refs = _submitted_refs(response)
     candidates = crew_candidates(host, seat, source)
     available = {candidate.object_ref: candidate for candidate in candidates}
@@ -368,6 +375,7 @@ def commit_crew_cost(
         source is None
         or source.zone != "battlefield"
         or source.controller != plan.seat
+        or source.phased_out
         or source.logical_object_id != plan.source_logical_object_id
     ):
         raise CrewAbilityError("Crew source changed before cost commitment")

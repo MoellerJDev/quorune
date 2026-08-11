@@ -18,6 +18,7 @@ from quorune.counter_state import (
 from quorune.crew import (
     CrewAbilityError,
     OrdinaryCrewAbilitySpec,
+    commit_crew_cost,
     compile_ordinary_crew_ability,
     crew_candidates,
     ordinary_crew_handler_descriptor,
@@ -549,6 +550,33 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
 
         with self.assertRaisesRegex(CrewAbilityError, "power is unresolved"):
             crew_candidates(engine, "A", source)
+
+    def test_phased_source_is_unavailable_before_cost_commitment(self):
+        session = self.session(70212214)
+        engine = session.engine
+        source, candidates, _ = self.prepare(session, powers=(2,))
+        candidate = candidates[0]
+        plan = prepare_crew_cost(
+            engine,
+            seat="A",
+            source=source,
+            threshold=2,
+            response={"cost_cards": [candidate.ref]},
+        )
+
+        source.phased_out = True
+        self.assertEqual((), crew_candidates(engine, "A", source))
+        with self.assertRaisesRegex(CrewAbilityError, "no longer available"):
+            prepare_crew_cost(
+                engine,
+                seat="A",
+                source=source,
+                threshold=2,
+                response={"cost_cards": [candidate.ref]},
+            )
+        with self.assertRaisesRegex(CrewAbilityError, "changed"):
+            commit_crew_cost(engine, plan)
+        self.assertFalse(candidate.tapped)
 
     def test_current_effective_power_and_source_exclusion_share_one_cost_owner(self):
         session = self.session(70212203)
