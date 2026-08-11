@@ -3145,6 +3145,33 @@
       "status": "trusted"
     },
     {
+      "id": "target.protection.shroud_permanent",
+      "version": 1,
+      "official_rules": ["115.1", "115.2", "608.2b", "702.18", "702.18a", "702.18b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Prevent every spell or ability from targeting a battlefield permanent that currently has ordinary Shroud, including spells and abilities controlled by that permanent's controller.",
+        "inputs": ["acting spell or ability controller", "target current represented effective keyword set", "current public target schema", "selected logical target identity"],
+        "outputs": ["offer-time target exclusion", "submitted-command rejection", "resolution-time target illegality", "controller-independent prohibited verdict"],
+        "exclusions": ["players with Shroud", "effects that allow targeting as though Shroud were absent", "hidden-zone targets", "unsupported ability-removing, copy, face-down, or merged-object keyword producers"]
+      },
+      "dependencies": ["target.revalidate_resolution"],
+      "implementation_components": ["quorune.keyword_abilities.normalized_characteristic_keywords", "quorune.target_protection.TargetProtectionSnapshot", "quorune.target_protection.target_protection_verdict", "quorune.target_protection_engine_adapter.target_protection_verdict_for_row", "quorune.engine.CommanderEngine._target_row_matches"],
+      "positive_tests": ["test_shroud_blocks_every_controller_and_multiple_instances_are_redundant", "test_offer_command_privacy_rollback_and_replay_share_shroud_legality"],
+      "negative_tests": ["test_malformed_snapshot_fails_closed", "test_player_and_nonkeyword_shroud_wording_remain_residual", "test_shroud_dependency_fails_closed_without_target_revalidation"],
+      "interaction_tests": ["test_shroud_gained_after_selection_is_illegal_at_resolution", "test_shroud_does_not_prohibit_nontarget_attachment_checks"],
+      "multiplayer_tests": ["test_offer_command_privacy_rollback_and_replay_share_shroud_legality"],
+      "privacy_tests": ["test_offer_command_privacy_rollback_and_replay_share_shroud_legality"],
+      "replay_tests": ["test_offer_command_privacy_rollback_and_replay_share_shroud_legality"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The Shroud CardProgram dependency closes through target.revalidate_resolution, and the same current target-protection snapshot is consumed for offer generation, submitted-command validation, and CR 608.2b resolution revalidation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused mutation changes an ordinary Shroud verdict to allowed; the direct typed assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "target.revalidate_resolution",
       "version": 1,
       "official_rules": ["115.1", "608.2b"],

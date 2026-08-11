@@ -112,6 +112,7 @@
       "test_semantic_counter_replacement_continuations",
       "test_semantic_handlers",
       "test_semantic_searches",
+      "test_shroud_targeting",
       "test_stack_counter_rules",
       "test_targeting_v070",
       "test_trigger_targeting",
