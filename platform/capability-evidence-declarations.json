@@ -11587,6 +11587,14 @@
     },
     {
       "capability_id": "target.public.player_or_damageable_permanent",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_damage_effect_clauses.FixedDamageEffectRuntimeTests.test_any_target_damage_then_draw_revalidates_and_draws_privately",
+      "official_rule_ids": ["115.1", "115.2", "115.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Revalidate one public damageable target before the same source-spanned spell continues to its later private draw instruction."
+    },
+    {
+      "capability_id": "target.public.player_or_damageable_permanent",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_browser_gameplay_regressions.BrowserGameplayRegressionTests.test_sunscorched_desert_prompts_for_target_and_deals_damage",
       "official_rule_ids": [
@@ -13578,6 +13586,14 @@
         "commander_review"
       ],
       "applicability_note": "Resolve each represented draw through the immutable replacement pipeline before committing ordinary draw or Dredge results."
+    },
+    {
+      "capability_id": "zone.draw.library_to_hand",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_damage_effect_clauses.FixedDamageEffectRuntimeTests.test_any_target_damage_then_draw_revalidates_and_draws_privately",
+      "official_rule_ids": ["121.1", "121.2", "121.2a", "121.2b", "121.2c", "121.3", "121.3a", "121.4", "121.5", "121.6", "121.6a", "121.6b", "702.52a", "702.52b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Perform the later private draw only after the preceding targeted damage clause resolves, preserving printed order, projection privacy, and replay."
     },
     {
       "capability_id": "zone.draw.library_to_hand",

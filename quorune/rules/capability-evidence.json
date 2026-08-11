@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "248ee4c14543155f2599125a6bf30f28b5293c9dbabdba7610f3371a5a128d14",
-  "declaration_source_fingerprint": "99c4084005bae90efe9f8ba86a2bc2a76c88deefe5238129300b1d21c446a970",
+  "registry_fingerprint": "4717dba2c00c020c55f1a6fad1d53ab08abf142d13f458d6f96578a9d8a18342",
+  "declaration_source_fingerprint": "25c3d6e6082bb27ff2821a5d20cc27111c151c0eb3207fba5b78780c45b290fd",
   "declarations": [
     {
       "capability_id": "activation.crew.fixed_power",
@@ -24998,6 +24998,22 @@
     },
     {
       "capability_id": "target.public.player_or_damageable_permanent",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_damage_effect_clauses.FixedDamageEffectRuntimeTests.test_any_target_damage_then_draw_revalidates_and_draws_privately",
+      "official_rule_ids": [
+        "115.1",
+        "115.2",
+        "115.4"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate one public damageable target before the same source-spanned spell continues to its later private draw instruction."
+    },
+    {
+      "capability_id": "target.public.player_or_damageable_permanent",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_browser_gameplay_regressions.BrowserGameplayRegressionTests.test_sunscorched_desert_prompts_for_target_and_deals_damage",
       "official_rule_ids": [
@@ -27741,6 +27757,33 @@
     },
     {
       "capability_id": "zone.draw.library_to_hand",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_damage_effect_clauses.FixedDamageEffectRuntimeTests.test_any_target_damage_then_draw_revalidates_and_draws_privately",
+      "official_rule_ids": [
+        "121.1",
+        "121.2",
+        "121.2a",
+        "121.2b",
+        "121.2c",
+        "121.3",
+        "121.3a",
+        "121.4",
+        "121.5",
+        "121.6",
+        "121.6a",
+        "121.6b",
+        "702.52a",
+        "702.52b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Perform the later private draw only after the preceding targeted damage clause resolves, preserving printed order, projection privacy, and replay."
+    },
+    {
+      "capability_id": "zone.draw.library_to_hand",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_activated_draw_abilities.ActivatedDrawRuntimeTests.test_each_player_activation_draws_in_four_player_game",
       "official_rule_ids": [
@@ -28608,5 +28651,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "2a42963aae08ac4bf1a798f9433ed6c06f2ba534b6f9728640c10edcdb605c55"
+  "fingerprint": "092ec0279cd616dc4efbeb606bf2795036d45cd4fb51a991846bffb2f0f0c992"
 }
