@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "e437bbd42dd95fba43b15188e6b37a45274103223da2573ce2d687f9988df78e"
+verified: "884f989dc12ba0f256ce4ea9637e7298433f336a12a913faedb8276c3bdb41ae"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -14,10 +14,10 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 ## Snapshot
 
 - Cards considered: 31,623
-- Oracle states: `{"exact":2974,"partial":12961,"unresolved":15688}`
-- CardProgram states: `{"residual":28649,"trusted":2974}`
+- Oracle states: `{"exact":2980,"partial":12955,"unresolved":15688}`
+- CardProgram states: `{"residual":28643,"trusted":2980}`
 - Hard construction failures: 0
-- Frontier fingerprint: `e437bbd42dd95fba43b15188e6b37a45274103223da2573ce2d687f9988df78e`
+- Frontier fingerprint: `884f989dc12ba0f256ce4ea9637e7298433f336a12a913faedb8276c3bdb41ae`
 
 ## Highest-leverage single families
 
@@ -28,7 +28,7 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `mechanic_dependency:cr-611-continuous-effects` | 480 | 440 | 194 | 346 | partial | high |
 | `mechanic_dependency:cr-509-declare-blockers-step` | 428 | 423 | 156 | 392 | partial | high |
 | `effect_clause:typed-spell-additional-cost-clause` | 123 | 123 | 122 | 123 | missing_lowering | high |
-| `mechanic_dependency:cr-111-tokens` | 338 | 333 | 116 | 338 | partial | high |
+| `mechanic_dependency:cr-111-tokens` | 338 | 333 | 117 | 338 | partial | high |
 | `effect_clause:deal-damage` | 956 | 925 | 112 | 245 | missing_lowering | high |
 | `effect_clause:exile` | 988 | 942 | 102 | 430 | missing_lowering | high |
 | `effect_clause:destroy-target` | 572 | 540 | 98 | 249 | missing_lowering | high |
@@ -56,9 +56,9 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, mechanic_dependency:cr-611-continuous-effects` | 4,040 | 10,423 | 10,423 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-509-declare-blockers-step` | 4,032 | 10,276 | 10,276 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, mechanic_dependency:cr-509-declare-blockers-step` | 4,022 | 10,469 | 10,469 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-111-tokens` | 3,981 | 10,222 | 10,222 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, mechanic_dependency:cr-111-tokens` | 3,976 | 10,415 | 10,415 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-509-declare-blockers-step, mechanic_dependency:cr-111-tokens` | 3,961 | 10,268 | 10,268 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-111-tokens` | 3,982 | 10,222 | 10,222 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, mechanic_dependency:cr-111-tokens` | 3,977 | 10,415 | 10,415 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-509-declare-blockers-step, mechanic_dependency:cr-111-tokens` | 3,962 | 10,268 | 10,268 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:typed-spell-additional-cost-clause` | 3,944 | 10,007 | 10,007 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-614-replacement-effects, effect_clause:typed-spell-additional-cost-clause` | 3,938 | 10,200 | 10,200 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:deal-damage` | 3,933 | 10,129 | 10,129 |

@@ -3671,6 +3671,110 @@
       "applicability_note": "Replay replacement selection, staged payment refusal, and sacrifice to the identical final authoritative hash."
     },
     {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_source_identity_handles_departure_control_and_phasing",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Bind the resolving result to the original Dethrone source incarnation, preserve that object through a control change, and skip a departed, returned, or phased source."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_dethrone_uses_complete_four_player_life_snapshot_and_quantity_replacement",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Freeze four-player most-life qualification at declaration and route the later self-counter result through the canonical quantity replacement owner."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Collect Dethrone and Training occurrences in the same ordinary declaration-time trigger batch and use the existing same-controller ordering continuation."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_dethrone_uses_complete_four_player_life_snapshot_and_quantity_replacement",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compare the attacked player against all four active public life totals, including ties with the attacking player and another opponent."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_attack_counter_compiler_mutant_is_killed",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a compiler mutant that removes the typed source-spanned Dethrone fragment from the CardProgram."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "negative",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_attack_counter_snapshots_are_canonical_strict_and_reconstructable",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject boolean life totals, malformed nested objects, unknown fields, and noncanonical qualification state before trigger placement."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "negative",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_unsupported_attack_counter_wording_and_blocked_dependencies_fail_closed",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep nonkeyword-equivalent wording and blocked trigger or counter dependencies outside exact Dethrone CardPrograms."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "negative",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_source_identity_handles_departure_control_and_phasing",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Do not put a counter on a new source incarnation or on a phased-out source when the original Dethrone trigger resolves."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "positive",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_and_training_compile_with_exact_spans_and_capability_closure",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower every ordinary printed Dethrone instance with an exact source span and fine-grained capability closure."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "positive",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_qualifies_only_direct_attacks_against_a_most_life_player",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Create one independently identified occurrence per Dethrone instance only for a direct attack against a player tied for greatest life."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "positive",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_dethrone_uses_complete_four_player_life_snapshot_and_quantity_replacement",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve one qualified Dethrone trigger through the canonical replacement-aware permanent counter owner."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project only public source references and trigger labels while retaining physical, logical, and qualification identity in authoritative state."
+    },
+    {
+      "capability_id": "counter.producer.dethrone",
+      "evidence_class": "replay",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_trigger_replays_exactly",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.105", "702.105a", "702.105b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the declaration snapshot, same-controller ordering, Dethrone occurrence, and final counter result to the identical authoritative hash."
+    },
+    {
       "capability_id": "counter.producer.effect_entry",
       "evidence_class": "interaction",
       "test_id": "tests.test_persist_undying_rules.PersistUndyingRuntimeTests.test_zone_and_counter_replacements_complete_before_return_mutates",
@@ -5325,6 +5429,110 @@
       "official_rule_ids": ["101.4", "115.1", "115.3", "115.6", "122.1", "122.1a", "122.6", "608.2b", "614.16", "616.1", "701.41", "701.41a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the same partial Support target set, replacement selection, and final authoritative hash."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_source_identity_handles_departure_control_and_phasing",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Bind the resolving result to the original Training source incarnation while preserving that object through a control change and skipping unavailable sources."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Collect Training and Dethrone occurrences in the same ordinary declaration-time trigger batch and use the existing same-controller ordering continuation."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_training_uses_declaration_power_and_quantity_replacement",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Freeze effective attacker powers at declaration and route the later Training self-counter result through the canonical quantity replacement owner."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Place simultaneous attack-counter triggers through the ordinary four-player declaration and trigger-order boundary."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_attack_counter_compiler_mutant_is_killed",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a compiler mutant that removes the typed source-spanned Training fragment from the CardProgram."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "negative",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_attack_counter_snapshots_are_canonical_strict_and_reconstructable",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject boolean powers, malformed nested identities, unknown fields, and noncanonical qualification state before trigger placement."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "negative",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_unsupported_attack_counter_wording_and_blocked_dependencies_fail_closed",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep trains-event listeners, nonkeyword-equivalent wording, and blocked trigger or counter dependencies outside exact Training CardPrograms."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "negative",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_source_identity_handles_departure_control_and_phasing",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Do not put a Training counter on a new source incarnation or phased-out source, while permitting the original object after control changes."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "positive",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_and_training_compile_with_exact_spans_and_capability_closure",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower every ordinary printed Training instance with an exact source span and fine-grained capability closure."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "positive",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_training_requires_another_strictly_greater_attacker_and_preserves_instances",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Create one independently identified occurrence per Training instance only when another declared attacker has strictly greater effective power."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "positive",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_training_uses_declaration_power_and_quantity_replacement",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve one qualified Training trigger through the canonical replacement-aware permanent counter owner."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project only public source references and trigger labels while retaining attacker powers and exact identities in authoritative state."
+    },
+    {
+      "capability_id": "counter.producer.training",
+      "evidence_class": "replay",
+      "test_id": "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_trigger_replays_exactly",
+      "official_rule_ids": ["122.1", "122.1a", "122.6", "208.3", "508.1m", "603.2c", "603.3", "603.3b", "603.3d", "608.2h", "614.16", "616.1", "702.149", "702.149a", "702.149b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the declaration power snapshot, same-controller ordering, Training occurrence, and final counter result to the identical authoritative hash."
     },
     {
       "capability_id": "counter.producer.undying",

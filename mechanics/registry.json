@@ -1,5 +1,5 @@
 {
-  "contract_count": 96,
+  "contract_count": 98,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -167,6 +167,12 @@
       "mechanic_id": "destroy",
       "path": "mechanics/contracts/destroy.json",
       "sha256": "43727e9ea1e7ec94d89012f77a62bc1ab6d5ac1539c4bbde75e1917ee4442e96",
+      "version": 1
+    },
+    {
+      "mechanic_id": "dethrone",
+      "path": "mechanics/contracts/dethrone.json",
+      "sha256": "7cd758dc96f1414607ebf37b6d92512e948bb12e64ad34437d5f8af05cef824b",
       "version": 1
     },
     {
@@ -521,6 +527,12 @@
       "mechanic_id": "toxic",
       "path": "mechanics/contracts/toxic.json",
       "sha256": "17d33279bb510c210334e997ad8d68b38a3192aeae016ef0d5843e1cff179eeb",
+      "version": 1
+    },
+    {
+      "mechanic_id": "training",
+      "path": "mechanics/contracts/training.json",
+      "sha256": "0393b4ddfa56a8cda780fdbb3006c1e1641e7fe566dedfdbe5427d6a65dd5820",
       "version": 1
     },
     {
@@ -1465,19 +1477,39 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/dethrone.json",
+      "contract_sha256": "7cd758dc96f1414607ebf37b6d92512e948bb12e64ad34437d5f8af05cef824b",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.attack_counter_triggers, quorune.attack_transition_engine_adapter, and the canonical counter-placement transaction",
+      "implementation_version": "typed-dethrone-counter-placement-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "granted, copied, lost, and face-down Dethrone requires trusted typed ability propagation",
+        "Oracle-equivalent nonkeyword wording remains unsupported",
+        "put-onto-the-battlefield-attacking effects outside the completed declaration transition remain unsupported",
+        "trigger-doubling policies remain outside this bounded capability",
+        "aggregate counter placement and triggered abilities remain incomplete"
+      ],
       "mechanic_id": "dethrone",
       "official_name": "Dethrone",
       "rule_references": [
         "702.105"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_attack_counter_snapshots_are_canonical_strict_and_reconstructable",
+        "test_dethrone_qualifies_only_direct_attacks_against_a_most_life_player",
+        "test_dethrone_and_training_compile_with_exact_spans_and_capability_closure",
+        "test_unsupported_attack_counter_wording_and_blocked_dependencies_fail_closed",
+        "test_attack_counter_compiler_mutant_is_killed",
+        "test_dethrone_uses_complete_four_player_life_snapshot_and_quantity_replacement",
+        "test_attack_counter_source_identity_handles_departure_control_and_phasing",
+        "test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+        "test_attack_counter_trigger_replays_exactly"
+      ],
       "trust_level": "untrusted"
     },
     {
@@ -4352,19 +4384,40 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/training.json",
+      "contract_sha256": "0393b4ddfa56a8cda780fdbb3006c1e1641e7fe566dedfdbe5427d6a65dd5820",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.attack_counter_triggers, quorune.attack_transition_engine_adapter, and the canonical counter-placement transaction",
+      "implementation_version": "typed-training-counter-placement-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "CR 702.149c trains-event emission and generic listeners remain unsupported",
+        "granted, copied, lost, and face-down Training requires trusted typed ability propagation",
+        "Oracle-equivalent nonkeyword wording remains unsupported",
+        "put-onto-the-battlefield-attacking effects outside the completed declaration transition remain unsupported",
+        "trigger-doubling policies remain outside this bounded capability",
+        "aggregate continuous effects, counter placement, and triggered abilities remain incomplete"
+      ],
       "mechanic_id": "training",
       "official_name": "Training",
       "rule_references": [
         "702.149"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_attack_counter_snapshots_are_canonical_strict_and_reconstructable",
+        "test_training_requires_another_strictly_greater_attacker_and_preserves_instances",
+        "test_dethrone_and_training_compile_with_exact_spans_and_capability_closure",
+        "test_unsupported_attack_counter_wording_and_blocked_dependencies_fail_closed",
+        "test_attack_counter_compiler_mutant_is_killed",
+        "test_training_uses_declaration_power_and_quantity_replacement",
+        "test_attack_counter_source_identity_handles_departure_control_and_phasing",
+        "test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+        "test_attack_counter_trigger_replays_exactly"
+      ],
       "trust_level": "untrusted"
     },
     {

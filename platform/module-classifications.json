@@ -174,6 +174,20 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/attack_counter_triggers.py",
+      "layer": "rules",
+      "owning_subsystem": "legacy_rules",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/attack_transition_engine_adapter.py",
       "layer": "rules",
       "owning_subsystem": "combat_transitions",
@@ -5280,5 +5294,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "04e26b9f0cc87d511a1b82fe83fce7bf78d4b181339e63cc7ff91579adfca396"
+  "fingerprint": "3e877761c0757b2b725a62c9d848b3190d4bc070349151afb159e6bd9ff0c163"
 }

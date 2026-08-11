@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.105 — Dethrone",
+  "cases": [
+    {
+      "rule_id": "702.105",
+      "rule_text_sha256": "ec6bb65027e280009404718ba65112b1233172158cb07211d600daceeccedb4e",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/dethrone.json"],
+      "executable_test_ids": ["tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_and_training_compile_with_exact_spans_and_capability_closure"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded ordinary printed behavior is owned by counter.producer.dethrone while granted, copied, nonkeyword, and trigger-modified variants keep the aggregate mechanic untrusted."]
+    },
+    {
+      "rule_id": "702.105a",
+      "rule_text_sha256": "c821a6780faf58de55edcd1fa3b0139324b5b2da6dd746206aec60d393a9fdaf",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["quorune.attack_counter_triggers.AttackPlayerLifeSnapshot", "quorune.attack_counter_triggers.DethroneQualification", "quorune.attack_counter_triggers.derive_attack_counter_trigger_occurrences", "quorune.attack_transition_engine_adapter.attack_transition_stack_items", "quorune.counter_placement.place_counters_on_refs"],
+      "executable_test_ids": ["tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_attack_counter_snapshots_are_canonical_strict_and_reconstructable", "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_qualifies_only_direct_attacks_against_a_most_life_player", "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_unsupported_attack_counter_wording_and_blocked_dependencies_fail_closed", "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_dethrone_uses_complete_four_player_life_snapshot_and_quantity_replacement", "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_source_identity_handles_departure_control_and_phasing", "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity", "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_trigger_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": [],
+      "notes": ["The bounded ordinary printed ability snapshots all active-player life totals after declaration, qualifies only a direct player attack, preserves the trigger through later life changes, and uses canonical trigger and counter owners."]
+    },
+    {
+      "rule_id": "702.105b",
+      "rule_text_sha256": "e2a88675989d06a4a62604bafb17c69ce37eca23fbffc124e93eca2dd231d8e8",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["quorune.ability_fragments.CombatKeywordTriggerSpec", "quorune.attack_counter_triggers.AttackCounterTriggerOccurrence", "quorune.attack_counter_triggers.derive_attack_counter_trigger_occurrences"],
+      "executable_test_ids": ["tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_qualifies_only_direct_attacks_against_a_most_life_player", "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_and_training_compile_with_exact_spans_and_capability_closure", "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_trigger_replays_exactly"],
+      "required_scenarios": ["positive", "replay"],
+      "covered_scenarios": ["positive", "replay"],
+      "blockers": [],
+      "notes": ["Each represented typed Dethrone fragment receives a distinct source span, instance index, immutable occurrence identity, independently ordered trigger, and counter result."]
+    }
+  ]
+}

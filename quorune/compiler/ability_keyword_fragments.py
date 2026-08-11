@@ -214,6 +214,16 @@ def _lower_combat_keyword_fragments(
             CombatKeywordTriggerKind.MENTOR,
             "ability.trigger.mentor.v1",
         ),
+        (
+            "dethrone",
+            CombatKeywordTriggerKind.DETHRONE,
+            "ability.trigger.dethrone.v1",
+        ),
+        (
+            "training",
+            CombatKeywordTriggerKind.TRAINING,
+            "ability.trigger.training.v1",
+        ),
     )
     for mechanic, kind, handler_id in ordinary_attack_keywords:
         keyword = mechanic

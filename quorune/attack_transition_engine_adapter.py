@@ -20,6 +20,15 @@ from .attack_transition_model import (
     build_attack_transition,
     derive_attack_keyword_trigger_occurrences,
 )
+from .attack_counter_triggers import (
+    ATTACK_COUNTER_TRIGGER_SEMANTIC_KEY,
+    AttackCounterTriggerOccurrence,
+    AttackPlayerLifeSnapshot,
+    PlayerLifeTotal,
+    attack_counter_effect,
+    attack_counter_trigger_stack_item,
+    derive_attack_counter_trigger_occurrences,
+)
 from .attack_transition_resolution import (
     ATTACK_KEYWORD_TRIGGER_SEMANTIC_KEY,
     attack_keyword_trigger_stack_item,
@@ -45,6 +54,9 @@ class EngineAttackTransitionQuery(AttackTransitionQuery):
 
     def __init__(self, engine: Any) -> None:
         self._engine = engine
+        self._fragment_cache: dict[str, tuple[Any, ...]] = {}
+        self._training_power_required: bool | None = None
+        self._attacker_ids: tuple[str, ...] | None = None
 
     def turn_sequence(self) -> int:
         return self._engine.state.turn_sequence
@@ -61,7 +73,9 @@ class EngineAttackTransitionQuery(AttackTransitionQuery):
         return active
 
     def attacker_object_ids(self) -> Sequence[str]:
-        return tuple(self._engine.state.combat.attackers)
+        if self._attacker_ids is None:
+            self._attacker_ids = tuple(self._engine.state.combat.attackers)
+        return self._attacker_ids
 
     def trigger_source_object_ids(self) -> Sequence[str]:
         active = self.active_player()
@@ -71,6 +85,54 @@ class EngineAttackTransitionQuery(AttackTransitionQuery):
             if participant.trigger_specs:
                 source_ids.append(object_id)
         return tuple(source_ids)
+
+    def _fragments(self, object_id: str) -> tuple[Any, ...]:
+        cached = self._fragment_cache.get(object_id)
+        if cached is not None:
+            return cached
+        card = self._engine.state.cards.get(object_id)
+        if (
+            card is None
+            or card.zone != "battlefield"
+            or card.phased_out
+            or card.controller != self.active_player()
+        ):
+            raise AttackTransitionError(
+                "Every attack-transition participant must be a current "
+                "active-player permanent"
+            )
+        try:
+            fragments = canonical_ability_fragments(
+                self._engine._effective_card_data(card).get(
+                    "ability_fragments", ()
+                )
+            )
+        except AbilityFragmentError as exc:
+            raise AttackTransitionError(str(exc)) from exc
+        self._fragment_cache[object_id] = fragments
+        return fragments
+
+    def _requires_training_power_snapshot(self) -> bool:
+        if self._training_power_required is None:
+            self._training_power_required = any(
+                spec.kind is CombatKeywordTriggerKind.TRAINING
+                for object_id in self.attacker_object_ids()
+                for spec in combat_keyword_trigger_specs(
+                    self._fragments(object_id)
+                )
+            )
+        return self._training_power_required
+
+    def player_life_snapshot(self) -> AttackPlayerLifeSnapshot:
+        return AttackPlayerLifeSnapshot(
+            tuple(
+                PlayerLifeTotal(
+                    player=seat,
+                    life=self._engine.state.players[seat].life,
+                )
+                for seat in self._engine.active_seats
+            )
+        )
 
     def participant(self, object_id: str) -> AttackTransitionParticipant:
         card = self._engine.state.cards.get(object_id)
@@ -88,28 +150,28 @@ class EngineAttackTransitionQuery(AttackTransitionQuery):
         card_types, _subtypes, _supertypes = self._engine._type_parts(
             str(effective.get("type_line") or "")
         )
-        try:
-            fragments = canonical_ability_fragments(
-                effective.get("ability_fragments", ())
-            )
-        except AbilityFragmentError as exc:
-            raise AttackTransitionError(str(exc)) from exc
+        fragments = self._fragments(object_id)
+        trigger_specs = tuple(
+            spec
+            for spec in combat_keyword_trigger_specs(fragments)
+            if spec.kind in ATTACK_TRIGGER_KINDS
+        )
         return AttackTransitionParticipant(
             object_id=card.object_id,
             logical_object_id=card.logical_object_id,
             reference=card.ref,
             controller=card.controller,
             is_creature="creature" in card_types and "battle" not in card_types,
-            trigger_specs=tuple(
-                spec
-                for spec in combat_keyword_trigger_specs(fragments)
-                if spec.kind in ATTACK_TRIGGER_KINDS
-            ),
+            trigger_specs=trigger_specs,
             power=(
                 self._engine._numeric_stat(card.object_id, "power")
-                if any(
-                    spec.kind is CombatKeywordTriggerKind.MENTOR
-                    for spec in combat_keyword_trigger_specs(fragments)
+                if card.object_id in self.attacker_object_ids()
+                and (
+                    self._requires_training_power_snapshot()
+                    or any(
+                        spec.kind is CombatKeywordTriggerKind.MENTOR
+                        for spec in trigger_specs
+                    )
                 )
                 else None
             ),
@@ -177,11 +239,16 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
     """Seal the attack declaration and return its represented stack items."""
 
     try:
-        event = build_attack_transition(EngineAttackTransitionQuery(engine))
+        query = EngineAttackTransitionQuery(engine)
+        event = build_attack_transition(query)
         if event is None:
             return ()
         occurrences = derive_attack_keyword_trigger_occurrences(event)
         mentor_occurrences = derive_mentor_trigger_occurrences(event)
+        counter_occurrences = derive_attack_counter_trigger_occurrences(
+            event,
+            query.player_life_snapshot(),
+        )
         stack_items = []
         for occurrence in occurrences:
             ref = engine._next_ref("S")
@@ -203,6 +270,16 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
                     visibility=engine.seats,
                 )
             )
+        for occurrence in counter_occurrences:
+            ref = engine._next_ref("S")
+            stack_items.append(
+                attack_counter_trigger_stack_item(
+                    occurrence,
+                    ref=ref,
+                    stack_id=engine._stable_runtime_id("stack", ref),
+                    visibility=engine.seats,
+                )
+            )
     except (AbilityFragmentError, AttackTransitionError) as exc:
         raise StateInvariantError(str(exc)) from exc
     engine._log(
@@ -211,7 +288,8 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
         (
             f"Completed {len(event.assignments)} attack declaration(s) and "
             "created "
-            f"{len(occurrences) + len(mentor_occurrences)} represented "
+            f"{len(occurrences) + len(mentor_occurrences) + len(counter_occurrences)} "
+            "represented "
             "trigger(s)."
         ),
         {
@@ -222,6 +300,10 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
             + [
                 occurrence.occurrence_id
                 for occurrence in mentor_occurrences
+            ]
+            + [
+                occurrence.occurrence_id
+                for occurrence in counter_occurrences
             ],
         },
         importance=2,
@@ -238,6 +320,48 @@ def prepare_attack_keyword_trigger_resolution(
 ) -> bool:
     """Resolve one typed attack occurrence through the engine facade."""
 
+    if item.semantic_key == ATTACK_COUNTER_TRIGGER_SEMANTIC_KEY:
+        context = item.context
+        if not isinstance(context, Mapping) or context.get("event") != (
+            "combat.attack_transition"
+        ):
+            raise StateInvariantError(
+                "An attack-counter trigger has malformed event context"
+            )
+        try:
+            occurrence = AttackCounterTriggerOccurrence.from_dict(
+                context.get("attack_counter_trigger")
+            )
+        except (TypeError, AttackTransitionError) as exc:
+            raise StateInvariantError(str(exc)) from exc
+        if (
+            occurrence.controller != item.controller
+            or occurrence.source.object_id != item.source_object_id
+        ):
+            raise StateInvariantError(
+                "An attack-counter trigger no longer matches its stack identity"
+            )
+        source = engine.state.cards.get(occurrence.source.object_id)
+        source_available = (
+            source is not None
+            and source.zone == "battlefield"
+            and not source.phased_out
+            and source.logical_object_id == occurrence.source.logical_object_id
+        )
+        engine._begin_resolve_item(
+            item,
+            [attack_counter_effect(source.ref)] if source_available else [],
+            item.default_destination,
+            note=(
+                f"Resolved typed {occurrence.kind.value} occurrence"
+                if source_available
+                else (
+                    f"Resolved typed {occurrence.kind.value} occurrence with "
+                    "unavailable source"
+                )
+            ),
+        )
+        return True
     if item.semantic_key == MENTOR_TRIGGER_SEMANTIC_KEY:
         context = item.context
         if not isinstance(context, Mapping) or context.get("event") != (

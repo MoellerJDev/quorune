@@ -71600,23 +71600,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.105",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_and_training_compile_with_exact_spans_and_capability_closure"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/dethrone.json"
+      ],
+      "notes": [
+        "Keyword heading; the bounded ordinary printed behavior is owned by counter.producer.dethrone while granted, copied, nonkeyword, and trigger-modified variants keep the aggregate mechanic untrusted."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.105",
       "rule_text_sha256": "ec6bb65027e280009404718ba65112b1233172158cb07211d600daceeccedb4e",
       "schema_version": 1,
@@ -71625,26 +71629,54 @@
         "end_line": 4773,
         "start_line": 4772
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.105a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.105"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_attack_counter_snapshots_are_canonical_strict_and_reconstructable",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_qualifies_only_direct_attacks_against_a_most_life_player",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_unsupported_attack_counter_wording_and_blocked_dependencies_fail_closed",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_dethrone_uses_complete_four_player_life_snapshot_and_quantity_replacement",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_source_identity_handles_departure_control_and_phasing",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_trigger_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.attack_counter_triggers.AttackPlayerLifeSnapshot",
+        "quorune.attack_counter_triggers.DethroneQualification",
+        "quorune.attack_counter_triggers.derive_attack_counter_trigger_occurrences",
+        "quorune.attack_transition_engine_adapter.attack_transition_stack_items",
+        "quorune.counter_placement.place_counters_on_refs"
+      ],
+      "notes": [
+        "The bounded ordinary printed ability snapshots all active-player life totals after declaration, qualifies only a direct player attack, preserves the trigger through later life changes, and uses canonical trigger and counter owners."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.105a",
       "rule_text_sha256": "c821a6780faf58de55edcd1fa3b0139324b5b2da6dd746206aec60d393a9fdaf",
       "schema_version": 1,
@@ -71653,26 +71685,40 @@
         "end_line": 4775,
         "start_line": 4774
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.105b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.105"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_qualifies_only_direct_attacks_against_a_most_life_player",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_and_training_compile_with_exact_spans_and_capability_closure",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_trigger_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.ability_fragments.CombatKeywordTriggerSpec",
+        "quorune.attack_counter_triggers.AttackCounterTriggerOccurrence",
+        "quorune.attack_counter_triggers.derive_attack_counter_trigger_occurrences"
+      ],
+      "notes": [
+        "Each represented typed Dethrone fragment receives a distinct source span, instance index, immutable occurrence identity, independently ordered trigger, and counter result."
+      ],
+      "required_scenarios": [
+        "positive",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.105b",
       "rule_text_sha256": "e2a88675989d06a4a62604bafb17c69ce37eca23fbffc124e93eca2dd231d8e8",
       "schema_version": 1,
@@ -71681,7 +71727,7 @@
         "end_line": 4777,
         "start_line": 4776
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
       "assertion_kind": "inventory_only",
@@ -76508,23 +76554,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.149",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_and_training_compile_with_exact_spans_and_capability_closure"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/training.json"
+      ],
+      "notes": [
+        "Keyword heading; ordinary printed trigger and counter behavior is owned by counter.producer.training while CR 702.149c listeners and other unrepresented variants keep the aggregate mechanic untrusted."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.149",
       "rule_text_sha256": "36a798e3f39239ccdec697ee348d2ce0a7b8d2d9087940496e2ca5d0853399f2",
       "schema_version": 1,
@@ -76533,26 +76583,54 @@
         "end_line": 5099,
         "start_line": 5098
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.149a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.149"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_attack_counter_snapshots_are_canonical_strict_and_reconstructable",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_training_requires_another_strictly_greater_attacker_and_preserves_instances",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_unsupported_attack_counter_wording_and_blocked_dependencies_fail_closed",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_training_uses_declaration_power_and_quantity_replacement",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_source_identity_handles_departure_control_and_phasing",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_trigger_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.attack_counter_triggers.AttackerPowerSnapshot",
+        "quorune.attack_counter_triggers.TrainingQualification",
+        "quorune.attack_counter_triggers.derive_attack_counter_trigger_occurrences",
+        "quorune.attack_transition_engine_adapter.attack_transition_stack_items",
+        "quorune.counter_placement.place_counters_on_refs"
+      ],
+      "notes": [
+        "The bounded ordinary printed ability snapshots effective power for every declared attacker, requires another strictly greater-power attacker, preserves that qualification through resolution, and uses canonical trigger and counter owners."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.149a",
       "rule_text_sha256": "a160b5028e7e8d868478d3e24c2132b1afab3a89a55ec31d69a0e7f8132b78d6",
       "schema_version": 1,
@@ -76561,26 +76639,40 @@
         "end_line": 5101,
         "start_line": 5100
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.149b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.149"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_training_requires_another_strictly_greater_attacker_and_preserves_instances",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_dethrone_and_training_compile_with_exact_spans_and_capability_closure",
+        "tests.test_attack_counter_triggers.AttackCounterTriggerRuntimeTests.test_attack_counter_trigger_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.ability_fragments.CombatKeywordTriggerSpec",
+        "quorune.attack_counter_triggers.AttackCounterTriggerOccurrence",
+        "quorune.attack_counter_triggers.derive_attack_counter_trigger_occurrences"
+      ],
+      "notes": [
+        "Each represented typed Training fragment receives a distinct source span, instance index, immutable occurrence identity, independently ordered trigger, and counter result."
+      ],
+      "required_scenarios": [
+        "positive",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.149b",
       "rule_text_sha256": "7f3cb6a3d1ef74ecffccdaee1b9831298cdb1f2d15ecd6ffe56a27b14546272a",
       "schema_version": 1,
@@ -76589,26 +76681,43 @@
         "end_line": 5103,
         "start_line": 5102
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "successful Training resolution does not yet emit a typed trains occurrence",
+        "generic listeners for the exact Training source and counter result are not compiled",
+        "counter-replacement-to-zero, simultaneous listener placement, copy, control-change, and replay evidence for trains listeners are absent"
       ],
       "case_id": "cr-702.149c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.149"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_attack_counter_triggers.AttackCounterTriggerModelAndCompilerTests.test_unsupported_attack_counter_wording_and_blocked_dependencies_fail_closed"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/training.json"
+      ],
+      "notes": [
+        "The ordinary Training counter result is implemented, but no downstream ability is told that the source trained; such listeners remain material residuals."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.149c",
       "rule_text_sha256": "2dd3add1181c955f1ed71e23f8d7922241e29019aab6ecd4b5684e8a8eeab2d0",
       "schema_version": 1,
@@ -76617,7 +76726,7 @@
         "end_line": 5105,
         "start_line": 5104
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

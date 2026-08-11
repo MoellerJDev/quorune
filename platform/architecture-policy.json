@@ -11,6 +11,7 @@
     "quorune/activation_usage.py",
     "quorune/ability_fragments.py",
     "quorune/aerial_blocking.py",
+    "quorune/attack_counter_triggers.py",
     "quorune/choice_forms.py",
     "quorune/combat.py",
     "quorune/combat_constraints.py",
