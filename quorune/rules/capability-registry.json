@@ -150,19 +150,19 @@
     {
       "id": "activation.crew.fixed_power",
       "version": 1,
-      "official_rules": ["602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
+      "official_rules": ["205.1a", "205.1b", "602.1", "602.2", "702.122", "702.122a", "702.122b", "702.122c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
         "summary": "Activate one source-pinned printed Crew N ability by tapping a chosen set of distinct other untapped creatures the activator controls whose current total power is at least N, then make the same battlefield permanent an artifact creature until end of turn on resolution.",
         "inputs": ["phased-in controlled battlefield source", "source-pinned ordinary Crew descriptor", "current exact effective creature types and integral power", "distinct chosen other untapped controlled creatures", "current priority and source logical identity"],
-        "outputs": ["payable activation offer with seat-scoped public cost candidates", "simultaneous validated tap-cost commitment", "ordinary activated-ability stack object", "replay-pinned crewed-by snapshots", "layer-4 creature type effect until cleanup"],
+        "outputs": ["payable activation offer with seat-scoped public cost candidates", "simultaneous validated tap-cost commitment", "ordinary activated-ability stack object", "replay-pinned crewed-by snapshots", "additive layer-4 Artifact and Creature type effect retaining existing types and subtypes until cleanup"],
         "exclusions": ["effects that state a creature can't crew Vehicles", "becomes-crewed triggers and intervening conditions", "alternative or additional Crew costs", "variable or nonnumeric Crew thresholds", "unresolved or nonintegral effective power", "granted, copied, removed, or text-changing Crew", "ambient type-changing dependencies outside the represented fixed layer-4 result", "effects that crew a Vehicle without activating its Crew ability"]
       },
       "dependencies": ["continuous.resolution.fixed_characteristics_until_end_of_turn"],
-      "implementation_components": ["quorune.crew.OrdinaryCrewAbilitySpec", "quorune.crew.CrewCostPlan", "quorune.compiler.crew_nodes.ordinary_crew_keyword_node", "quorune.semantic_runtime.crew_abilities.OrdinaryCrewAbilityHandler", "quorune.compiled_crew_abilities.compiled_ordinary_crew_abilities", "quorune.rules.activation.query.activated_abilities", "quorune.rules.activation.commit.commit_activation", "quorune.tap_state.set_permanent_tapped", "quorune.effect_runtime.objects_stack_and_tokens._apply_set_types_until_end_of_turn"],
+      "implementation_components": ["quorune.crew.OrdinaryCrewAbilitySpec", "quorune.crew.CrewCostPlan", "quorune.compiler.crew_nodes.ordinary_crew_keyword_node", "quorune.semantic_runtime.crew_abilities.OrdinaryCrewAbilityHandler", "quorune.compiled_crew_abilities.compiled_ordinary_crew_abilities", "quorune.rules.activation.query.activated_abilities", "quorune.rules.activation.commit.commit_activation", "quorune.tap_state.set_permanent_tapped", "quorune.effect_runtime.objects_stack_and_tokens._apply_add_types_until_end_of_turn"],
       "positive_tests": ["test_fixed_ordinary_crew_compiles_source_spanned_activation", "test_generic_crew_taps_exact_creatures_and_resolves_type_effect", "test_crew_zero_offer_and_commit_share_empty_cost_legality"],
       "negative_tests": ["test_unsupported_crew_variants_remain_precise_residuals", "test_selected_negative_power_counts_against_crew_total_and_rolls_back", "test_noncontrolled_tapped_and_duplicate_cost_objects_are_rejected", "test_unresolved_effective_power_fails_closed", "test_phased_source_is_unavailable_before_cost_commitment", "test_changed_crew_oracle_fails_closed_without_runtime_reparse"],
-      "interaction_tests": ["test_current_effective_power_and_source_exclusion_share_one_cost_owner", "test_source_departure_before_resolution_does_not_affect_returned_object", "test_source_control_change_and_phasing_use_zone_object_identity"],
+      "interaction_tests": ["test_crew_retains_existing_card_types_and_subtypes", "test_current_effective_power_and_source_exclusion_share_one_cost_owner", "test_source_departure_before_resolution_does_not_affect_returned_object", "test_source_control_change_and_phasing_use_zone_object_identity"],
       "multiplayer_tests": ["test_four_player_crew_context_is_public_seat_scoped_and_replays"],
       "privacy_tests": ["test_four_player_crew_context_is_public_seat_scoped_and_replays"],
       "replay_tests": ["test_four_player_crew_context_is_public_seat_scoped_and_replays"],

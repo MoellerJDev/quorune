@@ -116,8 +116,10 @@ candidate set and aggregate-power cost plan; activation offers and commits use
 that same typed owner. The plan excludes the source even if it is already a
 creature, counts the signed power of every selected creature, revalidates each
 physical and logical identity before tapping, and permits an empty selection
-for Crew 0. Resolution binds the layer-4 result to the source incarnation that
-created the stack object, so a Vehicle that leaves and returns is not affected.
+for Crew 0. Resolution adds the Artifact and Creature types while retaining
+the source's existing card types and subtypes, as required for an "artifact
+creature" result, and binds that layer-4 effect to the source incarnation that
+created the stack object. A Vehicle that leaves and returns is not affected.
 Crew prohibitions, alternative costs, becomes-crewed triggers, granted or
 copied Crew, and effects that crew without activating the ability remain
 explicitly unsupported.

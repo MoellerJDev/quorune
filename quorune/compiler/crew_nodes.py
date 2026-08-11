@@ -91,7 +91,7 @@ def ordinary_crew_keyword_node(
         cost=activated_ability_cost(spec.to_activated_ability()),
         effects=(
             {
-                "op": "set_types_until_end_of_turn",
+                "op": "add_types_until_end_of_turn",
                 "card": "$source.zone_object",
                 "types": ["Artifact", "Creature"],
             },

@@ -940,7 +940,7 @@ def capability_dependencies_for_node(
             {
                 "add_subtype_until_end_of_turn",
                 "add_type_until_end_of_turn",
-                "set_types_until_end_of_turn",
+                "add_types_until_end_of_turn",
                 "grant_keyword_until_end_of_turn",
                 "modify_all_matching_permanents_until_end_of_turn",
                 "modify_stats_until_end_of_turn",

@@ -22,6 +22,8 @@ class OrdinaryCrewAbilityHandler:
     family: str = "ability.activated.crew"
     event: str = "activate"
     rule_references: tuple[str, ...] = (
+        "205.1a",
+        "205.1b",
         "602.1",
         "602.2",
         "702.122",

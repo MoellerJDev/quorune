@@ -163,7 +163,7 @@ class OrdinaryCrewCompilerTests(unittest.TestCase):
         self.assertEqual("Crew 3", node.cost["text"])
         self.assertEqual(
             {
-                "op": "set_types_until_end_of_turn",
+                "op": "add_types_until_end_of_turn",
                 "card": "$source.zone_object",
                 "types": ["Artifact", "Creature"],
             },
@@ -288,6 +288,7 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
         *,
         seat: str = "A",
         powers: tuple[int, ...] = (1, 1),
+        source_type_line: str | None = None,
     ):
         engine = session.engine
         source = self.card(engine, seat, "Demonic Junker")
@@ -297,6 +298,10 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
             controller=seat,
             log=False,
         )
+        if source_type_line is not None:
+            source.annotations.setdefault("copy_overrides", {})[
+                "type_line"
+            ] = source_type_line
         candidates = tuple(
             self.creature(engine, seat, f"Crew Pilot {index}", power)
             for index, power in enumerate(powers, start=1)
@@ -346,6 +351,12 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
             str(engine._effective_card_data(card).get("type_line") or "")
         )[0]
 
+    @staticmethod
+    def effective_subtypes(engine, card) -> set[str]:
+        return engine._type_parts(
+            str(engine._effective_card_data(card).get("type_line") or "")
+        )[1]
+
     def test_generic_crew_taps_exact_creatures_and_resolves_type_effect(self):
         session = self.session(70212201)
         engine = session.engine
@@ -376,6 +387,47 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
         )
         self.assertIn("artifact", self.effective_types(engine, source))
         self.assertIn("creature", self.effective_types(engine, source))
+
+    def test_crew_retains_existing_card_types_and_subtypes(self):
+        session = self.session(70212215)
+        engine = session.engine
+        source, candidates, action_id = self.prepare(
+            session,
+            powers=(2,),
+            source_type_line=(
+                "Legendary Artifact Land — Vehicle Island"
+            ),
+        )
+        self.assertEqual(
+            {"artifact", "land"},
+            self.effective_types(engine, source),
+        )
+        self.assertEqual(
+            {"island", "vehicle"},
+            self.effective_subtypes(engine, source),
+        )
+
+        result = session.act(
+            "pilot:A",
+            {
+                "action_id": action_id,
+                "cost_cards": [candidates[0].ref],
+            },
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.resolve_until(
+            session,
+            lambda: "creature" in self.effective_types(engine, source),
+        )
+
+        self.assertEqual(
+            {"artifact", "creature", "land"},
+            self.effective_types(engine, source),
+        )
+        self.assertEqual(
+            {"island", "vehicle"},
+            self.effective_subtypes(engine, source),
+        )
 
     def test_crew_zero_offer_and_commit_share_empty_cost_legality(self):
         session = self.session(70212209)

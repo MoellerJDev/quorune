@@ -41,7 +41,7 @@ def ordinary_crew_node_capabilities(
     if target_schema is not None or len(effects) != 1:
         return ()
     if dict(effects[0]) != {
-        "op": "set_types_until_end_of_turn",
+        "op": "add_types_until_end_of_turn",
         "card": "$source.zone_object",
         "types": ["Artifact", "Creature"],
     }:
