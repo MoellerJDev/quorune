@@ -275,6 +275,13 @@ class TriggerProcessingHostMixin:
     def schedule_delayed_trigger(self, **kwargs: Any) -> DelayedTrigger:
         return schedule_delayed_trigger(self, **kwargs)  # type: ignore[arg-type]
 
+    def _complete_trigger_order(self, decision: Any) -> None:
+        """Retain the historical Game Record v3/private test adapter."""
+
+        complete_trigger_order_decision(
+            self, decision  # type: ignore[arg-type]
+        )
+
 
 def collect_trigger_items(
     host: TriggerProcessingHost,

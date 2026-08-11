@@ -3184,7 +3184,7 @@
       },
       "dependencies": ["trigger.placement.apnap"],
       "implementation_components": ["quorune.trigger_participation.WardSpec", "quorune.semantic_runtime.ability_fragments.WardAbilityFragmentHandler", "quorune.compiler.ability_keyword_fragments.lower_ability_keyword_fragments", "quorune.trigger_processing.TriggerProcessingOwner.collect_ward_occurrences"],
-      "positive_tests": ["test_fixed_generic_ward_compiles_and_queues_typed_occurrence"],
+      "positive_tests": ["test_roaming_throne_type_trigger_multiplier_and_ward"],
       "negative_tests": ["test_ward_unsupported_costs_remain_residual_and_removed_ability_does_not_trigger"],
       "interaction_tests": ["test_multiple_ward_instances_and_control_change_use_current_state"],
       "multiplayer_tests": ["test_multiple_ward_instances_and_control_change_use_current_state"],
