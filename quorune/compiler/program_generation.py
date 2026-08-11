@@ -54,6 +54,11 @@ from ..rules.node_capability_shapes import (
 from ..rules.echo_capability_shapes import fixed_mana_echo_node_capabilities
 from ..semantics import SemanticProgram, SemanticRegistry
 from ..util import stable_json
+from .program_composition import (
+    generated_node_groups,
+    is_closed_composed_spell_effect_program,
+    program_from_generated_node_group,
+)
 
 
 _EVOLVE_MECHANIC = "evo" + "lve"
@@ -870,10 +875,8 @@ def _is_closed_targeted_own_graveyard_return_program(
     )
 
 
-def _is_closed_effect_program(program: SemanticProgram) -> bool:
-    """Return whether a reviewed capability-shaped effect owns execution."""
-
-    recognizers = (
+def _closed_effect_recognizers():
+    return (
         _is_closed_fixed_damage_program,
         _is_closed_fixed_draw_program,
         _is_closed_single_explore_program,
@@ -902,6 +905,17 @@ def _is_closed_effect_program(program: SemanticProgram) -> bool:
         _is_closed_targeted_own_graveyard_return_program,
         _is_closed_targeted_tap_state_program,
     )
+
+
+def _is_closed_effect_program(program: SemanticProgram) -> bool:
+    """Return whether a reviewed capability-shaped effect owns execution."""
+
+    if is_closed_composed_spell_effect_program(
+        program,
+        component_recognizers=_closed_effect_recognizers(),
+    ):
+        return True
+    recognizers = _closed_effect_recognizers()
     return any(recognizer(program) for recognizer in recognizers)
 
 
@@ -930,137 +944,45 @@ def generated_programs(
     programs: list[SemanticProgram] = []
     rulings_hash = rulings_source_hash(db, record)
     for face in ir.faces:
-        for node in face.nodes:
-            if trust_level == "trusted" and not _generated_node_is_independently_exact(node):
-                # Trust is a property of the precise source-spanned node, not
-                # of every other lowerable sentence printed on the card.  A
-                # closed capability declaration may therefore be promoted
-                # while an unrelated sibling remains provisional.  The
-                # provisional registration pass still retains that sibling,
-                # so whole-card trust cannot be inferred from this filtering.
-                continue
-            runtime_handler_declaration = bool(node.handlers)
-            if not node.lowerable or (
-                not node.effects
-                and not _generated_static_declaration(node)
-                and not runtime_handler_declaration
-            ):
-                continue
-            ability_id = _generated_ability_id(
-                kind=node.kind,
-                face_id=face.face_id,
-                line=node.span.line,
-                static_declaration=_generated_static_declaration(node),
-                node_id=node.node_id,
-            )
-            if ability_id is None:
-                continue
-            capability_closure = (
-                capability_registry.closure(
-                    node.capability_dependencies,
-                    profile=capability_profile,
-                )
-                if capability_registry is not None
-                and node.capability_dependencies
-                else None
-            )
-            represented_mechanics = (
-                capability_covered_mechanics(
-                    node.capability_dependencies
-                )
-                if trust_level == "trusted"
-                and not node.exact
-                and _independently_exact_protection_handler(node)
-                else node.mechanics
-            )
-            programs.append(
-                SemanticProgram(
-                    key=f"{record.oracle_id}:{ability_id}",
-                    label=(
-                        record.name
-                        if node.kind == "spell_ability"
-                        else f"{record.name} — {node.text}"
-                    ),
-                    effects=[dict(effect) for effect in node.effects],
-                    handlers=[dict(handler) for handler in node.handlers],
-                    destination=(
-                        "graveyard" if node.kind == "spell_ability" else None
-                    ),
-                    requires_arbiter=trust_level != "trusted",
-                    version=1,
-                    oracle_id=record.oracle_id,
-                    ability_id=ability_id,
-                    active_zone=node.active_zone,
-                    event=node.event,
-                    trust_level=trust_level,
-                    provenance={
-                        "source_oracle_hash": ir.oracle_hash,
-                        "source_rulings_hash": rulings_hash,
-                        "authored_by": ORACLE_COMPILER_VERSION,
-                        "review_status": (
-                            "capability_closure_verified"
-                            if trust_level == "trusted"
-                            and capability_closure is not None
-                            and capability_closure.trusted
-                            else (
-                                "legacy_dependency_verified"
-                                if trust_level == "trusted"
-                                else "generated_review_required"
-                            )
-                        ),
-                        "template_id": node.template_id,
-                        "face_id": face.face_id,
-                        "source_span": asdict(node.span),
-                        "semantic_hash": ir.semantic_hash,
-                        "dependency_trust": (
-                            "capability_closure_verified"
-                            if capability_closure is not None
-                            and capability_closure.trusted
-                            else (
-                                "pending_mechanic_contracts"
-                                if trust_level != "trusted"
-                                else "verified"
-                            )
-                        ),
-                        **(
-                            {
-                                "capability_registry_fingerprint": (
-                                    capability_closure.registry_fingerprint
-                                ),
-                                "capability_closure_fingerprint": (
-                                    capability_closure.fingerprint
-                                ),
-                                "capability_profile": (
-                                    capability_closure.profile
-                                ),
-                            }
-                            if capability_closure is not None
-                            else {}
-                        ),
-                    },
-                    tests=[f"oracle_template:{node.template_id}"],
-                    target_schema=_copy_mapping(node.target_schema),
-                    cost_schema=_copy_mapping(node.cost),
-                    event_condition=_copy_mapping(node.event_condition),
-                    coverage=[
-                        "generated_oracle_ir",
-                        _generated_coverage(
-                            kind=node.kind,
-                            runtime_handler=runtime_handler_declaration,
-                        ),
-                        *node.runtime_coverage,
-                        *represented_mechanics,
-                    ],
-                    capability_dependencies=list(
+        ability_id_for = lambda node: _generated_ability_id(
+            kind=node.kind,
+            face_id=face.face_id,
+            line=node.span.line,
+            static_declaration=_generated_static_declaration(node),
+            node_id=node.node_id,
+        )
+        for nodes in generated_node_groups(
+            face,
+            ability_id_for=ability_id_for,
+        ):
+            program = program_from_generated_node_group(
+                record=record,
+                face=face,
+                nodes=nodes,
+                ir=ir,
+                rulings_hash=rulings_hash,
+                authored_by=ORACLE_COMPILER_VERSION,
+                trust_level=trust_level,
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+                ability_id_for=ability_id_for,
+                is_static_declaration=_generated_static_declaration,
+                is_independently_exact=(
+                    _generated_node_is_independently_exact
+                ),
+                represented_mechanics_for=lambda node: (
+                    capability_covered_mechanics(
                         node.capability_dependencies
-                    ),
-                    capability_closure=(
-                        capability_closure.to_dict()
-                        if capability_closure is not None
-                        else None
-                    ),
-                )
+                    )
+                    if trust_level == "trusted"
+                    and not node.exact
+                    and _independently_exact_protection_handler(node)
+                    else node.mechanics
+                ),
+                generated_coverage=_generated_coverage,
             )
+            if program is not None:
+                programs.append(program)
     return programs
 
 

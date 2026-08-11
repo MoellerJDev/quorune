@@ -1274,6 +1274,14 @@
       "capability_ids": ["trigger.keyword.echo.fixed_mana", "trigger.placement.apnap"],
       "interaction_order": 4,
       "assertion": "Simultaneous ordinary Echo occurrences enter the canonical APNAP and same-controller ordering batch before any pay-or-sacrifice choice resolves."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_any_target_damage_then_draw_revalidates_and_draws_privately",
+      "piece_ids": ["capability.target.public.player_or_damageable_permanent", "capability.zone.draw.library_to_hand"],
+      "capability_ids": ["target.public.player_or_damageable_permanent", "zone.draw.library_to_hand"],
+      "interaction_order": 2,
+      "assertion": "One source-spanned spell program revalidates its public damageable target, commits damage, then performs the later private draw in printed order with exact replay."
     }
   ]
 }

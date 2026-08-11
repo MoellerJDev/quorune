@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_composition_assurance_card_data",
+  "source": "Scryfall Oracle/rulings subset for generic spell-clause composition tests",
+  "cards": [
+    {
+      "oracle_id": "2094fb68-3859-401f-97f2-c8bae64a4822",
+      "name": "Playful Shove",
+      "mana_cost": "{1}{R}",
+      "cmc": 2.0,
+      "type_line": "Sorcery",
+      "oracle_text": "Playful Shove deals 1 damage to any target.\nDraw a card.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": ["R"],
+      "color_identity": ["R"],
+      "keywords": [],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2024-08-02",
+      "legalities": {"commander": "legal", "duel": "legal"}
+    }
+  ],
+  "rulings": [
+    {
+      "oracle_id": "2094fb68-3859-401f-97f2-c8bae64a4822",
+      "published_at": "2024-07-26",
+      "source": "wotc",
+      "comment": "If the target is illegal as Playful Shove tries to resolve, it won’t resolve and none of its effects will happen. You won’t draw a card."
+    }
+  ]
+}

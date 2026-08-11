@@ -15,8 +15,10 @@ from quorune.compiler.damage_templates import (
     fixed_damage_effect_template,
 )
 from quorune.compiler import damage_templates
+from quorune.compiler.program_generation import _is_closed_effect_program
 from quorune.oracle_ir import (
     compile_oracle_card,
+    generated_programs,
     register_generated_programs,
 )
 from quorune.model import StackItem
@@ -30,7 +32,7 @@ from quorune.rules.capabilities import (
     load_default_capability_registry,
 )
 from quorune.rules import node_capability_shapes
-from quorune.semantics import SemanticRegistry
+from quorune.semantics import SemanticProgram, SemanticRegistry
 
 
 class FixedDamageEffectTemplateTests(unittest.TestCase):
@@ -566,6 +568,129 @@ class FixedDamageEffectRuntimeTests(unittest.TestCase):
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
 
+    def test_same_spell_clauses_compile_as_one_canonical_program(self):
+        record = self.db.lookup("Playful Shove")
+        programs = generated_programs(
+            self.db,
+            record,
+            trust_level="trusted",
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+        )
+
+        self.assertEqual(1, len(programs))
+        program = programs[0]
+        self.assertEqual(f"{record.oracle_id}:spell:front", program.key)
+        self.assertEqual(
+            ["damage", "draw"],
+            [row["op"] for row in program.effects],
+        )
+        self.assertEqual(
+            "composed-spell-effect-sequence-v1",
+            program.provenance["template_id"],
+        )
+        self.assertEqual(
+            ["damage-any-target-v1", "draw-controller-v1"],
+            [
+                row["template_id"]
+                for row in program.provenance["components"]
+            ],
+        )
+        self.assertEqual(
+            [
+                {"start": 0, "end": 43, "line": 1},
+                {"start": 44, "end": 56, "line": 2},
+            ],
+            program.provenance["source_spans"],
+        )
+        self.assertEqual(
+            {
+                "damage.amount.positive",
+                "damage.result.multitype_permanent",
+                "damage.result.player_life",
+                "target.public.player_or_damageable_permanent",
+                "zone.draw.library_to_hand",
+            },
+            set(program.capability_dependencies),
+        )
+
+    def test_same_spell_composition_fails_closed_for_two_target_contracts(self):
+        original = self.db.lookup("Playful Shove")
+        unsupported = replace(
+            original,
+            oracle_id="00000000-0000-4000-8000-000000001205",
+            name="Two Independent Targets",
+            oracle_text=(
+                "Two Independent Targets deals 1 damage to any target.\n"
+                "Two Independent Targets deals 1 damage to any target."
+            ),
+        )
+
+        self.assertEqual(
+            [],
+            generated_programs(
+                self.db,
+                unsupported,
+                capability_registry=load_default_capability_registry(),
+                capability_profile="commander_review",
+            ),
+        )
+
+    def test_same_spell_composition_fails_closed_for_unresolved_clause(self):
+        original = self.db.lookup("Playful Shove")
+        unsupported = replace(
+            original,
+            oracle_id="00000000-0000-4000-8000-000000001206",
+            name="Partially Understood Spell",
+            oracle_text=(
+                "Partially Understood Spell deals 1 damage to any target.\n"
+                "Perform an unrepresented impossible instruction."
+            ),
+        )
+
+        self.assertEqual(
+            [],
+            generated_programs(
+                self.db,
+                unsupported,
+                capability_registry=load_default_capability_registry(),
+                capability_profile="commander_review",
+            ),
+        )
+
+    def test_same_spell_composition_round_trips_and_rejects_tampering(self):
+        record = self.db.lookup("Playful Shove")
+        program = generated_programs(
+            self.db,
+            record,
+            trust_level="trusted",
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+        )[0]
+        serialized = program.to_dict()
+        reconstructed = SemanticProgram.from_dict(copy.deepcopy(serialized))
+
+        self.assertEqual(serialized, reconstructed.to_dict())
+        self.assertTrue(_is_closed_effect_program(reconstructed))
+
+        tampered = copy.deepcopy(serialized)
+        tampered["provenance"]["components"][1]["effect_count"] = 2
+        self.assertFalse(
+            _is_closed_effect_program(SemanticProgram.from_dict(tampered))
+        )
+
+        malformed = SemanticProgram.from_dict(copy.deepcopy(serialized))
+        malformed.provenance["components"][0][
+            "capability_dependencies"
+        ] = [{}]
+        self.assertFalse(_is_closed_effect_program(malformed))
+
+        unknown = copy.deepcopy(serialized)
+        unknown["provenance"]["components"][0]["unexpected"] = True
+        self.assertFalse(
+            _is_closed_effect_program(SemanticProgram.from_dict(unknown))
+        )
+
     def test_compiled_target_offer_resolves_and_replays_exactly(self):
         session = self.session_with_card(
             "Flame Slash",
@@ -616,6 +741,78 @@ class FixedDamageEffectRuntimeTests(unittest.TestCase):
         self.pass_stack(session)
 
         self.assertEqual(4, target.marked_damage)
+        self.assertEqual("graveyard", source.zone)
+        self.assert_replays(session)
+
+    def test_any_target_damage_then_draw_revalidates_and_draws_privately(self):
+        session = self.session_with_card(
+            "Playful Shove",
+            players=2,
+            seed=12011505,
+        )
+        engine = session.engine
+        source = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "A" and card.printed_name == "Playful Shove"
+        )
+        target = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "B"
+            and (record := engine.card_record(card)) is not None
+            and "creature" in record.type_line.casefold()
+        )
+        engine.move_card(
+            target.object_id,
+            "battlefield",
+            controller="B",
+            log=False,
+        )
+        target.counters["+1/+1"] = 10
+        program = next(
+            candidate
+            for candidate in engine.semantics.programs_for_oracle(
+                source.oracle_id
+            )
+            if candidate.event == "resolve"
+        )
+        top = engine.state.players["A"].zones["library"][-1]
+        top_ref = engine.state.cards[top].ref
+        hand_before = len(engine.state.players["A"].zones["hand"])
+
+        self.assertEqual("trusted", program.trust_level)
+        self.assertFalse(program.requires_arbiter)
+        self.assertEqual(
+            ["damage", "draw"],
+            [effect["op"] for effect in program.effects],
+        )
+        public_schema = engine._public_target_schema(
+            "A",
+            program.target_schema,
+            source_ref=source.ref,
+        )
+        self.assertIn(target.ref, public_schema["legal_refs"])
+        self.assertIn("B", public_schema["legal_refs"])
+
+        self.stage_spell(session, source, program, targets=(target.ref,))
+        self.pass_stack(session)
+
+        self.assertEqual(1, target.marked_damage)
+        self.assertEqual(
+            hand_before + 1,
+            len(engine.state.players["A"].zones["hand"]),
+        )
+        self.assertIn(top, engine.state.players["A"].zones["hand"])
+        self.assertNotIn(
+            top_ref,
+            {
+                card["id"]
+                for card in session.packet("pilot:B", full=True)["state"][
+                    "players"
+                ]["A"].get("hand", [])
+            },
+        )
         self.assertEqual("graveyard", source.zone)
         self.assert_replays(session)
 
