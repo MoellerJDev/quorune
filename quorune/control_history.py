@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Typed ownership for control-acquisition and upkeep history."""
 
-from typing import Any
+from typing import Any, Callable, Mapping
 
 from .model import CONTROL_HISTORY_VERSION
 
@@ -71,9 +71,89 @@ def begin_upkeep_control_epoch(
     return previous
 
 
+def record_battlefield_acquisition(
+    state: Any,
+    permanent: Any,
+    timestamp: int,
+) -> None:
+    """Record one battlefield object's current control-acquisition facts."""
+
+    controller = permanent.controller
+    players = getattr(state, "players", None)
+    if (
+        not isinstance(players, Mapping)
+        or not isinstance(controller, str)
+        or controller not in players
+    ):
+        raise ControlHistoryError(
+            "Control acquisition requires a current controller"
+        )
+    record_control_acquisition(
+        permanent,
+        controller_turns_begun=players[controller].turns_begun,
+        timestamp=timestamp,
+        history_version=getattr(state, "control_history_version", None),
+    )
+
+
+def record_control_change(
+    state: Any,
+    permanent: Any,
+    timestamp_factory: Callable[[], int] | None,
+) -> None:
+    """Record a committed control change without perturbing legacy replay."""
+
+    history_version = getattr(state, "control_history_version", None)
+    if history_version is not None and timestamp_factory is None:
+        raise ControlHistoryError(
+            "Current control history requires a timestamp factory"
+        )
+    timestamp = timestamp_factory() if history_version is not None else 0
+    record_battlefield_acquisition(state, permanent, timestamp)
+
+
+def begin_upkeep_epoch(state: Any, seat: str) -> int:
+    """Advance one seat's versioned upkeep-relative history boundary."""
+
+    players = getattr(state, "players", None)
+    if (
+        not isinstance(players, Mapping)
+        or not isinstance(seat, str)
+        or seat not in players
+    ):
+        raise ControlHistoryError("Upkeep history requires a current player")
+    return begin_upkeep_control_epoch(
+        players[seat],
+        timestamp=getattr(state, "timestamp_sequence", None),
+        history_version=getattr(state, "control_history_version", None),
+    )
+
+
+def upkeep_trigger_context(
+    state: Any,
+    phase: str,
+    step: str,
+    active_player: str,
+) -> dict[str, Any]:
+    """Build the canonical upkeep event context after advancing history."""
+
+    return {
+        "phase": phase,
+        "step": step,
+        "player": active_player,
+        "previous_upkeep_timestamp": begin_upkeep_epoch(
+            state, active_player
+        ),
+    }
+
+
 __all__ = [
     "CONTROL_HISTORY_VERSION",
     "ControlHistoryError",
+    "begin_upkeep_epoch",
     "begin_upkeep_control_epoch",
+    "record_battlefield_acquisition",
+    "record_control_change",
     "record_control_acquisition",
+    "upkeep_trigger_context",
 ]

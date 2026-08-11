@@ -36,7 +36,7 @@ from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
 )
-from quorune.rules.node_capability_shapes import (
+from quorune.rules.echo_capability_shapes import (
     fixed_mana_echo_node_capabilities,
 )
 from quorune.semantics import SemanticProgram

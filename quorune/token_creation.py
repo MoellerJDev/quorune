@@ -13,7 +13,7 @@ from .aura import (
     prepare_aura_entry,
 )
 from .model import CardInstance
-from .control_history import record_control_acquisition
+from .control_history import record_battlefield_acquisition
 from .counter_placement import (
     commit_prepared_counter_placements,
     CounterPlacementError,
@@ -501,12 +501,7 @@ def _card_from_token_plan(
         attacking=plan.attacking,
         battle_protector=plan.battle_protector,
     )
-    record_control_acquisition(
-        card,
-        controller_turns_begun=host.state.players[controller].turns_begun,
-        timestamp=plan.zone_timestamp,
-        history_version=host.state.control_history_version,
-    )
+    record_battlefield_acquisition(host.state, card, plan.zone_timestamp)
     return card
 
 

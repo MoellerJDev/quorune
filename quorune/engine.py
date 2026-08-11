@@ -65,10 +65,7 @@ from .continuous_effect_state import (
     active_resolution_effects,
     expire_end_of_turn_continuous_effects,
 )
-from .control_history import (
-    begin_upkeep_control_epoch,
-    record_control_acquisition,
-)
+from . import control_history
 from .counter_placement import (
     CounterPlacementError,
     place_counters_on_controlled_subtype,
@@ -1663,14 +1660,7 @@ class CommanderEngine(
                 if tapped is None
                 else bool(tapped)
             )
-            record_control_acquisition(
-                card,
-                controller_turns_begun=self.state.players[
-                    card.controller
-                ].turns_begun,
-                timestamp=card.zone_timestamp,
-                history_version=self.state.control_history_version,
-            )
+            control_history.record_battlefield_acquisition(self.state, card, card.zone_timestamp)
             card.entered_battlefield_turn_sequence = self.state.turn_sequence
             card.battle_protector = prospective_battle_protector
             self.state.players[card.controller].zones["battlefield"].append(
@@ -3013,17 +3003,9 @@ class CommanderEngine(
             # A delayed trigger must not suppress permanent-based upkeep
             # triggers, and trigger time within the no-priority interval must
             # not determine stack order.
-            previous_upkeep_timestamp = begin_upkeep_control_epoch(
-                self.state.players[active],
-                timestamp=self.state.timestamp_sequence,
-                history_version=self.state.control_history_version,
+            context = control_history.upkeep_trigger_context(
+                self.state, phase, step, active
             )
-            context = {
-                "phase": phase,
-                "step": step,
-                "player": active,
-                "previous_upkeep_timestamp": previous_upkeep_timestamp,
-            }
             waiting_triggers = collect_trigger_items(
                 self,
                 "step.begin",
@@ -7726,14 +7708,7 @@ class CommanderEngine(
                 object_id
             )
         if zone == "battlefield":
-            record_control_acquisition(
-                card,
-                controller_turns_begun=self.state.players[
-                    controller
-                ].turns_begun,
-                timestamp=card.zone_timestamp,
-                history_version=self.state.control_history_version,
-            )
+            control_history.record_battlefield_acquisition(self.state, card, card.zone_timestamp)
             card.entered_battlefield_turn_sequence = (
                 self.state.turn_sequence
             )
@@ -12434,18 +12409,7 @@ class CommanderEngine(
         self.state.players[old].zones["battlefield"].remove(object_id)
         self.state.players[new_controller].zones["battlefield"].append(object_id)
         card.controller = new_controller
-        record_control_acquisition(
-            card,
-            controller_turns_begun=self.state.players[
-                new_controller
-            ].turns_begun,
-            timestamp=(
-                self._next_zone_timestamp()
-                if self.state.control_history_version is not None
-                else 0
-            ),
-            history_version=self.state.control_history_version,
-        )
+        control_history.record_control_change(self.state, card, self._next_zone_timestamp)
         self._log(None, "control.change", f"Control of {card.ref} changed {old} → {new_controller}.", {"object": card.ref, "from": old, "to": new_controller, "reason": reason}, importance=2, changed_objects=[object_id], changed_players=[old, new_controller])
 
     def apply_shortcut(

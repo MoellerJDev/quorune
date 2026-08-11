@@ -388,6 +388,23 @@ def _condition_mentions_field(
     )
 
 
+def _echo_control_context(
+    source: Any,
+    event_condition: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    if not _condition_mentions_field(
+        event_condition,
+        ECHO_CONTROL_CONDITION_FIELD,
+    ):
+        return {}
+    return {
+        "echo_control_acquisition_controller": source.controller,
+        "echo_control_acquisition_timestamp": (
+            source.acquired_control_timestamp
+        ),
+    }
+
+
 def _semantic_condition_operator_matches(
     op: str,
     actual: Any,
@@ -772,26 +789,13 @@ def dispatch_semantic_event(
                 "event": event,
                 **copy.deepcopy(dict(context)),
                 **_trigger_attachment_context(host, source, program),
+                **_echo_control_context(source, program.event_condition),
                 **(
                     {"trigger_target_selection_pending": True}
                     if program.target_schema
                     else {}
                 ),
             }
-            if _condition_mentions_field(
-                program.event_condition,
-                ECHO_CONTROL_CONDITION_FIELD,
-            ):
-                stack_context.update(
-                    {
-                        "echo_control_acquisition_controller": (
-                            source.controller
-                        ),
-                        "echo_control_acquisition_timestamp": (
-                            source.acquired_control_timestamp
-                        ),
-                    }
-                )
             if (
                 isinstance(program.event_condition, Mapping)
                 and program.event_condition.get("field")

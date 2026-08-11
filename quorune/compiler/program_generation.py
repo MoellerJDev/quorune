@@ -40,7 +40,6 @@ from ..rules.node_capability_shapes import (
     fixed_target_characteristics_node_capabilities,
     fixed_player_counter_placement_node_capabilities,
     fixed_mana_cumulative_upkeep_node_capabilities,
-    fixed_mana_echo_node_capabilities,
     fixed_damage_node_capabilities,
     mass_destruction_node_capabilities,
     fixed_draw_node_capabilities,
@@ -52,6 +51,7 @@ from ..rules.node_capability_shapes import (
     targeted_return_to_hand_node_capabilities,
     targeted_tap_state_node_capabilities,
 )
+from ..rules.echo_capability_shapes import fixed_mana_echo_node_capabilities
 from ..semantics import SemanticProgram, SemanticRegistry
 from ..util import stable_json
 
