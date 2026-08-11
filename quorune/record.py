@@ -16,6 +16,10 @@ from .record_commander_identity import (
     commander_damage_identity_version,
     validate_commander_damage_identity_provenance,
 )
+from .record_control_history import (
+    serialized_control_history_version,
+    validate_control_history_provenance,
+)
 from .record_decks import deck_fingerprints, deck_list_fingerprints
 from .record_trust import (
     card_program_trust_provenance,
@@ -723,6 +727,9 @@ def build_manifest(
             "commander_damage_identity_version": commander_damage_identity_version(
                 state.commander_damage_identity_version
             ),
+            "control_history_version": serialized_control_history_version(
+                state.control_history_version
+            ),
         },
         "player_count": len(state.turn_order),
         "turn_order": list(state.turn_order),
@@ -994,6 +1001,9 @@ def replay_record(
     validate_commander_damage_identity_provenance(
         manifest, state.commander_damage_identity_version
     )
+    validate_control_history_provenance(
+        manifest, state.control_history_version
+    )
     engine = CommanderEngine(card_db, state, semantics)
     engine.permissions.reissue_pending()
     applied = _apply_replay_commands(
@@ -1150,6 +1160,9 @@ def verify_record_suffix(
     state = GameState.from_dict(state_payload)
     validate_commander_damage_identity_provenance(
         manifest, state.commander_damage_identity_version
+    )
+    validate_control_history_provenance(
+        manifest, state.control_history_version
     )
     base_state_hash = authoritative_state_hash(state)
     if baseline_commands:

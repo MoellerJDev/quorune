@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "echo",
+  "official_name": "Echo",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["118.12", "603.3", "603.4", "701.17", "702.30", "702.30a", "702.30b"],
+  "glossary_references": ["echo"],
+  "dependencies": ["cost-payment", "object-zone-identity", "sacrifice", "stack", "triggered-abilities", "upkeep-step", "zone-changes"],
+  "coverage_status": "tested",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["battlefield", "stack", "graveyard"],
+    "objects": ["one current battlefield permanent with a source-pinned fixed-mana Echo descriptor", "one controller-frozen triggered-ability stack object"],
+    "events": ["control acquisition", "beginning of upkeep", "Echo trigger placement", "optional fixed-mana payment", "sacrifice when payment is declined"],
+    "state_reads": ["source logical identity", "trigger-time controller", "control-acquisition timestamp", "controller's previous upkeep timestamp", "current fixed-mana affordability"],
+    "state_writes": ["canonical upkeep history boundary", "canonical mana payment", "canonical battlefield-to-graveyard sacrifice", "public event journal"],
+    "costs": ["fixed generic, colored, and colorless mana including a zero cost"],
+    "timing": ["the intervening condition is checked when the upkeep event occurs and again as the trigger resolves"],
+    "targets": [],
+    "choices": ["the frozen trigger controller chooses whether to pay when payment is currently possible"],
+    "hidden_information": ["the choice contains only public source and cost information and is projected only to its chooser"],
+    "apnap": ["simultaneous Echo triggers use the ordinary APNAP/controller-order trigger batch"],
+    "layers": [],
+    "replacement_effects": ["the represented fixed mana payment and sacrifice use their existing canonical typed owners"],
+    "copy": ["copied or granted Echo requires separately trusted typed ability-fragment propagation"],
+    "control_change": ["the trigger preserves the acquisition controller and timestamp captured at trigger creation; a later controller does not become the trigger controller"],
+    "zone_change": ["a source that leaves and returns is a new logical object and cannot satisfy the old trigger's intervening condition"],
+    "source_leaves": ["a departed source makes the intervening condition false before any payment or sacrifice choice is issued"]
+  },
+  "variants": ["fixed generic Echo", "fixed colored Echo", "fixed colorless Echo", "Echo {0}", "control acquired after the prior upkeep", "control acquired before the prior upkeep", "control change after triggering", "source departure and return", "multiple simultaneous Echo sources", "four-player seat projection"],
+  "witness_cards": [
+    {"name": "Karmic Guide", "oracle_id": "8c31fec9-e4b3-4761-990e-7be38eb05604"},
+    {"name": "Shah of Naar Isle", "oracle_id": "31c978b4-06d7-4e9d-82da-bfa4ef16f470"}
+  ],
+  "rulings": [],
+  "test_ids": ["test_fixed_mana_echo_is_source_spanned_and_capability_closed", "test_unsupported_echo_variants_remain_precise_residuals", "test_descriptor_shape_and_dependency_mutations_fail_closed", "test_prior_upkeep_control_history_triggers_once", "test_engine_upkeep_step_records_boundary_before_echo_discovery", "test_pay_keeps_and_decline_sacrifices_through_typed_intents", "test_zero_echo_is_payable_without_mana", "test_control_change_and_zone_change_preserve_trigger_time_echo_facts", "test_control_history_version_preserves_legacy_record_hash_mode", "test_stale_source_and_malformed_history_fail_before_mutation", "test_multiple_echo_sources_share_apnap_trigger_placement", "test_four_player_echo_choice_is_seat_scoped_private_and_replays"],
+  "implementation": {
+    "component": "quorune.control_history, quorune.echo, quorune.compiler.echo_nodes, trigger discovery, and the shared optional pay-or-sacrifice handler",
+    "version": "typed-fixed-mana-echo-v1",
+    "capability_ids": ["trigger.keyword.echo.fixed_mana"],
+    "supported_slice": "Printed ordinary Echo whose complete cost is fixed generic, colored, or colorless mana, including zero."
+  },
+  "known_blockers": ["hybrid, Phyrexian, snow, variable, alternative, and nonmana Echo costs remain outside the closed grammar", "cost modification and restricted-mana interactions remain bounded by the canonical payment subsystem's current coverage", "granted, copied, face-down, and merged-object Echo need trusted typed ability propagation", "aggregate triggered-ability, control-history, cost-payment, and sacrifice coverage remains incomplete"],
+  "review_status": "reviewed"
+}

@@ -21,6 +21,11 @@ from .evolve import (
     EvolveCharacteristics,
     evolve_condition_holds,
 )
+from .echo import (
+    ECHO_CONTROL_CONDITION_FIELD,
+    EchoError,
+    echo_control_condition_holds,
+)
 from .death_return import (
     DEATH_RETURN_EVENT_CONDITION_FIELD,
     DeathReturnError,
@@ -330,6 +335,11 @@ def _semantic_condition_actual(
             source=source,
             context=context,
         )
+    if field == ECHO_CONTROL_CONDITION_FIELD:
+        try:
+            return echo_control_condition_holds(source, context)
+        except EchoError as exc:
+            raise GameRuleError(str(exc)) from exc
     if field == DEATH_RETURN_EVENT_CONDITION_FIELD:
         counter = condition.get("counter")
         counters = context.get("death_return_counter_snapshot")
@@ -353,6 +363,29 @@ def _semantic_condition_actual(
             else None
         )
     return context.get(field)
+
+
+def _condition_mentions_field(
+    condition: Mapping[str, Any] | None,
+    field: str,
+) -> bool:
+    if not isinstance(condition, Mapping):
+        return False
+    if condition.get("field") == field:
+        return True
+    for key in ("all", "any"):
+        values = condition.get(key)
+        if isinstance(values, Sequence) and not isinstance(values, (str, bytes)):
+            if any(
+                _condition_mentions_field(value, field)
+                for value in values
+                if isinstance(value, Mapping)
+            ):
+                return True
+    nested = condition.get("not")
+    return isinstance(nested, Mapping) and _condition_mentions_field(
+        nested, field
+    )
 
 
 def _semantic_condition_operator_matches(
@@ -745,6 +778,20 @@ def dispatch_semantic_event(
                     else {}
                 ),
             }
+            if _condition_mentions_field(
+                program.event_condition,
+                ECHO_CONTROL_CONDITION_FIELD,
+            ):
+                stack_context.update(
+                    {
+                        "echo_control_acquisition_controller": (
+                            source.controller
+                        ),
+                        "echo_control_acquisition_timestamp": (
+                            source.acquired_control_timestamp
+                        ),
+                    }
+                )
             if (
                 isinstance(program.event_condition, Mapping)
                 and program.event_condition.get("field")

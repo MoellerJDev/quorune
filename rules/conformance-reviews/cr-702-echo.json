@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.30 — Ordinary fixed-mana Echo",
+  "cases": [
+    {
+      "rule_id": "702.30",
+      "rule_text_sha256": "8335e4c92c40556ab31f1bc57faab0a2563d89f720a8e6740fee674ea79df3c9",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/echo.json"],
+      "executable_test_ids": ["tests.test_echo_rules.EchoCompilerTests.test_fixed_mana_echo_is_source_spanned_and_capability_closed"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded fixed ordinary-mana family is owned by trigger.keyword.echo.fixed_mana."]
+    },
+    {
+      "rule_id": "702.30a",
+      "rule_text_sha256": "8a07c622c5567b5db8daf23ab5e86bb5b6cee7060d3c42aae605ef1afb4b9587",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.control_history.record_control_acquisition", "quorune.control_history.begin_upkeep_control_epoch", "quorune.echo.echo_control_condition_holds", "quorune.compiler.echo_nodes.fixed_mana_echo_node", "quorune.semantic_choices.payments.OptionalPaymentHandler"],
+      "executable_test_ids": ["tests.test_echo_rules.EchoRuntimeTests.test_prior_upkeep_control_history_triggers_once", "tests.test_echo_rules.EchoRuntimeTests.test_pay_keeps_and_decline_sacrifices_through_typed_intents", "tests.test_echo_rules.EchoRuntimeTests.test_control_change_and_zone_change_preserve_trigger_time_echo_facts", "tests.test_echo_rules.EchoRuntimeTests.test_four_player_echo_choice_is_seat_scoped_private_and_replays", "tests.test_echo_rules.EchoCompilerTests.test_unsupported_echo_variants_remain_precise_residuals"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["non-ordinary Echo costs and unrepresented cost-modification or restricted-mana interactions remain outside the trusted fine-grained capability", "granted and copied Echo requires a separately trusted current-ability propagation boundary"],
+      "notes": ["The fine-grained capability implements the trigger-time and resolution-time intervening condition from public control/upkeep history and uses typed payment or sacrifice intents.", "The aggregate rule remains blocked because the supported capability is deliberately narrower than every legal cost and ambient ability-copy interaction."]
+    },
+    {
+      "rule_id": "702.30b",
+      "rule_text_sha256": "0d7578028cec7b4b9083974fe401a11461fd2029d61eb02fce5a6783fd7ce6e5",
+      "classification": "behavioral",
+      "status": "tested",
+      "assertion_kind": "positive_behavior",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.echo_nodes.fixed_mana_echo_node", "quorune.carddb.CardDatabase"],
+      "executable_test_ids": ["tests.test_echo_rules.EchoCompilerTests.test_fixed_mana_echo_is_source_spanned_and_capability_closed"],
+      "required_scenarios": ["positive"],
+      "covered_scenarios": ["positive"],
+      "blockers": [],
+      "notes": ["The compiler consumes pinned current Oracle text, including explicit Echo costs on cards whose older printings used the legacy implicit-cost wording; runtime never reparses old printed text."]
+    }
+  ]
+}
