@@ -22,7 +22,7 @@
     "choices": ["the controller selects a distinct current payable set, including zero creatures only for Crew 0"],
     "hidden_information": ["all represented source and cost objects are public battlefield permanents"],
     "apnap": ["ordinary priority and stack ordering apply in multiplayer"],
-    "layers": ["resolution adds Artifact and Creature in layer 4 until end of turn while retaining existing card types and subtypes"],
+    "layers": ["resolution adds Artifact and Creature in layer 4 until end of turn without changing supertypes and while retaining existing card types and subtypes"],
     "replacement_effects": [],
     "copy": ["only a current source-pinned printed descriptor is executable; copied or granted Crew is outside this slice"],
     "control_change": ["only the current source controller may activate and only current controlled creatures may pay; the same source incarnation is still affected if control changes before resolution"],

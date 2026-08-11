@@ -357,6 +357,12 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
             str(engine._effective_card_data(card).get("type_line") or "")
         )[1]
 
+    @staticmethod
+    def effective_supertypes(engine, card) -> set[str]:
+        return engine._type_parts(
+            str(engine._effective_card_data(card).get("type_line") or "")
+        )[2]
+
     def test_generic_crew_taps_exact_creatures_and_resolves_type_effect(self):
         session = self.session(70212201)
         engine = session.engine
@@ -406,6 +412,10 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
             {"island", "vehicle"},
             self.effective_subtypes(engine, source),
         )
+        self.assertEqual(
+            {"legendary"},
+            self.effective_supertypes(engine, source),
+        )
 
         result = session.act(
             "pilot:A",
@@ -427,6 +437,10 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
         self.assertEqual(
             {"island", "vehicle"},
             self.effective_subtypes(engine, source),
+        )
+        self.assertEqual(
+            {"legendary"},
+            self.effective_supertypes(engine, source),
         )
 
     def test_crew_zero_offer_and_commit_share_empty_cost_legality(self):
