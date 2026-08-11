@@ -455,6 +455,25 @@ class OrdinaryCrewRuntimeTests(unittest.TestCase):
         self.assertFalse(engine.state.stack)
         self.assertNotIn("creature", self.effective_types(engine, source))
 
+        payable = self.session(70212213)
+        source, candidates, action_id = self.prepare(
+            payable,
+            powers=(4, -2),
+        )
+        result = payable.act(
+            "pilot:A",
+            {
+                "action_id": action_id,
+                "cost_cards": [card.ref for card in candidates],
+            },
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.assertTrue(all(card.tapped for card in candidates))
+        self.assertEqual(
+            2,
+            payable.engine.state.stack[-1].context["crew"]["total_power"],
+        )
+
     def test_noncontrolled_tapped_and_duplicate_cost_objects_are_rejected(self):
         session = self.session(70212208, players=4)
         engine = session.engine
