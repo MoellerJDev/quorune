@@ -604,7 +604,7 @@
     {
       "mechanic_id": "cr-502-untap-step",
       "path": "mechanics/contracts/untap-step.json",
-      "sha256": "4ba8d3ea7ff3d57db8707b53f39ef91439cec1daa51fe3f4cb0408335ab44d3e",
+      "sha256": "cca9470e1df3796d2c665820c7975c38ff6bc090e0839366a760c09099e3cbe8",
       "version": 1
     },
     {
@@ -7953,18 +7953,18 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/untap-step.json",
-      "contract_sha256": "4ba8d3ea7ff3d57db8707b53f39ef91439cec1daa51fe3f4cb0408335ab44d3e",
+      "contract_sha256": "cca9470e1df3796d2c665820c7975c38ff6bc090e0839366a760c09099e3cbe8",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "CommanderEngine untap-step entry, fail-closed phasing and untap-limit guards, represented untap restrictions/replacements, trigger holding, upkeep handoff, and exact replay",
-      "implementation_version": "untap-step-v1",
+      "implementation_component": "typed CardProgram untap-step descriptors, immutable participation planning, narrow untap-step coordination, fail-closed phasing and selection guards, canonical untap mutation, trigger holding, upkeep handoff, and exact replay",
+      "implementation_version": "untap-step-v2",
       "kind": "rules_section",
       "known_blockers": [
         "direct and indirect phasing, attachment phasing, and controller-at-phase-out history are not implemented",
         "day/night state, spell-count history, transition events, and shared-team-turn calculation are not implemented",
         "the active player cannot yet choose a legal subset under maximum-untap or arbitrary untap restrictions",
-        "the Oracle compiler does not recognize every untap prohibition, optional untap, or selection restriction",
+        "the Oracle compiler recognizes only the closed source, attached-object, global, and other-player static participation grammar; qualified, optional, variable, and selection variants remain residual",
         "complete simultaneous untap replacement ordering and affected-player choices are not implemented",
         "complete trigger production for phasing, day/night, counter removal, and every untap event remains incomplete",
         "shared-team turns are outside the supported Commander profiles"
@@ -7981,6 +7981,15 @@
         "test_phasing_turn_action_fails_closed_before_untap_mutation",
         "test_global_untap_limit_fails_closed_instead_of_untapping_all",
         "test_untap_trigger_waits_for_upkeep_priority_and_replays",
+        "test_closed_static_untap_templates_compile_exactly",
+        "test_unsupported_untap_step_wording_remains_residual",
+        "test_untap_step_descriptor_rejects_malformed_shapes",
+        "test_source_and_attached_prohibitions_use_current_relationships",
+        "test_global_and_other_player_participation_compose_in_four_players",
+        "test_static_prohibition_does_not_consume_stun_and_next_step_marker_expires",
+        "test_source_leaves_and_control_changes_recompute_participation",
+        "test_uncompiled_oracle_text_cannot_change_untap",
+        "test_typed_untap_participation_replays_exactly",
         "test_intruder_alarm_suppresses_controller_untap_and_untaps_on_entry",
         "test_seedborn_muse_untaps_all_permanents_on_opponent_untap"
       ],

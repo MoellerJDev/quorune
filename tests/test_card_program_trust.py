@@ -215,6 +215,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "continuous.basic_land_type.add_all_lands",
                 "action.draw.reveal_first",
                 "prevention.damage.fixed",
+                "participation.untap_step.static",
                 "replacement.counter.quantity",
                 "replacement.damage.quantity",
                 "replacement.damage.redirection.static",

@@ -2929,6 +2929,33 @@
       "status": "trusted"
     },
     {
+      "id": "untap.step.static_participation",
+      "version": 1,
+      "official_rules": ["502.3", "604.1", "611.3b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and evaluate closed battlefield static abilities that prohibit a source, attached object, or typed permanent query from untapping during its controller's untap step, or additionally untap source-controlled creatures or permanents during each other player's untap step.",
+        "inputs": ["trusted source-spanned untap-step runtime component", "current phased-in battlefield sources", "immutable effective-characteristic object query", "current controller and attachment relationships", "active player"],
+        "outputs": ["deterministic prohibited object identities", "deterministic additional untap identities", "typed fail-closed selection-limit source"],
+        "exclusions": ["optional or modal untaps", "variable, conditional, qualified, or compound subjects beyond the closed typed query", "choose-not-to-untap instructions", "one-shot next-untap effects", "implemented selection under maximum untap limits", "phasing and day/night turn actions", "untap replacement ordering beyond the represented stun-counter owner", "unsupported effective-characteristic dependencies; those cards remain material residuals and fail match trust closed"]
+      },
+      "dependencies": ["permanent.untap.effect"],
+      "implementation_components": ["quorune.compiler.untap_step_templates.static_untap_step_handler", "quorune.semantic_runtime.untap_steps.StaticUntapStepParticipationHandler", "quorune.semantic_runtime.untap_steps.current_untap_step_plan", "quorune.untap_step.plan_untap_step", "quorune.untap_step_coordination.coordinate_untap_step", "quorune.tap_state.untap_permanent"],
+      "positive_tests": ["test_closed_static_untap_templates_compile_exactly", "test_intruder_alarm_suppresses_controller_untap_and_untaps_on_entry", "test_seedborn_muse_untaps_all_permanents_on_opponent_untap", "test_source_and_attached_prohibitions_use_current_relationships"],
+      "negative_tests": ["test_unsupported_untap_step_wording_remains_residual", "test_untap_step_descriptor_rejects_malformed_shapes"],
+      "interaction_tests": ["test_static_prohibition_does_not_consume_stun_and_next_step_marker_expires", "test_source_leaves_and_control_changes_recompute_participation"],
+      "multiplayer_tests": ["test_seedborn_muse_untaps_all_permanents_on_opponent_untap", "test_global_and_other_player_participation_compose_in_four_players"],
+      "privacy_tests": [],
+      "replay_tests": ["test_typed_untap_participation_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Capability closure requires the canonical single-permanent untap owner; registry mutation evidence proves the untap-step component cannot become trusted when that dependency is blocked.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused planner and compiler mutants that drop the prohibition, other-player relation, source relationship, or typed predicate are rejected by the exact compilation, multiplayer state, and replay assertions.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "resolution.effect_sequence.fixed_source",
       "version": 1,
       "official_rules": ["109.2", "608.2c", "608.2h", "611.2a", "611.2c", "614.16", "616.1", "122.1", "122.6"],

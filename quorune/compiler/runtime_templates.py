@@ -21,6 +21,7 @@ from .draw_templates import (
 from .life_templates import static_life_handler
 from .token_templates import static_additional_token_replacement_handler
 from .trigger_participation_templates import static_trigger_multiplier_handler
+from .untap_step_templates import static_untap_step_handler
 from .zone_templates import static_zone_destination_replacement_handler
 
 
@@ -119,6 +120,21 @@ def static_runtime_template(
     """Select one closed static runtime production for an Oracle line."""
 
     if source_permanent:
+        untap_step = (
+            static_untap_step_handler(text, source_name=source_name)
+            if source_name is not None
+            else None
+        )
+        if untap_step is not None:
+            return StaticRuntimeTemplate(
+                compiled=untap_step,
+                kind="static_ability",
+                event="untap.step",
+                dependency_reason=(
+                    "generic untap-step participation requires its closed "
+                    "typed runtime capability"
+                ),
+            )
         counter_maximum = _counter_maximum_template(
             text,
             source_name=source_name,

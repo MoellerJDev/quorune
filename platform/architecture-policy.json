@@ -85,6 +85,8 @@
     "quorune/trigger_batches.py",
     "quorune/trigger_discovery.py",
     "quorune/trigger_processing.py",
+    "quorune/untap_step.py",
+    "quorune/untap_step_coordination.py",
     "quorune/zone_trigger_events.py",
     "quorune/zone_trigger_processing.py",
     "quorune/zone_object_state.py",
@@ -228,6 +230,8 @@
       ,"quorune/object_query.py": "typed read-only object selection predicates"
       ,"quorune/zone_trigger_events.py": "immutable normalized CR 603.6 zone-change occurrence and event derivation"
       ,"quorune/zone_trigger_processing.py": "read-only zone-trigger detection coordinator delegating placement and mutation to canonical owners"
+      ,"quorune/semantic_runtime/untap_steps.py": "read-only trusted untap-step participation discovery over current effective characteristics"
+      ,"quorune/untap_step_coordination.py": "read-only untap-step coordinator delegating mutation to canonical tap-state and turn-step owners"
       ,"quorune/damage_prevention_aftermath.py": "typed prevention-aftermath planner delegating mutation to canonical life and counter owners"
       ,"quorune/mana_mode_effects.py": "typed mana-mode side-effect coordinator delegating to canonical damage, life, and zone owners"
       ,"quorune/mana_payment_continuations.py": "atomic mana-payment suspension coordinator"

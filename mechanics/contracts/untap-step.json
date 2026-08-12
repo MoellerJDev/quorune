@@ -55,7 +55,9 @@
       "active player",
       "battlefield controller",
       "phased status",
-      "effective keywords and Oracle text",
+      "effective keywords and characteristics",
+      "trusted typed untap-step participations",
+      "current source, controller, and attachment relationships",
       "tapped status",
       "stun counters",
       "represented next-untap prohibition",
@@ -90,7 +92,8 @@
       "waiting represented triggers are ordered at the dependent upkeep boundary"
     ],
     "layers": [
-      "effective keywords and Oracle text are consulted for fail-closed phasing and untap-limit detection",
+      "effective keywords are consulted only for fail-closed phasing detection",
+      "typed object predicates consume the effective characteristic view for represented static untap participation",
       "complete continuous-effect interaction with untap restrictions remains blocked"
     ],
     "replacement_effects": [
@@ -156,18 +159,27 @@
     "test_phasing_turn_action_fails_closed_before_untap_mutation",
     "test_global_untap_limit_fails_closed_instead_of_untapping_all",
     "test_untap_trigger_waits_for_upkeep_priority_and_replays",
+    "test_closed_static_untap_templates_compile_exactly",
+    "test_unsupported_untap_step_wording_remains_residual",
+    "test_untap_step_descriptor_rejects_malformed_shapes",
+    "test_source_and_attached_prohibitions_use_current_relationships",
+    "test_global_and_other_player_participation_compose_in_four_players",
+    "test_static_prohibition_does_not_consume_stun_and_next_step_marker_expires",
+    "test_source_leaves_and_control_changes_recompute_participation",
+    "test_uncompiled_oracle_text_cannot_change_untap",
+    "test_typed_untap_participation_replays_exactly",
     "test_intruder_alarm_suppresses_controller_untap_and_untaps_on_entry",
     "test_seedborn_muse_untaps_all_permanents_on_opponent_untap"
   ],
   "implementation": {
-    "component": "CommanderEngine untap-step entry, fail-closed phasing and untap-limit guards, represented untap restrictions/replacements, trigger holding, upkeep handoff, and exact replay",
-    "version": "untap-step-v1"
+    "component": "typed CardProgram untap-step descriptors, immutable participation planning, narrow untap-step coordination, fail-closed phasing and selection guards, canonical untap mutation, trigger holding, upkeep handoff, and exact replay",
+    "version": "untap-step-v2"
   },
   "known_blockers": [
     "direct and indirect phasing, attachment phasing, and controller-at-phase-out history are not implemented",
     "day/night state, spell-count history, transition events, and shared-team-turn calculation are not implemented",
     "the active player cannot yet choose a legal subset under maximum-untap or arbitrary untap restrictions",
-    "the Oracle compiler does not recognize every untap prohibition, optional untap, or selection restriction",
+    "the Oracle compiler recognizes only the closed source, attached-object, global, and other-player static participation grammar; qualified, optional, variable, and selection variants remain residual",
     "complete simultaneous untap replacement ordering and affected-player choices are not implemented",
     "complete trigger production for phasing, day/night, counter removal, and every untap event remains incomplete",
     "shared-team turns are outside the supported Commander profiles"

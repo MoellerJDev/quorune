@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "dbe8b0965d6ca2d9ebcb5c63dc83ccde95f7f30c77b847509ba614a829c1f412"
+verified: "6350827558d4cf4a5489e4ebc79374a6fac681b2dc2aa8fcec48978f220cbf24"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `d373e77a8bd860856626ac574beabcf97405c7d9eb2d990f5976265d82dd557d`
+Source fingerprint: `b69b8af5ee95542ec9bb9ab94b35255c48e3886437e45d545987373611a0d985`
 
 ## Current top-level state
 
@@ -20,7 +20,7 @@ Source fingerprint: `d373e77a8bd860856626ac574beabcf97405c7d9eb2d990f5976265d82d
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `architecture:runtime-oracle-text-removal:turn_priority_and_decisions`
+- Selected cross-program work: `architecture:runtime-oracle-text-subsystem-attribution`
 - Selected work class: `runtime_oracle_removal`
 
 ## Cross-program work selection
@@ -31,21 +31,20 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `architecture:runtime-oracle-text-removal:turn_priority_and_decisions` | `runtime_oracle_removal` | 0 | 0 | 1 | 0 |
-| 2 | deferred | `architecture:runtime-oracle-text-subsystem-attribution` | `runtime_oracle_removal` | 0 | 0 | 26 | 0 |
-| 3 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
-| 4 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 5 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 122 | 123 | 0 | 0 |
-| 6 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
-| 7 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
-| 8 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
-| 9 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 10 | blocked | `frontier:mechanic_dependency:cr-614-replacement-effects` | `rules_foundation` | 203 | 539 | 0 | 0 |
-| 11 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 197 | 346 | 0 | 0 |
-| 12 | blocked | `frontier:mechanic_dependency:cr-509-declare-blockers-step` | `rules_foundation` | 157 | 392 | 0 | 0 |
-| 13 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 119 | 338 | 0 | 0 |
+| 1 | selected | `architecture:runtime-oracle-text-subsystem-attribution` | `runtime_oracle_removal` | 0 | 0 | 24 | 0 |
+| 2 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
+| 3 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 4 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 122 | 123 | 0 | 0 |
+| 5 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
+| 6 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
+| 7 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
+| 8 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
+| 9 | blocked | `frontier:mechanic_dependency:cr-614-replacement-effects` | `rules_foundation` | 203 | 539 | 0 | 0 |
+| 10 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 197 | 346 | 0 | 0 |
+| 11 | blocked | `frontier:mechanic_dependency:cr-509-declare-blockers-step` | `rules_foundation` | 157 | 392 | 0 | 0 |
+| 12 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 119 | 338 | 0 | 0 |
 
-Selected reason: 1 prohibited runtime-text accesses remain in the existing turn_priority_and_decisions typed owner and outrank card expansion.
+Selected reason: Complete subsystem attribution after the already bounded runtime-text slices; do not treat the remainder as one implementation batch.
 
 ## Top blockers
 

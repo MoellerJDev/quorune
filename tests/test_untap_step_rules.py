@@ -3,10 +3,14 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
-from quorune.engine import TURN_STEPS
+from quorune.compiler.untap_step_templates import (
+    static_untap_step_limit_handler,
+)
+from quorune.engine import CommanderEngine, TURN_STEPS
 from quorune.record import checkpoint_envelope, replay_record
 from quorune.semantics import SemanticProgram
 
@@ -240,6 +244,23 @@ class UntapStepRuleTests(unittest.TestCase):
         limiter.annotations["token_characteristics"]["type_line"] = (
             "Token Artifact"
         )
+        compiled = static_untap_step_limit_handler(
+            limiter.annotations["token_characteristics"]["oracle_text"],
+            source_name=limiter.printed_name,
+        )
+        self.assertIsNotNone(compiled)
+        _, descriptor, _ = compiled
+        engine.semantics.put(
+            SemanticProgram(
+                key="test:typed-untap-limit",
+                label="Typed untap limit witness",
+                oracle_id=limiter.oracle_id,
+                active_zone="battlefield",
+                event="untap.step",
+                handlers=[descriptor],
+                trust_level="provisional",
+            )
+        )
         tapped = [
             self.token(
                 engine,
@@ -250,7 +271,12 @@ class UntapStepRuleTests(unittest.TestCase):
             for index in range(3)
         ]
 
-        self.enter_untap(session)
+        with mock.patch.object(
+            CommanderEngine,
+            "semantic_program_is_current_trusted",
+            return_value=True,
+        ):
+            self.enter_untap(session)
 
         pause = engine._semantic_pause_annotation()
         self.assertIsNotNone(pause)
@@ -277,6 +303,25 @@ class UntapStepRuleTests(unittest.TestCase):
         inactive_limiter.annotations["token_characteristics"][
             "type_line"
         ] = "Token Artifact"
+        inactive_compiled = static_untap_step_limit_handler(
+            inactive_limiter.annotations["token_characteristics"][
+                "oracle_text"
+            ],
+            source_name=inactive_limiter.printed_name,
+        )
+        self.assertIsNotNone(inactive_compiled)
+        _, inactive_descriptor, _ = inactive_compiled
+        inactive_engine.semantics.put(
+            SemanticProgram(
+                key="test:typed-inactive-untap-limit",
+                label="Typed inactive untap limit witness",
+                oracle_id=inactive_limiter.oracle_id,
+                active_zone="battlefield",
+                event="untap.step",
+                handlers=[inactive_descriptor],
+                trust_level="provisional",
+            )
+        )
         unrestricted = [
             self.token(
                 inactive_engine,
@@ -287,7 +332,12 @@ class UntapStepRuleTests(unittest.TestCase):
             for index in range(3)
         ]
 
-        self.enter_untap(inactive_session)
+        with mock.patch.object(
+            CommanderEngine,
+            "semantic_program_is_current_trusted",
+            return_value=True,
+        ):
+            self.enter_untap(inactive_session)
 
         self.assertIsNone(inactive_engine._semantic_pause_annotation())
         self.assertTrue(inactive_limiter.tapped)

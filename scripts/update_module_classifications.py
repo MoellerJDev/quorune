@@ -216,6 +216,8 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/turn_counter_coordination.py",
         "quorune/turn_priority_owner.py",
         "quorune/turn_step_owner.py",
+        "quorune/untap_step.py",
+        "quorune/untap_step_coordination.py",
         "quorune/shortcuts.py",
         "quorune/stack_counter.py",
         "quorune/stack_resolution.py",
@@ -450,6 +452,11 @@ def _owner(relative: str, layer: str) -> str:
     }:
         return "turn_priority_and_decisions"
     if relative in {
+        "quorune/untap_step.py",
+        "quorune/untap_step_coordination.py",
+    }:
+        return "untap_step"
+    if relative in {
         "quorune/stack_counter.py",
         "quorune/stack_resolution.py",
     }:
@@ -600,6 +607,7 @@ def build_classifications() -> dict[str, Any]:
                             "fixed_mana_abilities.py",
                             "mana_ability_runtime.py",
                             "trigger_targeting.py",
+                            "untap_step",
                         )
                     )
                     or relative in {

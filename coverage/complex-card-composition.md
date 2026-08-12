@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "018f82bf566ced2e3a447acc4242bc2445a18e171bb411257a9eb7cab79cdb32"
+verified: "89e7fd016a6196d2ef1b04eeeb12ad601f34f81b5542fc6688be8651ed385c39"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -36,7 +36,6 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Ojer Taq, Deepest Foundation // Temple of Civilization | 170 | 22 | 7 | 6 | 8 | 2 | `blocked` |
 | Nicol Bolas, the Ravager // Nicol Bolas, the Arisen | 169 | 24 | 6 | 7 | 5 | 11 | `blocked` |
 | Invasion of Kaldheim // Pyre of the World Tree | 168 | 16 | 5 | 4 | 5 | 22 | `blocked` |
-| Stay Hidden, Stay Silent | 168 | 15 | 6 | 4 | 5 | 17 | `blocked` |
 | Flamewar, Brash Veteran // Flamewar, Streetwise Operative | 166 | 19 | 5 | 6 | 7 | 15 | `blocked` |
 | Jill, Shiva's Dominant // Shiva, Warden of Ice | 165 | 16 | 6 | 5 | 9 | 8 | `blocked` |
 | Starscream, Power Hungry // Starscream, Seeker Leader | 165 | 17 | 4 | 8 | 4 | 19 | `blocked` |
@@ -52,6 +51,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Starforged Sword | 157 | 16 | 5 | 4 | 6 | 11 | `blocked` |
 | Chandra, Fire of Kaladesh // Chandra, Roaring Flame | 156 | 19 | 4 | 5 | 7 | 15 | `blocked` |
 | Invasion of Gobakhan // Lightshield Array | 156 | 12 | 5 | 4 | 8 | 19 | `blocked` |
+| Stay Hidden, Stay Silent | 155 | 16 | 5 | 4 | 4 | 17 | `blocked` |
 | Tribute to Horobi // Echo of Death's Wail | 155 | 19 | 5 | 6 | 6 | 6 | `blocked` |
 | Covert Cutpurse // Covetous Geist | 154 | 19 | 6 | 4 | 6 | 7 | `blocked` |
 | Dennick, Pious Apprentice // Dennick, Pious Apparition | 154 | 16 | 5 | 6 | 6 | 10 | `blocked` |

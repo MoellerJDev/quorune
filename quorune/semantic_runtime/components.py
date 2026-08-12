@@ -33,6 +33,7 @@ from .continuous_components import (
 from .token_replacements import (
     default_token_creation_replacement_registry,
 )
+from .untap_steps import default_untap_step_component_registry
 from .zone_replacements import default_zone_change_replacement_registry
 
 
@@ -56,6 +57,7 @@ def runtime_component_registries() -> tuple[Any, ...]:
         default_color_set_mana_ability_registry(),
         default_fixed_mana_ability_registry(),
         default_token_creation_replacement_registry(),
+        default_untap_step_component_registry(),
         default_zone_change_replacement_registry(),
     )
 
