@@ -395,7 +395,11 @@ class ProliferateEngineTests(unittest.TestCase):
             [target.ref, "D"],
             packet["legal_actions"][0]["choice_schema"]["legal_refs"],
         )
-        serialized = json.dumps(packet, sort_keys=True)
+        # Capability secrets are opaque random encodings. A short private ref
+        # can occur inside one by chance without being projected as data.
+        public_packet = copy.deepcopy(packet)
+        public_packet.pop("cap", None)
+        serialized = json.dumps(public_packet, sort_keys=True)
         for seat in engine.seats:
             for object_id in engine.state.players[seat].zones["hand"]:
                 self.assertNotIn(engine.state.cards[object_id].ref, serialized)

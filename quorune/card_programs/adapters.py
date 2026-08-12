@@ -12,6 +12,7 @@ from ..compiler.program_generation import (
     runtime_handler_footprint,
 )
 from ..compiler.activated_ability_catalog import (
+    catalog_carrier_is_shadowed,
     with_activated_ability_catalog,
 )
 from ..compiler.card_form_rules import (
@@ -237,6 +238,13 @@ def compile_card_program(
             reference_programs=tuple(programs.values()),
         )
         for program in reviewed_programs:
+            for key, generated in tuple(programs.items()):
+                if catalog_carrier_is_shadowed(
+                    record,
+                    generated,
+                    (program,),
+                ):
+                    programs.pop(key)
             reviewed_footprint = runtime_handler_footprint(program)
             if reviewed_footprint is not None and program.trust_level == "trusted":
                 for key, generated in tuple(programs.items()):

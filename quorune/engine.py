@@ -3513,15 +3513,12 @@ class CommanderEngine(
             for mode in self._mana_modes_for_ability(
                 seat, source, ability
             ):
-                side_effects = list(mode.side_effects)
-                if ability.sacrifice_source:
-                    side_effects.append({"op": "sacrifice_source"})
                 compiled_modes.append(
                     ManaMode(
                         mode.bundle,
                         conditional=mode.conditional,
                         restriction=mode.restriction,
-                        side_effects=tuple(side_effects),
+                        side_effects=mode.side_effects,
                         requires_choice=mode.requires_choice,
                     )
                 )

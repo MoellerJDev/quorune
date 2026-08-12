@@ -10,6 +10,7 @@ from .activated_abilities import (
     activated_abilities_from_descriptors,
     activated_ability_catalog_descriptor,
     default_activated_ability_catalog_registry,
+    is_structural_activated_ability_catalog_program,
 )
 from .ability_fragments import (
     BATTLE_CRY_FRAGMENT_HANDLER_ID,
@@ -342,6 +343,7 @@ __all__ = [
     "activated_abilities_from_descriptors",
     "activated_ability_catalog_descriptor",
     "default_activated_ability_catalog_registry",
+    "is_structural_activated_ability_catalog_program",
     "ATTACHED_FIXED_CHARACTERISTICS_HANDLER_ID",
     "AttachedFixedCharacteristicsHandler",
     "AttachedFixedCharacteristicsNode",

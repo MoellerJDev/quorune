@@ -107,6 +107,21 @@ def activated_abilities_from_descriptors(
     return tuple(abilities)
 
 
+def is_structural_activated_ability_catalog_program(program: Any) -> bool:
+    """Whether a program carries discovery metadata but no resolution rules."""
+
+    handlers = tuple(getattr(program, "handlers", ()))
+    return bool(
+        str(getattr(program, "ability_id", "")).startswith(
+            "ability:catalog:"
+        )
+        and not getattr(program, "effects", ())
+        and len(handlers) == 1
+        and handlers[0].get("handler_id")
+        == ACTIVATED_ABILITY_CATALOG_HANDLER_ID
+    )
+
+
 __all__ = [
     "ACTIVATED_ABILITY_CATALOG_HANDLER_ID",
     "ActivatedAbilityCatalogHandler",
@@ -114,4 +129,5 @@ __all__ = [
     "activated_abilities_from_descriptors",
     "activated_ability_catalog_descriptor",
     "default_activated_ability_catalog_registry",
+    "is_structural_activated_ability_catalog_program",
 ]

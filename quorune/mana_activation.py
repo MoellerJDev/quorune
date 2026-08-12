@@ -95,6 +95,28 @@ def complete_mana_activation(
     # Explicit activation costs were already committed transactionally by the
     # activation owner. ManaMode side effects are the equivalent cost plan used
     # only by automatic payment and must not be applied twice here.
+    result_effects = tuple(
+        effect
+        for effect in (
+            selected_mode.side_effects if selected_mode is not None else ()
+        )
+        if effect.get("op") == "damage_self"
+    )
+    if result_effects:
+        apply_mana_mode_effects(
+            host,
+            seat,
+            result_effects,
+            source=source,
+            payment_id=str(response.get("_mana_payment_id") or "") or None,
+            replacement_selections_by_event=(
+                response.get("_mana_replacement_selections")
+                if isinstance(
+                    response.get("_mana_replacement_selections"), Mapping
+                )
+                else None
+            ),
+        )
     restriction = ability.mana_spend_restriction
     if restriction:
         host._add_restricted_mana(seat, restriction, bundle)

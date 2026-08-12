@@ -3,6 +3,7 @@ from __future__ import annotations
 """Runtime output selection for compiler-pinned activated mana abilities."""
 
 from dataclasses import replace
+import re
 from typing import Any, Mapping, Protocol
 
 from .abilities import ActivatedAbility
@@ -33,6 +34,26 @@ class ManaAbilityRuntimeHost(Protocol):
     def _activated_abilities(
         self, card: Any
     ) -> tuple[ActivatedAbility, ...]: ...
+
+
+_DAMAGE_CONTROLLER_RESULT = re.compile(
+    r"^builtin:mana-result-damage-controller:(?P<amount>[1-9][0-9]*)$"
+)
+
+
+def _mana_result_effects(
+    ability: ActivatedAbility,
+) -> tuple[dict[str, Any], ...]:
+    key = ability.builtin_semantic_key or ""
+    match = _DAMAGE_CONTROLLER_RESULT.fullmatch(key)
+    if match is None:
+        return ()
+    return (
+        {
+            "op": "damage_self",
+            "amount": int(match.group("amount")),
+        },
+    )
 
 
 def _color_set_mana_modes(
@@ -110,6 +131,7 @@ def mana_modes_for_ability(
         side_effects.append(
             {"op": "pay_life", "amount": ability.life_payment}
         )
+    side_effects.extend(_mana_result_effects(ability))
 
     def decorated(modes: tuple[ManaMode, ...]) -> tuple[ManaMode, ...]:
         return tuple(

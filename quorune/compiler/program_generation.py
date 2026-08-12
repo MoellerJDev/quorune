@@ -57,7 +57,10 @@ from ..util import stable_json
 from ..semantic_runtime.activated_abilities import (
     ACTIVATED_ABILITY_CATALOG_HANDLER_ID,
 )
-from .activated_ability_catalog import with_activated_ability_catalog
+from .activated_ability_catalog import (
+    catalog_carrier_is_shadowed,
+    with_activated_ability_catalog,
+)
 from .program_composition import (
     generated_node_groups,
     is_closed_composed_spell_effect_program,
@@ -1201,6 +1204,13 @@ def register_generated_programs(
         for provisional in provisional_programs:
             program = trusted_programs.get(provisional.key, provisional)
             if registry.get(program.key) is not None:
+                skipped_existing += 1
+                continue
+            if catalog_carrier_is_shadowed(
+                record,
+                program,
+                registry.programs_for_oracle(record.oracle_id),
+            ):
                 skipped_existing += 1
                 continue
             footprint = runtime_handler_footprint(program)

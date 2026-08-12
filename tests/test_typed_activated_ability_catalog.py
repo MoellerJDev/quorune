@@ -28,9 +28,10 @@ from quorune.rules.activation.conditions import activation_condition_status
 from quorune.replacement.immutable import freeze_value
 from quorune.semantic_runtime.activated_abilities import (
     ACTIVATED_ABILITY_CATALOG_HANDLER_ID,
+    activated_ability_catalog_descriptor,
     activated_abilities_from_descriptors,
 )
-from quorune.semantics import SemanticProgram
+from quorune.semantics import SemanticProgram, SemanticRegistry
 from quorune.standard_token_abilities import standard_token_characteristics
 
 
@@ -102,6 +103,24 @@ class TypedActivatedAbilityCatalogTests(unittest.TestCase):
         self.assertIsNotNone(mox.color_set_mana_output)
         self.assertEqual("opponent_land_colors", fellwar.dynamic_mana_output)
 
+    def test_catalog_pins_fixed_mana_and_damage_result(self):
+        ability = compile_activated_ability_catalog(
+            record(
+                "Elves of Deep Shadow",
+                "{T}: Add {B}. Elves of Deep Shadow deals 1 damage to you.",
+                type_line="Creature — Elf Druid",
+            )
+        )["front"][0]
+
+        self.assertEqual(
+            [{"W": 0, "U": 0, "B": 1, "R": 0, "G": 0, "C": 0}],
+            [mode.bundle for mode in ability.fixed_mana_outputs],
+        )
+        self.assertEqual(
+            "builtin:mana-result-damage-controller:1",
+            ability.builtin_semantic_key,
+        )
+
     def test_program_catalog_is_additive_and_strictly_lowered(self):
         card = record("Fixture Stone", "{T}: Add {C}.")
         program = SemanticProgram(
@@ -157,6 +176,166 @@ class TypedActivatedAbilityCatalogTests(unittest.TestCase):
         lowered = activated_abilities_from_descriptors(programs[0].handlers)
         self.assertEqual(("plains", "island"), lowered[0].library_search_types)
         self.assertIsNone(lowered[0].builtin_semantic_key)
+
+    def test_specialized_source_slot_prevents_redundant_catalog_carrier(self):
+        card = replace(
+            record(
+                "Fixture Vehicle",
+                "Crew 2",
+                type_line="Artifact — Vehicle",
+            ),
+            keywords=("Crew",),
+        )
+        specialized = ActivatedAbility(
+            ability_id="ab3",
+            line_index=0,
+            oracle_line="Crew 2",
+            cost_text="Crew 2",
+            effect_text=(
+                "This permanent becomes an artifact creature until end of turn."
+            ),
+            zones=("battlefield",),
+            mana={},
+            crew_threshold=2,
+        )
+        program = SemanticProgram(
+            key=f"{card.oracle_id}:ability:ab3",
+            label="Fixture Crew ability",
+            oracle_id=card.oracle_id,
+            ability_id="ability:ab3",
+            active_zone="battlefield",
+            event="activate",
+            trust_level="trusted",
+            handlers=[activated_ability_catalog_descriptor(specialized)],
+            provenance={
+                "source_oracle_hash": "a" * 64,
+                "source_rulings_hash": "b" * 64,
+                "authored_by": "fixture-reviewer",
+                "review_status": "reviewed",
+            },
+            tests=[
+                "test_specialized_source_slot_prevents_redundant_catalog_carrier"
+            ],
+        )
+
+        programs = with_activated_ability_catalog(
+            card,
+            (program,),
+            carrier_provenance={
+                "source_oracle_hash": "a" * 64,
+                "source_rulings_hash": "b" * 64,
+                "authored_by": "fixture-compiler",
+                "review_status": "generated_review_required",
+            },
+        )
+
+        self.assertEqual((program,), programs)
+
+    def test_unique_double_face_source_slot_prevents_redundant_carrier(self):
+        card = replace(
+            record("Fixture Front // Fixture Back", ""),
+            layout="transform",
+            faces=(
+                {
+                    "name": "Fixture Front",
+                    "oracle_text": "{T}: Add {C}.",
+                },
+                {
+                    "name": "Fixture Back",
+                    "oracle_text": "At the beginning of your upkeep, draw a card.",
+                },
+            ),
+        )
+        program = SemanticProgram(
+            key=f"{card.oracle_id}:ability:ab1",
+            label="Fixture reviewed mana ability",
+            oracle_id=card.oracle_id,
+            ability_id="ability:ab1",
+            active_zone="battlefield",
+            event="activate",
+            trust_level="trusted",
+            provenance={
+                "source_oracle_hash": "a" * 64,
+                "source_rulings_hash": "b" * 64,
+                "authored_by": "fixture-reviewer",
+                "review_status": "reviewed",
+            },
+            tests=[
+                "test_unique_double_face_source_slot_prevents_redundant_carrier"
+            ],
+        )
+
+        programs = with_activated_ability_catalog(
+            card,
+            (program,),
+            carrier_provenance={
+                "source_oracle_hash": "a" * 64,
+                "source_rulings_hash": "b" * 64,
+                "authored_by": "fixture-compiler",
+                "review_status": "generated_review_required",
+            },
+        )
+
+        self.assertEqual(1, len(programs))
+        self.assertEqual(program.key, programs[0].key)
+        self.assertEqual(1, len(activated_abilities_from_descriptors(programs[0].handlers)))
+
+    def test_structural_catalog_carrier_does_not_lower_reviewed_card_trust(self):
+        oracle_id = "fixture:catalog-trust"
+        reviewed = SemanticProgram(
+            key=f"{oracle_id}:spell:front",
+            label="Reviewed spell",
+            oracle_id=oracle_id,
+            ability_id="spell:front",
+            active_zone="stack",
+            event="resolve",
+            trust_level="trusted",
+            provenance={
+                "source_oracle_hash": "a" * 64,
+                "source_rulings_hash": "b" * 64,
+                "authored_by": "fixture-reviewer",
+                "review_status": "reviewed",
+            },
+            tests=[
+                "test_structural_catalog_carrier_does_not_lower_reviewed_card_trust"
+            ],
+        )
+        carrier = SemanticProgram(
+            key=f"{oracle_id}:catalog:front:ability:ab1",
+            label="Structural catalog carrier",
+            oracle_id=oracle_id,
+            ability_id="ability:catalog:front:ab1",
+            active_zone="battlefield",
+            event="activate",
+            trust_level="provisional",
+            handlers=[
+                activated_ability_catalog_descriptor(
+                    parse_activated_abilities(
+                        card_name="Structural catalog carrier",
+                        oracle_text="{T}: Add {C}.",
+                    )[0]
+                )
+            ],
+        )
+        registry = SemanticRegistry(include_builtin_packs=False)
+        registry.put(reviewed)
+        registry.put(carrier)
+
+        self.assertEqual("trusted", registry.trust_for_oracle(oracle_id))
+
+        carrier_only = SemanticRegistry(include_builtin_packs=False)
+        carrier_only.put(carrier)
+        self.assertEqual("unresolved", carrier_only.trust_for_oracle(oracle_id))
+
+        executable_carrier = replace(
+            carrier,
+            key=f"{oracle_id}:catalog:front:ability:ab1:executable",
+            effects=[{"op": "draw", "player": "$controller", "count": 1}],
+        )
+        fail_closed = SemanticRegistry(include_builtin_packs=False)
+        fail_closed.put(reviewed)
+        fail_closed.put(executable_carrier)
+        self.assertEqual("provisional", fail_closed.trust_for_oracle(oracle_id))
 
     def test_reviewed_augmentation_does_not_synthesize_catalog_carriers(self):
         card = record("Fixture Stone", "{T}: Add {C}.")

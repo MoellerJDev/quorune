@@ -6,7 +6,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
-from .semantic_runtime import validate_runtime_handler_descriptors
+from .semantic_runtime import (
+    is_structural_activated_ability_catalog_program,
+    validate_runtime_handler_descriptors,
+)
 from .util import stable_json
 
 TRUST_LEVELS = {
@@ -662,7 +665,11 @@ class SemanticRegistry:
         return self._runtime_handler_compatibility_enabled
 
     def trust_for_oracle(self, oracle_id: str) -> str:
-        programs = self.programs_for_oracle(oracle_id)
+        programs = tuple(
+            program
+            for program in self.programs_for_oracle(oracle_id)
+            if not is_structural_activated_ability_catalog_program(program)
+        )
         if not programs:
             return "unresolved"
         levels = {program.trust_level for program in programs}
