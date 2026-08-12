@@ -2,7 +2,7 @@
 title: "Testing strategy"
 status: "current"
 authoritative_source: "tests, quick gate, sharded PR certification, and nightly assurance"
-verified: "2026-08-05"
+verified: "2026-08-12"
 audience: "all contributors"
 maintenance: "hand-maintained"
 ---
@@ -41,12 +41,12 @@ working-tree changes and selects the relevant modules, functional shards, and
 validation commands. Its dry-run output is reviewable before execution.
 
 The ordinary merge authority is the public pull-request workflow for the exact
-head SHA. Ten balanced Linux functional shards run in parallel with generated
+head SHA. Twelve duration-ordered Ubuntu functional shards run in parallel with generated
 and architecture checks, package/clean-install validation, focused or complete
 Windows coverage, and an isolated headless browser smoke or full journey set.
 The stable `PR / Certification` job fails closed unless every required job
 succeeds. Compact `main` smoke catches integration mistakes after merge; the
-nightly workflow owns complete cross-platform suites, full browser journeys,
+nightly workflow owns the strictly certified cross-platform shard matrix, full browser journeys,
 large deterministic property budgets, mutation/soak checks, current Oracle
 censuses, and dependency audits.
 

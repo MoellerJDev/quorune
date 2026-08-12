@@ -2,7 +2,7 @@
 title: "Compact CI card dependencies"
 status: "generated"
 authoritative_source: "tests/fixtures/compact-ci-fixtures.json and platform/test-shards.json"
-verified: "d65fae572ac877735bc6566611277e901cc3cc4dc01a57e4e58d0dda3aeb1f48"
+verified: "c919261726722e50d2373a3c33e83bf777e92ba31d1718500370530fc1fb7bbb"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -36,11 +36,13 @@ Overall closure: **closed**.
 | combat-declarations | 20 | closed |
 | compiler-cardprogram | 35 | closed |
 | core-domain | 14 | closed |
+| counter-continuous-effects | 19 | closed |
+| deterministic-game-regressions | 5 | closed |
+| events-replacement-zone | 31 | closed |
 | generated-validation | 28 | closed |
 | main-smoke | 6 | closed |
-| multiplayer-commander | 13 | closed |
+| multiplayer-commander | 8 | closed |
 | nightly-property | 3 | closed |
-| rules-events-replacements | 50 | closed |
 | server-replay-privacy | 14 | closed |
 | state-actions-damage | 17 | closed |
 | targets-choices-continuations | 21 | closed |

@@ -191,7 +191,7 @@
       ]
     },
     {
-      "id": "rules-events-replacements-suite",
+      "id": "events-replacement-and-counter-continuous-suites",
       "patterns": [
         "quorune/replacement/**",
         "quorune/replacement_effects.py",
@@ -209,7 +209,8 @@
         "quorune/prevention_triggers.py"
       ],
       "test_suites": [
-        "rules-events-replacements"
+        "counter-continuous-effects",
+        "events-replacement-zone"
       ]
     },
     {
@@ -225,7 +226,8 @@
       ],
       "test_suites": [
         "compiler-cardprogram",
-        "rules-events-replacements",
+        "counter-continuous-effects",
+        "events-replacement-zone",
         "state-actions-damage",
         "targets-choices-continuations"
       ]

@@ -184,7 +184,8 @@ class CommanderEngine:
         self.assertEqual(
             {
                 "compiler-cardprogram",
-                "rules-events-replacements",
+                "counter-continuous-effects",
+                "events-replacement-zone",
                 "state-actions-damage",
                 "targets-choices-continuations",
             },

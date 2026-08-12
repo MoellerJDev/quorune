@@ -163,7 +163,10 @@ def load_windows_reports(directory: Path | None) -> list[dict]:
         document = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(document, dict):
             raise ValueError(f"Windows report {path} must be an object")
-        if document.get("type") != "unittest-shard-result":
+        if document.get("type") not in {
+            "unittest-shard-result",
+            "pytest-xdist-shard-result",
+        }:
             raise ValueError(f"Windows report {path} has an unknown type")
         reports.append(document)
     return reports
@@ -190,6 +193,8 @@ def _sum_setup_steps(job: Mapping[str, Any]) -> float | None:
         if step["name"] in {
             "Run focused Windows compatibility suite",
             "Run full Windows shard",
+            "Run functional Windows shard",
+            "Run sequential generated and governance shard",
         }:
             break
         duration = step["duration_seconds"]
@@ -277,6 +282,11 @@ def windows_metrics(
                 "test_duration_seconds": report.get("duration_seconds"),
                 "test_count": report.get("tests_run"),
                 "skipped_test_count": report.get("skipped"),
+                "backend": report.get("backend"),
+                "workers": report.get("workers"),
+                "distribution": report.get("distribution"),
+                "collection_fingerprint": report.get("collection_fingerprint"),
+                "module_timings": report.get("module_timings") or [],
                 "job_duration_seconds": (
                     round((completed - started).total_seconds(), 3)
                     if started is not None and completed is not None

@@ -325,15 +325,20 @@ pass without the exact command and numeric result, or a broad CI pass without
 the authoritative GitHub Actions run URL. The early `PR / Plan` job enforces
 this policy on open, synchronize, reopen, edit, and ready-for-review events.
 
-Public PR CI has a hard 20-job concurrency envelope. Its checked budget targets
-at most 18 simultaneous jobs so cancellation, certification, and incident
-recovery retain two slots. Do not add or widen a matrix without updating and
-passing `scripts.ci_plan.ci_concurrency_budget`. Functional Linux shards use
+Public PR CI has a hard 20-job concurrency envelope. Its checked, mode-aware
+budget targets at most 18 simultaneous jobs so cancellation, certification,
+and incident recovery retain two slots. Do not add or widen a matrix without
+updating and passing `scripts.ci_plan.ci_concurrency_budget` for all four
+browser/Windows impact combinations. Functional Ubuntu and Windows shards use
 four-process pytest-xdist execution with `loadfile` scheduling and exact
-unittest collection parity; generated-governance and Windows authority remain
-on the sequential unittest runner. Do not use automatic CPU counts, test-level
-distribution, or ad hoc parallelism. Preserve Linux shard result artifacts and
+unittest collection parity; generated-governance remains on the sequential
+unittest runner. The manifest owns one explicit observed-duration launch order.
+Do not use automatic CPU counts, test-level distribution, unordered matrices,
+or ad hoc parallelism. Preserve cross-platform shard result artifacts and
 per-module timing telemetry so later balancing is based on observed durations.
+Nightly runs the same primary partition on both operating systems with at most
+six matrix jobs, verifies all OS/shard results in one fail-closed certification
+job, and keeps five public-runner slots in reserve.
 
 A successful `PR / Certification` publishes the ephemeral exact-head
 receipt; Main smoke validates the squash-merged source tree against that

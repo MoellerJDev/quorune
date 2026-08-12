@@ -13,15 +13,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  full-python:
-    name: Nightly / Full Python / ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  plan:
+    name: Nightly / Plan
+    runs-on: ubuntu-latest
+    outputs:
+      python_matrix: ${{ steps.plan.outputs.python_matrix }}
+      python_max_parallel: ${{ steps.plan.outputs.python_max_parallel }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Planning and later certification both validate complete provenance.
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+      - id: plan
+        name: Build duration-aware cross-platform shard plan
+        run: python scripts/nightly_ci.py
+
+  python:
+    name: Nightly / Python / ${{ matrix.platform }} / ${{ matrix.shard }}
+    needs: plan
+    runs-on: ${{ matrix.runs_on }}
     strategy:
       fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+      max-parallel: ${{ fromJSON(needs.plan.outputs.python_max_parallel) }}
+      matrix: ${{ fromJSON(needs.plan.outputs.python_matrix) }}
     env:
-      MTG_CARD_DB: data/test-ci.sqlite3
+      MTG_CARD_DB: data/test-ci-${{ matrix.platform }}-${{ matrix.shard }}.sqlite3
+      MTG_SERVER_DATA: local/nightly-runtime-${{ matrix.platform }}-${{ matrix.shard }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,9 +58,29 @@ jobs:
       - name: Build compact database
         run: |
           python scripts/build_test_database.py validate-ci-dependencies
-          python scripts/build_test_database.py build-ci --output data/test-ci.sqlite3
-      - name: Run complete deterministic suite
-        run: python -m unittest discover -s tests -p "test_*.py" -v
+          python scripts/build_test_database.py build-ci --output "data/test-ci-${{ matrix.platform }}-${{ matrix.shard }}.sqlite3"
+      - name: Run functional shard with fixed collection-preserving workers
+        if: matrix.shard != 'generated-validation'
+        run: >-
+          python scripts/test_shards.py run "${{ matrix.shard }}"
+          --backend pytest-xdist
+          --workers 4
+          --platform "${{ matrix.platform }}"
+          --result-json "local/nightly-python/${{ matrix.platform }}-${{ matrix.shard }}.json"
+      - name: Run sequential generated and governance shard
+        if: matrix.shard == 'generated-validation'
+        run: >-
+          python scripts/test_shards.py run "${{ matrix.shard }}"
+          --platform "${{ matrix.platform }}"
+          --result-json "local/nightly-python/${{ matrix.platform }}-${{ matrix.shard }}.json"
+      - name: Upload nightly Python shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-python-${{ matrix.platform }}-${{ matrix.shard }}-${{ github.run_id }}
+          path: local/nightly-python/${{ matrix.platform }}-${{ matrix.shard }}.json
+          if-no-files-found: warn
+          retention-days: 14
 
   browser:
     name: Nightly / Browser / ${{ matrix.group }}
@@ -224,3 +265,30 @@ jobs:
           python -m pip_audit
           npm ci --prefix web
           npm audit --prefix web --audit-level=high
+
+  certification:
+    name: Nightly / Certification
+    if: always()
+    needs: [plan, python, browser, properties, mutation-and-soak, corpus, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install certification dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - name: Download every cross-platform shard result
+        uses: actions/download-artifact@v4
+        with:
+          pattern: nightly-python-*-${{ github.run_id }}
+          path: local/nightly-python-results
+          merge-multiple: false
+      - name: Certify dependency graph, exact collections, and result coverage
+        env:
+          CI_NIGHTLY_NEEDS_JSON: ${{ toJSON(needs) }}
+        run: >-
+          python scripts/verify_nightly_ci.py
+          --results-dir local/nightly-python-results

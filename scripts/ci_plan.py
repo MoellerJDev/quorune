@@ -19,26 +19,17 @@ from scripts.change_impact import (
     github_base,
     github_event_labels,
 )
-from scripts.test_shards import load_manifest, primary_matrix
+from scripts.test_shards import functional_shards, load_manifest, primary_matrix
 
 
 PUBLIC_JOB_CONCURRENCY_LIMIT = 20
 PUBLIC_JOB_RECOVERY_HEADROOM = 2
-PYTHON_MAX_PARALLEL = 7
-WINDOWS_MAX_PARALLEL = 5
 FIXED_PARALLEL_JOBS = 3  # generated, package, and Windows package
-FUNCTIONAL_PYTHON_SHARDS = (
-    "rules-events-replacements",
-    "compiler-cardprogram",
-    "state-actions-damage",
-    "casting-costs-mana",
-    "multiplayer-commander",
-    "targets-choices-continuations",
-    "combat-declarations",
-    "triggers-turns-exact-decks",
-    "server-replay-privacy",
-    "core-domain",
-)
+# Full Windows shards are consistently slower than their Ubuntu counterparts.
+# Weight the two matrices from observed exact-head duration artifacts instead of
+# giving every remaining slot to Ubuntu before considering the Windows tail.
+UBUNTU_FUNCTIONAL_WEIGHT = 4
+WINDOWS_FULL_WEIGHT = 5
 EXPECTED_PR_JOB_IDS = frozenset(
     {
         "plan",
@@ -81,26 +72,58 @@ def workflow_job_ids(
 
 def python_matrix() -> dict:
     manifest = load_manifest()
-    primary = set(manifest["primary_shards"])
-    expected = primary - {"generated-validation"}
-    if set(FUNCTIONAL_PYTHON_SHARDS) != expected:
-        raise ValueError("Functional Python CI shards do not match the manifest")
     return {
         "include": [
-            {"shard": shard} for shard in FUNCTIONAL_PYTHON_SHARDS
+            {"shard": shard} for shard in functional_shards(manifest)
         ]
     }
 
 
-def ci_concurrency_budget() -> dict[str, int]:
+def ci_concurrency_budget(
+    *,
+    browser_full: bool,
+    windows_full: bool,
+) -> dict[str, int]:
     workflow_job_ids()
-    browser_jobs = len(browser_matrix(True)["include"])
-    windows_jobs = min(
-        WINDOWS_MAX_PARALLEL,
-        len(primary_matrix(load_manifest())["include"]),
+    manifest = load_manifest()
+    browser_jobs = len(browser_matrix(browser_full)["include"])
+    available_shard_jobs = (
+        PUBLIC_JOB_CONCURRENCY_LIMIT
+        - PUBLIC_JOB_RECOVERY_HEADROOM
+        - FIXED_PARALLEL_JOBS
+        - browser_jobs
     )
+    python_job_count = len(functional_shards(manifest))
+    if windows_full:
+        windows_job_count = len(primary_matrix(manifest)["include"])
+        weighted_python_demand = python_job_count * UBUNTU_FUNCTIONAL_WEIGHT
+        weighted_windows_demand = windows_job_count * WINDOWS_FULL_WEIGHT
+        weighted_total = weighted_python_demand + weighted_windows_demand
+        windows_jobs = (
+            available_shard_jobs * weighted_windows_demand + weighted_total // 2
+        ) // weighted_total
+        windows_jobs = min(
+            windows_job_count,
+            max(1, min(available_shard_jobs - 1, windows_jobs)),
+        )
+        python_jobs = min(
+            python_job_count,
+            available_shard_jobs - windows_jobs,
+        )
+        windows_jobs = min(
+            windows_job_count,
+            available_shard_jobs - python_jobs,
+        )
+    else:
+        windows_jobs = 1
+        python_jobs = min(
+            python_job_count,
+            available_shard_jobs - windows_jobs,
+        )
+    if python_jobs <= 0:
+        raise ValueError("PR CI leaves no runner capacity for Python shards")
     peak = (
-        PYTHON_MAX_PARALLEL
+        python_jobs
         + windows_jobs
         + browser_jobs
         + FIXED_PARALLEL_JOBS
@@ -115,7 +138,7 @@ def ci_concurrency_budget() -> dict[str, int]:
     return {
         "public_job_limit": PUBLIC_JOB_CONCURRENCY_LIMIT,
         "target_headroom": PUBLIC_JOB_RECOVERY_HEADROOM,
-        "python_max_parallel": PYTHON_MAX_PARALLEL,
+        "python_max_parallel": python_jobs,
         "windows_max_parallel": windows_jobs,
         "browser_max_parallel": browser_jobs,
         "fixed_parallel_jobs": FIXED_PARALLEL_JOBS,
@@ -160,7 +183,10 @@ def browser_matrix(browser_full: bool) -> dict:
 
 
 def _write_github_output(path: Path, plan: dict) -> None:
-    budget = ci_concurrency_budget()
+    budget = ci_concurrency_budget(
+        browser_full=bool(plan["browser_full"]),
+        windows_full=bool(plan["windows_full"]),
+    )
     values = {
         "browser_full": str(plan["browser_full"]).lower(),
         "browser_focus_grep": "|".join(plan["browser_focus_patterns"]),
@@ -176,6 +202,7 @@ def _write_github_output(path: Path, plan: dict) -> None:
             python_matrix(), separators=(",", ":")
         ),
         "python_max_parallel": str(budget["python_max_parallel"]),
+        "windows_max_parallel": str(budget["windows_max_parallel"]),
         "ci_peak_jobs": str(budget["peak_jobs"]),
         "ci_job_headroom": str(budget["headroom"]),
     }
@@ -199,7 +226,10 @@ def main() -> int:
         ),
         labels=github_event_labels(args.event),
     ).to_dict()
-    plan["ci_concurrency_budget"] = ci_concurrency_budget()
+    plan["ci_concurrency_budget"] = ci_concurrency_budget(
+        browser_full=bool(plan["browser_full"]),
+        windows_full=bool(plan["windows_full"]),
+    )
     output = args.github_output or os.environ.get("GITHUB_OUTPUT")
     if output:
         _write_github_output(Path(output), plan)

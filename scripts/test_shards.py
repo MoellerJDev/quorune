@@ -36,11 +36,12 @@ def load_manifest(path: Path = MANIFEST) -> dict:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict) or set(value) != {
         "schema_version",
+        "execution_order",
         "primary_shards",
         "overlay_suites",
     }:
         raise TestShardError("Test-shard manifest has an invalid top-level shape")
-    if value["schema_version"] != 1:
+    if value["schema_version"] != 2:
         raise TestShardError("Unsupported test-shard manifest schema")
     for field in ("primary_shards", "overlay_suites"):
         suites = value[field]
@@ -64,6 +65,28 @@ def load_manifest(path: Path = MANIFEST) -> dict:
                 raise TestShardError(f"Suite {name!r} contains duplicates")
             if modules != sorted(modules):
                 raise TestShardError(f"Suite {name!r} must be sorted")
+    execution_order = value["execution_order"]
+    if (
+        not isinstance(execution_order, list)
+        or not execution_order
+        or any(not isinstance(name, str) or not name for name in execution_order)
+    ):
+        raise TestShardError("execution_order must be a nonempty list of names")
+    if len(execution_order) != len(set(execution_order)):
+        raise TestShardError("execution_order contains duplicates")
+    primary_names = set(value["primary_shards"])
+    ordered_names = set(execution_order)
+    if primary_names != ordered_names:
+        raise TestShardError(
+            "execution_order must contain every primary shard exactly once: "
+            + json.dumps(
+                {
+                    "missing": sorted(primary_names - ordered_names),
+                    "unknown": sorted(ordered_names - primary_names),
+                },
+                sort_keys=True,
+            )
+        )
     return value
 
 
@@ -124,9 +147,18 @@ def primary_matrix(manifest: Mapping) -> dict:
     return {
         "include": [
             {"shard": name}
-            for name in manifest["primary_shards"]
+            for name in manifest["execution_order"]
         ]
     }
+
+
+def functional_shards(manifest: Mapping) -> tuple[str, ...]:
+    validate_partition(manifest)
+    return tuple(
+        name
+        for name in manifest["execution_order"]
+        if name != "generated-validation"
+    )
 
 
 def load_suite(modules: Iterable[str]) -> unittest.TestSuite:
@@ -236,6 +268,7 @@ def run_modules(
     result_json: Path | None = None,
     backend: str = "unittest",
     workers: int = 1,
+    platform: str = "local",
 ) -> bool:
     if backend == "pytest-xdist":
         return run_modules_pytest_xdist(
@@ -243,21 +276,25 @@ def run_modules(
             suite_name=suite_name,
             result_json=result_json,
             workers=workers,
+            platform=platform,
         )
     if backend != "unittest":
         raise TestShardError(f"Unsupported test backend {backend!r}")
     if workers != 1:
         raise TestShardError("The unittest backend requires exactly one worker")
     suite = load_suite(modules)
-    configured_test_count = suite.countTestCases()
+    identifiers = canonical_test_ids(suite)
+    configured_test_count = len(identifiers)
+    fingerprint = test_collection_fingerprint(identifiers)
     started = perf_counter()
     result = unittest.TextTestRunner(verbosity=verbosity).run(suite)
     duration = round(perf_counter() - started, 3)
     successful = result.wasSuccessful() and result.testsRun > 0
     if result_json is not None:
         document = {
-            "schema_version": 1,
+            "schema_version": 2,
             "type": "unittest-shard-result",
+            "platform": platform,
             "suite": suite_name,
             "modules": list(modules),
             "configured_test_count": configured_test_count,
@@ -269,6 +306,15 @@ def run_modules(
             "skipped": len(result.skipped),
             "expected_failures": len(result.expectedFailures),
             "unexpected_successes": len(result.unexpectedSuccesses),
+            "backend": "unittest",
+            "workers": 1,
+            "distribution": "sequential",
+            "collection_fingerprint_algorithm": (
+                TEST_COLLECTION_FINGERPRINT_ALGORITHM
+            ),
+            "collection_fingerprint": fingerprint,
+            "collection_parity": "authoritative",
+            "module_timings": [],
         }
         result_json.parent.mkdir(parents=True, exist_ok=True)
         result_json.write_text(
@@ -285,6 +331,7 @@ def run_modules_pytest_xdist(
     suite_name: str | None,
     result_json: Path | None,
     workers: int,
+    platform: str,
 ) -> bool:
     if isinstance(workers, bool) or workers < 2:
         raise TestShardError("The pytest-xdist backend requires at least two workers")
@@ -356,8 +403,9 @@ def run_modules_pytest_xdist(
     successful = exit_code == 0 and tests_run == configured_test_count
     if result_json is not None:
         document = {
-            "schema_version": 1,
+            "schema_version": 2,
             "type": "pytest-xdist-shard-result",
+            "platform": platform,
             "suite": suite_name,
             "modules": list(modules),
             "configured_test_count": configured_test_count,
@@ -404,6 +452,7 @@ def main() -> int:
         default="unittest",
     )
     run.add_argument("--workers", type=int)
+    run.add_argument("--platform", default="local")
     modules = subparsers.add_parser("run-modules")
     modules.add_argument("module", nargs="+")
     modules.add_argument("--result-json")
@@ -413,6 +462,7 @@ def main() -> int:
         default="unittest",
     )
     modules.add_argument("--workers", type=int)
+    modules.add_argument("--platform", default="local")
     args = parser.parse_args()
 
     try:
@@ -448,6 +498,7 @@ def main() -> int:
                 result_json=result_json,
                 backend=args.backend,
                 workers=workers,
+                platform=args.platform,
             )
             else 1
         )

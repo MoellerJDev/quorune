@@ -16,6 +16,7 @@ from scripts.pytest_shard_plugin import (
 from scripts.test_shards import (
     canonical_test_ids,
     discovered_modules,
+    functional_shards,
     load_manifest,
     load_suite,
     primary_matrix,
@@ -39,10 +40,41 @@ class TestShardManifestTests(unittest.TestCase):
     def test_primary_matrix_uses_every_authoritative_shard_once(self):
         rows = primary_matrix(self.manifest)["include"]
         self.assertEqual(
-            list(self.manifest["primary_shards"]),
+            list(self.manifest["execution_order"]),
             [row["shard"] for row in rows],
         )
         self.assertIn("generated-validation", [row["shard"] for row in rows])
+        self.assertEqual(
+            [
+                name
+                for name in self.manifest["execution_order"]
+                if name != "generated-validation"
+            ],
+            list(functional_shards(self.manifest)),
+        )
+
+    def test_execution_order_is_a_strict_permutation(self):
+        with TemporaryDirectory() as raw:
+            path = Path(raw) / "test-shards.json"
+            for mutation, message in (
+                (lambda value: value["execution_order"].pop(), "every primary"),
+                (
+                    lambda value: value["execution_order"].append(
+                        value["execution_order"][0]
+                    ),
+                    "duplicates",
+                ),
+                (
+                    lambda value: value["execution_order"].__setitem__(0, "unknown"),
+                    "every primary",
+                ),
+            ):
+                mutated = deepcopy(self.manifest)
+                mutation(mutated)
+                path.write_text(json.dumps(mutated), encoding="utf-8")
+                with self.subTest(message=message):
+                    with self.assertRaisesRegex(TestShardError, message):
+                        load_manifest(path)
 
     def test_duplicate_primary_assignment_fails_closed(self):
         mutated = deepcopy(self.manifest)
