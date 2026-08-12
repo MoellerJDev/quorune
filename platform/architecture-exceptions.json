@@ -659,6 +659,31 @@
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_protector_choice_replays_exactly",
         "tests.test_interactions_v070.InteractionKernelTests.test_flusterstorm_storm_and_target_reassignment"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0031",
+      "adr": "docs/adr/0063-compiler-pinned-activated-ability-catalog.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "eea9918297578dae7f79b20e7822e72315ca1314e1944c63e92edee985b1dffc",
+      "exact_allowance": "Only the reduced schema-3 structural state-write identities, owner classifications, prohibited runtime Oracle-text access identities, engine methods, size ceilings, specificity literals, Oracle-ID literals, legacy helpers, module classifications, and the reviewed grant_ability_fragment operation serialized after compiler-pinned activated-ability discovery.",
+      "rationale": "The activation catalog makes the compiler-authored ActivatedAbility descriptor the sole current-game discovery authority for represented Crew, Cycling, mana, copied, granted, and standard-token abilities. It deletes specialized runtime discovery modules, removes prohibited runtime Oracle-text interpretation and printed-name literals, shrinks CommanderEngine, and adds one closed typed fragment-grant operation without adding state mutation or a competing executor.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact reduced structural identities and counts serialized for this branch plus activation.catalog.pinned.v1, its strict immutable descriptor envelope, typed standard-token profiles, copy and layer-6 catalog handling, and grant_ability_fragment as described by ADR 0063; new runtime Oracle interpretation, unowned mutation, engine-local writes, oversized symbols, card-identity behavior, arbitrary callbacks, or additional unreviewed effect operations remain forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered engine write and prohibited runtime-text interpretation has migrated to declared typed owners; retain grant_ability_fragment only while its closed fragment schema, compiler source spans, capability closure, rollback, privacy, and exact replay remain enforced.",
+      "target_milestone": "runtime Oracle-text removal for casting, activation, and costs",
+      "replay_implications": "Current games serialize the exact compiler-pinned descriptor used for offers and commits; Game Record v3 remains compatible through an isolated historical adapter, and copy or grant changes alter canonical handler and replay fingerprints.",
+      "privacy_implications": "Activated descriptors contain public rules characteristics and source identity only; capability projection remains seat scoped and no hand, library, raw capability, or opposing private data is added.",
+      "security_implications": "Runtime discovery accepts only strict versioned mappings lowered to immutable typed abilities; the grant operation cannot carry executable callbacks, Oracle prose, arbitrary state mutation, card-name dispatch, or cross-seat authority.",
+      "tests": [
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_current_repository_passes_every_architecture_guard",
+        "tests.test_architecture_guards.ArchitectureGuardTests.test_direct_writes_are_classified_by_actual_owner",
+        "tests.test_typed_activated_ability_catalog.TypedActivatedAbilityCatalogTests.test_closed_descriptor_round_trip_and_input_isolation",
+        "tests.test_typed_activated_ability_catalog.TypedActivatedAbilityCatalogTests.test_program_catalog_is_additive_and_strictly_lowered",
+        "tests.test_typed_activated_ability_catalog.TypedActivatedAbilityCatalogTests.test_material_catalog_change_changes_pinned_handler",
+        "tests.test_typed_activated_ability_catalog.TypedActivatedAbilityCatalogTests.test_copy_and_remove_all_abilities_use_the_typed_catalog",
+        "tests.test_exact_keyword_families.ExactKeywordFamilyTests.test_food_and_treasure_tokens_have_authoritative_abilities",
+        "tests.test_mana_abilities.ManaAbilityRuleTests.test_treasure_exposes_color_choice_and_auto_payment_sacrifices_it"
+      ]
     }
   ]
 }

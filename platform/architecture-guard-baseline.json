@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "f484b2ceb573cb0868da5c6bb4374cfcde3766f1",
+  "baseline_commit": "9432d0b6745a342d2be91e80aaea1a76b83c4687",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -486,7 +486,7 @@
     "quorune/zone_transitions.py": 3
   },
   "engine": {
-    "logical_lines": 8005,
+    "logical_lines": 7997,
     "methods": [
       {
         "kind": "method",
@@ -751,11 +751,6 @@
       {
         "kind": "method",
         "name": "_compiled_land_play_permission",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_compiled_mana_restriction",
         "visibility": "private"
       },
       {
@@ -1116,11 +1111,6 @@
       {
         "kind": "method",
         "name": "_loyalty_cost_modifier_present",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_mana_mode_has_compiled_activation_condition",
         "visibility": "private"
       },
       {
@@ -1729,12 +1719,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 8602
+    "physical_lines": 8556
   },
   "exception_binding": {
-    "adr": "docs/adr/0061-typed-search-target-choice-owner.md",
-    "allowance_fingerprint": "8b596db8dd834cfae4c4a6c2d5adc539e851e07a2a82c526cc26e4ed64c5c4b4",
-    "exception_id": "ARCH-EXC-0030"
+    "adr": "docs/adr/0063-compiler-pinned-activated-ability-catalog.md",
+    "allowance_fingerprint": "eea9918297578dae7f79b20e7822e72315ca1314e1944c63e92edee985b1dffc",
+    "exception_id": "ARCH-EXC-0031"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1954,7 +1944,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 8005
+      "logical_lines": 7997
     },
     {
       "file": "quorune/record.py",
@@ -2048,6 +2038,7 @@
     "fixed_self_counter_keyword_action",
     "fomori_vault",
     "goad",
+    "grant_ability_fragment",
     "grant_ability_marker",
     "grant_cast_permission",
     "grant_keyword_until_end_of_turn",
@@ -2108,54 +2099,6 @@
     "veil_of_summer"
   ],
   "runtime_oracle_text_access_identities": [
-    {
-      "access_kind": "attribute",
-      "file": "quorune/compiled_activated_abilities.py",
-      "member": "oracle_text",
-      "symbol": "printed_face"
-    },
-    {
-      "access_kind": "mapping_get",
-      "file": "quorune/compiled_activated_abilities.py",
-      "member": "oracle_text",
-      "symbol": "printed_face"
-    },
-    {
-      "access_kind": "local_name",
-      "file": "quorune/compiled_activated_abilities.py",
-      "member": "executable_oracle_text",
-      "symbol": "trusted_face_handler_programs"
-    },
-    {
-      "access_kind": "local_name",
-      "file": "quorune/compiled_activated_abilities.py",
-      "member": "printed_oracle_text",
-      "symbol": "trusted_face_handler_programs"
-    },
-    {
-      "access_kind": "local_name",
-      "file": "quorune/compiled_crew_abilities.py",
-      "member": "executable_oracle_text",
-      "symbol": "compiled_ordinary_crew_abilities"
-    },
-    {
-      "access_kind": "local_name",
-      "file": "quorune/compiled_cycling_abilities.py",
-      "member": "executable_oracle_text",
-      "symbol": "compiled_ordinary_cycling_abilities"
-    },
-    {
-      "access_kind": "local_name",
-      "file": "quorune/compiled_mana_abilities.py",
-      "member": "executable_oracle_text",
-      "symbol": "compiled_color_set_mana_abilities"
-    },
-    {
-      "access_kind": "local_name",
-      "file": "quorune/compiled_mana_abilities.py",
-      "member": "executable_oracle_text",
-      "symbol": "compiled_fixed_mana_abilities"
-    },
     {
       "access_kind": "mapping_get",
       "file": "quorune/damage.py",
@@ -2283,12 +2226,6 @@
       "symbol": "CommanderEngine._nonmana_ability_prohibited_by_name"
     },
     {
-      "access_kind": "attribute",
-      "file": "quorune/engine.py",
-      "member": "oracle_text",
-      "symbol": "CommanderEngine._opening_hand_signals"
-    },
-    {
       "access_kind": "mapping_get",
       "file": "quorune/engine.py",
       "member": "oracle_text",
@@ -2319,36 +2256,6 @@
       "symbol": "CommanderEngine._unsupported_untap_selection_source"
     },
     {
-      "access_kind": "local_name",
-      "file": "quorune/mana.py",
-      "member": "oracle_text",
-      "symbol": "_has_unresolved_dynamic_output"
-    },
-    {
-      "access_kind": "mapping_get",
-      "file": "quorune/mana.py",
-      "member": "oracle_text",
-      "symbol": "effective_mana_record"
-    },
-    {
-      "access_kind": "attribute",
-      "file": "quorune/mana.py",
-      "member": "oracle_text",
-      "symbol": "extract_mana_modes"
-    },
-    {
-      "access_kind": "attribute",
-      "file": "quorune/mana_activation.py",
-      "member": "oracle_text",
-      "symbol": "_mana_plan_modes"
-    },
-    {
-      "access_kind": "attribute",
-      "file": "quorune/mana_source_discovery.py",
-      "member": "oracle_text",
-      "symbol": "available_mana_sources"
-    },
-    {
       "access_kind": "attribute",
       "file": "quorune/report.py",
       "member": "oracle_text",
@@ -2365,24 +2272,6 @@
       "file": "quorune/report.py",
       "member": "oracle_text",
       "symbol": "derive_review"
-    },
-    {
-      "access_kind": "local_name",
-      "file": "quorune/rules/activation/query.py",
-      "member": "executable_oracle_text",
-      "symbol": "activated_abilities"
-    },
-    {
-      "access_kind": "mapping_get",
-      "file": "quorune/rules/activation/query.py",
-      "member": "executable_oracle_text",
-      "symbol": "activated_abilities"
-    },
-    {
-      "access_kind": "mapping_get",
-      "file": "quorune/rules/activation/query.py",
-      "member": "oracle_text",
-      "symbol": "activated_abilities"
     },
     {
       "access_kind": "attribute",

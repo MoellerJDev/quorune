@@ -87,6 +87,7 @@ class ExactKeywordFamilyTests(unittest.TestCase):
                 "oracle_text": (
                     "{T}, Sacrifice this token: Add one mana of any color."
                 ),
+                "activated_ability_profile": "tap_sac_any_color_mana_v1",
             },
         )[0]
         food_ref = engine.create_token(
@@ -96,6 +97,9 @@ class ExactKeywordFamilyTests(unittest.TestCase):
                 "type_line": "Token Artifact — Food",
                 "oracle_text": (
                     "{2}, {T}, Sacrifice this token: You gain 3 life."
+                ),
+                "activated_ability_profile": (
+                    "two_tap_sac_gain_three_life_v1"
                 ),
             },
         )[0]

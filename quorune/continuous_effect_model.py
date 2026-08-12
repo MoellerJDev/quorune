@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from enum import Enum, IntEnum
 from typing import Any, Mapping
 
+from .activated_ability_descriptor import validate_activated_ability_descriptor
 from .object_predicate import ObjectQuerySpec
 from .ability_fragments import ability_fragment_from_dict
 from .replacement.immutable import (
@@ -90,6 +91,7 @@ _COPY_FIELDS = {
     "colors",
     "abilities",
     "ability_fragments",
+    "activated_abilities",
     "power",
     "toughness",
     "loyalty",
@@ -156,6 +158,16 @@ def _validate_copy_values(value: Any) -> None:
             try:
                 for fragment in field_value:
                     ability_fragment_from_dict(fragment)
+            except (TypeError, ValueError) as exc:
+                raise ContinuousEffectError(str(exc)) from exc
+        elif field_name == "activated_abilities":
+            if not isinstance(field_value, (list, tuple)):
+                raise ContinuousEffectError(
+                    "copy_values.activated_abilities must be an array"
+                )
+            try:
+                for ability in field_value:
+                    validate_activated_ability_descriptor(thaw_value(ability))
             except (TypeError, ValueError) as exc:
                 raise ContinuousEffectError(str(exc)) from exc
         elif field_name in {"name", "controller", "mana_cost", "text"}:

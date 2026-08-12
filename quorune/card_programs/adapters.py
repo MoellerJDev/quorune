@@ -11,6 +11,9 @@ from ..compiler.program_generation import (
     rulings_source_hash,
     runtime_handler_footprint,
 )
+from ..compiler.activated_ability_catalog import (
+    with_activated_ability_catalog,
+)
 from ..compiler.card_form_rules import (
     CardFormRuleNode,
     compile_intrinsic_entry_counter_forms,
@@ -228,7 +231,12 @@ def compile_card_program(
     }
     reviewed_keys: list[str] = []
     if semantic_registry is not None:
-        for program in semantic_registry.programs_for_oracle(record.oracle_id):
+        reviewed_programs = with_activated_ability_catalog(
+            record,
+            semantic_registry.programs_for_oracle(record.oracle_id),
+            reference_programs=tuple(programs.values()),
+        )
+        for program in reviewed_programs:
             reviewed_footprint = runtime_handler_footprint(program)
             if reviewed_footprint is not None and program.trust_level == "trusted":
                 for key, generated in tuple(programs.items()):

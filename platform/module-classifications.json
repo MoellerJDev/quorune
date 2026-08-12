@@ -76,6 +76,18 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/activated_ability_descriptor.py",
+      "layer": "domain",
+      "owning_subsystem": "activated_abilities",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/activation_usage.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -942,51 +954,6 @@
       "replay_participation": "none"
     },
     {
-      "file": "quorune/compiled_crew_abilities.py",
-      "layer": "semantics",
-      "owning_subsystem": "activated_abilities",
-      "allowed_dependency_layers": [
-        "adapter",
-        "domain",
-        "rules",
-        "semantics"
-      ],
-      "game_state_access": "none",
-      "card_specificity_policy": "generic_no_growth",
-      "visibility_sensitivity": "authoritative_internal",
-      "replay_participation": "authoritative"
-    },
-    {
-      "file": "quorune/compiled_cycling_abilities.py",
-      "layer": "semantics",
-      "owning_subsystem": "activated_abilities",
-      "allowed_dependency_layers": [
-        "adapter",
-        "domain",
-        "rules",
-        "semantics"
-      ],
-      "game_state_access": "none",
-      "card_specificity_policy": "generic_no_growth",
-      "visibility_sensitivity": "authoritative_internal",
-      "replay_participation": "authoritative"
-    },
-    {
-      "file": "quorune/compiled_mana_abilities.py",
-      "layer": "semantics",
-      "owning_subsystem": "mana_rules",
-      "allowed_dependency_layers": [
-        "adapter",
-        "domain",
-        "rules",
-        "semantics"
-      ],
-      "game_state_access": "none",
-      "card_specificity_policy": "generic_no_growth",
-      "visibility_sensitivity": "authoritative_internal",
-      "replay_participation": "authoritative"
-    },
-    {
       "file": "quorune/compiler/__init__.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -1003,6 +970,21 @@
     },
     {
       "file": "quorune/compiler/ability_keyword_fragments.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/compiler/activated_ability_catalog.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
       "allowed_dependency_layers": [
@@ -4543,6 +4525,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/activated_abilities.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/attached_continuous.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -5307,6 +5304,20 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/standard_token_abilities.py",
+      "layer": "rules",
+      "owning_subsystem": "token_creation",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/state_based_actions.py",
       "layer": "rules",
       "owning_subsystem": "state_based_actions",
@@ -5859,5 +5870,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "cd8d7f2682696b9866a807691c2c86f5f6ea7d9377a9833b1d2271424190ffe9"
+  "fingerprint": "db8cfd455ab1532b61ca9815813e0620510ccac7982613c7df280087853d9899"
 }

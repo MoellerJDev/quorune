@@ -9,6 +9,9 @@ from .compiled_ability_fragments import (
     compiled_enchant_spec,
     compiled_static_ability_fragments,
 )
+from .compiled_activated_abilities import (
+    compiled_activated_ability_dicts,
+)
 from .enchant_spec import EnchantSpec
 
 
@@ -62,6 +65,11 @@ class AbilityFragmentHostMixin:
     ) -> dict[str, Any]:
         base = base_card_characteristics(card, record)
         base["ability_fragments"] = self._compiled_ability_fragment_dicts(
+            card,
+            error_type=error_type,
+        )
+        base["activated_abilities"] = compiled_activated_ability_dicts(
+            self,
             card,
             error_type=error_type,
         )

@@ -10,10 +10,12 @@ letting a pilot invent a cheaper cost or mutate state directly.
 """
 
 from dataclasses import dataclass, field
+from enum import Enum
 import re
 from typing import Any, Iterable, Mapping, Sequence
 
 from .activation_usage import ActivationLimit
+from .activated_ability_descriptor import validate_activated_ability_descriptor
 from .replacement.immutable import FrozenMap, thaw_value
 from .color_set_mana_abilities import ColorSetActivatedManaAbilitySpec
 from .fixed_mana_abilities import FixedManaMode
@@ -84,6 +86,20 @@ class CostChoice:
     card_type: str | None = None
     another: bool = False
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.kind, str) or not self.kind.strip():
+            raise ValueError("cost choice kind must be a nonempty string")
+        if type(self.count) is not int or self.count < 1:
+            raise ValueError("cost choice count must be a positive integer")
+        if not isinstance(self.zone, str) or not self.zone.strip():
+            raise ValueError("cost choice zone must be a nonempty string")
+        if self.card_type is not None and (
+            not isinstance(self.card_type, str) or not self.card_type.strip()
+        ):
+            raise ValueError("cost choice card_type must be null or nonempty")
+        if type(self.another) is not bool:
+            raise ValueError("cost choice another flag must be boolean")
+
     def compact(self) -> dict[str, Any]:
         result: dict[str, Any] = {"k": self.kind, "n": self.count, "z": self.zone}
         if self.card_type:
@@ -91,6 +107,102 @@ class CostChoice:
         if self.another:
             result["other"] = 1
         return result
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "kind": self.kind,
+            "count": self.count,
+            "zone": self.zone,
+            "card_type": self.card_type,
+            "another": self.another,
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "CostChoice":
+        expected = {"kind", "count", "zone", "card_type", "another"}
+        if not isinstance(value, Mapping) or set(value) != expected:
+            raise ValueError("cost choices use a closed schema")
+        return cls(
+            kind=value["kind"],
+            count=value["count"],
+            zone=value["zone"],
+            card_type=value["card_type"],
+            another=value["another"],
+        )
+
+
+class ActivationConditionKind(str, Enum):
+    CONTROLLERS_TURN = "controllers_turn"
+    NOT_CONTROLLERS_TURN = "not_controllers_turn"
+    TOKEN_CREATED_THIS_TURN = "token_created_this_turn"
+    CONTROLS_TYPE = "controls_type"
+    GRAVEYARD_DISTINCT_TYPES = "graveyard_distinct_types"
+    UNSUPPORTED = "unsupported"
+
+
+@dataclass(frozen=True, slots=True)
+class ActivationCondition:
+    """Closed compiler-pinned predicate evaluated before activation."""
+
+    kind: ActivationConditionKind
+    minimum: int | None = None
+    card_type: str | None = None
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.kind, ActivationConditionKind):
+            try:
+                object.__setattr__(self, "kind", ActivationConditionKind(self.kind))
+            except (TypeError, ValueError) as exc:
+                raise ValueError("unsupported activation condition kind") from exc
+        if self.minimum is not None and (
+            type(self.minimum) is not int or self.minimum < 1
+        ):
+            raise ValueError("activation condition minimum must be positive")
+        if self.card_type is not None and (
+            not isinstance(self.card_type, str) or not self.card_type.strip()
+        ):
+            raise ValueError("activation condition card_type must be nonempty")
+        if self.card_type is not None:
+            object.__setattr__(self, "card_type", self.card_type.casefold().strip())
+        if self.kind is ActivationConditionKind.CONTROLS_TYPE:
+            if self.minimum is None or self.card_type not in {
+                "artifact", "creature", "land"
+            }:
+                raise ValueError("controls-type conditions require a supported type and minimum")
+        elif self.kind is ActivationConditionKind.GRAVEYARD_DISTINCT_TYPES:
+            if self.minimum is None or self.card_type is not None:
+                raise ValueError("graveyard-type conditions require only a minimum")
+        elif self.minimum is not None or self.card_type is not None:
+            raise ValueError("this activation condition takes no parameters")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "kind": self.kind.value,
+            "minimum": self.minimum,
+            "card_type": self.card_type,
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "ActivationCondition":
+        if not isinstance(value, Mapping) or set(value) != {
+            "kind", "minimum", "card_type"
+        }:
+            raise ValueError("activation conditions use a closed schema")
+        return cls(
+            kind=value["kind"],
+            minimum=value["minimum"],
+            card_type=value["card_type"],
+        )
+
+
+_DYNAMIC_MANA_OUTPUTS = frozenset({"opponent_land_colors"})
+_MANA_SPEND_RESTRICTIONS = frozenset(
+    {
+        "artifact_spell_or_ability",
+        "nonartifact_spell_prohibited",
+        "legendary_spell_uncounterable",
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -123,45 +235,126 @@ class ActivatedAbility:
     color_set_mana_output: ColorSetActivatedManaAbilitySpec | None = None
     activation_limit: ActivationLimit | None = None
     library_search_types: tuple[str, ...] = ()
+    activation_conditions: tuple[ActivationCondition, ...] = ()
+    dynamic_mana_output: str | None = None
+    mana_spend_restriction: str | None = None
 
     def __post_init__(self) -> None:
-        if self.target_schema is not None and not isinstance(
-            self.target_schema, FrozenMap
-        ):
-            object.__setattr__(
-                self, "target_schema", FrozenMap(self.target_schema)
-            )
-        if not isinstance(self.fixed_mana_outputs, tuple) or any(
-            not isinstance(mode, FixedManaMode)
-            for mode in self.fixed_mana_outputs
-        ):
-            raise ValueError("fixed_mana_outputs must contain typed modes")
-        if self.color_set_mana_output is not None and not isinstance(
-            self.color_set_mana_output, ColorSetActivatedManaAbilitySpec
-        ):
-            raise ValueError(
-                "color_set_mana_output must be a typed color-set descriptor"
-            )
-        if self.activation_limit is not None and not isinstance(
-            self.activation_limit, ActivationLimit
-        ):
-            try:
-                object.__setattr__(
-                    self,
-                    "activation_limit",
-                    ActivationLimit(self.activation_limit),
+        _validate_ability_identity_and_cost(self)
+        _validate_ability_sequences_and_scalars(self)
+        _normalize_and_validate_ability_descriptors(self)
+        _validate_ability_closed_vocabulary(self)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": 1,
+            "ability_id": self.ability_id,
+            "line_index": self.line_index,
+            "oracle_line": self.oracle_line,
+            "cost_text": self.cost_text,
+            "effect_text": self.effect_text,
+            "zones": list(self.zones),
+            "mana": thaw_value(self.mana),
+            "complex_symbols": list(self.complex_symbols),
+            "tap_source": self.tap_source,
+            "untap_source": self.untap_source,
+            "discard_source": self.discard_source,
+            "sacrifice_source": self.sacrifice_source,
+            "exile_source": self.exile_source,
+            "life_payment": self.life_payment,
+            "energy_payment": self.energy_payment,
+            "loyalty_delta": self.loyalty_delta,
+            "choices": [choice.to_dict() for choice in self.choices],
+            "uncompiled_costs": list(self.uncompiled_costs),
+            "mana_ability": self.mana_ability,
+            "sorcery_speed": self.sorcery_speed,
+            "generic_reduction_per_legendary_creature": (
+                self.generic_reduction_per_legendary_creature
+            ),
+            "builtin_semantic_key": self.builtin_semantic_key,
+            "target_schema": (
+                None
+                if self.target_schema is None
+                else thaw_value(self.target_schema)
+            ),
+            "crew_threshold": self.crew_threshold,
+            "fixed_mana_outputs": [
+                mode.to_dict() for mode in self.fixed_mana_outputs
+            ],
+            "color_set_mana_output": (
+                None
+                if self.color_set_mana_output is None
+                else self.color_set_mana_output.to_dict()
+            ),
+            "activation_limit": (
+                None
+                if self.activation_limit is None
+                else self.activation_limit.value
+            ),
+            "library_search_types": list(self.library_search_types),
+            "activation_conditions": [
+                condition.to_dict() for condition in self.activation_conditions
+            ],
+            "dynamic_mana_output": self.dynamic_mana_output,
+            "mana_spend_restriction": self.mana_spend_restriction,
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "ActivatedAbility":
+        value = validate_activated_ability_descriptor(value)
+        return cls(
+            ability_id=value["ability_id"],
+            line_index=value["line_index"],
+            oracle_line=value["oracle_line"],
+            cost_text=value["cost_text"],
+            effect_text=value["effect_text"],
+            zones=tuple(value["zones"]),
+            mana=FrozenMap(value["mana"]),
+            complex_symbols=tuple(value["complex_symbols"]),
+            tap_source=value["tap_source"],
+            untap_source=value["untap_source"],
+            discard_source=value["discard_source"],
+            sacrifice_source=value["sacrifice_source"],
+            exile_source=value["exile_source"],
+            life_payment=value["life_payment"],
+            energy_payment=value["energy_payment"],
+            loyalty_delta=value["loyalty_delta"],
+            choices=tuple(
+                CostChoice.from_dict(choice) for choice in value["choices"]
+            ),
+            uncompiled_costs=tuple(value["uncompiled_costs"]),
+            mana_ability=value["mana_ability"],
+            sorcery_speed=value["sorcery_speed"],
+            generic_reduction_per_legendary_creature=value[
+                "generic_reduction_per_legendary_creature"
+            ],
+            builtin_semantic_key=value["builtin_semantic_key"],
+            target_schema=(
+                None
+                if value["target_schema"] is None
+                else FrozenMap(value["target_schema"])
+            ),
+            crew_threshold=value["crew_threshold"],
+            fixed_mana_outputs=tuple(
+                FixedManaMode.from_dict(mode)
+                for mode in value["fixed_mana_outputs"]
+            ),
+            color_set_mana_output=(
+                None
+                if value["color_set_mana_output"] is None
+                else ColorSetActivatedManaAbilitySpec.from_dict(
+                    value["color_set_mana_output"]
                 )
-            except (TypeError, ValueError) as exc:
-                raise ValueError("activation_limit is unsupported") from exc
-        if (
-            len(self.library_search_types)
-            != len(set(self.library_search_types))
-            or any(
-                value not in _SUPPORTED_LIBRARY_LAND_SEARCH_TYPES
-                for value in self.library_search_types
-            )
-        ):
-            raise ValueError("library_search_types are unsupported")
+            ),
+            activation_limit=value["activation_limit"],
+            library_search_types=tuple(value["library_search_types"]),
+            activation_conditions=tuple(
+                ActivationCondition.from_dict(condition)
+                for condition in value["activation_conditions"]
+            ),
+            dynamic_mana_output=value["dynamic_mana_output"],
+            mana_spend_restriction=value["mana_spend_restriction"],
+        )
 
     @property
     def compiled_cost(self) -> bool:
@@ -210,6 +403,162 @@ class ActivatedAbility:
         if self.library_search_types:
             result["search_types"] = list(self.library_search_types)
         return result
+
+
+def _validate_ability_identity_and_cost(ability: ActivatedAbility) -> None:
+    for field_name in ("ability_id", "oracle_line", "cost_text", "effect_text"):
+        value = getattr(ability, field_name)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(
+                f"activated ability {field_name} must be nonempty"
+            )
+    if type(ability.line_index) is not int or ability.line_index < 0:
+        raise ValueError("activated ability line_index must be nonnegative")
+    if (
+        not isinstance(ability.zones, tuple)
+        or not ability.zones
+        or any(
+            not isinstance(zone, str) or not zone.strip()
+            for zone in ability.zones
+        )
+        or len(ability.zones) != len(set(ability.zones))
+    ):
+        raise ValueError(
+            "activated ability zones must be unique nonempty strings"
+        )
+    mana_keys = ("GENERIC", "W", "U", "B", "R", "G", "C")
+    if not isinstance(ability.mana, Mapping) or not set(ability.mana).issubset(
+        mana_keys
+    ):
+        raise ValueError("activated ability mana contains unsupported keys")
+    if any(
+        type(amount) is not int or amount < 0
+        for amount in ability.mana.values()
+    ):
+        raise ValueError(
+            "activated ability mana amounts must be nonnegative integers"
+        )
+    object.__setattr__(
+        ability,
+        "mana",
+        FrozenMap({key: int(ability.mana.get(key, 0)) for key in mana_keys}),
+    )
+
+
+def _validate_ability_sequences_and_scalars(ability: ActivatedAbility) -> None:
+    for field_name in (
+        "complex_symbols",
+        "uncompiled_costs",
+        "library_search_types",
+    ):
+        values = getattr(ability, field_name)
+        if not isinstance(values, tuple) or any(
+            not isinstance(value, str) or not value.strip()
+            for value in values
+        ):
+            raise ValueError(
+                f"activated ability {field_name} must contain strings"
+            )
+    if not isinstance(ability.choices, tuple) or any(
+        not isinstance(choice, CostChoice) for choice in ability.choices
+    ):
+        raise ValueError("activated ability choices must be typed")
+    if not isinstance(ability.activation_conditions, tuple) or any(
+        not isinstance(condition, ActivationCondition)
+        for condition in ability.activation_conditions
+    ):
+        raise ValueError("activation_conditions must contain typed predicates")
+    for field_name in (
+        "tap_source",
+        "untap_source",
+        "discard_source",
+        "sacrifice_source",
+        "exile_source",
+        "mana_ability",
+        "sorcery_speed",
+    ):
+        if type(getattr(ability, field_name)) is not bool:
+            raise ValueError(f"activated ability {field_name} must be boolean")
+    for field_name in (
+        "life_payment",
+        "energy_payment",
+        "generic_reduction_per_legendary_creature",
+    ):
+        value = getattr(ability, field_name)
+        if type(value) is not int or value < 0:
+            raise ValueError(
+                f"activated ability {field_name} must be nonnegative"
+            )
+
+
+def _normalize_and_validate_ability_descriptors(
+    ability: ActivatedAbility,
+) -> None:
+    for field_name in ("loyalty_delta", "crew_threshold"):
+        value = getattr(ability, field_name)
+        if value is not None and type(value) is not int:
+            raise ValueError(
+                f"activated ability {field_name} must be an integer or null"
+            )
+    if ability.crew_threshold is not None and ability.crew_threshold < 0:
+        raise ValueError("activated ability crew_threshold cannot be negative")
+    if ability.target_schema is not None and not isinstance(
+        ability.target_schema, FrozenMap
+    ):
+        object.__setattr__(
+            ability, "target_schema", FrozenMap(ability.target_schema)
+        )
+    if not isinstance(ability.fixed_mana_outputs, tuple) or any(
+        not isinstance(mode, FixedManaMode)
+        for mode in ability.fixed_mana_outputs
+    ):
+        raise ValueError("fixed_mana_outputs must contain typed modes")
+    if ability.color_set_mana_output is not None and not isinstance(
+        ability.color_set_mana_output, ColorSetActivatedManaAbilitySpec
+    ):
+        raise ValueError(
+            "color_set_mana_output must be a typed color-set descriptor"
+        )
+    if ability.activation_limit is not None and not isinstance(
+        ability.activation_limit, ActivationLimit
+    ):
+        try:
+            object.__setattr__(
+                ability,
+                "activation_limit",
+                ActivationLimit(ability.activation_limit),
+            )
+        except (TypeError, ValueError) as exc:
+            raise ValueError("activation_limit is unsupported") from exc
+
+
+def _validate_ability_closed_vocabulary(ability: ActivatedAbility) -> None:
+    if ability.builtin_semantic_key is not None and (
+        not isinstance(ability.builtin_semantic_key, str)
+        or not ability.builtin_semantic_key.strip()
+    ):
+        raise ValueError(
+            "activated ability builtin_semantic_key must be null or nonempty"
+        )
+    if (
+        len(ability.library_search_types)
+        != len(set(ability.library_search_types))
+        or any(
+            value not in _SUPPORTED_LIBRARY_LAND_SEARCH_TYPES
+            for value in ability.library_search_types
+        )
+    ):
+        raise ValueError("library_search_types are unsupported")
+    if ability.dynamic_mana_output is not None and (
+        not isinstance(ability.dynamic_mana_output, str)
+        or ability.dynamic_mana_output not in _DYNAMIC_MANA_OUTPUTS
+    ):
+        raise ValueError("dynamic_mana_output is unsupported")
+    if ability.mana_spend_restriction is not None and (
+        not isinstance(ability.mana_spend_restriction, str)
+        or ability.mana_spend_restriction not in _MANA_SPEND_RESTRICTIONS
+    ):
+        raise ValueError("mana_spend_restriction is unsupported")
 
 
 def _number(value: str) -> int:
@@ -605,6 +954,90 @@ def _normalized_ability_line(raw_line: str) -> tuple[str, str | None]:
     return line, None
 
 
+def _activation_conditions(effect_text: str) -> tuple[ActivationCondition, ...]:
+    lower = " ".join(effect_text.casefold().split())
+    result: list[ActivationCondition] = []
+    if "activate only during your turn" in lower:
+        result.append(ActivationCondition(ActivationConditionKind.CONTROLLERS_TURN))
+    if "activate only if it's not your turn" in lower:
+        result.append(
+            ActivationCondition(ActivationConditionKind.NOT_CONTROLLERS_TURN)
+        )
+    if "activate only if you created a token this turn" in lower:
+        result.append(
+            ActivationCondition(ActivationConditionKind.TOKEN_CREATED_THIS_TURN)
+        )
+    if (
+        "activate only if there are four or more card types among "
+        "cards in your graveyard"
+    ) in lower:
+        result.append(
+            ActivationCondition(
+                ActivationConditionKind.GRAVEYARD_DISTINCT_TYPES,
+                minimum=4,
+            )
+        )
+    controlled = re.search(
+        r"activate only if you control "
+        r"(?:(?P<count>\d+|one|two|three|four|five|six|seven|eight|nine|ten) "
+        r"or more |an? )?(?P<kind>artifacts?|creatures?|lands?)(?:\.|$)",
+        lower,
+    )
+    if controlled is not None:
+        raw_count = controlled.group("count") or "one"
+        result.append(
+            ActivationCondition(
+                ActivationConditionKind.CONTROLS_TYPE,
+                minimum=(
+                    int(raw_count)
+                    if raw_count.isdigit()
+                    else _NUMBER_WORDS[raw_count]
+                ),
+                card_type=controlled.group("kind").removesuffix("s"),
+            )
+        )
+    recognized_if = any(
+        condition.kind
+        in {
+            ActivationConditionKind.NOT_CONTROLLERS_TURN,
+            ActivationConditionKind.TOKEN_CREATED_THIS_TURN,
+            ActivationConditionKind.CONTROLS_TYPE,
+            ActivationConditionKind.GRAVEYARD_DISTINCT_TYPES,
+        }
+        for condition in result
+    )
+    if "activate only if" in lower and not recognized_if:
+        result.append(ActivationCondition(ActivationConditionKind.UNSUPPORTED))
+    return tuple(result)
+
+
+def _dynamic_mana_output(effect_text: str) -> str | None:
+    lower = " ".join(effect_text.casefold().split())
+    if (
+        "add one mana of any color that a land an opponent controls "
+        "could produce"
+    ) in lower:
+        return "opponent_land_colors"
+    return None
+
+
+def _mana_spend_restriction(effect_text: str) -> str | None:
+    lower = " ".join(effect_text.casefold().split())
+    if (
+        "spend this mana only to cast artifact spells or activate "
+        "abilities of artifacts"
+    ) in lower:
+        return "artifact_spell_or_ability"
+    if "this mana can't be spent to cast nonartifact spells" in lower:
+        return "nonartifact_spell_prohibited"
+    if (
+        "spend this mana only to cast a legendary spell" in lower
+        and "that spell can't be countered" in lower
+    ):
+        return "legendary_spell_uncounterable"
+    return None
+
+
 def _parse_activated_line(
     raw_line: str,
     line_index: int,
@@ -694,6 +1127,9 @@ def _parse_activated_line(
             target_schema=target_schema,
             activation_limit=activation_limit,
             library_search_types=_library_search_types(effect_text),
+            activation_conditions=_activation_conditions(effect_text),
+            dynamic_mana_output=_dynamic_mana_output(effect_text),
+            mana_spend_restriction=_mana_spend_restriction(effect_text),
         ),
     )
 

@@ -97,6 +97,7 @@ VALID_EFFECT_OPERATIONS = {
     "exile_opponent_graveyards",
     "extra_turn",
     "grant_ability_marker",
+    "grant_ability_fragment",
     "grant_zone_object_keyword",
     "fomori_vault",
     "life",
@@ -646,6 +647,12 @@ class SemanticRegistry:
             candidate.to_dict() == program.to_dict()
             for candidate in candidates
         )
+
+    @property
+    def runtime_handler_compatibility_enabled(self) -> bool:
+        """Whether this registry is replaying a historical v3 snapshot."""
+
+        return self._runtime_handler_compatibility_enabled
 
     def trust_for_oracle(self, oracle_id: str) -> str:
         programs = self.programs_for_oracle(oracle_id)

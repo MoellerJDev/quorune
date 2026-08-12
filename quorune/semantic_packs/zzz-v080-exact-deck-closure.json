@@ -731,7 +731,9 @@
                   "effect_text": "This creature deals 1 damage to any target",
                   "mana": {"GENERIC": 2},
                   "tap_source": true,
-                  "sorcery_speed": false
+                  "sorcery_speed": false,
+                  "mana_ability": false,
+                  "fixed_mana_outputs": []
                 }
               },
               {
@@ -2112,7 +2114,8 @@
           "token": {
             "name": "Map",
             "type_line": "Token Artifact — Map",
-            "oracle_text": "{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery."
+            "oracle_text": "{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.",
+            "ability_profile": "one_tap_sac_explore_controlled_creature_v1"
           }
         }
       ],
@@ -2904,7 +2907,25 @@
       "ability_id": "trigger:chapter-1",
       "active_zone": "battlefield",
       "event": "saga.chapter.1",
-      "effects": [{"op": "grant_ability_marker", "source": "$source", "marker": "granted_activated_ability:saga_mana:{T}: Add {C}."}],
+      "effects": [{
+        "op": "grant_ability_fragment",
+        "source": "$source",
+        "fragment": {
+          "kind": "granted_activated",
+          "value": {
+            "schema_version": 1,
+            "ability_id": "saga_mana",
+            "semantic_key": "builtin:mana-fixed",
+            "cost_text": "{T}",
+            "effect_text": "Add {C}.",
+            "mana": {},
+            "tap_source": true,
+            "sorcery_speed": false,
+            "mana_ability": true,
+            "fixed_mana_outputs": [{"C": 1}]
+          }
+        }
+      }],
       "trust_level": "trusted",
       "coverage": ["static_ability", "saga_chapter", "lore_counter", "granted_mana_ability"],
       "tests": ["test_urzas_saga_chapters_construct_search_and_sacrifice"],
@@ -2922,7 +2943,25 @@
       "ability_id": "trigger:chapter-2",
       "active_zone": "battlefield",
       "event": "saga.chapter.2",
-      "effects": [{"op": "grant_ability_marker", "source": "$source", "marker": "granted_activated_ability:saga_construct:{2}, {T}: Create a 0/0 colorless Construct artifact creature token."}],
+      "effects": [{
+        "op": "grant_ability_fragment",
+        "source": "$source",
+        "fragment": {
+          "kind": "granted_activated",
+          "value": {
+            "schema_version": 1,
+            "ability_id": "saga_construct",
+            "semantic_key": "4c6a0c30-b547-4eff-8ff4-0ca25803c076:ability:saga_construct",
+            "cost_text": "{2}, {T}",
+            "effect_text": "Create a 0/0 colorless Construct artifact creature token.",
+            "mana": {"GENERIC": 2},
+            "tap_source": true,
+            "sorcery_speed": false,
+            "mana_ability": false,
+            "fixed_mana_outputs": []
+          }
+        }
+      }],
       "trust_level": "trusted",
       "coverage": ["static_ability", "saga_chapter", "lore_counter", "granted_activated_ability"],
       "tests": ["test_urzas_saga_chapters_construct_search_and_sacrifice"],

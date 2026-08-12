@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-"""Runtime output selection for activated mana abilities.
-
-The fixed-output CardProgram family is consumed first.  Legacy dynamic modes
-remain isolated here until their own typed capability families replace them.
-"""
+"""Runtime output selection for compiler-pinned activated mana abilities."""
 
 from dataclasses import replace
 from typing import Any, Mapping, Protocol
@@ -15,13 +11,9 @@ from .color_set_mana_abilities import (
     ColorSetSelection,
 )
 from .errors import GameRuleError
-from .mana import (
-    effective_mana_record,
-    extract_mana_modes,
-    ManaMode,
-)
+from .mana import ManaMode
 from .object_query import object_query_result, query_objects
-from .util import mana_cost_to_vector, normalize_mana_bundle
+from .util import normalize_mana_bundle
 
 
 class ManaAbilityRuntimeHost(Protocol):
@@ -37,6 +29,10 @@ class ManaAbilityRuntimeHost(Protocol):
     ) -> tuple[set[str], set[str], set[str]]: ...
 
     def _commander_identity(self, seat: str) -> set[str]: ...
+
+    def _activated_abilities(
+        self, card: Any
+    ) -> tuple[ActivatedAbility, ...]: ...
 
 
 def _color_set_mana_modes(
@@ -107,8 +103,31 @@ def mana_modes_for_ability(
 ) -> tuple[ManaMode, ...]:
     """Return the output modes for one selected activated mana ability."""
 
+    side_effects: list[dict[str, Any]] = []
+    if ability.sacrifice_source:
+        side_effects.append({"op": "sacrifice_source"})
+    if ability.life_payment:
+        side_effects.append(
+            {"op": "pay_life", "amount": ability.life_payment}
+        )
+
+    def decorated(modes: tuple[ManaMode, ...]) -> tuple[ManaMode, ...]:
+        return tuple(
+            ManaMode(
+                mode.bundle,
+                conditional=mode.conditional,
+                restriction=(
+                    ability.mana_spend_restriction
+                    or mode.restriction
+                ),
+                side_effects=tuple(side_effects) or mode.side_effects,
+                requires_choice=bool(ability.choices) or mode.requires_choice,
+            )
+            for mode in modes
+        )
+
     if ability.color_set_mana_output is not None:
-        return _color_set_mana_modes(host, seat, ability)
+        return decorated(_color_set_mana_modes(host, seat, ability))
     if ability.fixed_mana_outputs:
         fixed_outputs = tuple(ability.fixed_mana_outputs)
         if all(
@@ -126,79 +145,93 @@ def mana_modes_for_ability(
                     ),
                 )
             )
-        return tuple(
-            ManaMode(mode.bundle) for mode in fixed_outputs
+        return decorated(
+            tuple(ManaMode(mode.bundle) for mode in fixed_outputs)
         )
-    record = host.card_record(source)
-    if record is None:
-        effect = ability.effect_text.casefold()
-        if "one mana of any type" in effect:
-            colors = "WUBRGC"
-        elif "one mana of any color" in effect:
-            colors = "WUBRG"
-        else:
-            return ()
-        return tuple(
+    if ability.dynamic_mana_output == "opponent_land_colors":
+        return decorated(tuple(
             ManaMode(
                 {
                     **normalize_mana_bundle(None),
                     color: 1,
-                }
+                },
             )
-            for color in colors
-        )
-    effect = ability.effect_text.casefold()
-    if (
-        "one mana of any color that a land an opponent controls "
-        "could produce"
-        in effect
-    ):
-        colors: set[str] = set()
-        for opponent in host.active_seats:
-            if opponent == seat:
+            for color in _opponent_land_colors(host, seat)
+        ))
+    return ()
+
+
+def _land_output_colors(
+    host: ManaAbilityRuntimeHost,
+) -> dict[str, set[str]]:
+    """Compute land-produced colors to a deterministic least fixed point."""
+
+    colors_by_object: dict[str, set[str]] = {}
+    dynamic_by_object: dict[str, str] = {}
+    controller_by_object: dict[str, str] = {}
+    for seat in host.active_seats:
+        for object_id in host.state.players[seat].zones["battlefield"]:
+            land = host.state.cards[object_id]
+            if land.controller != seat or land.phased_out:
                 continue
-            for object_id in host.state.players[opponent].zones[
-                "battlefield"
-            ]:
-                land = host.state.cards[object_id]
-                land_record = effective_mana_record(
-                    host.card_record(land),
-                    host._effective_card_data(land),
-                )
-                if (
-                    land.controller != opponent
-                    or land.phased_out
-                    or land_record is None
-                ):
+            data = host._effective_card_data(land)
+            card_types, _, _ = host._type_parts(
+                str(data.get("type_line") or "")
+            )
+            if "land" not in card_types:
+                continue
+            colors = colors_by_object.setdefault(object_id, set())
+            controller_by_object[object_id] = seat
+            for ability in host._activated_abilities(land):
+                if not ability.mana_ability or land.zone not in ability.zones:
                     continue
-                for mode in extract_mana_modes(
-                    land_record,
-                    host._commander_identity(opponent),
-                ):
+                if ability.fixed_mana_outputs:
                     colors.update(
                         color
+                        for mode in ability.fixed_mana_outputs
                         for color, amount in mode.bundle.items()
                         if color in "WUBRG" and amount
                     )
-        return tuple(
-            ManaMode(
-                {
-                    **normalize_mana_bundle(None),
-                    color: 1,
-                }
-            )
-            for color in sorted(colors)
-        )
-    ability_record = replace(
-        record,
-        oracle_text=f"{{T}}: {ability.effect_text}",
-        type_line="",
-        produced_mana=(),
-    )
-    return extract_mana_modes(
-        ability_record,
-        host._commander_identity(seat),
-    )
+                elif ability.color_set_mana_output is not None:
+                    colors.update(
+                        color
+                        for mode in _color_set_mana_modes(host, seat, ability)
+                        for color, amount in mode.bundle.items()
+                        if color in "WUBRG" and amount
+                    )
+                elif ability.dynamic_mana_output is not None:
+                    dynamic_by_object[object_id] = ability.dynamic_mana_output
+    changed = True
+    while changed:
+        changed = False
+        for object_id, dynamic in sorted(dynamic_by_object.items()):
+            if dynamic != "opponent_land_colors":
+                continue
+            controller = controller_by_object[object_id]
+            produced = {
+                color
+                for other_id, other_colors in colors_by_object.items()
+                if controller_by_object[other_id] != controller
+                for color in other_colors
+            }
+            before = len(colors_by_object[object_id])
+            colors_by_object[object_id].update(produced)
+            changed = changed or len(colors_by_object[object_id]) != before
+    return colors_by_object
+
+
+def _opponent_land_colors(
+    host: ManaAbilityRuntimeHost,
+    seat: str,
+) -> tuple[str, ...]:
+    colors_by_object = _land_output_colors(host)
+    colors = {
+        color
+        for object_id, produced in colors_by_object.items()
+        if host.state.cards[object_id].controller != seat
+        for color in produced
+    }
+    return tuple(color for color in "WUBRG" if color in colors)
 
 
 def typed_mana_modes_for_abilities(
@@ -211,10 +244,7 @@ def typed_mana_modes_for_abilities(
 
     result: dict[tuple[tuple[str, int], ...], ManaMode] = {}
     for ability in abilities:
-        if not (
-            ability.fixed_mana_outputs
-            or ability.color_set_mana_output is not None
-        ):
+        if not ability.mana_ability:
             continue
         for mode in mana_modes_for_ability(host, seat, source, ability):
             key = tuple(
@@ -252,57 +282,6 @@ def mana_output_for_ability(
 ) -> dict[str, int]:
     """Validate the submitted output against the advertised mode set."""
 
-    effect_lower = ability.effect_text.casefold()
-    if (
-        "one mana of any color that a land an opponent controls "
-        "could produce"
-        in effect_lower
-    ):
-        legal_colors: set[str] = set()
-        for opponent in host.active_seats:
-            if opponent == seat:
-                continue
-            for object_id in host.state.players[opponent].zones[
-                "battlefield"
-            ]:
-                land = host.state.cards[object_id]
-                record = effective_mana_record(
-                    host.card_record(land),
-                    host._effective_card_data(land),
-                )
-                if (
-                    land.controller != opponent
-                    or land.phased_out
-                    or record is None
-                    or not record.is_land
-                ):
-                    continue
-                for mode in extract_mana_modes(
-                    record,
-                    host._commander_identity(opponent),
-                ):
-                    legal_colors.update(
-                        color
-                        for color, amount in mode.bundle.items()
-                        if color in "WUBRG" and amount
-                    )
-        raw_choice = str(response.get("mana_choice") or "").upper()
-        declared = normalize_mana_bundle(response.get("mana_output"))
-        if raw_choice in "WUBRG" and len(raw_choice) == 1:
-            declared[raw_choice] += 1
-        selected = [
-            color for color in "WUBRG" if declared[color] == 1
-        ]
-        if (
-            len(selected) != 1
-            or sum(declared.values()) != 1
-            or selected[0] not in legal_colors
-        ):
-            raise GameRuleError(
-                "Declared Fellwar/Orchard mana is not a color an "
-                "opponent's land could produce"
-            )
-        return declared
     legal_modes = mana_modes_for_ability(host, seat, source, ability)
     declared = normalize_mana_bundle(response.get("mana_output"))
     raw_choice = str(response.get("mana_choice") or "").upper()
@@ -322,37 +301,7 @@ def mana_output_for_ability(
             return normalize_mana_bundle(legal_modes[0].bundle)
         raise GameRuleError("Choose which mana this ability produces")
 
-    output_text = ability.effect_text.split(".", 1)[0]
-    output, complex_symbols = mana_cost_to_vector(output_text)
-    bundle = {color: int(output.get(color, 0)) for color in "WUBRGC"}
-    if output.get("GENERIC"):
-        bundle["C"] += int(output["GENERIC"])
-    if sum(bundle.values()) and not complex_symbols:
-        return normalize_mana_bundle(bundle)
-    raw_choice = str(response.get("mana_choice") or "").upper()
-    declared = normalize_mana_bundle(response.get("mana_output"))
-    if raw_choice in "WUBRGC" and len(raw_choice) == 1:
-        declared[raw_choice] += 1
-    record = host.card_record(source)
-    if not record:
-        if (
-            "one mana of any color" in ability.effect_text.casefold()
-            and sum(declared.values()) == 1
-            and declared["C"] == 0
-        ):
-            return declared
-        raise GameRuleError("Custom mana ability needs compiled semantics")
-    legacy_modes = extract_mana_modes(
-        record, host._commander_identity(seat)
-    )
-    if not any(
-        normalize_mana_bundle(mode.bundle) == declared
-        for mode in legacy_modes
-    ):
-        raise GameRuleError(
-            "Declared mana output is not a recognized Oracle mana mode"
-        )
-    return declared
+    raise GameRuleError("Mana ability has no compiler-pinned output descriptor")
 
 
 __all__ = [

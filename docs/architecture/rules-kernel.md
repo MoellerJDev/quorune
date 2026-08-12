@@ -110,6 +110,17 @@ remain unsupported. CardPrograms may grant an activated ability through a
 serialized descriptor; historical card-named markers are interpreted only by
 the Game Record v3 compatibility adapter.
 
+The compiler now attaches the complete closed activated-ability value to the
+source-pinned CardProgram through `activation.catalog.pinned.v1`. Runtime
+discovery consumes that catalog, rule-derived basic-land-type abilities, typed
+layer-6 grants, and typed token characteristics; it does not reinterpret Oracle
+prose. Copy effects preserve the catalog, ability-removal effects remove it,
+and a text-changing effect clears descriptors compiled from the replaced text.
+The catalog unifies discovery for ordinary Crew, Cycling, and represented mana
+abilities without replacing those families' specialized execution owners or
+capability closure. Current games cannot use the isolated Game Record v3
+compatibility parser.
+
 Ordinary printed `Crew N` is compiled once into a source-spanned activated-
 ability descriptor. `crew.py` owns the immutable current-characteristic
 candidate set and aggregate-power cost plan; activation offers and commits use

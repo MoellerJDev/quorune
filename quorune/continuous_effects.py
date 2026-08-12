@@ -21,6 +21,8 @@ from .ability_fragments import (
     ability_fragment_to_dict,
     canonical_ability_fragments,
 )
+from .abilities import ActivatedAbility
+from .replacement.immutable import thaw_value
 
 
 _SUBLAYER_ORDER = {
@@ -49,6 +51,9 @@ class CharacteristicState:
     ability_fragments: list[StaticAbilityFragment] = field(
         default_factory=list
     )
+    activated_abilities: list[ActivatedAbility] = field(
+        default_factory=list
+    )
     power: int | None = None
     toughness: int | None = None
     loyalty: int | None = None
@@ -73,6 +78,9 @@ class CharacteristicState:
                 for value in canonical_ability_fragments(
                     self.ability_fragments
                 )
+            ],
+            "activated_abilities": [
+                ability.to_dict() for ability in self.activated_abilities
             ],
             "power": self.power,
             "toughness": self.toughness,
@@ -222,6 +230,17 @@ def _apply_copy_values(
             state.ability_fragments = list(
                 canonical_ability_fragments(replacement)
             )
+        elif key == "activated_abilities":
+            if not isinstance(replacement, (list, tuple)):
+                raise ContinuousEffectError(
+                    "copy_values.activated_abilities must be an array"
+                )
+            state.activated_abilities = [
+                value
+                if isinstance(value, ActivatedAbility)
+                else ActivatedAbility.from_dict(thaw_value(value))
+                for value in replacement
+            ]
         elif hasattr(state, key):
             setattr(state, key, replacement)
         else:
@@ -250,6 +269,7 @@ def _apply_face_down(
         str(item) for item in values.get("abilities", [])
     ]
     state.ability_fragments = []
+    state.activated_abilities = []
     state.power = int(values.get("power", 2))
     state.toughness = int(values.get("toughness", 2))
 
@@ -296,6 +316,7 @@ def _apply_ability_operation(
     elif op == "remove_all_abilities":
         state.abilities = []
         state.ability_fragments = []
+        state.activated_abilities = []
     else:
         return False
     return True
@@ -329,6 +350,10 @@ def _apply_operation(
             str(value.get("from") or ""),
             str(value.get("to") or ""),
         )
+        # Text-changing effects can alter costs, activation restrictions, and
+        # output. Until that grammar is compiled, do not retain a descriptor
+        # for the pre-change text.
+        state.activated_abilities = []
         return
     if op in {"set_types", "add_types", "remove_types"}:
         target = (

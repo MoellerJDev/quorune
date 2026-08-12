@@ -5,7 +5,7 @@ from typing import Any, Mapping, Protocol, Sequence
 from .abilities import ActivatedAbility
 from .errors import GameRuleError
 from .haste import summoning_sickness_prohibits_tap_or_untap_cost
-from .mana import ManaMode, extract_effective_mana_modes
+from .mana import ManaMode
 from .mana_ability_runtime import (
     payable_mana_modes,
     typed_mana_modes_for_abilities,
@@ -35,8 +35,6 @@ class ManaActivationHost(Protocol):
         self, seat: str, source: Any, ability: ActivatedAbility
     ) -> tuple[ManaMode, ...]: ...
 
-    def _compiled_mana_restriction(self, restriction: str) -> str | None: ...
-
     def _add_restricted_mana(
         self, seat: str, restriction: str, bundle: Mapping[str, int]
     ) -> None: ...
@@ -57,13 +55,9 @@ class ManaActivationHost(Protocol):
         self, seat: str, card: Any
     ) -> bool: ...
 
-    def _controller_has_oracle_text(self, seat: str, text: str) -> bool: ...
-
     def _recordless_mana_modes(self, seat: str, card: Any) -> Sequence[ManaMode]: ...
 
     def _activated_abilities(self, card: Any) -> tuple[ActivatedAbility, ...]: ...
-
-    def _commander_identity(self, seat: str) -> set[str]: ...
 
     def _activation_condition_status(
         self, seat: str, ability: ActivatedAbility, card: Any
@@ -71,10 +65,6 @@ class ManaActivationHost(Protocol):
 
     def _mana_restriction_allows(
         self, restriction: str, spend_context: str | None
-    ) -> bool: ...
-
-    def _mana_mode_has_compiled_activation_condition(
-        self, restriction: str
     ) -> bool: ...
 
 
@@ -102,22 +92,10 @@ def complete_mana_activation(
         ),
         None,
     )
-    if selected_mode is not None:
-        apply_mana_mode_effects(
-            host,
-            seat,
-            selected_mode.side_effects,
-            source=source,
-            payment_id=str(response.get("_mana_payment_id") or "") or None,
-            replacement_selections_by_event=(
-                response.get("_mana_replacement_selections")
-                if isinstance(
-                    response.get("_mana_replacement_selections"), Mapping
-                )
-                else None
-            ),
-        )
-    restriction = host._compiled_mana_restriction(ability.effect_text)
+    # Explicit activation costs were already committed transactionally by the
+    # activation owner. ManaMode side effects are the equivalent cost plan used
+    # only by automatic payment and must not be applied twice here.
+    restriction = ability.mana_spend_restriction
     if restriction:
         host._add_restricted_mana(seat, restriction, bundle)
     host._log(
@@ -188,22 +166,7 @@ def _mana_plan_modes(
     host: ManaActivationHost,
     seat: str,
     card: Any,
-    data: Mapping[str, Any],
-    card_types: set[str],
 ) -> tuple[ManaMode, ...]:
-    granted_token_mana = bool(
-        card.is_token
-        and "creature" in card_types
-        and host._controller_has_oracle_text(
-            seat,
-            'creature tokens you control have "{t}: add one mana of any color."',
-        )
-    )
-    if granted_token_mana:
-        return tuple(
-            ManaMode({**normalize_mana_bundle(None), color: 1})
-            for color in "WUBRG"
-        )
     record = host.card_record(card)
     if not record:
         modes = tuple(host._recordless_mana_modes(seat, card))
@@ -213,24 +176,20 @@ def _mana_plan_modes(
     mana_abilities = [
         ability
         for ability in host._activated_abilities(card)
-        if ability.mana_ability and card.zone in ability.zones
+        if ability.mana_ability
+        and ability.tap_source
+        and card.zone in ability.zones
     ]
     if any(ability.activation_limit is not None for ability in mana_abilities):
         raise GameRuleError(
             f"{card.ref} has a usage-limited mana ability; activate it explicitly"
         )
-    if (
-        not mana_abilities
-        and not record.is_land
-        and "creature tokens you control have" in record.oracle_text.casefold()
-    ):
-        raise GameRuleError(f"{card.ref} does not itself have that mana ability")
-    return payable_mana_modes(
-        typed_mana_modes_for_abilities(host, seat, card, mana_abilities),
-        extract_effective_mana_modes(
-            record, data, host._commander_identity(seat)
-        ),
+    modes = payable_mana_modes(
+        typed_mana_modes_for_abilities(host, seat, card, mana_abilities)
     )
+    if not modes:
+        raise GameRuleError(f"{card.ref} has no compiler-pinned mana mode")
+    return modes
 
 
 def _selected_plan_mode(
@@ -258,7 +217,9 @@ def _selected_plan_mode(
     mana_abilities = [
         ability
         for ability in host._activated_abilities(card)
-        if ability.mana_ability and card.zone in ability.zones
+        if ability.mana_ability
+        and ability.tap_source
+        and card.zone in ability.zones
     ]
     if mana_abilities and not any(
         host._activation_condition_status(seat, ability, card)[0] == "payable"
@@ -267,10 +228,7 @@ def _selected_plan_mode(
         raise GameRuleError(
             f"{card.printed_name}'s mana ability has an unmet or unresolved activation condition"
         )
-    compiled = host._compiled_mana_restriction(mode.restriction)
-    condition_compiled = host._mana_mode_has_compiled_activation_condition(
-        mode.restriction
-    )
+    compiled = mode.restriction or None
     restriction_allows = bool(
         compiled and host._mana_restriction_allows(compiled, spend_context)
     )
@@ -283,7 +241,6 @@ def _selected_plan_mode(
         mode.conditional
         and host.state.config.strict_mana
         and not restriction_allows
-        and not condition_compiled
     ):
         raise GameRuleError(
             f"{card.printed_name}'s selected mana mode is conditional/restricted "
@@ -293,7 +250,6 @@ def _selected_plan_mode(
         mode.conditional
         and not allow_conditional
         and not restriction_allows
-        and not condition_compiled
     ):
         raise GameRuleError(
             f"{card.printed_name}'s selected mana mode requires an explicit condition"
@@ -394,7 +350,7 @@ def complete_mana_plan_activations(
         ):
             raise GameRuleError(f"{card.ref} is summoning sick")
         bundle = normalize_mana_bundle(activation.get("bundle"))
-        modes = _mana_plan_modes(host, seat, card, data, card_types)
+        modes = _mana_plan_modes(host, seat, card)
         mode, restriction = _selected_plan_mode(
             host,
             seat,

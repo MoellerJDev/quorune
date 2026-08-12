@@ -1577,14 +1577,14 @@ class ExactMishraClosureTests(unittest.TestCase):
         )
         self.assertFalse(engine._stabilize())
         self.resolve_top(engine)
-        self.assertTrue(
-            any(
-                marker.startswith(
-                    "granted_activated_ability:saga_mana:"
-                )
-                and active
-                for marker, active in saga.annotations.items()
-            )
+        self.assertEqual(
+            ["saga_mana"],
+            [
+                fragment["value"]["ability_id"]
+                for fragment in saga.annotations[
+                    "granted_ability_fragments"
+                ]
+            ],
         )
         self.assertIn(
             "saga_mana",
@@ -1597,14 +1597,14 @@ class ExactMishraClosureTests(unittest.TestCase):
         advance_active_player_sagas(engine, "A")
         self.assertFalse(engine._stabilize())
         self.resolve_top(engine)
-        self.assertTrue(
-            any(
-                marker.startswith(
-                    "granted_activated_ability:saga_construct:"
-                )
-                and active
-                for marker, active in saga.annotations.items()
-            )
+        self.assertEqual(
+            ["saga_mana", "saga_construct"],
+            [
+                fragment["value"]["ability_id"]
+                for fragment in saga.annotations[
+                    "granted_ability_fragments"
+                ]
+            ],
         )
         saga.tapped = False
         self.prepare_main(engine)

@@ -39,7 +39,7 @@
       "status": "blocked",
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
-      "implementation_components": ["quorune.compiled_cycling_abilities.compiled_ordinary_cycling_abilities", "quorune.rules.activation.query.activated_abilities"],
+      "implementation_components": ["quorune.compiled_activated_abilities.compiled_activated_abilities", "quorune.rules.activation.query.activated_abilities"],
       "executable_test_ids": ["tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_descriptor_exists_in_every_zone_but_activates_only_from_hand", "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_changed_cycling_oracle_fails_closed_without_runtime_reparse"],
       "required_scenarios": ["positive", "negative"],
       "covered_scenarios": ["positive", "negative"],
