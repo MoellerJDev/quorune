@@ -63,6 +63,7 @@
       "test_return_to_hand_rules",
       "test_single_object_zone_transition",
       "test_token_creation_replacements",
+      "test_typed_land_entry_participation",
       "test_zone_replacement_compiler"
     ],
     "counter-continuous-effects": [

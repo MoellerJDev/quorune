@@ -41,6 +41,7 @@
         "replacement_decisions.issue_combat_damage_replacement_choice",
         "replacement.ordering.next_batch_replacement_choice",
         "mana_payment_continuations.execute_mana_choice_capable_priority_action",
+        "land_entry_coordination.execute_land_entry_priority_action",
         "replacement.replay.ReplacementContinuation",
         "rules.activation.commit._commit_resource_costs",
         "rules.casting.commit._commit_counter_placement_additional_cost"
@@ -64,7 +65,8 @@
         "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_mana_ability_damage_choice_resumes_exact_activation",
         "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_player_counter_choices_follow_four_player_apnap",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
-        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"
+        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_competing_land_entry_choice_is_private_and_replayable"
       ],
       "required_scenarios": [
         "positive",
@@ -81,13 +83,13 @@
         "replay"
       ],
       "blockers": [
-        "generic engine choice packets are wired only into represented token creation, semantic zone change, effect-generated, positive-loyalty-cost, or bounded fixed casting-cost counter placement, ordinary combat/semantic damage, and mana-payment damage producers"
+        "generic engine choice packets are wired only into represented token creation, semantic zone change including ordinary typed land entry, effect-generated, positive-loyalty-cost, or bounded fixed casting-cost counter placement, ordinary combat/semantic damage, and mana-payment damage producers"
       ],
       "notes": [
         "Affected-player and affected-object facts are captured before mutation, and simultaneous different-seat choices traverse APNAP order.",
         "Seat packets expose only visible option labels and IDs; authoritative batch IDs, event paths, payloads, and prior journals remain in the continuation.",
         "The chooser can explicitly order simultaneous same-chooser events when a finite or next-instance effect makes event order material.",
-        "The represented engine producers suspend and replay exact choices, including replacement choices discovered during mana payment, a positive loyalty-symbol cost, or a bounded fixed creature-counter casting cost, but universal producer coverage remains incomplete."
+        "The represented engine producers suspend and replay exact choices, including replacement choices discovered during typed land entry, mana payment, a positive loyalty-symbol cost, or a bounded fixed creature-counter casting cost, but universal producer coverage remains incomplete."
       ]
     },
     {
@@ -200,10 +202,12 @@
       "implementation_components": [
         "replacement_effects.ReplacementClass.OTHER",
         "replacement_effects.replacement_choice",
-        "replacement_effects.apply_replacement"
+        "replacement_effects.apply_replacement",
+        "semantic_runtime.entry_state.EntryStateReplacementHandler"
       ],
       "executable_test_ids": [
-        "tests.test_rules_primitives.ReplacementOrderingTests.test_any_effect_in_the_current_class_may_be_chosen"
+        "tests.test_rules_primitives.ReplacementOrderingTests.test_any_effect_in_the_current_class_may_be_chosen",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_ambient_untapped_competes_with_intrinsic_tapped_entry"
       ],
       "required_scenarios": [
         "positive",
@@ -236,6 +240,7 @@
         "tests.test_rules_primitives.ReplacementOrderingTests.test_applicability_is_recomputed_after_each_replacement",
         "tests.test_replacement_event_tree.ReplacementBatchTests.test_forced_singletons_do_not_consume_later_explicit_selection",
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_replacements_apply_in_affected_players_chosen_order",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_competing_land_entry_choice_is_private_and_replayable",
         "tests.test_damage_replacement_model.DamageReplacementModelTests.test_furnace_and_daunting_order_changes_final_damage",
         "tests.test_damage_replacement_model.DamageReplacementModelTests.test_damage_amount_pipeline_property_1000_deterministic_transitions"
       ],

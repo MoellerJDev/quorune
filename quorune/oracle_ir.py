@@ -845,64 +845,6 @@ def _trigger_node(
     )
 
 
-def _is_unconditional_enters_tapped(line: str, source_name: str) -> bool:
-    source_pattern = SourceReferenceSpec(source_name).regex_pattern
-    return (
-        re.fullmatch(
-            rf"(?:this (?:artifact|creature|enchantment|land|permanent)"
-            rf"|{source_pattern}) enters tapped\.?",
-            line,
-            re.IGNORECASE,
-        )
-        is not None
-    )
-
-
-def _unconditional_enters_tapped_node(
-    *,
-    node_id: str,
-    line: str,
-    span: SourceSpan,
-    source_name: str,
-    trusted_mechanics: frozenset[str],
-    residuals: list[OracleResidual],
-) -> OracleNode | None:
-    if not _is_unconditional_enters_tapped(line, source_name):
-        return None
-    dependencies = ("cr-614-replacement-effects",)
-    missing = sorted(set(dependencies) - trusted_mechanics)
-    residual_ids = (
-        (
-            _residual(
-                residuals,
-                kind="dependency_contract",
-                text=line,
-                span=span,
-                reason=(
-                    "lowerable entry replacement depends on an "
-                    "untrusted mechanic contract"
-                ),
-                blockers=tuple(f"mechanic:{mechanic}" for mechanic in missing),
-            ),
-        )
-        if missing
-        else ()
-    )
-    return OracleNode(
-        node_id=node_id,
-        kind="replacement_effect",
-        text=line,
-        span=span,
-        active_zone="all",
-        event="permanent.enter.self",
-        lowerable=True,
-        exact=not missing,
-        template_id="enters-tapped-self-v1",
-        mechanics=dependencies,
-        residual_ids=residual_ids,
-    )
-
-
 def _typed_additional_cost_face(
     record: CardRecord,
     face_id: str,
@@ -1029,15 +971,6 @@ def _compile_face(
         )
         if counter_prohibition is not None:
             nodes.append(counter_prohibition)
-            continue
-
-        enters_tapped = _unconditional_enters_tapped_node(
-            node_id=node_id, line=line, span=span,
-            source_name=face_name or record.name,
-            trusted_mechanics=trusted_mechanics, residuals=residuals,
-        )
-        if enters_tapped is not None:
-            nodes.append(enters_tapped)
             continue
 
         declaration_cost = parse_declaration_cost_line(

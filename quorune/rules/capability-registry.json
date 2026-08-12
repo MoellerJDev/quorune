@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 86,
+  "registry_version": 87,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -765,6 +765,33 @@
       "dependency_fail_closed_rationale": "This bounded descriptor has no capability dependencies beyond the shared replacement subsystem.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_zone_replacement_snapshot_mutant_is_killed reverses and then mutates the captured source candidates; canonical equality and state-independent preparation reject source-order and live-source rediscovery mutants.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "zone.entry.tapped_state",
+      "version": 1,
+      "official_rules": ["119.4", "614.1c", "614.1d", "614.12", "614.12a", "616.1", "616.1e", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Resolve source-pinned unconditional, opponent-count, controlled-basic-type, optional-life, and controller-wide land entry tap-state replacements from one exact-face immutable zone-change snapshot before any life or zone mutation.",
+        "inputs": ["exact selected CardProgram face", "prospective battlefield characteristics", "destination controller", "current opponent count", "current controlled basic land types", "explicit optional life-payment choice", "complete applicable replacement snapshot"],
+        "outputs": ["resolved battlefield tapped state", "nonreplaceable typed life-payment plan", "seat-scoped applied-effect journal", "versioned land-entry continuation", "canonical zone-transition commit"],
+        "exclusions": ["dynamic or nonintegral life payments", "combined simultaneous entry payments", "optional tap-state choices outside the represented shock-land form", "entry conditions outside opponent count and controlled basic land types", "effects that inspect hidden information", "historical records lacking source-pinned CardPrograms except the narrow Game Record v3 adapter"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.entry_state_templates.static_entry_state_handler", "quorune.semantic_runtime.entry_state.EntryStateReplacementHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.life_state.prepare_life_payment", "quorune.zone_transitions.ZoneTransitionOwner", "quorune.land_entry_coordination.execute_land_entry_priority_action"],
+      "positive_tests": ["test_closed_entry_state_family_lowers_to_capability_closed_programs", "test_land_entry_families_use_typed_snapshot_and_canonical_owners", "test_selected_mdfc_face_isolates_entry_program"],
+      "negative_tests": ["test_entry_state_near_misses_remain_residual", "test_entry_preparation_rejects_stale_face_and_rolls_back", "test_only_historical_v3_registry_can_use_entry_adapter"],
+      "interaction_tests": ["test_ambient_untapped_competes_with_intrinsic_tapped_entry", "test_shock_land_payment_is_prepared_before_zone_mutation"],
+      "multiplayer_tests": ["test_bond_land_uses_current_four_player_opponent_count", "test_competing_land_entry_choice_is_private_and_replayable"],
+      "privacy_tests": ["test_competing_land_entry_choice_is_private_and_replayable"],
+      "replay_tests": ["test_competing_land_entry_choice_is_private_and_replayable"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "This bounded family depends only on the shared zone replacement, zone transition, face binding, and nonreplaceable life-payment owners.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_entry_state_compiler_mutation_is_killed removes the closed typed lowering and proves the previously exact source span becomes a material residual instead of falling back to runtime Oracle interpretation.",
       "blockers": [],
       "status": "trusted"
     },

@@ -93,6 +93,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
             "quorune/card_overrides/",
         )
     ) or relative in {
+        "quorune/card_program_faces.py",
         "quorune/carddb_characteristics.py",
         "quorune/effect_contracts.py",
         "quorune/oracle_ir.py",
@@ -184,6 +185,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/enchant_spec.py",
         "quorune/life_change.py",
         "quorune/life_state.py",
+        "quorune/land_entry_coordination.py",
         "quorune/landwalk.py",
         "quorune/mana.py",
         "quorune/mana_activation.py",

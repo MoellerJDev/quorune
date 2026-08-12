@@ -11,7 +11,8 @@
     "tests/fixtures/draw-rules-cards.json",
     "tests/fixtures/echo-rules-cards.json",
     "tests/fixtures/explore-cards.json",
-    "tests/fixtures/scryfall-exact-lists.json"
+    "tests/fixtures/scryfall-exact-lists.json",
+    "tests/fixtures/typed-land-entry-cards.json"
   ],
   "dynamic_requirements": [],
   "full_database_only": []

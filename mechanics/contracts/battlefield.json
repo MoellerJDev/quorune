@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 1,
+  "contract_version": 2,
   "mechanic_id": "cr-403-battlefield",
   "official_name": "Battlefield",
   "effective_date": "2026-06-19",
@@ -101,6 +101,7 @@
     ],
     "replacement_effects": [
       "entry replacements are applied before or during the represented zone transition",
+      "typed tapped-state land entry is resolved from an immutable pre-entry snapshot and exact selected-face CardProgram handlers",
       "complete replacement-choice ordering remains a separate trust blocker"
     ],
     "copy": [
@@ -134,6 +135,7 @@
     "explicit graveyard target",
     "card outside the battlefield",
     "card entering the battlefield",
+    "land entering tapped or untapped after competing intrinsic and ambient replacements",
     "instant or sorcery card prevented from entering",
     "ordinary reentry",
     "resolving permanent spell",
@@ -166,13 +168,14 @@
     "test_unqualified_effect_and_target_scope_default_to_battlefield",
     "test_permanent_category_exists_only_on_the_battlefield",
     "test_battlefield_entry_allocates_a_new_incarnation_except_400_7a",
+    "test_land_entry_families_use_typed_snapshot_and_canonical_owners",
     "test_pinned_oracle_data_uses_battlefield_not_legacy_in_play_terms",
     "test_permanent_spell_copy_becomes_the_same_token_object",
     "test_target_that_leaves_and_returns_is_a_new_illegal_object"
   ],
   "implementation": {
-    "component": "CommanderEngine battlefield membership, zone movement, target domains, control changes, attachments, object identity, and StateProjector controller presentation",
-    "version": "battlefield-foundation-v1"
+    "component": "CommanderEngine battlefield membership, typed zone-transition entry state, target domains, control changes, attachments, object identity, and StateProjector controller presentation",
+    "version": "battlefield-foundation-v2"
   },
   "known_blockers": [
     "complete CR 400.7 zone-change exception coverage is not implemented",

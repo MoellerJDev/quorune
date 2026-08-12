@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Mapping, Protocol, Sequence
 
+from ..card_program_faces import program_matches_face, selected_face_id
 from ..entry_counters import (
     EntryCounterError,
     EffectEntryCounter,
@@ -14,6 +15,7 @@ from ..entry_counters import (
 from ..entry_keyword_grants import (
     EntryKeywordGrant,
 )
+from ..landwalk import BASIC_LAND_TYPES
 from ..replacement_effects import (
     AffectedObject,
     CreateAffectedObjectCounter,
@@ -37,6 +39,7 @@ from .counter_replacements import (
 from .self_entry_counters import SelfEntryCounterHandler
 from .conditional_entry_counters import ConditionalSelfEntryCounterHandler
 from .entry_choices import RiotEntryChoiceHandler
+from .entry_state import ENTRY_STATE_HANDLER_ID, EntryStateReplacementHandler
 from .zone_replacement_model import (
     PreparedZoneChange,
     SUPPORTED_ZONE_DESTINATIONS,
@@ -57,6 +60,7 @@ _COUNTERS_FIELD = "counters"
 class ZoneReplacementHost(Protocol):
     state: Any
     semantics: Any
+    card_db: Any
 
     @property
     def active_seats(self) -> list[str]: ...
@@ -70,6 +74,8 @@ class ZoneReplacementHost(Protocol):
     def apnap_order(self, *, start: str | None = None) -> list[str]: ...
 
     def _effective_card_data(self, card: Any) -> Mapping[str, Any]: ...
+
+    def card_record(self, card: Any) -> Any: ...
 
     def _type_parts(
         self, type_line: str
@@ -328,7 +334,7 @@ class ZoneChangeReplacementRegistry(
         *,
         subject: ZoneChangeSubjectSnapshot,
         component_id: str,
-    ) -> ReplacementEffect:
+    ) -> ReplacementEffect | None:
         handler = self._handler(descriptor)
         compiler = getattr(handler, "subject_replacement_effect", None)
         if compiler is None:
@@ -349,6 +355,7 @@ def default_zone_change_replacement_registry(
     registry = ZoneChangeReplacementRegistry(
         (
             ConditionalSelfEntryCounterHandler(),
+            EntryStateReplacementHandler(),
             RiotEntryChoiceHandler(),
             SelfEntryCounterHandler(),
             ZoneDestinationReplacementHandler(),
@@ -358,6 +365,65 @@ def default_zone_change_replacement_registry(
         load_default_capability_registry()
     )
     return registry.freeze()
+
+
+def _zone_change_programs_for_record(
+    host: ZoneReplacementHost,
+    record: Any,
+    *,
+    active_zone: str,
+) -> tuple[Any, ...]:
+    """Return trusted programs plus the narrow historical-v3 entry adapter.
+
+    A current registry must contain its compiler output and never reaches the
+    adapter.  Historical Game Record v3 snapshots did not serialize the new
+    entry-state handler, so replay may compile only that exact handler family
+    from the record's pinned card database when the snapshot compatibility bit
+    is enabled.
+    """
+
+    programs = tuple(
+        program
+        for program in host.semantics.runtime_handler_programs_for_oracle(
+            record.oracle_id,
+            active_zone=active_zone,
+            event="zone.change",
+        )
+        if host.semantic_program_is_current_trusted(program)
+    )
+    if any(
+        descriptor.get("handler_id") == ENTRY_STATE_HANDLER_ID
+        for program in programs
+        for descriptor in program.handlers
+    ):
+        return programs
+    if not host.semantics.runtime_handler_compatibility_enabled:
+        return programs
+
+    # This import is intentionally operation-local.  It is a replay adapter,
+    # not a second runtime Oracle interpretation path for current games.
+    from ..oracle_ir import generated_programs
+
+    try:
+        generated = generated_programs(
+            host.card_db,
+            record,
+            trust_level="trusted",
+            capability_registry=load_default_capability_registry(),
+        )
+    except ValueError:
+        return programs
+    entry_programs = tuple(
+        program
+        for program in generated
+        if program.active_zone == active_zone
+        and program.event == "zone.change"
+        and any(
+            descriptor.get("handler_id") == ENTRY_STATE_HANDLER_ID
+            for descriptor in program.handlers
+        )
+    )
+    return (*programs, *entry_programs)
 
 
 def collect_zone_change_replacement_effects(
@@ -392,13 +458,16 @@ def collect_zone_change_replacement_effects(
             or source.controller not in host.active_seats
         ):
             continue
-        programs = host.semantics.runtime_handler_programs_for_oracle(
-            source.oracle_id,
+        record = host.card_record(source)
+        if record is None:
+            continue
+        programs = _zone_change_programs_for_record(
+            host,
+            record,
             active_zone="battlefield",
-            event="zone.change",
         )
         for program in programs:
-            if not host.semantic_program_is_current_trusted(program):
+            if not program_matches_face(record, program, source):
                 continue
             for descriptor_index, descriptor in enumerate(program.handlers):
                 effects.append(
@@ -419,6 +488,43 @@ def collect_zone_change_replacement_effects(
     return tuple(effects)
 
 
+def typed_entry_life_payment_amount(
+    host: ZoneReplacementHost,
+    record: Any,
+    *,
+    card: Any | None = None,
+    prospective_name: str | None = None,
+) -> int:
+    """Return the source-pinned optional entry payment for one exact face."""
+
+    handler = EntryStateReplacementHandler()
+    amounts: list[int] = []
+    programs = _zone_change_programs_for_record(
+        host,
+        record,
+        active_zone="all",
+    )
+    for program in programs:
+        if not program_matches_face(
+            record,
+            program,
+            card,
+            prospective_name=prospective_name,
+        ):
+            continue
+        for descriptor in program.handlers:
+            if descriptor.get("handler_id") != ENTRY_STATE_HANDLER_ID:
+                continue
+            amount = handler.optional_life_amount(descriptor)
+            if amount:
+                amounts.append(amount)
+    if len(amounts) > 1:
+        raise SemanticNodeError(
+            "One selected face cannot authorize multiple entry life payments"
+        )
+    return amounts[0] if amounts else 0
+
+
 def _validated_zone_change_snapshot_inputs(
     host: ZoneReplacementHost,
     changes: Sequence[tuple[str, str]],
@@ -428,12 +534,16 @@ def _validated_zone_change_snapshot_inputs(
     effect_entry_counters: Mapping[
         str, Sequence[EffectEntryCounter]
     ] | None,
+    requested_tapped: Mapping[str, bool] | None,
+    entry_pay_life: Mapping[str, bool | None] | None,
     error_type: type[Exception],
 ) -> tuple[
     tuple[tuple[str, str], ...],
     Mapping[str, str | None],
     Mapping[str, Mapping[str, Any]],
     Mapping[str, Sequence[EffectEntryCounter]],
+    Mapping[str, bool],
+    Mapping[str, bool | None],
 ]:
     supplied = tuple(changes)
     if any(
@@ -454,6 +564,8 @@ def _validated_zone_change_snapshot_inputs(
     controllers = destination_controllers or {}
     characteristics = entry_characteristics or {}
     effect_counters = effect_entry_counters or {}
+    tapped_requests = requested_tapped or {}
+    life_choices = entry_pay_life or {}
     if set(controllers) - set(object_ids):
         raise error_type(
             "Zone replacement destination controllers reference unknown objects"
@@ -469,6 +581,25 @@ def _validated_zone_change_snapshot_inputs(
     if set(effect_counters) - set(object_ids):
         raise error_type(
             "Zone replacement effect entry counters reference unknown objects"
+        )
+    if set(tapped_requests) - set(object_ids):
+        raise error_type(
+            "Zone replacement tapped requests reference unknown objects"
+        )
+    if any(type(value) is not bool for value in tapped_requests.values()):
+        raise error_type(
+            "Zone replacement tapped requests must be booleans"
+        )
+    if set(life_choices) - set(object_ids):
+        raise error_type(
+            "Zone replacement entry life choices reference unknown objects"
+        )
+    if any(
+        value is not None and type(value) is not bool
+        for value in life_choices.values()
+    ):
+        raise error_type(
+            "Zone replacement entry life choices must be booleans or null"
         )
     if any(
         not isinstance(values, (list, tuple))
@@ -486,7 +617,14 @@ def _validated_zone_change_snapshot_inputs(
         raise error_type(
             "Zone replacement effect entry counter player is not active"
         )
-    return supplied, controllers, characteristics, effect_counters
+    return (
+        supplied,
+        controllers,
+        characteristics,
+        effect_counters,
+        tapped_requests,
+        life_choices,
+    )
 
 
 def _zone_change_snapshot_subjects(
@@ -496,6 +634,8 @@ def _zone_change_snapshot_subjects(
     destination_controllers: Mapping[str, str | None],
     entry_characteristics: Mapping[str, Mapping[str, Any]],
     effect_entry_counters: Mapping[str, Sequence[EffectEntryCounter]],
+    requested_tapped: Mapping[str, bool],
+    entry_pay_life: Mapping[str, bool | None],
     error_type: type[Exception],
 ) -> tuple[ZoneChangeSubjectSnapshot, ...]:
     subjects: list[ZoneChangeSubjectSnapshot] = []
@@ -519,6 +659,26 @@ def _zone_change_snapshot_subjects(
                 if object_id in destination_controllers
                 else card.controller if card.zone == "stack" else card.owner
             )
+            controlled_basic_types: set[str] = set()
+            if destination_controller is not None:
+                for permanent_id in host.state.players[
+                    destination_controller
+                ].zones["battlefield"]:
+                    permanent = host.state.cards[permanent_id]
+                    if (
+                        permanent.controller != destination_controller
+                        or permanent.phased_out
+                    ):
+                        continue
+                    permanent_data = host._effective_card_data(permanent)
+                    _, permanent_subtypes, _ = host._type_parts(
+                        str(permanent_data.get("type_line") or "")
+                    )
+                    controlled_basic_types.update(
+                        permanent_subtypes.intersection(BASIC_LAND_TYPES)
+                    )
+            record = host.card_record(card)
+            prospective_name = str(characteristics.get("name") or "")
             subjects.append(
                 ZoneChangeSubjectSnapshot(
                     object_id=card.object_id,
@@ -533,6 +693,15 @@ def _zone_change_snapshot_subjects(
                     origin=card.zone,
                     destination=destination,
                     destination_controller=destination_controller,
+                    entry_face_id=(
+                        selected_face_id(
+                            record,
+                            card,
+                            prospective_name=prospective_name or None,
+                        )
+                        if record is not None
+                        else "front"
+                    ),
                     opponent_was_dealt_damage_this_turn=(
                         opponent_was_dealt_damage_this_turn(
                             host.state.turn_history,
@@ -551,6 +720,22 @@ def _zone_change_snapshot_subjects(
                     ),
                     effect_entry_counters=tuple(
                         effect_entry_counters.get(card.object_id, ())
+                    ),
+                    requested_tapped=bool(
+                        requested_tapped.get(card.object_id, False)
+                    ),
+                    entry_pay_life=entry_pay_life.get(card.object_id, False),
+                    opponent_count=(
+                        sum(
+                            1
+                            for seat in host.active_seats
+                            if seat != destination_controller
+                        )
+                        if destination_controller is not None
+                        else 0
+                    ),
+                    controller_basic_land_types=tuple(
+                        sorted(controlled_basic_types)
                     ),
                     object_types=tuple(
                         sorted({*card_types, *subtypes, *supertypes})
@@ -632,22 +817,34 @@ def _zone_change_snapshot_effects(
             raise ZoneReplacementError(
                 "Self-entry counter source disappeared during snapshot"
             )
-        programs = host.semantics.runtime_handler_programs_for_oracle(
-            card.oracle_id,
+        record = host.card_record(card)
+        if record is None:
+            continue
+        programs = _zone_change_programs_for_record(
+            host,
+            record,
             active_zone="all",
-            event="zone.change",
         )
         for program in programs:
-            if not host.semantic_program_is_current_trusted(program):
+            if not program_matches_face(
+                record,
+                program,
+                card,
+                prospective_name=(
+                    subject.entry_face_id
+                    if subject.entry_face_id != "front"
+                    else None
+                ),
+            ):
                 continue
             for descriptor_index, descriptor in enumerate(program.handlers):
-                self_entry_effects.append(
-                    registry.subject_replacement_effect(
-                        descriptor,
-                        subject=subject,
-                        component_id=f"{program.key}:{descriptor_index}",
-                    )
+                effect = registry.subject_replacement_effect(
+                    descriptor,
+                    subject=subject,
+                    component_id=f"{program.key}:{descriptor_index}",
                 )
+                if effect is not None:
+                    self_entry_effects.append(effect)
     return tuple(
         sorted(
             (
@@ -670,6 +867,8 @@ def capture_zone_change_replacement_snapshot(
     effect_entry_counters: Mapping[
         str, Sequence[EffectEntryCounter]
     ] | None = None,
+    requested_tapped: Mapping[str, bool] | None = None,
+    entry_pay_life: Mapping[str, bool | None] | None = None,
     sources: Sequence[Any] | None = None,
     source_zones: Mapping[str, str] | None = None,
     error_type: type[Exception] = ZoneReplacementError,
@@ -681,12 +880,16 @@ def capture_zone_change_replacement_snapshot(
         controllers,
         characteristics,
         effect_counters,
+        tapped_requests,
+        life_choices,
     ) = _validated_zone_change_snapshot_inputs(
         host,
         changes,
         destination_controllers=destination_controllers,
         entry_characteristics=entry_characteristics,
         effect_entry_counters=effect_entry_counters,
+        requested_tapped=requested_tapped,
+        entry_pay_life=entry_pay_life,
         error_type=error_type,
     )
     subjects = _zone_change_snapshot_subjects(
@@ -695,6 +898,8 @@ def capture_zone_change_replacement_snapshot(
         destination_controllers=controllers,
         entry_characteristics=characteristics,
         effect_entry_counters=effect_counters,
+        requested_tapped=tapped_requests,
+        entry_pay_life=life_choices,
         error_type=error_type,
     )
     active_sources = _active_zone_replacement_sources(
@@ -746,6 +951,12 @@ def _snapshot_event(
             "object_types": list(subject.object_types),
             "logical_object_id": subject.logical_object_id,
             "owner": subject.owner,
+            "tapped": subject.requested_tapped,
+            "entry_life_payment": 0,
+            "opponent_count": subject.opponent_count,
+            "controller_basic_land_types": list(
+                subject.controller_basic_land_types
+            ),
             "opponent_was_dealt_damage_this_turn": (
                 subject.opponent_was_dealt_damage_this_turn
             ),
@@ -757,6 +968,8 @@ def _prepared_from_event(
     subject: ZoneChangeSubjectSnapshot,
     event: ReplaceableEvent,
     *,
+    state_revision: int,
+    event_sequence: int,
     effects: tuple[ReplacementEffect, ...],
     journal: tuple[ReplacementSelection, ...],
 ) -> PreparedZoneChange:
@@ -789,12 +1002,33 @@ def _prepared_from_event(
                 sequence=value["sequence"],
             )
         )
+    entry_tapped = event.payload.get("tapped")
+    entry_life_payment = event.payload.get("entry_life_payment")
+    if type(entry_tapped) is not bool:
+        raise ZoneReplacementError(
+            "Prepared zone entry tapped state must be boolean"
+        )
+    if (
+        type(entry_life_payment) is not int
+        or entry_life_payment < 0
+    ):
+        raise ZoneReplacementError(
+            "Prepared zone entry life payment must be nonnegative"
+        )
     return PreparedZoneChange(
         object_id=subject.object_id,
         logical_object_id=subject.logical_object_id,
         origin=subject.origin,
         requested_destination=subject.destination,
+        destination_controller=subject.destination_controller,
+        entry_face_id=subject.entry_face_id,
+        state_revision=state_revision,
+        event_sequence=event_sequence,
         destination=str(event.payload["destination"]),
+        requested_tapped=subject.requested_tapped,
+        requested_entry_pay_life=subject.entry_pay_life,
+        entry_tapped=entry_tapped,
+        entry_life_payment=entry_life_payment,
         event=event,
         effects=effects,
         counter_events=tuple(counter_events),
@@ -813,6 +1047,8 @@ def prepare_zone_change_replacement(
     destination_controller: str | None = None,
     entry_characteristics: Mapping[str, Any] | None = None,
     effect_entry_counters: Sequence[EffectEntryCounter] = (),
+    requested_tapped: bool = False,
+    entry_pay_life: bool = False,
     selections: Sequence[str | None | Mapping[str, Any]] = (),
     prepared: PreparedZoneChange | None = None,
     error_type: type[Exception] = ZoneReplacementError,
@@ -820,11 +1056,35 @@ def prepare_zone_change_replacement(
     """Resolve ambient destination replacements before a zone mutation."""
 
     if prepared is not None:
+        record = host.card_record(card)
+        prospective_name = str(
+            (entry_characteristics or {}).get("name") or ""
+        )
+        entry_face_id = (
+            selected_face_id(
+                record,
+                card,
+                prospective_name=prospective_name or None,
+            )
+            if record is not None
+            else "front"
+        )
+        effective_destination_controller = (
+            destination_controller
+            if destination_controller is not None
+            else card.controller if card.zone == "stack" else card.owner
+        )
         if (
             prepared.object_id != card.object_id
             or prepared.logical_object_id != card.logical_object_id
             or prepared.origin != card.zone
             or prepared.requested_destination != destination
+            or prepared.destination_controller
+            != effective_destination_controller
+            or prepared.entry_face_id != entry_face_id
+            or prepared.state_revision != host.state.revision
+            or prepared.requested_tapped is not requested_tapped
+            or prepared.requested_entry_pay_life is not entry_pay_life
         ):
             raise error_type(
                 "Prepared zone replacement does not match the proposed move"
@@ -852,6 +1112,8 @@ def prepare_zone_change_replacement(
             if effect_entry_counters
             else None
         ),
+        requested_tapped={card.object_id: requested_tapped},
+        entry_pay_life={card.object_id: entry_pay_life},
         sources=sources,
         source_zones=source_zones,
         selections=selections,
@@ -872,6 +1134,8 @@ def prepare_zone_change_replacement_batch(
     effect_entry_counters: Mapping[
         str, Sequence[EffectEntryCounter]
     ] | None = None,
+    requested_tapped: Mapping[str, bool] | None = None,
+    entry_pay_life: Mapping[str, bool | None] | None = None,
     selections: Sequence[str | None | Mapping[str, Any]] = (),
     error_type: type[Exception] = ZoneReplacementError,
 ) -> dict[str, PreparedZoneChange]:
@@ -883,6 +1147,8 @@ def prepare_zone_change_replacement_batch(
         destination_controllers=destination_controllers,
         entry_characteristics=entry_characteristics,
         effect_entry_counters=effect_entry_counters,
+        requested_tapped=requested_tapped,
+        entry_pay_life=entry_pay_life,
         sources=sources,
         source_zones=source_zones,
         error_type=error_type,
@@ -924,6 +1190,8 @@ def prepare_zone_change_replacement_snapshot(
             subject.object_id: _prepared_from_event(
                 subject,
                 event,
+                state_revision=snapshot.revision,
+                event_sequence=snapshot.event_sequence,
                 effects=snapshot.effects,
                 journal=(),
             )
@@ -953,6 +1221,8 @@ def prepare_zone_change_replacement_snapshot(
         subject.object_id: _prepared_from_event(
             subject,
             event,
+            state_revision=snapshot.revision,
+            event_sequence=snapshot.event_sequence,
             effects=snapshot.effects,
             journal=(),
         )
@@ -971,6 +1241,8 @@ def prepare_zone_change_replacement_snapshot(
         prepared[subject.object_id] = _prepared_from_event(
             subject,
             event,
+            state_revision=snapshot.revision,
+            event_sequence=snapshot.event_sequence,
             effects=snapshot.effects,
             journal=event_journal,
         )

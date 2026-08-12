@@ -44,6 +44,10 @@ _MANA_FIELDS = {
     "replacement_effects",
 }
 _PRIORITY_ACTION_COST_FIELDS = frozenset(_MANA_FIELDS)
+_LAND_ENTRY_FIELDS = {
+    *_MANA_FIELDS,
+    "replacement_selections",
+}
 _SEMANTIC_COUNTER_COMPLETION_FIELDS = {
     "replacement_resume_kind",
     "semantic_choice_continuation",
@@ -161,6 +165,10 @@ class ReplacementContinuation:
                 effects,
                 resume_kind=resume_kind,
             )
+        if resume_kind == "land_entry":
+            return _decode_land_entry_continuation(
+                cls, value, batch, effects
+            )
         if resume_kind == "semantic_counter_completion":
             return _decode_semantic_counter_completion(
                 cls, value, batch, effects
@@ -262,6 +270,7 @@ def _validate_continuation_shape(value: Mapping[str, Any]) -> str:
             _PRIORITY_ACTION_COST_FIELDS,
             "priority-action cost continuation",
         ),
+        "land_entry": (_LAND_ENTRY_FIELDS, "land-entry continuation"),
         "semantic_counter_completion": (
             _SEMANTIC_COUNTER_COMPLETION_FIELDS,
             "semantic counter-completion continuation",
@@ -743,6 +752,79 @@ def _decode_mana_continuation(
         batch=batch,
         effects=effects,
         resume_kind=resume_kind,
+        priority_seat=seat,
+        priority_action=action,
+        priority_response=FrozenMap(response),
+        priority_frame=FrozenMap(frame),
+    )
+
+
+def _decode_land_entry_continuation(
+    continuation_type: type[ReplacementContinuation],
+    value: Mapping[str, Any],
+    batch: ReplacementEventBatch,
+    effects: tuple[ReplacementEffect, ...],
+) -> ReplacementContinuation:
+    seat = value["priority_seat"]
+    action = value["priority_action"]
+    response = value["priority_response"]
+    frame = value["priority_frame"]
+    if (
+        type(seat) is not str
+        or not seat
+        or action != "play_land"
+        or not isinstance(response, Mapping)
+        or not isinstance(frame, Mapping)
+        or seat not in batch.apnap_order
+    ):
+        raise ReplacementEffectError(
+            "Land-entry continuation fields are malformed"
+        )
+    _validate_mana_frame(frame, seat)
+    action_id = response.get("_entry_action_id")
+    card_ref = response.get("card") or response.get("id")
+    origin = str(response.get("from") or "hand")
+    if (
+        type(action_id) is not str
+        or not action_id
+        or type(card_ref) is not str
+        or not card_ref
+        or len(batch.events) != 1
+    ):
+        raise ReplacementEffectError(
+            "Land-entry continuation identity is malformed"
+        )
+    event = batch.events[0]
+    affected = event.affected_object
+    payload = event.payload
+    if (
+        event.kind != "zone.change"
+        or affected is None
+        or affected.controller != seat
+        or event.affected_player is not None
+        or payload.get("object_ref") != card_ref
+        or payload.get("origin") != origin
+        or payload.get("destination") != "battlefield"
+        or payload.get("destination_controller") != seat
+        or not event.event_id.startswith("zone.change:")
+        or not event.event_id.endswith(f":{card_ref}")
+    ):
+        raise ReplacementEffectError(
+            "Land-entry continuation event is malformed"
+        )
+    selections = _decode_combat_selections(value)
+    raw_response_selections = response.get("_entry_replacement_selections")
+    if not isinstance(raw_response_selections, (list, tuple)) or tuple(
+        thaw_value(selection) for selection in selections
+    ) != tuple(raw_response_selections):
+        raise ReplacementEffectError(
+            "Land-entry replacement journal changed in continuation"
+        )
+    return continuation_type(
+        batch=batch,
+        effects=effects,
+        resume_kind="land_entry",
+        replacement_selections=selections,
         priority_seat=seat,
         priority_action=action,
         priority_response=FrozenMap(response),

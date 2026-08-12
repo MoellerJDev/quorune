@@ -22,6 +22,7 @@ from .replacement.immutable import thaw_value
 from .mana_payment_continuations import (
     resume_mana_choice_capable_priority_action,
 )
+from .land_entry_coordination import resume_land_entry_priority_action
 from .semantic_choices.counter_coordination import (
     resume_semantic_counter_completion,
     resume_semantic_intent_completion,
@@ -390,6 +391,29 @@ def _resume_mana_replacement(
     )
 
 
+def _resume_land_entry_replacement(
+    host: ReplacementDecisionHost,
+    restored: ReplacementContinuation,
+    selection: str | Mapping[str, Any],
+    *,
+    error_type: type[Exception],
+) -> None:
+    try:
+        _validate_mana_payment_frame(host, restored.thaw_priority_frame())
+        response = restored.thaw_priority_response()
+    except ReplacementEffectError as exc:
+        raise error_type(str(exc)) from exc
+    resume_land_entry_priority_action(
+        host,
+        seat=restored.priority_seat,
+        response=response,
+        selections=[
+            *(thaw_value(value) for value in restored.replacement_selections),
+            selection,
+        ],
+    )
+
+
 def _resume_semantic_replacement(
     host: ReplacementDecisionHost,
     restored: ReplacementContinuation,
@@ -466,6 +490,11 @@ def complete_replacement_order_choice(
         return
     if restored.resume_kind in {"mana_payment", "priority_action_cost"}:
         _resume_mana_replacement(
+            host, restored, selection, error_type=error_type
+        )
+        return
+    if restored.resume_kind == "land_entry":
+        _resume_land_entry_replacement(
             host, restored, selection, error_type=error_type
         )
         return

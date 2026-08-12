@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping, Protocol
 
 from .model import CardInstance, GameState
+from .life_state import PreparedLifePayment
 from .semantic_runtime import PreparedZoneChange
 from .zone_trigger_processing import DepartureTriggerSnapshot
 
@@ -44,8 +45,6 @@ class ZoneTransitionHost(Protocol):
         self,
         type_line: str,
     ) -> tuple[set[str], set[str], set[str]]: ...
-
-    def _unconditionally_enters_tapped(self, card: CardInstance) -> bool: ...
 
     def _remove_object_from_combat(
         self,
@@ -114,6 +113,7 @@ class ZoneMovePlan:
     library_position: str | int | None
     destination_type_line: str
     prepared_replacement: PreparedZoneChange
+    prepared_life_payment: PreparedLifePayment | None
     prospective_battle_protector: str | None
     aura_entry_plan: Any
 

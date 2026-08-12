@@ -81,8 +81,8 @@
       "status": "definition_only",
       "assertion_kind": "static_traceability",
       "reviewed": true,
-      "implementation_components": ["CommanderEngine._unconditionally_enters_tapped", "oracle_ir.OracleIRCompiler"],
-      "executable_test_ids": ["tests.test_oracle_ir.OracleIRTests.test_unconditional_entry_tapped_is_engine_derived"],
+      "implementation_components": ["compiler.entry_state_templates.static_entry_state_handler", "semantic_runtime.entry_state.EntryStateReplacementHandler", "zone_transitions.move_card"],
+      "executable_test_ids": ["tests.test_typed_land_entry_participation.TypedLandEntryCompilerTests.test_closed_entry_state_family_lowers_to_capability_closed_programs", "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners"],
       "required_scenarios": [],
       "covered_scenarios": [],
       "blockers": [],
@@ -319,12 +319,12 @@
       "status": "blocked",
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
-      "implementation_components": ["CommanderEngine._unconditionally_enters_tapped", "CommanderEngine._effective_card_data"],
-      "executable_test_ids": ["tests.test_oracle_ir.OracleIRTests.test_unconditional_entry_tapped_is_engine_derived"],
+      "implementation_components": ["semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "semantic_runtime.entry_state.EntryStateReplacementHandler", "card_program_faces.program_matches_face"],
+      "executable_test_ids": ["tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners", "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_selected_mdfc_face_isolates_entry_program", "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_entry_preparation_rejects_stale_face_and_rolls_back"],
       "required_scenarios": ["positive", "negative", "interaction", "hidden_information"],
-      "covered_scenarios": ["positive", "negative"],
+      "covered_scenarios": ["positive", "negative", "interaction"],
       "blockers": ["entry applicability is not generically recomputed from would-exist battlefield characteristics after every replacement", "external static effects and full copy/layer interactions are incomplete"],
-      "notes": ["An exact unconditional self-entry replacement is derived, but the full would-exist evaluator is not complete."]
+      "notes": ["The reviewed unconditional, bond, check, shock, and controlled-land untapped family uses exact selected-face programs and immutable pre-entry facts; the full would-exist evaluator remains incomplete."]
     },
     {
       "rule_id": "614.12a",
@@ -333,12 +333,12 @@
       "status": "blocked",
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
-      "implementation_components": ["CommanderEngine.move_card", "CommanderEngine._create_semantic_choice"],
-      "executable_test_ids": ["tests.test_oracle_ir.OracleIRTests.test_unconditional_entry_tapped_is_engine_derived"],
+      "implementation_components": ["land_entry_coordination.execute_land_entry_priority_action", "replacement_decisions.resume_replacement_order_choice", "replacement.replay.ReplacementContinuation"],
+      "executable_test_ids": ["tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_competing_land_entry_choice_is_private_and_replayable"],
       "required_scenarios": ["positive", "negative", "interaction", "replay"],
-      "covered_scenarios": ["negative"],
+      "covered_scenarios": ["positive", "negative", "interaction", "replay"],
       "blockers": ["all entry-replacement choices are not uniformly collected before the permanent enters", "choice replay is implemented only for dedicated entry families"],
-      "notes": ["The unconditional template needs no choice; broader choice-bearing entry semantics remain incomplete."]
+      "notes": ["Competing typed land-entry state replacements suspend before mutation, expose a private seat-scoped choice, and replay exactly; broader choice-bearing entry semantics remain incomplete."]
     },
     {
       "rule_id": "614.12b",
@@ -530,11 +530,11 @@
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
       "implementation_components": ["CommanderEngine._effective_card_data", "CommanderEngine.move_card"],
-      "executable_test_ids": ["tests.test_oracle_ir.OracleIRTests.test_unconditional_entry_tapped_is_engine_derived"],
+      "executable_test_ids": ["tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners"],
       "required_scenarios": ["positive", "negative", "interaction"],
       "covered_scenarios": ["negative"],
       "blockers": ["entry can't-effects are not derived through the full would-exist battlefield evaluator", "external continuous effects and replacement-modified entry characteristics are incomplete"],
-      "notes": ["The implemented unconditional entry replacement is not a can't-effect and does not establish this family."]
+      "notes": ["The implemented typed land-entry state replacements are not can't-effects and do not establish this family."]
     }
   ]
 }
