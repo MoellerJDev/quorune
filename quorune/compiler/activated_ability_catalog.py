@@ -222,8 +222,16 @@ def with_activated_ability_catalog(
     programs: Iterable[SemanticProgram],
     *,
     reference_programs: Iterable[SemanticProgram] = (),
+    carrier_provenance: Mapping[str, Any] | None = None,
 ) -> tuple[SemanticProgram, ...]:
-    """Attach one closed discovery descriptor to represented activations."""
+    """Attach closed discovery descriptors to represented activations.
+
+    ``carrier_provenance`` is supplied only by the pinned Oracle compiler.  It
+    lets a completely typed activation (for example a fetchland built-in)
+    retain its catalog even when no separate effect program was generated for
+    that Oracle line.  Reviewed-pack augmentation deliberately omits it, so a
+    reviewed descriptor can never manufacture an unreviewed companion.
+    """
 
     catalog = compile_activated_ability_catalog(record)
     references = tuple(reference_programs)
@@ -254,7 +262,78 @@ def with_activated_ability_catalog(
                 ],
             )
         )
+    if carrier_provenance is not None:
+        _append_catalog_carriers(
+            record,
+            catalog=catalog,
+            programs=result,
+            provenance=carrier_provenance,
+        )
     return tuple(result)
+
+
+def _append_catalog_carriers(
+    record: CardRecord,
+    *,
+    catalog: Mapping[str, tuple[ActivatedAbility, ...]],
+    programs: list[SemanticProgram],
+    provenance: Mapping[str, Any],
+) -> None:
+    required = {
+        "source_oracle_hash",
+        "source_rulings_hash",
+        "authored_by",
+        "review_status",
+    }
+    if not required.issubset(provenance) or any(
+        not str(provenance.get(field) or "").strip() for field in required
+    ):
+        raise ValueError(
+            "Activated-ability catalog carriers require source-pinned provenance"
+        )
+    represented = {
+        (_program_face_id(record, program), ability.ability_id)
+        for program in programs
+        for ability in activated_abilities_from_program(program)
+    }
+    for face_id, abilities in catalog.items():
+        for ability in abilities:
+            if (face_id, ability.ability_id) in represented:
+                continue
+            programs.append(
+                SemanticProgram(
+                    key=(
+                        f"{record.oracle_id}:catalog:{face_id}:"
+                        f"ability:{ability.ability_id}"
+                    ),
+                    label=f"{record.name} activated ability catalog",
+                    oracle_id=record.oracle_id,
+                    ability_id=(
+                        f"ability:catalog:{face_id}:{ability.ability_id}"
+                    ),
+                    active_zone=ability.zones[0],
+                    event="activate",
+                    trust_level="provisional",
+                    provenance={
+                        **dict(provenance),
+                        "face_id": face_id,
+                        "template_id": "activated-ability-catalog-v1",
+                    },
+                    handlers=[activated_ability_catalog_descriptor(ability)],
+                )
+            )
+
+
+def activated_abilities_from_program(
+    program: SemanticProgram,
+) -> tuple[ActivatedAbility, ...]:
+    """Return only the closed catalog entries already carried by a program."""
+
+    from ..semantic_runtime.activated_abilities import (
+        activated_abilities_from_descriptors,
+    )
+
+    return activated_abilities_from_descriptors(program.handlers)
 
 
 __all__ = [

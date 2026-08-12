@@ -10,6 +10,7 @@ from quorune.abilities import (
     parse_activated_abilities,
 )
 from quorune.carddb import CardRecord
+from quorune.compiled_activated_abilities import compiled_activated_abilities
 from quorune.compiler.activated_ability_catalog import (
     compile_activated_ability_catalog,
     with_activated_ability_catalog,
@@ -24,6 +25,7 @@ from quorune.continuous_effects import (
     evaluate_continuous_effects,
 )
 from quorune.rules.activation.conditions import activation_condition_status
+from quorune.replacement.immutable import freeze_value
 from quorune.semantic_runtime.activated_abilities import (
     ACTIVATED_ABILITY_CATALOG_HANDLER_ID,
     activated_abilities_from_descriptors,
@@ -130,6 +132,36 @@ class TypedActivatedAbilityCatalogTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown fields"):
             activated_abilities_from_descriptors([malformed])
 
+    def test_source_pinned_carrier_preserves_standalone_builtin(self):
+        card = record(
+            "Fixture Strand",
+            "{T}, Pay 1 life, Sacrifice this land: Search your library for "
+            "a Plains or Island card, put it onto the battlefield, then shuffle.",
+            type_line="Land",
+        )
+        programs = with_activated_ability_catalog(
+            card,
+            (),
+            carrier_provenance={
+                "source_oracle_hash": "a" * 64,
+                "source_rulings_hash": "b" * 64,
+                "authored_by": "fixture-compiler",
+                "review_status": "generated_review_required",
+            },
+        )
+
+        self.assertEqual(1, len(programs))
+        self.assertEqual("activate", programs[0].event)
+        self.assertEqual("provisional", programs[0].trust_level)
+        self.assertEqual("front", programs[0].provenance["face_id"])
+        lowered = activated_abilities_from_descriptors(programs[0].handlers)
+        self.assertEqual(("plains", "island"), lowered[0].library_search_types)
+        self.assertIsNone(lowered[0].builtin_semantic_key)
+
+    def test_reviewed_augmentation_does_not_synthesize_catalog_carriers(self):
+        card = record("Fixture Stone", "{T}: Add {C}.")
+        self.assertEqual((), with_activated_ability_catalog(card, ()))
+
     def test_conditions_ignore_runtime_prose_and_use_effective_types(self):
         ability = parse_activated_abilities(
             card_name="Fixture",
@@ -211,6 +243,26 @@ class TypedActivatedAbilityCatalogTests(unittest.TestCase):
             standard_token_characteristics(
                 {"activated_ability_profile": "unknown-v1"}
             )
+
+    def test_frozen_token_descriptor_lowers_without_loosening_schema(self):
+        characteristics = freeze_value(
+            standard_token_characteristics(
+                {
+                    "type_line": "Token Artifact — Treasure",
+                    "activated_ability_profile": "tap_sac_any_color_mana_v1",
+                }
+            )
+        )
+        card = SimpleNamespace(
+            annotations={"token_characteristics": characteristics}
+        )
+        host = SimpleNamespace(card_record=lambda _card: None)
+
+        abilities = compiled_activated_abilities(host, card)
+
+        self.assertEqual(1, len(abilities))
+        self.assertTrue(abilities[0].mana_ability)
+        self.assertTrue(abilities[0].sacrifice_source)
 
     def test_material_catalog_change_changes_pinned_handler(self):
         program = SemanticProgram(

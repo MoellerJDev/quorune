@@ -470,7 +470,13 @@ class SemanticRegistry:
             # the semantics used to replay an older accepted-command prefix.
             self._programs.clear()
             self._card_program_cache = None
-            self._runtime_handler_compatibility_enabled = True
+            # Historical Game Record v3 registries predate the explicit flag,
+            # so absence retains their replay-only Oracle compatibility path.
+            # Current registries write ``False`` and must never acquire legacy
+            # runtime interpretation merely because they were serialized.
+            self._runtime_handler_compatibility_enabled = bool(
+                raw.get("runtime_handler_compatibility_enabled", True)
+            )
         serialized_card_programs = raw.get("card_programs")
         if serialized_card_programs is not None:
             if raw.get("card_program_schema_version") != 2:
@@ -559,6 +565,7 @@ class SemanticRegistry:
             "schema_version": SEMANTIC_SCHEMA_VERSION,
             "card_program_schema_version": 2,
             "include_builtin_packs": False,
+            "runtime_handler_compatibility_enabled": False,
             "card_programs": {
                 program.oracle_id: program.to_dict()
                 for program in self.card_programs()

@@ -6,6 +6,7 @@ from typing import Any, Mapping, Protocol
 
 from .abilities import ActivatedAbility
 from .card_programs.validation import program_source_is_current
+from .replacement.immutable import thaw_value
 from .semantic_runtime.activated_abilities import (
     activated_abilities_from_descriptors,
 )
@@ -40,7 +41,9 @@ def _custom_activated_abilities(card: Any) -> tuple[ActivatedAbility, ...]:
         not isinstance(value, Mapping) for value in raw
     ):
         raise ValueError("Custom activated_abilities must be an array")
-    return tuple(ActivatedAbility.from_dict(value) for value in raw)
+    return tuple(
+        ActivatedAbility.from_dict(thaw_value(value)) for value in raw
+    )
 
 
 def compiled_activated_abilities(
@@ -56,7 +59,7 @@ def compiled_activated_abilities(
     face_ids = tuple(
         str(face.get("name") or "front") for face in getattr(record, "faces", ())
     )
-    abilities: dict[str, ActivatedAbility] = {}
+    abilities: dict[str, tuple[ActivatedAbility, bool]] = {}
     for program in sorted(
         host.semantics.programs_for_oracle(
             record.oracle_id,
@@ -87,15 +90,21 @@ def compiled_activated_abilities(
         for ability in activated_abilities_from_descriptors(
             program.handlers
         ):
+            carrier = program.ability_id.startswith("ability:catalog:")
             prior = abilities.get(ability.ability_id)
-            if prior is not None and prior != ability:
+            if prior is not None and prior[0] != ability:
+                if prior[1] and not carrier:
+                    abilities[ability.ability_id] = (ability, False)
+                    continue
+                if carrier and not prior[1]:
+                    continue
                 raise ValueError(
                     f"Conflicting compiled ability {ability.ability_id}"
                 )
-            abilities[ability.ability_id] = ability
+            abilities[ability.ability_id] = (ability, carrier)
     return tuple(
         sorted(
-            abilities.values(),
+            (ability for ability, _carrier in abilities.values()),
             key=lambda ability: (ability.line_index, ability.ability_id),
         )
     )

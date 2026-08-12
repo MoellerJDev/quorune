@@ -679,6 +679,7 @@ class CardProgramV2Tests(unittest.TestCase):
             registry.save()
             raw = json.loads(path.read_text(encoding="utf-8"))
             self.assertEqual(2, raw["card_program_schema_version"])
+            self.assertFalse(raw["runtime_handler_compatibility_enabled"])
             self.assertEqual(
                 registry.card_program_fingerprints(),
                 {
@@ -687,6 +688,7 @@ class CardProgramV2Tests(unittest.TestCase):
                 },
             )
             restored = SemanticRegistry(path)
+            self.assertFalse(restored.runtime_handler_compatibility_enabled)
             self.assertEqual(
                 registry.card_program_fingerprints(),
                 restored.card_program_fingerprints(),
@@ -710,6 +712,19 @@ class CardProgramV2Tests(unittest.TestCase):
             path.write_text(json.dumps(raw), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "views disagree"):
                 SemanticRegistry(path)
+
+    def test_legacy_registry_without_compatibility_flag_retains_v3_adapter(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "semantics.json"
+            registry = SemanticRegistry(path, include_builtin_packs=False)
+            registry.save()
+            raw = json.loads(path.read_text(encoding="utf-8"))
+            raw.pop("runtime_handler_compatibility_enabled")
+            path.write_text(json.dumps(raw), encoding="utf-8")
+
+            restored = SemanticRegistry(path)
+
+        self.assertTrue(restored.runtime_handler_compatibility_enabled)
 
     def test_semantic_adapter_rejects_cross_card_or_source_hash_mix(self):
         values = SemanticRegistry().programs()

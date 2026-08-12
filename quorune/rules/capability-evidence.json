@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "09d56bf8c2687cf6196b5ad7073c78b497191849a281366fbc65d84da72871c3",
-  "declaration_source_fingerprint": "25c3d6e6082bb27ff2821a5d20cc27111c151c0eb3207fba5b78780c45b290fd",
+  "registry_fingerprint": "67a4dea306d6eaa28a09c38c45c49ac6b5503d8621048691bea78b4f3eadb6c5",
+  "declaration_source_fingerprint": "c11c67e565d49aaf33ce0758ceefdcf1927bb802d672d79a4c434643509ee06d",
   "declarations": [
     {
       "capability_id": "activation.crew.fixed_power",
@@ -20253,7 +20253,7 @@
     {
       "capability_id": "mana.activated.color_set",
       "evidence_class": "negative",
-      "test_id": "tests.test_color_set_mana_abilities.ColorSetManaRuntimeTests.test_changed_color_set_oracle_fails_closed",
+      "test_id": "tests.test_color_set_mana_abilities.ColorSetManaRuntimeTests.test_changed_runtime_oracle_does_not_override_pinned_descriptor",
       "official_rule_ids": [
         "106.1",
         "106.4",
@@ -20267,7 +20267,7 @@
         "commander_duel",
         "commander_review"
       ],
-      "applicability_note": "Reject a stale source-pinned descriptor without reparsing changed executable Oracle text at runtime."
+      "applicability_note": "Ignore changed runtime Oracle prose and continue using the source-pinned descriptor; source-hash validation remains the separate fail-closed boundary."
     },
     {
       "capability_id": "mana.activated.color_set",
@@ -28651,5 +28651,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "3b9f5bf89402956ae454210de0f389a4abed9bc34054830ea7cc2fe4635a7fb0"
+  "fingerprint": "3d6b75998aa87a9b3ee7747df64d11147215091095076ec7ec99aeaad1844809"
 }

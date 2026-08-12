@@ -756,18 +756,20 @@ class ColorSetManaRuntimeTests(unittest.TestCase):
         self.assertEqual(before_pool, dict(session.state.players["A"].mana_pool))
         self.assertEqual(before_events, len(session.state.events))
 
-    def test_changed_color_set_oracle_fails_closed(self):
+    def test_changed_runtime_oracle_does_not_override_pinned_descriptor(self):
         session = self.session(10606)
         engine = session.engine
         bloom = self._card(engine, "Bloom Tender", owner="B")
         self._prepare_priority(session, bloom)
+        expected = engine._activated_abilities(bloom)
         changed = dict(engine._effective_card_data(bloom))
         changed["executable_oracle_text"] = "{T}: Add one mana of any color."
 
         with mock.patch.object(engine, "_effective_card_data", return_value=changed):
             abilities = engine._activated_abilities(bloom)
 
-        self.assertFalse(any(ability.mana_ability for ability in abilities))
+        self.assertEqual(expected, abilities)
+        self.assertTrue(any(ability.color_set_mana_output for ability in abilities))
 
     def test_color_set_mana_respects_haste_cost_dependency(self):
         session = self.session(10607)

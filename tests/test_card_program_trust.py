@@ -183,6 +183,7 @@ class CardProgramTrustTests(unittest.TestCase):
         )
         self.assertEqual(
             {
+                "ability.activated.catalog",
                 "ability.activated.mana.color-set",
                 "ability.activated.mana.fixed-output",
                 "ability.activated.cycling",

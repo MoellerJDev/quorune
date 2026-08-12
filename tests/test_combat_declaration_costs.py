@@ -6,14 +6,38 @@ import unittest
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
+from quorune.abilities import parse_activated_abilities
 from quorune.ability_fragments import ability_fragment_to_dict
 from quorune.aura import SimpleEnchantSpec
+from quorune.fixed_mana_abilities import fixed_mana_modes_from_effect
 from quorune.model import CombatState
 from quorune.oracle_ir import compile_oracle_card
 from quorune.record import (
     authoritative_state_hash,
     checkpoint_envelope,
     replay_record,
+)
+
+
+def _fixed_mana_fixture(card_name: str, oracle_text: str) -> dict:
+    ability = parse_activated_abilities(
+        card_name=card_name,
+        oracle_text=oracle_text,
+    )[0]
+    modes = fixed_mana_modes_from_effect(ability.effect_text)
+    assert modes is not None
+    return replace(ability, fixed_mana_outputs=modes).to_dict()
+
+
+_TAP_COLORLESS_ABILITY = _fixed_mana_fixture(
+    "Fixture colorless source", "{T}: Add {C}."
+)
+_TAP_ANY_COLOR_ABILITY = _fixed_mana_fixture(
+    "Fixture mana creature", "{T}: Add one mana of any type."
+)
+_TAP_SAC_ANY_COLOR_ABILITY = _fixed_mana_fixture(
+    "Fixture sacrificial mana creature",
+    "{T}, Sacrifice this creature: Add one mana of any type.",
 )
 
 
@@ -58,6 +82,7 @@ class CombatDeclarationCostTests(unittest.TestCase):
         oracle_text: str = "",
         keywords: tuple[str, ...] = (),
         power: str = "2",
+        activated_ability: dict | None = None,
     ):
         ref = engine.create_token(
             seat,
@@ -67,6 +92,11 @@ class CombatDeclarationCostTests(unittest.TestCase):
                 "oracle_text": oracle_text,
                 "power": power,
                 "toughness": "2",
+                **(
+                    {"activated_abilities": [activated_ability]}
+                    if activated_ability is not None
+                    else {}
+                ),
             },
             temporary_keywords=keywords,
         )[0]
@@ -83,6 +113,7 @@ class CombatDeclarationCostTests(unittest.TestCase):
             characteristics={
                 "type_line": "Token Land",
                 "oracle_text": "{T}: Add {C}.",
+                "activated_abilities": [_TAP_COLORLESS_ABILITY],
             },
         )[0]
         return engine._resolve_object(seat, ref, zones={"battlefield"})
@@ -548,6 +579,7 @@ class CombatDeclarationCostTests(unittest.TestCase):
                 "{T}: Add one mana of any type."
             ),
             keywords=("Haste",),
+            activated_ability=_TAP_ANY_COLOR_ABILITY,
         )
         engine._issue_attackers()
         before = authoritative_state_hash(session.state)
@@ -576,6 +608,7 @@ class CombatDeclarationCostTests(unittest.TestCase):
                 "{T}: Add one mana of any type."
             ),
             keywords=("Haste", "Vigilance"),
+            activated_ability=_TAP_ANY_COLOR_ABILITY,
         )
         engine._issue_attackers()
 
@@ -604,6 +637,7 @@ class CombatDeclarationCostTests(unittest.TestCase):
                 "{T}, Sacrifice this creature: Add one mana of any type."
             ),
             keywords=("Haste", "Vigilance"),
+            activated_ability=_TAP_SAC_ANY_COLOR_ABILITY,
         )
         engine._issue_attackers()
 
@@ -818,6 +852,7 @@ class CombatDeclarationCostTests(unittest.TestCase):
                 "{T}, Sacrifice this creature: Add one mana of any type."
             ),
             keywords=("Haste",),
+            activated_ability=_TAP_SAC_ANY_COLOR_ABILITY,
         )
         engine.state.phase_index = 6
         engine.state.step = "declare_blockers"

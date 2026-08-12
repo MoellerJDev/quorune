@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "b4eadd090b451be26f5ed125674ede1d00d25a4f5472c3cadf5e304a94b7cc9f",
+    "evaluated_input_fingerprint": "f53b2e218a8e8149d21f169a6fc8d9a6c675af1e24f3a642b90de92dbb2e0110",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -673,12 +673,14 @@
         "material_residuals": 44823,
         "status_counts": {
           "residual": 28545,
-          "trusted": 3078
+          "trusted": 3009,
+          "untrusted": 69
         },
         "trust_basis_counts": {
-          "capability_closed": 3070,
+          "capability_closed": 3002,
           "legacy_reviewed": 5,
-          "mixed": 3,
+          "mixed": 2,
+          "provisional": 69,
           "unresolved": 28545
         }
       },
@@ -688,12 +690,14 @@
         "status_counts": {
           "failed": 2248,
           "residual": 32536,
-          "trusted": 3839
+          "trusted": 3757,
+          "untrusted": 82
         },
         "trust_basis_counts": {
-          "capability_closed": 3831,
+          "capability_closed": 3750,
           "legacy_reviewed": 5,
-          "mixed": 3,
+          "mixed": 2,
+          "provisional": 82,
           "unresolved": 32536
         }
       }

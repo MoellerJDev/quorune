@@ -997,7 +997,18 @@ def generated_programs(
             )
             if program is not None:
                 programs.append(program)
-    return list(with_activated_ability_catalog(record, programs))
+    return list(
+        with_activated_ability_catalog(
+            record,
+            programs,
+            carrier_provenance={
+                "source_oracle_hash": ir.oracle_hash,
+                "source_rulings_hash": rulings_hash,
+                "authored_by": ORACLE_COMPILER_VERSION,
+                "review_status": "generated_review_required",
+            },
+        )
+    )
 
 
 def _trusted_program_is_requested(
