@@ -908,6 +908,9 @@ class CardProgramV2Tests(unittest.TestCase):
                 "continuous.attached.fixed-characteristics.v1": [
                     "continuous.attached.fixed_characteristics"
                 ],
+                "continuous.ability.fixed-query-grant.v1": [
+                    "continuous.ability.fixed_query_grant"
+                ],
                 "prevention.damage.fixed.v1": [
                     "damage.prevention.static_fixed"
                 ],
