@@ -245,7 +245,9 @@ class StateProjector:
                 "m": token.get("mana_cost", ""),
                 "mv": token.get("mana_value", 0),
                 "t": token.get("type_line", "Token"),
-                "o": token.get("oracle_text", ""),
+                "o": token.get(
+                    "display_text", token.get("oracle_text", "")
+                ),
                 "p": token.get("power"),
                 "q": token.get("toughness"),
                 "k": list(token.get("keywords") or []),
@@ -292,7 +294,9 @@ class StateProjector:
                 "m": evaluated["mana_cost"],
                 "mv": evaluated["mana_value"],
                 "t": evaluated["type_line"],
-                "o": evaluated["oracle_text"],
+                "o": evaluated.get(
+                    "display_oracle_text", evaluated["oracle_text"]
+                ),
                 "p": evaluated.get("power"),
                 "q": evaluated.get("toughness"),
                 "k": list(evaluated.get("keywords") or []),

@@ -2117,7 +2117,7 @@
       "handlers": [
         {
           "handler_id": "replacement.token.additional.v2",
-          "schema_version": 1,
+          "schema_version": 2,
           "event": "token.create",
           "condition": {
             "event_controller": "source_controller",
@@ -2175,7 +2175,7 @@
       "handlers": [
         {
           "handler_id": "replacement.token.additional.v2",
-          "schema_version": 1,
+          "schema_version": 2,
           "event": "token.create",
           "condition": {
             "event_controller": "source_controller",
@@ -2186,7 +2186,7 @@
           "token": {
             "name": "Map",
             "type_line": "Token Artifact — Map",
-            "oracle_text": "{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.",
+            "display_text": "{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.",
             "ability_profile": "one_tap_sac_explore_controlled_creature_v1"
           }
         }

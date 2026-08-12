@@ -12,6 +12,7 @@ from .aura import (
     is_aura_type_line,
     prepare_aura_entry,
 )
+from .card_overrides import normalize_game_record_v3_runtime_handler
 from .model import CardInstance
 from .control_history import record_battlefield_acquisition
 from .counter_placement import (
@@ -223,9 +224,14 @@ def _token_replacement_effects(
             if not host.semantic_program_is_current_trusted(program):
                 continue
             for descriptor_index, descriptor in enumerate(program.handlers):
+                runtime_descriptor = (
+                    normalize_game_record_v3_runtime_handler(descriptor)
+                    if host.semantics.runtime_handler_compatibility_enabled
+                    else descriptor
+                )
                 effects.append(
                     registry.replacement_effect(
-                        descriptor,
+                        runtime_descriptor,
                         TokenCreationReplacementContext(
                             source_ref=source.ref,
                             source_controller=source.controller,

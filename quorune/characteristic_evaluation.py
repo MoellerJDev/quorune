@@ -115,7 +115,13 @@ def _base_characteristic_state(
         mana_cost=str(result.get("mana_cost") or ""),
         mana_value=float(result.get("mana_value") or 0),
         text=str(result.get("oracle_text") or ""),
-        executable_text=str(result.get("oracle_text") or ""),
+        executable_text=str(
+            result.get(
+                "executable_oracle_text",
+                result.get("oracle_text") or "",
+            )
+            or ""
+        ),
         supertypes=set(supertypes),
         card_types=set(card_types),
         subtypes=set(subtypes),
@@ -147,6 +153,8 @@ def _copy_effect(
         "mana_cost": "mana_cost",
         "mana_value": "mana_value",
         "oracle_text": "text",
+        "display_text": "text",
+        "executable_oracle_text": "executable_text",
         "power": "power",
         "toughness": "toughness",
         "loyalty": "loyalty",
@@ -166,7 +174,20 @@ def _copy_effect(
             if value is None:
                 continue
         copy_values[target_field] = value
-    if "oracle_text" in overrides and "activated_abilities" not in overrides:
+    if (
+        "display_text" in overrides
+        and "oracle_text" not in overrides
+        and "executable_oracle_text" not in overrides
+    ):
+        # Display-only prose is still a copiable visible characteristic, but
+        # it is not an executable Oracle program.  Supplying the empty value
+        # explicitly also prevents the layer-1 compatibility rule from
+        # mirroring copied display text into executable_text.
+        copy_values["executable_text"] = ""
+    if (
+        "oracle_text" in overrides
+        and "activated_abilities" not in overrides
+    ):
         copy_values["activated_abilities"] = []
     if overrides.get("type_line") is not None:
         copied_types, copied_subtypes, copied_supertypes = type_parts(
@@ -405,7 +426,11 @@ def evaluate_card_characteristics(
     )
     if not layered:
         result["executable_oracle_text"] = str(
-            result.get("oracle_text") or ""
+            result.get(
+                "executable_oracle_text",
+                result.get("oracle_text") or "",
+            )
+            or ""
         )
         result["keywords"] = unique_preserving_order(
             list(result.get("keywords") or [])
