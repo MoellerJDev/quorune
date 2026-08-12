@@ -8343,7 +8343,7 @@ class CommanderEngine(
         seat: str,
         proposal: Mapping[str, Any],
     ) -> dict[str, Any]:
-        from .shortcuts import execute_shortcut
+        from .card_overrides.shortcuts import execute_shortcut
 
         self._require_seat(seat, in_game=True)
         return execute_shortcut(self, seat, proposal)

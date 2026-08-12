@@ -30,8 +30,9 @@ measurements.
   opposing private zones, and analyst artifacts are not client payloads.
 - Material unknown Oracle semantics and unsupported rules dependencies fail
   closed before mutation.
-- Card behavior comes from pinned source-spanned CardPrograms and reusable
-  rules owners, never printed-name runtime branches or live Oracle parsing.
+- Card identity may remain typed data, but card behavior comes from pinned
+  source-spanned CardPrograms and reusable rules owners, never fixed identity
+  selecting generic runtime behavior or live Oracle parsing.
 - Game Record v3 is the durable compatibility contract. Additive state and
   continuation fields preserve historical replay semantics.
 

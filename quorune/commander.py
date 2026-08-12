@@ -17,7 +17,7 @@ from .model import (
 
 
 COMMANDER_DAMAGE_IDENTITY_VERSION = 2
-_LIBRARY_ZONE = "lib" + "rary"
+_LIBRARY_ZONE = "library"
 
 
 class CommanderIdentityError(ValueError):

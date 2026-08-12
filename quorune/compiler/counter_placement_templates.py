@@ -28,7 +28,7 @@ from .fixed_numbers import fixed_number
 
 
 _COUNT = r"a|an|one|two|three|four|five|six|seven|eight|nine|ten|\d+"
-_COUNTER_PLURAL = "counter" + "s"
+_COUNTER_PLURAL = "counters"
 _COUNTER_NAME = (
     r"[+-]\d+/[+-]\d+|"
     r"[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){0,2}"

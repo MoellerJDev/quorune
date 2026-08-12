@@ -23,7 +23,7 @@ from .intents import (
 )
 
 
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 
 
 def _fixed_counter_group_intent(

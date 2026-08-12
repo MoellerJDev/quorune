@@ -9,7 +9,7 @@ from ..semantics import SemanticProgram
 
 
 COMPOSED_SPELL_EFFECT_SEQUENCE = "composed-spell-effect-sequence-v1"
-_SPAN_START_FIELD = "sta" + "rt"
+_SPAN_START_FIELD = "start"
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,11 +1,118 @@
 {
-  "schema_version": 1,
-  "policy_version": "architecture-guards-v2",
+  "schema_version": 2,
+  "policy_version": "architecture-guards-v3",
   "baseline": "platform/architecture-guard-baseline.json",
   "module_classifications": "platform/module-classifications.json",
   "exception_registry": "platform/architecture-exceptions.json",
-  "card_name_hash_index": "platform/card-name-hash-index.json",
-  "printed_name_allowances": "platform/card-specificity-baseline.json",
+  "card_identity_flow": {
+    "schema_version": 1,
+    "identity_source_fields": [
+      "active_face",
+      "card_name",
+      "collector_number",
+      "effective_name",
+      "face_id",
+      "name",
+      "oracle_id",
+      "printed_name",
+      "set_code"
+    ],
+    "mapping_source_fields": [
+      "active_face",
+      "card_name",
+      "collector_number",
+      "effective_name",
+      "face_id",
+      "name",
+      "oracle_id",
+      "printed_name",
+      "set_code"
+    ],
+    "identity_receiver_types": [
+      "CardFace",
+      "CardInstance",
+      "CardRecord",
+      "CommanderDamageSource",
+      "EffectiveCardView",
+      "ObjectQueryResult"
+    ],
+    "identity_returning_calls": [
+      "by_oracle_id",
+      "card_for_object",
+      "card_record",
+      "lookup_card",
+      "record_for_object"
+    ],
+    "normalization_calls": [
+      "casefold",
+      "lower",
+      "str",
+      "strip",
+      "upper"
+    ],
+    "implementation_map_markers": [
+      "capabilit",
+      "component",
+      "dispatch",
+      "executor",
+      "handler",
+      "implementation",
+      "operation"
+    ],
+    "sink_kinds": [
+      "identity_as_data",
+      "implementation_map_lookup",
+      "static_identity_comparison",
+      "static_match_dispatch",
+      "static_membership"
+    ],
+    "allowed_classifications": [
+      "compiler_binding",
+      "display_metadata",
+      "generated_provenance",
+      "reviewed_historical_compatibility",
+      "reviewed_override",
+      "rules_value"
+    ],
+    "historical_compatibility_owner": "game_record_compatibility",
+    "reviewed_override_policy": "explicit_card_override",
+    "compiler_binding_prefixes": [
+      "quorune/card_programs/",
+      "quorune/compiler/"
+    ],
+    "compiler_binding_files": [
+      "quorune/compiled_activated_abilities.py",
+      "quorune/compiled_ability_fragments.py",
+      "quorune/compiled_cast_costs.py",
+      "quorune/compiled_cast_timing.py",
+      "quorune/oracle_ir.py",
+      "quorune/preflight.py",
+      "quorune/semantics.py"
+    ],
+    "generated_provenance_prefixes": [],
+    "provenance_symbol_markers": [
+      "audit",
+      "corpus",
+      "diagnostic",
+      "inventory",
+      "provenance",
+      "report"
+    ],
+    "display_metadata_prefixes": [
+      "server/"
+    ],
+    "display_metadata_files": [
+      "quorune/projection.py",
+      "quorune/report.py",
+      "quorune/session.py"
+    ],
+    "limitations": [
+      "The analysis is bounded to one Python module and propagates values only within one function or module scope.",
+      "Attribute name is treated as card identity only when the receiver has a configured card, record, face, or identity-bearing type proof.",
+      "Dynamic values, computed containers, reflection beyond configured getattr fields, and interprocedural return flows are outside the analysis.",
+      "The guard targets fixed identity dispatch and is not a general-purpose information-flow or privacy analysis."
+    ]
+  },
   "protected_rules_modules": [
     "quorune/abilities.py",
     "quorune/activation_usage.py",
@@ -72,7 +179,7 @@
     "quorune/rule_conformance.py",
     "quorune/rules_corpus.py",
     "quorune/semantics.py",
-    "quorune/shortcuts.py",
+    "quorune/card_overrides/shortcuts.py",
     "quorune/stack_counter.py",
     "quorune/state_based_actions.py",
     "quorune/state_based_execution.py",
@@ -259,10 +366,6 @@
     },
     "model_definition": "quorune/model.py"
   },
-  "specificity_scope": "all_generic_production_python",
-  "specificity_exempt_prefixes": [
-    "quorune/card_overrides/"
-  ],
   "review_thresholds": {
     "module_logical_lines": 1500,
     "function_logical_lines": 150,

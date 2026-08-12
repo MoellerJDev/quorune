@@ -17,8 +17,8 @@ class TargetPredicateError(ValueError):
     """A target predicate or its typed condition is unsupported or malformed."""
 
 
-_EXILE_ZONE = "ex" + "ile"
-_VOID_COUNTER = "vo" + "id"
+_EXILE_ZONE = "exile"
+_VOID_COUNTER = "void"
 
 
 class TargetPredicateHost(Protocol):

@@ -15,8 +15,8 @@ from ..rules.capabilities import (
 )
 
 
-_PROWESS_MECHANIC = "prow" + "ess"
-_BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
+_PROWESS_MECHANIC = "prowess"
+_BLOODTHIRST_MECHANIC = "bloodthirst"
 
 
 @dataclass(frozen=True, slots=True)
@@ -318,8 +318,8 @@ __all__ = [
     "keyword_dependency_gate",
 ]
 
-_DREDGE_MECHANIC = "dred" + "ge"
-_FABRICATE_MECHANIC = "fabri" + "cate"
-_EVOLVE_MECHANIC = "evo" + "lve"
+_DREDGE_MECHANIC = "dredge"
+_FABRICATE_MECHANIC = "fabricate"
+_EVOLVE_MECHANIC = "evolve"
 _PERSIST_MECHANIC = PERSIST_KEYWORD
 _UNDYING_MECHANIC = UNDYING_KEYWORD

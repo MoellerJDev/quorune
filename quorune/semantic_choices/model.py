@@ -11,7 +11,7 @@ class SemanticChoiceError(ValueError):
 
 
 Visibility = Literal["public", "actor_private"]
-_ORDER_SCHEMA_KEY = "ord" + "er"
+_ORDER_SCHEMA_KEY = "order"
 
 
 def _require_exact_fields(

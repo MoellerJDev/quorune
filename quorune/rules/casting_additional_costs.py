@@ -403,10 +403,10 @@ class FixedZoneChangeAdditionalCost:
     def log_kind(self) -> str:
         return {
             DISCARD_ONE_COST: "discard",
-            SACRIFICE_ONE_COST: "sacri" + "fice",
-            EXILE_ONE_FROM_GRAVEYARD_COST: "ex" + "ile",
-            EXILE_ONE_FROM_BATTLEFIELD_COST: "ex" + "ile",
-            RETURN_ONE_TO_OWNER_HAND_COST: "ret" + "urn",
+            SACRIFICE_ONE_COST: "sacrifice",
+            EXILE_ONE_FROM_GRAVEYARD_COST: "exile",
+            EXILE_ONE_FROM_BATTLEFIELD_COST: "exile",
+            RETURN_ONE_TO_OWNER_HAND_COST: "return",
         }[self.operation]
 
     def to_descriptor(self) -> dict[str, Any]:

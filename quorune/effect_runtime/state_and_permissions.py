@@ -10,7 +10,7 @@ from ..trigger_processing import schedule_delayed_trigger
 
 
 OPERATIONS = effect_family_contract("state-and-permissions.v1").operations
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 
 
 def _apply_goad(

@@ -14,7 +14,7 @@ from .zone_trigger_events import (
 )
 
 
-_EXILE_ZONE = "ex" + "ile"
+_EXILE_ZONE = "exile"
 _DEFAULT_SEMANTIC_SOURCE_ZONES = frozenset(
     {"battlefield", "graveyard", _EXILE_ZONE, "command", "hand"}
 )

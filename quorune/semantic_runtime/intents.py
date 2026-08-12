@@ -21,8 +21,8 @@ from ..zone_object_keyword_model import (
 from .context import SemanticSourceContext
 
 
-_EXPLORE_LABEL = "Ex" + "plore"
-_REASON_FIELD = "rea" + "son"
+_EXPLORE_LABEL = "Explore"
+_REASON_FIELD = "reason"
 
 
 def _freeze_replacement_selections(

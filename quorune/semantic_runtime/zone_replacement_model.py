@@ -11,10 +11,8 @@ from ..replacement_effects import (
     ReplacementEventBatch,
     ReplacementSelection,
 )
-# These zone labels are also exact printed card names. Keep them assembled so
-# card-specificity checks do not misclassify schema validation as card dispatch.
-_EXILE_ZONE = "ex" + "ile"
-_LIBRARY_ZONE = "lib" + "rary"
+_EXILE_ZONE = "exile"
+_LIBRARY_ZONE = "library"
 SUPPORTED_ZONE_DESTINATIONS = frozenset(
     {
         "battlefield",

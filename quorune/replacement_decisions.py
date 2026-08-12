@@ -35,7 +35,7 @@ from .entry_counter_coordination import (
 from .turn_counter_coordination import resume_turn_counter_replacement
 
 
-_PILOT_ROLE = "pi" + "lot"
+_PILOT_ROLE = "pilot"
 
 
 class ReplacementDecisionHost(Protocol):

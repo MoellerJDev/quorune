@@ -10,7 +10,6 @@
     ],
     "explicit_paths": [
       "mechanics/registry.json",
-      "platform/card-name-hash-index.json",
       "platform/continuous-effect-performance-baseline.json",
       "platform/module-classifications.json",
       "quorune/rules/capability-evidence.json"
@@ -320,8 +319,7 @@
       "outputs": [
         "coverage/architecture-audit.json",
         "docs/ARCHITECTURE_DEBT_STATUS.md",
-        "docs/COMPILER_COVERAGE_STATUS.md",
-        "platform/card-name-hash-index.json"
+        "docs/COMPILER_COVERAGE_STATUS.md"
       ],
       "check": [
         "scripts/update_architecture_audit.py",
@@ -331,12 +329,7 @@
         "scripts/update_architecture_audit.py",
         "--write"
       ],
-      "write_with_database": [
-        "scripts/update_architecture_audit.py",
-        "--write",
-        "--card-db",
-        "{db}"
-      ],
+      "write_with_database": null,
       "write_policy": "automatic"
     },
     {

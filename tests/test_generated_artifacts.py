@@ -213,10 +213,10 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         architecture_owner = next(
             spec for spec in specs if spec.id == "architecture-audit"
         )
-        self.assertIn(
-            "platform/card-name-hash-index.json",
-            architecture_owner.outputs,
+        self.assertNotIn(
+            "platform/card-name-hash-index.json", architecture_owner.outputs
         )
+        self.assertIsNone(architecture_owner.write_with_database)
 
     def test_every_discovered_generated_artifact_has_one_existing_owner(self):
         manifest = json.loads(
@@ -268,7 +268,7 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             discovery = GeneratedArtifactDiscoverySpec(
                 path_prefixes=("coverage/",),
                 path_globs=("rules/*.json",),
-                explicit_paths=("platform/card-name-hash-index.json",),
+                explicit_paths=("platform/module-classifications.json",),
                 markdown_statuses=("generated",),
                 content_markers=("automatically generated",),
             )
@@ -298,7 +298,7 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             discovery = GeneratedArtifactDiscoverySpec(
                 path_prefixes=("coverage/",),
                 path_globs=("rules/*.json",),
-                explicit_paths=("platform/card-name-hash-index.json",),
+                explicit_paths=("platform/module-classifications.json",),
                 markdown_statuses=("generated",),
                 content_markers=("automatically generated",),
             )
@@ -332,7 +332,7 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             discovery = GeneratedArtifactDiscoverySpec(
                 path_prefixes=("coverage/",),
                 path_globs=("rules/*.json",),
-                explicit_paths=("platform/card-name-hash-index.json",),
+                explicit_paths=("platform/module-classifications.json",),
                 markdown_statuses=("generated",),
                 content_markers=("automatically generated",),
             )
@@ -367,7 +367,7 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             discovery = GeneratedArtifactDiscoverySpec(
                 path_prefixes=("coverage/",),
                 path_globs=("rules/*.json",),
-                explicit_paths=("platform/card-name-hash-index.json",),
+                explicit_paths=("platform/module-classifications.json",),
                 markdown_statuses=("generated",),
                 content_markers=("automatically generated",),
             )

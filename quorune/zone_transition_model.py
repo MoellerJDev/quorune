@@ -10,9 +10,9 @@ from .semantic_runtime import PreparedZoneChange
 from .zone_trigger_processing import DepartureTriggerSnapshot
 
 
-EXILE_ZONE = "ex" + "ile"
-LIBRARY_ZONE = "lib" + "rary"
-JOURNAL_REASON_FIELD = "rea" + "son"
+EXILE_ZONE = "exile"
+LIBRARY_ZONE = "library"
+JOURNAL_REASON_FIELD = "reason"
 PUBLIC_ZONES = frozenset(
     {"battlefield", "graveyard", EXILE_ZONE, "command", "stack"}
 )

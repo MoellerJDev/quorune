@@ -93,11 +93,11 @@
     },
     "docs/ARCHITECTURE_DEBT_STATUS.md": {
       "source": "coverage/architecture-audit.json",
-      "command": ".\\.venv\\Scripts\\python.exe scripts\\update_architecture_audit.py --write --card-db data\\scryfall-current.sqlite3"
+      "command": ".\\.venv\\Scripts\\python.exe scripts\\update_architecture_audit.py --write"
     },
     "docs/COMPILER_COVERAGE_STATUS.md": {
       "source": "coverage/architecture-audit.json",
-      "command": ".\\.venv\\Scripts\\python.exe scripts\\update_architecture_audit.py --write --card-db data\\scryfall-current.sqlite3"
+      "command": ".\\.venv\\Scripts\\python.exe scripts\\update_architecture_audit.py --write"
     },
     "docs/PLATFORM_IMPLEMENTATION_STATUS.md": {
       "source": "coverage/platform-readiness.json",

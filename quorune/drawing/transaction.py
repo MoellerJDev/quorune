@@ -16,10 +16,10 @@ from .model import (
 )
 
 
-_DREDGE_KIND = "dred" + "ge"
-_DREDGE_REASON_PREFIX = "Dred" + "ge "
-_LIBRARY_ZONE = "lib" + "rary"
-_REASON_FIELD = "rea" + "son"
+_DREDGE_KIND = "dredge"
+_DREDGE_REASON_PREFIX = "Dredge "
+_LIBRARY_ZONE = "library"
+_REASON_FIELD = "reason"
 
 
 class DrawCommitHost(Protocol):

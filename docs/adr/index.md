@@ -78,3 +78,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0061 — typed search, target, and choice ownership](0061-typed-search-target-choice-owner.md)
 - [ADR 0062 — cross-program work selection](0062-cross-program-work-selection.md)
 - [ADR 0063 — compiler-pinned activated-ability catalog](0063-compiler-pinned-activated-ability-catalog.md)
+- [ADR 0064 — context-aware card-identity guard](0064-context-aware-card-identity-guard.md)

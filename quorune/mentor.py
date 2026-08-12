@@ -21,7 +21,7 @@ from .util import stable_json
 
 
 MENTOR_TRIGGER_SEMANTIC_KEY = "builtin:mentor-trigger"
-_ATTACKING_FIELD = "attack" + "ing"
+_ATTACKING_FIELD = "attacking"
 
 
 def _identity(value: Any, *, field: str) -> str:

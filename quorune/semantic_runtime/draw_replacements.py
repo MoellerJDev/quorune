@@ -21,7 +21,7 @@ DRAW_INSTRUCTION_MULTIPLIER_HANDLER_ID = (
     "replacement.draw.instruction.multiply.v1"
 )
 DRAW_RESULT_MULTIPLIER_HANDLER_ID = "replacement.draw.result.multiply.v1"
-_DREDGE_LABEL = "Dred" + "ge "
+_DREDGE_LABEL = "Dredge "
 
 
 class DrawReplacementSemantics(Protocol):

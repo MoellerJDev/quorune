@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Mapping, Sequence
 
 
-_STATUS_FIELD = "sta" + "tus"
+_STATUS_FIELD = "status"
 
 
 @dataclass(frozen=True, slots=True)

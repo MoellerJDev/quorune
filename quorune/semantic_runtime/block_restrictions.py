@@ -11,7 +11,7 @@ from .context import SemanticNodeError
 
 
 _SELF_COUNTER_HANDLER_ID = "combat.block.self-counter-prohibition.v1"
-_COUNTERS_FIELD = "counter" + "s"
+_COUNTERS_FIELD = "counters"
 
 
 def _normalized_counter_name(value: Any) -> str:

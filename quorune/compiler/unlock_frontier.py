@@ -46,14 +46,14 @@ BASE_RESIDUAL_FAMILIES = frozenset(
     }
 )
 
-_STATUS_FIELD = "sta" + "tus"
-_REASON_FIELD = "rea" + "son"
-_ERROR_FIELD = "err" + "or"
-_COPY_MARKER = "co" + "py"
-_EXILE_MARKER = "ex" + "ile"
-_RETURN_MARKER = "ret" + "urn"
-_SACRIFICE_MARKER = "sacri" + "fice"
-_REGENERATION_MARKER = "regener" + "ation"
+_STATUS_FIELD = "status"
+_REASON_FIELD = "reason"
+_ERROR_FIELD = "error"
+_COPY_MARKER = "copy"
+_EXILE_MARKER = "exile"
+_RETURN_MARKER = "return"
+_SACRIFICE_MARKER = "sacrifice"
+_REGENERATION_MARKER = "regeneration"
 _FAMILY_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("continuous_layer", ("continuous", "layer")),
     ("event_binding", ("event binding", "trigger grammar", "intervening-if", "reflexive-trigger")),

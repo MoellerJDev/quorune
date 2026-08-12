@@ -58,7 +58,7 @@ class DamageKeywordTriggerKind(str, Enum):
 
 
 CURRENT_ABILITY_FRAGMENT_COVERAGE = "current_ability_fragment_required"
-TOXIC_ABILITY_FRAGMENT_KIND = "tox" + "ic"
+TOXIC_ABILITY_FRAGMENT_KIND = "toxic"
 
 
 _COLOR_NAMES = {

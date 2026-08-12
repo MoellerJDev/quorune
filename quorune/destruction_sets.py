@@ -20,7 +20,7 @@ from .destruction import (
 from .object_query import ObjectQueryResult
 from .util import stable_json
 
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 
 
 class DestructionSetError(ValueError):

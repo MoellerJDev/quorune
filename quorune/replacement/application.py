@@ -35,7 +35,7 @@ from .operations import (
 )
 
 
-_LIFE_LOSS_DIRECTION = "lo" + "ss"
+_LIFE_LOSS_DIRECTION = "loss"
 
 
 _SET_FIELDS = {
@@ -781,4 +781,4 @@ def resolve_replacements(
         "Replacement choice sequence contains unused choices"
     )
 
-_DREDGE_RESULT_KIND = "dred" + "ge"
+_DREDGE_RESULT_KIND = "dredge"

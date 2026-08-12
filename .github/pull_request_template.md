@@ -20,7 +20,8 @@ outcome and why this is one coherent change.
 - Duplicate or superseded paths removed:
 - `CommanderEngine` delta:
 - Direct authoritative-write delta:
-- Card-name/Oracle-ID specificity delta:
+- Prohibited identity-dispatch delta:
+- Oracle-ID literal delta:
 - Compiler/CardProgram changes:
 - Card, residual, and capability-closure deltas: <!-- Link generated evidence, or N/A with reason. -->
 
@@ -39,7 +40,7 @@ outcome and why this is one coherent change.
 | Property and fuzz | |
 | Focused mutation | |
 | Compiler/corpus and residuals | |
-| Architecture, ownership, and specificity | |
+| Architecture, ownership, and identity flow | |
 | Local quick gate | |
 | Required exact-head CI | |
 

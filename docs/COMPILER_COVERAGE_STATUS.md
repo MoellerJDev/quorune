@@ -2,16 +2,16 @@
 title: "Compiler coverage status"
 status: "generated"
 authoritative_source: "coverage/architecture-audit.json"
-verified: "29bf7149710e5ce94e4ed851dcffe1d31c11d5e9cd31244abc1dd6e1a835fee5"
+verified: "5ceabf259551d76cb742b343a5194ea98fed730af8e7a80d2342f916a14d3182"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 generated_source: "coverage/architecture-audit.json"
-generation_command: ".\.venv\Scripts\python.exe scripts\update_architecture_audit.py --write --card-db data\scryfall-current.sqlite3"
+generation_command: ".\.venv\Scripts\python.exe scripts\update_architecture_audit.py --write"
 ---
 
 # Compiler coverage status
 
-Source fingerprint: `29bf7149710e5ce94e4ed851dcffe1d31c11d5e9cd31244abc1dd6e1a835fee5`
+Source fingerprint: `5ceabf259551d76cb742b343a5194ea98fed730af8e7a80d2342f916a14d3182`
 
 ## Current top-level state
 
@@ -35,5 +35,5 @@ Complete corpus, residual, stage, capability, and CardProgram inventories are in
 Exact generation command:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\update_architecture_audit.py --write --card-db data\scryfall-current.sqlite3
+.\.venv\Scripts\python.exe scripts\update_architecture_audit.py --write
 ```

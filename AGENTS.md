@@ -116,8 +116,11 @@ debt` to retrieve bounded current context. Use `writes`, `runtime-text`, and
 `owners` for exact mutation, raw-text, and live worktree provenance. Do not
 infer current branch, certification, or Slot A/Slot B state from generated
 prose, and do not hand-edit architecture metrics. A new prohibited runtime
-Oracle-text identity, engine-local direct write, or unowned direct write must
-fail the architecture guard; removal is the intended direction.
+Oracle-text identity, fixed card identity selecting generic behavior,
+engine-local direct write, or unowned direct write must fail the architecture
+guard; removal is the intended direction. Card identity may remain typed data;
+the bounded identity-flow inventory, not lexical collision with a card-name
+corpus, determines whether it became implementation authority.
 
 ## Browser ownership
 

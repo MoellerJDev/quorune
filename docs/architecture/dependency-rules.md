@@ -81,13 +81,24 @@ not line number or aggregate count. Architecture exceptions bind to one exact
 ADR and allowance fingerprint.
 
 `CommanderEngine` remains a measured legacy mutation boundary while it is
-decomposed. New engine methods, direct `GameState` write sites, card-name/Oracle
-ID branches, card-specific operations/helpers, oversized modules/functions, or
-unreviewed dependency exceptions fail the architecture gate. Existing debt is
-ratcheted rather than endorsed. Engine net logical growth defaults to zero, and
-existing oversized modules/functions may not grow.
+decomposed. New engine methods, direct `GameState` write sites, fixed card
+identity flows that select legality, mutation, implementations, or outcomes,
+card-specific operations/helpers, oversized modules/functions, or unreviewed
+dependency exceptions fail the architecture gate. Card names, face identity,
+collector numbers, set codes, and Oracle IDs may remain data for display,
+compiler binding, replay provenance, and typed rules values. Reviewed historical
+compatibility and explicit override modules remain exact classified boundaries;
+they are not generic-runtime exemptions. Existing debt is ratcheted rather than
+endorsed. Engine net logical growth defaults to zero, and existing oversized
+modules/functions may not grow. See
+[ADR 0064](../adr/0064-context-aware-card-identity-guard.md).
 
 Any new subsystem documents ownership and dependencies. Changing mutation
 ownership or adding a cross-layer dependency requires an ADR. Reviewed legacy
-exceptions require an ADR and removal plan; routine Scryfall digest refreshes
-cannot alter the reviewed specificity allowance.
+exceptions require an ADR and removal plan. The identity-flow guard has no
+growth allowance or card-database-derived exception surface.
+
+The separate raw Oracle-ID-literal ratchet remains active. It protects literal
+identity leakage and reviewed historical debt independently of whether a literal
+currently reaches a behavior-selection sink; it does not replace or weaken the
+identity-flow invariant.

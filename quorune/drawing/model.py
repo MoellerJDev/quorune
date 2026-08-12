@@ -15,8 +15,8 @@ from ..replacement import (
 )
 
 
-_DREDGE_KIND = "dred" + "ge"
-_REASON_FIELD = "rea" + "son"
+_DREDGE_KIND = "dredge"
+_REASON_FIELD = "reason"
 
 
 class DrawError(ValueError):

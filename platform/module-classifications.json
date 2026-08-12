@@ -442,6 +442,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/card_overrides/shortcuts.py",
+      "layer": "semantics",
+      "owning_subsystem": "reviewed_card_overrides",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "explicit_card_override",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/card_programs/__init__.py",
       "layer": "semantics",
       "owning_subsystem": "card_programs",
@@ -5375,20 +5390,6 @@
       "replay_participation": "authoritative"
     },
     {
-      "file": "quorune/shortcuts.py",
-      "layer": "rules",
-      "owning_subsystem": "legacy_rules",
-      "allowed_dependency_layers": [
-        "domain",
-        "rules",
-        "semantics"
-      ],
-      "game_state_access": "none",
-      "card_specificity_policy": "generic_no_growth",
-      "visibility_sensitivity": "authoritative_internal",
-      "replay_participation": "none"
-    },
-    {
       "file": "quorune/stack_counter.py",
       "layer": "rules",
       "owning_subsystem": "stack_counter",
@@ -6011,5 +6012,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "a87695a1cdcab2626bbcad8321c724d34220e33b73d1761bf5859c74df90ed54"
+  "fingerprint": "3fc16dfa359e883e5ab946667e2bcfcd4b9aed2fb936ff52e2aec1a883a1a8a8"
 }

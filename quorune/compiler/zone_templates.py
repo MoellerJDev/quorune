@@ -11,8 +11,8 @@ _OPPONENT_CARD_TO_EXILE_WITH_COUNTER = re.compile(
     r"counter on it\.?$",
     re.IGNORECASE,
 )
-_COUNTERS_FIELD = "counter" + "s"
-_EXILE_ZONE = "ex" + "ile"
+_COUNTERS_FIELD = "counters"
+_EXILE_ZONE = "exile"
 
 
 def static_zone_destination_replacement_handler(

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-RIOT_MECHANIC = "ri" + "ot"
+RIOT_MECHANIC = "riot"
 RIOT_COUNTER = "+1/+1"
 RIOT_ENTRY_HANDLER_ID = "replacement.zone.riot-entry-choice.v1"
 

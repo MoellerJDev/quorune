@@ -5,23 +5,23 @@ import json
 from types import SimpleNamespace
 import unittest
 
-from scripts.architecture_support import (
-    decode_card_name_hash_index,
-    printed_name_digest,
+from scripts.architecture_identity_flow import (
+    PROHIBITED_CLASSIFICATION,
+    analyze_identity_flows,
+    analyze_identity_source,
 )
 from scripts.architecture_observability import (
     classify_state_writes,
     runtime_text_accesses,
     runtime_text_growth,
 )
-from scripts.update_architecture_audit import ROOT, _string_records
+from scripts.update_architecture_audit import ROOT, analyze_production
 from scripts.validate_architecture import (
-    _counter_extras,
+    _card_identity_failures,
     _game_state_imports,
     evaluate_architecture,
     forbidden_import_violations,
     mutation_ownership_violations,
-    printed_name_literal_identities,
 )
 
 
@@ -32,10 +32,6 @@ class ArchitectureGuardTests(unittest.TestCase):
             (ROOT / "platform" / "architecture-policy.json").read_text(
                 encoding="utf-8"
             )
-        )
-        cls.card_index_path = ROOT / cls.policy["card_name_hash_index"]
-        cls.card_index = decode_card_name_hash_index(
-            json.loads(cls.card_index_path.read_text(encoding="utf-8"))
         )
         cls.audit_source = json.loads(
             (ROOT / "platform" / "architecture-audit-source.json").read_text(
@@ -196,87 +192,330 @@ class ArchitectureGuardTests(unittest.TestCase):
             ],
         )
 
-    def test_card_name_index_contains_no_plaintext_and_detects_new_literal(self):
-        raw = self.card_index_path.read_text(encoding="utf-8")
-        self.assertNotIn("Black Lotus", raw)
-        self.assertIn(printed_name_digest("Black Lotus"), self.card_index)
-        relative = self.policy["protected_rules_modules"][0]
-        literal = {
-            "file": relative,
-            "symbol": "bad_branch",
-            "value": "Black Lotus",
-            "in_condition": True,
-        }
-        identities = printed_name_literal_identities(
-            {relative: SimpleNamespace(string_literals=(literal,))},
-            [relative],
-            self.card_index,
+    def test_raw_oracle_id_literal_ratchet_remains_independent(self):
+        baseline = json.loads(
+            (ROOT / "platform" / "architecture-guard-baseline.json").read_text(
+                encoding="utf-8"
+            )
         )
-        self.assertEqual(
-            _counter_extras(identities, []),
-            [(relative, "bad_branch", "Black Lotus", True)],
+        relative = "quorune/engine.py"
+        analyses = {
+            relative: SimpleNamespace(
+                tree=ast.parse("EXAMPLE = '11111111-1111-1111-1111-111111111111'"),
+                functions=[],
+            )
+        }
+        failures, metrics = _card_identity_failures(
+            self.policy,
+            baseline,
+            {
+                "card_specific_semantic_operations": [],
+                "card_named_helpers": [],
+            },
+            analyses,
+            {
+                "oracle_id_literals": {
+                    "locations": [
+                        {
+                            "file": relative,
+                            "symbol": None,
+                            "value": "11111111-1111-1111-1111-111111111111",
+                            "oracle_id": "11111111-1111-1111-1111-111111111111",
+                            "in_condition": False,
+                        }
+                    ]
+                }
+            },
+            {
+                "modules": [
+                    {
+                        "file": relative,
+                        "owning_subsystem": "fixture",
+                        "card_specificity_policy": "generic_no_growth",
+                    }
+                ]
+            },
+        )
+        self.assertIn("oracle_id_literals", {row["guard"] for row in failures})
+        self.assertEqual(0, metrics["prohibited_identity_dispatch_count"])
+
+
+class CardIdentityFlowTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.policy = json.loads(
+            (ROOT / "platform" / "architecture-policy.json").read_text(
+                encoding="utf-8"
+            )
         )
 
-    def test_domain_words_are_exempt_only_in_structural_assignments(self):
-        tree = ast.parse(
-            """
-from enum import Enum
-_EXILE_MECHANIC = "exile"
-_REASON_FIELD = "reason"
-_ZONE_CHANGE_DESTINATIONS = {"library", "hand"}
-SACRIFICE_COST_KIND = "sacrifice"
-class Destination(str, Enum):
-    EXILE = "exile"
-def bad(card):
-    return (
-        card.printed_name == "Exile"
-        or card.printed_name == "Reason"
-        or card.printed_name == "Library"
-        or card.printed_name == "Sacrifice"
-    )
+    def analyze(
+        self,
+        source: str,
+        *,
+        relative: str = "quorune/fixture.py",
+        classification: dict[str, str] | None = None,
+    ) -> dict[str, object]:
+        return analyze_identity_source(
+            source,
+            relative=relative,
+            architecture_policy=self.policy,
+            module_classification=classification,
+        )
+
+    def assert_prohibited(self, source: str, *, minimum: int = 1) -> None:
+        report = self.analyze(source)
+        self.assertGreaterEqual(
+            report["counts"]["prohibited_identity_dispatch_count"],
+            minimum,
+            report,
+        )
+        self.assertTrue(
+            all(
+                row["classification"] == PROHIBITED_CLASSIFICATION
+                for row in report["prohibited_locations"]
+            )
+        )
+
+    def assert_allowed(self, source: str, **kwargs: object) -> dict[str, object]:
+        report = self.analyze(source, **kwargs)
+        self.assertEqual(
+            0,
+            report["counts"]["prohibited_identity_dispatch_count"],
+            report,
+        )
+        return report
+
+    def test_ordinary_domain_and_arbitrary_card_name_literals_are_allowed(self):
+        words = (
+            "life",
+            "stun",
+            "vigilance",
+            "reason",
+            "exile",
+            "sacrifice",
+            "vehicle",
+            "food",
+            "map",
+            "library",
+            "hand",
+            "counters",
+        )
+        source = "\n".join(
+            [f"value_{index} = {word!r}" for index, word in enumerate(words)]
+            + ["message = 'Black Lotus'"]
+        )
+        report = self.assert_allowed(source)
+        self.assertEqual(0, report["counts"]["classified_flow_count"])
+
+    def test_direct_reversed_and_stable_identity_dispatch_are_rejected(self):
+        source = """
+def direct(card):
+    return card.printed_name == "Black Lotus"
+def reversed(card):
+    return "A Future Card Not Yet Printed" == card.printed_name
+def oracle(card):
+    return card.oracle_id == "00000000-0000-0000-0000-000000000000"
+def collector(card):
+    return card.collector_number == "123"
+def edition(card):
+    return card.set_code == "abc"
 """
+        self.assert_prohibited(source, minimum=5)
+
+    def test_alias_normalization_and_imported_static_identity_are_rejected(self):
+        source = """
+from fixture import FUTURE_NAME
+SPECIAL_IDS = ("00000000-0000-0000-0000-000000000000",)
+def alias(card):
+    name = card.printed_name
+    return name == "Black Lotus"
+def normalized(card):
+    name = card.printed_name.casefold().strip()
+    return name == "black lotus"
+def member(card):
+    identity = card.oracle_id
+    return identity in SPECIAL_IDS
+def imported(card):
+    return card.printed_name == FUTURE_NAME
+"""
+        self.assert_prohibited(source, minimum=4)
+
+    def test_static_collections_match_and_concatenation_are_rejected(self):
+        source = """
+SPECIAL = ("Black Lotus",)
+def collection(card):
+    return card.printed_name in {"Black Lotus", "Ancestral Recall"}
+def named(card):
+    return card.printed_name in SPECIAL
+def match_name(card):
+    match card.printed_name:
+        case "Black Lotus":
+            return True
+    return False
+def concatenated(card):
+    return card.printed_name == "Black " + "Lotus"
+"""
+        self.assert_prohibited(source, minimum=4)
+
+    def test_static_implementation_maps_and_local_aliases_are_rejected(self):
+        source = """
+def by_name(card, state):
+    HANDLERS[card.printed_name](state)
+def aliased(card, state):
+    table = HANDLERS
+    handler = table.get(card.printed_name)
+    handler(state)
+def by_oracle(card):
+    operation = OPERATIONS_BY_ORACLE_ID[card.oracle_id]
+    execute(operation)
+def capability(card):
+    capability = CAPABILITIES_BY_NAME.get(card.printed_name)
+    require(capability)
+"""
+        report = self.analyze(source)
+        self.assertGreaterEqual(
+            report["counts"]["prohibited_identity_dispatch_count"], 4, report
         )
-        parents = {
-            child: parent
-            for parent in ast.walk(tree)
-            for child in ast.iter_child_nodes(parent)
-        }
-        strings, _oracle_ids = _string_records(
-            tree,
-            "quorune/fixture.py",
-            parents,
-        )
-        words = [
-            item
-            for item in strings
-            if str(item["value"]).casefold() in {"exile", "reason"}
-        ]
         self.assertEqual(
-            3,
-            sum(bool(item["card_specificity_exempt"]) for item in words),
+            {"implementation_map_lookup"},
+            {row["sink_kind"] for row in report["prohibited_locations"]},
+        )
+
+    def test_dynamic_typed_rules_name_data_is_allowed(self):
+        source = """
+def rules(candidate, predicate, descriptor):
+    checks = (
+        candidate.effective_name == predicate.exact_name,
+        matches_name_predicate(candidate, predicate),
+        NamePredicate(exact_name=descriptor["name"]),
+        PartnerWithSpec(partner_name=descriptor.partner_name),
+        MeldRelationship(other_face_name=descriptor.name),
+    )
+    return checks
+"""
+        self.assert_allowed(source)
+
+    def test_compiler_self_reference_is_compiler_binding(self):
+        source = """
+def lower_self_reference(record: CardRecord, oracle_text: str):
+    source_span = (0, len(oracle_text))
+    lowered = oracle_text.replace(record.name, "this object")
+    return {"source_ref": "self", "span": source_span, "text": lowered}
+"""
+        report = self.assert_allowed(
+            source, relative="quorune/compiler/self_reference_fixture.py"
+        )
+        self.assertIn(
+            "compiler_binding", report["counts"]["by_classification"]
+        )
+
+    def test_compiler_fixed_card_dispatch_is_rejected_but_face_binding_is_allowed(self):
+        prohibited = self.analyze(
+            "def lower(card):\n return card.printed_name == 'Black Lotus'\n",
+            relative="quorune/compiler/fixture.py",
         )
         self.assertEqual(
-            2,
-            sum(not item["card_specificity_exempt"] for item in words),
+            1, prohibited["counts"]["prohibited_identity_dispatch_count"]
         )
-        library_words = [
-            item for item in strings if str(item["value"]).casefold() == "library"
-        ]
-        self.assertEqual(
-            [False, True],
-            sorted(bool(item["card_specificity_exempt"]) for item in library_words),
+        face = self.assert_allowed(
+            "def lower(card):\n return card.active_face in {'front', 'back'}\n",
+            relative="quorune/compiler/fixture.py",
         )
-        sacrifice_words = [
-            item
-            for item in strings
-            if str(item["value"]).casefold() == "sacrifice"
-        ]
+        self.assertIn("compiler_binding", face["counts"]["by_classification"])
+
+    def test_flow_identity_does_not_depend_on_line_numbers(self):
+        source = "def dispatch(card):\n return card.oracle_id == 'fixed-id'\n"
+        compact = self.analyze(source)
+        spaced = self.analyze("\n\n" + source.replace("\n ", "\n\n "))
+        with_unrelated_flow = self.analyze(
+            "def dispatch(card):\n projected = card.set_code\n"
+            " return card.oracle_id == 'fixed-id'\n"
+        )
         self.assertEqual(
-            [False, True],
-            sorted(
-                bool(item["card_specificity_exempt"])
-                for item in sacrifice_words
-            ),
+            compact["prohibited_locations"][0]["flow_id"],
+            spaced["prohibited_locations"][0]["flow_id"],
+        )
+        self.assertEqual(
+            compact["prohibited_locations"][0]["flow_id"],
+            with_unrelated_flow["prohibited_locations"][0]["flow_id"],
+        )
+
+    def test_display_and_generated_provenance_identity_are_allowed(self):
+        projection = self.assert_allowed(
+            "def project(card):\n return {'name': card.printed_name}\n",
+            relative="quorune/projection.py",
+        )
+        self.assertIn(
+            "display_metadata", projection["counts"]["by_classification"]
+        )
+        provenance = self.assert_allowed(
+            "def build_inventory(card):\n return {'oracle_id': card.oracle_id}\n",
+            relative="quorune/reporting_fixture.py",
+        )
+        self.assertIn(
+            "generated_provenance", provenance["counts"]["by_classification"]
+        )
+
+    def test_historical_compatibility_is_exactly_classified(self):
+        source = "def adapt(card):\n return card.oracle_id == 'legacy-id'\n"
+        historical = self.assert_allowed(
+            source,
+            relative="quorune/card_overrides/game_record_v3_fixture.py",
+            classification={
+                "owning_subsystem": "game_record_compatibility",
+                "card_specificity_policy": "explicit_card_override",
+            },
+        )
+        self.assertIn(
+            "reviewed_historical_compatibility",
+            historical["counts"]["by_classification"],
+        )
+        self.assert_prohibited(source)
+
+    def test_reviewed_override_is_exactly_classified(self):
+        source = "def dispatch(card):\n return card.printed_name == 'Black Lotus'\n"
+        override = self.assert_allowed(
+            source,
+            relative="quorune/card_overrides/fixture.py",
+            classification={
+                "owning_subsystem": "reviewed_card_overrides",
+                "card_specificity_policy": "explicit_card_override",
+            },
+        )
+        self.assertIn("reviewed_override", override["counts"]["by_classification"])
+        self.assert_prohibited(source)
+
+    def test_analyzer_has_no_database_or_lexical_artifact_dependency(self):
+        report = self.assert_allowed("message = 'Black Lotus'\n")
+        self.assertEqual(
+            {
+                "card_database": False,
+                "card_name_index": False,
+                "specificity_baseline": False,
+            },
+            report["external_dependencies"],
+        )
+        module_source = (
+            ROOT / "scripts" / "architecture_identity_flow.py"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn("sqlite3", module_source)
+        self.assertNotIn("card-name-hash-index", module_source)
+        self.assertNotIn("card-specificity-baseline", module_source)
+
+    def test_current_production_tree_has_zero_prohibited_dispatches(self):
+        _source, _paths, analyses = analyze_production()
+        classifications = json.loads(
+            (ROOT / "platform" / "module-classifications.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        report = analyze_identity_flows(
+            analyses, self.policy, classifications
+        )
+        self.assertEqual([], report["prohibited_locations"])
+        self.assertEqual(
+            0, report["counts"]["prohibited_identity_dispatch_count"]
         )
 
 

@@ -12,7 +12,7 @@ from .semantic_runtime.activated_abilities import (
 )
 
 
-_EXILE_ZONE = "ex" + "ile"
+_EXILE_ZONE = "exile"
 
 
 class CompiledActivatedAbilityHost(Protocol):

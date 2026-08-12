@@ -35,6 +35,6 @@ as typed overrides.
 
 An override with a stale source fingerprint is unavailable, not approximately
 valid. A third substantially similar override must generalize the common
-pattern or carry an ADR explaining why it cannot. Ordinary architecture
-allowance refresh also requires an ADR and cannot be hidden inside a card-data
-index update.
+pattern or carry an ADR explaining why it cannot. The identity-flow guard
+inventories an override only through its exact reviewed module classification;
+there is no card-data-derived generic exemption or prohibited-flow allowance.

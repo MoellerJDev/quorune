@@ -6,7 +6,7 @@ from . import aerial_blocking
 from .landwalk import basic_landwalk_block_verdict
 
 
-FEAR_KEYWORD = "fe" + "ar"
+FEAR_KEYWORD = "fear"
 HORSEMANSHIP_KEYWORD = "horsemanship"
 INTIMIDATE_KEYWORD = "intimidate"
 SHADOW_KEYWORD = "shadow"

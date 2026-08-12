@@ -126,7 +126,8 @@ a class truly does not apply.
   and residual assertions, typed construct validation, construction and
   capability-closure evidence, and corpus deltas against the pinned snapshot.
 - Architecture changes need dependency, ownership, direct-write,
-  card-specificity, module-classification, and generated architecture checks.
+  card-identity-flow, Oracle-ID-literal, module-classification, and generated
+  architecture checks.
 
 Public exact-head pull-request CI is the ordinary merge authority. Do not
 weaken, bypass, rename, or make required checks optional when the service is
@@ -229,7 +230,8 @@ or pull request. Community-conduct reports follow the private process in the
 Use the pull-request template and make the description reviewable without
 requiring archaeology. Identify the change class, supported profile and source
 authority; ownership before and after; duplicate paths removed; runtime,
-direct-write and card-specificity deltas; compiler and CardProgram effects;
+direct-write, prohibited identity-dispatch, and Oracle-ID literal deltas;
+compiler and CardProgram effects;
 tests by class; generated artifacts; documentation or ADR changes; exact
 remaining limitations; privacy and rollback considerations; and rollback plan.
 Use `N/A` with a concrete reason for sections that do not apply, especially for

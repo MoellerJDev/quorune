@@ -19,7 +19,7 @@ from ..replacement.immutable import (
 )
 
 
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 
 
 class SingleObjectZoneTransitionError(ValueError):

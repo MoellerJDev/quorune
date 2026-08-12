@@ -218,7 +218,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/turn_step_owner.py",
         "quorune/untap_step.py",
         "quorune/untap_step_coordination.py",
-        "quorune/shortcuts.py",
+        "quorune/card_overrides/shortcuts.py",
         "quorune/stack_counter.py",
         "quorune/stack_resolution.py",
         "quorune/state_based_actions.py",
@@ -253,7 +253,11 @@ def _owner(relative: str, layer: str) -> str:
     if relative.startswith("quorune/effect_runtime/"):
         return "effect_runtime"
     if relative.startswith("quorune/card_overrides/"):
-        return "game_record_compatibility"
+        return (
+            "game_record_compatibility"
+            if relative.endswith(("/__init__.py", "/game_record_v3.py"))
+            else "reviewed_card_overrides"
+        )
     if relative == "quorune/effect_contracts.py":
         return "effect_runtime"
     if relative.startswith("quorune/card_programs/"):
@@ -492,7 +496,6 @@ def build_classifications() -> dict[str, Any]:
     readers = set(policy["game_state_access"]["read_only_consumers"])
     protected_rules_modules = set(policy["protected_rules_modules"])
     model = policy["game_state_access"]["model_definition"]
-    exemptions = tuple(source["scope"]["card_specificity_exempt_prefixes"])
     modules = []
     for relative in sorted(analyses):
         layer = _layer(relative, protected_rules_modules)
@@ -523,7 +526,7 @@ def build_classifications() -> dict[str, Any]:
                 "game_state_access": access,
                 "card_specificity_policy": (
                     "explicit_card_override"
-                    if any(relative.startswith(prefix) for prefix in exemptions)
+                    if relative.startswith("quorune/card_overrides/")
                     else "generic_no_growth"
                 ),
                 "visibility_sensitivity": (

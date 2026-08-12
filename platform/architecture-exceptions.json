@@ -684,6 +684,28 @@
         "tests.test_exact_keyword_families.ExactKeywordFamilyTests.test_food_and_treasure_tokens_have_authoritative_abilities",
         "tests.test_mana_abilities.ManaAbilityRuleTests.test_treasure_exposes_color_choice_and_auto_payment_sacrifices_it"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0032",
+      "adr": "docs/adr/0064-context-aware-card-identity-guard.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "f4ab5e55bced676e072f6d7cd9a6c67e532765dacff3ddd7656a6ab3c5961c25",
+      "exact_allowance": "Only the schema-4 structural state-write identities, owner classifications, prohibited runtime Oracle-text access identities, engine methods, size ceilings, Oracle-ID literals, registered operations, legacy helpers, and oversized-symbol ceilings serialized after removing the lexical printed-name machinery. Fixed card-identity dispatch has no allowance and must remain zero.",
+      "rationale": "The context-aware identity-flow guard removes the database-derived name index, printed-name allowance baseline, source fingerprint, and source-record exemption field without widening any unrelated architecture allowance. Existing shortcut Oracle IDs move into the exact reviewed override boundary, while their independent literal identities remain ratcheted.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact unrelated residual identities and counts in the rebound schema-4 baseline plus the classified historical compatibility and explicit override boundaries described by ADR 0064; new fixed card-identity dispatch, runtime Oracle interpretation, unowned mutation, engine-local writes, oversized symbols, arbitrary callbacks, or unreviewed operations remain forbidden.",
+      "removal_condition": "Remove the exception when every serialized grandfathered engine write and prohibited runtime-text interpretation has migrated to declared typed owners; the zero-prohibited identity-flow invariant, generated classified inventory, and independent Oracle-ID literal ratchet remain permanent without an allowance.",
+      "target_milestone": "typed architecture ownership and runtime Oracle-text removal",
+      "replay_implications": "Current game and Game Record v3 payloads are unchanged; stable identity-flow IDs are architecture evidence only, and historical compatibility remains isolated from current-game execution.",
+      "privacy_implications": "The analyzer reads repository syntax and generated public module classifications only; it introduces no game state, hidden-zone data, capability, checkpoint, or principal projection.",
+      "security_implications": "Fixed identity cannot select generic legality, mutation, capabilities, implementations, or outcomes; exact historical and override classifications are visible boundaries rather than generic path exemptions.",
+      "tests": [
+        "tests.test_architecture_guards.CardIdentityFlowTests.test_current_production_tree_has_zero_prohibited_dispatches",
+        "tests.test_architecture_guards.CardIdentityFlowTests.test_static_implementation_maps_and_local_aliases_are_rejected",
+        "tests.test_architecture_guards.CardIdentityFlowTests.test_compiler_fixed_card_dispatch_is_rejected_but_face_binding_is_allowed",
+        "tests.test_architecture_guards.CardIdentityFlowTests.test_flow_identity_does_not_depend_on_line_numbers",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
+      ]
     }
   ]
 }

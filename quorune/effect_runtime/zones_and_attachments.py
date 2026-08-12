@@ -22,7 +22,7 @@ from ..object_predicate import ObjectQueryError, ObjectQuerySpec
 from ..targets import TargetGroup
 from ..util import unique_preserving_order
 
-_EXILE_ZONE = "ex" + "ile"
+_EXILE_ZONE = "exile"
 
 
 OPERATIONS = effect_family_contract("zones-and-attachments.v1").operations

@@ -4,11 +4,11 @@ from dataclasses import dataclass
 
 
 BASIC_LANDWALK_TYPES = (
-    ("pl" + "ainswalk", "pl" + "ains"),
-    ("is" + "landwalk", "is" + "land"),
-    ("sw" + "ampwalk", "sw" + "amp"),
-    ("mount" + "ainwalk", "mount" + "ain"),
-    ("for" + "estwalk", "for" + "est"),
+    ("plainswalk", "plains"),
+    ("islandwalk", "island"),
+    ("swampwalk", "swamp"),
+    ("mountainwalk", "mountain"),
+    ("forestwalk", "forest"),
 )
 BASIC_LAND_TYPES = frozenset(
     land_type for _, land_type in BASIC_LANDWALK_TYPES

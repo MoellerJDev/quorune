@@ -12,7 +12,7 @@ import re
 from typing import Any, Mapping
 
 
-EXPLORE_MECHANIC_ID = "ex" + "plore"
+EXPLORE_MECHANIC_ID = "explore"
 
 
 @dataclass(frozen=True, slots=True)

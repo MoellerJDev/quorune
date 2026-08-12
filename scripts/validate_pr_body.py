@@ -37,7 +37,8 @@ REQUIRED_FIELDS = {
         "Duplicate or superseded paths removed",
         "`CommanderEngine` delta",
         "Direct authoritative-write delta",
-        "Card-name/Oracle-ID specificity delta",
+        "Prohibited identity-dispatch delta",
+        "Oracle-ID literal delta",
         "Compiler/CardProgram changes",
         "Card, residual, and capability-closure deltas",
     ),
@@ -69,7 +70,7 @@ EVIDENCE_CLASSES = (
     "Property and fuzz",
     "Focused mutation",
     "Compiler/corpus and residuals",
-    "Architecture, ownership, and specificity",
+    "Architecture, ownership, and identity flow",
     "Local quick gate",
     "Required exact-head CI",
 )

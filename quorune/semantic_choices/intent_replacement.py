@@ -24,7 +24,7 @@ from ..semantic_runtime import (
 from .model import SemanticChoiceError
 
 
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 _COUNTER_INTENT_FIELDS = {
     "actor",
     "object_refs",

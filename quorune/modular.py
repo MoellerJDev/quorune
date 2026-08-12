@@ -12,7 +12,7 @@ from .counter_snapshot import (
 from .replacement.immutable import FrozenMap
 
 
-MODULAR_MECHANIC_ID = "mod" + "ular"
+MODULAR_MECHANIC_ID = "modular"
 MODULAR_COUNTER_SNAPSHOT_FIELD = "modular_counter_snapshot"
 MODULAR_COUNTER_COUNT_FIELD = "modular_counter_count"
 

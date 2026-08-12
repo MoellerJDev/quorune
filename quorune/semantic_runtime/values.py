@@ -12,7 +12,7 @@ from ..attachment_references import (
 from .explore import explore_source_controller
 
 
-_INDEX_GROUP = "in" + "dex"
+_INDEX_GROUP = "index"
 
 
 class SemanticValueHost(Protocol):

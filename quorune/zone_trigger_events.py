@@ -32,8 +32,8 @@ class ZoneTriggerEventError(ValueError):
     """A normalized zone-change trigger occurrence is malformed."""
 
 
-_EXILE_ZONE = "ex" + "ile"
-_LIBRARY_ZONE = "lib" + "rary"
+_EXILE_ZONE = "exile"
+_LIBRARY_ZONE = "library"
 _ZONE_CHANGE_DESTINATIONS = frozenset(
     {_LIBRARY_ZONE, "hand", "battlefield", "graveyard", _EXILE_ZONE, "command", "outside"}
 )
