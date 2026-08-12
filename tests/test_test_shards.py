@@ -1,13 +1,28 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 import unittest
 
+import pytest
+
+from scripts.pytest_shard_plugin import (
+    canonical_collection,
+    expected_collection,
+)
 from scripts.test_shards import (
+    canonical_test_ids,
     discovered_modules,
     load_manifest,
+    load_suite,
     primary_matrix,
+    PytestShardRecorder,
+    run_modules,
     suite_modules,
+    test_collection_fingerprint,
     TestShardError,
     validate_partition,
 )
@@ -50,6 +65,87 @@ class TestShardManifestTests(unittest.TestCase):
     def test_unknown_suite_fails_closed(self):
         with self.assertRaisesRegex(TestShardError, "Unknown test suite"):
             suite_modules(self.manifest, "not-a-suite")
+
+    def test_unittest_collection_has_one_stable_canonical_fingerprint(self):
+        modules = suite_modules(self.manifest, "main-smoke")
+        first = canonical_test_ids(load_suite(modules))
+        second = canonical_test_ids(load_suite(tuple(reversed(modules))))
+        self.assertEqual(first, second)
+        self.assertEqual(len(first), len(set(first)))
+        self.assertEqual(
+            test_collection_fingerprint(first),
+            test_collection_fingerprint(second),
+        )
+        self.assertNotEqual(
+            test_collection_fingerprint(first),
+            test_collection_fingerprint((*first[:-1], first[-1] + "-changed")),
+        )
+
+    def test_parallel_worker_configuration_fails_closed(self):
+        with self.assertRaisesRegex(TestShardError, "at least two workers"):
+            run_modules(
+                ("test_rules_primitives",),
+                backend="pytest-xdist",
+                workers=1,
+            )
+        with self.assertRaisesRegex(TestShardError, "exactly one worker"):
+            run_modules(
+                ("test_rules_primitives",),
+                backend="unittest",
+                workers=2,
+            )
+
+    def test_pytest_collection_adapter_rejects_non_unittest_and_duplicates(self):
+        def item(identifier: str):
+            return SimpleNamespace(
+                nodeid=identifier,
+                _testcase=SimpleNamespace(id=lambda: identifier),
+            )
+
+        self.assertEqual(("a", "b"), canonical_collection((item("b"), item("a"))))
+        with self.assertRaisesRegex(pytest.UsageError, "duplicate"):
+            canonical_collection((item("a"), item("a")))
+        with self.assertRaisesRegex(pytest.UsageError, "only accept unittest"):
+            canonical_collection((SimpleNamespace(nodeid="free_function"),))
+
+    def test_expected_parallel_collection_fails_closed_for_malformed_data(self):
+        with TemporaryDirectory() as raw:
+            path = Path(raw) / "expected.json"
+            path.write_text(json.dumps(["b", "a"]), encoding="utf-8")
+            with self.assertRaisesRegex(pytest.UsageError, "canonically sorted"):
+                expected_collection(path)
+            path.write_text(json.dumps(["a", "a"]), encoding="utf-8")
+            with self.assertRaisesRegex(pytest.UsageError, "duplicate"):
+                expected_collection(path)
+
+    def test_parallel_result_recorder_reports_observed_module_time(self):
+        recorder = PytestShardRecorder()
+        recorder.pytest_runtest_logreport(
+            SimpleNamespace(
+                nodeid="tests/test_sample.py::Case::test_ok",
+                duration=1.25,
+                skipped=False,
+                failed=False,
+                passed=True,
+                when="call",
+            )
+        )
+        recorder.pytest_runtest_logreport(
+            SimpleNamespace(
+                nodeid="tests/test_sample.py::Case::test_bad",
+                duration=0.5,
+                skipped=False,
+                failed=True,
+                passed=False,
+                when="call",
+            )
+        )
+        self.assertEqual(2, len(recorder.seen_items))
+        self.assertEqual(1, recorder.failures)
+        self.assertEqual(
+            [{"module": "test_sample", "worker_elapsed_seconds": 1.75}],
+            recorder.module_timings(),
+        )
 
 
 if __name__ == "__main__":

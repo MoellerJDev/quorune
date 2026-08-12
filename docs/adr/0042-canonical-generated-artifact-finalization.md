@@ -82,9 +82,13 @@ plan selects that one command instead of maintaining another generator list.
 An opt-in repository-owned pre-push hook runs write mode with the worktree-local
 CPython 3.12 environment and aborts when it creates uncommitted outputs. It does
 not amend commits or push generated changes automatically.
-When `MTG_CARD_DB` is unset, the hook uses the worktree's
-`data/scryfall-current.sqlite3` if present and prints explicit database guidance
-otherwise.
+When `MTG_CARD_DB` is unset, the hook accepts the worktree's ordinary exact
+receipt first. The ordinary finalizer already performs every database-backed
+freshness check, so an unrelated change does not rebuild the corpus merely
+because `data/scryfall-current.sqlite3` exists. If that receipt is stale, the
+hook uses the worktree database when present and prints explicit database
+guidance otherwise. An explicitly selected `MTG_CARD_DB` remains part of the
+receipt identity and requires database-bound finalization.
 
 Platform readiness fingerprints only its authoritative source and derived
 package, stable test-shard inventory, rules, and CardProgram inputs. Exact

@@ -206,9 +206,14 @@ an unassigned discovered test module makes PR planning fail before any matrix
 job can run. It next runs
 `scripts/build_test_database.py validate-ci-dependencies`, so a compact-database
 card, Oracle ID, deck, fixture, or shard-closure omission fails before the push.
-It then automatically uses `data/scryfall-current.sqlite3` when present (or
-`MTG_CARD_DB` when set), runs generated write mode, and rejects the push when
-generated outputs need a commit. It never amends a commit.
+It accepts an exact ordinary receipt before inferring that the mere presence of
+`data/scryfall-current.sqlite3` requires another corpus write. Ordinary
+finalization already runs database-backed freshness checks; compiler or corpus
+drift therefore still makes that receipt stale. If no ordinary receipt matches,
+the hook uses the worktree database when present. An explicit `MTG_CARD_DB`
+selection always requires a receipt bound to that database. The fallback runs
+generated write mode and rejects the push when outputs need a commit. It never
+amends a commit.
 Pull-request CI remains check-only and authoritative.
 
 Keep generated-governance tests tied to identities from the canonical manifest
@@ -328,11 +333,12 @@ browser-context count, accepted command count, authoritative/projected
 revisions, and measured persistence/review time. It also reports each Windows
 shard's queue, setup, test and total duration, executed test count, the one-time
 package duration, the Windows critical path, and actual overlapping test-runner
-concurrency. Raw JSON reports and the combined `ci-metrics` artifact are
-retained for 14 days so future shard changes use measured history. Cache-hit
-rate, agent idle time, and stale-run cancellation remain `null` when GitHub
-does not expose measured data; the reporting code never estimates them as
-observations.
+concurrency. Functional Linux reports add the exact backend, worker count,
+collection fingerprint, wall duration, and cumulative worker time per module.
+Raw JSON reports and the combined `ci-metrics` artifact are retained for 14
+days so future shard changes use measured history. Cache-hit rate, agent idle
+time, and stale-run cancellation remain `null` when GitHub does not expose
+measured data; the reporting code never estimates them as observations.
 
 Long browser journeys use one shared progress driver rather than nested timeout
 loops. It observes the decision ID, phase/step, active and priority players,
@@ -439,6 +445,28 @@ Every `tests/test_*.py` module belongs to exactly one primary shard in
 `platform/test-shards.json`. Overlay suites such as `main-smoke`,
 `windows-compat`, and `nightly-property` may intentionally reuse modules.
 
+The PR workflow has a checked public concurrency budget of 20 jobs and reserves
+two slots for recovery. At full change impact it permits seven functional Linux
+jobs, five Windows jobs, three browser jobs, and three fixed jobs concurrently,
+for a peak of 18. The Plan job derives the Linux matrix and limit from
+`scripts/ci_plan.py`; changing a matrix without reconciling that budget fails
+the focused CI policy tests.
+
+Each functional Linux job uses four fixed pytest-xdist workers with
+`--dist loadfile`. A test module stays in one worker process, which preserves
+module fixtures and avoids splitting a unittest class across processes. Before
+execution the canonical unittest loader records every sorted test ID. Every
+xdist worker must collect that exact set, and xdist also requires identical
+worker collections. Any missing, additional, duplicate, or non-unittest item
+fails the shard. Worker count is deliberately fixed rather than inferred from
+the host, so resource use and timing comparisons remain reproducible.
+
+Generated validation and all Windows shards continue to use the sequential
+unittest backend. Those surfaces exercise repository-wide mutable generated
+state or platform compatibility and are not parallelized within one checkout.
+The sequential runner remains the local default and the compatibility fallback;
+pytest-xdist is an explicit CI backend, not a replacement test inventory.
+
 Before the final commit and push, validate ownership after adding, renaming, or
 deleting a test module:
 
@@ -453,6 +481,19 @@ compact result record consumed by public certification and metrics:
 .\.venv\Scripts\python.exe scripts/test_shards.py run core-domain `
   --result-json local/windows-results/core-domain.json
 ```
+
+A focused Linux-equivalent parallel reproduction is:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/test_shards.py run core-domain `
+  --backend pytest-xdist --workers 4 `
+  --result-json local/python-results/core-domain.json
+```
+
+Use that command only for a directly relevant diagnostic. Public exact-head CI
+is the broad authority. Compare its wall duration and per-module cumulative
+worker timings with the preserved sequential baseline before changing worker
+count or shard allocation.
 
 `generated-validation` is a primary shard, not a second full-discovery pass.
 The complete Windows matrix therefore executes every discovered test module

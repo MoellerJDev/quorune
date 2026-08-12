@@ -721,6 +721,14 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         self.assertIn('"$ROOT/scripts/test_shards.py" validate', hook)
         self.assertIn("--verify-receipt", hook)
         self.assertIn("--write --fail-on-change", hook)
+        self.assertIn(
+            "ordinary generated-finalization receipt is current",
+            hook,
+        )
+        self.assertLess(
+            hook.index("ordinary generated-finalization receipt is current"),
+            hook.index('run_finalizer --db "$ROOT/data/scryfall-current.sqlite3"'),
+        )
         self.assertLess(
             hook.index("--verify-receipt"),
             hook.index("--write --fail-on-change"),

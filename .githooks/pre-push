@@ -31,11 +31,21 @@ run_finalizer() {
 }
 
 if [ -n "${MTG_CARD_DB:-}" ]; then
+    # An explicit database selection is part of the requested certification
+    # identity and therefore requires a receipt bound to that exact database.
     run_finalizer --db "$MTG_CARD_DB"
-elif [ -f "$ROOT/data/scryfall-current.sqlite3" ]; then
-    run_finalizer --db "$ROOT/data/scryfall-current.sqlite3"
 else
-    echo "Quorune pre-push: no pinned card database found; database-backed compiler coverage can only be checked." >&2
-    echo "Set MTG_CARD_DB or provide data/scryfall-current.sqlite3 when compiler, capability, or CardProgram behavior changed." >&2
-    run_finalizer
+    # Ordinary finalization runs every freshness check, including checks of
+    # database-backed outputs, while skipping an unnecessary corpus rewrite.
+    # Accept its exact receipt before inferring that a local database should
+    # force another multi-minute write.
+    if "$PYTHON" "$ROOT/scripts/finalize_generated.py" --verify-receipt; then
+        echo "Quorune pre-push: ordinary generated-finalization receipt is current."
+    elif [ -f "$ROOT/data/scryfall-current.sqlite3" ]; then
+        run_finalizer --db "$ROOT/data/scryfall-current.sqlite3"
+    else
+        echo "Quorune pre-push: no pinned card database found; database-backed compiler coverage can only be checked." >&2
+        echo "Set MTG_CARD_DB or provide data/scryfall-current.sqlite3 when compiler, capability, or CardProgram behavior changed." >&2
+        run_finalizer
+    fi
 fi
