@@ -237,7 +237,15 @@ export async function driveUntil(
     let submitted = options.advance ? await options.advance() : false;
     if (!submitted) {
       for (const page of pages) {
-        const result = await submitAuthorizedPass(page);
+        // Pin the exact capability that was observed before rechecking the
+        // destination. A phase transition can publish the sought strategic
+        // decision between `advance` and this fallback; submitting an
+        // unqualified pass would then consume that new decision instead of the
+        // stale response window that made the fallback necessary.
+        const decisionId = await currentDecisionId(page);
+        if (!decisionId) continue;
+        if (await goal()) return;
+        const result = await submitAuthorizedPass(page, decisionId);
         if (result !== "unavailable") {
           submitted = true;
           break;
