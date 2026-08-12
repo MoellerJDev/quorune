@@ -11,6 +11,7 @@ from .continuous_templates import (
 from .counter_replacement_templates import (
     static_counter_quantity_replacement_handler,
 )
+from .counter_maximum_templates import static_counter_maximum_handler
 from .damage_templates import static_damage_handler
 from .draw_templates import (
     static_draw_reveal_handler,
@@ -46,9 +47,71 @@ def _trigger_multiplier_template(text: str) -> StaticRuntimeTemplate | None:
     )
 
 
+def _counter_maximum_template(
+    text: str,
+    *,
+    source_name: str | None,
+    source_is_class: bool,
+) -> StaticRuntimeTemplate | None:
+    if source_name is None or source_is_class:
+        return None
+    compiled = static_counter_maximum_handler(
+        text,
+        source_name=source_name,
+    )
+    if compiled is None:
+        return None
+    return StaticRuntimeTemplate(
+        compiled=compiled,
+        kind="static_ability",
+        event="continuous",
+        dependency_reason=(
+            "fixed self counter maximums depend on an untrusted "
+            "state-based-action capability"
+        ),
+    )
+
+
+def _draw_template(text: str) -> StaticRuntimeTemplate | None:
+    draw_reveal = static_draw_reveal_handler(text)
+    if draw_reveal is not None:
+        return StaticRuntimeTemplate(
+            compiled=draw_reveal,
+            kind="static_ability",
+            event="draw.reveal_as_drawn",
+            dependency_reason=(
+                "generic draw reveal depends on an untrusted rules capability"
+            ),
+        )
+    draw_restriction = static_draw_restriction_handler(text)
+    if draw_restriction is not None:
+        return StaticRuntimeTemplate(
+            compiled=draw_restriction,
+            kind="static_ability",
+            event="draw.permission",
+            dependency_reason=(
+                "generic draw restriction depends on an untrusted rules "
+                "capability"
+            ),
+        )
+    draw_result = static_draw_result_handler(text)
+    if draw_result is None:
+        return None
+    return StaticRuntimeTemplate(
+        compiled=draw_result,
+        kind="replacement_effect",
+        event="draw",
+        dependency_reason=(
+            "generic result-draw replacement depends on an untrusted rules "
+            "capability"
+        ),
+    )
+
+
 def static_runtime_template(
     text: str,
     *,
+    source_name: str | None = None,
     source_damageable: bool | None = None,
     source_permanent: bool = True,
     source_is_class: bool = False,
@@ -56,6 +119,13 @@ def static_runtime_template(
     """Select one closed static runtime production for an Oracle line."""
 
     if source_permanent:
+        counter_maximum = _counter_maximum_template(
+            text,
+            source_name=source_name,
+            source_is_class=source_is_class,
+        )
+        if counter_maximum is not None:
+            return counter_maximum
         trigger_multiplier = _trigger_multiplier_template(text)
         if trigger_multiplier is not None:
             return trigger_multiplier
@@ -96,36 +166,9 @@ def static_runtime_template(
                     "rules capability"
                 ),
             )
-        draw_reveal = static_draw_reveal_handler(text)
-        if draw_reveal is not None:
-            return StaticRuntimeTemplate(
-                compiled=draw_reveal,
-                kind="static_ability",
-                event="draw.reveal_as_drawn",
-                dependency_reason=(
-                    "generic draw reveal depends on an untrusted rules capability"
-                ),
-            )
-        draw_restriction = static_draw_restriction_handler(text)
-        if draw_restriction is not None:
-            return StaticRuntimeTemplate(
-                compiled=draw_restriction,
-                kind="static_ability",
-                event="draw.permission",
-                dependency_reason=(
-                    "generic draw restriction depends on an untrusted rules capability"
-                ),
-            )
-        draw_result = static_draw_result_handler(text)
-        if draw_result is not None:
-            return StaticRuntimeTemplate(
-                compiled=draw_result,
-                kind="replacement_effect",
-                event="draw",
-                dependency_reason=(
-                    "generic result-draw replacement depends on an untrusted rules capability"
-                ),
-            )
+        draw = _draw_template(text)
+        if draw is not None:
+            return draw
 
     attached_characteristics = attached_fixed_characteristics_handler(text)
     if attached_characteristics is not None:

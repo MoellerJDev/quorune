@@ -53,6 +53,8 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/activated_ability_descriptor.py",
         "quorune/ability_fragments.py",
         "quorune/bloodthirst.py",
+        "quorune/counter_maximums.py",
+        "quorune/counter_names.py",
         "quorune/counter_snapshot.py",
         "quorune/damage_source.py",
         "quorune/damage_modifier_state.py",
@@ -315,10 +317,13 @@ def _owner(relative: str, layer: str) -> str:
     }:
         return "damage"
     if relative in {
+        "quorune/counter_names.py",
         "quorune/counter_removal.py",
         "quorune/counter_state.py",
     }:
         return "counter_state"
+    if relative == "quorune/counter_maximums.py":
+        return "state_based_actions"
     if relative in {
         "quorune/attachment_references.py",
         "quorune/attachments.py",
@@ -552,6 +557,8 @@ def build_classifications() -> dict[str, Any]:
                             "effect_contracts.py",
                             "counter_placement.py",
                             "counter_placement_sets.py",
+                            "counter_maximums.py",
+                            "counter_names.py",
                             "counter_removal.py",
                             "counter_state.py",
                             "cumulative_upkeep.py",

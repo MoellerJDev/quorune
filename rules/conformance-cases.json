@@ -82969,11 +82969,8 @@
       "status": "passing"
     },
     {
-      "assertion_kind": "unsupported_fail_closed",
-      "blockers": [
-        "complete_precompiled_maximum_counter_ability_grammar_not_implemented",
-        "four_player_maximum_counter_interaction_evidence_not_complete"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-704.5r",
       "case_version": 1,
       "classification": "behavioral",
@@ -82981,6 +82978,7 @@
         "positive",
         "negative",
         "interaction",
+        "multiplayer",
         "replay"
       ],
       "dependency_rule_ids": [
@@ -82988,21 +82986,26 @@
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_counter_maximum_sentence_and_snapshot_action",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_counter_maximum_overlaps_opposing_pair_removal",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_rasputin_counter_maximum_replays_exactly",
+        "tests.test_maximum_counter_state_action.CounterMaximumModelAndCompilerTests.test_model_compiler_and_source_reference_are_closed",
+        "tests.test_maximum_counter_state_action.CounterMaximumModelAndCompilerTests.test_malformed_and_unsupported_grammar_fail_closed",
+        "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_runtime_uses_typed_fragment_not_display_text",
+        "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_strictest_current_grant_combines_with_opposing_pair_removal",
+        "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_four_player_maximum_batch_replays_exactly",
         "tests.test_rule_generated_counter_removals.StateBasedCounterRemovalTests.test_overlapping_sba_removals_share_one_atomic_plan",
         "tests.test_rule_generated_counter_removals.StateBasedCounterRemovalTests.test_malformed_sba_removal_fails_before_mutation"
       ],
       "implementation_components": [
-        "quorune.state_based_actions.counter_maximums_from_oracle",
+        "quorune.counter_maximums.CounterMaximumSpec",
+        "quorune.compiler.counter_maximum_templates.parse_fixed_self_counter_maximum",
+        "quorune.compiler.counter_maximum_templates.static_counter_maximum_handler",
+        "quorune.semantic_runtime.ability_fragments.CounterMaximumAbilityFragmentHandler",
         "quorune.state_based_actions.evaluate_permanent_state_based_actions",
         "quorune.state_based_execution.prepare_state_based_execution",
         "quorune.state_based_execution.commit_state_based_counter_removals",
         "quorune.counter_removal.commit_counter_removals"
       ],
       "notes": [
-        "The reviewed numeric self-restriction sentence family now commits through the canonical exact removal owner, including overlap and replay. Runtime Oracle interpretation and incomplete maximum-ability grammar prevent promotion of the complete rule."
+        "Current typed maximums are evaluated from one immutable state-based snapshot and commit through the canonical exact removal owner, including simultaneous overlap and four-player replay. The fixed numeric self-restriction Oracle family compiles before runtime; dynamic, another-object, player, compound, or otherwise unrepresented ability grammar remains a card-program residual rather than changing CR 704.5r evaluation."
       ],
       "required_scenarios": [
         "positive",
@@ -83020,7 +83023,7 @@
         "end_line": 5523,
         "start_line": 5522
       },
-      "status": "blocked"
+      "status": "passing"
     },
     {
       "assertion_kind": "unsupported_fail_closed",

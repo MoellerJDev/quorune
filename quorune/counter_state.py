@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Literal, Mapping, Protocol, Sequence
 
+from .counter_names import CounterStateError, normalized_counter_name
 from .model import PLAYER_COUNTERS_FIELD
 from .state_planner import (
     apply_state_plan,
@@ -19,19 +20,8 @@ _PLAYER_COUNTER_ATTRIBUTES = {
 }
 
 
-class CounterStateError(ValueError):
-    """A typed counter change cannot be planned or committed exactly."""
-
-
 class CounterStateHost(Protocol):
     state: Any
-
-
-def normalized_counter_name(value: str) -> str:
-    result = " ".join(str(value).casefold().split())
-    if not result:
-        raise CounterStateError("Counter changes require a counter name")
-    return result
 
 
 def player_counter_snapshot(player: Any) -> dict[str, int]:

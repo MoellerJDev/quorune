@@ -14,6 +14,7 @@ from quorune.aura import (
     simple_enchant_spec_from_oracle,
 )
 from quorune.ability_fragments import (
+    CounterMaximumSpec,
     ProtectionQualityKind,
     ProtectionSpec,
     ability_fragment_to_dict,
@@ -34,9 +35,11 @@ from quorune.semantics import SemanticProgram
 from quorune.state_based_actions import (
     ObjectSnapshot,
     PermanentSnapshot,
-    counter_maximums_from_oracle,
     evaluate_state_based_actions,
     evaluate_permanent_state_based_actions,
+)
+from quorune.compiler.counter_maximum_templates import (
+    parse_fixed_self_counter_maximum,
 )
 from quorune.saga_lifecycle import (
     SagaFinalChapterSnapshot,
@@ -462,24 +465,24 @@ class StateBasedActionPrimitiveTests(unittest.TestCase):
 
     def test_counter_maximum_sentence_and_snapshot_action(self):
         self.assertEqual(
-            {"dream": 7},
-            counter_maximums_from_oracle(
-                "Rasputin can't have more than seven dream "
-                "counters on it."
+            CounterMaximumSpec("dream", 7),
+            parse_fixed_self_counter_maximum(
+                "Rasputin can't have more than seven dream counters on it.",
+                source_name="Rasputin Dreamweaver",
             ),
         )
         self.assertEqual(
-            {"+1/+1": 2},
-            counter_maximums_from_oracle(
-                "This creature can’t have more than 2 +1/+1 "
-                "counters on it."
+            CounterMaximumSpec("+1/+1", 2),
+            parse_fixed_self_counter_maximum(
+                "This creature can’t have more than 2 +1/+1 counters on it.",
+                source_name="Counter Fixture",
             ),
         )
-        self.assertEqual(
-            {},
-            counter_maximums_from_oracle(
-                "Remove up to seven dream counters from it."
-            ),
+        self.assertIsNone(
+            parse_fixed_self_counter_maximum(
+                "Remove up to seven dream counters from it.",
+                source_name="Counter Fixture",
+            )
         )
 
         batch = evaluate_permanent_state_based_actions(
@@ -2444,10 +2447,12 @@ class StateBasedActionEngineTests(unittest.TestCase):
             name="Counter-Limited Bear",
             characteristics={
                 "type_line": "Token Creature — Bear",
-                "oracle_text": (
-                    "This creature can't have more than two +1/+1 "
-                    "counters on it."
-                ),
+                "oracle_text": "Display text is not runtime authority.",
+                "ability_fragments": [
+                    ability_fragment_to_dict(
+                        CounterMaximumSpec("+1/+1", 2)
+                    )
+                ],
                 "power": "2",
                 "toughness": "2",
             },
@@ -2496,10 +2501,12 @@ class StateBasedActionEngineTests(unittest.TestCase):
                 "type_line": (
                     "Token Legendary Creature — Human Wizard"
                 ),
-                "oracle_text": (
-                    "Rasputin can't have more than seven dream "
-                    "counters on it."
-                ),
+                "oracle_text": "Display text is not runtime authority.",
+                "ability_fragments": [
+                    ability_fragment_to_dict(
+                        CounterMaximumSpec("dream", 7)
+                    )
+                ],
                 "power": "4",
                 "toughness": "1",
             },

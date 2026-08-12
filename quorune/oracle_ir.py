@@ -1263,7 +1263,7 @@ def _compile_face(
             node_id=node_id,
             line=line,
             material_line=material_line,
-            span=span,
+            span=span, source_name=face_name or record.name,
             card_types=card_types,
             permanent_card_types=_PERMANENT_CARD_TYPES,
             source_is_class=("class" in type_parts(type_line)[1]),

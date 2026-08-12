@@ -550,8 +550,8 @@
     {
       "mechanic_id": "cr-704-state-based-actions",
       "path": "mechanics/contracts/state-based-actions.json",
-      "sha256": "33c545224644d91809259f2d95e6981e3c2575a885006f85913f682758af46bc",
-      "version": 8
+      "sha256": "e20b9dfc94ce3efbbbdd1b33fdf4890a0b88aaab36e9188338ce4ad15d4b25ac",
+      "version": 9
     },
     {
       "mechanic_id": "tap-and-untap",
@@ -9217,12 +9217,12 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/state-based-actions.json",
-      "contract_sha256": "33c545224644d91809259f2d95e6981e3c2575a885006f85913f682758af46bc",
-      "contract_version": 8,
+      "contract_sha256": "e20b9dfc94ce3efbbbdd1b33fdf4890a0b88aaab36e9188338ce4ad15d4b25ac",
+      "contract_version": 9,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "state_based_actions.evaluate_permanent_state_based_actions, saga_lifecycle.SagaFinalChapterSnapshot, state_based_execution.prepare_state_based_execution, state_based_execution.commit_state_based_zone_changes, state_based_execution.commit_state_based_counter_removals, and counter_removal.commit_counter_removals",
-      "implementation_version": "state-based-actions-v9",
+      "implementation_component": "counter_maximums.CounterMaximumSpec, compiler.counter_maximum_templates.static_counter_maximum_handler, state_based_actions.evaluate_permanent_state_based_actions, saga_lifecycle.SagaFinalChapterSnapshot, state_based_execution.prepare_state_based_execution, state_based_execution.commit_state_based_zone_changes, state_based_execution.commit_state_based_counter_removals, and counter_removal.commit_counter_removals",
+      "implementation_version": "state-based-actions-v10",
       "kind": "rules_section",
       "known_blockers": [
         "specialized copy-object exceptions such as Prepare copies in exile are not implemented",
@@ -9246,6 +9246,13 @@
         "test_input_mutation_cannot_change_batch",
         "test_opposing_power_toughness_counters_cancel_in_pairs",
         "test_counter_maximum_sentence_and_snapshot_action",
+        "test_model_compiler_and_source_reference_are_closed",
+        "test_malformed_and_unsupported_grammar_fail_closed",
+        "test_runtime_uses_typed_fragment_not_display_text",
+        "test_strictest_current_grant_combines_with_opposing_pair_removal",
+        "test_copy_and_layer_grant_use_current_typed_fragments",
+        "test_four_player_maximum_batch_replays_exactly",
+        "test_compiler_and_snapshot_consumer_mutations_are_killed",
         "test_counter_maximum_overlaps_opposing_pair_removal",
         "test_rasputin_counter_maximum_replays_exactly",
         "test_removals_are_canonical_and_commit_exactly",

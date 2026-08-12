@@ -434,6 +434,8 @@
       "id": "state_based_actions",
       "status": "dedicated_evaluator_with_engine_mutation",
       "owners": [
+        "quorune/counter_names.py",
+        "quorune/counter_maximums.py",
         "quorune/saga_lifecycle.py",
         "quorune/state_based_actions.py",
         "quorune/state_based_execution.py",
@@ -488,6 +490,7 @@
       "status": "generated_program_stage_extracted_from_interleaved_ir_compiler",
       "owners": [
         "quorune/oracle_ir.py",
+        "quorune/compiler/counter_maximum_templates.py",
         "quorune/compiler/program_generation.py"
       ],
       "missing_dedicated_owner": false

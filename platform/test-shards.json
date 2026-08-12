@@ -155,6 +155,7 @@
       "test_fixed_mass_damage",
       "test_indestructible_rules",
       "test_keyword_counter_composition",
+      "test_maximum_counter_state_action",
       "test_modular_rules",
       "test_renown_rules",
       "test_rule_generated_counter_removals",

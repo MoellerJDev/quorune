@@ -14,7 +14,7 @@ maintenance: "generated"
 - Indexed rules: 3300
 - Trusted rules: 0
 - Trusted fraction: 0.00%
-- Semantic conformance passes: 231
+- Semantic conformance passes: 232
 - Unreviewed conformance cases: 2495
 - Current snapshot complete: false
 

@@ -11242,6 +11242,86 @@
       "applicability_note": "Replay the generated counter attempt against a checkpoint-pinned intrinsic prohibition with the same failed-counter journal and final state."
     },
     {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_copy_and_layer_grant_use_current_typed_fragments",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Consume current copied and layer-granted typed maximum fragments rather than reparsing base or display Oracle text."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_strictest_current_grant_combines_with_opposing_pair_removal",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use the strictest current typed maximum and coalesce its removal with simultaneous opposing +1/+1 and -1/-1 counter removal through one canonical transaction."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_four_player_maximum_batch_replays_exactly",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove excess counters from two differently controlled permanents in one canonical four-player state-based-action batch."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_compiler_and_snapshot_consumer_mutations_are_killed",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of either the source-spanned compiler production or the typed current-fragment snapshot consumer."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "negative",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumModelAndCompilerTests.test_blocked_removal_dependency_prevents_trusted_program",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Retain a material dependency residual when canonical rule-generated counter removal is blocked."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "negative",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumModelAndCompilerTests.test_malformed_and_unsupported_grammar_fail_closed",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject booleans, unknown fields, dynamic values, another-object subjects, missing counter kinds, and compound instructions."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "positive",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumModelAndCompilerTests.test_model_compiler_and_source_reference_are_closed",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Round-trip the immutable descriptor and lower a bounded shortened source-name sentence into an exact capability-closed CardProgram node with its source span."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "positive",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_runtime_uses_typed_fragment_not_display_text",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove counters to the typed maximum even when display Oracle text states an unrelated value."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "replay",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumRuntimeTests.test_four_player_maximum_batch_replays_exactly",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay simultaneous maximum-counter removals to the same public journal and authoritative final state hash."
+    },
+    {
+      "capability_id": "state_based.counter_maximum.fixed_self",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_maximum_counter_state_action.CounterMaximumModelAndCompilerTests.test_malformed_snapshot_rolls_back_before_any_removal",
+      "official_rule_ids": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a boolean maximum in the complete immutable snapshot before producing or committing any counter removal."
+    },
+    {
       "capability_id": "state_based.saga_final_chapter",
       "evidence_class": "interaction",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_countered_final_chapter_uses_the_next_sba_check",

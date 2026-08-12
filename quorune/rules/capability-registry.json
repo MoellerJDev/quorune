@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 85,
+  "registry_version": 86,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -3006,6 +3006,33 @@
       "dependency_fail_closed_rationale": "The exact intrinsic declaration has no capability dependencies and is consumed only from a current trusted CardProgram.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_intrinsic_counter_prohibition_mutant_is_killed removes the trusted declaration lookup and the focused counter-failure assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "state_based.counter_maximum.fixed_self",
+      "version": 1,
+      "official_rules": ["201.5", "201.5c", "122.1", "122.1d", "604.1", "704.3", "704.5r"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile one fixed numeric self-restriction for a named permanent-counter kind into an immutable current ability fragment and remove counters above the strictest represented maximum in the next simultaneous state-based-action batch.",
+        "inputs": ["one exact source-spanned numeric self-restriction sentence", "bounded CR 201.5 source-name reference or this-object subject", "current typed ability fragments after characteristic evaluation", "canonical counter state", "physical and logical permanent identity"],
+        "outputs": ["closed versioned counter-maximum fragment", "strictest current maximum per counter kind", "immutable simultaneous state-based snapshot", "canonical exact counter-removal transaction", "deterministic public journal and exact replay"],
+        "exclusions": ["dynamic or variable maximum values", "maximums imposed on another object or player", "compound maximum-counter instructions", "unbounded source nicknames", "unrepresented ability-grant or removal grammar", "player counters", "counter replacement families outside canonical rule-generated removal"]
+      },
+      "dependencies": ["counter.removal.rule_generated"],
+      "implementation_components": ["quorune.counter_maximums.CounterMaximumSpec", "quorune.compiler.counter_maximum_templates.parse_fixed_self_counter_maximum", "quorune.compiler.counter_maximum_templates.static_counter_maximum_handler", "quorune.semantic_runtime.ability_fragments.CounterMaximumAbilityFragmentHandler", "CommanderEngine._permanent_sba_snapshots", "quorune.state_based_actions.evaluate_permanent_state_based_actions", "quorune.state_based_execution.prepare_state_based_execution", "quorune.state_based_execution.commit_state_based_counter_removals"],
+      "positive_tests": ["test_model_compiler_and_source_reference_are_closed", "test_runtime_uses_typed_fragment_not_display_text"],
+      "negative_tests": ["test_malformed_and_unsupported_grammar_fail_closed", "test_blocked_removal_dependency_prevents_trusted_program"],
+      "interaction_tests": ["test_strictest_current_grant_combines_with_opposing_pair_removal", "test_copy_and_layer_grant_use_current_typed_fragments"],
+      "multiplayer_tests": ["test_four_player_maximum_batch_replays_exactly"],
+      "privacy_tests": [],
+      "replay_tests": ["test_four_player_maximum_batch_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The source-spanned maximum ability remains partial whenever canonical rule-generated counter removal is unavailable for the active profile.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and snapshot-consumer mutations remove the typed descriptor or its current maximum; source-span, counter-state, four-player journal, and replay assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

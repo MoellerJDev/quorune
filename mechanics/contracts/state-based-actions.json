@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 8,
+  "contract_version": 9,
   "mechanic_id": "cr-704-state-based-actions",
   "official_name": "State-Based Actions",
   "effective_date": "2026-06-19",
@@ -92,7 +92,7 @@
       "the timestamp from which each permanent has continuously had the World supertype",
       "attachment restriction and protected qualities",
       "+1/+1 and -1/-1 counter counts from one immutable state-based snapshot",
-      "reviewed maximum-counter ability text, the named counter count, and each permanent's stable logical identity",
+      "typed current maximum-counter ability fragments, the named counter count, and each permanent's stable logical identity",
       "Saga subtype, lore count, canonical typed chapter numbers, current controller, physical and logical identity, and exact-incarnation chapter abilities pending on the stack"
     ],
     "state_writes": [
@@ -159,6 +159,8 @@
     "Aura, Equipment, and Fortification cleanup",
     "opposing +1/+1 and -1/-1 counters",
     "Rasputin Dreamweaver dream-counter maximum",
+    "bounded full or shortened source-name and this-object maximum-counter grammar",
+    "copied and layer-granted typed maximum-counter abilities",
     "overlapping opposing-counter and maximum-counter removal",
     "canonical counter-removal planning across equivalent snapshot orderings",
     "malformed or stale counter-removal rollback before mutation",
@@ -207,6 +209,13 @@
     "test_input_mutation_cannot_change_batch",
     "test_opposing_power_toughness_counters_cancel_in_pairs",
     "test_counter_maximum_sentence_and_snapshot_action",
+    "test_model_compiler_and_source_reference_are_closed",
+    "test_malformed_and_unsupported_grammar_fail_closed",
+    "test_runtime_uses_typed_fragment_not_display_text",
+    "test_strictest_current_grant_combines_with_opposing_pair_removal",
+    "test_copy_and_layer_grant_use_current_typed_fragments",
+    "test_four_player_maximum_batch_replays_exactly",
+    "test_compiler_and_snapshot_consumer_mutations_are_killed",
     "test_counter_maximum_overlaps_opposing_pair_removal",
     "test_rasputin_counter_maximum_replays_exactly",
     "test_removals_are_canonical_and_commit_exactly",
@@ -255,8 +264,8 @@
     "test_saga_lifecycle_mutation_is_killed"
   ],
   "implementation": {
-    "component": "state_based_actions.evaluate_permanent_state_based_actions, saga_lifecycle.SagaFinalChapterSnapshot, state_based_execution.prepare_state_based_execution, state_based_execution.commit_state_based_zone_changes, state_based_execution.commit_state_based_counter_removals, and counter_removal.commit_counter_removals",
-    "version": "state-based-actions-v9"
+    "component": "counter_maximums.CounterMaximumSpec, compiler.counter_maximum_templates.static_counter_maximum_handler, state_based_actions.evaluate_permanent_state_based_actions, saga_lifecycle.SagaFinalChapterSnapshot, state_based_execution.prepare_state_based_execution, state_based_execution.commit_state_based_zone_changes, state_based_execution.commit_state_based_counter_removals, and counter_removal.commit_counter_removals",
+    "version": "state-based-actions-v10"
   },
   "known_blockers": [
     "specialized copy-object exceptions such as Prepare copies in exile are not implemented",

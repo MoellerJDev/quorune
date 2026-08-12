@@ -324,6 +324,8 @@
         "quorune/damage_source.py",
         "quorune/damage_transaction.py",
         "quorune/damage_values.py",
+        "quorune/counter_names.py",
+        "quorune/counter_maximums.py",
         "quorune/state_based_actions.py",
         "quorune/state_planner.py"
       ],
