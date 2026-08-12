@@ -1768,6 +1768,33 @@
       "status": "trusted"
     },
     {
+      "id": "continuous.ability.fixed_query_grant",
+      "version": 1,
+      "official_rules": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Grant one or more typed fixed-output mana abilities in layer 6 to the live battlefield objects selected by a closed ObjectQuerySpec under the source controller.",
+        "inputs": ["active phased-in battlefield source", "source-controller target relation", "closed battlefield ObjectQuerySpec", "typed granted fixed-output mana ability fragment"],
+        "outputs": ["source-bound layer-6 ability grant", "live new-entry, type, token, and control applicability", "immediate source-departure and phasing expiration", "canonical replay-pinned continuous effect"],
+        "exclusions": ["granted triggered abilities", "nonmana activated abilities", "dynamic or restricted mana outputs", "qualified controller relations other than source controller", "hidden-zone applicability", "rules-text execution", "untyped ability descriptors"]
+      },
+      "dependencies": ["mana.activated.fixed_output"],
+      "implementation_components": ["quorune.semantic_runtime.continuous_components.FixedQueryAbilityGrantHandler", "quorune.card_programs.runtime.collect_card_program_continuous_effects", "quorune.continuous_effects.evaluate_continuous_effects", "quorune.rules.activation.query.activated_abilities"],
+      "positive_tests": ["test_fixed_query_ability_grant_is_typed_and_canonical", "test_insidious_roots_batches_graveyard_departures_and_grants_token_mana"],
+      "negative_tests": ["test_fixed_query_ability_grant_rejects_malformed_descriptors"],
+      "interaction_tests": ["test_insidious_roots_batches_graveyard_departures_and_grants_token_mana"],
+      "multiplayer_tests": [],
+      "privacy_tests": [],
+      "replay_tests": ["test_fixed_query_ability_grant_is_typed_and_canonical"],
+      "required_evidence": ["positive", "negative", "interaction", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The runtime component registry rejects the handler when the canonical fixed-output mana capability is unavailable, and malformed or competing descriptors fail before characteristic evaluation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused handler test removes or changes the typed layer-6 operation and canonical applicability assertions reject the survivor; the exact deck regression rejects removal of the executable grant.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "continuous.attached.fixed_characteristics",
       "version": 1,
       "official_rules": ["301.5", "303.4", "604.1", "611.3a", "611.3b", "613.1d", "613.1f", "613.1g", "613.6", "701.3c"],

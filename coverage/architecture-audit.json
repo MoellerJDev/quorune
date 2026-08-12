@@ -2916,7 +2916,7 @@
           "module": "quorune.carddb"
         },
         {
-          "fan_in": 25,
+          "fan_in": 26,
           "fan_out": 4,
           "module": "quorune.ability_fragments"
         },
@@ -3028,7 +3028,7 @@
           "module": "quorune.semantic_choices.engine_coordination"
         }
       ],
-      "internal_edges": 1630,
+      "internal_edges": 1631,
       "modules": [
         {
           "fan_in": 2,
@@ -3051,7 +3051,7 @@
           "module": "quorune.ability_fragment_host"
         },
         {
-          "fan_in": 25,
+          "fan_in": 26,
           "fan_out": 4,
           "module": "quorune.ability_fragments"
         },
@@ -4652,7 +4652,7 @@
         },
         {
           "fan_in": 3,
-          "fan_out": 7,
+          "fan_out": 8,
           "module": "quorune.semantic_runtime.continuous_components"
         },
         {
@@ -5069,7 +5069,7 @@
       "covered_high_risk_pairs": 25,
       "covered_piece_pairs": 445,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "5d7826d40fe514e412ca161ab901cad950cccc0e8235b7162fce0024f5458a20",
+      "source_fingerprint": "4632e2265ff781e5684da8125b148953831a6aa63c8433c3fab5c0c516002204",
       "uncovered_high_risk_pairs": 80
     },
     "migration_queue": [],
@@ -5478,12 +5478,12 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 144138,
+      "logical_lines": 144297,
       "methods": {
         "dunder": 397,
         "private": 746,
-        "public": 1548,
-        "total": 2691
+        "public": 1550,
+        "total": 2693
       },
       "modules": [
         {
@@ -5956,6 +5956,13 @@
           "physical_lines": 661
         },
         {
+          "file": "quorune/semantic_runtime/continuous_components.py",
+          "functions_and_methods": 12,
+          "language": "python",
+          "logical_lines": 629,
+          "physical_lines": 671
+        },
+        {
           "file": "quorune/semantic_choices/engine_coordination.py",
           "functions_and_methods": 15,
           "language": "python",
@@ -6078,8 +6085,8 @@
           "file": "quorune/semantic_runtime/__init__.py",
           "functions_and_methods": 2,
           "language": "python",
-          "logical_lines": 558,
-          "physical_lines": 566
+          "logical_lines": 562,
+          "physical_lines": 570
         },
         {
           "file": "quorune/trigger_batches.py",
@@ -6213,13 +6220,6 @@
           "language": "python",
           "logical_lines": 475,
           "physical_lines": 514
-        },
-        {
-          "file": "quorune/semantic_runtime/continuous_components.py",
-          "functions_and_methods": 10,
-          "language": "python",
-          "logical_lines": 474,
-          "physical_lines": 509
         },
         {
           "file": "quorune/runtime.py",
@@ -8812,7 +8812,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 157905,
+      "physical_lines": 158071,
       "python_file_count": 406,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -11837,7 +11837,7 @@
         "veil_of_summer"
       ],
       "registered_operations_still_in_legacy_dispatch": [],
-      "registered_runtime_handler_count": 45,
+      "registered_runtime_handler_count": 46,
       "registry_fingerprint": "94dbe23824ba72a3c146301ea8da7a55e538bbb2e5695bd173ad042f53b38540",
       "runtime_handlers": [
         {
@@ -12197,6 +12197,23 @@
         },
         {
           "capability_dependencies": [
+            "continuous.ability.fixed_query_grant"
+          ],
+          "event": "characteristics.evaluate",
+          "family": "continuous.fixed_query_ability_grant",
+          "handler_id": "continuous.ability.fixed-query-grant.v1",
+          "rule_references": [
+            "604.1",
+            "611.3a",
+            "611.3b",
+            "611.3c",
+            "613.1f",
+            "613.6"
+          ],
+          "schema_version": 1
+        },
+        {
+          "capability_dependencies": [
             "continuous.power_toughness.fixed_anthem"
           ],
           "event": "characteristics.evaluate",
@@ -12547,7 +12564,7 @@
           "schema_version": 1
         }
       ],
-      "runtime_registry_fingerprint": "19d0bf9e54b1802082446bb46ae0771f6274001f3824210de4f08a2c88e5804d",
+      "runtime_registry_fingerprint": "b8cd9ff0de71ccca6b2504cc4f1257c1f37c86b198033ee64994a4c81e892762",
       "schema_version": 1,
       "typed_intent_executor": "quorune.semantic_runtime.executor.execute_intent_plan"
     },
@@ -15331,11 +15348,12 @@
         ],
         "architecture_exceptions": [],
         "capabilities": [
+          "continuous.ability.fixed_query_grant",
           "continuous.attached.fixed_characteristics",
           "continuous.basic_land_type.add_all_lands",
           "continuous.power_toughness.fixed_anthem"
         ],
-        "capability_count": 3,
+        "capability_count": 4,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -15395,8 +15413,9 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Card overrides.",
-        "reusable_piece_count": 3,
+        "reusable_piece_count": 4,
         "reusable_pieces": [
+          "capability.continuous.ability.fixed_query_grant",
           "capability.continuous.attached.fixed_characteristics",
           "capability.continuous.basic_land_type.add_all_lands",
           "capability.continuous.power_toughness.fixed_anthem"
@@ -15423,11 +15442,12 @@
         ],
         "architecture_exceptions": [],
         "capabilities": [
+          "continuous.ability.fixed_query_grant",
           "continuous.attached.fixed_characteristics",
           "continuous.basic_land_type.add_all_lands",
           "continuous.power_toughness.fixed_anthem"
         ],
-        "capability_count": 3,
+        "capability_count": 4,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -15590,8 +15610,9 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Card program v2.",
-        "reusable_piece_count": 3,
+        "reusable_piece_count": 4,
         "reusable_pieces": [
+          "capability.continuous.ability.fixed_query_grant",
           "capability.continuous.attached.fixed_characteristics",
           "capability.continuous.basic_land_type.add_all_lands",
           "capability.continuous.power_toughness.fixed_anthem"
@@ -15632,13 +15653,14 @@
           "casting.additional_cost.zone_change.fixed_exile",
           "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
           "casting.payment.convoke",
+          "continuous.ability.fixed_query_grant",
           "mana.activated.color_set",
           "mana.activated.fixed_output",
           "stack.counter.prohibition.intrinsic",
           "timing.cast.printed_flash",
           "trigger.event.normalized_spell_cast"
         ],
-        "capability_count": 19,
+        "capability_count": 20,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -15723,7 +15745,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Casting activation and costs.",
-        "reusable_piece_count": 20,
+        "reusable_piece_count": 21,
         "reusable_pieces": [
           "capability.activation.crew.fixed_power",
           "capability.activation.cycling.hand",
@@ -15739,6 +15761,7 @@
           "capability.casting.additional_cost.zone_change.fixed_exile",
           "capability.casting.additional_cost.zone_change.fixed_return_to_owner_hand",
           "capability.casting.payment.convoke",
+          "capability.continuous.ability.fixed_query_grant",
           "capability.mana.activated.color_set",
           "capability.mana.activated.fixed_output",
           "capability.stack.counter.prohibition.intrinsic",
@@ -15975,6 +15998,7 @@
         ],
         "architecture_exceptions": [],
         "capabilities": [
+          "continuous.ability.fixed_query_grant",
           "continuous.attached.fixed_characteristics",
           "continuous.basic_land_type.add_all_lands",
           "continuous.power_toughness.fixed_anthem",
@@ -15982,7 +16006,7 @@
           "continuous.resolution.fixed_keyword_zone_object",
           "keyword_action.amass.fixed"
         ],
-        "capability_count": 6,
+        "capability_count": 7,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -16027,8 +16051,9 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Continuous effects.",
-        "reusable_piece_count": 6,
+        "reusable_piece_count": 7,
         "reusable_pieces": [
+          "capability.continuous.ability.fixed_query_grant",
           "capability.continuous.attached.fixed_characteristics",
           "capability.continuous.basic_land_type.add_all_lands",
           "capability.continuous.power_toughness.fixed_anthem",
@@ -17440,6 +17465,7 @@
           "combat.trigger.exalted",
           "combat.trigger.flanking",
           "combat.trigger.melee",
+          "continuous.ability.fixed_query_grant",
           "continuous.attached.fixed_characteristics",
           "continuous.basic_land_type.add_all_lands",
           "continuous.power_toughness.fixed_anthem",
@@ -17513,7 +17539,7 @@
           "zone.draw.reveal_as_drawn",
           "zone.draw.specifically_drawn_card_actions"
         ],
-        "capability_count": 84,
+        "capability_count": 85,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -17658,7 +17684,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Semantic effect execution.",
-        "reusable_piece_count": 85,
+        "reusable_piece_count": 86,
         "reusable_pieces": [
           "capability.activation.crew.fixed_power",
           "capability.activation.cycling.hand",
@@ -17672,6 +17698,7 @@
           "capability.combat.trigger.exalted",
           "capability.combat.trigger.flanking",
           "capability.combat.trigger.melee",
+          "capability.continuous.ability.fixed_query_grant",
           "capability.continuous.attached.fixed_characteristics",
           "capability.continuous.basic_land_type.add_all_lands",
           "capability.continuous.power_toughness.fixed_anthem",
@@ -19033,29 +19060,29 @@
       "dependency_fail_closed_status_counts": {
         "not_applicable": 48,
         "not_run": 3,
-        "passed": 93
+        "passed": 94
       },
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 242,
+          "interaction": 243,
           "multiplayer": 139,
-          "mutation": 161,
-          "negative": 266,
-          "positive": 276,
+          "mutation": 162,
+          "negative": 267,
+          "positive": 277,
           "privacy": 119,
           "property": 15,
-          "replay": 173,
+          "replay": 174,
           "rollback": 37
         },
-        "declaration_count": 1428,
-        "declaration_source_fingerprint": "c11c67e565d49aaf33ce0758ceefdcf1927bb802d672d79a4c434643509ee06d",
-        "fingerprint": "3d6b75998aa87a9b3ee7747df64d11147215091095076ec7ec99aeaad1844809",
-        "registry_fingerprint": "67a4dea306d6eaa28a09c38c45c49ac6b5503d8621048691bea78b4f3eadb6c5"
+        "declaration_count": 1433,
+        "declaration_source_fingerprint": "541e8053f7bf6471601dd1dd9343367bcc41150f1436c04ce66d0e863c70b232",
+        "fingerprint": "049e38a752bdfc21512958ff7b69bd1fb007740dd8540db3818260e7a7421ec4",
+        "registry_fingerprint": "046b2e992fb134d62a7bac45238722e967009bd2744b02cd35a9a5929a3ee11f"
       },
-      "fingerprint": "67a4dea306d6eaa28a09c38c45c49ac6b5503d8621048691bea78b4f3eadb6c5",
+      "fingerprint": "046b2e992fb134d62a7bac45238722e967009bd2744b02cd35a9a5929a3ee11f",
       "implementation_mutation_status_counts": {
-        "killed": 139,
+        "killed": 140,
         "not_run": 5
       },
       "profiles": [
@@ -19069,9 +19096,9 @@
       "status_counts": {
         "blocked": 4,
         "tested": 2,
-        "trusted": 138
+        "trusted": 139
       },
-      "total": 144
+      "total": 145
     },
     "stages": [
       {
@@ -19312,7 +19339,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 323,
         "exact_nodes": 535,
-        "fingerprint": "39d0e2c602f567659fc43b74354756d1e0e615361c0b6c603cf05796d94495d2",
+        "fingerprint": "4029a802b9f18f374e3c2d95ac129b87e70753944c3c15b76d267bc4661f0e83",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "dd4d9586ad713a5a8faa8bf705ed92a0ec9cfd8bc218315e28dc8d55fbaa415b",
         "present": true,
@@ -19324,7 +19351,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 336,
         "exact_nodes": 555,
-        "fingerprint": "2359febb71869050e5c070b6f343e84885fb0bab2116e6eafd664985f727f33a",
+        "fingerprint": "cb10b0834d66f43b3fb5031cc8f3c25fb579e5a4a73bb9d60d5a9b94df5792ad",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "d9cb9f014328fcef11de5e5faa8935a758cfad2cfbf0800e01fe4a890443f114",
         "present": true,
@@ -19343,7 +19370,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "5633ee875e0a7ce76edb749b98fd2330825b906f7ab6821e9fb03031a9be87c0",
+      "fingerprint": "3902c72c337fcbde37d525bb26ddf62f0f089d6fe7cd7d392ce8c099cb60cfb4",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -19893,7 +19920,7 @@
       "replacement-choice-nested-events": 1,
       "v0.8-artifact-engine-family": 22,
       "v0.8-equipment-family": 5,
-      "v0.8-exact-deck-closure": 106,
+      "v0.8-exact-deck-closure": 107,
       "v0.8-exact-keyword-family": 2,
       "v0.8-exact-land-family": 10,
       "v0.8-exact-mana-family": 5,
@@ -20042,7 +20069,7 @@
       {
         "file": "quorune/semantic_packs/zzz-v080-exact-deck-closure.json",
         "name": "v0.8-exact-deck-closure",
-        "program_count": 107,
+        "program_count": 108,
         "schema_version": 3
       },
       {
@@ -20052,7 +20079,7 @@
         "schema_version": 3
       }
     ],
-    "program_entries": 263,
+    "program_entries": 264,
     "semantic_operation_counts": {
       "add_counter_selected": 1,
       "add_subtype_until_end_of_turn": 1,
@@ -20161,13 +20188,13 @@
     },
     "trust_level_counts": {
       "provisional": 5,
-      "trusted": 253,
+      "trusted": 254,
       "unresolved": 5
     },
     "typed_card_override_boundary_present": true,
     "unclassified_operation_count": 99,
     "unique_oracle_ids": 141,
-    "unique_program_keys": 252
+    "unique_program_keys": 253
   },
   "tests": {
     "browser": {
@@ -20175,7 +20202,7 @@
       "playwright_e2e_journeys": 10
     },
     "mutation_testing": {
-      "capability_mutation_declarations": 161,
+      "capability_mutation_declarations": 162,
       "configured_tools": [],
       "focused_executable_suite": true,
       "mutation_score": null
@@ -20203,8 +20230,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2672,
-      "discovered_total": 5972,
+      "conventional_ast_cases": 2674,
+      "discovered_total": 5974,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 105,

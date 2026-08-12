@@ -1272,6 +1272,12 @@ class ExactZimoneClosureTests(unittest.TestCase):
         )
         self.assertTrue(plants[0].tapped)
         self.assertEqual(1, engine.state.players["B"].mana_pool["G"])
+        plants[0].tapped = False
+        engine.move_card(roots.object_id, "graveyard")
+        self.assertNotIn(
+            plants[0].ref,
+            {source.ref for source in engine.available_mana_sources("B")},
+        )
 
     def test_mistrise_marks_only_the_next_spell_uncounterable(self):
         session = self.make_session(1010)

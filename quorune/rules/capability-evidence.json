@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "67a4dea306d6eaa28a09c38c45c49ac6b5503d8621048691bea78b4f3eadb6c5",
-  "declaration_source_fingerprint": "c11c67e565d49aaf33ce0758ceefdcf1927bb802d672d79a4c434643509ee06d",
+  "registry_fingerprint": "046b2e992fb134d62a7bac45238722e967009bd2744b02cd35a9a5929a3ee11f",
+  "declaration_source_fingerprint": "541e8053f7bf6471601dd1dd9343367bcc41150f1436c04ce66d0e863c70b232",
   "declarations": [
     {
       "capability_id": "activation.crew.fixed_power",
@@ -6837,6 +6837,101 @@
         "commander_review"
       ],
       "applicability_note": "Replay the distinct-opponent amount and source identity exactly."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_grant",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_exact_zimone_closure.ExactZimoneClosureTests.test_insidious_roots_batches_graveyard_departures_and_grants_token_mana",
+      "official_rule_ids": [
+        "604.1",
+        "611.3a",
+        "611.3b",
+        "611.3c",
+        "613.1f",
+        "613.6"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Grant a typed tap-for-any-color ability to a newly created creature token, then remove that ability immediately when the static source leaves the battlefield."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_grant",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_continuous_effect_components.ContinuousEffectComponentTests.test_fixed_query_ability_grant_is_typed_and_canonical",
+      "official_rule_ids": [
+        "604.1",
+        "611.3a",
+        "611.3b",
+        "611.3c",
+        "613.1f",
+        "613.6"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal or alteration of the typed layer-6 operation, source-controller predicate, or token-and-creature applicability."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_grant",
+      "evidence_class": "negative",
+      "test_id": "tests.test_continuous_effect_components.ContinuousEffectComponentTests.test_fixed_query_ability_grant_rejects_malformed_descriptors",
+      "official_rule_ids": [
+        "604.1",
+        "611.3a",
+        "611.3b",
+        "611.3c",
+        "613.1f",
+        "613.6"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject empty grants and descriptors that attempt to bypass the source-controller applicability owner."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_grant",
+      "evidence_class": "positive",
+      "test_id": "tests.test_exact_zimone_closure.ExactZimoneClosureTests.test_insidious_roots_batches_graveyard_departures_and_grants_token_mana",
+      "official_rule_ids": [
+        "604.1",
+        "611.3a",
+        "611.3b",
+        "611.3c",
+        "613.1f",
+        "613.6"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Discover and execute every fixed color mode of the granted token mana ability through the ordinary activation owner."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_grant",
+      "evidence_class": "replay",
+      "test_id": "tests.test_continuous_effect_components.ContinuousEffectComponentTests.test_fixed_query_ability_grant_is_typed_and_canonical",
+      "official_rule_ids": [
+        "604.1",
+        "611.3a",
+        "611.3b",
+        "611.3c",
+        "613.1f",
+        "613.6"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Round-trip the complete typed continuous effect and its fixed granted fragment without changing canonical identity."
     },
     {
       "capability_id": "continuous.attached.fixed_characteristics",
@@ -28651,5 +28746,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "3d6b75998aa87a9b3ee7747df64d11147215091095076ec7ec99aeaad1844809"
+  "fingerprint": "049e38a752bdfc21512958ff7b69bd1fb007740dd8540db3818260e7a7421ec4"
 }

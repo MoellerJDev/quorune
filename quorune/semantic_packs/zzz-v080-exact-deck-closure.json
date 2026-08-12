@@ -631,6 +631,78 @@
       }
     },
     {
+      "key": "d75b2b8e-05c9-47da-b359-a867256d78ea:static:token-mana-grant",
+      "label": "Insidious Roots token mana grant",
+      "oracle_id": "d75b2b8e-05c9-47da-b359-a867256d78ea",
+      "ability_id": "static:token-mana-grant",
+      "active_zone": "battlefield",
+      "event": "characteristics.evaluate",
+      "effects": [],
+      "handlers": [
+        {
+          "handler_id": "continuous.ability.fixed-query-grant.v1",
+          "schema_version": 1,
+          "event": "characteristics.evaluate",
+          "condition": {
+            "target_controller": "source_controller",
+            "predicate": {
+              "zones": ["battlefield"],
+              "owner": null,
+              "controller": null,
+              "types_all": ["creature"],
+              "types_any": [],
+              "excluded_types": [],
+              "subtypes_all": [],
+              "supertypes_all": [],
+              "colors_all": [],
+              "colors_any": [],
+              "keywords_all": [],
+              "token": true,
+              "tapped": null,
+              "include_phased_out": false,
+              "known_to_actor": null,
+              "exclude_ref": null
+            },
+            "exclude_source": false
+          },
+          "modifier": {
+            "add_ability_fragments": [
+              {
+                "kind": "granted_activated",
+                "value": {
+                  "schema_version": 1,
+                  "ability_id": "insidious-roots-mana",
+                  "semantic_key": "builtin:mana-fixed",
+                  "cost_text": "{T}",
+                  "effect_text": "Add one mana of any color.",
+                  "mana": {},
+                  "tap_source": true,
+                  "sorcery_speed": false,
+                  "mana_ability": true,
+                  "fixed_mana_outputs": [
+                    {"W": 1},
+                    {"U": 1},
+                    {"B": 1},
+                    {"R": 1},
+                    {"G": 1}
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "trust_level": "trusted",
+      "coverage": ["static_ability", "granted_mana_ability"],
+      "tests": ["test_insidious_roots_batches_graveyard_departures_and_grants_token_mana"],
+      "provenance": {
+        "source_oracle_hash": "66b469bfd33f2bab444f06de7d72683d962aac1a24b8353e0b15e7d99e6d6687",
+        "source_rulings_hash": "e01931103debb822831b09d066581d2fc704b248a757cf04eff91c3c87edc3fa",
+        "authored_by": "v0.8-exact-deck-closure",
+        "review_status": "reviewed"
+      }
+    },
+    {
       "key": "d75b2b8e-05c9-47da-b359-a867256d78ea:trigger:graveyard-leave",
       "label": "Insidious Roots graveyard-leave trigger",
       "oracle_id": "d75b2b8e-05c9-47da-b359-a867256d78ea",

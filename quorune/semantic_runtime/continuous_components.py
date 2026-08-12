@@ -4,6 +4,12 @@ from dataclasses import dataclass, replace
 from functools import lru_cache
 from typing import Any, Mapping, Protocol
 
+from ..ability_fragments import (
+    GrantedActivatedAbilitySpec,
+    StaticAbilityFragment,
+    ability_fragment_from_dict,
+    ability_fragment_to_dict,
+)
 from ..continuous_effects import (
     ContinuousEffect,
     ContinuousEffectOrigin,
@@ -29,6 +35,9 @@ _FIXED_QUERY_ANTHEM_HANDLER_ID = (
 _BASIC_LAND_TYPE_HANDLER_ID = (
     "continuous.basic_land_type.add_all_lands.v1"
 )
+_FIXED_QUERY_ABILITY_GRANT_HANDLER_ID = (
+    "continuous.ability.fixed-query-grant.v1"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,6 +60,13 @@ class FixedQueryPowerToughnessAnthemNode:
 class AddBasicLandTypeNode:
     target_types_all: tuple[str, ...]
     basic_land_type: str
+
+
+@dataclass(frozen=True, slots=True)
+class FixedQueryAbilityGrantNode:
+    predicate: ObjectQuerySpec
+    exclude_source: bool
+    fragments: tuple[StaticAbilityFragment, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -481,6 +497,151 @@ class AddBasicLandTypeHandler:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class FixedQueryAbilityGrantHandler:
+    """Grant closed typed ability fragments to a live queried object set."""
+
+    handler_id: str = _FIXED_QUERY_ABILITY_GRANT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "continuous.fixed_query_ability_grant"
+    event: str = "characteristics.evaluate"
+    rule_references: tuple[str, ...] = (
+        "604.1",
+        "611.3a",
+        "611.3b",
+        "611.3c",
+        "613.1f",
+        "613.6",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "continuous.ability.fixed_query_grant",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> FixedQueryAbilityGrantNode:
+        exact_fields(
+            descriptor,
+            {
+                "handler_id",
+                "schema_version",
+                "event",
+                "condition",
+                "modifier",
+            },
+            field="runtime handler",
+        )
+        if descriptor["handler_id"] != self.handler_id:
+            raise SemanticNodeError("Runtime handler ID does not match registry")
+        if descriptor["schema_version"] != self.schema_version:
+            raise SemanticNodeError(
+                f"Unsupported {self.handler_id} schema version"
+            )
+        if descriptor["event"] != self.event:
+            raise SemanticNodeError(f"{self.handler_id} must handle {self.event}")
+        condition = descriptor["condition"]
+        if not isinstance(condition, Mapping):
+            raise SemanticNodeError("runtime handler condition must be an object")
+        exact_fields(
+            condition,
+            {"target_controller", "predicate", "exclude_source"},
+            field="runtime handler condition",
+        )
+        if condition["target_controller"] != "source_controller":
+            raise SemanticNodeError(
+                "fixed query ability grants require source-controller targets"
+            )
+        if type(condition["exclude_source"]) is not bool:
+            raise SemanticNodeError(
+                "fixed query ability grant exclude_source must be boolean"
+            )
+        try:
+            predicate = ObjectQuerySpec.from_dict(condition["predicate"])
+        except ObjectQueryError as exc:
+            raise SemanticNodeError(str(exc)) from exc
+        if (
+            predicate.owner is not None
+            or predicate.controller is not None
+            or predicate.exclude_ref is not None
+            or predicate.known_to_actor is not None
+        ):
+            raise SemanticNodeError(
+                "fixed query ability grants reserve owner, controller, visibility, "
+                "and source exclusion"
+            )
+        if predicate.zones not in {(), ("battlefield",)}:
+            raise SemanticNodeError(
+                "fixed query ability grants apply only on the battlefield"
+            )
+        modifier = descriptor["modifier"]
+        if not isinstance(modifier, Mapping):
+            raise SemanticNodeError("runtime handler modifier must be an object")
+        exact_fields(
+            modifier,
+            {"add_ability_fragments"},
+            field="runtime handler modifier",
+        )
+        raw_fragments = modifier["add_ability_fragments"]
+        if not isinstance(raw_fragments, list) or not raw_fragments:
+            raise SemanticNodeError(
+                "fixed query ability grants require a nonempty fragment array"
+            )
+        try:
+            fragments = tuple(
+                ability_fragment_from_dict(value) for value in raw_fragments
+            )
+        except (TypeError, ValueError) as exc:
+            raise SemanticNodeError(
+                "fixed query ability grant fragments are malformed"
+            ) from exc
+        if any(
+            not isinstance(fragment, GrantedActivatedAbilitySpec)
+            or not fragment.mana_ability
+            or not fragment.fixed_mana_outputs
+            for fragment in fragments
+        ):
+            raise SemanticNodeError(
+                "fixed query ability grants currently require typed fixed-output "
+                "mana abilities"
+            )
+        return FixedQueryAbilityGrantNode(
+            predicate=predicate,
+            exclude_source=condition["exclude_source"],
+            fragments=fragments,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: ContinuousEffectSourceContext,
+    ) -> tuple[ContinuousEffect, ...]:
+        node = self.validate(descriptor)
+        predicate = replace(
+            node.predicate,
+            zones=("battlefield",),
+            controller=context.source_controller,
+            exclude_ref=(context.source_ref if node.exclude_source else None),
+        )
+        return (
+            ContinuousEffect(
+                effect_id=f"{context.source_object_id}:{context.component_id}",
+                source_id=context.source_object_id,
+                layer=Layer.ABILITY,
+                sublayer="6",
+                timestamp=context.source_timestamp,
+                operations=tuple(
+                    ContinuousOperation(
+                        "add_ability_fragment",
+                        ability_fragment_to_dict(fragment),
+                    )
+                    for fragment in node.fragments
+                ),
+                origin=ContinuousEffectOrigin.STATIC_ABILITY,
+                applies=predicate,
+            ),
+        )
+
+
 class ContinuousEffectComponentRegistry(
     RuntimeComponentRegistry[
         ContinuousEffectSourceContext,
@@ -500,6 +661,7 @@ def default_continuous_effect_component_registry(
             FixedPowerToughnessAnthemHandler(),
             FixedQueryPowerToughnessAnthemHandler(),
             AddBasicLandTypeHandler(),
+            FixedQueryAbilityGrantHandler(),
             AttachedFixedCharacteristicsHandler(),
         )
     )
