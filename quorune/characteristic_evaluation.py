@@ -175,6 +175,16 @@ def _copy_effect(
                 continue
         copy_values[target_field] = value
     if (
+        "display_text" in overrides
+        and "oracle_text" not in overrides
+        and "executable_oracle_text" not in overrides
+    ):
+        # Display-only prose is still a copiable visible characteristic, but
+        # it is not an executable Oracle program.  Supplying the empty value
+        # explicitly also prevents the layer-1 compatibility rule from
+        # mirroring copied display text into executable_text.
+        copy_values["executable_text"] = ""
+    if (
         "oracle_text" in overrides
         and "activated_abilities" not in overrides
     ):

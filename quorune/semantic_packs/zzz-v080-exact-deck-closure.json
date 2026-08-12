@@ -784,7 +784,7 @@
       "handlers": [
         {
           "handler_id": "continuous.attached.fixed-characteristics.v1",
-          "schema_version": 2,
+          "schema_version": 1,
           "event": "characteristics.evaluate",
           "condition": {"relation": "source_attached_object"},
           "modifier": {
@@ -1100,7 +1100,7 @@
       "handlers": [
         {
           "handler_id": "replacement.zone.destination.v1",
-          "schema_version": 2,
+          "schema_version": 1,
           "event": "zone.change",
           "condition": {
             "destination": "graveyard",
@@ -2117,7 +2117,7 @@
       "handlers": [
         {
           "handler_id": "replacement.token.additional.v2",
-          "schema_version": 1,
+          "schema_version": 2,
           "event": "token.create",
           "condition": {
             "event_controller": "source_controller",
@@ -2175,7 +2175,7 @@
       "handlers": [
         {
           "handler_id": "replacement.token.additional.v2",
-          "schema_version": 1,
+          "schema_version": 2,
           "event": "token.create",
           "condition": {
             "event_controller": "source_controller",
