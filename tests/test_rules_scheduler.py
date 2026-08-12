@@ -17,6 +17,11 @@ from quorune.rules_scheduler import (
     load_rules_dependency_queue,
     rules_dependency_queue_errors,
 )
+from quorune.work_selection import (
+    WorkSelectionError,
+    build_work_selection,
+    load_work_selection_inputs,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +41,7 @@ class RulesSchedulerTests(unittest.TestCase):
             "quorune/rules/capability-registry.json"
         )
         cls.queue = load_rules_dependency_queue(ROOT)
+        cls.work_inputs = load_work_selection_inputs(ROOT)
 
     def test_generated_queue_is_fresh_and_source_pinned(self):
         self.assertEqual([], rules_dependency_queue_errors(ROOT))
@@ -164,6 +170,16 @@ class RulesSchedulerTests(unittest.TestCase):
             selected["rule_ids"],
             [rule["rule_id"] for rule in next_batch["next"]],
         )
+        self.assertEqual(
+            self.queue["work_selection"]["selected_candidate_id"],
+            next_batch["selected_work"]["candidate_id"],
+        )
+        self.assertNotIn(
+            "reusable_piece_ids", next_batch["selected_work"]
+        )
+        self.assertGreater(
+            next_batch["selected_work"]["reusable_piece_count"], 0
+        )
         self.assertIn("queue", CORPUS_OPERATIONS)
         self.assertEqual(
             self.queue["fingerprint"],
@@ -226,6 +242,115 @@ class RulesSchedulerTests(unittest.TestCase):
                 self.conformance,
                 trusted_selection,
                 self.capabilities,
+            )
+
+    def test_cross_program_selection_ranks_correctness_before_card_gain(self):
+        work = self.queue["work_selection"]
+        selected = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"] == work["selected_candidate_id"]
+        )
+        self.assertEqual("runtime_oracle_removal", selected["candidate_class"])
+        self.assertNotEqual(
+            "cross_subsystem_runtime_semantics", selected["universal_subsystem"]
+        )
+        runtime_total = int(
+            self.work_inputs["architecture_audit"]["architecture"]
+            ["runtime_oracle_text_access"]
+            ["prohibited_runtime_interpretation_count"]
+        )
+        selected_runtime_count = int(
+            selected["runtime_oracle_text_removal"]["expected_count"]
+        )
+        self.assertGreater(selected_runtime_count, 0)
+        self.assertLess(selected_runtime_count, runtime_total)
+        self.assertGreater(selected["priority_within_class"], 0)
+        card_candidates = [
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_class"]
+            in {"compiler_harvest", "card_family"}
+            and candidate["eligible"]
+        ]
+        self.assertTrue(card_candidates)
+        self.assertGreater(
+            max(
+                int(candidate["expected_complete_card_gain"] or 0)
+                for candidate in card_candidates
+            ),
+            int(selected["expected_complete_card_gain"] or 0),
+        )
+        self.assertTrue(
+            all(selected["rank"] < candidate["rank"] for candidate in card_candidates)
+        )
+
+    def test_every_serious_candidate_carries_auditable_reranking_context(self):
+        required = {
+            "candidate_id",
+            "candidate_class",
+            "universal_subsystem",
+            "reusable_piece_ids",
+            "rules_dependency_ids",
+            "compiler_readiness",
+            "runtime_readiness",
+            "assurance_readiness",
+            "affected_commander_cards",
+            "sole_blocker_cards",
+            "one_additional_blocker_cards",
+            "two_additional_blocker_cards",
+            "expected_exact_ability_gain",
+            "expected_complete_card_gain",
+            "expected_material_residual_reduction",
+            "interaction_debt_introduced",
+            "architecture_debt_removed",
+            "direct_write_migration",
+            "engine_extraction",
+            "runtime_oracle_text_removal",
+            "estimated_effort",
+            "reranking_reason",
+            "eligible",
+            "priority_within_class",
+            "rank",
+            "selection_state",
+        }
+        candidates = self.queue["work_selection"]["candidates"]
+        self.assertTrue(candidates)
+        for candidate in candidates:
+            self.assertEqual(required, set(candidate))
+            self.assertTrue(candidate["reranking_reason"])
+            self.assertTrue(candidate["universal_subsystem"])
+        history = self.queue["work_selection"]["reviewed_rerank_history"]
+        self.assertEqual(
+            {
+                "rules:ordinary-shroud-target-legality",
+                "rules:ordinary-echo-upkeep-trigger",
+                "rules:ordinary-fixed-threshold-crew",
+            },
+            {row["candidate_id"] for row in history},
+        )
+
+    def test_work_selection_policy_fails_closed(self):
+        policy = deepcopy(self.catalog["work_selection"])
+        policy["priority_classes"].append(policy["priority_classes"][0])
+        with self.assertRaisesRegex(
+            WorkSelectionError, "priority classes"
+        ):
+            build_work_selection(
+                selected_batch=self.queue["selected_batch"],
+                policy=policy,
+                inputs=self.work_inputs,
+            )
+
+        with self.assertRaisesRegex(
+            RulesSchedulerError, "work-selection inputs"
+        ):
+            build_rules_dependency_queue(
+                self.rule_index,
+                self.conformance,
+                self.catalog,
+                self.capabilities,
+                repository_root=ROOT,
             )
 
 

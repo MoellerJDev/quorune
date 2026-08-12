@@ -25,130 +25,15 @@ def _json_text(value: Mapping[str, Any]) -> str:
     return stable_json(value) + "\n"
 
 
-def _markdown(value: Mapping[str, Any]) -> str:
-    summary = value["summary"]
-    selected = value["selected_batch"]
-    lines = [
-        "---",
-        'title: "Rules dependency queue"',
-        'status: "generated"',
-        (
-            'authoritative_source: '
-            '"coverage/rules-dependency-queue.json"'
-        ),
-        f'verified: "{value["effective_date"]}"',
-        'audience: "rules, compiler, and engine contributors"',
-        'maintenance: "generated"',
-        "---",
-        "",
-        "# Rules dependency queue",
-        "",
-        "This report schedules the pinned Comprehensive Rules by coupled "
-        "subsystem. It does not claim that an unreviewed rule is behavioral; "
-        "it conservatively keeps that rule queued until review proves "
-        "otherwise.",
-        "",
-        "## Queue boundary",
-        "",
-        f'- Pinned rules: {summary["total_rules"]:,}',
-        f'- Queued rules: {summary["queued_rules"]:,}',
-        (
-            "- Reviewed behavioral blockers: "
-            f'{summary["reviewed_behavioral_blocked"]:,}'
-        ),
-        (
-            "- Behavioral classification/review required: "
-            f'{summary["behavioral_review_required"]:,}'
-        ),
-        f'- Passing behavioral rules: {summary["passing_behavioral"]:,}',
-        f'- Subsystems: {summary["subsystem_count"]}',
-        f'- Queue fingerprint: `{value["fingerprint"]}`',
-        "",
-        "## Selected next batch",
-        "",
-        f'- Batch: `{selected["batch_id"]}`',
-        f'- Subsystem: `{selected["subsystem_id"]}`',
-        "- Rules: "
-        + ", ".join(f'`{rule_id}`' for rule_id in selected["rule_ids"]),
-        "- Target capabilities: "
-        + (
-            ", ".join(
-                f'`{capability_id}`'
-                for capability_id in selected["target_capability_ids"]
-            )
-            or "none registered yet"
-        ),
-        f'- Rationale: {selected["rationale"]}',
-        "",
-        "Exit criteria:",
-        "",
-    ]
-    lines.extend(
-        f"- {criterion}" for criterion in selected["exit_criteria"]
-    )
-    lines.extend(
-        [
-            "",
-            "## Dependency schedule",
-            "",
-            (
-                "| Order | Subsystem | Dependencies | Queued | Reviewed "
-                "blocked | Review required | Compiler impact |"
-            ),
-            "|---:|---|---|---:|---:|---:|---|",
-        ]
-    )
-    for subsystem in value["subsystems"]:
-        counts = subsystem["conformance_status_counts"]
-        classifications = subsystem["classification_counts"]
-        lines.append(
-            "| "
-            + " | ".join(
-                [
-                    str(subsystem["schedule_order"]),
-                    f'`{subsystem["subsystem_id"]}`',
-                    ", ".join(
-                        f'`{dependency}`'
-                        for dependency in subsystem[
-                            "depends_on_subsystems"
-                        ]
-                    )
-                    or "—",
-                    str(subsystem["queued_rule_count"]),
-                    str(counts.get("blocked", 0)),
-                    str(classifications.get("unclassified", 0)),
-                    ", ".join(
-                        f'`{impact}`'
-                        for impact in subsystem["compiler_impact"]
-                    ),
-                ]
-            )
-            + " |"
-        )
-    lines.extend(
-        [
-            "",
-            "## Commands",
-            "",
-            "```bash",
-            "python scripts/update_rules_scheduler.py --check",
-            "python simctl.py rules queue --root .",
-            "python simctl.py rules next --root . --limit 20",
-            "```",
-            "",
-            "`rules next` returns the source-selected subsystem batch. "
-            "Changing that selection requires changing the machine-readable "
-            "catalog and regenerating this report; it is not a numerical "
-            "walk through rule IDs.",
-            "",
-        ]
-    )
-    return "\n".join(lines)
-
-
 def _compact_markdown(value: Mapping[str, Any]) -> str:
     summary = value["summary"]
     selected = value["selected_batch"]
+    work = value["work_selection"]
+    selected_work = next(
+        candidate
+        for candidate in work["candidates"]
+        if candidate["candidate_id"] == work["selected_candidate_id"]
+    )
     command = r".\.venv\Scripts\python.exe scripts\update_rules_scheduler.py --write"
     fingerprint = hashlib.sha256(_json_text(value).encode("utf-8")).hexdigest()
     blockers = list(selected["exit_criteria"])
@@ -177,13 +62,73 @@ def _compact_markdown(value: Mapping[str, Any]) -> str:
         f"- Subsystems: `{summary['subsystem_count']}`",
         f"- Selected subsystem: `{selected['subsystem_id']}`",
         f"- Selected batch: `{selected['batch_id']}`",
+        f"- Selected cross-program work: `{selected_work['candidate_id']}`",
+        f"- Selected work class: `{selected_work['candidate_class']}`",
+        "",
+        "## Cross-program work selection",
+        "",
+        "The rules batch remains dependency-ready, but final foreground work is "
+        "reranked with deterministic CI, replay/privacy, architecture, runtime-text, "
+        "interaction-assurance, compiler, and card-frontier evidence. A larger card "
+        "gain cannot outrank a higher-priority correctness class.",
+        "",
+        "Priority classes: "
+        + " → ".join(f"`{item}`" for item in work["priority_classes"]),
+        "",
+        "| Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |",
+        "|---:|---|---|---|---:|---:|---:|---:|",
+        *(
+            "| "
+            + " | ".join(
+                [
+                    str(candidate["rank"]),
+                    str(candidate["selection_state"]),
+                    f"`{candidate['candidate_id']}`",
+                    f"`{candidate['candidate_class']}`",
+                    (
+                        str(candidate["expected_complete_card_gain"])
+                        if candidate["expected_complete_card_gain"] is not None
+                        else "unknown"
+                    ),
+                    (
+                        str(candidate["expected_material_residual_reduction"])
+                        if candidate["expected_material_residual_reduction"] is not None
+                        else "unknown"
+                    ),
+                    (
+                        str(
+                            candidate["runtime_oracle_text_removal"].get(
+                                "expected_count"
+                            )
+                        )
+                        if candidate["runtime_oracle_text_removal"].get(
+                            "expected_count"
+                        )
+                        is not None
+                        else "unknown"
+                    ),
+                    (
+                        str(candidate["direct_write_migration"].get("expected_count"))
+                        if candidate["direct_write_migration"].get("expected_count")
+                        is not None
+                        else "unknown"
+                    ),
+                ]
+            )
+            + " |"
+            for candidate in work["candidates"]
+        ),
+        "",
+        f"Selected reason: {selected_work['reranking_reason']}",
         "",
         "## Top blockers",
         "",
         *(f"- {item}" for item in blockers[:5]),
         "",
         "Complete rule, subsystem, dependency, classification, and selected-batch data "
-        "is in the [machine-readable rules queue](../coverage/rules-dependency-queue.json).",
+        "plus complete readiness, blocker-card, architecture, interaction, and reranking "
+        "fields for every serious candidate are in the "
+        "[machine-readable rules queue](../coverage/rules-dependency-queue.json).",
         "",
         "Exact generation command:",
         "",

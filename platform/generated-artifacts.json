@@ -233,6 +233,8 @@
     {
       "id": "rules-scheduler",
       "depends_on": [
+        "compact-ci-card-dependencies",
+        "reusable-pieces",
         "rules-derived"
       ],
       "outputs": [

@@ -47,7 +47,10 @@ dependencies, and reviewed summaries rather than redistributing the prose.
   rules unit.
 - `rules/conformance-reviews/` stores subsystem reviews and evidence mappings.
 - `rules/dependency-graph.json` and `platform/rules-subsystems.json` describe
-  dependency and ownership scheduling.
+  dependency, ownership, and cross-program scheduling policy. The generated
+  rules queue combines that policy with compact-CI, replay/privacy,
+  architecture, interaction, and card-frontier evidence without creating a
+  competing rules registry.
 - `quorune/rules/capability-registry.json` and generated evidence
   define fine-grained executable trust.
 - CardPrograms bind Oracle spans to required capabilities and runtime
@@ -133,6 +136,16 @@ A coherent rules family:
 Do not select work one numbered rule at a time or preserve a false positive to
 avoid a measured demotion. Prefer a subsystem-sized family that removes a
 shared blocker and has one reviewable mutation boundary.
+
+The dependency-ready rules batch is not automatically the foreground task.
+The generated queue ranks deterministic CI, replay/privacy, missing-owner,
+runtime Oracle-text, interaction-assurance, and measured architecture debt
+before rules foundations, compiler harvests, and isolated card families. Card
+gain breaks ties only inside the same work class. Every serious candidate keeps
+its readiness, blocker-card, residual, interaction, ownership, engine, and
+runtime-text evidence visible; unknown gains remain unknown rather than being
+estimated. [ADR 0062](../adr/0062-cross-program-work-selection.md) records the
+durable boundary.
 
 ## Invalidation and replay
 

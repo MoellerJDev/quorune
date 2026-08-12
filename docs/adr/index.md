@@ -76,3 +76,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0059 — typed zone-transition ownership](0059-typed-zone-transition-owner.md)
 - [ADR 0060 — typed turn, priority, and decision ownership](0060-typed-turn-priority-decision-owner.md)
 - [ADR 0061 — typed search, target, and choice ownership](0061-typed-search-target-choice-owner.md)
+- [ADR 0062 — cross-program work selection](0062-cross-program-work-selection.md)

@@ -210,6 +210,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/rule_conformance.py",
         "quorune/rules_corpus.py",
         "quorune/rules_scheduler.py",
+        "quorune/work_selection.py",
         "quorune/saga_lifecycle.py",
         "quorune/saga_progression.py",
         "quorune/turn_counter_coordination.py",
@@ -459,7 +460,10 @@ def _owner(relative: str, layer: str) -> str:
         return "targeting"
     if relative == "quorune/replacement_decisions.py":
         return "replacement_effects"
-    if relative == "quorune/rules_scheduler.py":
+    if relative in {
+        "quorune/rules_scheduler.py",
+        "quorune/work_selection.py",
+    }:
         return "rules_governance"
     if relative in {
         "quorune/record.py",
