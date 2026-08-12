@@ -456,12 +456,15 @@ matrix and both OS limits from the actual browser and Windows impact modes:
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | smoke | compatibility | 12 | 1 | 1 | 17 | 3 |
 | full | compatibility | 11 | 1 | 3 | 18 | 2 |
-| smoke | full | 9 | 5 | 1 | 18 | 2 |
-| full | full | 7 | 5 | 3 | 18 | 2 |
+| smoke | full | 6 | 8 | 1 | 18 | 2 |
+| full | full | 5 | 7 | 3 | 18 | 2 |
 
 Three fixed jobs cover generated validation and the two package builds.
 Changing a matrix without reconciling all four budgets fails the focused CI
-policy tests. The declared matrix order is also significant: GitHub creates
+policy tests. When the full Windows matrix is selected, the remaining shard
+slots are divided by a checked 4:5 Ubuntu-to-Windows duration weight. This keeps
+the slower Windows tail from dominating while preserving two recovery slots.
+The declared matrix order is also significant: GitHub creates
 matrix jobs in declaration order, so `platform/test-shards.json` owns a
 slow-first order derived from exact-head duration artifacts.
 

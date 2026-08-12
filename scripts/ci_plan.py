@@ -24,8 +24,12 @@ from scripts.test_shards import functional_shards, load_manifest, primary_matrix
 
 PUBLIC_JOB_CONCURRENCY_LIMIT = 20
 PUBLIC_JOB_RECOVERY_HEADROOM = 2
-WINDOWS_MAX_PARALLEL = 5
 FIXED_PARALLEL_JOBS = 3  # generated, package, and Windows package
+# Full Windows shards are consistently slower than their Ubuntu counterparts.
+# Weight the two matrices from observed exact-head duration artifacts instead of
+# giving every remaining slot to Ubuntu before considering the Windows tail.
+UBUNTU_FUNCTIONAL_WEIGHT = 4
+WINDOWS_FULL_WEIGHT = 5
 EXPECTED_PR_JOB_IDS = frozenset(
     {
         "plan",
@@ -83,19 +87,39 @@ def ci_concurrency_budget(
     workflow_job_ids()
     manifest = load_manifest()
     browser_jobs = len(browser_matrix(browser_full)["include"])
-    windows_jobs = (
-        min(WINDOWS_MAX_PARALLEL, len(primary_matrix(manifest)["include"]))
-        if windows_full
-        else 1
-    )
-    available_python_jobs = (
+    available_shard_jobs = (
         PUBLIC_JOB_CONCURRENCY_LIMIT
         - PUBLIC_JOB_RECOVERY_HEADROOM
         - FIXED_PARALLEL_JOBS
         - browser_jobs
-        - windows_jobs
     )
-    python_jobs = min(len(functional_shards(manifest)), available_python_jobs)
+    python_job_count = len(functional_shards(manifest))
+    if windows_full:
+        windows_job_count = len(primary_matrix(manifest)["include"])
+        weighted_python_demand = python_job_count * UBUNTU_FUNCTIONAL_WEIGHT
+        weighted_windows_demand = windows_job_count * WINDOWS_FULL_WEIGHT
+        weighted_total = weighted_python_demand + weighted_windows_demand
+        windows_jobs = (
+            available_shard_jobs * weighted_windows_demand + weighted_total // 2
+        ) // weighted_total
+        windows_jobs = min(
+            windows_job_count,
+            max(1, min(available_shard_jobs - 1, windows_jobs)),
+        )
+        python_jobs = min(
+            python_job_count,
+            available_shard_jobs - windows_jobs,
+        )
+        windows_jobs = min(
+            windows_job_count,
+            available_shard_jobs - python_jobs,
+        )
+    else:
+        windows_jobs = 1
+        python_jobs = min(
+            python_job_count,
+            available_shard_jobs - windows_jobs,
+        )
     if python_jobs <= 0:
         raise ValueError("PR CI leaves no runner capacity for Python shards")
     peak = (

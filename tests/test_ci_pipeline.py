@@ -126,8 +126,8 @@ class CiPipelineTests(unittest.TestCase):
         expected = {
             (False, False): (12, 1, 1, 17, 3),
             (True, False): (11, 1, 3, 18, 2),
-            (False, True): (9, 5, 1, 18, 2),
-            (True, True): (7, 5, 3, 18, 2),
+            (False, True): (6, 8, 1, 18, 2),
+            (True, True): (5, 7, 3, 18, 2),
         }
         for (browser_full, windows_full), values in expected.items():
             budget = ci_concurrency_budget(
