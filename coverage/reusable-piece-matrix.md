@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "b1d3f353eac2a85dd4f5f34dd27906e29da4a99e85f486387d1ce47256893262"
+verified: "e5b9fb302d520eed8c147fc46a9a448c8953806887e4baa85f8be3d621dd4cce"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,7 +17,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,313
+- Pieces: 1,317
 - Cards indexed: 31,623
 - Material abilities classified: 59,596
 - Unclassified material spans: 0
@@ -34,15 +34,15 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `choices_continuations` — Modes, targets, choices, and continuations | 9 |
 | `combat` — Combat | 22 |
 | `compiler_cardprogram` — Compiler and CardProgram pieces | 401 |
-| `continuous_effects` — Static abilities and continuous effects | 18 |
+| `continuous_effects` — Static abilities and continuous effects | 20 |
 | `costs_mana` — Costs and mana | 7 |
-| `events_mutations` — Typed events and mutations | 98 |
+| `events_mutations` — Typed events and mutations | 99 |
 | `keyword_mechanics` — Keyword actions and keyword abilities | 544 |
 | `multiplayer_commander` — Multiplayer, Commander, and profile pieces | 1 |
 | `object_identity` — Object identity and lifetime | 26 |
 | `one_shot_effects` — One-shot semantic effects | 125 |
 | `players_format` — Players, relationships, and format state | 1 |
-| `proposals` — Casting and activation proposals | 9 |
+| `proposals` — Casting and activation proposals | 10 |
 | `quantities` — Quantity and value expressions | 1 |
 | `references` — References | 1 |
 | `replacement_prevention` — Replacement and prevention | 16 |
@@ -52,16 +52,16 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 | System | Status | Pieces | Blocking pieces |
 |---|---|---:|---:|
-| `action_legality_casting_activation_costs_mana` | `inventoried` | 44 | 6 |
+| `action_legality_casting_activation_costs_mana` | `inventoried` | 45 | 6 |
 | `combat` | `compositional` | 22 | 0 |
-| `derived_characteristics_static_layers` | `inventoried` | 18 | 5 |
+| `derived_characteristics_static_layers` | `inventoried` | 20 | 5 |
 | `generic_triggers_stack_placement` | `inventoried` | 2 | 2 |
 | `multiplayer_player_leaving_commander` | `represented` | 2 | 0 |
 | `objects_identity_zones_faces_copies` | `compositional` | 30 | 0 |
 | `replacement_prevention` | `inventoried` | 16 | 3 |
 | `state_turn_loops_stabilization` | `inventoried` | 0 | 0 |
 | `targets_modes_searches_references_choices` | `inventoried` | 11 | 6 |
-| `typed_transactions_events_mutations` | `inventoried` | 223 | 67 |
+| `typed_transactions_events_mutations` | `inventoried` | 224 | 67 |
 
 ## Highest current blocker leverage
 

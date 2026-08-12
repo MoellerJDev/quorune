@@ -264,12 +264,30 @@ def _runtime_text_classification(relative: str, symbol: str) -> tuple[str, str]:
         "quorune/carddb_characteristics.py",
         "quorune/characteristic_evaluation.py",
     }
+    historical_compatibility_files = {
+        "quorune/card_overrides/game_record_v3.py",
+    }
     if relative.startswith(compiler_prefixes) or relative in compiler_files:
         return "compiler_input", "Bounded compilation, validation, or corpus input."
+    if relative == "quorune/mana.py" and symbol in {
+        "effective_mana_record",
+        "extract_effective_mana_modes",
+        "extract_mana_modes",
+        "_has_unresolved_dynamic_output",
+    }:
+        return (
+            "compiler_input",
+            "Legacy public compiler API retained for preflight and direct compiler tests; current game runtime consumes typed mana descriptors.",
+        )
     if relative in display_files:
         return "display_only_metadata", "Card storage, inspection, or projection metadata."
     if relative in provenance_files:
         return "generated_provenance", "Carries derived text for identity or display provenance."
+    if relative in historical_compatibility_files:
+        return (
+            "reviewed_historical_compatibility",
+            "Explicit Game Record v3 compatibility isolated from current runtime behavior.",
+        )
     return (
         "prohibited_runtime_interpretation",
         "Production runtime access can influence represented game behavior and must migrate to typed data.",

@@ -325,22 +325,14 @@ class OrdinaryCyclingRuntimeTests(unittest.TestCase):
             data = dict(original_data(card))
             if getattr(card, "object_id", card) == source.object_id:
                 data["executable_oracle_text"] = "Cycling {1}"
+                data["activated_abilities"] = []
             return data
-
-        query = __import__(
-            "quorune.rules.activation.query",
-            fromlist=["parse_activated_abilities"],
-        )
-        original_parse = query.parse_activated_abilities
-
-        def reject_reparse(**kwargs):
-            self.assertEqual("", kwargs["oracle_text"])
-            return original_parse(**kwargs)
 
         with mock.patch.object(
             engine, "_effective_card_data", side_effect=changed
-        ), mock.patch.object(
-            query, "parse_activated_abilities", side_effect=reject_reparse
+        ), mock.patch(
+            "quorune.compiler.activated_ability_catalog.parse_activated_abilities",
+            side_effect=AssertionError("runtime activation discovery recompiled Oracle"),
         ):
             abilities = engine._activated_abilities(source)
             self.assertFalse(

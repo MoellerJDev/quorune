@@ -12,6 +12,7 @@ from .continuous_effects import (
     Layer,
     evaluate_continuous_effects,
 )
+from .continuous_effect_model import ContinuousEffectError
 from .model import CardInstance
 from .keyword_counters import keyword_counter_abilities
 from .util import unique_preserving_order
@@ -19,6 +20,7 @@ from .ability_fragments import (
     ability_fragment_to_dict,
     canonical_ability_fragments,
 )
+from .abilities import ActivatedAbility
 
 
 _CARD_TYPES = {
@@ -124,6 +126,10 @@ def _base_characteristic_state(
                 result.get("ability_fragments", ())
             )
         ),
+        activated_abilities=[
+            ActivatedAbility.from_dict(value)
+            for value in result.get("activated_abilities", ())
+        ],
         power=_numeric(result.get("power")),
         toughness=_numeric(result.get("toughness")),
         loyalty=_numeric(result.get("loyalty")),
@@ -148,6 +154,7 @@ def _copy_effect(
         "colors": "colors",
         "keywords": "abilities",
         "ability_fragments": "ability_fragments",
+        "activated_abilities": "activated_abilities",
     }
     numeric_fields = {"power", "toughness", "loyalty", "defense"}
     for source_field, target_field in field_map.items():
@@ -159,6 +166,8 @@ def _copy_effect(
             if value is None:
                 continue
         copy_values[target_field] = value
+    if "oracle_text" in overrides and "activated_abilities" not in overrides:
+        copy_values["activated_abilities"] = []
     if overrides.get("type_line") is not None:
         copied_types, copied_subtypes, copied_supertypes = type_parts(
             str(overrides["type_line"])
@@ -258,6 +267,35 @@ def _legacy_annotation_effects(
                 duration=ContinuousEffectDuration.ZONE_OBJECT,
             )
         )
+    raw_granted_fragments = card.annotations.get(
+        "granted_ability_fragments", ()
+    )
+    if raw_granted_fragments:
+        try:
+            granted_fragments = canonical_ability_fragments(
+                raw_granted_fragments
+            )
+        except (TypeError, ValueError) as exc:
+            raise ContinuousEffectError(
+                "granted ability fragments are malformed"
+            ) from exc
+        effects.append(
+            ContinuousEffect(
+                effect_id=f"{card.object_id}:granted-ability-fragments",
+                source_id=card.object_id,
+                layer=Layer.ABILITY,
+                sublayer="6",
+                timestamp=card.zone_timestamp,
+                operations=tuple(
+                    ContinuousOperation(
+                        "add_ability_fragment",
+                        ability_fragment_to_dict(fragment),
+                    )
+                    for fragment in granted_fragments
+                ),
+                duration=ContinuousEffectDuration.ZONE_OBJECT,
+            )
+        )
     return effects
 
 
@@ -301,6 +339,14 @@ def _render_characteristics(
                 for value in canonical_ability_fragments(
                     values["ability_fragments"]
                 )
+            ],
+            "activated_abilities": [
+                (
+                    ability.to_dict()
+                    if isinstance(ability, ActivatedAbility)
+                    else ActivatedAbility.from_dict(ability).to_dict()
+                )
+                for ability in values["activated_abilities"]
             ],
         }
     )
@@ -353,6 +399,7 @@ def evaluate_card_characteristics(
         or added_subtypes
         or card.temporary_keywords
         or keyword_counter_abilities(card.counters)
+        or card.annotations.get("granted_ability_fragments")
         or card.annotations.get("bestowed")
         or runtime_effects
     )
@@ -368,6 +415,10 @@ def evaluate_card_characteristics(
             for value in canonical_ability_fragments(
                 result.get("ability_fragments", ())
             )
+        ]
+        result["activated_abilities"] = [
+            ActivatedAbility.from_dict(value).to_dict()
+            for value in result.get("activated_abilities", ())
         ]
         return result
 

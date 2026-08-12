@@ -29,6 +29,9 @@ from .card_programs.validation import (
 from .card_programs.runtime import (
     collect_card_program_continuous_effects,
 )
+from .compiled_activated_abilities import (
+    compiled_activated_ability_dicts,
+)
 from .characteristic_evaluation import (
     evaluate_card_characteristics,
     type_parts,
@@ -165,12 +168,10 @@ from .entry_counter_coordination import (
 )
 from .deck import DeckDefinition
 from .mana import (
-    extract_effective_mana_modes,
     ManaMode,
     ManaPlanError,
     ManaSource,
     auto_plan_payment,
-    extract_mana_modes,
     parsed_cost,
 )
 from .mana_activation import complete_mana_activation, complete_mana_plan_activations
@@ -1119,6 +1120,9 @@ class CommanderEngine(
         base["ability_fragments"] = self._compiled_ability_fragment_dicts(
             card
         )
+        base["activated_abilities"] = (
+            compiled_activated_ability_dicts(self, card)
+        )
         base.update(
             copy.deepcopy(dict(card.annotations.get("copy_overrides") or {}))
         )
@@ -1746,13 +1750,33 @@ class CommanderEngine(
                 continue
             if record.is_land:
                 lands += 1
-                for mode in extract_mana_modes(record, self._commander_identity(seat)):
-                    if not mode.conditional:
-                        colored_sources.update(color for color, amount in mode.bundle.items() if amount and color in "WUBRG")
+                for ability in self._activated_abilities(
+                    self.state.cards[object_id]
+                ):
+                    if not ability.mana_ability:
+                        continue
+                    for mode in ability.fixed_mana_outputs:
+                        colored_sources.update(
+                            color
+                            for color, amount in mode.bundle.items()
+                            if amount and color in "WUBRG"
+                        )
             elif record.mana_value <= 2:
                 early_actions += 1
-                oracle = record.oracle_text.casefold()
-                if "add " in oracle or "search your library for a basic land" in oracle or "search your library for a forest" in oracle:
+                card = self.state.cards[object_id]
+                has_compiled_mana = any(
+                    ability.mana_ability
+                    for ability in self._activated_abilities(card)
+                )
+                has_compiled_land_search = any(
+                    effect.get("op") == "search"
+                    for program in self.semantics.programs_for_oracle(
+                        record.oracle_id,
+                        event="resolve",
+                    )
+                    for effect in program.effects
+                )
+                if has_compiled_mana or has_compiled_land_search:
                     early_mana += 1
         commander_colors = sorted(self._commander_identity(seat))
         red_flags: list[str] = []
@@ -2736,25 +2760,6 @@ class CommanderEngine(
         return colors
 
     @staticmethod
-    def _compiled_mana_restriction(restriction: str) -> str | None:
-        lower = restriction.casefold()
-        if (
-            "spend this mana only to cast artifact spells or activate "
-            "abilities of artifacts"
-            in lower
-        ):
-            return "artifact_spell_or_ability"
-        if "this mana can't be spent to cast nonartifact spells" in lower:
-            return "nonartifact_spell_prohibited"
-        if (
-            "spend this mana only to cast a legendary spell"
-            in lower
-            and "that spell can't be countered" in lower
-        ):
-            return "legendary_spell_uncounterable"
-        return None
-
-    @staticmethod
     def _mana_restriction_allows(
         restriction: str,
         spend_context: str | None,
@@ -2776,19 +2781,6 @@ class CommanderEngine(
         if restriction == "legendary_spell_uncounterable":
             return is_spell and is_legendary
         return False
-
-    @staticmethod
-    def _mana_mode_has_compiled_activation_condition(
-        restriction: str,
-    ) -> bool:
-        return bool(
-            re.search(
-                r"activate only if you control "
-                r"(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten) "
-                r"or more (?:artifacts?|creatures?|lands?)",
-                restriction.casefold(),
-            )
-        )
 
     def _spell_mana_spend_context(self, type_line: str) -> str:
         types, _, supertypes = self._type_parts(type_line)
@@ -3521,15 +3513,12 @@ class CommanderEngine(
             for mode in self._mana_modes_for_ability(
                 seat, source, ability
             ):
-                side_effects = list(mode.side_effects)
-                if ability.sacrifice_source:
-                    side_effects.append({"op": "sacrifice_source"})
                 compiled_modes.append(
                     ManaMode(
                         mode.bundle,
                         conditional=mode.conditional,
                         restriction=mode.restriction,
-                        side_effects=tuple(side_effects),
+                        side_effects=mode.side_effects,
                         requires_choice=mode.requires_choice,
                     )
                 )

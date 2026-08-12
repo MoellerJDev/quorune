@@ -12,6 +12,7 @@ from .enchant_spec import (
     SimpleEnchantSpec,
 )
 from .trigger_participation import TriggerMultiplierSpec, WardSpec
+from .replacement.immutable import thaw_value
 from .util import stable_json
 
 
@@ -221,6 +222,8 @@ class GrantedActivatedAbilitySpec:
     mana: tuple[tuple[str, int], ...] = ()
     tap_source: bool = False
     sorcery_speed: bool = False
+    mana_ability: bool = False
+    fixed_mana_outputs: tuple[tuple[tuple[str, int], ...], ...] = ()
     schema_version: int = 1
 
     def __post_init__(self) -> None:
@@ -234,10 +237,24 @@ class GrantedActivatedAbilitySpec:
                 field,
                 _nonempty_string(getattr(self, field), field=field),
             )
-        for field in ("tap_source", "sorcery_speed"):
+        for field in ("tap_source", "sorcery_speed", "mana_ability"):
             if type(getattr(self, field)) is not bool:
                 raise AbilityFragmentError(f"{field} must be a boolean")
         object.__setattr__(self, "mana", _mana_pairs(self.mana))
+        if not isinstance(self.fixed_mana_outputs, tuple):
+            raise AbilityFragmentError("fixed mana outputs must be a tuple")
+        normalized_outputs = tuple(
+            _mana_pairs(output) for output in self.fixed_mana_outputs
+        )
+        if any(not output for output in normalized_outputs):
+            raise AbilityFragmentError("fixed mana outputs cannot be empty")
+        if len(normalized_outputs) != len(set(normalized_outputs)):
+            raise AbilityFragmentError("fixed mana outputs must be unique")
+        if normalized_outputs and not self.mana_ability:
+            raise AbilityFragmentError(
+                "fixed mana outputs require a mana ability"
+            )
+        object.__setattr__(self, "fixed_mana_outputs", normalized_outputs)
 
     @property
     def mana_bundle(self) -> dict[str, int]:
@@ -253,6 +270,10 @@ class GrantedActivatedAbilitySpec:
             "mana": self.mana_bundle,
             "tap_source": self.tap_source,
             "sorcery_speed": self.sorcery_speed,
+            "mana_ability": self.mana_ability,
+            "fixed_mana_outputs": [
+                dict(output) for output in self.fixed_mana_outputs
+            ],
         }
 
     @classmethod
@@ -268,6 +289,8 @@ class GrantedActivatedAbilitySpec:
             "mana",
             "tap_source",
             "sorcery_speed",
+            "mana_ability",
+            "fixed_mana_outputs",
         }
         if not isinstance(value, Mapping) or set(value) != expected:
             raise AbilityFragmentError(
@@ -276,6 +299,13 @@ class GrantedActivatedAbilitySpec:
         if not isinstance(value["mana"], Mapping):
             raise AbilityFragmentError(
                 "Granted activated-ability mana must be an object"
+            )
+        if not isinstance(value["fixed_mana_outputs"], list) or any(
+            not isinstance(output, Mapping)
+            for output in value["fixed_mana_outputs"]
+        ):
+            raise AbilityFragmentError(
+                "Granted activated-ability fixed outputs must be an array of objects"
             )
         return cls(
             schema_version=value["schema_version"],
@@ -286,6 +316,8 @@ class GrantedActivatedAbilitySpec:
             mana=value["mana"],
             tap_source=value["tap_source"],
             sorcery_speed=value["sorcery_speed"],
+            mana_ability=value["mana_ability"],
+            fixed_mana_outputs=tuple(value["fixed_mana_outputs"]),
         )
 
 
@@ -561,6 +593,7 @@ def ability_fragment_to_dict(
 def ability_fragment_from_dict(
     value: Mapping[str, Any],
 ) -> StaticAbilityFragment:
+    value = thaw_value(value)
     if not isinstance(value, Mapping) or set(value) != {"kind", "value"}:
         raise AbilityFragmentError(
             "Ability fragments require exactly kind and value"

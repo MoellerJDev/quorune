@@ -283,6 +283,7 @@ class ManaAbilityRuleTests(unittest.TestCase):
                 "oracle_text": (
                     "{T}, Sacrifice this token: Add one mana of any color."
                 ),
+                "activated_ability_profile": "tap_sac_any_color_mana_v1",
             },
         )[0]
         treasure = next(
@@ -348,6 +349,7 @@ class ManaAbilityRuleTests(unittest.TestCase):
                 "oracle_text": (
                     "{T}, Sacrifice this token: Add one mana of any color."
                 ),
+                "activated_ability_profile": "tap_sac_any_color_mana_v1",
             },
         )[0]
         treasure = next(

@@ -3,7 +3,11 @@ from __future__ import annotations
 from types import SimpleNamespace
 import unittest
 
-from quorune.abilities import ActivatedAbility
+from quorune.abilities import (
+    ActivatedAbility,
+    ActivationCondition,
+    ActivationConditionKind,
+)
 from quorune.characteristic_evaluation import type_parts
 from quorune.rules.activation import activation_condition_status
 
@@ -53,6 +57,13 @@ def _ability(kind: str) -> ActivatedAbility:
         effect_text=f"Add {{C}}. {line}",
         zones=("battlefield",),
         mana={},
+        activation_conditions=(
+            ActivationCondition(
+                ActivationConditionKind.CONTROLS_TYPE,
+                minimum=2,
+                card_type=kind,
+            ),
+        ),
     )
 
 

@@ -81,6 +81,13 @@ class LoyaltyAbilityRuleTests(unittest.TestCase):
                     "name": name,
                     "type_line": type_line,
                     "oracle_text": oracle_text,
+                    "activated_abilities": [
+                        ability.to_dict()
+                        for ability in parse_activated_abilities(
+                            card_name=name,
+                            oracle_text=oracle_text,
+                        )
+                    ],
                 },
             },
         )

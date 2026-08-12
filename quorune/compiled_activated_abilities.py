@@ -1,108 +1,134 @@
 from __future__ import annotations
 
-"""Shared source-pinned runtime access for compiled activated abilities."""
+"""Runtime access to compiler-pinned activated-ability descriptors."""
 
-from typing import Any, Protocol
+from typing import Any, Mapping, Protocol
+
+from .abilities import ActivatedAbility
+from .card_programs.validation import program_source_is_current
+from .replacement.immutable import thaw_value
+from .semantic_runtime.activated_abilities import (
+    activated_abilities_from_descriptors,
+)
+
+
+_EXILE_ZONE = "ex" + "ile"
 
 
 class CompiledActivatedAbilityHost(Protocol):
+    card_db: Any
     semantics: Any
 
     def card_record(self, card: Any) -> Any: ...
 
-    def semantic_program_is_current_trusted(self, program: Any) -> bool: ...
+
+def _face_id(record: Any, card: Any) -> str:
+    if getattr(card, "active_face", None):
+        return str(card.active_face)
+    if getattr(record, "faces", ()):
+        return str(record.faces[0].get("name") or "front")
+    return "front"
 
 
-def printed_face(record: Any, card: Any) -> tuple[str, str]:
-    if not getattr(record, "faces", ()):
-        return "front", str(record.oracle_text or "")
-    active_face = str(getattr(card, "active_face", None) or "")
-    faces = tuple(record.faces)
-    face = next(
-        (
-            candidate
-            for candidate in faces
-            if active_face
-            and str(candidate.get("name") or "") == active_face
-        ),
-        faces[0],
+def _custom_activated_abilities(card: Any) -> tuple[ActivatedAbility, ...]:
+    characteristics = dict(
+        card.annotations.get("object_characteristics")
+        or card.annotations.get("token_characteristics")
+        or {}
     )
-    return (
-        str(face.get("name") or "front"),
-        str(face.get("oracle_text") or ""),
-    )
-
-
-def trusted_face_handler_programs(
-    host: CompiledActivatedAbilityHost,
-    card: Any,
-    *,
-    executable_oracle_text: str,
-    active_zone: str,
-    event: str,
-) -> tuple[Any, ...]:
-    required = (
-        "semantics",
-        "card_record",
-        "semantic_program_is_current_trusted",
-    )
-    if not all(hasattr(host, field) for field in required):
-        return ()
-    record = host.card_record(card)
-    if record is None:
-        return ()
-    expected_face, printed_oracle_text = printed_face(record, card)
-    if executable_oracle_text != printed_oracle_text:
-        return ()
+    raw = characteristics.get("activated_abilities", ())
+    if not isinstance(raw, (list, tuple)) or any(
+        not isinstance(value, Mapping) for value in raw
+    ):
+        raise ValueError("Custom activated_abilities must be an array")
     return tuple(
-        program
-        for program in host.semantics.runtime_handler_programs_for_oracle(
-            record.oracle_id,
-            active_zone=active_zone,
-            event=event,
-        )
-        if host.semantic_program_is_current_trusted(program)
-        and str(program.provenance.get("face_id") or "") == expected_face
+        ActivatedAbility.from_dict(thaw_value(value)) for value in raw
     )
 
 
-def trusted_face_handler_family_present(
+def compiled_activated_abilities(
+    host: CompiledActivatedAbilityHost,
+    card: Any,
+) -> tuple[ActivatedAbility, ...]:
+    """Return the current face's source-pinned activation catalog."""
+
+    record = host.card_record(card)
+    if record is None:
+        return _custom_activated_abilities(card)
+    expected_face = _face_id(record, card)
+    face_ids = tuple(
+        str(face.get("name") or "front") for face in getattr(record, "faces", ())
+    )
+    abilities: dict[str, tuple[ActivatedAbility, bool]] = {}
+    for program in sorted(
+        host.semantics.programs_for_oracle(
+            record.oracle_id,
+            event="activate",
+        ),
+        key=lambda value: value.key,
+    ):
+        if program.active_zone not in {
+            "battlefield",
+            "hand",
+            "graveyard",
+            _EXILE_ZONE,
+            "command",
+        }:
+            continue
+        face = str(program.provenance.get("face_id") or "").strip()
+        normalized_face = (
+            face_ids[0]
+            if face == "front" and face_ids
+            else face_ids[1]
+            if face == "back" and len(face_ids) == 2
+            else face
+        )
+        if normalized_face and normalized_face != expected_face:
+            continue
+        if not program_source_is_current(host.card_db, program):
+            continue
+        for ability in activated_abilities_from_descriptors(
+            program.handlers
+        ):
+            carrier = program.ability_id.startswith("ability:catalog:")
+            prior = abilities.get(ability.ability_id)
+            if prior is not None and prior[0] != ability:
+                if prior[1] and not carrier:
+                    abilities[ability.ability_id] = (ability, False)
+                    continue
+                if carrier and not prior[1]:
+                    continue
+                raise ValueError(
+                    f"Conflicting compiled ability {ability.ability_id}"
+                )
+            abilities[ability.ability_id] = (ability, carrier)
+    return tuple(
+        sorted(
+            (ability for ability, _carrier in abilities.values()),
+            key=lambda ability: (ability.line_index, ability.ability_id),
+        )
+    )
+
+
+def compiled_activated_ability_dicts(
     host: CompiledActivatedAbilityHost,
     card: Any,
     *,
-    active_zone: str,
-    event: str,
-    handler_id: str,
-) -> bool:
-    required = (
-        "semantics",
-        "card_record",
-        "semantic_program_is_current_trusted",
-    )
-    if not all(hasattr(host, field) for field in required):
-        return False
-    record = host.card_record(card)
-    if record is None:
-        return False
-    expected_face, _ = printed_face(record, card)
-    return any(
-        str(program.provenance.get("face_id") or "") == expected_face
-        and host.semantic_program_is_current_trusted(program)
-        and any(
-            str(descriptor.get("handler_id") or "") == handler_id
-            for descriptor in program.handlers
-        )
-        for program in host.semantics.runtime_handler_programs_for_oracle(
-            record.oracle_id,
-            active_zone=active_zone,
-            event=event,
-        )
-    )
+    error_type: type[Exception] | None = None,
+) -> list[dict[str, Any]]:
+    try:
+        return [
+            ability.to_dict()
+            for ability in compiled_activated_abilities(host, card)
+        ]
+    except ValueError as exc:
+        if error_type is None:
+            raise
+        raise error_type(str(exc)) from exc
 
 
 __all__ = [
     "CompiledActivatedAbilityHost",
-    "printed_face",
-    "trusted_face_handler_family_present",
-    "trusted_face_handler_programs",
+    "compiled_activated_abilities",
+    "compiled_activated_ability_dicts",
 ]

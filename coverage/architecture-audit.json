@@ -8,7 +8,7 @@
       }
     ],
     "debt_trend": {
-      "baseline_commit": "f484b2ceb573cb0868da5c6bb4374cfcde3766f1",
+      "baseline_commit": "9432d0b6745a342d2be91e80aaea1a76b83c4687",
       "dimensions": {
         "card_named_helpers": {
           "baseline": 1,
@@ -21,9 +21,9 @@
           "delta": 0
         },
         "engine_logical_lines": {
-          "baseline": 8005,
-          "current": 8003,
-          "delta": -2
+          "baseline": 7997,
+          "current": 7994,
+          "delta": -3
         },
         "legacy_card_specific_operations": {
           "baseline": 5,
@@ -63,7 +63,7 @@
           "expression": "self.state = state",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 378,
+          "line": 379,
           "state_path": "<state-root>",
           "symbol": "__init__"
         },
@@ -72,7 +72,7 @@
           "expression": "self.state = snapshot",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 475,
+          "line": 476,
           "state_path": "<state-root>",
           "symbol": "transaction"
         },
@@ -81,7 +81,7 @@
           "expression": "self.state.turn_history = history",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 513,
+          "line": 514,
           "state_path": "turn_history",
           "symbol": "_record_turn_history"
         },
@@ -90,7 +90,7 @@
           "expression": "self.state.ref_counters[prefix] = self.state.ref_counters.get(prefix, 0) + 1",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 581,
+          "line": 582,
           "state_path": "ref_counters",
           "symbol": "_next_ref"
         },
@@ -99,7 +99,7 @@
           "expression": "self.state.event_sequence += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 607,
+          "line": 608,
           "state_path": "event_sequence",
           "symbol": "_log"
         },
@@ -108,7 +108,7 @@
           "expression": "self.state.events.append(event)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 624,
+          "line": 625,
           "state_path": "events",
           "symbol": "_log"
         },
@@ -117,7 +117,7 @@
           "expression": "self.state.monarch = seat",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 659,
+          "line": 660,
           "state_path": "monarch",
           "symbol": "become_monarch"
         },
@@ -126,7 +126,7 @@
           "expression": "self.state.revision += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 1649,
+          "line": 1653,
           "state_path": "revision",
           "symbol": "submit"
         },
@@ -135,7 +135,7 @@
           "expression": "self.state.mulligan_round += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 1828,
+          "line": 1852,
           "state_path": "mulligan_round",
           "symbol": "_issue_mulligan_declaration"
         },
@@ -144,7 +144,7 @@
           "expression": "self.state.combat = CombatState()",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2445,
+          "line": 2469,
           "state_path": "combat",
           "symbol": "_finish_combat_phase"
         },
@@ -153,7 +153,7 @@
           "expression": "self.state.annotations.append(annotation)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 2716,
+          "line": 2740,
           "state_path": "annotations",
           "symbol": "_pause_for_unsupported_semantic"
         },
@@ -162,7 +162,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2717,
+          "line": 2741,
           "state_path": "priority_player",
           "symbol": "_pause_for_unsupported_semantic"
         },
@@ -171,7 +171,7 @@
           "expression": "self.state.players[seat].stats.setdefault( \"restricted_mana\", {}, )",
           "file": "quorune/engine.py",
           "kind": "mutating_call:setdefault",
-          "line": 2806,
+          "line": 2798,
           "state_path": "players.stats",
           "symbol": "_restricted_mana"
         },
@@ -180,7 +180,7 @@
           "expression": "self.state.players[seat].stats[\"restricted_mana\"] = compact",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2830,
+          "line": 2822,
           "state_path": "players.stats",
           "symbol": "_store_restricted_mana"
         },
@@ -189,7 +189,7 @@
           "expression": "self.state.players[seat].stats.pop(\"restricted_mana\", None)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:pop",
-          "line": 2832,
+          "line": 2824,
           "state_path": "players.stats",
           "symbol": "_store_restricted_mana"
         },
@@ -198,7 +198,7 @@
           "expression": "self.state.players[seat].stats[ \"next_spell_uncounterable\" ] = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2886,
+          "line": 2878,
           "state_path": "players.stats",
           "symbol": "_apply_mana_spend"
         },
@@ -207,7 +207,7 @@
           "expression": "self.state.players[seat].mana_pool = pool",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 2897,
+          "line": 2889,
           "state_path": "players.mana_pool",
           "symbol": "_apply_mana_spend"
         },
@@ -216,7 +216,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3292,
+          "line": 3284,
           "state_path": "priority_player",
           "symbol": "_play_land"
         },
@@ -225,7 +225,7 @@
           "expression": "self.state.priority_passes = []",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3293,
+          "line": 3285,
           "state_path": "priority_passes",
           "symbol": "_play_land"
         },
@@ -234,7 +234,7 @@
           "expression": "self.state.priority_player = seat",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 3296,
+          "line": 3288,
           "state_path": "priority_player",
           "symbol": "_play_land"
         },
@@ -243,7 +243,7 @@
           "expression": "self.state.stack.remove(item)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:remove",
-          "line": 4298,
+          "line": 4287,
           "state_path": "stack",
           "symbol": "_finish_siege_defeated_resolution"
         },
@@ -252,7 +252,7 @@
           "expression": "self.state.stack.remove(item)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:remove",
-          "line": 4631,
+          "line": 4620,
           "state_path": "stack",
           "symbol": "_prepare_stack_resolution"
         },
@@ -261,7 +261,7 @@
           "expression": "self.state.cards[object_id] = card",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 4833,
+          "line": 4822,
           "state_path": "cards",
           "symbol": "_create_copy_object"
         },
@@ -270,7 +270,7 @@
           "expression": "self.state.players[controller].zones[zone].append( object_id )",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 4835,
+          "line": 4824,
           "state_path": "players.zones",
           "symbol": "_create_copy_object"
         },
@@ -279,7 +279,7 @@
           "expression": "self.state.stack.append(copied)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 4968,
+          "line": 4957,
           "state_path": "stack",
           "symbol": "_copy_stack_item"
         },
@@ -288,7 +288,7 @@
           "expression": "self.state.combat.attackers_declared = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 6619,
+          "line": 6608,
           "state_path": "combat.attackers_declared",
           "symbol": "_issue_attackers"
         },
@@ -297,7 +297,7 @@
           "expression": "self.state.combat.defending_players = [ seat for seat in self.active_seats if seat != active ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 6620,
+          "line": 6609,
           "state_path": "combat.defending_players",
           "symbol": "_issue_attackers"
         },
@@ -306,7 +306,7 @@
           "expression": "self.state.combat.attackers_declared = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 6933,
+          "line": 6922,
           "state_path": "combat.attackers_declared",
           "symbol": "_complete_attackers"
         },
@@ -315,7 +315,7 @@
           "expression": "self.state.combat.had_attacking_creature = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 6935,
+          "line": 6924,
           "state_path": "combat.had_attacking_creature",
           "symbol": "_complete_attackers"
         },
@@ -324,7 +324,7 @@
           "expression": "self.state.combat.defending_players = [ seat for seat in self.active_seats if seat != active ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 6936,
+          "line": 6925,
           "state_path": "combat.defending_players",
           "symbol": "_complete_attackers"
         },
@@ -333,7 +333,7 @@
           "expression": "self.state.combat.blockers_declared = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 7043,
+          "line": 7032,
           "state_path": "combat.blockers_declared",
           "symbol": "_begin_blocker_decisions"
         },
@@ -342,7 +342,7 @@
           "expression": "self.state.combat.blocker_cursor = 0",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 7046,
+          "line": 7035,
           "state_path": "combat.blocker_cursor",
           "symbol": "_begin_blocker_decisions"
         },
@@ -351,7 +351,7 @@
           "expression": "self.state.combat.blockers_declared = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 7052,
+          "line": 7041,
           "state_path": "combat.blockers_declared",
           "symbol": "_issue_next_blocker"
         },
@@ -360,7 +360,7 @@
           "expression": "self.state.combat.blocker_cursor += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 7097,
+          "line": 7086,
           "state_path": "combat.blocker_cursor",
           "symbol": "_issue_next_blocker"
         },
@@ -369,7 +369,7 @@
           "expression": "self.state.combat.blocker_cursor += 1",
           "file": "quorune/engine.py",
           "kind": "augmented_assignment",
-          "line": 7241,
+          "line": 7230,
           "state_path": "combat.blocker_cursor",
           "symbol": "_complete_blockers"
         },
@@ -378,7 +378,7 @@
           "expression": "self.state.combat.damage_assignments.extend(declared)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:extend",
-          "line": 7552,
+          "line": 7541,
           "state_path": "combat.damage_assignments",
           "symbol": "_apply_combat_assignments"
         },
@@ -387,7 +387,7 @@
           "expression": "self.state.stack = [ item for item in self.state.stack if item.card_object_id != card.object_id ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8063,
+          "line": 8052,
           "state_path": "stack",
           "symbol": "_stabilize"
         },
@@ -396,7 +396,7 @@
           "expression": "self.state.eliminated_players.append(seat)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 8245,
+          "line": 8234,
           "state_path": "eliminated_players",
           "symbol": "_eliminate_players"
         },
@@ -405,7 +405,7 @@
           "expression": "self.state.stack = [item for item in self.state.stack if item.card_object_id != card.object_id]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8258,
+          "line": 8247,
           "state_path": "stack",
           "symbol": "_eliminate_players"
         },
@@ -414,7 +414,7 @@
           "expression": "self.state.stack = [item for item in self.state.stack if item.controller != seat or item.card_object_id is not None]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8289,
+          "line": 8278,
           "state_path": "stack",
           "symbol": "_eliminate_players"
         },
@@ -423,7 +423,7 @@
           "expression": "self.state.extra_turns = [turn for turn in self.state.extra_turns if turn.player != seat]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8290,
+          "line": 8279,
           "state_path": "extra_turns",
           "symbol": "_eliminate_players"
         },
@@ -432,7 +432,7 @@
           "expression": "self.state.priority_passes = [passed for passed in self.state.priority_passes if passed != seat]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8291,
+          "line": 8280,
           "state_path": "priority_passes",
           "symbol": "_eliminate_players"
         },
@@ -441,7 +441,7 @@
           "expression": "self.state.monarch = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8298,
+          "line": 8287,
           "state_path": "monarch",
           "symbol": "_eliminate_players"
         },
@@ -450,7 +450,7 @@
           "expression": "self.state.combat.defending_players = [ seat for seat in self.state.combat.defending_players if seat in remaining ]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8329,
+          "line": 8318,
           "state_path": "combat.defending_players",
           "symbol": "_eliminate_players"
         },
@@ -459,7 +459,7 @@
           "expression": "self.state.game_over = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8335,
+          "line": 8324,
           "state_path": "game_over",
           "symbol": "_eliminate_players"
         },
@@ -468,7 +468,7 @@
           "expression": "self.state.winner = remaining[0]",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8336,
+          "line": 8325,
           "state_path": "winner",
           "symbol": "_eliminate_players"
         },
@@ -477,7 +477,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8337,
+          "line": 8326,
           "state_path": "priority_player",
           "symbol": "_eliminate_players"
         },
@@ -486,7 +486,7 @@
           "expression": "self.state.game_over = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8341,
+          "line": 8330,
           "state_path": "game_over",
           "symbol": "_eliminate_players"
         },
@@ -495,7 +495,7 @@
           "expression": "self.state.draw = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8342,
+          "line": 8331,
           "state_path": "draw",
           "symbol": "_eliminate_players"
         },
@@ -504,7 +504,7 @@
           "expression": "self.state.priority_player = None",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8343,
+          "line": 8332,
           "state_path": "priority_player",
           "symbol": "_eliminate_players"
         },
@@ -513,7 +513,7 @@
           "expression": "self.state.priority_player = self._next_active_after(unique[-1])",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8347,
+          "line": 8336,
           "state_path": "priority_player",
           "symbol": "_eliminate_players"
         },
@@ -522,7 +522,7 @@
           "expression": "self.state.cards[object_id] = emblem",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8468,
+          "line": 8457,
           "state_path": "cards",
           "symbol": "create_emblem"
         },
@@ -531,7 +531,7 @@
           "expression": "self.state.players[owner].zones[\"command\"].append(object_id)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 8469,
+          "line": 8458,
           "state_path": "players.zones",
           "symbol": "create_emblem"
         },
@@ -540,7 +540,7 @@
           "expression": "self.state.players[owner].stats[\"emblem_objects_v1\"] = True",
           "file": "quorune/engine.py",
           "kind": "assignment",
-          "line": 8470,
+          "line": 8459,
           "state_path": "players.stats",
           "symbol": "create_emblem"
         },
@@ -549,7 +549,7 @@
           "expression": "self.state.players[old].zones[\"battlefield\"].remove(object_id)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:remove",
-          "line": 8533,
+          "line": 8522,
           "state_path": "players.zones",
           "symbol": "change_control"
         },
@@ -558,7 +558,7 @@
           "expression": "self.state.players[new_controller].zones[\"battlefield\"].append(object_id)",
           "file": "quorune/engine.py",
           "kind": "mutating_call:append",
-          "line": 8534,
+          "line": 8523,
           "state_path": "players.zones",
           "symbol": "change_control"
         },
@@ -904,7 +904,7 @@
             "symbol": "__init__"
           },
           "kind": "assignment",
-          "line": 378,
+          "line": 379,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "<state-root>",
           "subsystems": [
@@ -924,7 +924,7 @@
             "symbol": "_apply_combat_assignments"
           },
           "kind": "mutating_call:extend",
-          "line": 7552,
+          "line": 7541,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.damage_assignments",
           "subsystems": [
@@ -944,7 +944,7 @@
             "symbol": "_apply_mana_spend"
           },
           "kind": "assignment",
-          "line": 2897,
+          "line": 2889,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.mana_pool",
           "subsystems": [
@@ -964,7 +964,7 @@
             "symbol": "_apply_mana_spend"
           },
           "kind": "assignment",
-          "line": 2886,
+          "line": 2878,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.stats",
           "subsystems": [
@@ -984,7 +984,7 @@
             "symbol": "_begin_blocker_decisions"
           },
           "kind": "assignment",
-          "line": 7046,
+          "line": 7035,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.blocker_cursor",
           "subsystems": [
@@ -1004,7 +1004,7 @@
             "symbol": "_begin_blocker_decisions"
           },
           "kind": "assignment",
-          "line": 7043,
+          "line": 7032,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.blockers_declared",
           "subsystems": [
@@ -1024,7 +1024,7 @@
             "symbol": "_complete_attackers"
           },
           "kind": "assignment",
-          "line": 6933,
+          "line": 6922,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.attackers_declared",
           "subsystems": [
@@ -1044,7 +1044,7 @@
             "symbol": "_complete_attackers"
           },
           "kind": "assignment",
-          "line": 6936,
+          "line": 6925,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.defending_players",
           "subsystems": [
@@ -1064,7 +1064,7 @@
             "symbol": "_complete_attackers"
           },
           "kind": "assignment",
-          "line": 6935,
+          "line": 6924,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.had_attacking_creature",
           "subsystems": [
@@ -1084,7 +1084,7 @@
             "symbol": "_complete_blockers"
           },
           "kind": "augmented_assignment",
-          "line": 7241,
+          "line": 7230,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.blocker_cursor",
           "subsystems": [
@@ -1104,7 +1104,7 @@
             "symbol": "_copy_stack_item"
           },
           "kind": "mutating_call:append",
-          "line": 4968,
+          "line": 4957,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "stack",
           "subsystems": [
@@ -1124,7 +1124,7 @@
             "symbol": "_create_copy_object"
           },
           "kind": "assignment",
-          "line": 4833,
+          "line": 4822,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "cards",
           "subsystems": [
@@ -1144,7 +1144,7 @@
             "symbol": "_create_copy_object"
           },
           "kind": "mutating_call:append",
-          "line": 4835,
+          "line": 4824,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.zones",
           "subsystems": [
@@ -1164,7 +1164,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8329,
+          "line": 8318,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.defending_players",
           "subsystems": [
@@ -1184,7 +1184,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8342,
+          "line": 8331,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "draw",
           "subsystems": [
@@ -1204,7 +1204,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8290,
+          "line": 8279,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "extra_turns",
           "subsystems": [
@@ -1224,7 +1224,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8335,
+          "line": 8324,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "game_over",
           "subsystems": [
@@ -1244,7 +1244,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8341,
+          "line": 8330,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "game_over",
           "subsystems": [
@@ -1264,7 +1264,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8298,
+          "line": 8287,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "monarch",
           "subsystems": [
@@ -1284,7 +1284,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8291,
+          "line": 8280,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "priority_passes",
           "subsystems": [
@@ -1304,7 +1304,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8337,
+          "line": 8326,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "priority_player",
           "subsystems": [
@@ -1324,7 +1324,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8343,
+          "line": 8332,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "priority_player",
           "subsystems": [
@@ -1344,7 +1344,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8347,
+          "line": 8336,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "priority_player",
           "subsystems": [
@@ -1364,7 +1364,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8258,
+          "line": 8247,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "stack",
           "subsystems": [
@@ -1384,7 +1384,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8289,
+          "line": 8278,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "stack",
           "subsystems": [
@@ -1404,7 +1404,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "assignment",
-          "line": 8336,
+          "line": 8325,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "winner",
           "subsystems": [
@@ -1424,7 +1424,7 @@
             "symbol": "_eliminate_players"
           },
           "kind": "mutating_call:append",
-          "line": 8245,
+          "line": 8234,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "eliminated_players",
           "subsystems": [
@@ -1444,7 +1444,7 @@
             "symbol": "_finish_combat_phase"
           },
           "kind": "assignment",
-          "line": 2445,
+          "line": 2469,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat",
           "subsystems": [
@@ -1464,7 +1464,7 @@
             "symbol": "_finish_siege_defeated_resolution"
           },
           "kind": "mutating_call:remove",
-          "line": 4298,
+          "line": 4287,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "stack",
           "subsystems": [
@@ -1484,7 +1484,7 @@
             "symbol": "_issue_attackers"
           },
           "kind": "assignment",
-          "line": 6619,
+          "line": 6608,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.attackers_declared",
           "subsystems": [
@@ -1504,7 +1504,7 @@
             "symbol": "_issue_attackers"
           },
           "kind": "assignment",
-          "line": 6620,
+          "line": 6609,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.defending_players",
           "subsystems": [
@@ -1524,7 +1524,7 @@
             "symbol": "_issue_mulligan_declaration"
           },
           "kind": "augmented_assignment",
-          "line": 1828,
+          "line": 1852,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "mulligan_round",
           "subsystems": [
@@ -1544,7 +1544,7 @@
             "symbol": "_issue_next_blocker"
           },
           "kind": "assignment",
-          "line": 7052,
+          "line": 7041,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.blockers_declared",
           "subsystems": [
@@ -1564,7 +1564,7 @@
             "symbol": "_issue_next_blocker"
           },
           "kind": "augmented_assignment",
-          "line": 7097,
+          "line": 7086,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "combat.blocker_cursor",
           "subsystems": [
@@ -1584,7 +1584,7 @@
             "symbol": "_log"
           },
           "kind": "augmented_assignment",
-          "line": 607,
+          "line": 608,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "event_sequence",
           "subsystems": [
@@ -1604,7 +1604,7 @@
             "symbol": "_log"
           },
           "kind": "mutating_call:append",
-          "line": 624,
+          "line": 625,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "events",
           "subsystems": [
@@ -1624,7 +1624,7 @@
             "symbol": "_next_ref"
           },
           "kind": "assignment",
-          "line": 581,
+          "line": 582,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "ref_counters",
           "subsystems": [
@@ -1644,7 +1644,7 @@
             "symbol": "_pause_for_unsupported_semantic"
           },
           "kind": "assignment",
-          "line": 2717,
+          "line": 2741,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "priority_player",
           "subsystems": [
@@ -1664,7 +1664,7 @@
             "symbol": "_pause_for_unsupported_semantic"
           },
           "kind": "mutating_call:append",
-          "line": 2716,
+          "line": 2740,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "annotations",
           "subsystems": [
@@ -1684,7 +1684,7 @@
             "symbol": "_play_land"
           },
           "kind": "assignment",
-          "line": 3293,
+          "line": 3285,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "priority_passes",
           "subsystems": [
@@ -1704,7 +1704,7 @@
             "symbol": "_play_land"
           },
           "kind": "assignment",
-          "line": 3292,
+          "line": 3284,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "priority_player",
           "subsystems": [
@@ -1724,7 +1724,7 @@
             "symbol": "_play_land"
           },
           "kind": "assignment",
-          "line": 3296,
+          "line": 3288,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "priority_player",
           "subsystems": [
@@ -1744,7 +1744,7 @@
             "symbol": "_prepare_stack_resolution"
           },
           "kind": "mutating_call:remove",
-          "line": 4631,
+          "line": 4620,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "stack",
           "subsystems": [
@@ -1764,7 +1764,7 @@
             "symbol": "_record_turn_history"
           },
           "kind": "assignment",
-          "line": 513,
+          "line": 514,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "turn_history",
           "subsystems": [
@@ -1784,7 +1784,7 @@
             "symbol": "_restricted_mana"
           },
           "kind": "mutating_call:setdefault",
-          "line": 2806,
+          "line": 2798,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.stats",
           "subsystems": [
@@ -1804,7 +1804,7 @@
             "symbol": "_stabilize"
           },
           "kind": "assignment",
-          "line": 8063,
+          "line": 8052,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "stack",
           "subsystems": [
@@ -1824,7 +1824,7 @@
             "symbol": "_store_restricted_mana"
           },
           "kind": "assignment",
-          "line": 2830,
+          "line": 2822,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.stats",
           "subsystems": [
@@ -1844,7 +1844,7 @@
             "symbol": "_store_restricted_mana"
           },
           "kind": "mutating_call:pop",
-          "line": 2832,
+          "line": 2824,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.stats",
           "subsystems": [
@@ -1864,7 +1864,7 @@
             "symbol": "become_monarch"
           },
           "kind": "assignment",
-          "line": 659,
+          "line": 660,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "monarch",
           "subsystems": [
@@ -1884,7 +1884,7 @@
             "symbol": "change_control"
           },
           "kind": "mutating_call:append",
-          "line": 8534,
+          "line": 8523,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.zones",
           "subsystems": [
@@ -1904,7 +1904,7 @@
             "symbol": "change_control"
           },
           "kind": "mutating_call:remove",
-          "line": 8533,
+          "line": 8522,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.zones",
           "subsystems": [
@@ -1924,7 +1924,7 @@
             "symbol": "create_emblem"
           },
           "kind": "assignment",
-          "line": 8468,
+          "line": 8457,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "cards",
           "subsystems": [
@@ -1944,7 +1944,7 @@
             "symbol": "create_emblem"
           },
           "kind": "assignment",
-          "line": 8470,
+          "line": 8459,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.stats",
           "subsystems": [
@@ -1964,7 +1964,7 @@
             "symbol": "create_emblem"
           },
           "kind": "mutating_call:append",
-          "line": 8469,
+          "line": 8458,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "players.zones",
           "subsystems": [
@@ -1984,7 +1984,7 @@
             "symbol": "submit"
           },
           "kind": "augmented_assignment",
-          "line": 1649,
+          "line": 1653,
           "owner_rationale": "The legacy engine still mutates this represented state directly.",
           "state_path": "revision",
           "subsystems": [
@@ -2004,7 +2004,7 @@
             "symbol": "transaction"
           },
           "kind": "assignment",
-          "line": 475,
+          "line": 476,
           "owner_rationale": "Authoritative transaction rollback replaces the state root.",
           "state_path": "<state-root>",
           "subsystems": [
@@ -2576,9 +2576,9 @@
     "engine": {
       "cross_subsystem_responsibility_count": 7,
       "dunder_methods": 1,
-      "logical_lines": 8003,
-      "physical_lines": 8564,
-      "private_methods": 220,
+      "logical_lines": 7994,
+      "physical_lines": 8553,
+      "private_methods": 218,
       "public_methods": 27,
       "responsibility_groups": [
         {
@@ -2627,7 +2627,7 @@
         },
         {
           "id": "casting_activation_and_costs",
-          "method_count": 46,
+          "method_count": 44,
           "methods": [
             "_ability_availability",
             "_ability_choice_payable",
@@ -2643,7 +2643,6 @@
             "_cast_cost_options",
             "_clear_mana",
             "_compiled_land_play_permission",
-            "_compiled_mana_restriction",
             "_compiled_printed_cost",
             "_compiled_printed_cost_options",
             "_compiled_zone_cast_permission",
@@ -2654,7 +2653,6 @@
             "_exile_cost_candidates",
             "_land_play_faces",
             "_loyalty_cost_modifier_present",
-            "_mana_mode_has_compiled_activation_condition",
             "_mana_modes_for_ability",
             "_mana_output_for_ability",
             "_mana_restriction_allows",
@@ -2883,7 +2881,7 @@
           "module": "quorune.util"
         },
         {
-          "fan_in": 68,
+          "fan_in": 73,
           "fan_out": 1,
           "module": "quorune.replacement.immutable"
         },
@@ -2893,7 +2891,7 @@
           "module": "quorune.model"
         },
         {
-          "fan_in": 44,
+          "fan_in": 45,
           "fan_out": 0,
           "module": "quorune.semantic_runtime.context"
         },
@@ -2913,14 +2911,19 @@
           "module": "quorune.semantic_runtime.intents"
         },
         {
-          "fan_in": 27,
+          "fan_in": 28,
           "fan_out": 1,
           "module": "quorune.carddb"
         },
         {
-          "fan_in": 24,
-          "fan_out": 3,
+          "fan_in": 26,
+          "fan_out": 4,
           "module": "quorune.ability_fragments"
+        },
+        {
+          "fan_in": 24,
+          "fan_out": 7,
+          "module": "quorune.abilities"
         },
         {
           "fan_in": 24,
@@ -2928,14 +2931,14 @@
           "module": "quorune.semantic_choices.model"
         },
         {
-          "fan_in": 22,
+          "fan_in": 23,
           "fan_out": 1,
-          "module": "quorune.replacement_effects"
+          "module": "quorune.semantic_runtime.component_registry"
         },
         {
           "fan_in": 22,
           "fan_out": 1,
-          "module": "quorune.semantic_runtime.component_registry"
+          "module": "quorune.replacement_effects"
         },
         {
           "fan_in": 21,
@@ -2946,22 +2949,17 @@
           "fan_in": 19,
           "fan_out": 1,
           "module": "quorune.object_predicate"
-        },
-        {
-          "fan_in": 19,
-          "fan_out": 2,
-          "module": "quorune.object_query"
         }
       ],
       "highest_fan_out": [
         {
           "fan_in": 8,
-          "fan_out": 90,
+          "fan_out": 91,
           "module": "quorune.engine"
         },
         {
           "fan_in": 17,
-          "fan_out": 35,
+          "fan_out": 36,
           "module": "quorune.semantic_runtime"
         },
         {
@@ -2976,13 +2974,18 @@
         },
         {
           "fan_in": 1,
+          "fan_out": 21,
+          "module": "quorune.semantic_runtime.components"
+        },
+        {
+          "fan_in": 2,
           "fan_out": 20,
-          "module": "quorune.semantic_choices.intent_host"
+          "module": "quorune.compiler.program_generation"
         },
         {
           "fan_in": 1,
           "fan_out": 20,
-          "module": "quorune.semantic_runtime.components"
+          "module": "quorune.semantic_choices.intent_host"
         },
         {
           "fan_in": 1,
@@ -2993,11 +2996,6 @@
           "fan_in": 5,
           "fan_out": 19,
           "module": "quorune.semantic_choices.defaults"
-        },
-        {
-          "fan_in": 2,
-          "fan_out": 18,
-          "module": "quorune.compiler.program_generation"
         },
         {
           "fan_in": 2,
@@ -3030,7 +3028,7 @@
           "module": "quorune.semantic_choices.engine_coordination"
         }
       ],
-      "internal_edges": 1604,
+      "internal_edges": 1631,
       "modules": [
         {
           "fan_in": 2,
@@ -3043,19 +3041,24 @@
           "module": "quorune.__main__"
         },
         {
-          "fan_in": 17,
-          "fan_out": 6,
+          "fan_in": 24,
+          "fan_out": 7,
           "module": "quorune.abilities"
         },
         {
           "fan_in": 1,
-          "fan_out": 4,
+          "fan_out": 5,
           "module": "quorune.ability_fragment_host"
         },
         {
-          "fan_in": 24,
-          "fan_out": 3,
+          "fan_in": 26,
+          "fan_out": 4,
           "module": "quorune.ability_fragments"
+        },
+        {
+          "fan_in": 2,
+          "fan_out": 0,
+          "module": "quorune.activated_ability_descriptor"
         },
         {
           "fan_in": 6,
@@ -3179,7 +3182,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 0,
+          "fan_out": 1,
           "module": "quorune.card_overrides.game_record_v3"
         },
         {
@@ -3189,7 +3192,7 @@
         },
         {
           "fan_in": 4,
-          "fan_out": 7,
+          "fan_out": 8,
           "module": "quorune.card_programs.adapters"
         },
         {
@@ -3214,16 +3217,16 @@
         },
         {
           "fan_in": 3,
-          "fan_out": 1,
+          "fan_out": 2,
           "module": "quorune.card_programs.trust"
         },
         {
-          "fan_in": 2,
+          "fan_in": 3,
           "fan_out": 3,
           "module": "quorune.card_programs.validation"
         },
         {
-          "fan_in": 27,
+          "fan_in": 28,
           "fan_out": 1,
           "module": "quorune.carddb"
         },
@@ -3239,7 +3242,7 @@
         },
         {
           "fan_in": 12,
-          "fan_out": 5,
+          "fan_out": 7,
           "module": "quorune.characteristic_evaluation"
         },
         {
@@ -3343,8 +3346,8 @@
           "module": "quorune.compiled_ability_fragments"
         },
         {
-          "fan_in": 3,
-          "fan_out": 0,
+          "fan_in": 2,
+          "fan_out": 4,
           "module": "quorune.compiled_activated_abilities"
         },
         {
@@ -3358,21 +3361,6 @@
           "module": "quorune.compiled_cast_timing"
         },
         {
-          "fan_in": 1,
-          "fan_out": 3,
-          "module": "quorune.compiled_crew_abilities"
-        },
-        {
-          "fan_in": 1,
-          "fan_out": 3,
-          "module": "quorune.compiled_cycling_abilities"
-        },
-        {
-          "fan_in": 1,
-          "fan_out": 5,
-          "module": "quorune.compiled_mana_abilities"
-        },
-        {
           "fan_in": 0,
           "fan_out": 0,
           "module": "quorune.compiler"
@@ -3381,6 +3369,11 @@
           "fan_in": 2,
           "fan_out": 5,
           "module": "quorune.compiler.ability_keyword_fragments"
+        },
+        {
+          "fan_in": 2,
+          "fan_out": 11,
+          "module": "quorune.compiler.activated_ability_catalog"
         },
         {
           "fan_in": 3,
@@ -3554,7 +3547,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 18,
+          "fan_out": 20,
           "module": "quorune.compiler.program_generation"
         },
         {
@@ -3628,8 +3621,8 @@
           "module": "quorune.compiler.zone_templates"
         },
         {
-          "fan_in": 8,
-          "fan_out": 3,
+          "fan_in": 9,
+          "fan_out": 4,
           "module": "quorune.continuous_effect_model"
         },
         {
@@ -3639,7 +3632,7 @@
         },
         {
           "fan_in": 9,
-          "fan_out": 4,
+          "fan_out": 6,
           "module": "quorune.continuous_effects"
         },
         {
@@ -3688,7 +3681,7 @@
           "module": "quorune.creature_subtypes"
         },
         {
-          "fan_in": 6,
+          "fan_in": 5,
           "fan_out": 5,
           "module": "quorune.crew"
         },
@@ -3698,7 +3691,7 @@
           "module": "quorune.cumulative_upkeep"
         },
         {
-          "fan_in": 4,
+          "fan_in": 3,
           "fan_out": 4,
           "module": "quorune.cycling_abilities"
         },
@@ -3839,7 +3832,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 7,
+          "fan_out": 8,
           "module": "quorune.effect_runtime.damage_life_and_turns"
         },
         {
@@ -3879,7 +3872,7 @@
         },
         {
           "fan_in": 8,
-          "fan_out": 90,
+          "fan_out": 91,
           "module": "quorune.engine"
         },
         {
@@ -3928,7 +3921,7 @@
           "module": "quorune.fixed_damage_set_model"
         },
         {
-          "fan_in": 10,
+          "fan_in": 11,
           "fan_out": 4,
           "module": "quorune.fixed_mana_abilities"
         },
@@ -3989,7 +3982,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 6,
+          "fan_out": 5,
           "module": "quorune.mana_source_discovery"
         },
         {
@@ -4153,7 +4146,7 @@
           "module": "quorune.replacement.application"
         },
         {
-          "fan_in": 68,
+          "fan_in": 73,
           "fan_out": 1,
           "module": "quorune.replacement.immutable"
         },
@@ -4284,7 +4277,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 9,
+          "fan_out": 6,
           "module": "quorune.rules.activation.query"
         },
         {
@@ -4599,13 +4592,18 @@
         },
         {
           "fan_in": 17,
-          "fan_out": 35,
+          "fan_out": 36,
           "module": "quorune.semantic_runtime"
         },
         {
           "fan_in": 4,
           "fan_out": 6,
           "module": "quorune.semantic_runtime.ability_fragments"
+        },
+        {
+          "fan_in": 6,
+          "fan_out": 3,
+          "module": "quorune.semantic_runtime.activated_abilities"
         },
         {
           "fan_in": 2,
@@ -4633,13 +4631,13 @@
           "module": "quorune.semantic_runtime.color_set_mana_abilities"
         },
         {
-          "fan_in": 22,
+          "fan_in": 23,
           "fan_out": 1,
           "module": "quorune.semantic_runtime.component_registry"
         },
         {
           "fan_in": 1,
-          "fan_out": 20,
+          "fan_out": 21,
           "module": "quorune.semantic_runtime.components"
         },
         {
@@ -4648,13 +4646,13 @@
           "module": "quorune.semantic_runtime.conditional_entry_counters"
         },
         {
-          "fan_in": 44,
+          "fan_in": 45,
           "fan_out": 0,
           "module": "quorune.semantic_runtime.context"
         },
         {
           "fan_in": 3,
-          "fan_out": 7,
+          "fan_out": 8,
           "module": "quorune.semantic_runtime.continuous_components"
         },
         {
@@ -4809,7 +4807,7 @@
         },
         {
           "fan_in": 2,
-          "fan_out": 5,
+          "fan_out": 6,
           "module": "quorune.semantic_runtime.token_replacements"
         },
         {
@@ -4833,7 +4831,7 @@
           "module": "quorune.semantic_runtime.zone_replacements"
         },
         {
-          "fan_in": 18,
+          "fan_in": 19,
           "fan_out": 5,
           "module": "quorune.semantics"
         },
@@ -4861,6 +4859,11 @@
           "fan_in": 2,
           "fan_out": 5,
           "module": "quorune.stack_resolution"
+        },
+        {
+          "fan_in": 2,
+          "fan_out": 4,
+          "module": "quorune.standard_token_abilities"
         },
         {
           "fan_in": 2,
@@ -4909,7 +4912,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 9,
+          "fan_out": 10,
           "module": "quorune.token_creation"
         },
         {
@@ -5066,7 +5069,7 @@
       "covered_high_risk_pairs": 25,
       "covered_piece_pairs": 445,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "eaafcecc0239040e1b1d8e1c806a25a4d83ed1a5c2f72efe0958ca30715f24d1",
+      "source_fingerprint": "4632e2265ff781e5684da8125b148953831a6aa63c8433c3fab5c0c516002204",
       "uncovered_high_risk_pairs": 80
     },
     "migration_queue": [],
@@ -5142,7 +5145,7 @@
       "structural_identity": "file, nearest symbol, literal value, conditional use"
     },
     "production": {
-      "file_count": 421,
+      "file_count": 422,
       "largest_functions_and_methods": [
         {
           "end_line": 1645,
@@ -5233,10 +5236,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 2422,
+          "end_line": 2446,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 2117,
+          "line": 2141,
           "logical_lines": 280,
           "name": "_enter_step",
           "physical_lines": 306,
@@ -5244,10 +5247,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 4753,
+          "end_line": 4742,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 4482,
+          "line": 4471,
           "logical_lines": 269,
           "name": "_prepare_stack_resolution",
           "physical_lines": 272,
@@ -5277,10 +5280,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 8233,
+          "end_line": 8222,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 7978,
+          "line": 7967,
           "logical_lines": 248,
           "name": "_stabilize",
           "physical_lines": 256,
@@ -5321,10 +5324,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 6298,
+          "end_line": 6287,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 6066,
+          "line": 6055,
           "logical_lines": 232,
           "name": "_declaration_restrictions",
           "physical_lines": 233,
@@ -5354,10 +5357,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 1040,
+          "end_line": 1041,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 843,
+          "line": 844,
           "logical_lines": 194,
           "name": "_effective_card_data",
           "physical_lines": 198,
@@ -5409,10 +5412,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 7005,
+          "end_line": 6994,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 6841,
+          "line": 6830,
           "logical_lines": 164,
           "name": "_complete_attackers",
           "physical_lines": 165,
@@ -5442,10 +5445,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 4480,
+          "end_line": 4469,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 4319,
+          "line": 4308,
           "logical_lines": 156,
           "name": "_begin_siege_defeated_resolution",
           "physical_lines": 162,
@@ -5453,10 +5456,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 281,
+          "end_line": 295,
           "file": "quorune/card_programs/trust.py",
           "kind": "function",
-          "line": 128,
+          "line": 142,
           "logical_lines": 153,
           "name": "build_program_trust_closure",
           "physical_lines": 154,
@@ -5475,20 +5478,20 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 143043,
+      "logical_lines": 144297,
       "methods": {
-        "dunder": 395,
-        "private": 755,
-        "public": 1540,
-        "total": 2690
+        "dunder": 397,
+        "private": 746,
+        "public": 1550,
+        "total": 2693
       },
       "modules": [
         {
           "file": "quorune/engine.py",
-          "functions_and_methods": 251,
+          "functions_and_methods": 249,
           "language": "python",
-          "logical_lines": 8003,
-          "physical_lines": 8564
+          "logical_lines": 7994,
+          "physical_lines": 8553
         },
         {
           "file": "quorune/report.py",
@@ -5610,6 +5613,13 @@
           "physical_lines": 1194
         },
         {
+          "file": "quorune/compiler/program_generation.py",
+          "functions_and_methods": 45,
+          "language": "python",
+          "logical_lines": 1134,
+          "physical_lines": 1281
+        },
+        {
           "file": "quorune/semantic_runtime/intents.py",
           "functions_and_methods": 35,
           "language": "python",
@@ -5617,11 +5627,11 @@
           "physical_lines": 1272
         },
         {
-          "file": "quorune/compiler/program_generation.py",
-          "functions_and_methods": 44,
+          "file": "quorune/abilities.py",
+          "functions_and_methods": 36,
           "language": "python",
-          "logical_lines": 1086,
-          "physical_lines": 1231
+          "logical_lines": 1072,
+          "physical_lines": 1183
         },
         {
           "file": "quorune/rules/capabilities.py",
@@ -5753,8 +5763,8 @@
           "file": "quorune/token_creation.py",
           "functions_and_methods": 32,
           "language": "python",
-          "logical_lines": 847,
-          "physical_lines": 916
+          "logical_lines": 853,
+          "physical_lines": 922
         },
         {
           "file": "quorune/reusable_pieces/reporting.py",
@@ -5804,6 +5814,13 @@
           "language": "python",
           "logical_lines": 776,
           "physical_lines": 848
+        },
+        {
+          "file": "quorune/effect_runtime/damage_life_and_turns.py",
+          "functions_and_methods": 20,
+          "language": "python",
+          "logical_lines": 772,
+          "physical_lines": 835
         },
         {
           "file": "quorune/model.py",
@@ -5862,11 +5879,11 @@
           "physical_lines": 766
         },
         {
-          "file": "quorune/effect_runtime/damage_life_and_turns.py",
-          "functions_and_methods": 19,
+          "file": "quorune/ability_fragments.py",
+          "functions_and_methods": 33,
           "language": "python",
-          "logical_lines": 708,
-          "physical_lines": 768
+          "logical_lines": 705,
+          "physical_lines": 810
         },
         {
           "file": "quorune/trigger_processing.py",
@@ -5890,11 +5907,11 @@
           "physical_lines": 810
         },
         {
-          "file": "quorune/ability_fragments.py",
-          "functions_and_methods": 33,
+          "file": "quorune/semantics.py",
+          "functions_and_methods": 23,
           "language": "python",
-          "logical_lines": 672,
-          "physical_lines": 777
+          "logical_lines": 679,
+          "physical_lines": 738
         },
         {
           "file": "quorune/attack_counter_triggers.py",
@@ -5904,25 +5921,18 @@
           "physical_lines": 733
         },
         {
-          "file": "quorune/abilities.py",
-          "functions_and_methods": 21,
-          "language": "python",
-          "logical_lines": 665,
-          "physical_lines": 747
-        },
-        {
-          "file": "quorune/semantics.py",
-          "functions_and_methods": 22,
-          "language": "python",
-          "logical_lines": 664,
-          "physical_lines": 717
-        },
-        {
           "file": "quorune/semantic_choices/model.py",
           "functions_and_methods": 34,
           "language": "python",
           "logical_lines": 662,
           "physical_lines": 743
+        },
+        {
+          "file": "quorune/continuous_effect_model.py",
+          "functions_and_methods": 15,
+          "language": "python",
+          "logical_lines": 651,
+          "physical_lines": 703
         },
         {
           "file": "quorune/drawing/continuation.py",
@@ -5946,11 +5956,11 @@
           "physical_lines": 661
         },
         {
-          "file": "quorune/continuous_effect_model.py",
-          "functions_and_methods": 15,
+          "file": "quorune/semantic_runtime/continuous_components.py",
+          "functions_and_methods": 12,
           "language": "python",
-          "logical_lines": 639,
-          "physical_lines": 691
+          "logical_lines": 629,
+          "physical_lines": 671
         },
         {
           "file": "quorune/semantic_choices/engine_coordination.py",
@@ -6030,6 +6040,13 @@
           "physical_lines": 668
         },
         {
+          "file": "quorune/semantic_runtime/token_replacements.py",
+          "functions_and_methods": 17,
+          "language": "python",
+          "logical_lines": 594,
+          "physical_lines": 637
+        },
+        {
           "file": "quorune/semantic_runtime/draw_replacements.py",
           "functions_and_methods": 18,
           "language": "python",
@@ -6051,13 +6068,6 @@
           "physical_lines": 624
         },
         {
-          "file": "quorune/semantic_runtime/token_replacements.py",
-          "functions_and_methods": 17,
-          "language": "python",
-          "logical_lines": 575,
-          "physical_lines": 618
-        },
-        {
           "file": "quorune/compiler/draw_templates.py",
           "functions_and_methods": 10,
           "language": "python",
@@ -6070,6 +6080,13 @@
           "language": "python",
           "logical_lines": 563,
           "physical_lines": 601
+        },
+        {
+          "file": "quorune/semantic_runtime/__init__.py",
+          "functions_and_methods": 2,
+          "language": "python",
+          "logical_lines": 562,
+          "physical_lines": 570
         },
         {
           "file": "quorune/trigger_batches.py",
@@ -6098,13 +6115,6 @@
           "language": "python",
           "logical_lines": 543,
           "physical_lines": 603
-        },
-        {
-          "file": "quorune/semantic_runtime/__init__.py",
-          "functions_and_methods": 2,
-          "language": "python",
-          "logical_lines": 542,
-          "physical_lines": 550
         },
         {
           "file": "quorune/semantic_choices/payments.py",
@@ -6212,13 +6222,6 @@
           "physical_lines": 514
         },
         {
-          "file": "quorune/semantic_runtime/continuous_components.py",
-          "functions_and_methods": 10,
-          "language": "python",
-          "logical_lines": 474,
-          "physical_lines": 509
-        },
-        {
           "file": "quorune/runtime.py",
           "functions_and_methods": 25,
           "language": "python",
@@ -6240,6 +6243,20 @@
           "physical_lines": 474
         },
         {
+          "file": "quorune/continuous_effects.py",
+          "functions_and_methods": 10,
+          "language": "python",
+          "logical_lines": 444,
+          "physical_lines": 481
+        },
+        {
+          "file": "quorune/characteristic_evaluation.py",
+          "functions_and_methods": 9,
+          "language": "python",
+          "logical_lines": 441,
+          "physical_lines": 472
+        },
+        {
           "file": "quorune/life_change.py",
           "functions_and_methods": 19,
           "language": "python",
@@ -6254,13 +6271,6 @@
           "physical_lines": 481
         },
         {
-          "file": "quorune/continuous_effects.py",
-          "functions_and_methods": 10,
-          "language": "python",
-          "logical_lines": 422,
-          "physical_lines": 456
-        },
-        {
           "file": "quorune/color_set_mana_abilities.py",
           "functions_and_methods": 9,
           "language": "python",
@@ -6273,6 +6283,20 @@
           "language": "python",
           "logical_lines": 418,
           "physical_lines": 442
+        },
+        {
+          "file": "quorune/card_programs/adapters.py",
+          "functions_and_methods": 10,
+          "language": "python",
+          "logical_lines": 417,
+          "physical_lines": 448
+        },
+        {
+          "file": "quorune/compiler/activated_ability_catalog.py",
+          "functions_and_methods": 15,
+          "language": "python",
+          "logical_lines": 414,
+          "physical_lines": 464
         },
         {
           "file": "quorune/compiler/direct_target.py",
@@ -6317,32 +6341,11 @@
           "physical_lines": 443
         },
         {
-          "file": "quorune/card_programs/adapters.py",
-          "functions_and_methods": 10,
-          "language": "python",
-          "logical_lines": 401,
-          "physical_lines": 432
-        },
-        {
           "file": "quorune/compiler/spell_additional_cost_templates.py",
           "functions_and_methods": 21,
           "language": "python",
           "logical_lines": 391,
           "physical_lines": 444
-        },
-        {
-          "file": "quorune/characteristic_evaluation.py",
-          "functions_and_methods": 9,
-          "language": "python",
-          "logical_lines": 390,
-          "physical_lines": 421
-        },
-        {
-          "file": "quorune/mana_activation.py",
-          "functions_and_methods": 23,
-          "language": "python",
-          "logical_lines": 387,
-          "physical_lines": 423
         },
         {
           "file": "quorune/zone_trigger_events.py",
@@ -6371,6 +6374,13 @@
           "language": "python",
           "logical_lines": 380,
           "physical_lines": 455
+        },
+        {
+          "file": "quorune/mana_activation.py",
+          "functions_and_methods": 19,
+          "language": "python",
+          "logical_lines": 366,
+          "physical_lines": 401
         },
         {
           "file": "server/data.py",
@@ -6436,18 +6446,18 @@
           "physical_lines": 364
         },
         {
+          "file": "quorune/card_programs/trust.py",
+          "functions_and_methods": 8,
+          "language": "python",
+          "logical_lines": 344,
+          "physical_lines": 370
+        },
+        {
           "file": "quorune/state_based_execution.py",
           "functions_and_methods": 6,
           "language": "python",
           "logical_lines": 340,
           "physical_lines": 377
-        },
-        {
-          "file": "quorune/mana_ability_runtime.py",
-          "functions_and_methods": 9,
-          "language": "python",
-          "logical_lines": 334,
-          "physical_lines": 364
         },
         {
           "file": "quorune/relative_power_target.py",
@@ -6462,13 +6472,6 @@
           "language": "python",
           "logical_lines": 333,
           "physical_lines": 357
-        },
-        {
-          "file": "quorune/card_programs/trust.py",
-          "functions_and_methods": 7,
-          "language": "python",
-          "logical_lines": 332,
-          "physical_lines": 356
         },
         {
           "file": "quorune/compiler/continuous_templates.py",
@@ -6567,6 +6570,13 @@
           "language": "python",
           "logical_lines": 298,
           "physical_lines": 328
+        },
+        {
+          "file": "quorune/mana_ability_runtime.py",
+          "functions_and_methods": 14,
+          "language": "python",
+          "logical_lines": 297,
+          "physical_lines": 335
         },
         {
           "file": "quorune/compiler/destruction_templates.py",
@@ -6765,13 +6775,6 @@
           "physical_lines": 267
         },
         {
-          "file": "quorune/rules/activation/query.py",
-          "functions_and_methods": 6,
-          "language": "python",
-          "logical_lines": 225,
-          "physical_lines": 243
-        },
-        {
           "file": "quorune/semantic_runtime/draw_restrictions.py",
           "functions_and_methods": 11,
           "language": "python",
@@ -6940,11 +6943,11 @@
           "physical_lines": 208
         },
         {
-          "file": "quorune/mana_source_discovery.py",
-          "functions_and_methods": 14,
+          "file": "quorune/card_overrides/game_record_v3.py",
+          "functions_and_methods": 3,
           "language": "python",
-          "logical_lines": 186,
-          "physical_lines": 218
+          "logical_lines": 185,
+          "physical_lines": 211
         },
         {
           "file": "quorune/compiler/runtime_templates.py",
@@ -7069,8 +7072,8 @@
           "file": "quorune/effect_contracts.py",
           "functions_and_methods": 2,
           "language": "python",
-          "logical_lines": 162,
-          "physical_lines": 172
+          "logical_lines": 163,
+          "physical_lines": 173
         },
         {
           "file": "quorune/object_query.py",
@@ -7078,13 +7081,6 @@
           "language": "python",
           "logical_lines": 160,
           "physical_lines": 179
-        },
-        {
-          "file": "quorune/rules/activation/conditions.py",
-          "functions_and_methods": 4,
-          "language": "python",
-          "logical_lines": 160,
-          "physical_lines": 176
         },
         {
           "file": "quorune/semantic_runtime/component_registry.py",
@@ -7283,18 +7279,25 @@
           "physical_lines": 151
         },
         {
-          "file": "quorune/semantic_runtime/counter_removal_handlers.py",
-          "functions_and_methods": 2,
+          "file": "quorune/rules/activation/conditions.py",
+          "functions_and_methods": 5,
           "language": "python",
-          "logical_lines": 134,
-          "physical_lines": 147
+          "logical_lines": 135,
+          "physical_lines": 152
         },
         {
           "file": "quorune/shortcuts.py",
           "functions_and_methods": 2,
           "language": "python",
+          "logical_lines": 135,
+          "physical_lines": 150
+        },
+        {
+          "file": "quorune/semantic_runtime/counter_removal_handlers.py",
+          "functions_and_methods": 2,
+          "language": "python",
           "logical_lines": 134,
-          "physical_lines": 149
+          "physical_lines": 147
         },
         {
           "file": "quorune/combat_damage_engine_adapter.py",
@@ -7325,11 +7328,11 @@
           "physical_lines": 149
         },
         {
-          "file": "quorune/card_overrides/game_record_v3.py",
-          "functions_and_methods": 2,
+          "file": "quorune/mana_source_discovery.py",
+          "functions_and_methods": 10,
           "language": "python",
-          "logical_lines": 130,
-          "physical_lines": 144
+          "logical_lines": 129,
+          "physical_lines": 152
         },
         {
           "file": "quorune/control_history.py",
@@ -7344,6 +7347,13 @@
           "language": "python",
           "logical_lines": 125,
           "physical_lines": 135
+        },
+        {
+          "file": "quorune/rules/activation/query.py",
+          "functions_and_methods": 5,
+          "language": "python",
+          "logical_lines": 124,
+          "physical_lines": 137
         },
         {
           "file": "quorune/rules/activation/model.py",
@@ -7388,6 +7398,13 @@
           "physical_lines": 151
         },
         {
+          "file": "quorune/compiled_activated_abilities.py",
+          "functions_and_methods": 5,
+          "language": "python",
+          "logical_lines": 115,
+          "physical_lines": 134
+        },
+        {
           "file": "quorune/compiler/fixed_source_effect_sequences.py",
           "functions_and_methods": 3,
           "language": "python",
@@ -7430,6 +7447,13 @@
           "physical_lines": 121
         },
         {
+          "file": "quorune/semantic_runtime/activated_abilities.py",
+          "functions_and_methods": 6,
+          "language": "python",
+          "logical_lines": 110,
+          "physical_lines": 133
+        },
+        {
           "file": "quorune/semantic_runtime/registry.py",
           "functions_and_methods": 7,
           "language": "python",
@@ -7465,6 +7489,13 @@
           "physical_lines": 110
         },
         {
+          "file": "quorune/standard_token_abilities.py",
+          "functions_and_methods": 4,
+          "language": "python",
+          "logical_lines": 107,
+          "physical_lines": 127
+        },
+        {
           "file": "quorune/compiler/cumulative_upkeep_nodes.py",
           "functions_and_methods": 1,
           "language": "python",
@@ -7484,6 +7515,13 @@
           "language": "python",
           "logical_lines": 104,
           "physical_lines": 132
+        },
+        {
+          "file": "quorune/semantic_runtime/components.py",
+          "functions_and_methods": 5,
+          "language": "python",
+          "logical_lines": 104,
+          "physical_lines": 116
         },
         {
           "file": "quorune/semantic_runtime/return_to_hand_handlers.py",
@@ -7535,13 +7573,6 @@
           "physical_lines": 124
         },
         {
-          "file": "quorune/semantic_runtime/components.py",
-          "functions_and_methods": 5,
-          "language": "python",
-          "logical_lines": 100,
-          "physical_lines": 112
-        },
-        {
           "file": "quorune/trigger_targeting.py",
           "functions_and_methods": 6,
           "language": "python",
@@ -7561,6 +7592,13 @@
           "language": "python",
           "logical_lines": 97,
           "physical_lines": 110
+        },
+        {
+          "file": "quorune/compiler/token_templates.py",
+          "functions_and_methods": 1,
+          "language": "python",
+          "logical_lines": 97,
+          "physical_lines": 108
         },
         {
           "file": "quorune/card_programs/runtime.py",
@@ -7596,20 +7634,6 @@
           "language": "python",
           "logical_lines": 94,
           "physical_lines": 113
-        },
-        {
-          "file": "quorune/compiled_activated_abilities.py",
-          "functions_and_methods": 5,
-          "language": "python",
-          "logical_lines": 94,
-          "physical_lines": 108
-        },
-        {
-          "file": "quorune/compiler/token_templates.py",
-          "functions_and_methods": 1,
-          "language": "python",
-          "logical_lines": 94,
-          "physical_lines": 105
         },
         {
           "file": "quorune/drawing/__init__.py",
@@ -7652,13 +7676,6 @@
           "language": "python",
           "logical_lines": 92,
           "physical_lines": 102
-        },
-        {
-          "file": "quorune/compiled_mana_abilities.py",
-          "functions_and_methods": 4,
-          "language": "python",
-          "logical_lines": 90,
-          "physical_lines": 109
         },
         {
           "file": "quorune/compiler/exile_templates.py",
@@ -7752,6 +7769,13 @@
           "physical_lines": 96
         },
         {
+          "file": "quorune/activated_ability_descriptor.py",
+          "functions_and_methods": 1,
+          "language": "python",
+          "logical_lines": 80,
+          "physical_lines": 99
+        },
+        {
           "file": "quorune/menace.py",
           "functions_and_methods": 4,
           "language": "python",
@@ -7836,6 +7860,13 @@
           "physical_lines": 89
         },
         {
+          "file": "quorune/ability_fragment_host.py",
+          "functions_and_methods": 4,
+          "language": "python",
+          "logical_lines": 69,
+          "physical_lines": 79
+        },
+        {
           "file": "quorune/modular.py",
           "functions_and_methods": 6,
           "language": "python",
@@ -7890,13 +7921,6 @@
           "language": "python",
           "logical_lines": 63,
           "physical_lines": 84
-        },
-        {
-          "file": "quorune/ability_fragment_host.py",
-          "functions_and_methods": 4,
-          "language": "python",
-          "logical_lines": 61,
-          "physical_lines": 71
         },
         {
           "file": "quorune/aura/__init__.py",
@@ -8065,20 +8089,6 @@
           "language": "python",
           "logical_lines": 46,
           "physical_lines": 50
-        },
-        {
-          "file": "quorune/compiled_crew_abilities.py",
-          "functions_and_methods": 2,
-          "language": "python",
-          "logical_lines": 45,
-          "physical_lines": 54
-        },
-        {
-          "file": "quorune/compiled_cycling_abilities.py",
-          "functions_and_methods": 2,
-          "language": "python",
-          "logical_lines": 45,
-          "physical_lines": 54
         },
         {
           "file": "quorune/compiled_cast_costs.py",
@@ -8522,10 +8532,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 2422,
+          "end_line": 2446,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 2117,
+          "line": 2141,
           "logical_lines": 280,
           "name": "_enter_step",
           "physical_lines": 306,
@@ -8533,10 +8543,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 4753,
+          "end_line": 4742,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 4482,
+          "line": 4471,
           "logical_lines": 269,
           "name": "_prepare_stack_resolution",
           "physical_lines": 272,
@@ -8566,10 +8576,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 8233,
+          "end_line": 8222,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 7978,
+          "line": 7967,
           "logical_lines": 248,
           "name": "_stabilize",
           "physical_lines": 256,
@@ -8610,10 +8620,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 6298,
+          "end_line": 6287,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 6066,
+          "line": 6055,
           "logical_lines": 232,
           "name": "_declaration_restrictions",
           "physical_lines": 233,
@@ -8643,10 +8653,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 1040,
+          "end_line": 1041,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 843,
+          "line": 844,
           "logical_lines": 194,
           "name": "_effective_card_data",
           "physical_lines": 198,
@@ -8698,10 +8708,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 7005,
+          "end_line": 6994,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 6841,
+          "line": 6830,
           "logical_lines": 164,
           "name": "_complete_attackers",
           "physical_lines": 165,
@@ -8731,10 +8741,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 4480,
+          "end_line": 4469,
           "file": "quorune/engine.py",
           "kind": "method",
-          "line": 4319,
+          "line": 4308,
           "logical_lines": 156,
           "name": "_begin_siege_defeated_resolution",
           "physical_lines": 162,
@@ -8742,10 +8752,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 281,
+          "end_line": 295,
           "file": "quorune/card_programs/trust.py",
           "kind": "function",
-          "line": 128,
+          "line": 142,
           "logical_lines": 153,
           "name": "build_program_trust_closure",
           "physical_lines": 154,
@@ -8768,10 +8778,10 @@
       "oversized_modules": [
         {
           "file": "quorune/engine.py",
-          "functions_and_methods": 251,
+          "functions_and_methods": 249,
           "language": "python",
-          "logical_lines": 8003,
-          "physical_lines": 8564
+          "logical_lines": 7994,
+          "physical_lines": 8553
         },
         {
           "file": "quorune/report.py",
@@ -8802,8 +8812,8 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 156681,
-      "python_file_count": 405,
+      "physical_lines": 158071,
+      "python_file_count": 406,
       "review_thresholds": {
         "function_logical_lines_review": 150,
         "module_logical_lines_review": 1500
@@ -8820,7 +8830,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 1954,
+      "top_level_functions": 1986,
       "web_file_count": 16
     },
     "runtime_oracle_text_access": {
@@ -8833,7 +8843,7 @@
           ],
           "file": "quorune/abilities.py",
           "lines": [
-            708
+            1144
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -8854,6 +8864,48 @@
           "symbol": "simple_enchant_spec_from_oracle"
         },
         {
+          "access_kind": "local_name",
+          "classification": "reviewed_historical_compatibility",
+          "expressions": [
+            "oracle_text"
+          ],
+          "file": "quorune/card_overrides/game_record_v3.py",
+          "lines": [
+            171
+          ],
+          "member": "oracle_text",
+          "rationale": "Explicit Game Record v3 compatibility isolated from current runtime behavior.",
+          "symbol": "historical_game_record_v3_activated_abilities"
+        },
+        {
+          "access_kind": "mapping_get",
+          "classification": "reviewed_historical_compatibility",
+          "expressions": [
+            "data.get('executable_oracle_text', data.get('oracle_text') or '')"
+          ],
+          "file": "quorune/card_overrides/game_record_v3.py",
+          "lines": [
+            166
+          ],
+          "member": "executable_oracle_text",
+          "rationale": "Explicit Game Record v3 compatibility isolated from current runtime behavior.",
+          "symbol": "historical_game_record_v3_activated_abilities"
+        },
+        {
+          "access_kind": "mapping_get",
+          "classification": "reviewed_historical_compatibility",
+          "expressions": [
+            "data.get('oracle_text')"
+          ],
+          "file": "quorune/card_overrides/game_record_v3.py",
+          "lines": [
+            166
+          ],
+          "member": "oracle_text",
+          "rationale": "Explicit Game Record v3 compatibility isolated from current runtime behavior.",
+          "symbol": "historical_game_record_v3_activated_abilities"
+        },
+        {
           "access_kind": "attribute",
           "classification": "compiler_input",
           "expressions": [
@@ -8861,7 +8913,7 @@
           ],
           "file": "quorune/card_programs/adapters.py",
           "lines": [
-            59
+            63
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -8875,7 +8927,7 @@
           ],
           "file": "quorune/card_programs/adapters.py",
           "lines": [
-            49
+            53
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -9061,8 +9113,8 @@
           ],
           "file": "quorune/characteristic_evaluation.py",
           "lines": [
-            115,
-            116
+            117,
+            118
           ],
           "member": "oracle_text",
           "rationale": "Carries derived text for identity or display provenance.",
@@ -9076,7 +9128,7 @@
           ],
           "file": "quorune/characteristic_evaluation.py",
           "lines": [
-            328
+            374
           ],
           "member": "oracle_text",
           "rationale": "Carries derived text for identity or display provenance.",
@@ -9090,7 +9142,7 @@
           ],
           "file": "quorune/characteristic_evaluation.py",
           "lines": [
-            361
+            408
           ],
           "member": "oracle_text",
           "rationale": "Carries derived text for identity or display provenance.",
@@ -9104,7 +9156,7 @@
           ],
           "file": "quorune/characteristic_evaluation.py",
           "lines": [
-            360
+            407
           ],
           "member": "executable_oracle_text",
           "rationale": "Carries derived text for identity or display provenance.",
@@ -9112,115 +9164,45 @@
         },
         {
           "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
+          "classification": "compiler_input",
           "expressions": [
             "record.oracle_text"
           ],
-          "file": "quorune/compiled_activated_abilities.py",
+          "file": "quorune/compiler/activated_ability_catalog.py",
           "lines": [
-            18
+            43
           ],
           "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "printed_face"
+          "rationale": "Bounded compilation, validation, or corpus input.",
+          "symbol": "_face_material"
         },
         {
           "access_kind": "mapping_get",
-          "classification": "prohibited_runtime_interpretation",
+          "classification": "compiler_input",
           "expressions": [
             "face.get('oracle_text')"
           ],
-          "file": "quorune/compiled_activated_abilities.py",
+          "file": "quorune/compiler/activated_ability_catalog.py",
           "lines": [
-            32
+            48
           ],
           "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "printed_face"
+          "rationale": "Bounded compilation, validation, or corpus input.",
+          "symbol": "_face_material"
         },
         {
           "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
+          "classification": "compiler_input",
           "expressions": [
-            "executable_oracle_text"
+            "oracle_text"
           ],
-          "file": "quorune/compiled_activated_abilities.py",
+          "file": "quorune/compiler/activated_ability_catalog.py",
           "lines": [
-            55
+            68
           ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "trusted_face_handler_programs"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "printed_oracle_text"
-          ],
-          "file": "quorune/compiled_activated_abilities.py",
-          "lines": [
-            55
-          ],
-          "member": "printed_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "trusted_face_handler_programs"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_crew_abilities.py",
-          "lines": [
-            29
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "compiled_ordinary_crew_abilities"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_cycling_abilities.py",
-          "lines": [
-            29
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "compiled_ordinary_cycling_abilities"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_mana_abilities.py",
-          "lines": [
-            62
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "compiled_color_set_mana_abilities"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_mana_abilities.py",
-          "lines": [
-            41
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "compiled_fixed_mana_abilities"
+          "member": "oracle_text",
+          "rationale": "Bounded compilation, validation, or corpus input.",
+          "symbol": "compile_activated_ability_catalog"
         },
         {
           "access_kind": "attribute",
@@ -9286,7 +9268,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            4384
+            4373
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9300,7 +9282,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            5496
+            5485
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9314,7 +9296,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3345
+            3337
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9328,7 +9310,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            6978
+            6967
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9342,7 +9324,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3039
+            3031
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9356,7 +9338,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            1093
+            1094
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9370,7 +9352,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            1091
+            1092
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9384,7 +9366,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3894
+            3883
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9398,7 +9380,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            899
+            900
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9413,9 +9395,9 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            872,
-            902,
-            927
+            873,
+            903,
+            928
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9429,7 +9411,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            2179
+            2203
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9443,7 +9425,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            5478
+            5467
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9457,7 +9439,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3111
+            3103
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9471,7 +9453,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3111
+            3103
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9485,7 +9467,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3189
+            3181
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9499,7 +9481,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3189
+            3181
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9513,9 +9495,9 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3652,
-            3653,
-            3654
+            3641,
+            3642,
+            3643
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9529,7 +9511,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3648
+            3637
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9543,25 +9525,11 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3693
+            3682
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
           "symbol": "CommanderEngine._nonmana_ability_prohibited_by_name"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/engine.py",
-          "lines": [
-            1754
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "CommanderEngine._opening_hand_signals"
         },
         {
           "access_kind": "mapping_get",
@@ -9571,7 +9539,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            7845
+            7834
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9585,7 +9553,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            4268
+            4257
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9599,7 +9567,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            1235
+            1239
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9613,9 +9581,9 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            2105,
-            2106,
-            2110
+            2129,
+            2130,
+            2134
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9629,7 +9597,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            2101
+            2125
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -9637,7 +9605,7 @@
         },
         {
           "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
+          "classification": "compiler_input",
           "expressions": [
             "oracle_text"
           ],
@@ -9646,12 +9614,12 @@
             113
           ],
           "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
+          "rationale": "Legacy public compiler API retained for preflight and direct compiler tests; current game runtime consumes typed mana descriptors.",
           "symbol": "_has_unresolved_dynamic_output"
         },
         {
           "access_kind": "mapping_get",
-          "classification": "prohibited_runtime_interpretation",
+          "classification": "compiler_input",
           "expressions": [
             "effective.get('oracle_text')"
           ],
@@ -9660,12 +9628,12 @@
             84
           ],
           "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
+          "rationale": "Legacy public compiler API retained for preflight and direct compiler tests; current game runtime consumes typed mana descriptors.",
           "symbol": "effective_mana_record"
         },
         {
           "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
+          "classification": "compiler_input",
           "expressions": [
             "record.oracle_text"
           ],
@@ -9674,36 +9642,8 @@
             137
           ],
           "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
+          "rationale": "Legacy public compiler API retained for preflight and direct compiler tests; current game runtime consumes typed mana descriptors.",
           "symbol": "extract_mana_modes"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/mana_activation.py",
-          "lines": [
-            225
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "_mana_plan_modes"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/mana_source_discovery.py",
-          "lines": [
-            186
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "available_mana_sources"
         },
         {
           "access_kind": "local_name",
@@ -9992,52 +9932,6 @@
           "symbol": "derive_review"
         },
         {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/rules/activation/query.py",
-          "lines": [
-            61,
-            66,
-            71,
-            76,
-            105
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "activated_abilities"
-        },
-        {
-          "access_kind": "mapping_get",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "data.get('executable_oracle_text', data.get('oracle_text') or '')"
-          ],
-          "file": "quorune/rules/activation/query.py",
-          "lines": [
-            53
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "activated_abilities"
-        },
-        {
-          "access_kind": "mapping_get",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "data.get('oracle_text')"
-          ],
-          "file": "quorune/rules/activation/query.py",
-          "lines": [
-            55
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "activated_abilities"
-        },
-        {
           "access_kind": "attribute",
           "classification": "prohibited_runtime_interpretation",
           "expressions": [
@@ -10045,8 +9939,8 @@
           ],
           "file": "quorune/semantic_runtime/token_replacements.py",
           "lines": [
-            93,
-            94
+            107,
+            108
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10060,7 +9954,7 @@
           ],
           "file": "quorune/semantic_runtime/token_replacements.py",
           "lines": [
-            94
+            108
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10074,7 +9968,7 @@
           ],
           "file": "quorune/semantic_runtime/token_replacements.py",
           "lines": [
-            81
+            94
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10096,10 +9990,11 @@
         }
       ],
       "by_classification": {
-        "compiler_input": 19,
+        "compiler_input": 25,
         "display_only_metadata": 14,
         "generated_provenance": 6,
-        "prohibited_runtime_interpretation": 50
+        "prohibited_runtime_interpretation": 33,
+        "reviewed_historical_compatibility": 3
       },
       "classification_vocabulary": [
         "compiler_input",
@@ -10109,118 +10004,6 @@
         "prohibited_runtime_interpretation"
       ],
       "prohibited_runtime_interpretation": [
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/compiled_activated_abilities.py",
-          "lines": [
-            18
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "printed_face"
-        },
-        {
-          "access_kind": "mapping_get",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "face.get('oracle_text')"
-          ],
-          "file": "quorune/compiled_activated_abilities.py",
-          "lines": [
-            32
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "printed_face"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_activated_abilities.py",
-          "lines": [
-            55
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "trusted_face_handler_programs"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "printed_oracle_text"
-          ],
-          "file": "quorune/compiled_activated_abilities.py",
-          "lines": [
-            55
-          ],
-          "member": "printed_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "trusted_face_handler_programs"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_crew_abilities.py",
-          "lines": [
-            29
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "compiled_ordinary_crew_abilities"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_cycling_abilities.py",
-          "lines": [
-            29
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "compiled_ordinary_cycling_abilities"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_mana_abilities.py",
-          "lines": [
-            62
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "compiled_color_set_mana_abilities"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/compiled_mana_abilities.py",
-          "lines": [
-            41
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "compiled_fixed_mana_abilities"
-        },
         {
           "access_kind": "mapping_get",
           "classification": "prohibited_runtime_interpretation",
@@ -10257,7 +10040,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            4384
+            4373
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10271,7 +10054,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            5496
+            5485
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10285,7 +10068,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3345
+            3337
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10299,7 +10082,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            6978
+            6967
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10313,7 +10096,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3039
+            3031
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10327,7 +10110,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            1093
+            1094
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10341,7 +10124,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            1091
+            1092
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10355,7 +10138,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3894
+            3883
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10369,7 +10152,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            899
+            900
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10384,9 +10167,9 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            872,
-            902,
-            927
+            873,
+            903,
+            928
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10400,7 +10183,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            2179
+            2203
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10414,7 +10197,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            5478
+            5467
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10428,7 +10211,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3111
+            3103
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10442,7 +10225,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3111
+            3103
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10456,7 +10239,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3189
+            3181
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10470,7 +10253,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3189
+            3181
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10484,9 +10267,9 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3652,
-            3653,
-            3654
+            3641,
+            3642,
+            3643
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10500,7 +10283,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3648
+            3637
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10514,25 +10297,11 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            3693
+            3682
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
           "symbol": "CommanderEngine._nonmana_ability_prohibited_by_name"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/engine.py",
-          "lines": [
-            1754
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "CommanderEngine._opening_hand_signals"
         },
         {
           "access_kind": "mapping_get",
@@ -10542,7 +10311,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            7845
+            7834
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10556,7 +10325,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            4268
+            4257
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10570,7 +10339,7 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            1235
+            1239
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10584,9 +10353,9 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            2105,
-            2106,
-            2110
+            2129,
+            2130,
+            2134
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10600,81 +10369,11 @@
           ],
           "file": "quorune/engine.py",
           "lines": [
-            2101
+            2125
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
           "symbol": "CommanderEngine._unsupported_untap_selection_source"
-        },
-        {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "oracle_text"
-          ],
-          "file": "quorune/mana.py",
-          "lines": [
-            113
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "_has_unresolved_dynamic_output"
-        },
-        {
-          "access_kind": "mapping_get",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "effective.get('oracle_text')"
-          ],
-          "file": "quorune/mana.py",
-          "lines": [
-            84
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "effective_mana_record"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/mana.py",
-          "lines": [
-            137
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "extract_mana_modes"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/mana_activation.py",
-          "lines": [
-            225
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "_mana_plan_modes"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/mana_source_discovery.py",
-          "lines": [
-            186
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "available_mana_sources"
         },
         {
           "access_kind": "attribute",
@@ -10719,52 +10418,6 @@
           "symbol": "derive_review"
         },
         {
-          "access_kind": "local_name",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "executable_oracle_text"
-          ],
-          "file": "quorune/rules/activation/query.py",
-          "lines": [
-            61,
-            66,
-            71,
-            76,
-            105
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "activated_abilities"
-        },
-        {
-          "access_kind": "mapping_get",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "data.get('executable_oracle_text', data.get('oracle_text') or '')"
-          ],
-          "file": "quorune/rules/activation/query.py",
-          "lines": [
-            53
-          ],
-          "member": "executable_oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "activated_abilities"
-        },
-        {
-          "access_kind": "mapping_get",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "data.get('oracle_text')"
-          ],
-          "file": "quorune/rules/activation/query.py",
-          "lines": [
-            55
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "activated_abilities"
-        },
-        {
           "access_kind": "attribute",
           "classification": "prohibited_runtime_interpretation",
           "expressions": [
@@ -10772,8 +10425,8 @@
           ],
           "file": "quorune/semantic_runtime/token_replacements.py",
           "lines": [
-            93,
-            94
+            107,
+            108
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10787,7 +10440,7 @@
           ],
           "file": "quorune/semantic_runtime/token_replacements.py",
           "lines": [
-            94
+            108
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10801,7 +10454,7 @@
           ],
           "file": "quorune/semantic_runtime/token_replacements.py",
           "lines": [
-            81
+            94
           ],
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
@@ -10822,8 +10475,8 @@
           "symbol": "counter_maximums_from_oracle"
         }
       ],
-      "prohibited_runtime_interpretation_count": 50,
-      "total_accesses": 89
+      "prohibited_runtime_interpretation_count": 33,
+      "total_accesses": 81
     },
     "semantic_handlers": {
       "engine_string_dispatch_branch_count": 3,
@@ -11491,6 +11144,17 @@
         {
           "capability_dependencies": [],
           "family": "effect.damage-turn",
+          "handler_id": "effect.damage-turn.grant_ability_fragment.v1",
+          "operation": "grant_ability_fragment",
+          "rule_references": [
+            "120.3",
+            "500.7"
+          ],
+          "schema_version": 1
+        },
+        {
+          "capability_dependencies": [],
+          "family": "effect.damage-turn",
           "handler_id": "effect.damage-turn.grant_ability_marker.v1",
           "operation": "grant_ability_marker",
           "rule_references": [
@@ -12069,8 +11733,8 @@
       ],
       "legacy_apply_effect_branch_count": 0,
       "read_only_context": "quorune.semantic_runtime.context.ReadOnlyHandlerContext",
-      "registered_handler_count": 98,
-      "registered_operation_count": 98,
+      "registered_handler_count": 99,
+      "registered_operation_count": 99,
       "registered_operations": [
         "add_counter_selected",
         "add_subtype",
@@ -12126,6 +11790,7 @@
         "exile_permanent",
         "extra_turn",
         "goad",
+        "grant_ability_fragment",
         "grant_ability_marker",
         "grant_cast_permission",
         "grant_keyword_until_end_of_turn",
@@ -12172,8 +11837,8 @@
         "veil_of_summer"
       ],
       "registered_operations_still_in_legacy_dispatch": [],
-      "registered_runtime_handler_count": 44,
-      "registry_fingerprint": "b9ec2236fbd2f7c7c3c07d81ad7b2ec12a3f2e5705d8a7a9453bf7b19ff29f81",
+      "registered_runtime_handler_count": 46,
+      "registry_fingerprint": "94dbe23824ba72a3c146301ea8da7a55e538bbb2e5695bd173ad042f53b38540",
       "runtime_handlers": [
         {
           "capability_dependencies": [
@@ -12483,6 +12148,21 @@
           "schema_version": 1
         },
         {
+          "capability_dependencies": [],
+          "event": "activate",
+          "family": "ability.activated.catalog",
+          "handler_id": "activation.catalog.pinned.v1",
+          "rule_references": [
+            "602.1",
+            "602.2",
+            "602.2a",
+            "602.2b",
+            "602.2c",
+            "605.1a"
+          ],
+          "schema_version": 1
+        },
+        {
           "capability_dependencies": [
             "casting.payment.convoke"
           ],
@@ -12512,6 +12192,23 @@
           "rule_references": [
             "509.1b",
             "702.98a"
+          ],
+          "schema_version": 1
+        },
+        {
+          "capability_dependencies": [
+            "continuous.ability.fixed_query_grant"
+          ],
+          "event": "characteristics.evaluate",
+          "family": "continuous.fixed_query_ability_grant",
+          "handler_id": "continuous.ability.fixed-query-grant.v1",
+          "rule_references": [
+            "604.1",
+            "611.3a",
+            "611.3b",
+            "611.3c",
+            "613.1f",
+            "613.6"
           ],
           "schema_version": 1
         },
@@ -12867,7 +12564,7 @@
           "schema_version": 1
         }
       ],
-      "runtime_registry_fingerprint": "88cbed0ee9ded742a4b681ed3c3131fb67cfe6ae0230ba474cb1c21533040b2c",
+      "runtime_registry_fingerprint": "b8cd9ff0de71ccca6b2504cc4f1257c1f37c86b198033ee64994a4c81e892762",
       "schema_version": 1,
       "typed_intent_executor": "quorune.semantic_runtime.executor.execute_intent_plan"
     },
@@ -12935,7 +12632,7 @@
         {
           "condition": "operation in {\"create_warform\", \"choose_warform\"}",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 16,
+          "line": 22,
           "string_literals": [
             "choose_warform",
             "create_warform"
@@ -12945,7 +12642,7 @@
         {
           "condition": "operation == \"field_of_dead_token\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 36,
+          "line": 42,
           "string_literals": [
             "field_of_dead_token"
           ],
@@ -12954,7 +12651,7 @@
         {
           "condition": "operation == \"scute_swarm_token\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 53,
+          "line": 59,
           "string_literals": [
             "scute_swarm_token"
           ],
@@ -12963,7 +12660,7 @@
         {
           "condition": "operation == \"create_daretti_emblem\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 71,
+          "line": 77,
           "string_literals": [
             "create_daretti_emblem"
           ],
@@ -12972,7 +12669,7 @@
         {
           "condition": "operation == \"grant_urzas_saga_chapter\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 85,
+          "line": 91,
           "string_literals": [
             "grant_urzas_saga_chapter"
           ],
@@ -12981,7 +12678,7 @@
         {
           "condition": "operation == \"demonic_junker_resolve\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 93,
+          "line": 99,
           "string_literals": [
             "demonic_junker_resolve"
           ],
@@ -12990,7 +12687,7 @@
         {
           "condition": "operation == \"welder_exchange\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 101,
+          "line": 107,
           "string_literals": [
             "welder_exchange"
           ],
@@ -12999,7 +12696,7 @@
         {
           "condition": "operation == \"toxic_deluge\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 103,
+          "line": 109,
           "string_literals": [
             "toxic_deluge"
           ],
@@ -13008,7 +12705,7 @@
         {
           "condition": "operation == \"animate_dead_prepare\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 112,
+          "line": 118,
           "string_literals": [
             "animate_dead_prepare"
           ],
@@ -13017,7 +12714,7 @@
         {
           "condition": "operation == \"animate_dead_reanimate\"",
           "file": "quorune/card_overrides/game_record_v3.py",
-          "line": 114,
+          "line": 120,
           "string_literals": [
             "animate_dead_reanimate"
           ],
@@ -13096,7 +12793,7 @@
         {
           "condition": "operation",
           "file": "quorune/card_programs/trust.py",
-          "line": 71,
+          "line": 74,
           "string_literals": [],
           "symbol": "_ambient_surfaces"
         },
@@ -13308,7 +13005,7 @@
         {
           "condition": "op not in {\"set_types\", \"add_types\", \"remove_types\"} and field is not None",
           "file": "quorune/continuous_effect_model.py",
-          "line": 185,
+          "line": 197,
           "string_literals": [
             "add_types",
             "remove_types",
@@ -13319,7 +13016,7 @@
         {
           "condition": "op == \"copy_values\"",
           "file": "quorune/continuous_effect_model.py",
-          "line": 187,
+          "line": 199,
           "string_literals": [
             "copy_values"
           ],
@@ -13328,7 +13025,7 @@
         {
           "condition": "op == \"face_down\"",
           "file": "quorune/continuous_effect_model.py",
-          "line": 189,
+          "line": 201,
           "string_literals": [
             "face_down"
           ],
@@ -13337,7 +13034,7 @@
         {
           "condition": "op == \"set_controller\"",
           "file": "quorune/continuous_effect_model.py",
-          "line": 230,
+          "line": 242,
           "string_literals": [
             "set_controller"
           ],
@@ -13346,7 +13043,7 @@
         {
           "condition": "op == \"replace_text\"",
           "file": "quorune/continuous_effect_model.py",
-          "line": 233,
+          "line": 245,
           "string_literals": [
             "replace_text"
           ],
@@ -13355,7 +13052,7 @@
         {
           "condition": "op in {\"set_types\", \"add_types\", \"remove_types\"}",
           "file": "quorune/continuous_effect_model.py",
-          "line": 238,
+          "line": 250,
           "string_literals": [
             "add_types",
             "remove_types",
@@ -13366,7 +13063,7 @@
         {
           "condition": "op in {\"set_colors\", \"add_colors\", \"remove_colors\"}",
           "file": "quorune/continuous_effect_model.py",
-          "line": 242,
+          "line": 254,
           "string_literals": [
             "add_colors",
             "remove_colors",
@@ -13377,7 +13074,7 @@
         {
           "condition": "op in {\"add_ability\", \"remove_ability\", \"add_rules_text\"}",
           "file": "quorune/continuous_effect_model.py",
-          "line": 248,
+          "line": 260,
           "string_literals": [
             "add_ability",
             "add_rules_text",
@@ -13388,7 +13085,7 @@
         {
           "condition": "op in {\"add_ability_fragment\", \"remove_ability_fragment\"}",
           "file": "quorune/continuous_effect_model.py",
-          "line": 251,
+          "line": 263,
           "string_literals": [
             "add_ability_fragment",
             "remove_ability_fragment"
@@ -13398,7 +13095,7 @@
         {
           "condition": "op in {\"remove_all_abilities\", \"switch_power_toughness\"}",
           "file": "quorune/continuous_effect_model.py",
-          "line": 260,
+          "line": 272,
           "string_literals": [
             "remove_all_abilities",
             "switch_power_toughness"
@@ -13408,7 +13105,7 @@
         {
           "condition": "op in {\"set_power_toughness\", \"modify_power_toughness\"}",
           "file": "quorune/continuous_effect_model.py",
-          "line": 263,
+          "line": 275,
           "string_literals": [
             "modify_power_toughness",
             "set_power_toughness"
@@ -13418,21 +13115,21 @@
         {
           "condition": "type(self.op) is not str or not self.op",
           "file": "quorune/continuous_effect_model.py",
-          "line": 277,
+          "line": 289,
           "string_literals": [],
           "symbol": "__post_init__"
         },
         {
           "condition": "self.op not in _OPERATION_LAYERS",
           "file": "quorune/continuous_effect_model.py",
-          "line": 281,
+          "line": 293,
           "string_literals": [],
           "symbol": "__post_init__"
         },
         {
           "condition": "set(value) != {\"op\", \"value\", \"field\"}",
           "file": "quorune/continuous_effect_model.py",
-          "line": 316,
+          "line": 328,
           "string_literals": [
             "field",
             "op",
@@ -13443,7 +13140,7 @@
         {
           "condition": "type(value[\"op\"]) is not str",
           "file": "quorune/continuous_effect_model.py",
-          "line": 320,
+          "line": 332,
           "string_literals": [
             "op"
           ],
@@ -13452,21 +13149,21 @@
         {
           "condition": "not all( isinstance(operation, ContinuousOperation) for operation in operations )",
           "file": "quorune/continuous_effect_model.py",
-          "line": 499,
+          "line": 511,
           "string_literals": [],
           "symbol": "__post_init__"
         },
         {
           "condition": "any( _OPERATION_LAYERS[operation.op] is not self.layer for operation in operations )",
           "file": "quorune/continuous_effect_model.py",
-          "line": 506,
+          "line": 518,
           "string_literals": [],
           "symbol": "__post_init__"
         },
         {
           "condition": "op == \"add_ability\"",
           "file": "quorune/continuous_effects.py",
-          "line": 263,
+          "line": 283,
           "string_literals": [
             "add_ability"
           ],
@@ -13475,7 +13172,7 @@
         {
           "condition": "op == \"remove_ability\"",
           "file": "quorune/continuous_effects.py",
-          "line": 269,
+          "line": 289,
           "string_literals": [
             "remove_ability"
           ],
@@ -13484,7 +13181,7 @@
         {
           "condition": "op == \"add_rules_text\"",
           "file": "quorune/continuous_effects.py",
-          "line": 275,
+          "line": 295,
           "string_literals": [
             "add_rules_text"
           ],
@@ -13493,7 +13190,7 @@
         {
           "condition": "op == \"add_ability_fragment\"",
           "file": "quorune/continuous_effects.py",
-          "line": 282,
+          "line": 302,
           "string_literals": [
             "add_ability_fragment"
           ],
@@ -13502,7 +13199,7 @@
         {
           "condition": "op == \"remove_ability_fragment\"",
           "file": "quorune/continuous_effects.py",
-          "line": 289,
+          "line": 309,
           "string_literals": [
             "remove_ability_fragment"
           ],
@@ -13511,7 +13208,7 @@
         {
           "condition": "op == \"remove_all_abilities\"",
           "file": "quorune/continuous_effects.py",
-          "line": 296,
+          "line": 316,
           "string_literals": [
             "remove_all_abilities"
           ],
@@ -13520,7 +13217,7 @@
         {
           "condition": "op == \"copy_values\"",
           "file": "quorune/continuous_effects.py",
-          "line": 310,
+          "line": 331,
           "string_literals": [
             "copy_values"
           ],
@@ -13529,7 +13226,7 @@
         {
           "condition": "op == \"face_down\"",
           "file": "quorune/continuous_effects.py",
-          "line": 313,
+          "line": 334,
           "string_literals": [
             "face_down"
           ],
@@ -13538,7 +13235,7 @@
         {
           "condition": "op == \"set_controller\"",
           "file": "quorune/continuous_effects.py",
-          "line": 316,
+          "line": 337,
           "string_literals": [
             "set_controller"
           ],
@@ -13547,7 +13244,7 @@
         {
           "condition": "op == \"replace_text\"",
           "file": "quorune/continuous_effects.py",
-          "line": 319,
+          "line": 340,
           "string_literals": [
             "replace_text"
           ],
@@ -13556,7 +13253,7 @@
         {
           "condition": "op in {\"set_types\", \"add_types\", \"remove_types\"}",
           "file": "quorune/continuous_effects.py",
-          "line": 333,
+          "line": 358,
           "string_literals": [
             "add_types",
             "remove_types",
@@ -13567,7 +13264,7 @@
         {
           "condition": "op == \"set_types\"",
           "file": "quorune/continuous_effects.py",
-          "line": 345,
+          "line": 370,
           "string_literals": [
             "set_types"
           ],
@@ -13576,7 +13273,7 @@
         {
           "condition": "op == \"add_types\"",
           "file": "quorune/continuous_effects.py",
-          "line": 347,
+          "line": 372,
           "string_literals": [
             "add_types"
           ],
@@ -13585,7 +13282,7 @@
         {
           "condition": "op in {\"set_colors\", \"add_colors\", \"remove_colors\"}",
           "file": "quorune/continuous_effects.py",
-          "line": 352,
+          "line": 377,
           "string_literals": [
             "add_colors",
             "remove_colors",
@@ -13596,7 +13293,7 @@
         {
           "condition": "op == \"set_colors\"",
           "file": "quorune/continuous_effects.py",
-          "line": 354,
+          "line": 379,
           "string_literals": [
             "set_colors"
           ],
@@ -13605,7 +13302,7 @@
         {
           "condition": "op == \"add_colors\"",
           "file": "quorune/continuous_effects.py",
-          "line": 356,
+          "line": 381,
           "string_literals": [
             "add_colors"
           ],
@@ -13614,14 +13311,14 @@
         {
           "condition": "_apply_ability_operation(state, operation)",
           "file": "quorune/continuous_effects.py",
-          "line": 361,
+          "line": 386,
           "string_literals": [],
           "symbol": "_apply_operation"
         },
         {
           "condition": "op == \"set_power_toughness\"",
           "file": "quorune/continuous_effects.py",
-          "line": 363,
+          "line": 388,
           "string_literals": [
             "set_power_toughness"
           ],
@@ -13630,7 +13327,7 @@
         {
           "condition": "op == \"modify_power_toughness\"",
           "file": "quorune/continuous_effects.py",
-          "line": 371,
+          "line": 396,
           "string_literals": [
             "modify_power_toughness"
           ],
@@ -13639,7 +13336,7 @@
         {
           "condition": "op == \"switch_power_toughness\"",
           "file": "quorune/continuous_effects.py",
-          "line": 381,
+          "line": 406,
           "string_literals": [
             "switch_power_toughness"
           ],
@@ -13677,7 +13374,7 @@
         {
           "condition": "effect.get(\"op\") == \"choose_cards_apnap\"",
           "file": "quorune/engine.py",
-          "line": 5122,
+          "line": 5111,
           "string_literals": [
             "choose_cards_apnap",
             "op"
@@ -13687,7 +13384,7 @@
         {
           "condition": "effect.get(\"op\") == \"search\"",
           "file": "quorune/engine.py",
-          "line": 5137,
+          "line": 5126,
           "string_literals": [
             "op",
             "search"
@@ -13697,7 +13394,7 @@
         {
           "condition": "str(effect.get(\"op\") or \"\") in default_semantic_choice_registry().operations",
           "file": "quorune/engine.py",
-          "line": 5188,
+          "line": 5177,
           "string_literals": [
             "",
             "op"
@@ -15236,14 +14933,14 @@
         {
           "condition": "operation in VALID_EFFECT_OPERATIONS",
           "file": "quorune/semantics.py",
-          "line": 160,
+          "line": 164,
           "string_literals": [],
           "symbol": "_is_supported_effect_operation"
         },
         {
           "condition": "not _is_supported_effect_operation(operation)",
           "file": "quorune/semantics.py",
-          "line": 309,
+          "line": 313,
           "string_literals": [],
           "symbol": "__post_init__"
         },
@@ -15651,11 +15348,12 @@
         ],
         "architecture_exceptions": [],
         "capabilities": [
+          "continuous.ability.fixed_query_grant",
           "continuous.attached.fixed_characteristics",
           "continuous.basic_land_type.add_all_lands",
           "continuous.power_toughness.fixed_anthem"
         ],
-        "capability_count": 3,
+        "capability_count": 4,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -15682,10 +15380,10 @@
         "oversized_symbol_count": 1,
         "oversized_symbols": [
           {
-            "end_line": 281,
+            "end_line": 295,
             "file": "quorune/card_programs/trust.py",
             "kind": "function",
-            "line": 128,
+            "line": 142,
             "logical_lines": 153,
             "name": "build_program_trust_closure",
             "physical_lines": 154,
@@ -15715,8 +15413,9 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Card overrides.",
-        "reusable_piece_count": 3,
+        "reusable_piece_count": 4,
         "reusable_pieces": [
+          "capability.continuous.ability.fixed_query_grant",
           "capability.continuous.attached.fixed_characteristics",
           "capability.continuous.basic_land_type.add_all_lands",
           "capability.continuous.power_toughness.fixed_anthem"
@@ -15743,11 +15442,12 @@
         ],
         "architecture_exceptions": [],
         "capabilities": [
+          "continuous.ability.fixed_query_grant",
           "continuous.attached.fixed_characteristics",
           "continuous.basic_land_type.add_all_lands",
           "continuous.power_toughness.fixed_anthem"
         ],
-        "capability_count": 3,
+        "capability_count": 4,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -15790,10 +15490,10 @@
             "visibility": "public"
           },
           {
-            "end_line": 281,
+            "end_line": 295,
             "file": "quorune/card_programs/trust.py",
             "kind": "function",
-            "line": 128,
+            "line": 142,
             "logical_lines": 153,
             "name": "build_program_trust_closure",
             "physical_lines": 154,
@@ -15801,7 +15501,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 162,
+        "primary_test_count": 163,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_activating_abilities_rules",
@@ -15910,8 +15610,9 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Card program v2.",
-        "reusable_piece_count": 3,
+        "reusable_piece_count": 4,
         "reusable_pieces": [
+          "capability.continuous.ability.fixed_query_grant",
           "capability.continuous.attached.fixed_characteristics",
           "capability.continuous.basic_land_type.add_all_lands",
           "capability.continuous.power_toughness.fixed_anthem"
@@ -15952,13 +15653,14 @@
           "casting.additional_cost.zone_change.fixed_exile",
           "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
           "casting.payment.convoke",
+          "continuous.ability.fixed_query_grant",
           "mana.activated.color_set",
           "mana.activated.fixed_output",
           "stack.counter.prohibition.intrinsic",
           "timing.cast.printed_flash",
           "trigger.event.normalized_spell_cast"
         ],
-        "capability_count": 19,
+        "capability_count": 20,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -16013,7 +15715,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 19,
+        "primary_test_count": 21,
         "primary_tests": [
           "test_action_proposals",
           "test_activated_abilities",
@@ -16022,6 +15724,7 @@
           "test_attached_static_characteristics",
           "test_capability_implementation_mutations",
           "test_color_set_mana_abilities",
+          "test_combat_declaration_costs",
           "test_convoke_rules",
           "test_exact_deck_interactions",
           "test_exact_land_families",
@@ -16033,15 +15736,16 @@
           "test_mana_abilities",
           "test_riot_rules",
           "test_source_references",
-          "test_typed_ability_fragments"
+          "test_typed_ability_fragments",
+          "test_typed_activated_ability_catalog"
         ],
         "privacy_sensitivity": "not explicitly declared",
-        "prohibited_runtime_oracle_text_accesses": 7,
+        "prohibited_runtime_oracle_text_accesses": 0,
         "public_ports_and_protocols": [],
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Casting activation and costs.",
-        "reusable_piece_count": 20,
+        "reusable_piece_count": 21,
         "reusable_pieces": [
           "capability.activation.crew.fixed_power",
           "capability.activation.cycling.hand",
@@ -16057,6 +15761,7 @@
           "capability.casting.additional_cost.zone_change.fixed_exile",
           "capability.casting.additional_cost.zone_change.fixed_return_to_owner_hand",
           "capability.casting.payment.convoke",
+          "capability.continuous.ability.fixed_query_grant",
           "capability.mana.activated.color_set",
           "capability.mana.activated.fixed_output",
           "capability.stack.counter.prohibition.intrinsic",
@@ -16064,7 +15769,7 @@
           "capability.trigger.event.normalized_spell_cast",
           "mechanic.convoke"
         ],
-        "runtime_oracle_text_accesses": 8,
+        "runtime_oracle_text_accesses": 4,
         "state_authority": {
           "classified_module_access": {
             "mutable_owner": 5,
@@ -16293,6 +15998,7 @@
         ],
         "architecture_exceptions": [],
         "capabilities": [
+          "continuous.ability.fixed_query_grant",
           "continuous.attached.fixed_characteristics",
           "continuous.basic_land_type.add_all_lands",
           "continuous.power_toughness.fixed_anthem",
@@ -16300,7 +16006,7 @@
           "continuous.resolution.fixed_keyword_zone_object",
           "keyword_action.amass.fixed"
         ],
-        "capability_count": 6,
+        "capability_count": 7,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -16323,7 +16029,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 12,
+        "primary_test_count": 13,
         "primary_tests": [
           "test_attached_static_characteristics",
           "test_basic_land_type_mana",
@@ -16336,7 +16042,8 @@
           "test_riot_rules",
           "test_rules_primitives",
           "test_trigger_processing_owner",
-          "test_typed_ability_fragments"
+          "test_typed_ability_fragments",
+          "test_typed_activated_ability_catalog"
         ],
         "privacy_sensitivity": "not explicitly declared",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -16344,8 +16051,9 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Continuous effects.",
-        "reusable_piece_count": 6,
+        "reusable_piece_count": 7,
         "reusable_pieces": [
+          "capability.continuous.ability.fixed_query_grant",
           "capability.continuous.attached.fixed_characteristics",
           "capability.continuous.basic_land_type.add_all_lands",
           "capability.continuous.power_toughness.fixed_anthem",
@@ -16811,6 +16519,7 @@
         "modules": [
           "quorune/compiler/__init__.py",
           "quorune/compiler/ability_keyword_fragments.py",
+          "quorune/compiler/activated_ability_catalog.py",
           "quorune/compiler/activated_costs.py",
           "quorune/compiler/activated_mana_nodes.py",
           "quorune/compiler/amass_templates.py",
@@ -16899,7 +16608,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 82,
+        "primary_test_count": 83,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_additional_token_compiler",
@@ -16981,6 +16690,7 @@
           "test_token_creation_replacements",
           "test_trigger_processing_owner",
           "test_typed_ability_fragments",
+          "test_typed_activated_ability_catalog",
           "test_unleash_rules",
           "test_zone_replacement_compiler"
         ],
@@ -17061,10 +16771,10 @@
           "mechanic.adapt",
           "mechanic.monstrosity"
         ],
-        "runtime_oracle_text_accesses": 8,
+        "runtime_oracle_text_accesses": 11,
         "state_authority": {
           "classified_module_access": {
-            "none": 53
+            "none": 54
           },
           "direct_write_count": 0,
           "engine_direct_write_count": 0
@@ -17417,7 +17127,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 44,
+        "primary_test_count": 45,
         "primary_tests": [
           "test_bloodthirst_rules",
           "test_capability_implementation_mutations",
@@ -17462,6 +17172,7 @@
           "test_semantic_choice_model",
           "test_single_object_zone_transition",
           "test_token_creation_replacements",
+          "test_typed_activated_ability_catalog",
           "test_unleash_rules"
         ],
         "privacy_sensitivity": "not explicitly declared",
@@ -17754,6 +17465,7 @@
           "combat.trigger.exalted",
           "combat.trigger.flanking",
           "combat.trigger.melee",
+          "continuous.ability.fixed_query_grant",
           "continuous.attached.fixed_characteristics",
           "continuous.basic_land_type.add_all_lands",
           "continuous.power_toughness.fixed_anthem",
@@ -17827,7 +17539,7 @@
           "zone.draw.reveal_as_drawn",
           "zone.draw.specifically_drawn_card_actions"
         ],
-        "capability_count": 84,
+        "capability_count": 85,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -17853,6 +17565,7 @@
           "quorune/return_to_hand.py",
           "quorune/semantic_runtime/__init__.py",
           "quorune/semantic_runtime/ability_fragments.py",
+          "quorune/semantic_runtime/activated_abilities.py",
           "quorune/semantic_runtime/attached_continuous.py",
           "quorune/semantic_runtime/block_restrictions.py",
           "quorune/semantic_runtime/cast_costs.py",
@@ -17903,7 +17616,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 58,
+        "primary_test_count": 59,
         "primary_tests": [
           "test_additional_token_compiler",
           "test_attached_counter_placement",
@@ -17962,6 +17675,7 @@
           "test_stack_counter_rules",
           "test_token_creation_replacements",
           "test_typed_ability_fragments",
+          "test_typed_activated_ability_catalog",
           "test_unleash_rules"
         ],
         "privacy_sensitivity": "not explicitly declared",
@@ -17970,7 +17684,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Semantic effect execution.",
-        "reusable_piece_count": 85,
+        "reusable_piece_count": 86,
         "reusable_pieces": [
           "capability.activation.crew.fixed_power",
           "capability.activation.cycling.hand",
@@ -17984,6 +17698,7 @@
           "capability.combat.trigger.exalted",
           "capability.combat.trigger.flanking",
           "capability.combat.trigger.melee",
+          "capability.continuous.ability.fixed_query_grant",
           "capability.continuous.attached.fixed_characteristics",
           "capability.continuous.basic_land_type.add_all_lands",
           "capability.continuous.power_toughness.fixed_anthem",
@@ -18062,7 +17777,7 @@
         "state_authority": {
           "classified_module_access": {
             "mutable_owner": 6,
-            "none": 45,
+            "none": 46,
             "read_only": 2
           },
           "direct_write_count": 0,
@@ -18443,10 +18158,10 @@
         "oversized_symbol_count": 1,
         "oversized_symbols": [
           {
-            "end_line": 2422,
+            "end_line": 2446,
             "file": "quorune/engine.py",
             "kind": "method",
-            "line": 2117,
+            "line": 2141,
             "logical_lines": 280,
             "name": "_enter_step",
             "physical_lines": 306,
@@ -19345,29 +19060,29 @@
       "dependency_fail_closed_status_counts": {
         "not_applicable": 48,
         "not_run": 3,
-        "passed": 93
+        "passed": 94
       },
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 242,
+          "interaction": 243,
           "multiplayer": 139,
-          "mutation": 161,
-          "negative": 266,
-          "positive": 276,
+          "mutation": 162,
+          "negative": 267,
+          "positive": 277,
           "privacy": 119,
           "property": 15,
-          "replay": 173,
+          "replay": 174,
           "rollback": 37
         },
-        "declaration_count": 1428,
-        "declaration_source_fingerprint": "25c3d6e6082bb27ff2821a5d20cc27111c151c0eb3207fba5b78780c45b290fd",
-        "fingerprint": "092ec0279cd616dc4efbeb606bf2795036d45cd4fb51a991846bffb2f0f0c992",
-        "registry_fingerprint": "4717dba2c00c020c55f1a6fad1d53ab08abf142d13f458d6f96578a9d8a18342"
+        "declaration_count": 1433,
+        "declaration_source_fingerprint": "541e8053f7bf6471601dd1dd9343367bcc41150f1436c04ce66d0e863c70b232",
+        "fingerprint": "049e38a752bdfc21512958ff7b69bd1fb007740dd8540db3818260e7a7421ec4",
+        "registry_fingerprint": "046b2e992fb134d62a7bac45238722e967009bd2744b02cd35a9a5929a3ee11f"
       },
-      "fingerprint": "4717dba2c00c020c55f1a6fad1d53ab08abf142d13f458d6f96578a9d8a18342",
+      "fingerprint": "046b2e992fb134d62a7bac45238722e967009bd2744b02cd35a9a5929a3ee11f",
       "implementation_mutation_status_counts": {
-        "killed": 139,
+        "killed": 140,
         "not_run": 5
       },
       "profiles": [
@@ -19381,9 +19096,9 @@
       "status_counts": {
         "blocked": 4,
         "tested": 2,
-        "trusted": 138
+        "trusted": 139
       },
-      "total": 144
+      "total": 145
     },
     "stages": [
       {
@@ -19437,11 +19152,12 @@
             "quorune/oracle_ir.py:224"
           ],
           "parse_activated_abilities": [
-            "quorune/abilities.py:701",
+            "quorune/abilities.py:1137",
+            "quorune/card_overrides/game_record_v3.py:6",
+            "quorune/compiler/activated_ability_catalog.py:9",
             "quorune/compiler/activated_mana_nodes.py:10",
             "quorune/compiler/target_effect_corpus_assurance.py:12",
-            "quorune/preflight.py:10",
-            "quorune/rules/activation/query.py:7"
+            "quorune/preflight.py:10"
           ]
         },
         "evidence_symbols": [
@@ -19504,11 +19220,11 @@
           "compile_card_program": [
             "quorune/__init__.py:9",
             "quorune/card_programs/__init__.py:9",
-            "quorune/card_programs/adapters.py:200"
+            "quorune/card_programs/adapters.py:204"
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:922",
+            "quorune/compiler/program_generation.py:939",
             "quorune/oracle_ir.py:1490"
           ]
         },
@@ -19524,7 +19240,7 @@
         "current_status": "fine_grained_profile_scoped_closure_with_fail_closed_dependencies",
         "evidence": {
           "CapabilityRegistry": [
-            "quorune/card_programs/adapters.py:19",
+            "quorune/card_programs/adapters.py:23",
             "quorune/card_programs/commands.py:9",
             "quorune/compiler/activated_mana_nodes.py:19",
             "quorune/compiler/crew_nodes.py:9",
@@ -19557,7 +19273,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:922",
+            "quorune/compiler/program_generation.py:939",
             "quorune/oracle_ir.py:1490"
           ]
         },
@@ -19594,7 +19310,7 @@
           "CardProgram": [
             "quorune/__init__.py:9",
             "quorune/card_programs/__init__.py:3",
-            "quorune/card_programs/adapters.py:22",
+            "quorune/card_programs/adapters.py:26",
             "quorune/card_programs/commands.py:24",
             "quorune/card_programs/model.py:482"
           ],
@@ -19604,7 +19320,7 @@
             "quorune/engine.py:25"
           ],
           "register_generated_programs": [
-            "quorune/compiler/program_generation.py:1097",
+            "quorune/compiler/program_generation.py:1128",
             "quorune/oracle_ir.py:1513",
             "quorune/preflight.py:16",
             "quorune/session.py:14"
@@ -19623,7 +19339,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 323,
         "exact_nodes": 535,
-        "fingerprint": "3ead162bc55d19a55bb80cdc4bef48bfa3df5c8b802fa2273939f6c18d00e379",
+        "fingerprint": "4029a802b9f18f374e3c2d95ac129b87e70753944c3c15b76d267bc4661f0e83",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "dd4d9586ad713a5a8faa8bf705ed92a0ec9cfd8bc218315e28dc8d55fbaa415b",
         "present": true,
@@ -19635,7 +19351,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 336,
         "exact_nodes": 555,
-        "fingerprint": "8c3689cca5f220449632ee370cb3188df67acf455e1f78fd841703afe14d5617",
+        "fingerprint": "cb10b0834d66f43b3fb5031cc8f3c25fb579e5a4a73bb9d60d5a9b94df5792ad",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "d9cb9f014328fcef11de5e5faa8935a758cfad2cfbf0800e01fe4a890443f114",
         "present": true,
@@ -19654,7 +19370,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "27ccb05383911625157dcf3ffb7cfde2d94676bd989fcf80db8f3b896e147fb9",
+      "fingerprint": "4c79348fb72d9c6041bf9c61caa63c5bed4a7a9df55fe42679a0a19775d227da",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -20204,7 +19920,7 @@
       "replacement-choice-nested-events": 1,
       "v0.8-artifact-engine-family": 22,
       "v0.8-equipment-family": 5,
-      "v0.8-exact-deck-closure": 106,
+      "v0.8-exact-deck-closure": 107,
       "v0.8-exact-keyword-family": 2,
       "v0.8-exact-land-family": 10,
       "v0.8-exact-mana-family": 5,
@@ -20353,7 +20069,7 @@
       {
         "file": "quorune/semantic_packs/zzz-v080-exact-deck-closure.json",
         "name": "v0.8-exact-deck-closure",
-        "program_count": 107,
+        "program_count": 108,
         "schema_version": 3
       },
       {
@@ -20363,7 +20079,7 @@
         "schema_version": 3
       }
     ],
-    "program_entries": 263,
+    "program_entries": 264,
     "semantic_operation_counts": {
       "add_counter_selected": 1,
       "add_subtype_until_end_of_turn": 1,
@@ -20423,7 +20139,7 @@
       "extra_turn": 1,
       "fabricate": 1,
       "fomori_vault": 1,
-      "grant_ability_marker": 2,
+      "grant_ability_fragment": 2,
       "grant_cast_permission": 1,
       "grant_keyword_until_end_of_turn": 2,
       "grant_play_without_mana_cost": 1,
@@ -20472,13 +20188,13 @@
     },
     "trust_level_counts": {
       "provisional": 5,
-      "trusted": 253,
+      "trusted": 254,
       "unresolved": 5
     },
     "typed_card_override_boundary_present": true,
     "unclassified_operation_count": 99,
     "unique_oracle_ids": 141,
-    "unique_program_keys": 252
+    "unique_program_keys": 253
   },
   "tests": {
     "browser": {
@@ -20486,7 +20202,7 @@
       "playwright_e2e_journeys": 10
     },
     "mutation_testing": {
-      "capability_mutation_declarations": 161,
+      "capability_mutation_declarations": 162,
       "configured_tools": [],
       "focused_executable_suite": true,
       "mutation_score": null
@@ -20514,8 +20230,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2657,
-      "discovered_total": 5957,
+      "conventional_ast_cases": 2674,
+      "discovered_total": 5974,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 105,
@@ -20525,7 +20241,7 @@
         "server_named": 26
       },
       "reconciles": true,
-      "test_files": 257
+      "test_files": 258
     }
   }
 }

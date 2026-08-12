@@ -1,0 +1,133 @@
+from __future__ import annotations
+
+"""Closed compiler-pinned descriptors for activated-ability discovery."""
+
+from dataclasses import dataclass
+from functools import lru_cache
+from typing import Any, Mapping
+
+from ..abilities import ActivatedAbility
+from .component_registry import RuntimeComponentRegistry, exact_fields
+from .context import SemanticNodeError
+
+
+ACTIVATED_ABILITY_CATALOG_HANDLER_ID = "activation.catalog.pinned.v1"
+
+
+@dataclass(frozen=True, slots=True)
+class ActivatedAbilityCatalogHandler:
+    """Validate a complete activated ability compiled before game runtime."""
+
+    handler_id: str = ACTIVATED_ABILITY_CATALOG_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.activated.catalog"
+    event: str = "activate"
+    rule_references: tuple[str, ...] = (
+        "602.1",
+        "602.2",
+        "602.2a",
+        "602.2b",
+        "602.2c",
+        "605.1a",
+    )
+    capability_dependencies: tuple[str, ...] = ()
+
+    def validate(self, descriptor: Mapping[str, Any]) -> ActivatedAbility:
+        exact_fields(
+            descriptor,
+            {"handler_id", "schema_version", "event", "ability"},
+            field="activated ability catalog handler",
+        )
+        if descriptor["handler_id"] != self.handler_id:
+            raise SemanticNodeError(
+                "Activated ability catalog handler ID mismatch"
+            )
+        if descriptor["schema_version"] != self.schema_version:
+            raise SemanticNodeError(
+                "Unsupported activated ability catalog schema version"
+            )
+        if descriptor["event"] != self.event:
+            raise SemanticNodeError(
+                "Activated ability catalog handlers must use activate"
+            )
+        ability = descriptor["ability"]
+        if not isinstance(ability, Mapping):
+            raise SemanticNodeError(
+                "Activated ability catalog value must be an object"
+            )
+        try:
+            return ActivatedAbility.from_dict(ability)
+        except (TypeError, ValueError) as exc:
+            raise SemanticNodeError(str(exc)) from exc
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[ActivatedAbility, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+class ActivatedAbilityCatalogRegistry(
+    RuntimeComponentRegistry[object, ActivatedAbility]
+):
+    pass
+
+
+@lru_cache(maxsize=1)
+def default_activated_ability_catalog_registry(
+) -> ActivatedAbilityCatalogRegistry:
+    return ActivatedAbilityCatalogRegistry(
+        (ActivatedAbilityCatalogHandler(),)
+    ).freeze()
+
+
+def activated_ability_catalog_descriptor(
+    ability: ActivatedAbility,
+) -> dict[str, Any]:
+    return {
+        "handler_id": ACTIVATED_ABILITY_CATALOG_HANDLER_ID,
+        "schema_version": 1,
+        "event": "activate",
+        "ability": ability.to_dict(),
+    }
+
+
+def activated_abilities_from_descriptors(
+    descriptors: tuple[Mapping[str, Any], ...]
+    | list[Mapping[str, Any]],
+) -> tuple[ActivatedAbility, ...]:
+    registry = default_activated_ability_catalog_registry()
+    abilities: list[ActivatedAbility] = []
+    for descriptor in descriptors:
+        if registry.describe(str(descriptor.get("handler_id") or "")) is None:
+            continue
+        abilities.extend(registry.lower(descriptor, None))
+    return tuple(abilities)
+
+
+def is_structural_activated_ability_catalog_program(program: Any) -> bool:
+    """Whether a program carries discovery metadata but no resolution rules."""
+
+    handlers = tuple(getattr(program, "handlers", ()))
+    return bool(
+        str(getattr(program, "ability_id", "")).startswith(
+            "ability:catalog:"
+        )
+        and not getattr(program, "effects", ())
+        and len(handlers) == 1
+        and handlers[0].get("handler_id")
+        == ACTIVATED_ABILITY_CATALOG_HANDLER_ID
+    )
+
+
+__all__ = [
+    "ACTIVATED_ABILITY_CATALOG_HANDLER_ID",
+    "ActivatedAbilityCatalogHandler",
+    "ActivatedAbilityCatalogRegistry",
+    "activated_abilities_from_descriptors",
+    "activated_ability_catalog_descriptor",
+    "default_activated_ability_catalog_registry",
+    "is_structural_activated_ability_catalog_program",
+]

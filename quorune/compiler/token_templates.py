@@ -33,6 +33,7 @@ _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
         "oracle_text": (
             "{T}, Sacrifice this token: Add one mana of any color."
         ),
+        "ability_profile": "tap_sac_any_color_mana_v1",
     },
     "food token": {
         "name": _TOKEN_FOOD,
@@ -40,6 +41,7 @@ _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
         "oracle_text": (
             "{2}, {T}, Sacrifice this token: You gain 3 life."
         ),
+        "ability_profile": "two_tap_sac_gain_three_life_v1",
     },
     "map token": {
         "name": _TOKEN_MAP,
@@ -48,6 +50,7 @@ _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
             "{1}, {T}, Sacrifice this token: Target creature you control "
             "explores. Activate only as a sorcery."
         ),
+        "ability_profile": "one_tap_sac_explore_controlled_creature_v1",
     },
     "1/1 colorless thopter artifact creature token with flying": {
         "name": _TOKEN_THOPTER,

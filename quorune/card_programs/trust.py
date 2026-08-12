@@ -4,6 +4,9 @@ import hashlib
 import json
 from typing import Any, Iterable, Mapping, Sequence
 
+from ..semantic_runtime.activated_abilities import (
+    is_structural_activated_ability_catalog_program,
+)
 from ..util import stable_json
 
 
@@ -125,6 +128,17 @@ def _compatibility_row(
     }
 
 
+def _semantic_ability_trust_inputs(
+    abilities: Sequence[Any],
+) -> tuple[tuple[Any, ...], bool]:
+    values = tuple(
+        ability
+        for ability in abilities
+        if not is_structural_activated_ability_catalog_program(ability)
+    )
+    return values, bool(values)
+
+
 def build_program_trust_closure(
     abilities: Sequence[Any],
     residuals: Sequence[Mapping[str, Any]],
@@ -132,6 +146,7 @@ def build_program_trust_closure(
     oracle_source_hash: str,
     rulings_source_hash: str,
 ) -> dict[str, Any]:
+    semantic_abilities, all_ignored = _semantic_ability_trust_inputs(abilities)
     direct: set[str] = set()
     reachable: set[str] = set()
     blockers: set[str] = set()
@@ -142,8 +157,7 @@ def build_program_trust_closure(
     capability_closed: list[str] = []
     compatibility: list[dict[str, Any]] = []
     provisional = False
-    all_ignored = bool(abilities)
-    for ability in abilities:
+    for ability in semantic_abilities:
         direct.update(ability.capability_dependencies)
         closure = ability.capability_closure
         if closure is None:

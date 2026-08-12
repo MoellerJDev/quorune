@@ -79,6 +79,7 @@ def execute_shortcut(
             characteristics={
                 "type_line": "Token Artifact — Treasure",
                 "oracle_text": "{T}, Sacrifice this token: Add one mana of any color.",
+                "activated_ability_profile": "tap_sac_any_color_mana_v1",
             },
             reason="validated deterministic shortcut",
         )[0]

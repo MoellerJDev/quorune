@@ -331,18 +331,9 @@ class FixedManaRuntimeTests(unittest.TestCase):
         session = self.session(60520)
         ring, ability = self._ring(session)
         engine = session.engine
-        original = __import__(
-            "quorune.rules.activation.query",
-            fromlist=["parse_activated_abilities"],
-        ).parse_activated_abilities
-
-        def reject_owned_oracle(**kwargs):
-            self.assertNotIn("Add {C}{C}", kwargs["oracle_text"])
-            return original(**kwargs)
-
         with mock.patch(
-            "quorune.rules.activation.query.parse_activated_abilities",
-            side_effect=reject_owned_oracle,
+            "quorune.compiler.activated_ability_catalog.parse_activated_abilities",
+            side_effect=AssertionError("runtime activation discovery recompiled Oracle"),
         ):
             rediscovered = engine._activated_abilities(ring)
         self.assertEqual(ability, next(row for row in rediscovered if row.fixed_mana_outputs))
@@ -385,22 +376,15 @@ class FixedManaRuntimeTests(unittest.TestCase):
         engine = session.engine
         changed = dict(engine._effective_card_data(ring))
         changed["executable_oracle_text"] = "{T}: Add {U}."
-        original = __import__(
-            "quorune.rules.activation.query",
-            fromlist=["parse_activated_abilities"],
-        ).parse_activated_abilities
-
-        def reject_stale_oracle(**kwargs):
-            self.assertEqual("", kwargs["oracle_text"])
-            return original(**kwargs)
+        changed["activated_abilities"] = []
 
         with mock.patch.object(
             engine,
             "_effective_card_data",
             return_value=changed,
         ), mock.patch(
-            "quorune.rules.activation.query.parse_activated_abilities",
-            side_effect=reject_stale_oracle,
+            "quorune.compiler.activated_ability_catalog.parse_activated_abilities",
+            side_effect=AssertionError("runtime activation discovery recompiled Oracle"),
         ):
             abilities = engine._activated_abilities(ring)
 

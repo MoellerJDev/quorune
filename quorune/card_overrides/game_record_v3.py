@@ -1,6 +1,12 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Any, Mapping
+
+from ..abilities import ActivatedAbility, parse_activated_abilities
+
+
+_GRANTED_ABILITY_PREFIX = "granted_activated_ability:"
 
 
 def normalize_game_record_v3_effect(effect: Mapping[str, Any]) -> dict[str, Any]:
@@ -138,7 +144,68 @@ def historical_granted_activated_ability_descriptors(
     return tuple(descriptors)
 
 
+def historical_game_record_v3_activated_abilities(
+    card: Any,
+    data: Mapping[str, Any],
+) -> tuple[ActivatedAbility, ...]:
+    """Interpret replay-pinned v3 text only behind compatibility mode.
+
+    Current games receive compiler-pinned ``ActivatedAbility`` values in their
+    characteristic snapshots.  Historical records predate that descriptor, so
+    their saved Oracle text and legacy ability markers remain an explicit,
+    isolated compatibility input rather than a second current-runtime owner.
+    """
+
+    keywords = data.get("keywords", ())
+    if not isinstance(keywords, (list, tuple)) or any(
+        not isinstance(keyword, str) for keyword in keywords
+    ):
+        raise ValueError("historical keywords must be an array of strings")
+    name = str(data.get("name") or getattr(card, "printed_name", ""))
+    oracle_text = str(
+        data.get("executable_oracle_text", data.get("oracle_text") or "")
+    )
+    result = list(
+        parse_activated_abilities(
+            card_name=name,
+            oracle_text=oracle_text,
+            keywords=tuple(keywords),
+        )
+    )
+    annotations = getattr(card, "annotations", {})
+    if not isinstance(annotations, Mapping):
+        raise ValueError("historical card annotations must be an object")
+    descriptors = [
+        str(marker).removeprefix(_GRANTED_ABILITY_PREFIX)
+        for marker, active in sorted(annotations.items())
+        if active and str(marker).startswith(_GRANTED_ABILITY_PREFIX)
+    ]
+    descriptors.extend(
+        historical_granted_activated_ability_descriptors(annotations)
+    )
+    for descriptor in descriptors:
+        ability_id, separator, oracle_line = descriptor.partition(":")
+        if not separator or not ability_id or not oracle_line:
+            continue
+        parsed = parse_activated_abilities(
+            card_name=name,
+            oracle_text=oracle_line,
+            keywords=(),
+        )
+        if len(parsed) != 1:
+            continue
+        result.append(
+            replace(
+                parsed[0],
+                ability_id=ability_id,
+                line_index=30_000 + len(result),
+            )
+        )
+    return tuple(sorted(result, key=lambda ability: ability.line_index))
+
+
 __all__ = [
+    "historical_game_record_v3_activated_abilities",
     "historical_granted_activated_ability_descriptors",
     "normalize_game_record_v3_effect",
 ]

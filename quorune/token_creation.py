@@ -37,6 +37,7 @@ from .semantic_runtime import (
     resolve_token_creation_replacements,
 )
 from .trigger_processing import enqueue_trigger_batch
+from .standard_token_abilities import standard_token_characteristics
 
 
 class TokenCreationError(ValueError):
@@ -831,6 +832,11 @@ def create_tokens(
     host._require_seat(controller, in_game=True)
     if quantity < 0:
         raise TokenCreationError("Token quantity cannot be negative")
+    if not copy_of:
+        try:
+            characteristics = standard_token_characteristics(characteristics)
+        except ValueError as exc:
+            raise TokenCreationError(str(exc)) from exc
     created_types, created_subtypes, sources = _creation_subject(
         host,
         controller,

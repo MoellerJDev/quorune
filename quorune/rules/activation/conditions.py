@@ -1,10 +1,15 @@
 from __future__ import annotations
 
-import re
+"""Evaluation of compiler-pinned activated-ability conditions."""
+
 from collections.abc import Mapping
 from typing import Any, Protocol
 
-from ...abilities import ActivatedAbility
+from ...abilities import (
+    ActivatedAbility,
+    ActivationCondition,
+    ActivationConditionKind,
+)
 from ...activation_usage import (
     ActivationUsageError,
     activation_usage_verdict,
@@ -19,23 +24,6 @@ class ActivationConditionHost(Protocol):
     def _type_parts(
         self, type_line: str
     ) -> tuple[set[str], set[str], set[str]]: ...
-
-
-_COUNT_WORDS = {
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "s" + "ix": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "ten": 10,
-}
-_COUNT_PATTERN = "|".join(
-    (r"\d+", *(re.escape(word) for word in _COUNT_WORDS))
-)
 
 
 def _effective_card_types(
@@ -68,20 +56,78 @@ def _effective_card_types(
     return frozenset(value.casefold() for value in card_types)
 
 
+def _typed_condition_status(
+    host: ActivationConditionHost,
+    seat: str,
+    condition: ActivationCondition,
+) -> tuple[str, str | None]:
+    kind = condition.kind
+    if kind is ActivationConditionKind.CONTROLLERS_TURN:
+        return (
+            ("payable", None)
+            if host.state.active_player == seat
+            else ("unavailable", "only_during_your_turn")
+        )
+    if kind is ActivationConditionKind.NOT_CONTROLLERS_TURN:
+        return (
+            ("unavailable", "only_during_another_players_turn")
+            if host.state.active_player == seat
+            else ("payable", None)
+        )
+    if kind is ActivationConditionKind.TOKEN_CREATED_THIS_TURN:
+        created = int(
+            host.state.players[seat].stats.get(
+                "tokens_created_by_turn", {}
+            ).get(str(host.state.turn_sequence), 0)
+        )
+        return (
+            ("payable", None)
+            if created > 0
+            else ("unavailable", "requires_token_created_this_turn")
+        )
+    if kind is ActivationConditionKind.CONTROLS_TYPE:
+        controlled = 0
+        for object_id in host.state.players[seat].zones["battlefield"]:
+            permanent = host.state.cards[object_id]
+            if permanent.controller != seat or permanent.phased_out:
+                continue
+            card_types = _effective_card_types(host, permanent)
+            if card_types is None:
+                return "unresolved", "malformed_effective_type_line"
+            if condition.card_type in card_types:
+                controlled += 1
+        required = int(condition.minimum or 0)
+        return (
+            ("payable", None)
+            if controlled >= required
+            else (
+                "unavailable",
+                f"requires_{required}_{condition.card_type}s",
+            )
+        )
+    if kind is ActivationConditionKind.GRAVEYARD_DISTINCT_TYPES:
+        card_types: set[str] = set()
+        for object_id in host.state.players[seat].zones["graveyard"]:
+            object_types = _effective_card_types(host, object_id)
+            if object_types is None:
+                return "unresolved", "malformed_effective_type_line"
+            card_types.update(object_types)
+        return (
+            ("payable", None)
+            if len(card_types) >= int(condition.minimum or 0)
+            else ("unavailable", "requires_delirium")
+        )
+    return "unresolved", "unresolved_activation_condition"
+
+
 def activation_condition_status(
     host: ActivationConditionHost,
     seat: str,
     ability: ActivatedAbility,
     source: Any | None = None,
 ) -> tuple[str, str | None]:
-    """Evaluate the closed activation-condition grammar without mutation."""
+    """Evaluate closed predicates and usage limits without Oracle text reads."""
 
-    effect = ability.effect_text.casefold()
-    if (
-        "activate only during your turn" in effect
-        and host.state.active_player != seat
-    ):
-        return "unavailable", "only_during_your_turn"
     if ability.activation_limit is not None:
         if source is None:
             return "unresolved", "activation_source_required"
@@ -96,80 +142,10 @@ def activation_condition_status(
             return "unresolved", "malformed_activation_usage"
         if not usage.available:
             return "unavailable", usage.reason
-    if "activate only if" not in effect:
-        return "payable", None
-    if "created a token this turn" in effect:
-        created = int(
-            host.state.players[seat].stats.get(
-                "tokens_created_by_turn", {}
-            ).get(str(host.state.turn_sequence), 0)
-        )
-        return (
-            ("payable", None)
-            if created > 0
-            else ("unavailable", "requires_token_created_this_turn")
-        )
-    if "activate only if it's not your turn" in effect:
-        return (
-            ("unavailable", "only_during_another_players_turn")
-            if host.state.active_player == seat
-            else ("payable", None)
-        )
-    if "activate only if you control an artifact" in effect:
-        controls_artifact = False
-        for object_id in host.state.players[seat].zones["battlefield"]:
-            permanent = host.state.cards[object_id]
-            if permanent.controller != seat or permanent.phased_out:
-                continue
-            card_types = _effective_card_types(host, object_id)
-            if card_types is None:
-                return "unresolved", "malformed_effective_type_line"
-            controls_artifact = controls_artifact or "artifact" in card_types
-        return (
-            ("payable", None)
-            if controls_artifact
-            else ("unavailable", "requires_controlled_artifact")
-        )
-    if (
-        "activate only if there are four or more card types among "
-        "cards in your graveyard"
-    ) in effect:
-        card_types: set[str] = set()
-        for object_id in host.state.players[seat].zones["graveyard"]:
-            object_types = _effective_card_types(host, object_id)
-            if object_types is None:
-                return "unresolved", "malformed_effective_type_line"
-            card_types.update(object_types)
-        return (
-            ("payable", None)
-            if len(card_types) >= 4
-            else ("unavailable", "requires_delirium")
-        )
-    match = re.search(
-        r"activate only if you control "
-        rf"(?P<count>{_COUNT_PATTERN}) "
-        r"or more (?P<kind>artifacts?|creatures?|lands?)",
-        effect,
-    )
-    if match is None:
-        return "unresolved", "unresolved_activation_condition"
-    raw_count = match.group("count")
-    required = (
-        int(raw_count) if raw_count.isdigit() else _COUNT_WORDS[raw_count]
-    )
-    kind = match.group("kind").removesuffix("s")
-    controlled = 0
-    for object_id in host.state.players[seat].zones["battlefield"]:
-        permanent = host.state.cards[object_id]
-        if permanent.controller != seat or permanent.phased_out:
-            continue
-        card_types = _effective_card_types(host, permanent)
-        if card_types is None:
-            return "unresolved", "malformed_effective_type_line"
-        if kind in card_types:
-            controlled += 1
-    if controlled < required:
-        return "unavailable", f"requires_{required}_{kind}s"
+    for condition in ability.activation_conditions:
+        status, reason = _typed_condition_status(host, seat, condition)
+        if status != "payable":
+            return status, reason
     return "payable", None
 
 

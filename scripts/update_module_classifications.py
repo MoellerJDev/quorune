@@ -50,6 +50,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         return "transport"
     if relative in {
         "quorune/additional_cost_vocabulary.py",
+        "quorune/activated_ability_descriptor.py",
         "quorune/ability_fragments.py",
         "quorune/bloodthirst.py",
         "quorune/counter_snapshot.py",
@@ -99,9 +100,6 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/compiled_activated_abilities.py",
         "quorune/compiled_cast_costs.py",
         "quorune/compiled_cast_timing.py",
-        "quorune/compiled_crew_abilities.py",
-        "quorune/compiled_cycling_abilities.py",
-        "quorune/compiled_mana_abilities.py",
     }:
         return "semantics"
     if relative in {
@@ -222,6 +220,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/state_based_actions.py",
         "quorune/state_based_execution.py",
         "quorune/state_planner.py",
+        "quorune/standard_token_abilities.py",
         "quorune/tap_state.py",
         "quorune/target_protection.py",
         "quorune/target_protection_engine_adapter.py",
@@ -272,9 +271,8 @@ def _owner(relative: str, layer: str) -> str:
     }:
         return "ability_fragments"
     if relative in {
+        "quorune/activated_ability_descriptor.py",
         "quorune/compiled_activated_abilities.py",
-        "quorune/compiled_crew_abilities.py",
-        "quorune/compiled_cycling_abilities.py",
         "quorune/crew.py",
         "quorune/cycling_abilities.py",
     }:
@@ -357,7 +355,6 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/fixed_mana_abilities.py",
         "quorune/mana_ability_runtime.py",
         "quorune/mana_source_discovery.py",
-        "quorune/compiled_mana_abilities.py",
         "quorune/mana_mode_effects.py",
         "quorune/mana_payment_continuations.py",
         "quorune/mana_undo.py",
@@ -423,7 +420,10 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/combat_relationship_state.py",
     }:
         return "combat_damage"
-    if relative == "quorune/token_creation.py":
+    if relative in {
+        "quorune/standard_token_abilities.py",
+        "quorune/token_creation.py",
+    }:
         return "token_creation"
     if relative == "quorune/return_to_hand.py":
         return "return_to_hand"
@@ -588,11 +588,8 @@ def build_classifications() -> dict[str, Any]:
                             "protection.py",
                             "compiled_ability_fragments.py",
                             "compiled_activated_abilities.py",
-                            "compiled_crew_abilities.py",
-                            "compiled_cycling_abilities.py",
                             "crew.py",
                             "cycling_abilities.py",
-                            "compiled_mana_abilities.py",
                             "fixed_mana_abilities.py",
                             "mana_ability_runtime.py",
                             "trigger_targeting.py",

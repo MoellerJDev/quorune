@@ -63384,7 +63384,7 @@
         "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_changed_cycling_oracle_fails_closed_without_runtime_reparse"
       ],
       "implementation_components": [
-        "quorune.compiled_cycling_abilities.compiled_ordinary_cycling_abilities",
+        "quorune.compiled_activated_abilities.compiled_activated_abilities",
         "quorune.rules.activation.query.activated_abilities"
       ],
       "notes": [

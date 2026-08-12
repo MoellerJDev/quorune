@@ -54,6 +54,13 @@ from ..rules.node_capability_shapes import (
 from ..rules.echo_capability_shapes import fixed_mana_echo_node_capabilities
 from ..semantics import SemanticProgram, SemanticRegistry
 from ..util import stable_json
+from ..semantic_runtime.activated_abilities import (
+    ACTIVATED_ABILITY_CATALOG_HANDLER_ID,
+)
+from .activated_ability_catalog import (
+    catalog_carrier_is_shadowed,
+    with_activated_ability_catalog,
+)
 from .program_composition import (
     generated_node_groups,
     is_closed_composed_spell_effect_program,
@@ -73,6 +80,8 @@ def runtime_handler_footprint(
         sorted(
             _runtime_handler_semantic_descriptor(handler)
             for handler in program.handlers
+            if handler.get("handler_id")
+            != ACTIVATED_ABILITY_CATALOG_HANDLER_ID
         )
     )
     if not handler_descriptors or any(
@@ -260,6 +269,14 @@ def _generated_coverage(*, kind: str, runtime_handler: bool) -> str:
     if runtime_handler:
         return "runtime_static_handler"
     return "activated_ability"
+
+
+def _has_executable_runtime_handler(program: SemanticProgram) -> bool:
+    return any(
+        handler.get("handler_id")
+        != ACTIVATED_ABILITY_CATALOG_HANDLER_ID
+        for handler in program.handlers
+    )
 
 
 def _copy_mapping(value: Any) -> dict[str, Any] | None:
@@ -983,7 +1000,18 @@ def generated_programs(
             )
             if program is not None:
                 programs.append(program)
-    return programs
+    return list(
+        with_activated_ability_catalog(
+            record,
+            programs,
+            carrier_provenance={
+                "source_oracle_hash": ir.oracle_hash,
+                "source_rulings_hash": rulings_hash,
+                "authored_by": ORACLE_COMPILER_VERSION,
+                "review_status": "generated_review_required",
+            },
+        )
+    )
 
 
 def _trusted_program_is_requested(
@@ -995,7 +1023,7 @@ def _trusted_program_is_requested(
     promote_exact_capability_declarations: bool,
 ) -> bool:
     return bool(
-        program.handlers
+        _has_executable_runtime_handler(program)
         or (
             promote_exact_effect_programs
             and program.key in promotable_effect_keys
@@ -1043,7 +1071,10 @@ def _trusted_generated_programs(
             program.ability_id.startswith("trigger:")
             for program in provisional_programs
         )
-        or any(program.handlers for program in provisional_programs)
+        or any(
+            _has_executable_runtime_handler(program)
+            for program in provisional_programs
+        )
         or (
             promote_exact_effect_programs
             and promotable_effect_keys
@@ -1130,6 +1161,18 @@ def register_generated_programs(
             capability_registry=capability_registry,
             capability_profile=capability_profile,
         )
+        existing_programs = registry.programs_for_oracle(record.oracle_id)
+        for existing, augmented in zip(
+            existing_programs,
+            with_activated_ability_catalog(
+                record,
+                existing_programs,
+                reference_programs=provisional_programs,
+            ),
+            strict=True,
+        ):
+            if existing.to_dict() != augmented.to_dict():
+                registry.put(augmented)
         program_key_counts = Counter(
             program.key for program in provisional_programs
         )
@@ -1163,6 +1206,13 @@ def register_generated_programs(
             if registry.get(program.key) is not None:
                 skipped_existing += 1
                 continue
+            if catalog_carrier_is_shadowed(
+                record,
+                program,
+                registry.programs_for_oracle(record.oracle_id),
+            ):
+                skipped_existing += 1
+                continue
             footprint = runtime_handler_footprint(program)
             if footprint is not None and any(
                 existing.trust_level == "trusted"
@@ -1189,7 +1239,7 @@ def register_generated_programs(
                 continue
             if program is not provisional:
                 promoted_exact_programs += 1
-                if program.handlers:
+                if _has_executable_runtime_handler(program):
                     promoted_runtime_handlers += 1
                 if (
                     program.key in promotable_effect_keys

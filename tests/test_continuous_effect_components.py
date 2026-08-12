@@ -17,6 +17,7 @@ from quorune.model import StackItem
 from quorune.record import checkpoint_envelope, replay_record
 from quorune.semantic_runtime import (
     ContinuousEffectSourceContext,
+    FixedQueryAbilityGrantHandler,
     FixedPowerToughnessAnthemHandler,
     SemanticNodeError,
     default_continuous_effect_component_registry,
@@ -34,6 +35,55 @@ def anthem_descriptor() -> dict:
             "target_subtypes_all": ["thopter"],
         },
         "modifier": {"power": 1, "toughness": 1},
+    }
+
+
+def ability_grant_descriptor() -> dict:
+    return {
+        "handler_id": "continuous.ability.fixed-query-grant.v1",
+        "schema_version": 1,
+        "event": "characteristics.evaluate",
+        "condition": {
+            "target_controller": "source_controller",
+            "predicate": {
+                "zones": ["battlefield"],
+                "owner": None,
+                "controller": None,
+                "types_all": ["creature"],
+                "types_any": [],
+                "excluded_types": [],
+                "subtypes_all": [],
+                "supertypes_all": [],
+                "colors_all": [],
+                "colors_any": [],
+                "keywords_all": [],
+                "token": True,
+                "tapped": None,
+                "include_phased_out": False,
+                "known_to_actor": None,
+                "exclude_ref": None,
+            },
+            "exclude_source": False,
+        },
+        "modifier": {
+            "add_ability_fragments": [
+                {
+                    "kind": "granted_activated",
+                    "value": {
+                        "schema_version": 1,
+                        "ability_id": "test-mana",
+                        "semantic_key": "builtin:mana-fixed",
+                        "cost_text": "{T}",
+                        "effect_text": "Add {G}.",
+                        "mana": {},
+                        "tap_source": True,
+                        "sorcery_speed": False,
+                        "mana_ability": True,
+                        "fixed_mana_outputs": [{"G": 1}],
+                    },
+                }
+            ]
+        },
     }
 
 
@@ -133,6 +183,43 @@ class ContinuousEffectComponentTests(unittest.TestCase):
                 event="resolve",
                 handlers=[anthem_descriptor()],
             )
+
+    def test_fixed_query_ability_grant_is_typed_and_canonical(self):
+        handler = FixedQueryAbilityGrantHandler()
+        context = ContinuousEffectSourceContext(
+            source_object_id="source",
+            source_ref="S1",
+            source_controller="A",
+            source_timestamp=4,
+            component_id="test:ability-grant:0",
+        )
+        effect = handler.lower(ability_grant_descriptor(), context)[0]
+        reconstructed = ContinuousEffect.from_dict(effect.to_dict())
+
+        self.assertEqual(effect, reconstructed)
+        self.assertEqual(Layer.ABILITY, effect.layer)
+        self.assertEqual("A", effect.applies.controller)
+        self.assertTrue(effect.applies.token)
+        self.assertEqual(("creature",), effect.applies.types_all)
+        self.assertEqual("add_ability_fragment", effect.operations[0].op)
+        self.assertEqual(
+            ["continuous.ability.fixed_query_grant"],
+            default_continuous_effect_component_registry().describe(
+                "continuous.ability.fixed-query-grant.v1"
+            )["capability_dependencies"],
+        )
+
+    def test_fixed_query_ability_grant_rejects_malformed_descriptors(self):
+        handler = FixedQueryAbilityGrantHandler()
+        empty = ability_grant_descriptor()
+        empty["modifier"]["add_ability_fragments"] = []
+        with self.assertRaisesRegex(SemanticNodeError, "nonempty"):
+            handler.validate(empty)
+
+        competing_controller = ability_grant_descriptor()
+        competing_controller["condition"]["predicate"]["controller"] = "A"
+        with self.assertRaisesRegex(SemanticNodeError, "reserve"):
+            handler.validate(competing_controller)
 
     def test_multiple_anthem_components_stack_and_respect_control(self):
         session = self.session(1250602)

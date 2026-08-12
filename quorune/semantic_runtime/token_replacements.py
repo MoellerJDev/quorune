@@ -21,6 +21,10 @@ from .component_registry import (
     nonempty_strings,
 )
 from .context import SemanticNodeError
+from ..standard_token_abilities import (
+    TOKEN_ABILITY_PROFILE_FIELD,
+    standard_token_characteristics,
+)
 
 
 _ADDITIONAL_TOKEN_HANDLER_ID = "replacement.token.additional.v1"
@@ -36,6 +40,7 @@ class TokenDefinition:
     toughness: str | None = None
     keywords: tuple[str, ...] = ()
     oracle_text: str = ""
+    ability_profile: str | None = None
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> "TokenDefinition":
@@ -47,6 +52,7 @@ class TokenDefinition:
             "toughness",
             "keywords",
             "oracle_text",
+            "ability_profile",
         }
         unknown = sorted(set(value) - allowed)
         if unknown:
@@ -67,6 +73,13 @@ class TokenDefinition:
         )
         power = value.get("power")
         toughness = value.get("toughness")
+        ability_profile = value.get("ability_profile")
+        if ability_profile is not None and (
+            type(ability_profile) is not str or not ability_profile
+        ):
+            raise SemanticNodeError(
+                "additional token ability_profile must be null or nonempty"
+            )
         if (power is None) != (toughness is None):
             raise SemanticNodeError(
                 "additional token power and toughness must appear together"
@@ -79,6 +92,7 @@ class TokenDefinition:
             toughness=None if toughness is None else str(toughness),
             keywords=keywords,
             oracle_text=str(value.get("oracle_text") or ""),
+            ability_profile=ability_profile,
         )
 
     def characteristics(self) -> dict[str, Any]:
@@ -92,7 +106,12 @@ class TokenDefinition:
             value["toughness"] = self.toughness
         if self.oracle_text:
             value["oracle_text"] = self.oracle_text
-        return value
+        if self.ability_profile is not None:
+            value[TOKEN_ABILITY_PROFILE_FIELD] = self.ability_profile
+        try:
+            return standard_token_characteristics(value)
+        except ValueError as exc:
+            raise SemanticNodeError(str(exc)) from exc
 
 
 @dataclass(frozen=True, slots=True)

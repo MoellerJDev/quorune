@@ -6,7 +6,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
-from .semantic_runtime import validate_runtime_handler_descriptors
+from .semantic_runtime import (
+    is_structural_activated_ability_catalog_program,
+    validate_runtime_handler_descriptors,
+)
 from .util import stable_json
 
 TRUST_LEVELS = {
@@ -97,6 +100,7 @@ VALID_EFFECT_OPERATIONS = {
     "exile_opponent_graveyards",
     "extra_turn",
     "grant_ability_marker",
+    "grant_ability_fragment",
     "grant_zone_object_keyword",
     "fomori_vault",
     "life",
@@ -469,7 +473,13 @@ class SemanticRegistry:
             # the semantics used to replay an older accepted-command prefix.
             self._programs.clear()
             self._card_program_cache = None
-            self._runtime_handler_compatibility_enabled = True
+            # Historical Game Record v3 registries predate the explicit flag,
+            # so absence retains their replay-only Oracle compatibility path.
+            # Current registries write ``False`` and must never acquire legacy
+            # runtime interpretation merely because they were serialized.
+            self._runtime_handler_compatibility_enabled = bool(
+                raw.get("runtime_handler_compatibility_enabled", True)
+            )
         serialized_card_programs = raw.get("card_programs")
         if serialized_card_programs is not None:
             if raw.get("card_program_schema_version") != 2:
@@ -558,6 +568,7 @@ class SemanticRegistry:
             "schema_version": SEMANTIC_SCHEMA_VERSION,
             "card_program_schema_version": 2,
             "include_builtin_packs": False,
+            "runtime_handler_compatibility_enabled": False,
             "card_programs": {
                 program.oracle_id: program.to_dict()
                 for program in self.card_programs()
@@ -647,8 +658,18 @@ class SemanticRegistry:
             for candidate in candidates
         )
 
+    @property
+    def runtime_handler_compatibility_enabled(self) -> bool:
+        """Whether this registry is replaying a historical v3 snapshot."""
+
+        return self._runtime_handler_compatibility_enabled
+
     def trust_for_oracle(self, oracle_id: str) -> str:
-        programs = self.programs_for_oracle(oracle_id)
+        programs = tuple(
+            program
+            for program in self.programs_for_oracle(oracle_id)
+            if not is_structural_activated_ability_catalog_program(program)
+        )
         if not programs:
             return "unresolved"
         levels = {program.trust_level for program in programs}

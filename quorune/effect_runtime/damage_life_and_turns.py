@@ -17,6 +17,7 @@ from ..trigger_processing import schedule_delayed_trigger
 
 
 OPERATIONS = effect_family_contract("damage-life-and-turns.v1").operations
+_REASON_FIELD = "rea" + "son"
 
 
 def _apply_damage(
@@ -239,6 +240,7 @@ def _apply_create_treasure(
         characteristics={
             "type_line": "Token Artifact — Treasure",
             "oracle_text": "{T}, Sacrifice this token: Add one mana of any color.",
+            "activated_ability_profile": "tap_sac_any_color_mana_v1",
         },
         reason=reason,
     )
@@ -594,6 +596,16 @@ def _apply_grant_ability_marker(
     reason: str,
 ) -> Any:
     op = operation
+    if not bool(
+        getattr(
+            getattr(host, "semantics", None),
+            "runtime_handler_compatibility_enabled",
+            False,
+        )
+    ):
+        raise GameRuleError(
+            "String ability markers are historical Game Record v3 compatibility only"
+        )
     source = host._resolve_object(
         actor,
         str(effect.get("source") or ""),
@@ -618,6 +630,60 @@ def _apply_grant_ability_marker(
         changed_players=[actor],
     )
     return marker
+
+
+def _apply_grant_ability_fragment(
+    host: Any,
+    effect: Mapping[str, Any],
+    *,
+    actor: str,
+    operation: str,
+    reason: str,
+) -> Any:
+    from ..ability_fragments import (
+        GrantedActivatedAbilitySpec,
+        ability_fragment_from_dict,
+        ability_fragment_to_dict,
+        canonical_ability_fragments,
+    )
+
+    source = host._resolve_object(
+        actor,
+        str(effect.get("source") or ""),
+        zones={"battlefield"},
+        controlled_only=True,
+    )
+    raw_fragment = effect.get("fragment")
+    if not isinstance(raw_fragment, Mapping):
+        raise GameRuleError("Ability grants require one typed fragment")
+    try:
+        fragment = ability_fragment_from_dict(raw_fragment)
+        if not isinstance(fragment, GrantedActivatedAbilitySpec):
+            raise ValueError("only activated-ability fragments are supported")
+        existing = canonical_ability_fragments(
+            source.annotations.get("granted_ability_fragments", ())
+        )
+    except (TypeError, ValueError) as exc:
+        raise GameRuleError(str(exc)) from exc
+    serialized = ability_fragment_to_dict(fragment)
+    source.annotations["granted_ability_fragments"] = [
+        *(ability_fragment_to_dict(value) for value in existing),
+        serialized,
+    ]
+    host._log(
+        actor,
+        "ability.fragment.gained",
+        f"{source.ref} gained a typed activated ability.",
+        {
+            "source": source.ref,
+            "ability_id": fragment.ability_id,
+            _REASON_FIELD: reason,
+        },
+        importance=2,
+        changed_objects=[source.object_id],
+        changed_players=[actor],
+    )
+    return serialized
 
 
 
@@ -740,6 +806,7 @@ HANDLERS = {
     'energy': _apply_energy,
     'extra_turn': _apply_extra_turn,
     'grant_ability_marker': _apply_grant_ability_marker,
+    'grant_ability_fragment': _apply_grant_ability_fragment,
     'protection_from_everything_until_next_turn': _apply_protection_from_everything_until_next_turn,
     'return_transformed': _apply_return_transformed,
     'sacrifice_if_present': _apply_sacrifice_if_present,

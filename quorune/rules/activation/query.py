@@ -1,40 +1,23 @@
 from __future__ import annotations
 
-import re
-from dataclasses import replace
 from typing import Any, Protocol
 
-from ...abilities import ActivatedAbility, parse_activated_abilities
+from ...abilities import ActivatedAbility
 from ...ability_fragments import (
     canonical_ability_fragments,
     granted_activated_specs,
 )
 from ...card_overrides.game_record_v3 import (
-    historical_granted_activated_ability_descriptors,
-)
-from ...compiled_mana_abilities import (
-    compiled_color_set_mana_abilities,
-    compiled_color_set_mana_family_present,
-    compiled_fixed_mana_abilities,
-    compiled_fixed_mana_family_present,
-)
-from ...compiled_cycling_abilities import (
-    compiled_ordinary_cycling_abilities,
-    compiled_ordinary_cycling_family_present,
-)
-from ...compiled_crew_abilities import (
-    compiled_ordinary_crew_abilities,
-    compiled_ordinary_crew_family_present,
+    historical_game_record_v3_activated_abilities,
 )
 from ...fixed_mana_abilities import FixedManaMode
 from ...mana import BASIC_LAND_MANA
 from ...util import normalize_mana_bundle
 
 
-_GRANTED_ABILITY_PREFIX = "granted_activated_ability:"
-
-
 class ActivatedAbilityQueryHost(Protocol):
+    semantics: Any
+
     def _effective_card_data(self, card: Any) -> dict[str, Any]: ...
 
     def _type_parts(
@@ -46,92 +29,34 @@ def activated_abilities(
     host: ActivatedAbilityQueryHost,
     card: Any,
 ) -> tuple[ActivatedAbility, ...]:
-    """Compile printed, intrinsic, and explicitly granted activated abilities."""
+    """Return compiler-pinned, intrinsic, and typed granted abilities."""
 
     data = host._effective_card_data(card)
-    executable_oracle_text = str(
-        data.get(
-            "executable_oracle_text",
-            data.get("oracle_text") or "",
+    raw_abilities = data.get("activated_abilities", ())
+    if not isinstance(raw_abilities, (list, tuple)):
+        raise ValueError("activated_abilities must be an array")
+    abilities = [
+        value
+        if isinstance(value, ActivatedAbility)
+        else ActivatedAbility.from_dict(value)
+        for value in raw_abilities
+    ]
+    if (
+        not abilities
+        and bool(
+            getattr(
+                getattr(host, "semantics", None),
+                "runtime_handler_compatibility_enabled",
+                False,
+            )
         )
-    )
-    compiled_mana = compiled_fixed_mana_abilities(
-        host,
-        card,
-        executable_oracle_text=executable_oracle_text,
-    )
-    compiled_color_set_mana = compiled_color_set_mana_abilities(
-        host,
-        card,
-        executable_oracle_text=executable_oracle_text,
-    )
-    compiled_cycling = compiled_ordinary_cycling_abilities(
-        host,
-        card,
-        executable_oracle_text=executable_oracle_text,
-    )
-    compiled_crew = compiled_ordinary_crew_abilities(
-        host,
-        card,
-        executable_oracle_text=executable_oracle_text,
-    )
-    stale_compiled_family = (
-        (
-            not compiled_mana
-            and compiled_fixed_mana_family_present(host, card)
+    ):
+        abilities.extend(
+            historical_game_record_v3_activated_abilities(card, data)
         )
-        or (
-            not compiled_color_set_mana
-            and compiled_color_set_mana_family_present(host, card)
-        )
-        or (
-            not compiled_cycling
-            and compiled_ordinary_cycling_family_present(host, card)
-        )
-        or (
-            not compiled_crew
-            and compiled_ordinary_crew_family_present(host, card)
-        )
-    )
-    owned_lines = {
-        spec.line_index
-        for spec in (
-            *compiled_mana,
-            *compiled_color_set_mana,
-            *compiled_cycling,
-            *compiled_crew,
-        )
-    }
-    runtime_lines = executable_oracle_text.splitlines()
-    for line_index in owned_lines:
-        if 0 <= line_index < len(runtime_lines):
-            runtime_lines[line_index] = ""
-    runtime_oracle_text = (
-        "" if stale_compiled_family else "\n".join(runtime_lines)
-    )
-    abilities = list(
-        parse_activated_abilities(
-            card_name=str(data.get("name") or card.printed_name),
-            oracle_text=runtime_oracle_text,
-            keywords=tuple(data.get("keywords") or ()),
-        )
-    )
-    abilities.extend(
-        spec.to_activated_ability() for spec in compiled_mana
-    )
-    abilities.extend(
-        spec.to_activated_ability() for spec in compiled_color_set_mana
-    )
-    abilities.extend(
-        spec.to_activated_ability() for spec in compiled_cycling
-    )
-    abilities.extend(
-        spec.to_activated_ability() for spec in compiled_crew
-    )
     abilities.sort(key=lambda ability: ability.line_index)
     _append_intrinsic_land_abilities(host, data, abilities)
     abilities.extend(_typed_granted_abilities(data))
-    abilities.extend(_granted_abilities(card, data))
     return tuple(abilities)
 
 
@@ -164,6 +89,11 @@ def _typed_granted_abilities(
                 },
                 tap_source=spec.tap_source,
                 sorcery_speed=spec.sorcery_speed,
+                mana_ability=spec.mana_ability,
+                fixed_mana_outputs=tuple(
+                    FixedManaMode.from_bundle(dict(output))
+                    for output in spec.fixed_mana_outputs
+                ),
                 builtin_semantic_key=spec.semantic_key,
             )
         )
@@ -182,9 +112,9 @@ def _append_intrinsic_land_abilities(
         color
         for ability in abilities
         if ability.mana_ability
-        for color in re.findall(
-            r"Add\s+\{([WUBRG])\}", ability.effect_text, re.IGNORECASE
-        )
+        for mode in ability.fixed_mana_outputs
+        for color, amount in mode.bundle.items()
+        if amount
     }
     for subtype, color in BASIC_LAND_MANA.items():
         if subtype in subtypes and color not in represented:
@@ -204,40 +134,4 @@ def _append_intrinsic_land_abilities(
                     ),
                 )
             )
-
-
-def _granted_abilities(
-    card: Any,
-    data: dict[str, Any],
-) -> tuple[ActivatedAbility, ...]:
-    result: list[ActivatedAbility] = []
-    descriptors = [
-        str(marker).removeprefix(_GRANTED_ABILITY_PREFIX)
-        for marker, active in sorted(card.annotations.items())
-        if active and str(marker).startswith(_GRANTED_ABILITY_PREFIX)
-    ]
-    descriptors.extend(
-        historical_granted_activated_ability_descriptors(card.annotations)
-    )
-    for descriptor in descriptors:
-        ability_id, separator, oracle_line = descriptor.partition(":")
-        if not separator or not ability_id or not oracle_line:
-            continue
-        parsed = parse_activated_abilities(
-            card_name=str(data.get("name") or card.printed_name),
-            oracle_text=oracle_line,
-            keywords=(),
-        )
-        if len(parsed) != 1:
-            continue
-        result.append(
-            replace(
-                parsed[0],
-                ability_id=ability_id,
-                line_index=30_000 + len(result),
-            )
-        )
-    return tuple(result)
-
-
 __all__ = ["ActivatedAbilityQueryHost", "activated_abilities"]

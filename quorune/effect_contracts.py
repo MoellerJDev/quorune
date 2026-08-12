@@ -85,6 +85,7 @@ EFFECT_FAMILY_CONTRACTS = (
                 "energy",
                 "extra_turn",
                 "grant_ability_marker",
+                "grant_ability_fragment",
                 "protection_from_everything_until_next_turn",
                 "return_transformed",
                 "sacrifice_if_present",

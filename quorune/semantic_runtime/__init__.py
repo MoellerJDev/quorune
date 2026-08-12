@@ -3,6 +3,15 @@ from __future__ import annotations
 from functools import lru_cache
 
 from ..rules.capabilities import load_default_capability_registry
+from .activated_abilities import (
+    ACTIVATED_ABILITY_CATALOG_HANDLER_ID,
+    ActivatedAbilityCatalogHandler,
+    ActivatedAbilityCatalogRegistry,
+    activated_abilities_from_descriptors,
+    activated_ability_catalog_descriptor,
+    default_activated_ability_catalog_registry,
+    is_structural_activated_ability_catalog_program,
+)
 from .ability_fragments import (
     BATTLE_CRY_FRAGMENT_HANDLER_ID,
     BUSHIDO_FRAGMENT_HANDLER_ID,
@@ -50,6 +59,8 @@ from .continuous_components import (
     AddBasicLandTypeNode,
     ContinuousEffectComponentRegistry,
     ContinuousEffectSourceContext,
+    FixedQueryAbilityGrantHandler,
+    FixedQueryAbilityGrantNode,
     FixedPowerToughnessAnthemHandler,
     FixedPowerToughnessAnthemNode,
     FixedQueryPowerToughnessAnthemHandler,
@@ -328,6 +339,13 @@ def default_semantic_interpreter() -> SemanticInterpreter:
 
 
 __all__ = [
+    "ACTIVATED_ABILITY_CATALOG_HANDLER_ID",
+    "ActivatedAbilityCatalogHandler",
+    "ActivatedAbilityCatalogRegistry",
+    "activated_abilities_from_descriptors",
+    "activated_ability_catalog_descriptor",
+    "default_activated_ability_catalog_registry",
+    "is_structural_activated_ability_catalog_program",
     "ATTACHED_FIXED_CHARACTERISTICS_HANDLER_ID",
     "AttachedFixedCharacteristicsHandler",
     "AttachedFixedCharacteristicsNode",
@@ -424,6 +442,8 @@ __all__ = [
     "DrawReplacementSourceContext",
     "collect_draw_reveal_policies",
     "default_draw_reveal_registry",
+    "FixedQueryAbilityGrantHandler",
+    "FixedQueryAbilityGrantNode",
     "FixedPowerToughnessAnthemHandler",
     "FixedPowerToughnessAnthemNode",
     "FixedQueryPowerToughnessAnthemHandler",
