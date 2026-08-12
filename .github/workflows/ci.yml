@@ -23,6 +23,10 @@ jobs:
       browser_matrix: ${{ steps.impact.outputs.browser_matrix }}
       windows_full: ${{ steps.impact.outputs.windows_full }}
       windows_matrix: ${{ steps.impact.outputs.windows_matrix }}
+      python_matrix: ${{ steps.impact.outputs.python_matrix }}
+      python_max_parallel: ${{ steps.impact.outputs.python_max_parallel }}
+      ci_peak_jobs: ${{ steps.impact.outputs.ci_peak_jobs }}
+      ci_job_headroom: ${{ steps.impact.outputs.ci_job_headroom }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,19 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 10
-      matrix:
-        shard:
-          - core-domain
-          - rules-events-replacements
-          - casting-costs-mana
-          - targets-choices-continuations
-          - triggers-turns-exact-decks
-          - state-actions-damage
-          - combat-declarations
-          - multiplayer-commander
-          - compiler-cardprogram
-          - server-replay-privacy
+      max-parallel: ${{ fromJSON(needs.plan.outputs.python_max_parallel) }}
+      matrix: ${{ fromJSON(needs.plan.outputs.python_matrix) }}
     env:
       MTG_CARD_DB: data/test-ci.sqlite3
     steps:
@@ -75,7 +68,19 @@ jobs:
           python scripts/build_test_database.py build-ci
           --output data/test-ci.sqlite3
       - name: Run functional shard
-        run: python scripts/test_shards.py run "${{ matrix.shard }}"
+        run: >-
+          python scripts/test_shards.py run "${{ matrix.shard }}"
+          --backend pytest-xdist
+          --workers 4
+          --result-json "local/python-results/${{ matrix.shard }}.json"
+      - name: Upload Linux shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-results-${{ matrix.shard }}-${{ github.run_id }}
+          path: local/python-results/${{ matrix.shard }}.json
+          if-no-files-found: warn
+          retention-days: 14
 
   generated:
     name: PR / Generated and architecture
@@ -382,6 +387,12 @@ jobs:
           pattern: windows-results-*-${{ github.run_id }}
           path: local/windows-results
           merge-multiple: false
+      - name: Download Linux Python shard reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: python-results-*-${{ github.run_id }}
+          path: local/python-results
+          merge-multiple: false
       - name: Fetch observed run timings
         env:
           GH_TOKEN: ${{ github.token }}
@@ -394,6 +405,7 @@ jobs:
             --jobs-json local/ci-jobs.json \
             --browser-report-dir local/browser-results \
             --windows-report-dir local/windows-results \
+            --python-report-dir local/python-results \
             --output local/ci-metrics.json \
             --summary "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4

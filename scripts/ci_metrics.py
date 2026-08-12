@@ -169,6 +169,20 @@ def load_windows_reports(directory: Path | None) -> list[dict]:
     return reports
 
 
+def load_python_reports(directory: Path | None) -> list[dict]:
+    if directory is None or not directory.exists():
+        return []
+    reports = []
+    for path in sorted(directory.rglob("*.json")):
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(document, dict):
+            raise ValueError(f"Python report {path} must be an object")
+        if document.get("type") != "pytest-xdist-shard-result":
+            raise ValueError(f"Python report {path} has an unknown type")
+        reports.append(document)
+    return reports
+
+
 def _sum_setup_steps(job: Mapping[str, Any]) -> float | None:
     total = 0.0
     observed = False
@@ -294,11 +308,64 @@ def windows_metrics(
     }
 
 
+def python_metrics(
+    run: Mapping[str, Any],
+    jobs: Sequence[Mapping[str, Any]],
+    reports: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    created = _time(str(run.get("created_at") or ""))
+    by_name = {str(job.get("name") or "unknown"): job for job in jobs}
+    shards = []
+    worker_jobs = []
+    for report in reports:
+        suite = str(report.get("suite") or "unknown")
+        job = by_name.get(f"PR / Python / {suite}")
+        if job is not None:
+            worker_jobs.append(job)
+        started, completed = _runner_interval(job) if job is not None else (None, None)
+        shards.append(
+            {
+                "name": suite,
+                "conclusion": job.get("conclusion") if job is not None else None,
+                "queue_seconds": (
+                    round((started - created).total_seconds(), 3)
+                    if started is not None and created is not None
+                    else None
+                ),
+                "test_duration_seconds": report.get("duration_seconds"),
+                "test_count": report.get("tests_run"),
+                "skipped_test_count": report.get("skipped"),
+                "backend": report.get("backend"),
+                "workers": report.get("workers"),
+                "distribution": report.get("distribution"),
+                "collection_fingerprint": report.get("collection_fingerprint"),
+                "module_timings": report.get("module_timings") or [],
+                "job_duration_seconds": (
+                    round((completed - started).total_seconds(), 3)
+                    if started is not None and completed is not None
+                    else None
+                ),
+            }
+        )
+    completions = [_runner_interval(job)[1] for job in worker_jobs]
+    completions = [value for value in completions if value is not None]
+    return {
+        "shards": sorted(shards, key=lambda row: row["name"]),
+        "critical_path_seconds_observed": (
+            round((max(completions) - created).total_seconds(), 3)
+            if completions and created is not None
+            else None
+        ),
+        "max_job_concurrency_observed": _maximum_concurrency(worker_jobs),
+    }
+
+
 def build_metrics(
     run: Mapping,
     jobs_document: Mapping,
     browser_reports: Sequence[tuple[str, Mapping[str, Any]]] = (),
     windows_reports: Sequence[Mapping[str, Any]] = (),
+    python_reports: Sequence[Mapping[str, Any]] = (),
 ) -> dict:
     jobs = jobs_document.get("jobs")
     if not isinstance(jobs, Sequence):
@@ -340,7 +407,7 @@ def build_metrics(
         for journey in playwright_metrics(document, group=group)
     ]
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "run_id": run.get("id"),
         "head_sha": run.get("head_sha"),
         "status": run.get("status"),
@@ -355,6 +422,7 @@ def build_metrics(
             journeys, key=lambda row: (row["group"], row["title"])
         ),
         "windows": windows_metrics(run, jobs, windows_reports),
+        "python": python_metrics(run, jobs, python_reports),
     }
 
 
@@ -413,6 +481,27 @@ def markdown(metrics: Mapping) -> str:
                 f"{shard['setup_duration_seconds']} | {shard['test_count']} | "
                 f"{shard['test_duration_seconds']} | {shard['job_duration_seconds']} |"
             )
+    python = metrics.get("python") or {}
+    python_shards = python.get("shards") or []
+    if python_shards:
+        lines.extend(
+            [
+                "",
+                "- Python critical path: "
+                f"{python.get('critical_path_seconds_observed')} seconds",
+                "- Observed Python job concurrency: "
+                f"{python.get('max_job_concurrency_observed')}",
+                "",
+                "| Python shard | Backend | Workers | Tests | Test duration | Job duration |",
+                "|---|---|---:|---:|---:|---:|",
+            ]
+        )
+        for shard in python_shards:
+            lines.append(
+                f"| {shard['name']} | {shard['backend']} | {shard['workers']} | "
+                f"{shard['test_count']} | {shard['test_duration_seconds']} | "
+                f"{shard['job_duration_seconds']} |"
+            )
     return "\n".join(lines) + "\n"
 
 
@@ -422,6 +511,7 @@ def main() -> int:
     parser.add_argument("--jobs-json", required=True)
     parser.add_argument("--browser-report-dir")
     parser.add_argument("--windows-report-dir")
+    parser.add_argument("--python-report-dir")
     parser.add_argument("--output", required=True)
     parser.add_argument("--summary")
     args = parser.parse_args()
@@ -433,7 +523,16 @@ def main() -> int:
     windows_reports = load_windows_reports(
         Path(args.windows_report_dir) if args.windows_report_dir else None
     )
-    metrics = build_metrics(run, jobs, reports, windows_reports)
+    python_reports = load_python_reports(
+        Path(args.python_report_dir) if args.python_report_dir else None
+    )
+    metrics = build_metrics(
+        run,
+        jobs,
+        reports,
+        windows_reports,
+        python_reports,
+    )
     Path(args.output).write_text(
         json.dumps(metrics, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",

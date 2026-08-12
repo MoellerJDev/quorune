@@ -7,7 +7,13 @@ import unittest
 
 from tests.common import ROOT
 from scripts.ci_metrics import build_metrics, markdown
-from scripts.ci_plan import browser_matrix
+from scripts.ci_plan import (
+    browser_matrix,
+    ci_concurrency_budget,
+    FUNCTIONAL_PYTHON_SHARDS,
+    python_matrix,
+    workflow_job_ids,
+)
 from scripts.test_shards import load_manifest, primary_matrix, suite_modules
 from scripts.verify_ci_needs import failed_dependencies
 from scripts.verify_windows_ci import (
@@ -38,6 +44,35 @@ class CiPipelineTests(unittest.TestCase):
             "unexpected_successes": 0,
         }
 
+    @staticmethod
+    def _python_result(suite: str, *, tests_run: int = 3) -> dict:
+        modules = suite_modules(load_manifest(), suite)
+        return {
+            "schema_version": 1,
+            "type": "pytest-xdist-shard-result",
+            "suite": suite,
+            "modules": list(modules),
+            "configured_test_count": tests_run,
+            "tests_run": tests_run,
+            "duration_seconds": 12.5,
+            "successful": True,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "expected_failures": 0,
+            "unexpected_successes": 0,
+            "backend": "pytest-xdist",
+            "workers": 4,
+            "distribution": "loadfile",
+            "collection_fingerprint": "a" * 64,
+            "module_timings": [
+                {
+                    "module": modules[0],
+                    "worker_elapsed_seconds": 10.0,
+                }
+            ],
+        }
+
     def test_browser_matrix_uses_one_smoke_or_three_isolated_measured_groups(self):
         smoke = browser_matrix(False)["include"]
         full = browser_matrix(True)["include"]
@@ -51,6 +86,22 @@ class CiPipelineTests(unittest.TestCase):
         self.assertEqual(3, len({row["server_port"] for row in full}))
         self.assertEqual(3, len({row["web_port"] for row in full}))
         self.assertEqual(3, len({row["grep"] for row in full}))
+
+    def test_pr_matrix_preserves_two_jobs_of_public_recovery_headroom(self):
+        budget = ci_concurrency_budget()
+        self.assertEqual(20, budget["public_job_limit"])
+        self.assertEqual(18, budget["peak_jobs"])
+        self.assertEqual(2, budget["headroom"])
+        self.assertEqual(
+            list(FUNCTIONAL_PYTHON_SHARDS),
+            [row["shard"] for row in python_matrix()["include"]],
+        )
+        self.assertIn("python", workflow_job_ids())
+        with TemporaryDirectory() as raw:
+            changed = Path(raw) / "ci.yml"
+            changed.write_text("jobs:\n  unbudgeted_job:\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "budget review"):
+                workflow_job_ids(changed)
 
     def test_certification_fails_for_any_non_success_dependency(self):
         self.assertEqual(
@@ -252,6 +303,7 @@ class CiPipelineTests(unittest.TestCase):
                 self._windows_result("core-domain"),
                 self._windows_result("casting-costs-mana"),
             ],
+            [self._python_result("core-domain")],
         )
         self.assertEqual(5.0, metrics["queue_seconds"])
         self.assertEqual(125.0, metrics["critical_path_seconds_observed"])
@@ -268,6 +320,10 @@ class CiPipelineTests(unittest.TestCase):
         self.assertEqual(25.0, windows["package_duration_seconds"])
         self.assertEqual(3, windows["shards"][0]["test_count"])
         self.assertEqual(10.0, windows["shards"][0]["setup_duration_seconds"])
+        python = metrics["python"]
+        self.assertEqual(4, python["shards"][0]["workers"])
+        self.assertEqual("pytest-xdist", python["shards"][0]["backend"])
+        self.assertEqual(12.5, python["shards"][0]["test_duration_seconds"])
         self.assertIn("unavailable", markdown(metrics))
         self.assertIn("rules journey", markdown(metrics))
         self.assertIn("core-domain", markdown(metrics))
@@ -304,7 +360,15 @@ class CiPipelineTests(unittest.TestCase):
         self.assertIn("actions/download-artifact@v4", pr)
         self.assertIn("--browser-report-dir local/browser-results", pr)
         self.assertIn("--windows-report-dir local/windows-results", pr)
+        self.assertIn("--python-report-dir local/python-results", pr)
         self.assertIn("scripts/test_shards.py run", pr)
+        self.assertIn("--backend pytest-xdist", pr)
+        self.assertIn("--workers 4", pr)
+        self.assertIn("python-results-${{ matrix.shard }}", pr)
+        self.assertIn(
+            "max-parallel: ${{ fromJSON(needs.plan.outputs.python_max_parallel) }}",
+            pr,
+        )
         generated = pr.split("\n  generated:", 1)[1].split("\n  package:", 1)[0]
         package = pr.split("\n  package:", 1)[1].split("\n  windows_compatibility:", 1)[0]
         windows_full = pr.split("\n  windows_full:", 1)[1].split("\n  windows_package:", 1)[0]

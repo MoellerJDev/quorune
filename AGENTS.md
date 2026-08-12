@@ -225,9 +225,11 @@ to discover that drift; the ordinary finalizer command owns it.
 until a pass changes nothing, then runs every freshness check, documentation
 validation, and diff hygiene. Database-backed corpus writers use `--db <path>`
 or `MTG_CARD_DB`; omitting the database does not refresh those reports. The
-tracked pre-push hook automatically uses `data/scryfall-current.sqlite3` when
-present and otherwise prints the required database guidance. Manual
-performance baselines are never rewritten implicitly.
+tracked pre-push hook first accepts a current ordinary receipt because that
+finalization already checks database-backed freshness. If it is stale, the hook
+uses `data/scryfall-current.sqlite3` when present and otherwise prints the
+required database guidance. An explicit `MTG_CARD_DB` requires a database-bound
+receipt. Manual performance baselines are never rewritten implicitly.
 
 Inspect every changed generated output, stage it with the source that caused
 it, and make the final commit only after the command succeeds. Do not defer this
@@ -322,6 +324,16 @@ must name `scripts/finalize_generated.py --write`. Do not claim a broad local
 pass without the exact command and numeric result, or a broad CI pass without
 the authoritative GitHub Actions run URL. The early `PR / Plan` job enforces
 this policy on open, synchronize, reopen, edit, and ready-for-review events.
+
+Public PR CI has a hard 20-job concurrency envelope. Its checked budget targets
+at most 18 simultaneous jobs so cancellation, certification, and incident
+recovery retain two slots. Do not add or widen a matrix without updating and
+passing `scripts.ci_plan.ci_concurrency_budget`. Functional Linux shards use
+four-process pytest-xdist execution with `loadfile` scheduling and exact
+unittest collection parity; generated-governance and Windows authority remain
+on the sequential unittest runner. Do not use automatic CPU counts, test-level
+distribution, or ad hoc parallelism. Preserve Linux shard result artifacts and
+per-module timing telemetry so later balancing is based on observed durations.
 
 A successful `PR / Certification` publishes the ephemeral exact-head
 receipt; Main smoke validates the squash-merged source tree against that
