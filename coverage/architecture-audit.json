@@ -19355,7 +19355,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "2f0a7d5a34ac3322f9940db2ee844108b7ef607dca52aedacb2c1d1676b207bd",
+      "fingerprint": "9ec0a5c205f113f5f89e3ff6de3ec321547148d997f5a7af095de2a282583fbe",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -19665,7 +19665,7 @@
           "maintenance": "hand-maintained",
           "status": "current",
           "title": "Testing strategy",
-          "verified": "2026-08-05"
+          "verified": "2026-08-12"
         },
         "metadata_complete": true,
         "missing_metadata": [],
@@ -20215,8 +20215,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2694,
-      "discovered_total": 5994,
+      "conventional_ast_cases": 2698,
+      "discovered_total": 5998,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 111,

@@ -2,7 +2,7 @@
 title: "CI pipeline and two-slot development"
 status: "current"
 authoritative_source: "GitHub workflows, platform/test-shards.json, and local gate scripts"
-verified: "2026-08-09"
+verified: "2026-08-12"
 audience: "contributors and maintainers"
 maintenance: "hand-maintained"
 ---
@@ -273,20 +273,21 @@ Slot B work.
 
 `.github/workflows/ci.yml` runs these independent jobs:
 
-- ten balanced Ubuntu functional shards;
+- twelve duration-ordered Ubuntu functional shards;
 - canonical generated-artifact finalization checks from the ownership
   manifest, followed by rules, documentation, repository, and architecture
   validation;
 - wheel build and clean-install verification;
 - a focused Windows compatibility overlay for ordinary changes;
-- for platform-sensitive changes or the `windows-full` label, all eleven
+- for platform-sensitive changes or the `windows-full` label, all thirteen
   authoritative primary shards on isolated Windows runners and Python
-  processes, with `fail-fast: false`, at most five concurrent workers,
+  processes, with `fail-fast: false`, at most five concurrent jobs,
   per-shard compact databases and runtime roots, and no shared writable state;
 - one separate Windows wheel build and clean-install verification, followed by
   `PR / Windows Certification`, which fails closed on the wrong mode, missing,
-  skipped, failed, duplicate, or zero-test shard results, a manifest partition
-  gap, or package failure;
+  skipped, failed, duplicate, zero-test, wrong-platform, wrong-backend, stale
+  collection, or incomplete module-timing results, a manifest partition gap,
+  or package failure;
 - browser build plus a compact authoritative four-context lifecycle smoke;
 - focused `mana-action`, `combat`, or `turn-draw` Playwright journeys selected
   by the affected typed rules owner (or the matching `browser-*` label);
@@ -403,7 +404,9 @@ failed gate, direct push, or mismatched GitHub coordinate fails closed.
 
 `.github/workflows/nightly.yml` owns expensive breadth:
 
-- complete deterministic Python suites on Ubuntu and Windows;
+- every deterministic primary Python shard on Ubuntu and Windows, launched in
+  one slow-first matrix with six concurrent jobs and strict result
+  certification;
 - all three isolated headless Chromium groups, including the natural-winner
   soak;
 - at least 100,000 deterministic property transitions across parallel jobs;
@@ -446,13 +449,23 @@ Every `tests/test_*.py` module belongs to exactly one primary shard in
 `windows-compat`, and `nightly-property` may intentionally reuse modules.
 
 The PR workflow has a checked public concurrency budget of 20 jobs and reserves
-two slots for recovery. At full change impact it permits seven functional Linux
-jobs, five Windows jobs, three browser jobs, and three fixed jobs concurrently,
-for a peak of 18. The Plan job derives the Linux matrix and limit from
-`scripts/ci_plan.py`; changing a matrix without reconciling that budget fails
-the focused CI policy tests.
+at least two slots for recovery. `scripts/ci_plan.py` derives the functional
+matrix and both OS limits from the actual browser and Windows impact modes:
 
-Each functional Linux job uses four fixed pytest-xdist workers with
+| Browser mode | Windows mode | Ubuntu functional | Windows | Browser | Peak | Reserve |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| smoke | compatibility | 12 | 1 | 1 | 17 | 3 |
+| full | compatibility | 11 | 1 | 3 | 18 | 2 |
+| smoke | full | 9 | 5 | 1 | 18 | 2 |
+| full | full | 7 | 5 | 3 | 18 | 2 |
+
+Three fixed jobs cover generated validation and the two package builds.
+Changing a matrix without reconciling all four budgets fails the focused CI
+policy tests. The declared matrix order is also significant: GitHub creates
+matrix jobs in declaration order, so `platform/test-shards.json` owns a
+slow-first order derived from exact-head duration artifacts.
+
+Each functional Ubuntu or Windows job uses four fixed pytest-xdist workers with
 `--dist loadfile`. A test module stays in one worker process, which preserves
 module fixtures and avoids splitting a unittest class across processes. Before
 execution the canonical unittest loader records every sorted test ID. Every
@@ -461,11 +474,14 @@ worker collections. Any missing, additional, duplicate, or non-unittest item
 fails the shard. Worker count is deliberately fixed rather than inferred from
 the host, so resource use and timing comparisons remain reproducible.
 
-Generated validation and all Windows shards continue to use the sequential
-unittest backend. Those surfaces exercise repository-wide mutable generated
-state or platform compatibility and are not parallelized within one checkout.
-The sequential runner remains the local default and the compatibility fallback;
-pytest-xdist is an explicit CI backend, not a replacement test inventory.
+Generated validation remains on the sequential unittest backend because it
+exercises repository-wide generated and governance state. The sequential
+runner is also the local default and compatibility fallback; pytest-xdist is
+an explicit functional-CI backend, not a replacement test inventory. Result
+schema v2 records platform, backend, fixed worker policy, collection parity,
+the canonical collection fingerprint, and exact per-module timing coverage.
+The Windows and nightly certification jobs independently reconstruct the
+manifest collection and reject incomplete or dishonest result sets.
 
 Before the final commit and push, validate ownership after adding, renaming, or
 deleting a test module:
@@ -474,11 +490,13 @@ deleting a test module:
 .\.venv\Scripts\python.exe scripts/test_shards.py validate
 ```
 
-Every primary shard is directly reproducible on Windows and can write the same
-compact result record consumed by public certification and metrics:
+Every functional primary shard is directly reproducible on Windows and can
+write the same compact result record consumed by public certification and
+metrics:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/test_shards.py run core-domain `
+  --backend pytest-xdist --workers 4 --platform windows `
   --result-json local/windows-results/core-domain.json
 ```
 
@@ -486,7 +504,7 @@ A focused Linux-equivalent parallel reproduction is:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/test_shards.py run core-domain `
-  --backend pytest-xdist --workers 4 `
+  --backend pytest-xdist --workers 4 --platform ubuntu `
   --result-json local/python-results/core-domain.json
 ```
 
@@ -495,15 +513,32 @@ is the broad authority. Compare its wall duration and per-module cumulative
 worker timings with the preserved sequential baseline before changing worker
 count or shard allocation.
 
-`generated-validation` is a primary shard, not a second full-discovery pass.
-The complete Windows matrix therefore executes every discovered test module
-exactly once. `windows-compat` remains an intentionally overlapping focused
-suite and never runs alongside the full matrix.
+`generated-validation` is a primary shard, not a second full-discovery pass,
+and uses the sequential backend on both operating systems. The complete
+Windows and nightly OS partitions therefore execute every discovered test
+module exactly once per platform. `windows-compat` remains an intentionally
+overlapping focused suite and never runs alongside the full Windows matrix.
 
 Keep functional shard weights close enough to use parallel capacity. Split by
 coherent subsystem ownership, not by individual test methods. The generated
 inventory shard is separate because thousands of small generated cases have a
 different runtime profile from behavioral tests.
+
+Nightly uses the same manifest order, interleaved Ubuntu then Windows per
+shard, with `max-parallel: 6`. Its other browser, property, mutation, corpus,
+and security jobs can consume nine runners, so the measured peak is 15 and five
+of the public repository's 20 concurrent-job slots remain available. A final
+nightly certification requires all seven upstream job families and every one
+of the 26 OS/shard result documents.
+
+The fixed four-worker policy matches the four-vCPU standard public-repository
+runner and avoids nested oversubscription. The scheduling and runner contracts
+are documented by [pytest-xdist distribution modes](https://pytest-xdist.readthedocs.io/en/stable/distribution.html),
+[GitHub matrix ordering and `max-parallel`](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax),
+[GitHub-hosted runner specifications](https://docs.github.com/en/actions/reference/runners/github-hosted-runners),
+and [GitHub Actions limits](https://docs.github.com/en/actions/reference/limits).
+Do not change worker count or shard order from intuition: compare exact-head
+wall time, queue time, and module timings first.
 
 ## Recovery and inspection
 

@@ -80,7 +80,8 @@ class TemporaryDependencyRepository:
         (root / "platform/test-shards.json").write_text(
             json.dumps(
                 {
-                    "schema_version": 1,
+                    "schema_version": 2,
+                    "execution_order": ["generated-validation"],
                     "primary_shards": {"generated-validation": ["test_fixture"]},
                     "overlay_suites": {"windows-compat": ["test_fixture"]},
                 }

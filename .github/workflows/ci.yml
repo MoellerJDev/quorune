@@ -25,6 +25,7 @@ jobs:
       windows_matrix: ${{ steps.impact.outputs.windows_matrix }}
       python_matrix: ${{ steps.impact.outputs.python_matrix }}
       python_max_parallel: ${{ steps.impact.outputs.python_max_parallel }}
+      windows_max_parallel: ${{ steps.impact.outputs.windows_max_parallel }}
       ci_peak_jobs: ${{ steps.impact.outputs.ci_peak_jobs }}
       ci_job_headroom: ${{ steps.impact.outputs.ci_job_headroom }}
     steps:
@@ -72,6 +73,7 @@ jobs:
           python scripts/test_shards.py run "${{ matrix.shard }}"
           --backend pytest-xdist
           --workers 4
+          --platform ubuntu
           --result-json "local/python-results/${{ matrix.shard }}.json"
       - name: Upload Linux shard result
         if: always()
@@ -114,10 +116,7 @@ jobs:
       - name: Run generated conformance and governance tests
         run: python scripts/test_shards.py run generated-validation
       - name: Verify architecture, documentation, and repository policy
-        run: |
-          python scripts/validate_architecture.py --check
-          python scripts/validate_documentation.py --check
-          python scripts/validate_repository.py
+        run: python scripts/validate_repository.py
 
   package:
     name: PR / Package
@@ -164,6 +163,9 @@ jobs:
       - name: Run focused Windows compatibility suite
         run: >-
           python scripts/test_shards.py run windows-compat
+          --backend pytest-xdist
+          --workers 4
+          --platform windows
           --result-json local/windows-results/windows-compat.json
       - name: Upload Windows compatibility result
         if: always()
@@ -181,7 +183,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: ${{ fromJSON(needs.plan.outputs.windows_max_parallel) }}
       matrix: ${{ fromJSON(needs.plan.outputs.windows_matrix) }}
     env:
       MTG_CARD_DB: data/test-ci-windows-${{ matrix.shard }}.sqlite3
@@ -206,9 +208,19 @@ jobs:
           python scripts/build_test_database.py validate-ci-dependencies
           python scripts/build_test_database.py build-ci `
             --output "data/test-ci-windows-${{ matrix.shard }}.sqlite3"
-      - name: Run full Windows shard
+      - name: Run functional Windows shard
+        if: matrix.shard != 'generated-validation'
         run: >-
           python scripts/test_shards.py run "${{ matrix.shard }}"
+          --backend pytest-xdist
+          --workers 4
+          --platform windows
+          --result-json "local/windows-results/${{ matrix.shard }}.json"
+      - name: Run sequential generated and governance shard
+        if: matrix.shard == 'generated-validation'
+        run: >-
+          python scripts/test_shards.py run "${{ matrix.shard }}"
+          --platform windows
           --result-json "local/windows-results/${{ matrix.shard }}.json"
       - name: Upload Windows shard result
         if: always()
@@ -245,6 +257,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install certification dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
       - name: Download Windows shard results
         uses: actions/download-artifact@v4
         with:

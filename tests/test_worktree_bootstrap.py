@@ -96,7 +96,8 @@ def _write_shards(root: Path) -> None:
     (platform / "test-shards.json").write_text(
         json.dumps(
             {
-                "schema_version": 1,
+                "schema_version": 2,
+                "execution_order": ["only"],
                 "primary_shards": {"only": ["test_fixture"]},
                 "overlay_suites": {"smoke": ["test_fixture"]},
             }

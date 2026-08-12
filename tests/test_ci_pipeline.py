@@ -10,9 +10,14 @@ from scripts.ci_metrics import build_metrics, markdown
 from scripts.ci_plan import (
     browser_matrix,
     ci_concurrency_budget,
-    FUNCTIONAL_PYTHON_SHARDS,
     python_matrix,
     workflow_job_ids,
+)
+from scripts.nightly_ci import nightly_concurrency_budget, nightly_python_matrix
+from scripts.shard_result_validation import suite_expectation
+from scripts.shard_result_validation import (
+    ShardResultError,
+    validate_result_document,
 )
 from scripts.test_shards import load_manifest, primary_matrix, suite_modules
 from scripts.verify_ci_needs import failed_dependencies
@@ -22,19 +27,31 @@ from scripts.verify_windows_ci import (
     validate_dependencies,
     validate_results,
 )
+from scripts.verify_nightly_ci import (
+    NightlyCertificationError,
+    validate_dependencies as validate_nightly_dependencies,
+    validate_results as validate_nightly_results,
+)
 
 
 class CiPipelineTests(unittest.TestCase):
     @staticmethod
     def _windows_result(suite: str, *, tests_run: int = 3) -> dict:
-        modules = suite_modules(load_manifest(), suite)
+        modules, exact_count, fingerprint = suite_expectation(suite)
+        count = 0 if tests_run == 0 else exact_count
+        backend = "unittest" if suite == "generated-validation" else "pytest-xdist"
         return {
-            "schema_version": 1,
-            "type": "unittest-shard-result",
+            "schema_version": 2,
+            "type": (
+                "unittest-shard-result"
+                if backend == "unittest"
+                else "pytest-xdist-shard-result"
+            ),
+            "platform": "windows",
             "suite": suite,
             "modules": list(modules),
-            "configured_test_count": tests_run,
-            "tests_run": tests_run,
+            "configured_test_count": count,
+            "tests_run": count,
             "duration_seconds": 25.0,
             "successful": True,
             "failures": 0,
@@ -42,18 +59,33 @@ class CiPipelineTests(unittest.TestCase):
             "skipped": 0,
             "expected_failures": 0,
             "unexpected_successes": 0,
+            "backend": backend,
+            "workers": 1 if backend == "unittest" else 4,
+            "distribution": "sequential" if backend == "unittest" else "loadfile",
+            "collection_fingerprint_algorithm": "canonical-unittest-ids-sha256-v1",
+            "collection_fingerprint": fingerprint,
+            "collection_parity": "authoritative" if backend == "unittest" else "enforced",
+            "module_timings": (
+                []
+                if backend == "unittest"
+                else [
+                    {"module": module, "worker_elapsed_seconds": 0.1}
+                    for module in modules
+                ]
+            ),
         }
 
     @staticmethod
     def _python_result(suite: str, *, tests_run: int = 3) -> dict:
-        modules = suite_modules(load_manifest(), suite)
+        modules, exact_count, fingerprint = suite_expectation(suite)
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "type": "pytest-xdist-shard-result",
+            "platform": "ubuntu",
             "suite": suite,
             "modules": list(modules),
-            "configured_test_count": tests_run,
-            "tests_run": tests_run,
+            "configured_test_count": exact_count,
+            "tests_run": exact_count,
             "duration_seconds": 12.5,
             "successful": True,
             "failures": 0,
@@ -64,12 +96,15 @@ class CiPipelineTests(unittest.TestCase):
             "backend": "pytest-xdist",
             "workers": 4,
             "distribution": "loadfile",
-            "collection_fingerprint": "a" * 64,
+            "collection_fingerprint_algorithm": "canonical-unittest-ids-sha256-v1",
+            "collection_fingerprint": fingerprint,
+            "collection_parity": "enforced",
             "module_timings": [
                 {
-                    "module": modules[0],
-                    "worker_elapsed_seconds": 10.0,
+                    "module": module,
+                    "worker_elapsed_seconds": 10.0 / len(modules),
                 }
+                for module in modules
             ],
         }
 
@@ -88,12 +123,32 @@ class CiPipelineTests(unittest.TestCase):
         self.assertEqual(3, len({row["grep"] for row in full}))
 
     def test_pr_matrix_preserves_two_jobs_of_public_recovery_headroom(self):
-        budget = ci_concurrency_budget()
-        self.assertEqual(20, budget["public_job_limit"])
-        self.assertEqual(18, budget["peak_jobs"])
-        self.assertEqual(2, budget["headroom"])
+        expected = {
+            (False, False): (12, 1, 1, 17, 3),
+            (True, False): (11, 1, 3, 18, 2),
+            (False, True): (9, 5, 1, 18, 2),
+            (True, True): (7, 5, 3, 18, 2),
+        }
+        for (browser_full, windows_full), values in expected.items():
+            budget = ci_concurrency_budget(
+                browser_full=browser_full,
+                windows_full=windows_full,
+            )
+            observed = (
+                budget["python_max_parallel"],
+                budget["windows_max_parallel"],
+                budget["browser_max_parallel"],
+                budget["peak_jobs"],
+                budget["headroom"],
+            )
+            self.assertEqual(values, observed)
+            self.assertEqual(20, budget["public_job_limit"])
         self.assertEqual(
-            list(FUNCTIONAL_PYTHON_SHARDS),
+            [
+                shard
+                for shard in load_manifest()["execution_order"]
+                if shard != "generated-validation"
+            ],
             [row["shard"] for row in python_matrix()["include"]],
         )
         self.assertIn("python", workflow_job_ids())
@@ -102,6 +157,23 @@ class CiPipelineTests(unittest.TestCase):
             changed.write_text("jobs:\n  unbudgeted_job:\n", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "budget review"):
                 workflow_job_ids(changed)
+
+    def test_nightly_matrix_is_slow_first_cross_platform_and_budgeted(self):
+        manifest = load_manifest()
+        rows = nightly_python_matrix()["include"]
+        self.assertEqual(2 * len(manifest["execution_order"]), len(rows))
+        self.assertEqual(
+            [
+                (platform, shard)
+                for shard in manifest["execution_order"]
+                for platform in ("ubuntu", "windows")
+            ],
+            [(row["platform"], row["shard"]) for row in rows],
+        )
+        budget = nightly_concurrency_budget()
+        self.assertEqual(6, budget["python_max_parallel"])
+        self.assertEqual(15, budget["peak_jobs"])
+        self.assertEqual(5, budget["headroom"])
 
     def test_certification_fails_for_any_non_success_dependency(self):
         self.assertEqual(
@@ -139,7 +211,7 @@ class CiPipelineTests(unittest.TestCase):
 
     def test_windows_full_results_cover_every_primary_shard_and_are_nonempty(self):
         self.assertEqual(
-            tuple(load_manifest()["primary_shards"]),
+            tuple(load_manifest()["execution_order"]),
             expected_suites(full=True),
         )
         with TemporaryDirectory() as raw:
@@ -164,6 +236,79 @@ class CiPipelineTests(unittest.TestCase):
         with TemporaryDirectory() as raw:
             with self.assertRaisesRegex(WindowsCertificationError, "missing_results"):
                 validate_results(Path(raw), full=False)
+
+    def test_shard_results_bind_exact_collection_backend_and_platform(self):
+        valid = self._windows_result("windows-compat")
+        validated = validate_result_document(
+            valid,
+            expected_suite="windows-compat",
+            expected_platform="windows",
+            expected_backend="pytest-xdist",
+        )
+        self.assertEqual("windows", validated["platform"])
+        for field, value, message in (
+            ("tests_run", True, "exact nonnegative integer"),
+            ("workers", True, "backend contract"),
+            ("duration_seconds", float("nan"), "nonnegative number"),
+            ("collection_fingerprint", "0" * 64, "fingerprint"),
+            ("platform", "ubuntu", "platform"),
+        ):
+            malformed = dict(valid)
+            malformed[field] = value
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(ShardResultError, message):
+                    validate_result_document(
+                        malformed,
+                        expected_suite="windows-compat",
+                        expected_platform="windows",
+                        expected_backend="pytest-xdist",
+                    )
+        missing_timing = dict(valid)
+        missing_timing["module_timings"] = valid["module_timings"][:-1]
+        with self.assertRaisesRegex(ShardResultError, "exact module set"):
+            validate_result_document(
+                missing_timing,
+                expected_suite="windows-compat",
+                expected_platform="windows",
+                expected_backend="pytest-xdist",
+            )
+
+    def test_nightly_certification_requires_every_os_shard_and_dependency(self):
+        dependency_names = {
+            "plan",
+            "python",
+            "browser",
+            "properties",
+            "mutation-and-soak",
+            "corpus",
+            "security",
+        }
+        validate_nightly_dependencies(
+            {name: {"result": "success"} for name in dependency_names}
+        )
+        with self.assertRaisesRegex(NightlyCertificationError, "did not all pass"):
+            validate_nightly_dependencies(
+                {
+                    name: {
+                        "result": "failure" if name == "browser" else "success"
+                    }
+                    for name in dependency_names
+                }
+            )
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            for suite in load_manifest()["execution_order"]:
+                for platform in ("ubuntu", "windows"):
+                    document = self._windows_result(suite)
+                    document["platform"] = platform
+                    path = root / platform / suite / "result.json"
+                    path.parent.mkdir(parents=True)
+                    path.write_text(json.dumps(document), encoding="utf-8")
+            summary = validate_nightly_results(root)
+            self.assertEqual(2 * len(load_manifest()["execution_order"]), summary["assignments"])
+            (root / "ubuntu" / "core-domain" / "result.json").unlink()
+            with self.assertRaisesRegex(NightlyCertificationError, "incomplete"):
+                validate_nightly_results(root)
 
     def test_metrics_report_observed_values_without_estimates(self):
         metrics = build_metrics(
@@ -318,7 +463,10 @@ class CiPipelineTests(unittest.TestCase):
         self.assertEqual(100.0, windows["critical_path_seconds_observed"])
         self.assertEqual(1, windows["max_runner_concurrency_observed"])
         self.assertEqual(25.0, windows["package_duration_seconds"])
-        self.assertEqual(3, windows["shards"][0]["test_count"])
+        self.assertEqual(
+            suite_expectation("casting-costs-mana")[1],
+            windows["shards"][0]["test_count"],
+        )
         self.assertEqual(10.0, windows["shards"][0]["setup_duration_seconds"])
         python = metrics["python"]
         self.assertEqual(4, python["shards"][0]["workers"])
@@ -380,9 +528,11 @@ class CiPipelineTests(unittest.TestCase):
             "scripts/update_reusable_piece_matrix.py --check", generated
         )
         self.assertIn("python -m pip install -e .", package)
-        self.assertIn("max-parallel: 5", windows_full)
+        self.assertIn("needs.plan.outputs.windows_max_parallel", windows_full)
         self.assertIn("validate-ci-dependencies", windows_full)
         self.assertIn('python scripts/test_shards.py run "${{ matrix.shard }}"', windows_full)
+        self.assertIn("--backend pytest-xdist", windows_full)
+        self.assertIn("--platform windows", windows_full)
         self.assertNotIn("unittest discover", windows_full)
         self.assertIn("PR / Windows Certification", pr)
         self.assertIn("windows_certification", pr)
@@ -393,9 +543,13 @@ class CiPipelineTests(unittest.TestCase):
         self.assertIn("validate-ci-dependencies", main)
         self.assertNotIn("test_*.py", main)
         self.assertIn("schedule:", nightly)
+        self.assertIn("python scripts/nightly_ci.py", nightly)
+        self.assertIn("python scripts/verify_nightly_ci.py", nightly)
+        self.assertIn("needs.plan.outputs.python_max_parallel", nightly)
+        self.assertIn("--backend pytest-xdist", nightly)
         self.assertIn("MTG_PROPERTY_TRANSITIONS: \"33334\"", nightly)
         self.assertGreaterEqual(nightly.count("validate-ci-dependencies"), 4)
-        self.assertIn("test_*.py", nightly)
+        self.assertNotIn("unittest discover", nightly)
         combined = "\n".join((pr, main, nightly))
         self.assertNotIn("--fixture tests/fixtures/", combined)
         for line in combined.splitlines():
