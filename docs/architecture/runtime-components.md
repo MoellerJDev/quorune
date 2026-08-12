@@ -54,6 +54,18 @@ mode set, and treats an empty qualifying set as a legal activation that adds no
 mana. Runtime code does not parse Oracle prose. Wider dynamic or conditional
 mana wording remains residual.
 
+`participation.untap-step.static.v1` lowers closed source, attached-object,
+global, and other-player static wording into immutable CR 502 participation
+values. The runtime query evaluates the complete typed `ObjectQuerySpec`
+against current effective battlefield characteristics and current controller
+and attachment relationships. A pure planner produces prohibited and
+additional untap identities; `quorune/untap_step_coordination.py` commits them
+through the canonical untap owner and holds triggers until upkeep. Maximum
+untap limits have a typed fail-closed descriptor but are not compiler-promoted
+as supported selection behavior. Optional, variable, qualified, phasing, and
+selection variants remain residual. Runtime code does not inspect Oracle text
+to decide untap participation.
+
 `replacement.token.additional.v2` represents the closed mandatory fixed
 additional-token family. Its descriptor carries an optional card-type and
 subtype filter plus one immutable token definition. Inert `display_text` is

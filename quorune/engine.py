@@ -160,6 +160,7 @@ from .selection.apnap import ApnapChoiceOwnerMixin
 from .selection.storm import StormTargetChoiceOwnerMixin
 from .selection.public_choice import PublicChoiceOwnerMixin
 from . import turn_counter_coordination
+from . import untap_step_coordination
 from .saga_progression import saga_final_chapter_snapshot
 from .life_state import (
     pay_life_cost,
@@ -189,7 +190,7 @@ from .mana_undo import (
     clear_mana_undo_stack,
     priority_actions_with_mana_undo,
 )
-from .tap_state import tap_declared_attackers, untap_permanent
+from .tap_state import tap_declared_attackers
 from .stack_counter import (
     counter_stack_item,
     stack_item_can_be_countered,
@@ -2083,61 +2084,6 @@ class CommanderEngine(
                 player.stats.pop("restricted_mana", None)
                 self._log(seat, "mana.empty", f"{seat}'s mana pool emptied.", {"lost": lost, "reason": reason}, importance=0, changed_players=[seat])
 
-    def _unsupported_phasing_source_at_untap(
-        self,
-        active: str,
-    ) -> CardInstance | None:
-        """Return a permanent whose CR 502.1 action cannot be approximated.
-
-        The state model can hide an object with ``phased_out``, but it does
-        not yet preserve indirect-phasing groups or the controller-at-phase-
-        out fact required to execute phasing generically.  Silently leaving
-        such an object phased out—or merely untapping a permanent with
-        phasing—would be materially wrong, so the turn transition stops
-        before any untap-step action mutates state.
-        """
-
-        for object_id in self.state.players[active].zones["battlefield"]:
-            card = self.state.cards[object_id]
-            if card.controller != active:
-                continue
-            keywords = {
-                str(value).casefold()
-                for value in self._effective_card_data(card).get(
-                    "keywords", []
-                )
-            }
-            if card.phased_out or "phasing" in keywords:
-                return card
-        return None
-
-    def _unsupported_untap_selection_source(
-        self,
-    ) -> CardInstance | None:
-        """Find a represented global untap limit that needs a player choice."""
-
-        for seat in self.active_seats:
-            for object_id in self.state.players[seat].zones["battlefield"]:
-                card = self.state.cards[object_id]
-                if card.phased_out:
-                    continue
-                oracle_text = str(
-                    self._effective_card_data(card).get("oracle_text")
-                    or ""
-                ).casefold()
-                if (
-                    "can't untap more than" not in oracle_text
-                    or "during their untap steps" not in oracle_text
-                ):
-                    continue
-                if (
-                    "as long as this artifact is untapped" in oracle_text
-                    and card.tapped
-                ):
-                    continue
-                return card
-        return None
-
     def _enter_step(
         self,
         *,
@@ -2159,144 +2105,13 @@ class CommanderEngine(
             )
 
         if step == "untap":
-            unsupported_phasing = (
-                self._unsupported_phasing_source_at_untap(active)
-            )
-            if unsupported_phasing is not None:
-                self._pause_for_unsupported_semantic(
-                    event="untap.phasing",
-                    source=unsupported_phasing,
-                )
-                return
-            unsupported_selection = (
-                self._unsupported_untap_selection_source()
-            )
-            if unsupported_selection is not None:
-                self._pause_for_unsupported_semantic(
-                    event="untap.selection_restriction",
-                    source=unsupported_selection,
-                )
-                return
-            # CR 502.4 and 503.1a hold every ability that triggers during
-            # untap until the first priority opportunity in upkeep.  Untap
-            # cannot be interrupted, so this batch can remain on the Python
-            # call stack while the engine synchronously crosses the boundary;
-            # no unserialized game state exists at a command/checkpoint
-            # boundary.
-            untap_context = {
-                "phase": phase,
-                "step": step,
-                "player": active,
-            }
-            waiting_triggers = collect_trigger_items(
+            untap_step_coordination.coordinate_untap_step(
                 self,
-                "step.begin",
-                untap_context,
+                phase=phase,
+                step=step,
+                active_player=active,
+                held_triggers=held_triggers,
             )
-            untapped_object_ids: list[str] = []
-            if self.state.config.auto_untap:
-                changed: list[str] = []
-                intruder_alarm_active = any(
-                    "creatures don't untap during their controllers' "
-                    "untap steps"
-                    in str(
-                        self._effective_card_data(permanent).get(
-                            "oracle_text"
-                        )
-                        or ""
-                    ).casefold()
-                    for permanent in self.state.cards.values()
-                    if permanent.zone == "battlefield"
-                    and not permanent.phased_out
-                )
-                for object_id in list(self.state.players[active].zones["battlefield"]):
-                    card = self.state.cards[object_id]
-                    if card.controller != active or card.phased_out:
-                        continue
-                    if card.annotations.pop("does_not_untap_next", False):
-                        continue
-                    if (
-                        intruder_alarm_active
-                        and "creature"
-                        in self._type_parts(
-                            str(
-                                self._effective_card_data(card).get(
-                                    "type_line"
-                                )
-                                or ""
-                            )
-                        )[0]
-                    ):
-                        continue
-                    if untap_permanent(
-                        self, card,
-                        actor=active,
-                        reason="untap step",
-                    ):
-                        changed.append(object_id)
-                        untapped_object_ids.append(object_id)
-                if changed:
-                    self._log(active, "permanent.untap", f"{active} untapped {len(changed)} permanent(s).", {"objects": [self.state.cards[oid].ref for oid in changed]}, importance=0, changed_objects=changed, changed_players=[active])
-                for seat in self.active_seats:
-                    if seat == active or not self._controller_has_oracle_text(
-                        seat,
-                        "untap all permanents you control during each "
-                        "other player's untap step",
-                    ):
-                        continue
-                    extra_changed: list[str] = []
-                    for object_id in list(
-                        self.state.players[seat].zones["battlefield"]
-                    ):
-                        card = self.state.cards[object_id]
-                        if (
-                            card.controller == seat
-                            and not card.phased_out
-                            and untap_permanent(
-                                self, card,
-                                actor=seat,
-                                reason="Seedborn Muse",
-                            )
-                        ):
-                            extra_changed.append(object_id)
-                            untapped_object_ids.append(object_id)
-                    if extra_changed:
-                        self._log(
-                            seat,
-                            "permanent.untap",
-                            (
-                                f"{seat} untapped {len(extra_changed)} "
-                                "permanent(s) during another player's "
-                                "untap step."
-                            ),
-                            {
-                                "objects": [
-                                    self.state.cards[object_id].ref
-                                    for object_id in extra_changed
-                                ],
-                                "reason": "Seedborn Muse",
-                            },
-                            importance=1,
-                            changed_objects=extra_changed,
-                            changed_players=[seat],
-                        )
-            for object_id in untapped_object_ids:
-                card = self.state.cards[object_id]
-                event_context = {
-                    "card": card.ref,
-                    "player": active,
-                    "controller": card.controller,
-                    "phase": phase,
-                    "step": step,
-                    "reason": "untap step",
-                }
-                waiting_triggers = collect_trigger_items(
-                    self,
-                    "permanent.untap",
-                    event_context,
-                    held_triggers=waiting_triggers,
-                )
-            self._advance_step(held_triggers=waiting_triggers)
             return
 
         waiting_at_priority = turn_counter_coordination.coordinate_turn_counter_step(

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "364e0aa0a5ba4d126ac6fe3e5c84bb19a123de0cac9f42a7eba455515ce3cb55",
-  "declaration_source_fingerprint": "5136721a9c34b216aecec9c0b5de54ba35d8a4bec52c3b0264e01bb025048f29",
+  "registry_fingerprint": "c1fd6524e21a0a694c1ce0016b372c509fea8b7a62975a44e5c198238f30d4fc",
+  "declaration_source_fingerprint": "afba2a09d1dee7a83f1020e1d0283959fbf502b3e695ff26155ea12ec10129dc",
   "declarations": [
     {
       "capability_id": "activation.crew.fixed_power",
@@ -27783,6 +27783,102 @@
       "applicability_note": "Replay a waiting untap trigger that is put on the stack before upkeep priority."
     },
     {
+      "capability_id": "untap.step.static_participation",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_typed_untap_step_participation.UntapStepParticipationRuntimeTests.test_static_prohibition_does_not_consume_stun_and_next_step_marker_expires",
+      "official_rule_ids": [
+        "502.3",
+        "604.1",
+        "611.3b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose a current static untap prohibition with the canonical stun-counter replacement and a next-step prohibition without consuming or retaining the wrong state."
+    },
+    {
+      "capability_id": "untap.step.static_participation",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_typed_untap_step_participation.UntapStepParticipationRuntimeTests.test_global_and_other_player_participation_compose_in_four_players",
+      "official_rule_ids": [
+        "502.3",
+        "604.1",
+        "611.3b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply a global active-player prohibition and a different controller's additional untap in the same four-player untap step."
+    },
+    {
+      "capability_id": "untap.step.static_participation",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_typed_untap_step_participation.UntapStepParticipationModelTests.test_untap_step_planner_and_compiler_mutants_are_killed",
+      "official_rule_ids": [
+        "502.3",
+        "604.1",
+        "611.3b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill omission of the closed global compiler production and omission of typed predicate application in the pure planner."
+    },
+    {
+      "capability_id": "untap.step.static_participation",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_untap_step_participation.UntapStepCompilerTests.test_unsupported_untap_step_wording_remains_residual",
+      "official_rule_ids": [
+        "502.3",
+        "604.1",
+        "611.3b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep optional, variable, controller-qualified, and maximum-selection wording outside the executable compiler family."
+    },
+    {
+      "capability_id": "untap.step.static_participation",
+      "evidence_class": "positive",
+      "test_id": "tests.test_typed_untap_step_participation.UntapStepCompilerTests.test_closed_static_untap_templates_compile_exactly",
+      "official_rule_ids": [
+        "502.3",
+        "604.1",
+        "611.3b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile the closed global, source, attached-object, and other-player families to one source-spanned typed runtime descriptor."
+    },
+    {
+      "capability_id": "untap.step.static_participation",
+      "evidence_class": "replay",
+      "test_id": "tests.test_typed_untap_step_participation.UntapStepParticipationRuntimeTests.test_typed_untap_participation_replays_exactly",
+      "official_rule_ids": [
+        "502.3",
+        "604.1",
+        "611.3b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the same global prohibition and other-player additional untap through a command-driven turn boundary."
+    },
+    {
       "capability_id": "variant.monarch.designate",
       "evidence_class": "interaction",
       "test_id": "tests.test_monarch_rules.MonarchRuleTests.test_creature_combat_damage_transfers_only_on_trigger_resolution",
@@ -29221,5 +29317,5 @@
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
     }
   ],
-  "fingerprint": "090df820fcbc88e857c933046846f1b1df1ea18261c91405f4947984a2cfdaac"
+  "fingerprint": "cd5da44225a31ad7cffac40a910bcca89993a4851ad11a33940bd8a08e184481"
 }

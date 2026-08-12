@@ -12,10 +12,25 @@ from .counter_removal import (
 VIGILANCE_KEYWORD = "vigi" + "lan" + "ce"
 STUN_COUNTER_NAME = "st" + "un"
 REASON_FIELD = "rea" + "son"
+NEXT_UNTAP_PROHIBITION_ANNOTATION = "does_not_untap_next"
 
 
 class TapStateError(ValueError):
     """A requested canonical tap-state transition is malformed."""
+
+
+def consume_next_untap_prohibition(card: Any) -> bool:
+    """Expire one object-local prohibition at its next physical untap step."""
+
+    annotations = card.annotations
+    if not isinstance(annotations, dict):
+        raise TapStateError("Permanent annotations must be a mapping")
+    value = annotations.pop(NEXT_UNTAP_PROHIBITION_ANNOTATION, False)
+    if type(value) is not bool:
+        raise TapStateError(
+            "Next-untap prohibition state must be boolean"
+        )
+    return value
 
 
 class TapStateHost(Protocol):
