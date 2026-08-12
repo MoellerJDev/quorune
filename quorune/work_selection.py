@@ -519,7 +519,7 @@ def _system_candidates(
             eligible=not replay_privacy_closed,
         ),
         _candidate(
-            candidate_id="assurance:high-risk-interaction-recovery",
+            candidate_id="assurance:critical-interaction-recovery",
             candidate_class="interaction_assurance",
             universal_subsystem="cross_owner_interactions",
             compiler_readiness=_readiness("not_applicable", "behavioral assurance"),

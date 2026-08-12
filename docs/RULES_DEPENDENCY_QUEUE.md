@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "a27913f303e8ebd11d2e12f26f4ba15f1f0fe170f61bc3365c6b87c038fe4788"
+verified: "e35e3030d7154f9b25790ca40a553032be504329b1b6017e8b9b6baa79f521c1"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `b5e92c086a216d130b6528891dfa753f8f617b23f2669e27ac3c96df69a4a030`
+Source fingerprint: `3019cf2109cc417ee5616924fa1f1d16bcc108c081d1a95481d31b481e45b5de`
 
 ## Current top-level state
 
@@ -46,7 +46,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 13 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
 | 14 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
 | 15 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
-| 16 | complete | `assurance:high-risk-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
+| 16 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
 | 17 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 197 | 346 | 0 | 0 |
 | 18 | blocked | `frontier:mechanic_dependency:cr-614-replacement-effects` | `rules_foundation` | 196 | 539 | 0 | 0 |
 | 19 | blocked | `frontier:mechanic_dependency:cr-509-declare-blockers-step` | `rules_foundation` | 157 | 392 | 0 | 0 |
