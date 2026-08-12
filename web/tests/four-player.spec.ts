@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import {
   annotateJourneyMetrics,
+  currentDecisionId,
   driveUntil,
   submitAuthorizedPass,
   viewRevision,
@@ -212,16 +213,34 @@ async function declineSeatOpportunity(
   const expectedPhase = expectedStep === "Main Phase 1"
     ? "precombat_main"
     : "postcombat_main";
-  const atExpectedWindow = async () =>
-    (await shell.getAttribute("data-active-player")) === expectedActiveSeat
-    && (await shell.getAttribute("data-phase")) === expectedPhase;
+  const windowSnapshot = async () => shell.evaluate((element) => {
+    const root = element as HTMLElement;
+    return {
+      activePlayer: root.dataset.activePlayer || "",
+      phase: root.dataset.phase || "",
+      step: root.querySelector<HTMLElement>('[data-testid="exact-step-label"]')
+        ?.textContent || "",
+    };
+  });
+  const atExpectedWindow = async () => {
+    const snapshot = await windowSnapshot();
+    return snapshot.activePlayer === expectedActiveSeat
+      && snapshot.phase === expectedPhase
+      && snapshot.step === expectedStep;
+  };
+  let exposedDecisionId = "";
   await driveUntil(
     pages,
-    async () =>
-      (await atExpectedWindow()) &&
-      (await step.textContent()) === expectedStep &&
-      (await actionIsReady(opportunity)) &&
-      (await actionIsReady(seatPage.getByTestId("action-pass"))),
+    async () => {
+      const decisionIdBefore = await currentDecisionId(seatPage);
+      if (!decisionIdBefore || !(await atExpectedWindow())) return false;
+      if (!(await actionIsReady(opportunity))) return false;
+      if (!(await actionIsReady(seatPage.getByTestId("action-pass")))) return false;
+      const decisionIdAfter = await currentDecisionId(seatPage);
+      if (decisionIdAfter !== decisionIdBefore) return false;
+      exposedDecisionId = decisionIdBefore;
+      return true;
+    },
     testInfo,
     {
       label: `expose ${expectedStep} seat opportunity`,
@@ -236,8 +255,12 @@ async function declineSeatOpportunity(
       },
     },
   );
+  expect(exposedDecisionId).not.toBe("");
+  expect(await currentDecisionId(seatPage)).toBe(exposedDecisionId);
+  expect(await atExpectedWindow()).toBe(true);
+  expect(await step.textContent()).toBe(expectedStep);
   expect(await actionIsReady(opportunity)).toBe(true);
-  const result = await submitAuthorizedPass(seatPage);
+  const result = await submitAuthorizedPass(seatPage, exposedDecisionId);
   if (result !== "submitted") {
     throw new Error(`The intended seat pass ${result} after opportunity exposure`);
   }
