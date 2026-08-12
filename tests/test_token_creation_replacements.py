@@ -6,6 +6,7 @@ import tempfile
 import unittest
 
 from common import keep_all, load_assets, make_session
+from quorune.card_overrides import normalize_game_record_v3_runtime_handler
 from quorune.model import StackItem
 from quorune.compiler.token_templates import (
     static_additional_token_replacement_handler,
@@ -39,7 +40,7 @@ def additional_token_descriptor(
 ) -> dict:
     return {
         "handler_id": "replacement.token.additional.v1",
-        "schema_version": 1,
+        "schema_version": 2,
         "event": "token.create",
         "condition": {
             "event_controller": "source_controller",
@@ -180,6 +181,54 @@ class TokenCreationReplacementTests(unittest.TestCase):
             event.details["replacement_components"][0]["handler_id"],
         )
 
+    def test_typed_token_display_text_is_not_runtime_oracle_authority(self):
+        session = self.session(12505012)
+        engine = session.engine
+        source = self.install_generated_worldwalker(engine)
+
+        created = engine.create_token(
+            "A",
+            name="Treasure",
+            characteristics={"type_line": "Token Artifact — Treasure"},
+            reason="typed display boundary characterization",
+        )
+        map_card = next(
+            engine._resolve_object("A", ref)
+            for ref in created
+            if engine._resolve_object("A", ref).printed_name == "Map"
+        )
+        stored = map_card.annotations["token_characteristics"]
+        self.assertIn("display_text", stored)
+        self.assertNotIn("oracle_text", stored)
+        effective = engine._effective_card_data(map_card)
+        self.assertEqual("", effective["oracle_text"])
+        self.assertEqual(
+            stored["display_text"], effective["display_oracle_text"]
+        )
+        projected = session.projector._effective(map_card)
+        self.assertEqual(stored["display_text"], projected["o"])
+        self.assertEqual(1, len(effective["activated_abilities"]))
+
+        engine.move_card(
+            source.object_id,
+            "graveyard",
+            controller="A",
+        )
+        copied_ref = engine.create_token(
+            "A",
+            name="",
+            copy_of=map_card.ref,
+            reason="typed display copy characterization",
+        )[0]
+        copied = engine._resolve_object("A", copied_ref)
+        copied_effective = engine._effective_card_data(copied)
+        self.assertEqual("", copied_effective["oracle_text"])
+        self.assertEqual(
+            stored["display_text"],
+            copied_effective["display_oracle_text"],
+        )
+        self.assertEqual(1, len(copied_effective["activated_abilities"]))
+
     def test_additional_token_component_rejects_malformed_or_nonmatching_events(
         self,
     ):
@@ -188,6 +237,16 @@ class TokenCreationReplacementTests(unittest.TestCase):
         malformed["quantity"] = 0
         with self.assertRaisesRegex(SemanticNodeError, "quantity"):
             handler.validate(malformed)
+
+        obsolete_text = additional_token_descriptor()
+        obsolete_text["token"]["oracle_text"] = "Display only"
+        with self.assertRaisesRegex(SemanticNodeError, "unknown fields"):
+            handler.validate(obsolete_text)
+
+        malformed_display = additional_token_descriptor()
+        malformed_display["token"]["display_text"] = ["not", "text"]
+        with self.assertRaisesRegex(SemanticNodeError, "display_text"):
+            handler.validate(malformed_display)
 
         descriptor = additional_token_descriptor()
         creature_context = TokenCreationReplacementContext(
@@ -225,6 +284,23 @@ class TokenCreationReplacementTests(unittest.TestCase):
                     }
                 ],
             )
+
+    def test_historical_token_display_field_has_one_explicit_adapter(self):
+        descriptor = additional_token_descriptor()
+        descriptor["schema_version"] = 1
+        descriptor["token"]["oracle_text"] = "Historical display text"
+
+        normalized = normalize_game_record_v3_runtime_handler(descriptor)
+
+        self.assertNotIn("oracle_text", normalized["token"])
+        self.assertEqual(2, normalized["schema_version"])
+        self.assertEqual(
+            "Historical display text", normalized["token"]["display_text"]
+        )
+        self.assertNotIn("display_text", descriptor["token"])
+        self.assertEqual(
+            "Historical display text", descriptor["token"]["oracle_text"]
+        )
 
     def test_generic_filter_and_context_types_are_canonical_and_unique(self):
         handler = GenericAdditionalTokenReplacementHandler()

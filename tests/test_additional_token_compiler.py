@@ -104,12 +104,16 @@ class AdditionalTokenCompilerTests(unittest.TestCase):
                     "replacement.token.additional.v2",
                     descriptor["handler_id"],
                 )
+                self.assertEqual(2, descriptor["schema_version"])
                 self.assertEqual(types, descriptor["condition"]["created_types_all"])
                 self.assertEqual(
                     subtypes,
                     descriptor["condition"]["created_subtypes_all"],
                 )
                 self.assertEqual(token_name, descriptor["token"]["name"])
+                self.assertNotIn("oracle_text", descriptor["token"])
+                if token_name in {"Treasure", "Food", "Map"}:
+                    self.assertIn("display_text", descriptor["token"])
 
     def test_nearby_unsupported_wording_remains_residual(self):
         unsupported = (

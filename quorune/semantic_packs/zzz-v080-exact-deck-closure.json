@@ -784,7 +784,7 @@
       "handlers": [
         {
           "handler_id": "continuous.attached.fixed-characteristics.v1",
-          "schema_version": 1,
+          "schema_version": 2,
           "event": "characteristics.evaluate",
           "condition": {"relation": "source_attached_object"},
           "modifier": {
@@ -1100,7 +1100,7 @@
       "handlers": [
         {
           "handler_id": "replacement.zone.destination.v1",
-          "schema_version": 1,
+          "schema_version": 2,
           "event": "zone.change",
           "condition": {
             "destination": "graveyard",
@@ -2186,7 +2186,7 @@
           "token": {
             "name": "Map",
             "type_line": "Token Artifact — Map",
-            "oracle_text": "{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.",
+            "display_text": "{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.",
             "ability_profile": "one_tap_sac_explore_controlled_creature_v1"
           }
         }

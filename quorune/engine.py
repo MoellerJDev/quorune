@@ -22,6 +22,10 @@ from .attachments import (
     detach_object,
 )
 from .carddb import CardDatabase, CardRecord
+from .carddb_characteristics import (
+    custom_copyable_characteristics,
+    separate_custom_display_text,
+)
 from .card_programs.validation import (
     canonical_program_fingerprint,
     program_source_is_current,
@@ -867,6 +871,7 @@ class CommanderEngine(
             base,
             runtime_effects=runtime_effects,
         )
+        base = separate_custom_display_text(card, base)
         conditional_haste = re.search(
             r"has haste as long as an opponent has "
             r"(?P<life>\d+) or less life",
@@ -1047,18 +1052,11 @@ class CommanderEngine(
         self, card: CardInstance
     ) -> dict[str, Any]:
         record = self.card_record(card)
-        if record is None:
-            base = copy.deepcopy(
-                dict(card.annotations.get("token_characteristics") or {})
-            )
-            base.setdefault("name", card.printed_name)
-            base.setdefault("mana_cost", "")
-            base.setdefault("mana_value", 0)
-            base.setdefault("type_line", "Token")
-            base.setdefault("oracle_text", "")
-            base.setdefault("keywords", [])
-            base.setdefault("colors", [])
-            base.setdefault("produced_mana", [])
+        token_characteristics = card.annotations.get(
+            "token_characteristics", {}
+        )
+        if record is None or "display_text" in token_characteristics:
+            base = custom_copyable_characteristics(card)
         else:
             face = None
             if card.active_face:

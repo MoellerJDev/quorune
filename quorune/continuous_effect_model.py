@@ -85,6 +85,7 @@ _COPY_FIELDS = {
     "mana_cost",
     "mana_value",
     "text",
+    "executable_text",
     "supertypes",
     "card_types",
     "subtypes",
@@ -170,7 +171,13 @@ def _validate_copy_values(value: Any) -> None:
                     validate_activated_ability_descriptor(thaw_value(ability))
             except (TypeError, ValueError) as exc:
                 raise ContinuousEffectError(str(exc)) from exc
-        elif field_name in {"name", "controller", "mana_cost", "text"}:
+        elif field_name in {
+            "name",
+            "controller",
+            "mana_cost",
+            "text",
+            "executable_text",
+        }:
             if type(field_value) is not str:
                 raise ContinuousEffectError(
                     f"copy_values.{field_name} must be a string"

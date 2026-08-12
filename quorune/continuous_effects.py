@@ -218,10 +218,12 @@ def _apply_copy_values(
 ) -> None:
     if not isinstance(value, Mapping):
         raise ContinuousEffectError("copy_values requires an object")
+    has_explicit_executable_text = "executable_text" in value
     for key, replacement in value.items():
         if key == "text":
             state.text = str(replacement)
-            state.executable_text = state.text
+            if not has_explicit_executable_text:
+                state.executable_text = state.text
         elif key in {"supertypes", "card_types", "subtypes", "colors"}:
             setattr(state, key, _as_words(replacement))
         elif key == "abilities":

@@ -39,7 +39,7 @@ class TokenDefinition:
     power: str | None = None
     toughness: str | None = None
     keywords: tuple[str, ...] = ()
-    oracle_text: str = ""
+    display_text: str = ""
     ability_profile: str | None = None
 
     @classmethod
@@ -51,7 +51,7 @@ class TokenDefinition:
             "power",
             "toughness",
             "keywords",
-            "oracle_text",
+            "display_text",
             "ability_profile",
         }
         unknown = sorted(set(value) - allowed)
@@ -73,6 +73,11 @@ class TokenDefinition:
         )
         power = value.get("power")
         toughness = value.get("toughness")
+        display_text = value.get("display_text", "")
+        if type(display_text) is not str:
+            raise SemanticNodeError(
+                "additional token display_text must be a string"
+            )
         ability_profile = value.get("ability_profile")
         if ability_profile is not None and (
             type(ability_profile) is not str or not ability_profile
@@ -91,7 +96,7 @@ class TokenDefinition:
             power=None if power is None else str(power),
             toughness=None if toughness is None else str(toughness),
             keywords=keywords,
-            oracle_text=str(value.get("oracle_text") or ""),
+            display_text=display_text,
             ability_profile=ability_profile,
         )
 
@@ -104,8 +109,8 @@ class TokenDefinition:
         if self.power is not None:
             value["power"] = self.power
             value["toughness"] = self.toughness
-        if self.oracle_text:
-            value["oracle_text"] = self.oracle_text
+        if self.display_text:
+            value["display_text"] = self.display_text
         if self.ability_profile is not None:
             value[TOKEN_ABILITY_PROFILE_FIELD] = self.ability_profile
         try:
@@ -276,7 +281,7 @@ class TokenCreationReplacementHandler(Protocol):
 @dataclass(frozen=True, slots=True)
 class AdditionalTokenReplacementHandler:
     handler_id: str = _ADDITIONAL_TOKEN_HANDLER_ID
-    schema_version: int = 1
+    schema_version: int = 2
     family: str = "replacement.fixed_additional_token"
     event: str = "token.create"
     rule_references: tuple[str, ...] = (
@@ -427,7 +432,7 @@ class GenericAdditionalTokenReplacementHandler:
     """Closed compiler-facing fixed additional-token replacement family."""
 
     handler_id: str = _GENERIC_ADDITIONAL_TOKEN_HANDLER_ID
-    schema_version: int = 1
+    schema_version: int = 2
     family: str = "replacement.fixed_additional_token"
     event: str = "token.create"
     rule_references: tuple[str, ...] = (

@@ -7,6 +7,43 @@ from ..abilities import ActivatedAbility, parse_activated_abilities
 
 
 _GRANTED_ABILITY_PREFIX = "granted_activated_ability:"
+_ADDITIONAL_TOKEN_HANDLER_IDS = {
+    "replacement.token.additional.v1",
+    "replacement.token.additional.v2",
+}
+
+
+def normalize_game_record_v3_runtime_handler(
+    descriptor: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Adapt a superseded token display field in replay-pinned registries.
+
+    Current descriptors distinguish inert display text from typed executable
+    abilities.  Historical Game Record v3 snapshots used ``oracle_text`` for
+    that display field, so only the explicit compatibility path renames it.
+    The text is never parsed or promoted into executable behavior here.
+    """
+
+    value = dict(descriptor)
+    if str(value.get("handler_id") or "") not in (
+        _ADDITIONAL_TOKEN_HANDLER_IDS
+    ):
+        return value
+    token = value.get("token")
+    if not isinstance(token, Mapping):
+        return value
+    if value.get("schema_version") == 1:
+        value["schema_version"] = 2
+    token_value = dict(token)
+    if "oracle_text" in token_value:
+        if "display_text" in token_value:
+            raise ValueError(
+                "Historical token descriptor cannot contain both display "
+                "text fields"
+            )
+        token_value["display_text"] = token_value.pop("oracle_text")
+        value["token"] = token_value
+    return value
 
 
 def normalize_game_record_v3_effect(effect: Mapping[str, Any]) -> dict[str, Any]:

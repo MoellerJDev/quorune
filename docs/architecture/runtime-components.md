@@ -56,13 +56,17 @@ mana wording remains residual.
 
 `replacement.token.additional.v2` represents the closed mandatory fixed
 additional-token family. Its descriptor carries an optional card-type and
-subtype filter plus one immutable token definition. The replacement operation
+subtype filter plus one immutable token definition. Inert `display_text` is
+separate from typed keyword and activated-ability descriptors; current runtime
+code never interprets that display string as Oracle authority. The replacement operation
 updates the existing `token.create` event atomically, so newly added token
 characteristics participate in the normal replacement rediscovery loop while
 the same source cannot apply twice. The token owner commits every resulting
 specification with one creation timestamp only after APNAP ordering completes.
 The v1 handler remains registered solely for pinned reviewed semantic-pack
-compatibility. Optional choices, quantity multipliers, state-derived token
+compatibility. Historical Game Record v3 token descriptors receive one
+compatibility-only field migration without parsing or trust promotion. Optional
+choices, quantity multipliers, state-derived token
 definitions, and modified entry instructions remain unsupported.
 
 ## Ownership boundaries

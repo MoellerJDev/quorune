@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from typing import Any, Mapping
 
 from .carddb import CardRecord
@@ -14,27 +15,95 @@ def _custom_object_characteristics(card: CardInstance) -> Mapping[str, Any]:
     )
 
 
+def separate_custom_display_text(
+    card: CardInstance,
+    characteristics: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Keep current custom-object display prose out of execution inputs."""
+
+    result = dict(characteristics)
+    custom = (
+        card.annotations.get("object_characteristics")
+        or card.annotations.get("token_characteristics")
+        or card.annotations.get("copy_overrides")
+        or {}
+    )
+    if "display_text" in custom:
+        result["display_oracle_text"] = str(
+            result.get("oracle_text") or ""
+        )
+        result["oracle_text"] = str(
+            result.get("executable_oracle_text") or ""
+        )
+    return result
+
+
+def custom_copyable_characteristics(card: CardInstance) -> dict[str, Any]:
+    """Return isolated custom-object copiable values with typed text roles."""
+
+    result = copy.deepcopy(
+        dict(card.annotations.get("token_characteristics") or {})
+    )
+    result.setdefault("name", card.printed_name)
+    result.setdefault("mana_cost", "")
+    result.setdefault("mana_value", 0)
+    result.setdefault("type_line", "Token")
+    if "display_text" in result:
+        result.setdefault("executable_oracle_text", "")
+    else:
+        result.setdefault("oracle_text", "")
+    result.setdefault("keywords", [])
+    result.setdefault("colors", [])
+    result.setdefault("produced_mana", [])
+    return result
+
+
 def base_card_characteristics(
     card: CardInstance,
     record: CardRecord | None,
 ) -> dict[str, Any]:
     """Adapt printed or custom object data to the shared evaluator schema."""
 
-    if record is None:
-        values = _custom_object_characteristics(card)
+    values = _custom_object_characteristics(card)
+    if record is None or "display_text" in values:
+        legacy_text = str(values.get("oracle_text", ""))
+        display_text = str(
+            values.get(
+                "display_text",
+                legacy_text or (record.oracle_text if record else ""),
+            )
+        )
         return {
             "name": "" if card.object_kind == "emblem" else card.printed_name,
-            "mana_cost": "",
-            "mana_value": values.get("mana_value", 0),
-            "type_line": str(values.get("type_line", "Token")),
-            "oracle_text": str(values.get("oracle_text", "")),
+            "mana_cost": str(
+                values.get("mana_cost", record.mana_cost if record else "")
+            ),
+            "mana_value": values.get(
+                "mana_value", record.mana_value if record else 0
+            ),
+            "type_line": str(
+                values.get(
+                    "type_line", record.type_line if record else "Token"
+                )
+            ),
+            "oracle_text": display_text,
+            "executable_oracle_text": legacy_text,
             "power": values.get("power"),
             "toughness": values.get("toughness"),
             "loyalty": values.get("loyalty"),
             "defense": values.get("defense"),
-            "keywords": list(values.get("keywords", [])),
-            "colors": list(values.get("colors", [])),
-            "produced_mana": list(values.get("produced_mana", [])),
+            "keywords": list(
+                values.get("keywords", record.keywords if record else [])
+            ),
+            "colors": list(
+                values.get("colors", record.colors if record else [])
+            ),
+            "produced_mana": list(
+                values.get(
+                    "produced_mana",
+                    record.produced_mana if record else [],
+                )
+            ),
             "ability_fragments": list(
                 values.get("ability_fragments", [])
             ),
@@ -56,6 +125,11 @@ def base_card_characteristics(
         "mana_value": record.mana_value,
         "type_line": str(face.get("type_line") or "") if face else record.type_line,
         "oracle_text": str(face.get("oracle_text") or "") if face else record.oracle_text,
+        "executable_oracle_text": (
+            str(face.get("oracle_text") or "")
+            if face
+            else record.oracle_text
+        ),
         "power": face.get("power") if face else record.power,
         "toughness": face.get("toughness") if face else record.toughness,
         "loyalty": face.get("loyalty") if face else record.loyalty,
@@ -67,4 +141,8 @@ def base_card_characteristics(
     }
 
 
-__all__ = ["base_card_characteristics"]
+__all__ = [
+    "base_card_characteristics",
+    "custom_copyable_characteristics",
+    "separate_custom_display_text",
+]

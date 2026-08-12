@@ -30,7 +30,7 @@ _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
     "treasure token": {
         "name": _TOKEN_TREASURE,
         "type_line": "Token Artifact — Treasure",
-        "oracle_text": (
+        "display_text": (
             "{T}, Sacrifice this token: Add one mana of any color."
         ),
         "ability_profile": "tap_sac_any_color_mana_v1",
@@ -38,7 +38,7 @@ _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
     "food token": {
         "name": _TOKEN_FOOD,
         "type_line": "Token Artifact — Food",
-        "oracle_text": (
+        "display_text": (
             "{2}, {T}, Sacrifice this token: You gain 3 life."
         ),
         "ability_profile": "two_tap_sac_gain_three_life_v1",
@@ -46,7 +46,7 @@ _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
     "map token": {
         "name": _TOKEN_MAP,
         "type_line": "Token Artifact — Map",
-        "oracle_text": (
+        "display_text": (
             "{1}, {T}, Sacrifice this token: Target creature you control "
             "explores. Activate only as a sorcery."
         ),
@@ -91,7 +91,7 @@ def static_additional_token_replacement_handler(
         f"additional-token-fixed-{filter_label}-{token_label}-v1",
         {
             "handler_id": "replacement.token.additional.v2",
-            "schema_version": 1,
+            "schema_version": 2,
             "event": "token.create",
             "condition": {
                 "event_controller": "source_controller",
