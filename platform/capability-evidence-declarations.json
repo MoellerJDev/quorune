@@ -10850,6 +10850,94 @@
       "applicability_note": "Replay the exact protected-object filtering and selected legal Aura attachment from a pinned continuation."
     },
     {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceRuntimeTests.test_invalid_remaining_effect_rolls_back_the_choice_command",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject an invalid second instruction from a resumed private choice without committing the preceding library arrangement."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceRuntimeTests.test_scry_then_draw_resumes_privately_and_replays_exactly",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend the ordered sequence for a private Scry choice, preserve the remaining draw, and resume it exactly once."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceRuntimeTests.test_scry_then_draw_resumes_privately_and_replays_exactly",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve the sequence in a four-player game with one seat-scoped private choice and no opponent decision."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceCompilerTests.test_sequence_compiler_and_shape_mutants_are_killed",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the closed sequence compiler production and alter its strict payload shapes; exact compilation and capability closure reject every survivor."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceCompilerTests.test_sequence_shape_rejects_open_and_malformed_variants",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject boolean and nonpositive counts, nonprivate draws, wrong actors, targets, wrong arity, duplicate draws, and no-draw sequences."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceCompilerTests.test_unsupported_sequence_wording_remains_a_precise_residual",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Leave dynamic, optional, targeted, three-instruction, and conditional wording as material compiler residuals."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceCompilerTests.test_spell_trigger_and_activated_contexts_share_sequence_lowering",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reuse one source-spanned ordered-sequence compiler in spell, trigger, and activated ability contexts."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceRuntimeTests.test_draw_then_life_commits_in_printed_order",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit two ordinary draws before the following fixed life loss through their existing canonical owners."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceRuntimeTests.test_scry_then_draw_resumes_privately_and_replays_exactly",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose neither the looked-at Scry set nor the subsequently drawn card identity to the other three seats."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceRuntimeTests.test_scry_then_draw_resumes_privately_and_replays_exactly",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the private Scry response and resumed draw to the identical authoritative final hash."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_controller",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceRuntimeTests.test_invalid_remaining_effect_rolls_back_the_choice_command",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Roll back the entire choice command when the pinned remaining instruction is invalid, preserving the library, life, decision, and state hash."
+    },
+    {
       "capability_id": "resolution.effect_sequence.fixed_source",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
