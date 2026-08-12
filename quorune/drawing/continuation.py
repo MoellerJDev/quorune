@@ -22,7 +22,7 @@ from .model import (
 )
 
 
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 
 
 def _exact(value: Mapping[str, Any], fields: set[str], *, name: str) -> None:

@@ -7,7 +7,7 @@ from typing import Any
 
 
 _LKI_CONTROLLER_KEY = "explore_source_lki_controller"
-_EXPLORE_OPERATION = "ex" + "plore"
+_EXPLORE_OPERATION = "explore"
 
 
 def _program_explores_source(program: Any) -> bool:

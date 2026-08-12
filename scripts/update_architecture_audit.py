@@ -9,7 +9,6 @@ import io
 import json
 from pathlib import Path
 import re
-import sqlite3
 import sys
 import tokenize
 import tomllib
@@ -24,10 +23,8 @@ try:
         interaction_assurance_summary,
         runtime_text_accesses,
     )
-    from scripts.architecture_support import (
-        build_card_name_hash_index,
-        decode_card_name_hash_index,
-        printed_name_digest,
+    from scripts.architecture_identity_flow import (
+        analyze_identity_flows,
     )
     from scripts.source_tree_fingerprint import (
         SOURCE_TREE_FINGERPRINT_ALGORITHM,
@@ -41,10 +38,8 @@ except ModuleNotFoundError:  # Direct `python scripts/...` execution.
         interaction_assurance_summary,
         runtime_text_accesses,
     )
-    from architecture_support import (
-        build_card_name_hash_index,
-        decode_card_name_hash_index,
-        printed_name_digest,
+    from architecture_identity_flow import (
+        analyze_identity_flows,
     )
     from source_tree_fingerprint import (
         SOURCE_TREE_FINGERPRINT_ALGORITHM,
@@ -60,8 +55,6 @@ root_text = str(ROOT)
 if root_text not in sys.path:
     sys.path.insert(0, root_text)
 SOURCE = ROOT / "platform" / "architecture-audit-source.json"
-CARD_BASELINE = ROOT / "platform" / "card-specificity-baseline.json"
-CARD_NAME_INDEX = ROOT / "platform" / "card-name-hash-index.json"
 JSON_OUTPUT = ROOT / "coverage" / "architecture-audit.json"
 ARCHITECTURE_STATUS = ROOT / "docs" / "ARCHITECTURE_DEBT_STATUS.md"
 COMPILER_STATUS = ROOT / "docs" / "COMPILER_COVERAGE_STATUS.md"
@@ -157,7 +150,7 @@ def _serialize_json(value: Mapping[str, Any]) -> str:
 
 def _source() -> dict[str, Any]:
     source = _load_json(SOURCE)
-    if source.get("schema_version") != 2:
+    if source.get("schema_version") != 3:
         raise ValueError("Unsupported architecture audit source schema")
     observations = source.get("historical_observations")
     if not isinstance(observations, list) or not observations:
@@ -440,135 +433,6 @@ def _string_records(
     relative: str,
     parents: Mapping[ast.AST, ast.AST],
 ) -> tuple[tuple[dict[str, Any], ...], tuple[dict[str, Any], ...]]:
-    def specificity_exempt(node: ast.Constant) -> bool:
-        ordinary_keyword_values = {
-            "deathtouch",
-            "decayed",
-            "double strike",
-            "exalted",
-            "first strike",
-            "flying",
-            "haste",
-            "hexproof",
-            "indestructible",
-            "lifelink",
-            "menace",
-            "reach",
-            "shadow",
-            "trample",
-            "vigilance",
-        }
-        structural_values = {
-            "_EXILE_MECHANIC": {"exile"},
-            "_EXILE_ZONE": {"exile"},
-            "_REASON_FIELD": {"reason"},
-            "_SACRIFICE_TRANSITION_KIND": {"sacrifice"},
-            "PLAYER_COUNTERS_FIELD": {"counters"},
-            # Closed rules/compiler vocabulary can coincide with short card
-            # names. The exemption applies only to these assigned constants;
-            # any use in printed-name or card-identity dispatch still fails.
-            "_COUNTER_NAME_ANY": {"counters"},
-            "_COUNTER_TARGET_GOBLIN": {"goblin"},
-            "_COUNTER_TARGET_VEHICLE": {"vehicle"},
-            "DIRECT_NONCREATURE_SUBTYPES": {"vehicle"},
-            "SACRIFICE_COST_KIND": {"sacrifice"},
-            # Closed rules vocabulary may also coincide with exact printed
-            # card names. These exemptions are limited to the typed keyword
-            # registries; use in card identity or printed-name dispatch still
-            # fails below.
-            "_KEYWORDS": ordinary_keyword_values,
-            "FIXED_TARGET_CHARACTERISTIC_KEYWORDS": ordinary_keyword_values,
-            "_FIXED_TARGET_SEQUENCE_KEYWORDS": ordinary_keyword_values,
-            "KEYWORD_COUNTER_MECHANICS": ordinary_keyword_values,
-            "ZONE_OBJECT_KEYWORDS": ordinary_keyword_values,
-            "_TARGET_GROUP_FIELDS": {"attacking"},
-            # Closed predefined token names are CR vocabulary used to build
-            # token characteristics.  The structural exemption is limited to
-            # these named constants and still fails if a value participates
-            # in printed-name or other card-identity dispatch.
-            "_TOKEN_TREASURE": {"treasure"},
-            "_TOKEN_FOOD": {"food"},
-            "_TOKEN_MAP": {"map"},
-            "_TOKEN_THOPTER": {"thopter"},
-            "_ZONE_CHANGE_DESTINATIONS": {
-                "battlefield",
-                "command",
-                "exile",
-                "graveyard",
-                "hand",
-                "library",
-                "outside",
-            },
-        }
-        normalized_value = node.value.casefold()
-        if normalized_value not in set().union(*structural_values.values()):
-            return False
-        containing_class: ast.ClassDef | None = None
-        ancestor: ast.AST = node
-        while ancestor in parents:
-            ancestor = parents[ancestor]
-            if isinstance(ancestor, ast.ClassDef):
-                containing_class = ancestor
-                break
-        current: ast.AST = node
-        while current in parents:
-            parent = parents[current]
-            if isinstance(parent, (ast.Compare, ast.Call, ast.Subscript)) and any(
-                (
-                    isinstance(child, ast.Attribute)
-                    and child.attr
-                    in {
-                        "printed_name",
-                        "oracle_id",
-                        "collector_number",
-                        "set_code",
-                        "card_name",
-                    }
-                )
-                or (
-                    isinstance(child, ast.Name)
-                    and child.id
-                    in {
-                        "printed_name",
-                        "oracle_id",
-                        "collector_number",
-                        "set_code",
-                        "card_name",
-                    }
-                )
-                for child in ast.walk(parent)
-            ):
-                return False
-            if isinstance(parent, (ast.Assign, ast.AnnAssign)):
-                targets = (
-                    parent.targets
-                    if isinstance(parent, ast.Assign)
-                    else [parent.target]
-                )
-                names = {
-                    target.id
-                    for target in targets
-                    if isinstance(target, ast.Name)
-                }
-                if any(
-                    normalized_value in structural_values.get(name, set())
-                    for name in names
-                ):
-                    return True
-                if (
-                    node.value.casefold() == "exile"
-                    and "EXILE" in names
-                    and containing_class is not None
-                    and any(
-                        isinstance(base, ast.Name) and base.id == "Enum"
-                        for base in containing_class.bases
-                    )
-                ):
-                    return True
-                return False
-            current = parent
-        return False
-
     condition_nodes: set[ast.AST] = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.If):
@@ -591,7 +455,6 @@ def _string_records(
             "symbol": _nearest_function(node, parents),
             "value": node.value,
             "in_condition": node in condition_nodes,
-            "card_specificity_exempt": specificity_exempt(node),
         }
         strings.append(record)
         for oracle_id in UUID_PATTERN.findall(node.value):
@@ -638,32 +501,6 @@ def analyze_production() -> tuple[
         if path.suffix == ".py"
     }
     return source, paths, analyses
-
-
-def card_specificity_scope(
-    analyses: Mapping[str, SourceAnalysis],
-    source: Mapping[str, Any],
-) -> list[str]:
-    """Return every generic production Python module, default-deny."""
-
-    exemptions = tuple(
-        str(value)
-        for value in source["scope"].get(
-            "card_specificity_exempt_prefixes", []
-        )
-    )
-    metadata_exempt_files = {
-        str(value)
-        for value in source["scope"].get(
-            "card_specificity_metadata_exempt_files", []
-        )
-    }
-    return sorted(
-        relative
-        for relative in analyses
-        if relative not in metadata_exempt_files
-        and not any(relative.startswith(prefix) for prefix in exemptions)
-    )
 
 
 def _production_metrics(
@@ -915,136 +752,11 @@ def _semantic_handler_metrics(
     }
 
 
-def _card_names(database: Path) -> tuple[dict[str, str], dict[str, str]]:
-    names: dict[str, str] = {}
-    metadata: dict[str, str] = {}
-    with sqlite3.connect(database) as connection:
-        metadata = {
-            str(key): str(value)
-            for key, value in connection.execute("SELECT key, value FROM metadata")
-        }
-        for name, faces_json in connection.execute(
-            "SELECT name, faces_json FROM cards ORDER BY oracle_id"
-        ):
-            names[str(name).strip().casefold()] = str(name)
-            try:
-                faces = json.loads(str(faces_json))
-            except json.JSONDecodeError:
-                faces = []
-            for face in faces if isinstance(faces, list) else []:
-                if isinstance(face, dict) and str(face.get("name") or "").strip():
-                    face_name = str(face["name"]).strip()
-                    names[face_name.casefold()] = face_name
-    return names, metadata
-
-
-def _refresh_card_baseline(
-    database: Path,
-    analyses: Mapping[str, SourceAnalysis],
-    source: Mapping[str, Any],
-) -> dict[str, Any]:
-    if not database.is_file():
-        raise ValueError(f"Card database does not exist: {database}")
-    names, metadata = _card_names(database)
-    scoped_files = set(card_specificity_scope(analyses, source))
-    matches: list[dict[str, Any]] = []
-    for relative in sorted(scoped_files):
-        if relative not in analyses:
-            raise ValueError(f"Card-specificity file is not a Python production file: {relative}")
-        for literal in analyses[relative].string_literals:
-            normalized = " ".join(literal["value"].split()).casefold()
-            if normalized in names:
-                matches.append({**literal, "matched_printed_name": names[normalized]})
-    return {
-        "schema_version": 1,
-        "generator": "scripts/update_architecture_audit.py --write --card-db <path>",
-        "database_snapshot": {
-            "card_count": metadata.get("card_count"),
-            "oracle_source_sha256": metadata.get("oracle_source_sha256"),
-            "scryfall_oracle_updated_at": metadata.get("scryfall_oracle_updated_at"),
-        },
-        "card_names_and_faces_loaded": len(names),
-        "scope": sorted(scoped_files),
-        "exact_printed_name_literals": sorted(
-            matches,
-            key=lambda item: (item["file"], item["line"], item["column"], item["value"]),
-        ),
-        "limitations": (
-            "Exact full printed-name literals only. Card-named helpers and semantic "
-            "operations are separately reviewed in architecture-audit-source.json."
-        ),
-    }
-
-
-def _card_name_index(
-    database: Path,
-) -> dict[str, Any]:
-    if not database.is_file():
-        raise ValueError(f"Card database does not exist: {database}")
-    names, metadata = _card_names(database)
-    snapshot = {
-        "card_count": metadata.get("card_count"),
-        "oracle_source_sha256": metadata.get("oracle_source_sha256"),
-        "scryfall_oracle_updated_at": metadata.get("scryfall_oracle_updated_at"),
-    }
-    return build_card_name_hash_index(names, snapshot)
-
-
-def _validate_card_baseline(
-    baseline: Mapping[str, Any],
-    analyses: Mapping[str, SourceAnalysis],
-    source: Mapping[str, Any],
-    digest_index: frozenset[bytes],
-) -> dict[str, Any]:
-    def identity(literal: Mapping[str, Any]) -> tuple[str, str | None, str, bool]:
-        return (
-            str(literal["file"]),
-            literal.get("symbol"),
-            str(literal["value"]),
-            bool(literal.get("in_condition")),
-        )
-
-    observed = [
-        literal
-        for relative in card_specificity_scope(analyses, source)
-        for literal in analyses[relative].string_literals
-        if not literal.get("card_specificity_exempt", False)
-        if printed_name_digest(str(literal["value"])) in digest_index
-    ]
-    allowances = Counter(
-        identity(item) for item in baseline.get("exact_printed_name_literals", [])
-    )
-    new: list[dict[str, Any]] = []
-    for item in observed:
-        key = identity(item)
-        if allowances[key] > 0:
-            allowances[key] -= 1
-        else:
-            new.append(item)
-    removed_count = sum(allowances.values())
-    return {
-        "entry_count": len(observed),
-        "baseline_entry_count": len(
-            baseline.get("exact_printed_name_literals", [])
-        ),
-        "conditional_entry_count": sum(
-            bool(item.get("in_condition"))
-            for item in observed
-        ),
-        "no_unreviewed_growth": len(new) == 0,
-        "new_unreviewed_literals": new,
-        "removed_baseline_occurrences": removed_count,
-        "structural_identity": "file, nearest symbol, literal value, conditional use",
-        "database_snapshot": baseline.get("database_snapshot", {}),
-        "limitations": baseline.get("limitations"),
-    }
-
-
 def _debt_trend(
     production: Mapping[str, Any],
     engine: Mapping[str, Any],
     state_dispatch: Mapping[str, Any],
-    card_validation: Mapping[str, Any],
+    identity_flow: Mapping[str, Any],
     source: Mapping[str, Any],
 ) -> dict[str, Any] | None:
     if not GUARD_BASELINE.is_file():
@@ -1059,9 +771,9 @@ def _debt_trend(
             sum(baseline["direct_game_state_writes_by_file"].values()),
             int(state_dispatch["direct_game_state_write_heuristic"]["count"]),
         ),
-        "printed_name_literals": (
-            int(card_validation["baseline_entry_count"]),
-            int(card_validation["entry_count"]),
+        "prohibited_identity_dispatch_count": (
+            0,
+            int(identity_flow["counts"]["prohibited_identity_dispatch_count"]),
         ),
         "oracle_id_literals": (
             len(baseline["oracle_id_literals"]),
@@ -1624,23 +1336,6 @@ def _coordinates(source: Mapping[str, Any]) -> dict[str, Any]:
 
 def build_report() -> dict[str, Any]:
     source, paths, analyses = analyze_production()
-    if not CARD_BASELINE.is_file():
-        raise ValueError(
-            "Missing card-specificity baseline; run with --write --card-db <full-db>"
-        )
-    if not CARD_NAME_INDEX.is_file():
-        raise ValueError(
-            "Missing card-name hash index; run with --write --card-db <full-db>"
-        )
-    card_baseline = _load_json(CARD_BASELINE)
-    digest_index = decode_card_name_hash_index(_load_json(CARD_NAME_INDEX))
-    card_validation = _validate_card_baseline(
-        card_baseline, analyses, source, digest_index
-    )
-    if not card_validation["no_unreviewed_growth"]:
-        raise ValueError(
-            "Core code contains printed-name literals outside the reviewed baseline"
-        )
     state_dispatch = _state_and_dispatch_metrics(analyses, source)
     semantic_handlers = _semantic_handler_metrics(state_dispatch)
     production = _production_metrics(paths, analyses, source)
@@ -1648,6 +1343,13 @@ def build_report() -> dict[str, Any]:
     policy = _load_json(ARCHITECTURE_POLICY)
     baseline = _load_json(GUARD_BASELINE)
     module_classifications = _load_json(MODULE_CLASSIFICATIONS)
+    identity_flow = analyze_identity_flows(
+        analyses, policy, module_classifications
+    )
+    if identity_flow["counts"]["prohibited_identity_dispatch_count"]:
+        raise ValueError(
+            "Generic production code contains prohibited fixed card-identity dispatch"
+        )
     exceptions = _load_json(ARCHITECTURE_EXCEPTIONS)
     write_inventory = classify_state_writes(
         state_dispatch["direct_game_state_write_heuristic"]["locations"],
@@ -1669,11 +1371,10 @@ def build_report() -> dict[str, Any]:
         exceptions=exceptions,
     )
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "generated": {
             "generator": "scripts/update_architecture_audit.py",
             "source": "platform/architecture-audit-source.json",
-            "card_specificity_source": "platform/card-specificity-baseline.json",
             "stale_check": "python scripts/update_architecture_audit.py --check",
             "scope_note": source["program"]["scope_note"],
         },
@@ -1691,8 +1392,8 @@ def build_report() -> dict[str, Any]:
             **state_dispatch,
             "direct_game_state_write_ownership": write_inventory,
             "runtime_oracle_text_access": runtime_text,
+            "card_identity_flow": identity_flow,
             "semantic_handlers": semantic_handlers,
-            "printed_name_literals": card_validation,
             "card_named_helpers": source["card_named_helpers"],
             "subsystem_ownership": source["subsystem_ownership"],
             "subsystem_capsules": subsystem_capsules,
@@ -1704,7 +1405,7 @@ def build_report() -> dict[str, Any]:
                 if item["missing_dedicated_owner"]
             ],
             "debt_trend": _debt_trend(
-                production, engine, state_dispatch, card_validation, source
+                production, engine, state_dispatch, identity_flow, source
             ),
         },
         "compiler": _compiler_metrics(source, analyses),
@@ -1815,18 +1516,24 @@ def render_architecture_status(report: Mapping[str, Any]) -> str:
             f"{architecture['semantic_handlers']['legacy_apply_effect_branch_count']}",
             f"- Registered operations still intercepted by engine string dispatch: "
             f"{len(architecture['semantic_handlers']['registered_operations_still_in_legacy_dispatch'])}",
-            f"- Exact printed-name literals in configured core files: "
-            f"{architecture['printed_name_literals']['entry_count']} "
-            f"({architecture['printed_name_literals']['conditional_entry_count']} conditional)",
+            "- Prohibited fixed card-identity dispatches: "
+            f"{architecture['card_identity_flow']['counts']['prohibited_identity_dispatch_count']}",
+            "- Card identities are permitted as typed data, compiler binding, display "
+            "metadata, generated provenance, reviewed overrides, and exact historical "
+            "compatibility; they are prohibited as generic implementation authority.",
             f"- Oracle-ID literals in Python production code: "
             f"{architecture['oracle_id_literals']['count']}",
+            "- The Oracle-ID literal ratchet independently protects literal identity "
+            "leakage and historical debt; it is not a substitute for behavior-flow "
+            "analysis.",
             f"- Card-named helpers: {len(architecture['card_named_helpers'])}",
             f"- Modules above the {production['review_thresholds']['module_logical_lines_review']:,}-logical-line review threshold: "
             f"{production['oversized_module_count']}",
             f"- Functions/methods above the {production['review_thresholds']['function_logical_lines_review']:,}-logical-line review threshold: "
             f"{production['oversized_function_and_method_count']}",
-            "- Printed-name matching is deliberately over-inclusive: ordinary words that "
-            "are also printed card names remain baseline candidates for Phase 1 review.",
+            "- Identity-flow analysis is bounded to declared source and sink shapes "
+            "within one module or function; its exact limitations are serialized in "
+            "the JSON inventory.",
         ]
     )
     lines.extend(
@@ -1982,7 +1689,7 @@ def render_architecture_status(report: Mapping[str, Any]) -> str:
             "## Regeneration",
             "",
             "```bash",
-            "python scripts/update_architecture_audit.py --write --card-db data/scryfall-current.sqlite3",
+            "python scripts/update_architecture_audit.py --write",
             "python scripts/update_architecture_audit.py --check",
             "```",
             "",
@@ -2160,7 +1867,7 @@ def render_compact_architecture_status(report: Mapping[str, Any]) -> str:
     fingerprint = _machine_report_fingerprint(report)
     command = (
         r".\.venv\Scripts\python.exe scripts\update_architecture_audit.py "
-        r"--write --card-db data\scryfall-current.sqlite3"
+        r"--write"
     )
     blockers = [
         *(f"Missing dedicated owner: `{owner}`." for owner in architecture["missing_dedicated_owners"]),
@@ -2231,7 +1938,7 @@ def render_compact_compiler_status(report: Mapping[str, Any]) -> str:
     fingerprint = _machine_report_fingerprint(report)
     command = (
         r".\.venv\Scripts\python.exe scripts\update_architecture_audit.py "
-        r"--write --card-db data\scryfall-current.sqlite3"
+        r"--write"
     )
     blockers: list[str] = []
     if not commander["current_snapshot_complete"]:
@@ -2333,43 +2040,7 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
-    parser.add_argument("--card-db", type=Path)
-    parser.add_argument("--refresh-specificity-allowances", action="store_true")
-    parser.add_argument("--adr", type=Path)
     args = parser.parse_args()
-    refreshed_card_index = False
-    refreshed_allowances = False
-    if args.check and args.card_db:
-        parser.error("--card-db is only valid with --write")
-    if args.refresh_specificity_allowances and not args.card_db:
-        parser.error("--refresh-specificity-allowances requires --card-db")
-    if args.refresh_specificity_allowances and not args.adr:
-        parser.error("--refresh-specificity-allowances requires --adr")
-    if args.adr and not args.refresh_specificity_allowances:
-        parser.error("--adr is only valid with --refresh-specificity-allowances")
-    if args.write and args.card_db:
-        source, _paths, analyses = analyze_production()
-        CARD_NAME_INDEX.write_text(
-            _serialize_json(_card_name_index(args.card_db.resolve())),
-            encoding="utf-8",
-            newline="\n",
-        )
-        refreshed_card_index = True
-        if args.refresh_specificity_allowances:
-            adr = args.adr.resolve()
-            if not adr.is_file() or ROOT not in adr.parents:
-                parser.error("--adr must name an existing repository ADR")
-            adr_relative = adr.relative_to(ROOT)
-            if adr_relative.parts[:2] != ("docs", "adr"):
-                parser.error("--adr must be under docs/adr/")
-            baseline = _refresh_card_baseline(
-                args.card_db.resolve(), analyses, source
-            )
-            baseline["review_adr"] = adr_relative.as_posix()
-            CARD_BASELINE.write_text(
-                _serialize_json(baseline), encoding="utf-8", newline="\n"
-            )
-            refreshed_allowances = True
     report = build_report()
     if args.write:
         _write_outputs(report)
@@ -2378,16 +2049,6 @@ def main() -> int:
                 {
                     "ok": True,
                     "outputs": [
-                        *(
-                            [CARD_NAME_INDEX.relative_to(ROOT).as_posix()]
-                            if refreshed_card_index
-                            else []
-                        ),
-                        *(
-                            [CARD_BASELINE.relative_to(ROOT).as_posix()]
-                            if refreshed_allowances
-                            else []
-                        ),
                         *(
                             path.relative_to(ROOT).as_posix()
                             for path in _outputs(report)
@@ -2403,8 +2064,7 @@ def main() -> int:
     if stale:
         print(
             "architecture audit is stale; run `python "
-            "scripts/update_architecture_audit.py --write --card-db "
-            "data/scryfall-current.sqlite3`: "
+            "scripts/update_architecture_audit.py --write`: "
             + ", ".join(stale),
             file=sys.stderr,
         )

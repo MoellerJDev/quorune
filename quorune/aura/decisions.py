@@ -24,7 +24,7 @@ _FIELDS = {
     "spec",
     "advertised_targets",
 }
-_PILOT_ROLE = "pi" + "lot"
+_PILOT_ROLE = "pilot"
 
 
 class AuraDecisionHost(Protocol):

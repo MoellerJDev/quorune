@@ -130,7 +130,8 @@ A coherent rules family:
 6. declares precise capabilities and ambient interactions;
 7. rejects unsupported variants before mutation;
 8. preserves record, replay, projection, and compatibility contracts;
-9. improves or holds measured ownership, direct-write, and specificity debt;
+9. improves or holds measured ownership and direct-write debt while keeping
+   prohibited card-identity dispatch at zero;
 10. regenerates affected rules/card reports once at the final exact head.
 
 Do not select work one numbered rule at a time or preserve a false positive to

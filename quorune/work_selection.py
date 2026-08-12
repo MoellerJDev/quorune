@@ -47,8 +47,8 @@ _REQUIRED_CANDIDATE_FIELDS = {
     "eligible",
     "priority_within_class",
 }
-_REASON_FIELD = "rea" + "son"
-_STATUS_FIELD = "sta" + "tus"
+_REASON_FIELD = "reason"
+_STATUS_FIELD = "status"
 
 
 class WorkSelectionError(ValueError):

@@ -19,7 +19,7 @@ from .util import stable_json
 
 
 ATTACK_COUNTER_TRIGGER_SEMANTIC_KEY = "builtin:attack-counter-trigger"
-_LIFE_FIELD = "li" + "fe"
+_LIFE_FIELD = "life"
 ATTACK_COUNTER_TRIGGER_KINDS = frozenset(
     {
         CombatKeywordTriggerKind.DETHRONE,

@@ -10,7 +10,7 @@ from .fixed_numbers import FIXED_COUNT_PATTERN, fixed_number
 
 
 LIFE_MECHANIC = "cr-119-life"
-_LIFE_OPERATION = "li" + "fe"
+_LIFE_OPERATION = "life"
 
 _DOUBLE_CONTROLLER_LIFE_GAIN = re.compile(
     r"^If you would gain life, you gain twice that much life instead\.?$",

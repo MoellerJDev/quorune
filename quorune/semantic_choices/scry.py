@@ -21,7 +21,7 @@ from .model import (
 )
 
 
-_LIBRARY_ZONE = "lib" + "rary"
+_LIBRARY_ZONE = "library"
 
 
 @dataclass(frozen=True, slots=True)

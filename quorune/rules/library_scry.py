@@ -10,7 +10,7 @@ class ScryError(ValueError):
     """A Scry instruction, arrangement, or current library is malformed."""
 
 
-_LIBRARY_ZONE = "lib" + "rary"
+_LIBRARY_ZONE = "library"
 
 
 def _refs(value: Any, *, field: str) -> tuple[str, ...]:

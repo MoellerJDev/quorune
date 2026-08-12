@@ -52,7 +52,7 @@ from .session import CommanderSession
 from .util import stable_json
 
 
-_ORACLE_COMMAND = "ora" + "cle"
+_ORACLE_COMMAND = "oracle"
 _CLI_DESCRIPTION = "Operate the Quorune rules, replay, and local-match toolchain."
 
 

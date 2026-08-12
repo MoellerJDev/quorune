@@ -38,7 +38,8 @@ Validate pull-request descriptions before expensive certification jobs begin.
 - Duplicate or superseded paths removed: none
 - `CommanderEngine` delta: zero
 - Direct authoritative-write delta: zero
-- Card-name/Oracle-ID specificity delta: zero
+- Prohibited identity-dispatch delta: zero
+- Oracle-ID literal delta: zero
 - Compiler/CardProgram changes: none
 - Card, residual, and capability-closure deltas: N/A — no rules change.
 

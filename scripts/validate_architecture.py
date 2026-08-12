@@ -16,19 +16,16 @@ try:
         runtime_text_accesses,
         runtime_text_growth,
     )
-    from scripts.architecture_support import (
-        decode_card_name_hash_index,
-        printed_name_digest,
+    from scripts.architecture_identity_flow import (
+        analyze_identity_flows,
     )
     from scripts.update_architecture_audit import (
-        CARD_BASELINE,
         MODULE_CLASSIFICATIONS,
         ROOT,
         _engine_metrics,
         _production_metrics,
         _state_and_dispatch_metrics,
         analyze_production,
-        card_specificity_scope,
     )
 except ModuleNotFoundError:  # Direct `python scripts/...` execution.
     from architecture_observability import (
@@ -36,19 +33,16 @@ except ModuleNotFoundError:  # Direct `python scripts/...` execution.
         runtime_text_accesses,
         runtime_text_growth,
     )
-    from architecture_support import (
-        decode_card_name_hash_index,
-        printed_name_digest,
+    from architecture_identity_flow import (
+        analyze_identity_flows,
     )
     from update_architecture_audit import (
-        CARD_BASELINE,
         MODULE_CLASSIFICATIONS,
         ROOT,
         _engine_metrics,
         _production_metrics,
         _state_and_dispatch_metrics,
         analyze_production,
-        card_specificity_scope,
     )
 
 from quorune.semantics import VALID_EFFECT_OPERATIONS
@@ -74,7 +68,6 @@ def _baseline_allowance_fingerprint(baseline: Mapping[str, Any]) -> str:
             "card_named_helpers",
             "oversized_modules",
             "oversized_functions_and_methods",
-            "source_fingerprints",
         )
     }
     return hashlib.sha256(stable_json(payload).encode("utf-8")).hexdigest()
@@ -311,22 +304,6 @@ def module_classification_failures(
     return failures
 
 
-def printed_name_literal_identities(
-    analyses: Mapping[str, Any], scope: Iterable[str], digest_index: frozenset[bytes]
-) -> list[tuple[Any, ...]]:
-    matches = []
-    for relative in scope:
-        for item in analyses[relative].string_literals:
-            if (
-                not item.get("card_specificity_exempt", False)
-                and printed_name_digest(str(item["value"])) in digest_index
-            ):
-                matches.append(
-                    _identity(item, "file", "symbol", "value", "in_condition")
-                )
-    return matches
-
-
 def _git_head() -> str:
     return subprocess.run(
         ["git", "rev-parse", "HEAD"],
@@ -336,10 +313,6 @@ def _git_head() -> str:
         encoding="utf-8",
         stdout=subprocess.PIPE,
     ).stdout.strip()
-
-
-def _file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def build_baseline(baseline_commit: str) -> dict[str, Any]:
@@ -367,9 +340,12 @@ def build_baseline(baseline_commit: str) -> dict[str, Any]:
         if item["kind"] == "method"
     ]
     result = {
-        "schema_version": 3,
+        "schema_version": 4,
         "baseline_commit": baseline_commit,
-        "purpose": "Phase 1 non-growth allowances; removals remain allowed.",
+        "purpose": (
+            "Exact residual architecture allowances; fixed card-identity dispatch "
+            "has no allowance and must remain zero."
+        ),
         "engine": {
             "physical_lines": engine["physical_lines"],
             "logical_lines": engine["logical_lines"],
@@ -446,9 +422,6 @@ def build_baseline(baseline_commit: str) -> dict[str, Any]:
             ),
             key=lambda item: (item["file"], item["symbol"]),
         ),
-        "source_fingerprints": {
-            "printed_name_allowances_sha256": _file_sha256(CARD_BASELINE),
-        },
     }
     return result
 
@@ -703,34 +676,25 @@ def _dependency_and_mutation_failures(
     return failures
 
 
-def _specificity_failures(
+def _card_identity_failures(
     policy: Mapping[str, Any],
     baseline: Mapping[str, Any],
     source: Mapping[str, Any],
     analyses: Mapping[str, Any],
     state: Mapping[str, Any],
+    module_classifications: Mapping[str, Any],
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     failures: list[dict[str, Any]] = []
-    digest_index = decode_card_name_hash_index(
-        _load_json(ROOT / str(policy["card_name_hash_index"]))
+    identity_flow = analyze_identity_flows(
+        analyses, policy, module_classifications
     )
-    current_card_literals = printed_name_literal_identities(
-        analyses, card_specificity_scope(analyses, source), digest_index
-    )
-    allowances = _load_json(ROOT / str(policy["printed_name_allowances"]))
-    allowed_card_literals = [
-        _identity(item, "file", "symbol", "value", "in_condition")
-        for item in allowances["exact_printed_name_literals"]
-    ]
-    new_card_literals = _counter_extras(
-        current_card_literals, allowed_card_literals
-    )
-    if new_card_literals:
+    prohibited = identity_flow["prohibited_locations"]
+    if prohibited:
         failures.append(
             _failure(
-                "printed_card_names",
-                "A new exact printed-card-name literal appeared in core code.",
-                new_card_literals,
+                "card_identity_flow",
+                "Fixed card identity selects generic implementation, legality, mutation, or outcome.",
+                prohibited,
             )
         )
     current_oracle_ids = [
@@ -818,22 +782,10 @@ def _specificity_failures(
                 new_card_helpers,
             )
         )
-    fingerprints = baseline["source_fingerprints"]
-    current_fingerprint = _file_sha256(CARD_BASELINE)
-    if current_fingerprint != fingerprints["printed_name_allowances_sha256"]:
-        failures.append(
-            _failure(
-                "specificity_source_fingerprints",
-                "Printed-name allowances changed without refreshing the reviewed guard baseline.",
-                {
-                    "baseline": fingerprints["printed_name_allowances_sha256"],
-                    "current": current_fingerprint,
-                },
-            )
-        )
     return failures, {
-        "current_card_literals": len(current_card_literals),
-        "allowed_card_literals": len(allowed_card_literals),
+        "prohibited_identity_dispatch_count": int(
+            identity_flow["counts"]["prohibited_identity_dispatch_count"]
+        ),
         "current_oracle_ids": len(current_oracle_ids),
         "allowed_oracle_ids": len(allowed_oracle_ids),
     }
@@ -936,7 +888,7 @@ def _guard_metrics(
     baseline: Mapping[str, Any],
     engine: Mapping[str, Any],
     state: Mapping[str, Any],
-    specificity: Mapping[str, int],
+    identity: Mapping[str, int],
     write_inventory: Mapping[str, Any],
     runtime_text: Mapping[str, Any],
 ) -> dict[str, Any]:
@@ -1003,17 +955,16 @@ def _guard_metrics(
             "delta": runtime_text["prohibited_runtime_interpretation_count"]
             - len(baseline["runtime_oracle_text_access_identities"]),
         },
-        "printed_name_literals": {
-            "baseline": specificity["allowed_card_literals"],
-            "current": specificity["current_card_literals"],
-            "delta": specificity["current_card_literals"]
-            - specificity["allowed_card_literals"],
+        "prohibited_identity_dispatch_count": {
+            "baseline": 0,
+            "current": identity["prohibited_identity_dispatch_count"],
+            "delta": identity["prohibited_identity_dispatch_count"],
         },
         "oracle_id_literals": {
-            "baseline": specificity["allowed_oracle_ids"],
-            "current": specificity["current_oracle_ids"],
-            "delta": specificity["current_oracle_ids"]
-            - specificity["allowed_oracle_ids"],
+            "baseline": identity["allowed_oracle_ids"],
+            "current": identity["current_oracle_ids"],
+            "delta": identity["current_oracle_ids"]
+            - identity["allowed_oracle_ids"],
         },
         "registered_effect_operations": {
             "baseline": len(baseline["registered_effect_operations"]),
@@ -1046,10 +997,15 @@ def evaluate_architecture() -> dict[str, Any]:
     )
     failures.extend(exception_binding_failures(policy, baseline))
     failures.extend(module_classification_failures(analyses, policy))
-    specificity_failures, specificity = _specificity_failures(
-        policy, baseline, source, analyses, state
+    identity_failures, identity = _card_identity_failures(
+        policy,
+        baseline,
+        source,
+        analyses,
+        state,
+        module_classifications,
     )
-    failures.extend(specificity_failures)
+    failures.extend(identity_failures)
     failures.extend(_size_debt_failures(policy, baseline, production, engine))
     return {
         "schema_version": 1,
@@ -1058,7 +1014,7 @@ def evaluate_architecture() -> dict[str, Any]:
         "evaluated_commit": _git_head(),
         "status": "pass" if not failures else "fail",
         "metrics": _guard_metrics(
-            baseline, engine, state, specificity, write_inventory, runtime_text
+            baseline, engine, state, identity, write_inventory, runtime_text
         ),
         "failures": failures,
     }

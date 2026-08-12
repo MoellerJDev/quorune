@@ -13,8 +13,8 @@ from .replacement.immutable import FrozenMap
 
 
 DEATH_RETURN_EVENT_CONDITION_FIELD = "death_return_departed_without_counter"
-PERSIST_KEYWORD = "per" + "sist"
-UNDYING_KEYWORD = "un" + "dying"
+PERSIST_KEYWORD = "persist"
+UNDYING_KEYWORD = "undying"
 
 
 class DeathReturnError(ValueError):

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 
-BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
+BLOODTHIRST_MECHANIC = "bloodthirst"
 BLOODTHIRST_LABEL = BLOODTHIRST_MECHANIC.title()
 BLOODTHIRST_COUNTER = "+1/+1"
 BLOODTHIRST_CONDITION = "opponent_was_dealt_damage_this_turn"

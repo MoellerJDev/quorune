@@ -11,7 +11,7 @@ from .semantic_runtime.zone_replacements import PreparedZoneChange
 from .stack_counter import oracle_has_intrinsic_counter_prohibition
 
 
-_COPY_TERM = "co" + "py"
+_COPY_TERM = "copy"
 
 
 class GenericStackResolutionQuery(Protocol):

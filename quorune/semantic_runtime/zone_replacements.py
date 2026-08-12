@@ -51,7 +51,7 @@ from .zone_replacement_model import (
 
 
 _DESTINATION_HANDLER_ID = "replacement.zone.destination.v1"
-_COUNTERS_FIELD = "counter" + "s"
+_COUNTERS_FIELD = "counters"
 
 
 class ZoneReplacementHost(Protocol):

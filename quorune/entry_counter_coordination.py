@@ -16,7 +16,7 @@ from .replacement_effects import (
 )
 
 
-_PILOT_ROLE = "pi" + "lot"
+_PILOT_ROLE = "pilot"
 
 
 class EntryCounterCoordinationHost(Protocol):

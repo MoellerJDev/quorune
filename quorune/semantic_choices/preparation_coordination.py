@@ -24,7 +24,7 @@ from .model import (
 )
 
 
-_PILOT_ROLE = "pi" + "lot"
+_PILOT_ROLE = "pilot"
 
 
 class SemanticPreparationCoordinationHost(Protocol):

@@ -36,8 +36,6 @@ def is_generated_report(
 ) -> bool:
     if relative in TRACKED_PLATFORM_OUTPUTS or relative.startswith("coverage/"):
         return True
-    if relative == "platform/card-name-hash-index.json":
-        return True
     if Path(relative).suffix.lower() != ".md":
         return False
     if markdown_prefix is None:

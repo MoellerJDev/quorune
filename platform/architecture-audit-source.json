@@ -1,7 +1,7 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "program": {
-    "scope_note": "The architecture audit measures production ownership, dependency direction, mutation authority, runtime Oracle-text access, oversized symbols, semantic dispatch, specificity debt, and generated assurance. Current branch, main, certification, and worktree-slot facts are transport state and are reported live rather than copied into this hand-maintained source."
+    "scope_note": "The architecture audit measures production ownership, dependency direction, mutation authority, runtime Oracle-text access, bounded card-identity flow, oversized symbols, semantic dispatch, and generated assurance. Current branch, main, certification, and worktree-slot facts are transport state and are reported live rather than copied into this hand-maintained source."
   },
   "historical_observations": [
     {
@@ -79,25 +79,7 @@
       "quorune/commander.py",
       "quorune/state_based_actions.py"
     ],
-    "core_card_specificity_files": [
-      "quorune/engine.py",
-      "quorune/oracle_ir.py",
-      "quorune/semantics.py",
-      "quorune/abilities.py",
-      "quorune/replacement_decisions.py",
-      "quorune/replacement_effects.py",
-      "quorune/continuous_effects.py",
-      "quorune/continuous_effect_model.py",
-      "quorune/characteristic_evaluation.py",
-      "quorune/state_based_actions.py",
-      "quorune/token_creation.py"
-    ],
-    "card_specificity_exempt_prefixes": [
-      "quorune/card_overrides/"
-    ],
-    "card_specificity_metadata_exempt_files": [
-      "quorune/rules_scheduler.py"
-    ]
+    "identity_flow_scope": "all production Python modules"
   },
   "thresholds": {
     "module_logical_lines_review": 1500,
@@ -508,10 +490,9 @@
     },
     {
       "id": "card_overrides",
-      "status": "card_program_v2_boundary_with_no_explicit_typed_overrides",
+      "status": "isolated_reviewed_loop_shortcuts_and_game_record_v3_compatibility",
       "owners": [
-        "quorune/card_programs",
-        "quorune/semantic_packs"
+        "quorune/card_overrides"
       ],
       "missing_dedicated_owner": false
     }

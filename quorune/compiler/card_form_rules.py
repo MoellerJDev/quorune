@@ -16,7 +16,7 @@ from .ir_model import SourceSpan
 INTRINSIC_ENTRY_COUNTER_CAPABILITY = "counter.producer.intrinsic_entry"
 SAGA_LORE_COUNTER_CAPABILITY = "counter.producer.saga_lore"
 SAGA_FINAL_CHAPTER_CAPABILITY = "state_based.saga_final_chapter"
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 
 
 @dataclass(frozen=True, slots=True)

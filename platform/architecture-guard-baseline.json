@@ -1722,9 +1722,9 @@
     "physical_lines": 8556
   },
   "exception_binding": {
-    "adr": "docs/adr/0063-compiler-pinned-activated-ability-catalog.md",
-    "allowance_fingerprint": "eea9918297578dae7f79b20e7822e72315ca1314e1944c63e92edee985b1dffc",
-    "exception_id": "ARCH-EXC-0031"
+    "adr": "docs/adr/0064-context-aware-card-identity-guard.md",
+    "allowance_fingerprint": "f4ab5e55bced676e072f6d7cd9a6c67e532765dacff3ddd7656a6ab3c5961c25",
+    "exception_id": "ARCH-EXC-0032"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1735,9 +1735,8 @@
   ],
   "oracle_id_literals": [
     {
-      "card_specificity_exempt": false,
       "column": 13,
-      "file": "quorune/shortcuts.py",
+      "file": "quorune/card_overrides/shortcuts.py",
       "in_condition": false,
       "line": 8,
       "oracle_id": "ace86e56-efde-4eb7-8815-71456a4c3abe",
@@ -1745,9 +1744,8 @@
       "value": "ace86e56-efde-4eb7-8815-71456a4c3abe"
     },
     {
-      "card_specificity_exempt": false,
       "column": 15,
-      "file": "quorune/shortcuts.py",
+      "file": "quorune/card_overrides/shortcuts.py",
       "in_condition": false,
       "line": 9,
       "oracle_id": "09ff28b1-b6c9-48e6-b12e-2f0e644f709f",
@@ -1755,9 +1753,8 @@
       "value": "09ff28b1-b6c9-48e6-b12e-2f0e644f709f"
     },
     {
-      "card_specificity_exempt": false,
       "column": 11,
-      "file": "quorune/shortcuts.py",
+      "file": "quorune/card_overrides/shortcuts.py",
       "in_condition": false,
       "line": 10,
       "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
@@ -1765,9 +1762,8 @@
       "value": "76b003e0-15af-4f22-bdf2-1ade5430964a"
     },
     {
-      "card_specificity_exempt": false,
       "column": 9,
-      "file": "quorune/shortcuts.py",
+      "file": "quorune/card_overrides/shortcuts.py",
       "in_condition": false,
       "line": 11,
       "oracle_id": "d3438037-3efd-4ce0-88ec-6d48ab521992",
@@ -1775,9 +1771,8 @@
       "value": "d3438037-3efd-4ce0-88ec-6d48ab521992"
     },
     {
-      "card_specificity_exempt": false,
       "column": 14,
-      "file": "quorune/shortcuts.py",
+      "file": "quorune/card_overrides/shortcuts.py",
       "in_condition": false,
       "line": 12,
       "oracle_id": "69428825-3c40-486d-b051-14e97a598ce6",
@@ -1959,7 +1954,7 @@
       "logical_lines": 1728
     }
   ],
-  "purpose": "Phase 1 non-growth allowances; removals remain allowed.",
+  "purpose": "Exact residual architecture allowances; fixed card-identity dispatch has no allowance and must remain zero.",
   "registered_effect_operations": [
     "add_counter_selected",
     "add_subtype",
@@ -2298,8 +2293,5 @@
       "symbol": "counter_maximums_from_oracle"
     }
   ],
-  "schema_version": 3,
-  "source_fingerprints": {
-    "printed_name_allowances_sha256": "4fb6e563d473217d3d25b08e7a882ab30989e2b12a9272753e92da8e2a15bc63"
-  }
+  "schema_version": 4
 }

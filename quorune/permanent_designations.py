@@ -161,7 +161,7 @@ def become_monstrous(
         "logical_object_id": card.logical_object_id,
         "value": request.value,
         "controller": card.controller,
-        "rea" + "son": request.reason,
+        "reason": request.reason,
     }
     host._log(
         request.actor,
@@ -224,7 +224,7 @@ def become_renowned(
         "object": card.ref,
         "logical_object_id": card.logical_object_id,
         "controller": card.controller,
-        "rea" + "son": request.reason,
+        "reason": request.reason,
     }
     host._log(
         request.actor,

@@ -59,7 +59,7 @@ def builtin_activation_resolution(
                         "op": "attach",
                         "equipment": "$source",
                         "creature": "$target.0",
-                        "rea" + "son": "Equip",
+                        "reason": "Equip",
                     }
                 ),
             ),

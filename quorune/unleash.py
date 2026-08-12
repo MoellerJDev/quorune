@@ -3,7 +3,7 @@ from __future__ import annotations
 """Closed descriptors for ordinary printed Unleash."""
 
 
-UNLEASH_MECHANIC = "un" + "leash"
+UNLEASH_MECHANIC = "unleash"
 UNLEASH_COUNTER = "+1/+1"
 UNLEASH_ENTRY_HANDLER_ID = "replacement.zone.self-entry-counter.v1"
 UNLEASH_BLOCK_HANDLER_ID = "combat.block.self-counter-prohibition.v1"

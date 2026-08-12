@@ -128,8 +128,8 @@ class TokenCreationHost(Protocol):
     ) -> Any: ...
 
 
-_ATTACKING_FIELD = "attack" + "ing"
-_REASON_FIELD = "rea" + "son"
+_ATTACKING_FIELD = "attacking"
+_REASON_FIELD = "reason"
 
 
 @dataclass(frozen=True, slots=True)

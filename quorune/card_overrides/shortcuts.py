@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Mapping, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .engine import CommanderEngine
+    from ..engine import CommanderEngine
 
 SOULTRADER = "ace86e56-efde-4eb7-8815-71456a4c3abe"
 GRAVECRAWLER = "09ff28b1-b6c9-48e6-b12e-2f0e644f709f"

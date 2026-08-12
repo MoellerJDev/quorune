@@ -30,12 +30,12 @@ FIXED_ZONE_CHANGE_COST_CONTRACTS = {
     ),
     EXILE_ONE_FROM_GRAVEYARD_COST: (
         "graveyard",
-        "ex" + "ile",
+        "exile",
         "exile_cards",
     ),
     EXILE_ONE_FROM_BATTLEFIELD_COST: (
         "battlefield",
-        "ex" + "ile",
+        "exile",
         "exile_cards",
     ),
     RETURN_ONE_TO_OWNER_HAND_COST: (

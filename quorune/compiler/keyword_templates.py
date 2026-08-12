@@ -4,9 +4,9 @@ import re
 from typing import Sequence
 
 
-_BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
-_RENOWN_MECHANIC = "re" + "nown"
-_MODULAR_MECHANIC = "mod" + "ular"
+_BLOODTHIRST_MECHANIC = "bloodthirst"
+_RENOWN_MECHANIC = "renown"
+_MODULAR_MECHANIC = "modular"
 
 _KEYWORD_WITH_VALUE = re.compile(
     rf"^(?P<name>{re.escape(_BLOODTHIRST_MECHANIC)}|{re.escape(_RENOWN_MECHANIC)}|{re.escape(_MODULAR_MECHANIC)}|ward|equip|enchant|bushido|cycling|crew|dredge|kicker|toxic|"

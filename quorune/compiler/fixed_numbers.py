@@ -13,7 +13,7 @@ _NUMBER_WORDS = {
     "three": 3,
     "four": 4,
     "five": 5,
-    "s" + "ix": 6,
+    "six": 6,
     "seven": 7,
     "eight": 8,
     "nine": 9,

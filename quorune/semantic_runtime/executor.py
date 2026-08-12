@@ -426,7 +426,7 @@ COUNTER_PLACEMENT_INTENT_TYPES = (
     PlaceCountersOnTargetsIntent,
     PlacePlayerCountersIntent,
 )
-_COUNTER_RESULT_KEY = "counter" + "s"
+_COUNTER_RESULT_KEY = "counters"
 
 
 def _execute_counter_placement_intent(

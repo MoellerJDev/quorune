@@ -11,7 +11,7 @@ from .node_capability_shapes import (
 
 
 _FIXED_CONTROLLER_SEQUENCE_MECHANIC = "fixed-controller-effect-sequence"
-_LIFE_OPERATION = "li" + "fe"
+_LIFE_OPERATION = "life"
 
 
 def _positive_int(value: Any) -> bool:

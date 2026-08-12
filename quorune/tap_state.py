@@ -9,9 +9,9 @@ from .counter_removal import (
     plan_counter_removals,
 )
 
-VIGILANCE_KEYWORD = "vigi" + "lan" + "ce"
-STUN_COUNTER_NAME = "st" + "un"
-REASON_FIELD = "rea" + "son"
+VIGILANCE_KEYWORD = "vigilance"
+STUN_COUNTER_NAME = "stun"
+REASON_FIELD = "reason"
 NEXT_UNTAP_PROHIBITION_ANNOTATION = "does_not_untap_next"
 
 

@@ -109,7 +109,7 @@ from ..semantic_runtime.zone_replacements import (
 )
 
 
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 from ..util import unique_preserving_order
 
 
@@ -348,7 +348,7 @@ class SemanticChoiceIntentHostMixin:
                 intent.explorer_logical_object_id
             ),
             "result": intent.result,
-            "rea" + "son": intent.reason,
+            "reason": intent.reason,
         }
         if intent.revealed_card_ref is not None:
             details["revealed_card"] = intent.revealed_card_ref

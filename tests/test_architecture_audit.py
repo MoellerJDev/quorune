@@ -5,7 +5,6 @@ import unittest
 from unittest import mock
 
 from scripts.update_architecture_audit import (
-    CARD_BASELINE,
     GENERATED_VERIFIED_SENTINEL,
     ROOT,
     _check_outputs,
@@ -146,7 +145,6 @@ class ArchitectureAuditTests(unittest.TestCase):
         rules = _json("rules/manifest.json")
         semantics = self.report["semantic_packs_and_overrides"]
         documents = self.report["documentation"]
-        baseline = json.loads(CARD_BASELINE.read_text(encoding="utf-8"))
 
         self.assertEqual(compiler["compiler_version"], oracle["compiler_version"])
         self.assertEqual(
@@ -186,22 +184,32 @@ class ArchitectureAuditTests(unittest.TestCase):
         self.assertTrue(documents["policy"]["internal_links_enforced"])
         self.assertTrue(documents["policy"]["stale_claims_enforced"])
         self.assertTrue(documents["policy"]["adr_system_enforced"])
-        self.assertTrue(
-            self.report["architecture"]["printed_name_literals"][
-                "no_unreviewed_growth"
-            ]
+        identity_flow = self.report["architecture"]["card_identity_flow"]
+        self.assertEqual(3, self.report["schema_version"])
+        self.assertEqual(
+            0, identity_flow["counts"]["prohibited_identity_dispatch_count"]
         )
         self.assertEqual(
-            self.report["architecture"]["printed_name_literals"][
-                "baseline_entry_count"
-            ],
-            len(baseline["exact_printed_name_literals"]),
+            {
+                "identity_as_data",
+                "implementation_map_lookup",
+                "static_identity_comparison",
+                "static_match_dispatch",
+                "static_membership",
+            },
+            set(identity_flow["vocabulary"]["sink_kinds"]),
         )
-        self.assertLessEqual(
-            self.report["architecture"]["printed_name_literals"]["entry_count"],
-            len(baseline["exact_printed_name_literals"]),
+        self.assertIn(
+            "prohibited_identity_dispatch",
+            identity_flow["vocabulary"]["classification_vocabulary"],
         )
-        self.assertIsNotNone(self.report["architecture"]["debt_trend"])
+        self.assertFalse(any(identity_flow["external_dependencies"].values()))
+        debt_trend = self.report["architecture"]["debt_trend"]
+        self.assertIsNotNone(debt_trend)
+        self.assertIn(
+            "prohibited_identity_dispatch_count", debt_trend["dimensions"]
+        )
+        self.assertNotIn("printed_name_literals", debt_trend["dimensions"])
 
 
 if __name__ == "__main__":

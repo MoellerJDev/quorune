@@ -16,7 +16,7 @@ _REASON_FIELD = "reason"
 def _load_report(root: Path) -> dict[str, Any]:
     path = root / _REPORT
     value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict) or value.get("schema_version") != 2:
+    if not isinstance(value, dict) or value.get("schema_version") != 3:
         raise ValueError(f"{path} is not a current architecture audit")
     return value
 

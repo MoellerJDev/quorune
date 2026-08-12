@@ -89,57 +89,57 @@ EVIDENCE_FIELDS = {
 MINIMUM_TRUSTED_REGISTRY_EVIDENCE = frozenset(
     {"positive", "negative", "replay"}
 )
-_LIFELINK_MECHANIC = "li" + "felink"
-_TOXIC_MECHANIC = "tox" + "ic"
-_VIGILANCE_MECHANIC = "vigi" + "lan" + "ce"
-_HASTE_MECHANIC = "ha" + "ste"
+_LIFELINK_MECHANIC = "lifelink"
+_TOXIC_MECHANIC = "toxic"
+_VIGILANCE_MECHANIC = "vigilance"
+_HASTE_MECHANIC = "haste"
 _HEXPROOF_MECHANIC = "hexproof"
-_SHROUD_MECHANIC = "shr" + "oud"
-_FLYING_MECHANIC = "fl" + "ying"
-_REACH_MECHANIC = "re" + "ach"
-_FLASH_MECHANIC = "fl" + "ash"
-_CONVOKE_MECHANIC = "con" + "voke"
-_TRAMPLE_MECHANIC = "tram" + "ple"
-_INDESTRUCTIBLE_MECHANIC = "inde" + "structible"
-_DEATHTOUCH_MECHANIC = "dea" + "thtouch"
-_DEFENDER_MECHANIC = "def" + "ender"
-_MENACE_MECHANIC = "men" + "ace"
-_FEAR_MECHANIC = "fe" + "ar"
-_HORSEMANSHIP_MECHANIC = "hor" + "semanship"
-_INTIMIDATE_MECHANIC = "intim" + "idate"
-_SHADOW_MECHANIC = "sha" + "dow"
-_SKULK_MECHANIC = "sku" + "lk"
-_FLANKING_MECHANIC = "flan" + "king"
-_BUSHIDO_MECHANIC = "bu" + "shido"
-_EXALTED_MECHANIC = "ex" + "alted"
-_BATTLE_CRY_MECHANIC = "battle" + " cry"
-_MELEE_MECHANIC = "me" + "lee"
-_MENTOR_MECHANIC = "men" + "tor"
-_DETHRONE_MECHANIC = "deth" + "rone"
-_TRAINING_MECHANIC = "train" + "ing"
-_RENOWN_MECHANIC = "re" + "nown"
-_MODULAR_MECHANIC = "mod" + "ular"
-_EXHAUST_MECHANIC = "ex" + "haust"
-_CYCLING_MECHANIC = "cyc" + "ling"
-_CREW_MECHANIC = "cr" + "ew"
-_EVOLVE_MECHANIC = "evo" + "lve"
-_PROWESS_MECHANIC = "prow" + "ess"
-_PERSIST_MECHANIC = "per" + "sist"
-_UNDYING_MECHANIC = "un" + "dying"
-_UNLEASH_MECHANIC = "un" + "leash"
-_RIOT_MECHANIC = "ri" + "ot"
-_BLOODTHIRST_MECHANIC = "blo" + "od" + "thi" + "rst"
-_ECHO_MECHANIC = "ec" + "ho"
+_SHROUD_MECHANIC = "shroud"
+_FLYING_MECHANIC = "flying"
+_REACH_MECHANIC = "reach"
+_FLASH_MECHANIC = "flash"
+_CONVOKE_MECHANIC = "convoke"
+_TRAMPLE_MECHANIC = "trample"
+_INDESTRUCTIBLE_MECHANIC = "indestructible"
+_DEATHTOUCH_MECHANIC = "deathtouch"
+_DEFENDER_MECHANIC = "defender"
+_MENACE_MECHANIC = "menace"
+_FEAR_MECHANIC = "fear"
+_HORSEMANSHIP_MECHANIC = "horsemanship"
+_INTIMIDATE_MECHANIC = "intimidate"
+_SHADOW_MECHANIC = "shadow"
+_SKULK_MECHANIC = "skulk"
+_FLANKING_MECHANIC = "flanking"
+_BUSHIDO_MECHANIC = "bushido"
+_EXALTED_MECHANIC = "exalted"
+_BATTLE_CRY_MECHANIC = "battle cry"
+_MELEE_MECHANIC = "melee"
+_MENTOR_MECHANIC = "mentor"
+_DETHRONE_MECHANIC = "dethrone"
+_TRAINING_MECHANIC = "training"
+_RENOWN_MECHANIC = "renown"
+_MODULAR_MECHANIC = "modular"
+_EXHAUST_MECHANIC = "exhaust"
+_CYCLING_MECHANIC = "cycling"
+_CREW_MECHANIC = "crew"
+_EVOLVE_MECHANIC = "evolve"
+_PROWESS_MECHANIC = "prowess"
+_PERSIST_MECHANIC = "persist"
+_UNDYING_MECHANIC = "undying"
+_UNLEASH_MECHANIC = "unleash"
+_RIOT_MECHANIC = "riot"
+_BLOODTHIRST_MECHANIC = "bloodthirst"
+_ECHO_MECHANIC = "echo"
 _BASIC_LANDWALK_MECHANICS = (
-    "pl" + "ainswalk",
-    "is" + "landwalk",
-    "sw" + "ampwalk",
-    "mount" + "ainwalk",
-    "for" + "estwalk",
+    "plainswalk",
+    "islandwalk",
+    "swampwalk",
+    "mountainwalk",
+    "forestwalk",
 )
-_FIRST_STRIKE_MECHANIC = "first" + " strike"
-_DOUBLE_STRIKE_MECHANIC = "double" + " strike"
-_EXILE_MECHANIC = "ex" + "ile"
+_FIRST_STRIKE_MECHANIC = "first strike"
+_DOUBLE_STRIKE_MECHANIC = "double strike"
+_EXILE_MECHANIC = "exile"
 _FIXED_TARGET_SEQUENCE_MECHANIC = "fixed-target-effect-sequence"
 _FIXED_SOURCE_SEQUENCE_MECHANIC = "fixed-source-effect-sequence"
 _FIXED_CONTROLLER_SEQUENCE_MECHANIC = "fixed-controller-effect-sequence"
@@ -1116,9 +1116,9 @@ def capability_covered_mechanics(
     if "trigger.keyword.echo.fixed_mana" in supplied:
         covered.add(_ECHO_MECHANIC)
     if "keyword_action.explore.single" in supplied:
-        covered.add("ex" + "plore")
+        covered.add("explore")
     if "counter.producer.proliferate" in supplied:
-        covered.add("pro" + "liferate")
+        covered.add("proliferate")
     if "keyword_action.adapt.fixed" in supplied:
         covered.update({"adapt", "cr-122-counters"})
     if "keyword_action.monstrosity.fixed" in supplied:

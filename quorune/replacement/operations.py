@@ -7,7 +7,7 @@ from .immutable import FrozenMap, freeze_value, thaw_value
 
 
 OPERATION_SCHEMA_VERSION = 1
-_DREDGE_LABEL = "Dred" + "ge "
+_DREDGE_LABEL = "Dredge "
 
 
 class ReplacementOperationError(ValueError):

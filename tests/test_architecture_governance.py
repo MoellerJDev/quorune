@@ -11,7 +11,6 @@ from scripts.update_architecture_audit import (
     _parent_map,
     _state_write_records,
     analyze_production,
-    card_specificity_scope,
 )
 from scripts.validate_architecture import (
     _load_json,
@@ -61,29 +60,20 @@ class ArchitectureGovernanceTests(unittest.TestCase):
             failure["evidence"]["unclassified"],
         )
 
-    def test_specificity_scope_covers_all_generic_python_modules(self):
-        scope = card_specificity_scope(self.analyses, self.source)
-        metadata_exempt = set(
-            self.source["scope"].get(
-                "card_specificity_metadata_exempt_files", []
-            )
-        )
+    def test_identity_flow_scope_covers_all_production_python_modules(self):
         self.assertEqual(
-            {"quorune/rules_scheduler.py"}, metadata_exempt
+            "all production Python modules",
+            self.source["scope"]["identity_flow_scope"],
         )
-        exempt_prefixes = tuple(
-            self.source["scope"].get(
-                "card_specificity_exempt_prefixes", []
-            )
-        )
-        expected = {
-            relative
-            for relative in self.analyses
-            if relative not in metadata_exempt
-            and not relative.startswith(exempt_prefixes)
+        classified = {
+            row["file"]
+            for row in json.loads(
+                (ROOT / "platform" / "module-classifications.json").read_text(
+                    encoding="utf-8"
+                )
+            )["modules"]
         }
-        self.assertEqual(expected, set(scope))
-        self.assertGreater(len(scope), 7)
+        self.assertEqual(set(self.analyses), classified)
 
     def test_state_write_identity_does_not_depend_on_source_line(self):
         relative = "quorune/example.py"

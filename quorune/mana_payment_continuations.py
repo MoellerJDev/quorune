@@ -13,7 +13,7 @@ from .replacement.ordering import (
 from .replacement.model import ReplacementEffectError
 
 
-_PILOT_ROLE = "pi" + "lot"
+_PILOT_ROLE = "pilot"
 
 
 class ManaPaymentContinuationHost(Protocol):

@@ -17,7 +17,7 @@ from .util import mana_cost_to_vector
 
 
 CYCLING_HANDLER_ID = "ability.activated.cycling.v1"
-CYCLING_MECHANIC_ID = "cyc" + "ling"
+CYCLING_MECHANIC_ID = "cycling"
 _ABILITY_ID = re.compile(r"^ab[1-9][0-9]*$")
 _ORDINARY_COST = r"(?:\{(?:0|[1-9]\d*|[WUBRGC])\})+"
 _ORDINARY_CYCLING = re.compile(

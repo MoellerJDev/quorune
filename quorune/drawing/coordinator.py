@@ -42,10 +42,10 @@ from .transaction import (
 )
 
 
-_DREDGE_REASON_PREFIX = "Dred" + "ge "
-_LIBRARY_ZONE = "lib" + "rary"
-_PILOT_ROLE = "pi" + "lot"
-_REASON_FIELD = "rea" + "son"
+_DREDGE_REASON_PREFIX = "Dredge "
+_LIBRARY_ZONE = "library"
+_PILOT_ROLE = "pilot"
+_REASON_FIELD = "reason"
 
 
 class DrawCoordinatorHost(

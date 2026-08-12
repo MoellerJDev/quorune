@@ -28,7 +28,7 @@ from ..trigger_processing import schedule_delayed_trigger
 
 
 OPERATIONS = effect_family_contract("objects-stack-and-tokens.v1").operations
-_REASON_FIELD = "rea" + "son"
+_REASON_FIELD = "reason"
 
 
 def _commit_temporary_characteristic_effect(

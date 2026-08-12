@@ -15,9 +15,9 @@ if TYPE_CHECKING:
     from ..rules.capabilities import CapabilityRegistry
 
 
-_ORACLE_COMMAND = "ora" + "cle"
-_REASON_FIELD = "rea" + "son"
-_STATUS_FIELD = "sta" + "tus"
+_ORACLE_COMMAND = "oracle"
+_REASON_FIELD = "reason"
+_STATUS_FIELD = "status"
 
 
 def oracle_corpus_coverage(

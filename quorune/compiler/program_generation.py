@@ -73,10 +73,10 @@ from .program_composition import (
 )
 
 
-_EVOLVE_MECHANIC = "evo" + "lve"
-_PROWESS_MECHANIC = "prow" + "ess"
+_EVOLVE_MECHANIC = "evolve"
+_PROWESS_MECHANIC = "prowess"
 _EXILE_MECHANIC = "exile"
-_TOXIC_MECHANIC = "tox" + "ic"
+_TOXIC_MECHANIC = "toxic"
 
 
 def runtime_handler_footprint(
@@ -469,7 +469,7 @@ def _is_closed_single_explore_program(program: SemanticProgram) -> bool:
             mechanic_ids=(
                 value
                 for value in program.coverage
-                if value in {"ex" + "plore", "cr-115-targets"}
+                if value in {"explore", "cr-115-targets"}
             ),
         )
     )

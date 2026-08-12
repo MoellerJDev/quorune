@@ -13,7 +13,7 @@ from .ability_fragments import (
 )
 
 
-RENOWN_MECHANIC_ID = "re" + "nown"
+RENOWN_MECHANIC_ID = "renown"
 RENOWN_EVENT_CONDITION_FIELD = "renown_combat_damage_player_unrenowned"
 
 

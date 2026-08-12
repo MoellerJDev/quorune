@@ -547,12 +547,12 @@ def single_explore_node_capabilities(
     """Return capabilities only for one permanent exploring once."""
 
     mechanics = {str(value).casefold() for value in mechanic_ids}
-    if "ex" + "plore" not in mechanics or len(effects) != 1:
+    if "explore" not in mechanics or len(effects) != 1:
         return ()
     effect = effects[0]
     if (
         set(effect) != {"op", "player", "card"}
-        or effect.get("op") != "ex" + "plore"
+        or effect.get("op") != "explore"
     ):
         return ()
     if (

@@ -17,7 +17,7 @@ from .saga_progression import SagaProgressionHost, saga_step_batch
 from .trigger_processing import collect_trigger_items, enqueue_trigger_batch
 
 
-_PILOT_ROLE = "pi" + "lot"
+_PILOT_ROLE = "pilot"
 _SAGA_LORE_ACTION = "saga_lore"
 
 

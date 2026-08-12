@@ -18,7 +18,7 @@ from .util import normalize_mana_bundle
 
 
 CREW_HANDLER_ID = "ability.activated.crew.v1"
-CREW_MECHANIC_ID = "cr" + "ew"
+CREW_MECHANIC_ID = "crew"
 CREW_CAPABILITY_ID = "activation.crew.fixed_power"
 _ABILITY_ID = re.compile(r"^ab[1-9][0-9]*$")
 _ORDINARY_CREW = re.compile(

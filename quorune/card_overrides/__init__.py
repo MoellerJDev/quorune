@@ -1,4 +1,4 @@
-"""Explicitly reviewed compatibility for historical card-specific records."""
+"""Explicitly classified card overrides and historical compatibility adapters."""
 
 from .game_record_v3 import (
     normalize_game_record_v3_effect,
