@@ -10032,7 +10032,7 @@
       "covered_high_risk_pairs": 26,
       "covered_piece_pairs": 453,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "d7a92425d6b3e1b8a2a8a8241fbcf3f48cfb68a60135262e579dffeddbfb489c",
+      "source_fingerprint": "461f0947fe9276f478663d2d3dd4f75b3777799bb489c899cd6bb6cfa49648a7",
       "uncovered_high_risk_pairs": 85
     },
     "migration_queue": [],
@@ -23712,7 +23712,7 @@
     "compiler_module": "quorune/oracle_ir.py",
     "compiler_module_logical_lines": 1386,
     "compiler_module_physical_lines": 1438,
-    "compiler_version": "oracle-ir-v77",
+    "compiler_version": "oracle-ir-v78",
     "current_ir": "OracleCardIR lowered to canonical CardProgram V2 with a derived SemanticProgram compatibility index",
     "full_oracle": {
       "current_snapshot_complete": false,
@@ -24173,7 +24173,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 329,
         "exact_nodes": 535,
-        "fingerprint": "b79d0a76147293f5f00e9e46d4ff0bfc99c6c60ed6a2534cb00d96b6ebbdff19",
+        "fingerprint": "bd2eae048211533c1516d93d8c542d31bd384b3d42faf39cb1ba3f7835739b95",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "dd4d9586ad713a5a8faa8bf705ed92a0ec9cfd8bc218315e28dc8d55fbaa415b",
         "present": true,
@@ -24185,7 +24185,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 342,
         "exact_nodes": 555,
-        "fingerprint": "6ab99fb67d1d1a5227a441aa0db01df31cbc73937bda97abf1639a34b5d16668",
+        "fingerprint": "33131eb25392fe4a40d4ab1a7032ca69f08d5dc024f41a22561bea07879976e6",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "d9cb9f014328fcef11de5e5faa8935a758cfad2cfbf0800e01fe4a890443f114",
         "present": true,
@@ -24204,7 +24204,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "96f2cb88e171cde97559e87a95725eeb2743a6a0c67ae1341bac023090ca2a2a",
+      "fingerprint": "5a885ec9734fb0d01d156d8f61cfdc404b83f2fd2e6bd39a582920b5425cdb2a",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
