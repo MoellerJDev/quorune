@@ -1104,6 +1104,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/counter_maximum_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/counter_placement_group_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -1800,6 +1815,30 @@
       "card_specificity_policy": "generic_no_growth",
       "visibility_sensitivity": "authoritative_internal",
       "replay_participation": "none"
+    },
+    {
+      "file": "quorune/counter_maximums.py",
+      "layer": "domain",
+      "owning_subsystem": "state_based_actions",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/counter_names.py",
+      "layer": "domain",
+      "owning_subsystem": "counter_state",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
     },
     {
       "file": "quorune/counter_placement.py",
@@ -5870,5 +5909,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "db8cfd455ab1532b61ca9815813e0620510ccac7982613c7df280087853d9899"
+  "fingerprint": "eb19ed664bb8b621f9903bcbf8a49149414dfb87b2b76bc3944f095d7ed1658f"
 }

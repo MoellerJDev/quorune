@@ -18,6 +18,7 @@ from .aura import (
     simple_aura_attachment_is_legal,
 )
 from .ability_fragment_host import AbilityFragmentHostMixin
+from .ability_fragments import counter_maximum_values
 from .attachments import (
     detach_object,
 )
@@ -306,7 +307,6 @@ from .semantic_runtime.values import resolve_semantic_value
 from .state_based_actions import (
     ObjectSnapshot,
     PermanentSnapshot,
-    counter_maximums_from_oracle,
     evaluate_state_based_actions,
     player_loss_seats,
 )
@@ -7829,10 +7829,8 @@ class CommanderEngine(
                             else False
                         ),
                         counters=dict(card.counters),
-                        counter_maximums=(
-                            counter_maximums_from_oracle(
-                                str(data.get("oracle_text") or "")
-                            )
+                        counter_maximums=counter_maximum_values(
+                            data.get("ability_fragments", ())
                         ),
                     )
                 )

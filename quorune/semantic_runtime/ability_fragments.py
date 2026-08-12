@@ -8,6 +8,7 @@ from ..ability_fragments import (
     AbilityFragmentError,
     CombatKeywordTriggerKind,
     CombatKeywordTriggerSpec,
+    CounterMaximumSpec,
     DamageKeywordTriggerKind,
     DamageKeywordTriggerSpec,
     ProtectionSpec,
@@ -45,6 +46,7 @@ TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID = (
 )
 WARD_FRAGMENT_HANDLER_ID = "ability.trigger.ward.v1"
 TOXIC_FRAGMENT_HANDLER_ID = "ability.static.toxic.v1"
+COUNTER_MAXIMUM_FRAGMENT_HANDLER_ID = "ability.static.counter-maximum.v1"
 
 
 def _fragment(
@@ -614,6 +616,34 @@ class ToxicAbilityFragmentHandler:
         return (self.validate(descriptor),)
 
 
+@dataclass(frozen=True, slots=True)
+class CounterMaximumAbilityFragmentHandler:
+    handler_id: str = COUNTER_MAXIMUM_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.counter_maximum"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("704.3", "704.5r")
+    capability_dependencies: tuple[str, ...] = (
+        "state_based.counter_maximum.fixed_self",
+    )
+
+    def validate(self, descriptor: Mapping[str, Any]) -> CounterMaximumSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=CounterMaximumSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
 class AbilityFragmentRegistry(
     RuntimeComponentRegistry[object, StaticAbilityFragment]
 ):
@@ -626,6 +656,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
         (
             BattleCryAbilityFragmentHandler(),
             BushidoAbilityFragmentHandler(),
+            CounterMaximumAbilityFragmentHandler(),
             DethroneAbilityFragmentHandler(),
             EnchantAbilityFragmentHandler(),
             ExaltedAbilityFragmentHandler(),
@@ -664,6 +695,7 @@ __all__ = [
     "ENCHANT_FRAGMENT_HANDLER_ID",
     "BUSHIDO_FRAGMENT_HANDLER_ID",
     "BATTLE_CRY_FRAGMENT_HANDLER_ID",
+    "COUNTER_MAXIMUM_FRAGMENT_HANDLER_ID",
     "EXALTED_FRAGMENT_HANDLER_ID",
     "FLANKING_FRAGMENT_HANDLER_ID",
     "LINKED_GRAVEYARD_ENCHANT_HANDLER_ID",
@@ -680,6 +712,7 @@ __all__ = [
     "EnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
+    "CounterMaximumAbilityFragmentHandler",
     "ExaltedAbilityFragmentHandler",
     "FlankingAbilityFragmentHandler",
     "LinkedGraveyardEnchantFragmentHandler",

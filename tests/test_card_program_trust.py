@@ -191,6 +191,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.enchant.linked_graveyard_creature",
                 "ability.static.enchant",
                 "ability.static.flash",
+                "ability.static.counter_maximum",
                 "ability.static.protection",
                 "ability.static.toxic",
                 "ability.static.trigger_multiplier",

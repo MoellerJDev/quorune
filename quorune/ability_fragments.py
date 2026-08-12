@@ -11,6 +11,11 @@ from .enchant_spec import (
     LinkedGraveyardCreatureEnchantSpec,
     SimpleEnchantSpec,
 )
+from .counter_maximums import (
+    CounterMaximumError,
+    CounterMaximumSpec,
+    effective_counter_maximums,
+)
 from .trigger_participation import TriggerMultiplierSpec, WardSpec
 from .replacement.immutable import thaw_value
 from .util import stable_json
@@ -590,6 +595,7 @@ StaticAbilityFragment: TypeAlias = (
     | DamageKeywordTriggerSpec
     | SpellCastKeywordTriggerSpec
     | ToxicSpec
+    | CounterMaximumSpec
     | TriggerMultiplierSpec
     | WardSpec
 )
@@ -616,6 +622,8 @@ def ability_fragment_to_dict(
         kind = "spell_cast_keyword_trigger"
     elif isinstance(fragment, ToxicSpec):
         kind = TOXIC_ABILITY_FRAGMENT_KIND
+    elif isinstance(fragment, CounterMaximumSpec):
+        kind = "counter_maximum"
     elif isinstance(fragment, TriggerMultiplierSpec):
         kind = "trigger_multiplier"
     elif isinstance(fragment, WardSpec):
@@ -659,6 +667,11 @@ def ability_fragment_from_dict(
         return SpellCastKeywordTriggerSpec.from_dict(value["value"])
     if value["kind"] == TOXIC_ABILITY_FRAGMENT_KIND:
         return ToxicSpec.from_dict(value["value"])
+    if value["kind"] == "counter_maximum":
+        try:
+            return CounterMaximumSpec.from_dict(value["value"])
+        except CounterMaximumError as exc:
+            raise AbilityFragmentError(str(exc)) from exc
     if value["kind"] == "trigger_multiplier":
         return TriggerMultiplierSpec.from_dict(value["value"])
     if value["kind"] == "ward":
@@ -685,6 +698,7 @@ def canonical_ability_fragments(
                 DamageKeywordTriggerSpec,
                 SpellCastKeywordTriggerSpec,
                 ToxicSpec,
+                CounterMaximumSpec,
                 TriggerMultiplierSpec,
                 WardSpec,
             ),
@@ -830,10 +844,31 @@ def toxic_specs(
     )
 
 
+def counter_maximum_specs(
+    fragments: Iterable[StaticAbilityFragment],
+) -> tuple[CounterMaximumSpec, ...]:
+    return tuple(
+        fragment
+        for fragment in fragments
+        if isinstance(fragment, CounterMaximumSpec)
+    )
+
+
+def counter_maximum_values(
+    values: Iterable[StaticAbilityFragment | Mapping[str, Any]],
+) -> dict[str, int]:
+    """Return strict current maxima from one effective fragment collection."""
+
+    return effective_counter_maximums(
+        counter_maximum_specs(canonical_ability_fragments(values))
+    )
+
+
 __all__ = [
     "AbilityFragmentError",
     "CombatKeywordTriggerKind",
     "CombatKeywordTriggerSpec",
+    "CounterMaximumSpec",
     "CURRENT_ABILITY_FRAGMENT_COVERAGE",
     "DamageKeywordTriggerKind",
     "DamageKeywordTriggerSpec",
@@ -852,6 +887,8 @@ __all__ = [
     "ability_fragment_to_dict",
     "canonical_ability_fragments",
     "combat_keyword_trigger_specs",
+    "counter_maximum_specs",
+    "counter_maximum_values",
     "damage_keyword_trigger_specs",
     "enchant_specs",
     "granted_activated_specs",

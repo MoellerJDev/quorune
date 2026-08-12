@@ -42,7 +42,7 @@ export async function viewRevision(page: Page): Promise<number> {
   );
 }
 
-async function currentDecisionId(page: Page): Promise<string | null> {
+export async function currentDecisionId(page: Page): Promise<string | null> {
   // A terminal projection correctly has no decision panel. `getAttribute`
   // auto-waits for a matching element and would turn metrics collection into
   // a suite-length timeout, so query the current zero-or-one element set
@@ -55,26 +55,39 @@ async function currentDecisionId(page: Page): Promise<string | null> {
   return values[0] || null;
 }
 
-async function actionIsReady(page: Page): Promise<boolean> {
-  const action = page.getByTestId("action-pass");
+function authorizedPassAction(page: Page, decisionId: string) {
+  return page
+    .locator(
+      `[data-testid="decision-panel"][data-decision-id="${decisionId}"]`,
+    )
+    .getByTestId("action-pass");
+}
+
+async function actionIsReady(page: Page, decisionId: string): Promise<boolean> {
+  const action = authorizedPassAction(page, decisionId);
   if (!(await action.isVisible().catch(() => false))) return false;
   return action.isEnabled({ timeout: 250 }).catch(() => false);
 }
 
 export async function submitAuthorizedPass(
   page: Page,
+  expectedDecisionId?: string,
 ): Promise<"submitted" | "raced" | "unavailable"> {
   const decisionId = await currentDecisionId(page);
+  if (expectedDecisionId && decisionId !== expectedDecisionId) {
+    return "raced";
+  }
   if (
     !decisionId ||
-    !(await actionIsReady(page))
+    !(await actionIsReady(page, decisionId))
   ) {
     return "unavailable";
   }
 
   const revision = await viewRevision(page);
+  const action = authorizedPassAction(page, decisionId);
   try {
-    await page.getByTestId("action-pass").click({ timeout: 2_000 });
+    await action.click({ timeout: 2_000 });
     const dialog = page.getByTestId("choice-dialog");
     const transitionDeadline = Date.now() + 2_000;
     while (Date.now() < transitionDeadline) {
@@ -84,7 +97,7 @@ export async function submitAuthorizedPass(
       }
       if (
         (await viewRevision(page)) > revision ||
-        !(await actionIsReady(page))
+        !(await actionIsReady(page, decisionId))
       ) {
         return "submitted";
       }
@@ -92,7 +105,7 @@ export async function submitAuthorizedPass(
     }
     throw new Error("Pass click produced neither a choice nor state progress");
   } catch (error) {
-    if (await actionIsReady(page)) throw error;
+    if (await actionIsReady(page, decisionId)) throw error;
     if ((await viewRevision(page)) > revision) {
       return "submitted";
     }
@@ -224,7 +237,15 @@ export async function driveUntil(
     let submitted = options.advance ? await options.advance() : false;
     if (!submitted) {
       for (const page of pages) {
-        const result = await submitAuthorizedPass(page);
+        // Pin the exact capability that was observed before rechecking the
+        // destination. A phase transition can publish the sought strategic
+        // decision between `advance` and this fallback; submitting an
+        // unqualified pass would then consume that new decision instead of the
+        // stale response window that made the fallback necessary.
+        const decisionId = await currentDecisionId(page);
+        if (!decisionId) continue;
+        if (await goal()) return;
+        const result = await submitAuthorizedPass(page, decisionId);
         if (result !== "unavailable") {
           submitted = true;
           break;

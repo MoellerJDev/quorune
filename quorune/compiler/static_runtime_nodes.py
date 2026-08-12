@@ -76,6 +76,7 @@ def static_runtime_node(
     line: str,
     material_line: str,
     span: SourceSpan,
+    source_name: str,
     card_types: AbstractSet[str],
     permanent_card_types: AbstractSet[str],
     source_is_class: bool,
@@ -87,6 +88,7 @@ def static_runtime_node(
 
     template = static_runtime_template(
         material_line,
+        source_name=source_name,
         source_damageable=bool(card_types.intersection(_DAMAGEABLE_CARD_TYPES)),
         source_permanent=bool(card_types.intersection(permanent_card_types)),
         source_is_class=source_is_class,

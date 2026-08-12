@@ -1,58 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-import re
 from typing import Iterable, Mapping
 
 from .commander import commander_damage_losers
+from .counter_maximums import validated_counter_maximums
 from .model import GameState
 from .saga_lifecycle import SagaFinalChapterSnapshot
-
-
-_NUMBER_WORDS = {
-    "zero": 0,
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "ten": 10,
-}
-_COUNTER_MAXIMUM_PATTERN = re.compile(
-    r"\bcan['’]t have more than "
-    r"(?P<count>\d+|zero|one|two|three|four|five|six|seven|eight|"
-    r"nine|ten) "
-    r"(?P<kind>[a-z0-9+/\- ]+?) counters? on (?:it|him|her)\b",
-    re.IGNORECASE,
-)
-
-
-def counter_maximums_from_oracle(
-    oracle_text: str,
-) -> dict[str, int]:
-    """Extract the reviewed CR 704.5r maximum-counter sentence family."""
-
-    maximums: dict[str, int] = {}
-    for match in _COUNTER_MAXIMUM_PATTERN.finditer(str(oracle_text or "")):
-        raw_count = match.group("count").casefold()
-        count = (
-            int(raw_count)
-            if raw_count.isdigit()
-            else _NUMBER_WORDS[raw_count]
-        )
-        kind = " ".join(
-            match.group("kind").casefold().split()
-        )
-        if kind:
-            maximums[kind] = min(
-                maximums.get(kind, count),
-                count,
-            )
-    return maximums
 
 
 def player_loss_seats(
@@ -260,14 +214,9 @@ def evaluate_permanent_state_based_actions(
             counter_pairs[permanent.object_id] = min(
                 positive, negative
             )
-        for raw_kind, raw_maximum in permanent.counter_maximums.items():
-            kind = " ".join(str(raw_kind).casefold().split())
-            maximum = int(raw_maximum)
-            if not kind or maximum < 0:
-                raise ValueError(
-                    "Counter maximums require a kind and "
-                    "nonnegative value"
-                )
+        for kind, maximum in validated_counter_maximums(
+            permanent.counter_maximums
+        ):
             current = max(
                 0, int(permanent.counters.get(kind, 0))
             )

@@ -177,8 +177,15 @@ class RulesSchedulerTests(unittest.TestCase):
         self.assertNotIn(
             "reusable_piece_ids", next_batch["selected_work"]
         )
-        self.assertGreater(
-            next_batch["selected_work"]["reusable_piece_count"], 0
+        selected_work = next(
+            candidate
+            for candidate in self.queue["work_selection"]["candidates"]
+            if candidate["candidate_id"]
+            == self.queue["work_selection"]["selected_candidate_id"]
+        )
+        self.assertEqual(
+            len(selected_work["reusable_piece_ids"]),
+            next_batch["selected_work"]["reusable_piece_count"],
         )
         self.assertIn("queue", CORPUS_OPERATIONS)
         self.assertEqual(

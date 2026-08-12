@@ -1,7 +1,7 @@
 ---
 title: "Counter placement and removal transactions"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_state.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_names.py, quorune/counter_state.py, quorune/counter_maximums.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_maximum_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/ability_fragments.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
 verified: "2026-08-11"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -120,6 +120,16 @@ tree result and pinned logical identity.
 Planeswalker loyalty and Battle defense damage results share it with stun and
 state-based counter removals; replacement-aware placement and exact removal do
 not compete for the final counter-map write boundary.
+
+CR 704.5r maximums enter that owner through a current typed ability view.
+`counter_maximums.py` defines the immutable fixed self-maximum descriptor, and
+Oracle IR lowers the bounded numeric sentence using full, shortened, or
+this-object source references before a game starts. State-based snapshots read
+only the effective ability fragments after copy and layer-6 changes, choose the
+strictest current maximum for each counter kind, and combine that requirement
+with other simultaneous counter removals. Dynamic values, another-object or
+player maximums, compound instructions, and unrepresented ability grants remain
+material residuals; runtime code never recovers them from display text.
 
 The engine retains compatibility facades and supplies the host protocol. New
 positive fixed counter operations must enter the transaction instead of adding
@@ -579,6 +589,9 @@ isolated in `test_renown_rules.py`.
 Modular compiler, entry replacement, departure LKI, target revalidation,
 controller scoping, multiplayer privacy, and exact-replay evidence is isolated
 in `test_modular_rules.py`.
+Fixed self maximum model, compiler, current-characteristic, simultaneous
+removal, four-player replay, rollback, and mutation evidence is isolated in
+`test_maximum_counter_state_action.py`.
 Target-threaded counter and
 characteristic sequences, strict residuals, replacement suspension, rollback,
 four-player privacy, exact replay, keyword-counter projection, and focused

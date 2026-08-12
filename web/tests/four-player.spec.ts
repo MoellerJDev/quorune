@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import {
   annotateJourneyMetrics,
+  currentDecisionId,
   driveUntil,
   submitAuthorizedPass,
   viewRevision,
@@ -212,32 +213,62 @@ async function declineSeatOpportunity(
   const expectedPhase = expectedStep === "Main Phase 1"
     ? "precombat_main"
     : "postcombat_main";
-  const atExpectedWindow = async () =>
-    (await shell.getAttribute("data-active-player")) === expectedActiveSeat
-    && (await shell.getAttribute("data-phase")) === expectedPhase;
+  const windowSnapshot = async () => shell.evaluate((element) => {
+    const root = element as HTMLElement;
+    return {
+      activePlayer: root.dataset.activePlayer || "",
+      phase: root.dataset.phase || "",
+      step: root.querySelector<HTMLElement>('[data-testid="exact-step-label"]')
+        ?.textContent || "",
+    };
+  });
+  const atExpectedWindow = async () => {
+    const snapshot = await windowSnapshot();
+    return snapshot.activePlayer === expectedActiveSeat
+      && snapshot.phase === expectedPhase
+      && snapshot.step === expectedStep;
+  };
+  let exposedDecisionId = "";
   await driveUntil(
     pages,
-    async () =>
-      (await atExpectedWindow()) &&
-      (await step.textContent()) === expectedStep &&
-      (await actionIsReady(opportunity)) &&
-      (await actionIsReady(seatPage.getByTestId("action-pass"))),
+    async () => {
+      const decisionIdBefore = await currentDecisionId(seatPage);
+      if (!decisionIdBefore || !(await atExpectedWindow())) return false;
+      if (!(await actionIsReady(opportunity))) return false;
+      if (!(await actionIsReady(seatPage.getByTestId("action-pass")))) return false;
+      const decisionIdAfter = await currentDecisionId(seatPage);
+      if (decisionIdAfter !== decisionIdBefore) return false;
+      exposedDecisionId = decisionIdBefore;
+      return true;
+    },
     testInfo,
     {
       label: `expose ${expectedStep} seat opportunity`,
       noProgressMs: durabilityTimeout,
       advance: async () => {
-        const opportunityReady = await actionIsReady(opportunity);
-        if (!opportunityReady && !(await atExpectedWindow())) return false;
-        // Decision controls and phase labels are projected independently. Hold
-        // this seat as soon as either proves the intended window, but continue
-        // advancing an authorized pass owned by another seat.
+        const snapshot = await windowSnapshot();
+        if (
+          snapshot.activePlayer !== expectedActiveSeat
+          || snapshot.phase !== expectedPhase
+        ) {
+          // The same action can be offered in an earlier main phase. Let the
+          // shared driver pass that exact authorized decision instead of
+          // holding it merely because the action text matches our later goal.
+          return false;
+        }
+        // Once the authoritative phase is correct, hold this seat while its
+        // exact step label and decision controls settle, and advance only a
+        // separately authorized response owned by another seat.
         return advanceOtherSeats(pages, seatPage);
       },
     },
   );
+  expect(exposedDecisionId).not.toBe("");
+  expect(await currentDecisionId(seatPage)).toBe(exposedDecisionId);
+  expect(await atExpectedWindow()).toBe(true);
+  expect(await step.textContent()).toBe(expectedStep);
   expect(await actionIsReady(opportunity)).toBe(true);
-  const result = await submitAuthorizedPass(seatPage);
+  const result = await submitAuthorizedPass(seatPage, exposedDecisionId);
   if (result !== "submitted") {
     throw new Error(`The intended seat pass ${result} after opportunity exposure`);
   }
@@ -1190,7 +1221,11 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
     await submitImmediateAction(host, "keep");
     await submitImmediateAction(opponent, "keep");
 
-    async function playLand(page: Page, name?: "Swamp" | "Forest") {
+    async function playLand(
+      page: Page,
+      name?: "Swamp" | "Forest",
+      expectCommanderAlternative = false,
+    ) {
       const cards = page.getByTestId("own-hand").locator(".hand-card");
       // This natural-winner witness runs after the other durability-heavy
       // journeys in its serial shard. A single accepted command can take more
@@ -1221,6 +1256,18 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
       );
       const actionTestId = await playAction.getAttribute("data-testid");
       expect(actionTestId).toMatch(/^action-play-land:[A-Z][0-9]+$/);
+      if (expectCommanderAlternative) {
+        // The server may advertise the land and commander in one strategic
+        // decision. Choosing the land does not require a redundant task with
+        // the same meaningful-action signature, so certify the alternative
+        // against this exact capability before submitting the land action.
+        const decisionIdBefore = await currentDecisionId(page);
+        expect(decisionIdBefore).not.toBe("");
+        const commanderOffer = page.getByTestId("decision-panel")
+          .getByRole("button", { name: /Cast Yargle and Multani/ });
+        expect(await actionIsReady(commanderOffer)).toBe(true);
+        expect(await currentDecisionId(page)).toBe(decisionIdBefore);
+      }
       const landRef = actionTestId!.slice("action-play-land:".length);
       const land = page
         .getByTestId("own-hand")
@@ -1262,6 +1309,16 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
         testInfo,
         durableTransitionTimeout,
       );
+      await declineSeatOpportunity(
+        [host, opponent], page, commanderOffer, "B", "Main Phase 2",
+        testInfo,
+        durableTransitionTimeout,
+      );
+    }
+
+    async function declineCommanderPostcombat(page: Page) {
+      const commanderOffer = page.getByTestId("decision-panel")
+        .getByRole("button", { name: /Cast Yargle and Multani/ });
       await declineSeatOpportunity(
         [host, opponent], page, commanderOffer, "B", "Main Phase 2",
         testInfo,
@@ -1361,8 +1418,12 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
     // already the desired transition: the following exact Seat B land offer,
     // protected by Full Control, proves the turn advanced without skipping B.
     await submitAuthorizedPass(host);
-    await playLand(opponent);
-    await declineCommanderDevelopment(opponent);
+    // B already has enough mana before this land play. Its exact precombat
+    // decision offers both the land and commander, so prove the alternative
+    // there instead of waiting for a duplicate post-land decision. Main Phase
+    // 2 remains a distinct strategic window and is declined explicitly.
+    await playLand(opponent, undefined, true);
+    await declineCommanderPostcombat(opponent);
     await ensureAutoPass(opponent);
 
     await attackWithCommander();
