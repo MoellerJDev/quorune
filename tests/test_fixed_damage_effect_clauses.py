@@ -448,10 +448,15 @@ class FixedDamageEffectCompilerTests(unittest.TestCase):
             0,
             duplicate["exact_fixed_damage_programs_promoted"],
         )
+        self.assertEqual(1, duplicate["exact_effect_programs_promoted"])
         duplicate_programs = duplicate_registry.programs()
         self.assertEqual(1, len(duplicate_programs))
-        self.assertEqual("provisional", duplicate_programs[0].trust_level)
-        self.assertTrue(duplicate_programs[0].requires_arbiter)
+        self.assertEqual(
+            ("life", "draw"),
+            tuple(effect["op"] for effect in duplicate_programs[0].effects),
+        )
+        self.assertEqual("trusted", duplicate_programs[0].trust_level)
+        self.assertFalse(duplicate_programs[0].requires_arbiter)
 
         unrelated_record = replace(
             self.base,
