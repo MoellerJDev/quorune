@@ -271,7 +271,20 @@ class RulesSchedulerTests(unittest.TestCase):
             selected["runtime_oracle_text_removal"]["expected_count"]
         )
         self.assertGreater(selected_runtime_count, 0)
-        self.assertLess(selected_runtime_count, runtime_total)
+        if (
+            selected["candidate_id"]
+            == "architecture:runtime-oracle-text-subsystem-attribution"
+        ):
+            self.assertEqual(runtime_total, selected_runtime_count)
+            self.assertEqual(
+                "not_applicable", selected["compiler_readiness"]["status"]
+            )
+            self.assertIn(
+                "do not treat the remainder as one implementation batch",
+                selected["reranking_reason"],
+            )
+        else:
+            self.assertLess(selected_runtime_count, runtime_total)
         self.assertGreater(selected["priority_within_class"], 0)
         card_candidates = [
             candidate
