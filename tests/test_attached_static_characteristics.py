@@ -372,6 +372,28 @@ class AttachedContinuousCompilerTests(unittest.TestCase):
             modifier["add_ability_fragments"],
         )
 
+    def test_compiler_lowers_granted_toxic_to_a_typed_fragment(self):
+        result = attached_fixed_characteristics_handler(
+            "Equipped creature has toxic 2."
+        )
+        self.assertIsNotNone(result)
+        modifier = result[1]["modifier"]
+        self.assertEqual(["Toxic 2"], modifier["add_abilities"])
+        self.assertEqual(
+            [
+                {
+                    "kind": "toxic",
+                    "value": {"schema_version": 1, "value": 2},
+                }
+            ],
+            modifier["add_ability_fragments"],
+        )
+        self.assertIsNone(
+            attached_fixed_characteristics_handler(
+                "Equipped creature loses toxic 2."
+            )
+        )
+
     def test_fixed_equip_keyword_has_exact_bounded_capability(self):
         greaves = self.db.lookup("Lightning Greaves")
         ir = compile_oracle_card(

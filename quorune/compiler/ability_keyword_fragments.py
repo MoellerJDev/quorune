@@ -9,6 +9,8 @@ from ..ability_fragments import (
     CombatKeywordTriggerSpec,
     SpellCastKeywordTriggerKind,
     SpellCastKeywordTriggerSpec,
+    TOXIC_ABILITY_FRAGMENT_KIND,
+    ToxicSpec,
     ability_fragment_to_dict,
     parse_protection_line,
 )
@@ -59,6 +61,41 @@ def _lower_fixed_generic_ward(
     )
 
 
+def _lower_toxic_fragment(
+    material_line: str,
+) -> AbilityKeywordFragmentLowering:
+    matches = tuple(
+        match
+        for part in _keyword_parts(material_line)
+        if (
+            match := re.fullmatch(
+                r"Toxic (?P<value>[1-9]\d*)",
+                part,
+                re.IGNORECASE,
+            )
+        )
+        is not None
+    )
+    if len(matches) != 1:
+        return AbilityKeywordFragmentLowering(
+            residual_kind="unsupported_toxic_value",
+            residual_reason="Toxic requires one printed positive integer value",
+            residual_blockers=("positive integer Toxic value",),
+        )
+    return AbilityKeywordFragmentLowering(
+        handlers=(
+            {
+                "handler_id": "ability.static.toxic.v1",
+                "schema_version": 1,
+                "event": "continuous",
+                "fragment": ability_fragment_to_dict(
+                    ToxicSpec(value=int(matches[0].group("value")))
+                ),
+            },
+        )
+    )
+
+
 def lower_ability_keyword_fragments(
     material_line: str,
     mechanics: tuple[str, ...],
@@ -98,6 +135,8 @@ def lower_ability_keyword_fragments(
                 },
             )
         )
+    if mechanics == (TOXIC_ABILITY_FRAGMENT_KIND,):
+        return _lower_toxic_fragment(material_line)
     if mechanics == ("prowess",):
         matching_parts = tuple(
             part

@@ -13,6 +13,7 @@ from quorune.ability_fragments import (
     GrantedTriggeredAbilitySpec,
     ProtectionQualityKind,
     ProtectionSpec,
+    ToxicSpec,
     ability_fragment_from_dict,
     ability_fragment_to_dict,
     canonical_ability_fragments,
@@ -146,6 +147,7 @@ class AbilityFragmentModelTests(unittest.TestCase):
                 kind=DamageKeywordTriggerKind.RENOWN,
                 amount=2,
             ),
+            ToxicSpec(value=2),
         )
         for value in values:
             with self.subTest(value=type(value).__name__):
@@ -207,7 +209,7 @@ class AbilityFragmentModelTests(unittest.TestCase):
             ),
         )
         self.assertEqual(
-            15,
+            16,
             len(default_ability_fragment_registry().inventory()),
         )
         with self.assertRaisesRegex(ValueError, "unknown"):
@@ -259,6 +261,71 @@ class AbilityFragmentModelTests(unittest.TestCase):
         self.assertEqual(
             "unsupported_protection_quality",
             unsupported_ir.faces[0].residuals[-1].kind,
+        )
+
+    def test_compiler_emits_source_spanned_toxic_fragment(self):
+        record = card_record(
+            "fixture:typed-toxic",
+            type_line="Creature — Test",
+            oracle_text="Toxic 2",
+            keywords=("Toxic",),
+        )
+        compiled = compile_oracle_card(
+            record,
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+        )
+        node = compiled.faces[0].nodes[0]
+        self.assertTrue(node.exact)
+        self.assertEqual(
+            "Toxic 2",
+            record.oracle_text[node.span.start : node.span.end],
+        )
+        self.assertEqual(
+            (ToxicSpec(value=2),),
+            fragments_from_descriptors(list(node.handlers)),
+        )
+        self.assertEqual(
+            "ability.static.toxic.v1",
+            node.handlers[0]["handler_id"],
+        )
+
+        malformed = wrapped(ToxicSpec(value=2))
+        malformed["value"]["value"] = True
+        with self.assertRaisesRegex(
+            AbilityFragmentError,
+            "positive integers",
+        ):
+            ability_fragment_from_dict(malformed)
+
+        repeated = card_record(
+            "fixture:repeated-typed-toxic",
+            type_line="Creature — Test",
+            oracle_text="Toxic 1, Toxic 3",
+            keywords=("Toxic",),
+        )
+        repeated_ir = compile_oracle_card(
+            repeated,
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+        )
+        self.assertEqual(
+            ["Toxic 1", "Toxic 3"],
+            [
+                repeated.oracle_text[node.span.start : node.span.end]
+                for node in repeated_ir.faces[0].nodes
+            ],
+        )
+        self.assertEqual(
+            [ToxicSpec(value=1), ToxicSpec(value=3)],
+            [
+                fragments_from_descriptors(list(node.handlers))[0]
+                for node in repeated_ir.faces[0].nodes
+            ],
+        )
+        self.assertEqual(
+            2,
+            len({node.node_id for node in repeated_ir.faces[0].nodes}),
         )
 
 

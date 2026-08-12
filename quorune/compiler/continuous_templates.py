@@ -5,6 +5,7 @@ from typing import Any, Mapping
 
 from ..object_predicate import ObjectQuerySpec
 from ..ability_fragments import (
+    ToxicSpec,
     ability_fragment_to_dict,
     parse_protection_line,
 )
@@ -214,6 +215,25 @@ def _attached_abilities(value: str) -> tuple[str, ...] | None:
     return tuple(ability.title() for ability in abilities)
 
 
+def _toxic_ability_fragments(
+    abilities: tuple[str, ...],
+) -> tuple[Mapping[str, Any], ...]:
+    return tuple(
+        ability_fragment_to_dict(
+            ToxicSpec(value=int(match.group("value")))
+        )
+        for ability in abilities
+        if (
+            match := re.fullmatch(
+                r"Toxic (?P<value>[1-9]\d*)",
+                ability,
+                re.IGNORECASE,
+            )
+        )
+        is not None
+    )
+
+
 def attached_fixed_characteristics_handler(
     oracle_line: str,
 ) -> tuple[str, Mapping[str, Any], str] | None:
@@ -245,6 +265,7 @@ def attached_fixed_characteristics_handler(
             if parsed is None:
                 return None
             add_abilities = parsed
+            add_ability_fragments = _toxic_ability_fragments(parsed)
     elif ability_match is not None:
         parsed = _attached_abilities(ability_match.group("abilities"))
         if parsed is None:
@@ -262,7 +283,13 @@ def attached_fixed_characteristics_handler(
             )
         elif ability_match.group("verb").casefold() == "has":
             add_abilities = parsed
+            add_ability_fragments = _toxic_ability_fragments(parsed)
         else:
+            if _toxic_ability_fragments(parsed):
+                # Removing a typed granted/printed ability requires a closed
+                # fragment-removal descriptor, which this handler does not yet
+                # own. Do not leave the executable fragment behind.
+                return None
             remove_abilities = parsed
     elif type_match is not None:
         type_word = type_match.group("type")

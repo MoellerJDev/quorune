@@ -40,6 +40,7 @@ from quorune.ability_fragments import (
     CombatKeywordTriggerSpec,
     ProtectionQualityKind,
     ProtectionSpec,
+    ToxicSpec,
     ability_fragment_to_dict,
 )
 from quorune.protection import (
@@ -1055,7 +1056,7 @@ class CapabilityImplementationMutationTests(unittest.TestCase):
         keep_all(session)
         engine = session.engine
 
-        def token(name: str, *, keywords=(), oracle_text=""):
+        def token(name: str, *, keywords=(), toxic_values=()):
             ref = engine.create_token(
                 "A" if "Source" in name else "B",
                 name=name,
@@ -1064,7 +1065,10 @@ class CapabilityImplementationMutationTests(unittest.TestCase):
                     "power": "3",
                     "toughness": "5",
                     "keywords": list(keywords),
-                    "oracle_text": oracle_text,
+                    "ability_fragments": [
+                        ability_fragment_to_dict(ToxicSpec(value=value))
+                        for value in toxic_values
+                    ],
                 },
             )[0]
             return engine._resolve_object(
@@ -1076,7 +1080,7 @@ class CapabilityImplementationMutationTests(unittest.TestCase):
         infect = token(
             "Infect Lifelink Toxic Source",
             keywords=("Infect", "Lifelink", "Toxic"),
-            oracle_text="Toxic 2",
+            toxic_values=(2,),
         )
         wither = token("Wither Source", keywords=("Wither",))
         target = token("Mutation Target")

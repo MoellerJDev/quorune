@@ -562,7 +562,7 @@
     {
       "mechanic_id": "toxic",
       "path": "mechanics/contracts/toxic.json",
-      "sha256": "17d33279bb510c210334e997ad8d68b38a3192aeae016ef0d5843e1cff179eeb",
+      "sha256": "b1374b87e762ffef3e700749bc420d43f080e0571ba880021215fd4f783ac167",
       "version": 1
     },
     {
@@ -4511,18 +4511,18 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/toxic.json",
-      "contract_sha256": "17d33279bb510c210334e997ad8d68b38a3192aeae016ef0d5843e1cff179eeb",
+      "contract_sha256": "b1374b87e762ffef3e700749bc420d43f080e0571ba880021215fd4f783ac167",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
         "702"
       ],
-      "implementation_component": "quorune.damage_results.materialize_damage_results",
-      "implementation_version": "damage-results-v1",
+      "implementation_component": "quorune.ability_fragments.ToxicSpec",
+      "implementation_version": "typed-toxic-fragment-v1",
       "kind": "keyword_ability",
       "known_blockers": [
         "dynamic or otherwise unresolved toxic values remain fail-closed",
-        "unrepresented source last-known-information and continuous ability grants remain fail-closed",
+        "unrepresented source last-known-information and non-attached continuous ability grants remain fail-closed",
         "the complete counter-replacement Oracle family is not yet compiled"
       ],
       "mechanic_id": "toxic",
@@ -4531,8 +4531,11 @@
         "702.164"
       ],
       "test_ids": [
+        "test_compiler_emits_source_spanned_toxic_fragment",
+        "test_compiler_lowers_granted_toxic_to_a_typed_fragment",
         "test_toxic_is_additional_only_for_creature_combat_damage_to_player",
         "test_multiple_toxic_abilities_are_cumulative",
+        "test_toxic_uses_pinned_fragment_not_runtime_oracle_text",
         "test_unresolved_toxic_value_fails_before_mutation",
         "test_source_pinned_keyword_witnesses_follow_damage_results"
       ],
