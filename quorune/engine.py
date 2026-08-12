@@ -839,10 +839,13 @@ class CommanderEngine(
     ) -> dict[str, Any]:
         """Delegate CR 613 evaluation to its rules-owned subsystem."""
 
-        return evaluate_card_characteristics(
+        return separate_custom_display_text(
             card,
-            base,
-            runtime_effects=runtime_effects,
+            evaluate_card_characteristics(
+                card,
+                base,
+                runtime_effects=runtime_effects,
+            ),
         )
 
     def _effective_card_data(
@@ -871,7 +874,6 @@ class CommanderEngine(
             base,
             runtime_effects=runtime_effects,
         )
-        base = separate_custom_display_text(card, base)
         conditional_haste = re.search(
             r"has haste as long as an opponent has "
             r"(?P<life>\d+) or less life",
