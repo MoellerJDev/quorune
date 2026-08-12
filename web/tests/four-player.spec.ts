@@ -1213,7 +1213,11 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
     await submitImmediateAction(host, "keep");
     await submitImmediateAction(opponent, "keep");
 
-    async function playLand(page: Page, name?: "Swamp" | "Forest") {
+    async function playLand(
+      page: Page,
+      name?: "Swamp" | "Forest",
+      expectCommanderAlternative = false,
+    ) {
       const cards = page.getByTestId("own-hand").locator(".hand-card");
       // This natural-winner witness runs after the other durability-heavy
       // journeys in its serial shard. A single accepted command can take more
@@ -1244,6 +1248,18 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
       );
       const actionTestId = await playAction.getAttribute("data-testid");
       expect(actionTestId).toMatch(/^action-play-land:[A-Z][0-9]+$/);
+      if (expectCommanderAlternative) {
+        // The server may advertise the land and commander in one strategic
+        // decision. Choosing the land does not require a redundant task with
+        // the same meaningful-action signature, so certify the alternative
+        // against this exact capability before submitting the land action.
+        const decisionIdBefore = await currentDecisionId(page);
+        expect(decisionIdBefore).not.toBe("");
+        const commanderOffer = page.getByTestId("decision-panel")
+          .getByRole("button", { name: /Cast Yargle and Multani/ });
+        expect(await actionIsReady(commanderOffer)).toBe(true);
+        expect(await currentDecisionId(page)).toBe(decisionIdBefore);
+      }
       const landRef = actionTestId!.slice("action-play-land:".length);
       const land = page
         .getByTestId("own-hand")
@@ -1285,6 +1301,16 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
         testInfo,
         durableTransitionTimeout,
       );
+      await declineSeatOpportunity(
+        [host, opponent], page, commanderOffer, "B", "Main Phase 2",
+        testInfo,
+        durableTransitionTimeout,
+      );
+    }
+
+    async function declineCommanderPostcombat(page: Page) {
+      const commanderOffer = page.getByTestId("decision-panel")
+        .getByRole("button", { name: /Cast Yargle and Multani/ });
       await declineSeatOpportunity(
         [host, opponent], page, commanderOffer, "B", "Main Phase 2",
         testInfo,
@@ -1384,8 +1410,12 @@ test("@browser-soak @natural-winner @persistence a trusted browser duel reaches 
     // already the desired transition: the following exact Seat B land offer,
     // protected by Full Control, proves the turn advanced without skipping B.
     await submitAuthorizedPass(host);
-    await playLand(opponent);
-    await declineCommanderDevelopment(opponent);
+    // B already has enough mana before this land play. Its exact precombat
+    // decision offers both the land and commander, so prove the alternative
+    // there instead of waiting for a duplicate post-land decision. Main Phase
+    // 2 remains a distinct strategic window and is declined explicitly.
+    await playLand(opponent, undefined, true);
+    await declineCommanderPostcombat(opponent);
     await ensureAutoPass(opponent);
 
     await attackWithCommander();
