@@ -246,11 +246,19 @@ async function declineSeatOpportunity(
       label: `expose ${expectedStep} seat opportunity`,
       noProgressMs: durabilityTimeout,
       advance: async () => {
-        const opportunityReady = await actionIsReady(opportunity);
-        if (!opportunityReady && !(await atExpectedWindow())) return false;
-        // Decision controls and phase labels are projected independently. Hold
-        // this seat as soon as either proves the intended window, but continue
-        // advancing an authorized pass owned by another seat.
+        const snapshot = await windowSnapshot();
+        if (
+          snapshot.activePlayer !== expectedActiveSeat
+          || snapshot.phase !== expectedPhase
+        ) {
+          // The same action can be offered in an earlier main phase. Let the
+          // shared driver pass that exact authorized decision instead of
+          // holding it merely because the action text matches our later goal.
+          return false;
+        }
+        // Once the authoritative phase is correct, hold this seat while its
+        // exact step label and decision controls settle, and advance only a
+        // separately authorized response owned by another seat.
         return advanceOtherSeats(pages, seatPage);
       },
     },
