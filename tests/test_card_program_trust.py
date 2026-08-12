@@ -192,6 +192,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.static.enchant",
                 "ability.static.flash",
                 "ability.static.protection",
+                "ability.static.toxic",
                 "ability.static.trigger_multiplier",
                 "ability.trigger.bushido",
                 "ability.trigger.battle_cry",

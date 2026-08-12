@@ -71,6 +71,7 @@ from .program_composition import (
 _EVOLVE_MECHANIC = "evo" + "lve"
 _PROWESS_MECHANIC = "prow" + "ess"
 _EXILE_MECHANIC = "exile"
+_TOXIC_MECHANIC = "tox" + "ic"
 
 
 def runtime_handler_footprint(
@@ -240,7 +241,8 @@ def _generated_ability_id(
         if (
             len(parts) >= 2
             and parts[-1].isdigit()
-            and parts[-2] in {RIOT_MECHANIC, BLOODTHIRST_MECHANIC}
+            and parts[-2]
+            in {RIOT_MECHANIC, BLOODTHIRST_MECHANIC, _TOXIC_MECHANIC}
         ):
             return (
                 f"static:{face_id}:n{line}:{parts[-2]}:"

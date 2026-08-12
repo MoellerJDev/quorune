@@ -14,6 +14,7 @@ from ..ability_fragments import (
     SpellCastKeywordTriggerKind,
     SpellCastKeywordTriggerSpec,
     StaticAbilityFragment,
+    ToxicSpec,
     ability_fragment_from_dict,
 )
 from ..enchant_spec import SimpleEnchantSpec
@@ -43,6 +44,7 @@ TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID = (
     "ability.static.trigger-multiplier.v1"
 )
 WARD_FRAGMENT_HANDLER_ID = "ability.trigger.ward.v1"
+TOXIC_FRAGMENT_HANDLER_ID = "ability.static.toxic.v1"
 
 
 def _fragment(
@@ -586,6 +588,32 @@ class WardAbilityFragmentHandler:
         return (self.validate(descriptor),)
 
 
+@dataclass(frozen=True, slots=True)
+class ToxicAbilityFragmentHandler:
+    handler_id: str = TOXIC_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.toxic"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("120.3g", "702.164", "702.164a")
+    capability_dependencies: tuple[str, ...] = ("damage.result.toxic",)
+
+    def validate(self, descriptor: Mapping[str, Any]) -> ToxicSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=ToxicSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
 class AbilityFragmentRegistry(
     RuntimeComponentRegistry[object, StaticAbilityFragment]
 ):
@@ -610,6 +638,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             RenownAbilityFragmentHandler(),
             TrainingAbilityFragmentHandler(),
             TriggerMultiplierAbilityFragmentHandler(),
+            ToxicAbilityFragmentHandler(),
             WardAbilityFragmentHandler(),
         )
     )
@@ -647,6 +676,7 @@ __all__ = [
     "PROWESS_FRAGMENT_HANDLER_ID",
     "TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID",
     "WARD_FRAGMENT_HANDLER_ID",
+    "TOXIC_FRAGMENT_HANDLER_ID",
     "EnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
@@ -660,6 +690,7 @@ __all__ = [
     "RenownAbilityFragmentHandler",
     "ProwessAbilityFragmentHandler",
     "TriggerMultiplierAbilityFragmentHandler",
+    "ToxicAbilityFragmentHandler",
     "WardAbilityFragmentHandler",
     "ProtectionAbilityFragmentHandler",
     "AbilityFragmentRegistry",

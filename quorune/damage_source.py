@@ -1,6 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any, Iterable, Mapping
+
+from .ability_fragments import (
+    AbilityFragmentError,
+    TOXIC_ABILITY_FRAGMENT_KIND,
+    canonical_ability_fragments,
+    toxic_specs,
+)
 
 
 class DamageError(ValueError):
@@ -15,6 +23,54 @@ REPRESENTED_DAMAGE_SOURCE_ZONES = (
     "graveyard",
     "stack",
 )
+
+
+def represented_toxic_value(
+    data: Mapping[str, Any],
+    *,
+    temporary_keywords: Iterable[Any] = (),
+) -> int | None:
+    """Return the typed CR 702.164 value for a represented damage source."""
+
+    normalized = {
+        " ".join(str(value).casefold().split())
+        for value in data.get("keywords", ())
+        if str(value).strip()
+    }
+    try:
+        printed = toxic_specs(
+            canonical_ability_fragments(data.get("ability_fragments", ()))
+        )
+    except AbilityFragmentError as exc:
+        raise DamageError(str(exc)) from exc
+    values = [spec.value for spec in printed]
+    unresolved_temporary = False
+    for value in temporary_keywords:
+        keyword = " ".join(str(value).casefold().split())
+        if keyword == TOXIC_ABILITY_FRAGMENT_KIND:
+            unresolved_temporary = True
+            continue
+        prefix, separator, amount = keyword.partition(" ")
+        if prefix != TOXIC_ABILITY_FRAGMENT_KIND or not separator:
+            continue
+        if not amount.isdigit() or int(amount) <= 0:
+            unresolved_temporary = True
+            continue
+        values.append(int(amount))
+    has_toxic = (
+        TOXIC_ABILITY_FRAGMENT_KIND in normalized
+        or any(
+            value.startswith(f"{TOXIC_ABILITY_FRAGMENT_KIND} ")
+            for value in normalized
+        )
+        or bool(printed)
+        or bool(values)
+    )
+    if not has_toxic:
+        return 0
+    if unresolved_temporary or not values:
+        return None
+    return sum(values)
 
 
 @dataclass(frozen=True, slots=True)
@@ -165,4 +221,8 @@ class DamageSourceSnapshot:
         )
 
 
-__all__ = ["DamageError", "DamageSourceSnapshot"]
+__all__ = [
+    "DamageError",
+    "DamageSourceSnapshot",
+    "represented_toxic_value",
+]

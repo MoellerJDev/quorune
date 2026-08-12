@@ -56,6 +56,43 @@ _BLOODTHIRST_MECHANIC = BLOODTHIRST_MECHANIC
 _RENOWN_MECHANIC = RENOWN_MECHANIC_ID
 _MODULAR_MECHANIC = MODULAR_MECHANIC_ID
 _ECHO_MECHANIC = ECHO_MECHANIC_ID
+_TOXIC_MECHANIC = "tox" + "ic"
+_GROUPED_SPLIT_MECHANICS = (
+    _BLOODTHIRST_MECHANIC,
+    _TOXIC_MECHANIC,
+    _EVOLVE_MECHANIC,
+)
+_PARAMETERIZED_SPLIT_MECHANICS = frozenset(
+    {
+        _BLOODTHIRST_MECHANIC,
+        _RENOWN_MECHANIC,
+        _MODULAR_MECHANIC,
+        _ECHO_MECHANIC,
+        _TOXIC_MECHANIC,
+    }
+)
+_INSTANCE_PART_MECHANICS = (
+    _BLOODTHIRST_MECHANIC,
+    _EVOLVE_MECHANIC,
+    _PERSIST_MECHANIC,
+    _RIOT_MECHANIC,
+    _UNDYING_MECHANIC,
+    _UNLEASH_MECHANIC,
+    _MENTOR_MECHANIC,
+    _PROWESS_MECHANIC,
+    _RENOWN_MECHANIC,
+    _MODULAR_MECHANIC,
+    _ECHO_MECHANIC,
+    _TOXIC_MECHANIC,
+    _CONVOKE_MECHANIC,
+)
+_SPLIT_MECHANICS = frozenset(
+    {
+        PRINTED_FLASH_MECHANIC,
+        _FABRICATE_MECHANIC,
+        *_INSTANCE_PART_MECHANICS,
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -88,13 +125,10 @@ def keyword_node_plans(
         )
         if mechanic in mechanics
     ) + tuple(
-        _BLOODTHIRST_MECHANIC
+        grouped
+        for grouped in _GROUPED_SPLIT_MECHANICS
         for mechanic in mechanics
-        if mechanic == _BLOODTHIRST_MECHANIC
-    ) + tuple(
-        _EVOLVE_MECHANIC
-        for mechanic in mechanics
-        if mechanic == _EVOLVE_MECHANIC
+        if mechanic == grouped
     ) + tuple(
         mechanic
         for mechanic in mechanics
@@ -132,12 +166,7 @@ def keyword_node_plans(
             if (
                 match.group().strip().rstrip(".").casefold() == mechanic
                 or (
-                    mechanic in {
-                        _BLOODTHIRST_MECHANIC,
-                        _RENOWN_MECHANIC,
-                        _MODULAR_MECHANIC,
-                        _ECHO_MECHANIC,
-                    }
+                    mechanic in _PARAMETERIZED_SPLIT_MECHANICS
                     and re.fullmatch(
                         rf"{re.escape(mechanic)}\s+.+",
                         match.group().strip().rstrip("."),
@@ -146,20 +175,7 @@ def keyword_node_plans(
                 )
             )
         )
-        for mechanic in (
-            _BLOODTHIRST_MECHANIC,
-            _EVOLVE_MECHANIC,
-            _PERSIST_MECHANIC,
-            _RIOT_MECHANIC,
-            _UNDYING_MECHANIC,
-            _UNLEASH_MECHANIC,
-            _MENTOR_MECHANIC,
-            _PROWESS_MECHANIC,
-            _RENOWN_MECHANIC,
-            _MODULAR_MECHANIC,
-            _ECHO_MECHANIC,
-            _CONVOKE_MECHANIC,
-        )
+        for mechanic in _INSTANCE_PART_MECHANICS
     }
     result: list[KeywordNodePlan] = []
     for mechanic in split_mechanics:
@@ -194,22 +210,7 @@ def keyword_node_plans(
     remaining = tuple(
         mechanic
         for mechanic in mechanics
-        if mechanic not in {
-            PRINTED_FLASH_MECHANIC,
-            _BLOODTHIRST_MECHANIC,
-            _FABRICATE_MECHANIC,
-            _EVOLVE_MECHANIC,
-            _PERSIST_MECHANIC,
-            _RIOT_MECHANIC,
-            _UNDYING_MECHANIC,
-            _UNLEASH_MECHANIC,
-            _MENTOR_MECHANIC,
-            _PROWESS_MECHANIC,
-            _RENOWN_MECHANIC,
-            _MODULAR_MECHANIC,
-            _ECHO_MECHANIC,
-            _CONVOKE_MECHANIC,
-        }
+        if mechanic not in _SPLIT_MECHANICS
     )
     if remaining:
         result.append(

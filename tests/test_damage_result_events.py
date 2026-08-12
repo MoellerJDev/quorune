@@ -10,6 +10,7 @@ from common import ROOT, keep_all, make_session
 from property_budget import property_transitions
 from scripts.build_test_database import build_fixture_database
 from quorune import damage_results as damage_results_module
+from quorune.ability_fragments import ToxicSpec, ability_fragment_to_dict
 from quorune.carddb import CardDatabase
 from quorune.counter_placement import (
     CounterPlacementCommitPlan,
@@ -135,7 +136,7 @@ class DamageResultEventTests(unittest.TestCase):
 
     def permanent(self, engine, seat: str, name: str, *, ref: str):
         record = self.db.lookup(name)
-        if name == "Boon Reflection":
+        if name == "Boon Reflection" or "Toxic" in record.keywords:
             register_generated_programs(
                 self.db,
                 engine.semantics,
@@ -169,6 +170,7 @@ class DamageResultEventTests(unittest.TestCase):
         type_line: str = "Token Creature — Test",
         keywords: tuple[str, ...] = (),
         oracle_text: str = "",
+        toxic_values: tuple[int, ...] = (),
         power: int = 3,
         toughness: int = 3,
         loyalty: int | None = None,
@@ -182,6 +184,10 @@ class DamageResultEventTests(unittest.TestCase):
             "keywords": list(keywords),
             "oracle_text": oracle_text,
             "colors": ["G"],
+            "ability_fragments": [
+                ability_fragment_to_dict(ToxicSpec(value=value))
+                for value in toxic_values
+            ],
         }
         if loyalty is not None:
             characteristics["loyalty"] = str(loyalty)
@@ -540,7 +546,7 @@ class DamageResultEventTests(unittest.TestCase):
             "A",
             "Toxic Source",
             keywords=("Toxic",),
-            oracle_text="Toxic 2",
+            toxic_values=(2,),
         )
         life_before = engine.state.players["B"].life
 
@@ -578,7 +584,7 @@ class DamageResultEventTests(unittest.TestCase):
             "A",
             "Multiple Toxic Source",
             keywords=("Toxic",),
-            oracle_text="Toxic 1\nToxic 2",
+            toxic_values=(1, 2),
         )
         source.temporary_keywords.append("Toxic 3")
 
@@ -595,6 +601,31 @@ class DamageResultEventTests(unittest.TestCase):
         )
         self.assertEqual(6, engine.state.players["B"].poison)
 
+    def test_toxic_uses_pinned_fragment_not_runtime_oracle_text(self):
+        engine = self.session(120_300_105).engine
+        source = self.token(
+            engine,
+            "A",
+            "Pinned Toxic Source",
+            keywords=("Toxic",),
+            oracle_text="Toxic 99",
+            toxic_values=(2,),
+        )
+
+        self.commit(
+            engine,
+            self.proposal(
+                engine,
+                source,
+                "B",
+                1,
+                event_id="damage:pinned-toxic",
+                combat=True,
+            ),
+        )
+
+        self.assertEqual(2, engine.state.players["B"].poison)
+
     def test_four_player_keyword_results_keep_source_attribution(self):
         engine = self.session(120_300_012, players=4).engine
         source_a = self.token(
@@ -602,14 +633,14 @@ class DamageResultEventTests(unittest.TestCase):
             "A",
             "A Infect Toxic Lifelink Source",
             keywords=("Infect", "Lifelink", "Toxic"),
-            oracle_text="Toxic 1",
+            toxic_values=(1,),
         )
         source_c = self.token(
             engine,
             "C",
             "C Toxic Lifelink Source",
             keywords=("Lifelink", "Toxic"),
-            oracle_text="Toxic 2",
+            toxic_values=(2,),
         )
         engine.state.players["A"].life = 20
         engine.state.players["C"].life = 20
@@ -681,7 +712,7 @@ class DamageResultEventTests(unittest.TestCase):
             "A",
             "Prevented Infect Toxic Source",
             keywords=("Infect", "Toxic"),
-            oracle_text="Toxic 2",
+            toxic_values=(2,),
         )
         engine.state.players["B"].stats[
             "protection_from_everything_until_next_turn"
@@ -740,7 +771,7 @@ class DamageResultEventTests(unittest.TestCase):
             "A",
             "Toxic Source",
             keywords=("Toxic",),
-            oracle_text="Toxic 2",
+            toxic_values=(2,),
         )
         wither_source = self.token(
             engine,
@@ -1400,7 +1431,7 @@ class DamageResultEventTests(unittest.TestCase):
             power=4,
             toughness=4,
             keywords=("Infect", "Lifelink", "Toxic"),
-            oracle_text="Toxic 2",
+            toxic_values=(2,),
         )
         wither = self.token(
             engine,

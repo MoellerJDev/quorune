@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import re
 from typing import Any, Mapping, Protocol, Sequence
 
 from .counter_state import (
@@ -30,6 +29,7 @@ from .damage_values import (
     DamageRecipientSnapshot,
     DamageSourceSnapshot,
 )
+from .damage_source import represented_toxic_value
 from .deathtouch import DeathtouchError, deathtouch_damage_result_applies
 from .commander import CommanderIdentityError, commander_damage_key
 from .combat_damage_events import (
@@ -398,51 +398,7 @@ class _CanonicalDamageTransactionPort(DamageTransactionPort):
         return commit_prepared_damage_batch(self.host, prepared)
 
 
-_TOXIC_ABILITY = re.compile(r"^toxic\s+(?P<value>[0-9]+)$", re.IGNORECASE)
 _DAMAGE_REASON_FIELD = "".join(("rea", "son"))
-
-
-def _total_toxic_value(
-    data: Mapping[str, Any],
-    *,
-    temporary_keywords: Sequence[Any] = (),
-) -> int | None:
-    """Return a represented source's total CR 702.164 toxic value.
-
-    Scryfall's keyword array deliberately omits the numeric parameter. Printed
-    values therefore come from complete ability-list segments in effective
-    Oracle text, while temporary granted abilities must retain their value in
-    the keyword string. Incidental references such as "a token with toxic 1"
-    are never treated as abilities of the source.
-    """
-
-    normalized = set(_normalized_keywords(data.get("keywords", ())))
-    values: list[int] = []
-    for line in str(data.get("oracle_text") or "").splitlines():
-        material = line.split(" (", 1)[0].strip().rstrip(".")
-        for part in material.split(","):
-            match = _TOXIC_ABILITY.fullmatch(part.strip())
-            if match is not None:
-                values.append(int(match.group("value")))
-    for keyword in normalized:
-        match = _TOXIC_ABILITY.fullmatch(keyword)
-        if match is not None:
-            values.append(int(match.group("value")))
-    unresolved_temporary = False
-    for value in temporary_keywords:
-        keyword = " ".join(str(value).casefold().split())
-        if keyword == "toxic":
-            unresolved_temporary = True
-    has_toxic = (
-        "toxic" in normalized
-        or any(value.startswith("toxic ") for value in normalized)
-        or bool(values)
-    )
-    if not has_toxic:
-        return 0
-    if unresolved_temporary or not values:
-        return None
-    return sum(values)
 
 
 def source_snapshot(
@@ -492,7 +448,7 @@ def source_snapshot(
         str(data.get("type_line") or "")
     )
     keywords = _normalized_keywords(data.get("keywords", ()))
-    toxic_value = _total_toxic_value(
+    toxic_value = represented_toxic_value(
         data,
         temporary_keywords=getattr(source, "temporary_keywords", ()),
     )

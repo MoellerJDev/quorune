@@ -375,7 +375,7 @@
       "status": "definition_only",
       "assertion_kind": "static_traceability",
       "reviewed": true,
-      "implementation_components": ["oracle_ir.OracleIRCompiler", "damage._total_toxic_value"],
+      "implementation_components": ["oracle_ir.OracleIRCompiler", "ability_fragments.ToxicSpec", "semantic_runtime.ability_fragments.ToxicAbilityFragmentHandler"],
       "executable_test_ids": ["tests.test_oracle_ir.OracleIRTests.test_damage_result_keywords_compile_as_generic_mechanics"],
       "required_scenarios": [],
       "covered_scenarios": [],
@@ -389,12 +389,12 @@
       "status": "definition_only",
       "assertion_kind": "static_traceability",
       "reviewed": true,
-      "implementation_components": ["oracle_ir.OracleIRCompiler", "damage._total_toxic_value"],
-      "executable_test_ids": ["tests.test_card_program_v2.CardProgramV2Tests.test_keyword_programs_declare_exact_damage_result_capabilities"],
+      "implementation_components": ["compiler.ability_keyword_fragments.lower_ability_keyword_fragments", "ability_fragments.ToxicSpec", "semantic_runtime.ability_fragments.ToxicAbilityFragmentHandler"],
+      "executable_test_ids": ["tests.test_card_program_v2.CardProgramV2Tests.test_keyword_programs_declare_exact_damage_result_capabilities", "tests.test_typed_ability_fragments.AbilityFragmentModelTests.test_compiler_emits_source_spanned_toxic_fragment"],
       "required_scenarios": [],
       "covered_scenarios": [],
       "blockers": [],
-      "notes": ["Fixed toxic N syntax lowers to the damage.result.toxic capability; unresolved values fail closed."]
+      "notes": ["Fixed toxic N syntax lowers once to a source-spanned typed fragment and the damage.result.toxic capability; malformed and unresolved values fail closed."]
     },
     {
       "rule_id": "702.164b",
@@ -403,12 +403,12 @@
       "status": "passing",
       "assertion_kind": "executable_engine",
       "reviewed": true,
-      "implementation_components": ["damage._total_toxic_value", "damage.source_snapshot"],
-      "executable_test_ids": ["tests.test_damage_result_events.DamageResultEventTests.test_multiple_toxic_abilities_are_cumulative", "tests.test_damage_result_events.DamageResultEventTests.test_unresolved_toxic_value_fails_before_mutation"],
+      "implementation_components": ["ability_fragments.ToxicSpec", "compiler.continuous_templates.attached_fixed_characteristics_handler", "damage_source.represented_toxic_value", "damage.source_snapshot"],
+      "executable_test_ids": ["tests.test_damage_result_events.DamageResultEventTests.test_multiple_toxic_abilities_are_cumulative", "tests.test_damage_result_events.DamageResultEventTests.test_toxic_uses_pinned_fragment_not_runtime_oracle_text", "tests.test_damage_result_events.DamageResultEventTests.test_unresolved_toxic_value_fails_before_mutation", "tests.test_attached_static_characteristics.AttachedContinuousCompilerTests.test_compiler_lowers_granted_toxic_to_a_typed_fragment"],
       "required_scenarios": ["positive", "negative", "interaction"],
       "covered_scenarios": ["positive", "negative", "interaction"],
       "blockers": [],
-      "notes": ["Printed and granted fixed toxic values are summed; a bare unresolved grant fails before mutation."]
+      "notes": ["Compiler-pinned printed and typed attached fixed toxic values participate in layer 6, explicit temporary fixed grants are summed, contradictory runtime Oracle display text is ignored, and a bare unresolved grant fails before mutation."]
     },
     {
       "rule_id": "702.164c",

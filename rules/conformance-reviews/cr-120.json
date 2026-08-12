@@ -422,7 +422,7 @@
       "assertion_kind": "executable_engine",
       "reviewed": true,
       "implementation_components": [
-        "damage._total_toxic_value",
+        "damage_source.represented_toxic_value",
         "damage_results.materialize_damage_results",
         "damage_results.commit_damage_result_plan",
         "counter_placement.plan_resolved_counter_placement_commit",
@@ -431,6 +431,7 @@
       "executable_test_ids": [
         "tests.test_damage_result_events.DamageResultEventTests.test_toxic_is_additional_only_for_creature_combat_damage_to_player",
         "tests.test_damage_result_events.DamageResultEventTests.test_multiple_toxic_abilities_are_cumulative",
+        "tests.test_damage_result_events.DamageResultEventTests.test_toxic_uses_pinned_fragment_not_runtime_oracle_text",
         "tests.test_damage_result_events.DamageResultEventTests.test_unresolved_toxic_value_fails_before_mutation",
         "tests.test_damage_result_events.DamageResultEventTests.test_prevented_infect_and_toxic_create_no_counter_results",
         "tests.test_damage_result_events.DamageResultEventTests.test_four_player_keyword_results_keep_source_attribution",
