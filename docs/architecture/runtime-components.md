@@ -46,6 +46,13 @@ records may use an explicit compatibility adapter, but the adapter cannot
 rewrite the recorded program or silently promote trust. Current records pin
 the descriptor and registry directly.
 
+`prohibition.combat.goad.controller-creatures.v1` represents only the exact
+static sentence `Creatures you control can't be goaded.` Runtime discovery
+requires a current trusted, selected-face-pinned battlefield program and emits
+a typed public participant scoped to the source controller. Conditional,
+duration-qualified, dynamically granted, and differently scoped prohibitions
+remain residual rather than falling back to runtime Oracle inspection.
+
 `casting.payment.affinity-artifacts.v1` represents each exact printed
 `Affinity for artifacts` instance as a selected-face `cast.cost` descriptor.
 Cost calculation counts only current phased-in artifacts controlled by the

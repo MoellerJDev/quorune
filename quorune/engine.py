@@ -257,6 +257,7 @@ from .semantic_runtime.casting_activation_metadata import (
     active_loyalty_cost_modifiers,
     compiled_self_zone_cast_permission,
 )
+from .semantic_runtime.combat_metadata import active_goad_prohibitions
 from .semantic_runtime import (
     AddManaIntent,
     AddSubtypeIntent,
@@ -4852,25 +4853,14 @@ class CommanderEngine(
         self,
         card: CardInstance,
     ) -> CardInstance | None:
-        """Return an active exact static source that forbids goading."""
+        """Return a trusted typed static source that forbids goading."""
 
-        for source in self.state.cards.values():
-            if (
-                source.zone != "battlefield"
-                or source.phased_out
-                or source.controller != card.controller
-            ):
+        for prohibition in active_goad_prohibitions(self):
+            if prohibition.source_controller != card.controller:
                 continue
-            oracle = " ".join(
-                str(
-                    self._effective_card_data(source).get("oracle_text")
-                    or ""
-                )
-                .casefold()
-                .split()
-            )
-            if "creatures you control can't be goaded." in oracle:
-                return source
+            for source in self.state.cards.values():
+                if source.ref == prohibition.source_ref:
+                    return source
         return None
 
     def _combat_oracle_lines(

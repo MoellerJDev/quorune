@@ -51216,10 +51216,12 @@
         "tests.test_goad_rules.GoadRuleTests.test_single_goad_requires_another_player_when_available_and_replays",
         "tests.test_goad_rules.GoadRuleTests.test_goad_in_duel_still_requires_attacking_the_goader",
         "tests.test_goad_rules.GoadRuleTests.test_zone_change_removes_the_noncopiable_designation",
-        "tests.test_goad_rules.GoadRuleTests.test_exact_static_prohibition_makes_goad_have_no_effect"
+        "tests.test_goad_rules.GoadRuleTests.test_typed_goad_prohibition_is_controller_scoped_and_replays"
       ],
       "implementation_components": [
         "GoadDesignation",
+        "GoadProhibitionHandler",
+        "CommanderEngine._goad_prohibition_source",
         "CommanderEngine._attack_declaration_problem",
         "DeclarationProblem",
         "StateProjector"

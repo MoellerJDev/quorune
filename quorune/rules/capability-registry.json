@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 92,
+  "registry_version": 93,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -2061,6 +2061,33 @@
       "dependency_fail_closed_rationale": "This bounded resolution-created characteristic effect has no capability dependencies beyond the shared typed continuous-effect evaluator.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_resolution_continuous_effect_commit_mutant_is_killed removes the canonical journal commit and the characteristic result assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "combat.goad.prohibition.controller_creatures",
+      "version": 1,
+      "official_rules": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and apply the exact static ability 'Creatures you control can't be goaded.' as a current trusted face-pinned public prohibition.",
+        "inputs": ["current phased-in battlefield source", "current source face", "trusted source-spanned CardProgram V2 goad-prohibition descriptor", "source controller", "creature permanent controlled by that player"],
+        "outputs": ["typed public goad-prohibition participant", "goad attempt prevented before designation mutation"],
+        "exclusions": ["affected sets other than creatures controlled by the source controller", "conditional or duration-qualified prohibitions", "dynamically granted or removed abilities", "inactive faces", "untrusted or prose-only prohibitions"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.combat_metadata_templates.static_goad_prohibition_handler", "quorune.semantic_runtime.combat_metadata.GoadProhibitionHandler", "quorune.semantic_runtime.combat_metadata.active_goad_prohibitions", "CommanderEngine._goad_prohibition_source"],
+      "positive_tests": ["test_closed_goad_prohibition_compiles_source_spanned_program", "test_typed_goad_prohibition_is_controller_scoped_and_replays"],
+      "negative_tests": ["test_goad_prohibition_near_miss_and_malformed_descriptor_fail_closed", "test_raw_oracle_goad_prohibition_without_typed_metadata_fails_closed"],
+      "interaction_tests": ["test_typed_goad_prohibition_is_controller_scoped_and_replays"],
+      "multiplayer_tests": ["test_typed_goad_prohibition_is_controller_scoped_and_replays"],
+      "privacy_tests": [],
+      "replay_tests": ["test_typed_goad_prohibition_is_controller_scoped_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded public prohibition consumes no capability dependency beyond its own current trusted typed descriptor and ordinary creature validation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_goad_prohibition_compiler_mutant_is_killed removes the closed lowering and proves the represented sentence returns to a material residual.",
       "blockers": [],
       "status": "trusted"
     },

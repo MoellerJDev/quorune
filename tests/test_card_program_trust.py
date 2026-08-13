@@ -220,6 +220,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "action.draw.reveal_first",
                 "modification.activation.loyalty-cost",
                 "prevention.damage.fixed",
+                "prohibition.combat.goad",
                 "participation.untap_step.static",
                 "permission.action.static",
                 "permission.cast.self-zone",
