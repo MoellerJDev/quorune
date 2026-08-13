@@ -378,6 +378,78 @@
       "applicability_note": "Replay a mana activation authorized by the controller-wide as-though-haste permission to the exact state hash."
     },
     {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionRuntimeTests.test_chosen_name_restriction_is_global_typed_and_mana_exempt",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose the typed chosen-name predicate with current effective names, accepted activation validation, phasing, and the mana-ability exemption."
+    },
+    {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionRuntimeTests.test_chosen_name_restriction_is_global_typed_and_mana_exempt",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply one phased-in source's public restriction to a matching nonmana source controlled by another player in a four-player game."
+    },
+    {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionCompilerTests.test_activation_restriction_compiler_mutant_is_killed",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the exact static restriction production before runtime can fall back to Oracle prose."
+    },
+    {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionCompilerTests.test_unsupported_restriction_wording_and_malformed_descriptors_fail_closed",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject widened predicates, removed mana exemptions, alternate ability kinds, and malformed typed descriptors."
+    },
+    {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionRuntimeTests.test_raw_oracle_text_without_typed_restriction_fails_closed",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prove live Oracle wording cannot prohibit activation after the trusted current-face descriptor is removed."
+    },
+    {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionCompilerTests.test_closed_restriction_compiles_face_pinned_typed_program",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower the exact sentence to a source-spanned current-face activation-permission descriptor."
+    },
+    {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionRuntimeTests.test_chosen_name_restriction_is_global_typed_and_mana_exempt",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use one trusted descriptor and public chosen-name designation to prohibit a matching nonmana activation."
+    },
+    {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionRuntimeTests.test_chosen_name_restriction_choice_is_principal_scoped",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep the source-pinned name choice scoped to its choosing principal before the resulting public designation is committed."
+    },
+    {
+      "capability_id": "activation.restriction.chosen_name_nonmana",
+      "evidence_class": "replay",
+      "test_id": "tests.test_activation_restrictions.StaticActivationRestrictionRuntimeTests.test_chosen_name_restriction_replays_exactly",
+      "official_rule_ids": ["602.1", "602.5", "605.1a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the source-pinned chosen-name designation to the exact authoritative state used by typed activation availability."
+    },
+    {
       "capability_id": "activation.tap_untap_cost.haste",
       "evidence_class": "interaction",
       "test_id": "tests.test_activating_abilities_rules.ActivatingAbilityRuleTests.test_sick_mana_creature_requires_haste_or_as_though_permission",

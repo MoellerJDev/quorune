@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "0078b7ea242168396365d0ed37c9da0cb6652ed3740512ad921b65b4185b71ca"
+verified: "a54ed182bc4858bea0e67a582bfcd729dbb4d4643dd0573cf8621c64877387bb"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `195f8cfbacf4fcd17456c2183e70c30fce1c88ab2261573c758c8514a63e5558`
+Source fingerprint: `0f78dfcbb3fc31cc416a30aba3f092650be3769408e7b7698aff2c27c824726f`
 
 ## Current top-level state
 
@@ -20,7 +20,7 @@ Source fingerprint: `195f8cfbacf4fcd17456c2183e70c30fce1c88ab2261573c758c8514a63
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `architecture:runtime-oracle-text-removal:casting_activation_and_costs`
+- Selected cross-program work: `architecture:runtime-oracle-text-removal:continuous_effects`
 - Selected work class: `runtime_oracle_removal`
 
 ## Cross-program work selection
@@ -31,8 +31,8 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `architecture:runtime-oracle-text-removal:casting_activation_and_costs` | `runtime_oracle_removal` | 0 | 0 | 4 | 0 |
-| 2 | deferred | `architecture:runtime-oracle-text-removal:continuous_effects` | `runtime_oracle_removal` | 0 | 0 | 4 | 0 |
+| 1 | selected | `architecture:runtime-oracle-text-removal:continuous_effects` | `runtime_oracle_removal` | 0 | 0 | 4 | 0 |
+| 2 | deferred | `architecture:runtime-oracle-text-removal:casting_activation_and_costs` | `runtime_oracle_removal` | 0 | 0 | 3 | 0 |
 | 3 | deferred | `architecture:runtime-oracle-text-removal:combat` | `runtime_oracle_removal` | 0 | 0 | 3 | 0 |
 | 4 | deferred | `architecture:runtime-oracle-text-removal:semantic_effect_execution` | `runtime_oracle_removal` | 0 | 0 | 3 | 0 |
 | 5 | deferred | `architecture:runtime-oracle-text-removal:application_session` | `runtime_oracle_removal` | 0 | 0 | 2 | 0 |
@@ -48,7 +48,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 15 | blocked | `frontier:mechanic_dependency:cr-509-declare-blockers-step` | `rules_foundation` | 157 | 392 | 0 | 0 |
 | 16 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 122 | 338 | 0 | 0 |
 
-Selected reason: 4 prohibited runtime-text accesses remain in the existing casting_activation_and_costs typed owner and outrank card expansion.
+Selected reason: 4 prohibited runtime-text accesses remain in the existing continuous_effects typed owner and outrank card expansion.
 
 ## Top blockers
 

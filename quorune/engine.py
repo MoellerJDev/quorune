@@ -3360,34 +3360,6 @@ class CommanderEngine(
             )
         )
 
-    def _nonmana_ability_prohibited_by_name(
-        self,
-        source: CardInstance,
-    ) -> bool:
-        source_name = str(
-            self._effective_card_data(source).get("name")
-            or source.printed_name
-        ).casefold()
-        for seat in self.active_seats:
-            for object_id in self.state.players[seat].zones["battlefield"]:
-                permanent = self.state.cards[object_id]
-                chosen_name = str(
-                    permanent.annotations.get("chosen_name") or ""
-                ).casefold()
-                if not chosen_name or chosen_name != source_name:
-                    continue
-                oracle = str(
-                    self._effective_card_data(permanent).get("oracle_text")
-                    or ""
-                ).casefold()
-                if (
-                    "activated abilities of sources with the chosen name "
-                    "can't be activated unless they're mana abilities"
-                    in oracle
-                ):
-                    return True
-        return False
-
     def _activation_condition_status(
         self,
         seat: str,

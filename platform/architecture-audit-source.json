@@ -254,10 +254,6 @@
           {
             "file": "quorune/engine.py",
             "symbol": "CommanderEngine._loyalty_cost_modifier_present"
-          },
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._nonmana_ability_prohibited_by_name"
           }
         ]
       }
