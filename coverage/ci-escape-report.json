@@ -301,6 +301,23 @@
       "resolution": "The immediate Echo correction added the two cards to the canonical fixture set. The compact dependency closure now structurally discovers card, Oracle-ID, helper, and deck requirements and blocks pull-request matrices before long shards when the canonical manifest is incomplete.",
       "run_id": 31483829105,
       "summary": "Ordinary Echo runtime tests resolved Karmic Guide and Shah of Naar Isle from the full local card database, but those cards were absent from the canonical compact CI database; this was a recurrence of the Amass fixture-omission class."
+    },
+    {
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "failed_surfaces": [
+        "compiler-cardprogram"
+      ],
+      "head_sha": "fc9b98f80193250dee537d69b5efb6ab712a7eaa",
+      "id": "ci-20260813-18",
+      "impact_edge_status": "added",
+      "regressions": [
+        "test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_declaration_components_are_closed_typed_fragments",
+        "test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound"
+      ],
+      "resolution": "The declaration-focused witness now verifies the three exact registered families and their shared capability dependency, the global ratchet includes those families, and AGENTS.md requires that exact global inventory test in any authorized focused check for registration changes.",
+      "run_id": 31733942575,
+      "summary": "The combat declaration family registered three new static runtime components, but the focused local evidence omitted the global family-inventory ratchet; this recurred after the Bloodthirst registration escape."
     }
   ],
   "known_flaky_tests": [],
@@ -308,7 +325,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-11T09:04:00Z",
+  "observed_at": "2026-08-13T19:18:44Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -351,9 +368,9 @@
       "workflow_runs_observed": 3
     }
   ],
-  "repository": "MoellerJDev/quorune",
+  "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "c1d935170d18e5c29cd5e1bb4a8e47d3aab040c07d83de4f113f2321bb4c3065",
+  "source_fingerprint": "1e34f4e53d35dc31562ac0eaaec709d51b406d5d455987333a51fa8f2b243937",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -363,12 +380,12 @@
       "flaky_test": 6,
       "generated_artifact_drift": 2,
       "infrastructure": 1,
-      "missing_affected_test": 5,
+      "missing_affected_test": 6,
       "source_correctness": 2
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 12,
-    "escape_count": 17,
+    "deterministic_escape_count": 13,
+    "escape_count": 18,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

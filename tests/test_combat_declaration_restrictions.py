@@ -1957,6 +1957,40 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
         self.assertTrue(
             all(handler["event"] == "combat.declaration" for handler in handlers)
         )
+        registered = {
+            row["handler_id"]: row
+            for row in default_ability_fragment_registry().inventory()
+            if row["handler_id"]
+            in {
+                DECLARATION_COST_FRAGMENT_HANDLER_ID,
+                DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID,
+                DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID,
+            }
+        }
+        self.assertEqual(
+            {
+                DECLARATION_COST_FRAGMENT_HANDLER_ID: (
+                    "ability.static.declaration_cost"
+                ),
+                DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID: (
+                    "ability.static.declaration_requirement"
+                ),
+                DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID: (
+                    "ability.static.declaration_restriction"
+                ),
+            },
+            {
+                handler_id: row["family"]
+                for handler_id, row in registered.items()
+            },
+        )
+        self.assertTrue(
+            all(
+                row["capability_dependencies"]
+                == ["combat.declaration.typed_components"]
+                for row in registered.values()
+            )
+        )
         self.assertEqual(
             3,
             len(

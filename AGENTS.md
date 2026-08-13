@@ -188,6 +188,12 @@ generated-output obligation. After source, tests, and documentation form a
 coherent worktree—and **before the final commit**—run the automatic
 deterministic writers to a fixed point:
 
+When a user-authorized focused check covers a semantic-handler or runtime-
+component registration change, include
+`CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound`
+in that focused set. Family-level registration evidence does not replace the
+global inventory ratchet.
+
 ```powershell
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write
 ```
