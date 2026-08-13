@@ -43,55 +43,58 @@ class RulesAuthorityRegressionTests(unittest.TestCase):
             if card.owner == seat and card.printed_name == name
         )
 
+    def _enter(self, session, seat, name, *, controller=None):
+        card = self._card(session, seat, name)
+        session.engine.move_card(
+            card.object_id,
+            "battlefield",
+            controller=controller or seat,
+            log=False,
+        )
+        return card
+
     def test_land_entry_is_server_derived_for_duel_and_multiplayer(self):
         duel = self._session(players=2)
-        forest = self.db.lookup("Forest")
-        confluence = self.db.lookup("Mana Confluence")
-        strand = self.db.lookup("Flooded Strand")
-        wooded = self.db.lookup("Wooded Foothills")
-        bog = self.db.lookup("Bojuka Bog")
-        field = self.db.lookup("Field of the Dead")
-        training = self.db.lookup("Training Center")
-        shifting = self.db.lookup("Shifting Woodland")
-        mistrise = self.db.lookup("Mistrise Village")
-        self.assertFalse(duel.engine._land_enters_tapped("A", forest, {}))
-        self.assertFalse(duel.engine._land_enters_tapped("A", confluence, {}))
-        self.assertFalse(duel.engine._land_enters_tapped("A", strand, {}))
-        self.assertFalse(duel.engine._land_enters_tapped("A", wooded, {}))
-        self.assertTrue(duel.engine._land_enters_tapped("A", bog, {}))
-        self.assertTrue(duel.engine._land_enters_tapped("A", field, {}))
-        self.assertTrue(duel.engine._land_enters_tapped("A", training, {}))
-        self.assertTrue(duel.engine._land_enters_tapped("B", shifting, {}))
-        forest_card = self._card(duel, "B", "Forest")
-        duel.engine.move_card(forest_card.object_id, "battlefield", controller="B")
-        self.assertFalse(duel.engine._land_enters_tapped("B", shifting, {}))
-        self.assertFalse(duel.engine._land_enters_tapped("B", mistrise, {}))
+        self.assertFalse(self._enter(duel, "A", "Island").tapped)
+        self.assertFalse(self._enter(duel, "A", "Mana Confluence").tapped)
+        self.assertFalse(self._enter(duel, "A", "Flooded Strand").tapped)
+        self.assertFalse(self._enter(duel, "B", "Wooded Foothills").tapped)
+        self.assertTrue(self._enter(duel, "B", "Bojuka Bog").tapped)
+        self.assertTrue(self._enter(duel, "B", "Field of the Dead").tapped)
+        self.assertTrue(self._enter(duel, "A", "Training Center").tapped)
+        self.assertTrue(self._enter(duel, "B", "Shifting Woodland").tapped)
 
-        mountain_only = self._session(players=2)
-        mountain = next(
-            card
-            for card in mountain_only.state.cards.values()
-            if "Mountain"
-            in self.db.lookup(card.printed_name).type_line.split()
-        )
-        mountain_only.engine.move_card(
-            mountain.object_id,
-            "battlefield",
-            controller="B",
+        forest_control = self._session(players=2)
+        self.assertFalse(self._enter(forest_control, "B", "Forest").tapped)
+        self.assertFalse(
+            self._enter(forest_control, "B", "Shifting Woodland").tapped
         )
         self.assertFalse(
-            mountain_only.engine._land_enters_tapped("B", mistrise, {})
+            self._enter(forest_control, "B", "Mistrise Village").tapped
         )
+
+        mountain_only = self._session(players=2)
+        self.assertFalse(
+            self._enter(
+                mountain_only,
+                "A",
+                "Mountain",
+                controller="B",
+            ).tapped
+        )
+        self.assertFalse(
+            self._enter(mountain_only, "B", "Mistrise Village").tapped
+        )
+
+        no_basic_type = self._session(players=2)
         self.assertTrue(
-            self._session(players=2).engine._land_enters_tapped(
-                "B",
-                mistrise,
-                {},
-            )
+            self._enter(no_basic_type, "B", "Mistrise Village").tapped
         )
 
         multiplayer = self._session(players=4)
-        self.assertFalse(multiplayer.engine._land_enters_tapped("A", training, {}))
+        self.assertFalse(
+            self._enter(multiplayer, "A", "Training Center").tapped
+        )
 
     def test_fetchland_exposes_search_choices_and_resolves_authoritatively(self):
         session = self._session(players=2)

@@ -12,6 +12,7 @@ from common import (
 )
 from quorune.model import CombatState, StackItem
 from quorune.preflight import card_semantic_status
+from quorune.projection import StateProjector
 from quorune.targets import TargetGroup
 
 
@@ -1592,11 +1593,24 @@ class ExactZimoneClosureTests(unittest.TestCase):
             },
         )
         self.assertTrue(result.ok, result.summary)
+        self.assertEqual(
+            "replacement.order",
+            engine.state.pending_decision.kind,
+        )
+        projected = StateProjector(self.db, engine.state)._decision("pilot:B")
+        intrinsic = next(
+            option["id"]
+            for option in projected["ctx"]["options"]
+            if option["source"] == bog.ref
+        )
+        result = session.act(
+            "pilot:B",
+            {"action_id": "choose", "replacement": intrinsic},
+        )
+        self.assertTrue(result.ok, result.summary)
+        bog = engine.state.cards[bog.object_id]
         self.assertEqual("battlefield", bog.zone)
         self.assertFalse(bog.tapped)
-        self.assertFalse(
-            engine._land_enters_tapped("B", self.db.lookup("Bojuka Bog"))
-        )
 
     def test_mole_man_plays_graveyard_land_and_moloid_attack_may_mill(
         self,
