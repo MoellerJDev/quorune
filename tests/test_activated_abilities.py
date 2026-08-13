@@ -229,6 +229,7 @@ class ActivatedAbilityAndCostTests(unittest.TestCase):
                 tapped=False,
                 log=False,
             )
+        breeding_pool.tapped = False
         hints = engine._priority_action_hints("B")
 
         self.assertTrue(
@@ -340,6 +341,7 @@ class ActivatedAbilityAndCostTests(unittest.TestCase):
             tapped=False,
             log=False,
         )
+        pool.tapped = False
 
         hints = engine._priority_action_hints("B")
         pool_abilities = {

@@ -437,6 +437,7 @@ class BasicLandTypeManaTests(unittest.TestCase):
             controller="A",
             enter_face="Agadeem, the Undercrypt",
         )
+        agadeem.tapped = False
         self.prepare_main(session)
 
         agadeem_source = next(
