@@ -1,5 +1,5 @@
 {
-  "contract_count": 104,
+  "contract_count": 105,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -11,6 +11,12 @@
       "mechanic_id": "adapt",
       "path": "mechanics/contracts/adapt.json",
       "sha256": "cc52acbfb4bc40c0f286a523fa64781bca16e03d626b479ad54c4c4ea5753cfe",
+      "version": 1
+    },
+    {
+      "mechanic_id": "affinity",
+      "path": "mechanics/contracts/affinity.json",
+      "sha256": "ec9959442d9a98c4ddf988783a3a47301b0fc494b5920760841fd866191fb37b",
       "version": 1
     },
     {
@@ -665,20 +671,32 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/affinity.json",
+      "contract_sha256": "ec9959442d9a98c4ddf988783a3a47301b0fc494b5920760841fd866191fb37b",
+      "contract_version": 1,
+      "coverage_status": "trusted",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.rules.casting.costs._apply_affinity",
+      "implementation_version": "affinity-artifact-count-payment-v1",
       "kind": "keyword_ability",
+      "known_blockers": [],
       "mechanic_id": "affinity",
       "official_name": "Affinity",
       "rule_references": [
         "702.41"
       ],
-      "test_ids": [],
-      "trust_level": "untrusted"
+      "test_ids": [
+        "test_affinity_for_artifacts_compiles_face_pinned_typed_program",
+        "test_affinity_descriptor_and_unsupported_grammar_fail_closed",
+        "test_affinity_compiler_mutant_is_killed",
+        "test_typed_affinity_counts_only_active_controlled_artifacts",
+        "test_raw_affinity_keyword_without_compiled_descriptor_fails_closed",
+        "test_affinity_runtime_mutant_is_killed",
+        "test_typed_affinity_cast_replays_exactly"
+      ],
+      "trust_level": "trusted"
     },
     {
       "category": "additional_rules",
@@ -11280,5 +11298,5 @@
       "taxonomy_id": "cr-905-conspiracy-draft"
     }
   ],
-  "trusted_mechanic_count": 7
+  "trusted_mechanic_count": 8
 }

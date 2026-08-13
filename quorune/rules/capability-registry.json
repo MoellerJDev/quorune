@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 87,
+  "registry_version": 88,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -387,6 +387,33 @@
       "dependency_fail_closed_rationale": "test_fixed_zone_change_capability_dependencies_fail_closed blocks each canonical zone-change dependency and proves the source-spanned return spell remains inexact.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_fixed_zone_change_compiler_mutant_is_killed removes the closed zone-change grammar and the exact compiler assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "casting.payment.affinity_artifacts",
+      "version": 1,
+      "official_rules": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Reduce one selected spell's generic total cost once for each current phased-in artifact controlled by its caster through a face-pinned ordinary printed Affinity for artifacts descriptor.",
+        "inputs": ["one or more source-spanned trusted Affinity for artifacts descriptors on the selected face", "the announced post-modification total mana cost", "current effective artifact types", "current controller and phasing state"],
+        "outputs": ["one nonnegative generic reduction per printed Affinity instance", "one typed cost-reduction journal entry per instance", "the remaining canonical mana vector"],
+        "exclusions": ["Affinity for card types or object qualities other than artifacts", "Affinity granted or removed after compilation", "Affinity-equivalent rules text", "cost increases, reductions, floors, restrictions, or ordering choices outside the represented total-cost pipeline", "cost-payment replacement effects", "spells copied without being cast"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.semantic_runtime.cast_costs.AffinityCostHandler", "quorune.compiled_cast_costs.compiled_affinity_specs", "quorune.rules.casting.costs._apply_affinity"],
+      "positive_tests": ["test_affinity_for_artifacts_compiles_face_pinned_typed_program", "test_typed_affinity_counts_only_active_controlled_artifacts"],
+      "negative_tests": ["test_affinity_descriptor_and_unsupported_grammar_fail_closed", "test_raw_affinity_keyword_without_compiled_descriptor_fails_closed"],
+      "interaction_tests": ["test_typed_affinity_counts_only_active_controlled_artifacts"],
+      "multiplayer_tests": ["test_typed_affinity_counts_only_active_controlled_artifacts"],
+      "privacy_tests": ["test_typed_affinity_counts_only_active_controlled_artifacts"],
+      "replay_tests": ["test_typed_affinity_cast_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "This bounded reduction reads only the spell's canonical total cost and current public effective battlefield characteristics; it has no optional capability dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_affinity_compiler_mutant_is_killed removes the typed compiler node and test_affinity_runtime_mutant_is_killed removes artifact-count application; source-spanned compilation and exact remaining-cost assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

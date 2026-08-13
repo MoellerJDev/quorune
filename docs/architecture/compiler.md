@@ -97,6 +97,12 @@ lowers an immutable relative `ObjectQuerySpec`. Monocolored-only, linked-exile,
 opponent-relative, additional-condition, restricted, and side-effecting
 variants remain source-spanned residuals.
 
+Printed `Affinity for artifacts` lowers as one source-spanned `cast.cost`
+descriptor per printed instance. The selected-face runtime reads only those
+typed descriptors and current effective artifact characteristics; other
+Affinity parameters and equivalent rules text remain residual instead of
+becoming runtime Oracle interpretation.
+
 Printed Exhaust prefixes lower to a typed `ActivationLimit` on each distinct
 ability. The exact reminder sentence is stripped once by the ability parser;
 neither legality nor commit reparses it. Fixed-output and color-set mana

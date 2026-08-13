@@ -5,7 +5,8 @@ import unittest
 from common import keep_all, load_assets
 from quorune import CommanderSession, GameConfig
 from quorune.engine import GameRuleError
-from quorune.model import StackItem
+from quorune.model import CardInstance, StackItem
+from quorune.oracle_ir import register_generated_programs
 from quorune.preflight import (
     _card_source_hashes,
     card_semantic_status,
@@ -13,6 +14,7 @@ from quorune.preflight import (
 )
 from quorune.record import pause_reason_for_state
 from quorune.report import derive_review
+from quorune.rules.capabilities import load_default_capability_registry
 from quorune.semantics import SemanticProgram, SemanticRegistry
 
 
@@ -849,23 +851,31 @@ class NormalizedZoneEventTests(unittest.TestCase):
     def test_affinity_reduction_is_derived_from_public_artifacts(self):
         session = self.make_session(812)
         engine = session.engine
-        signet = self.card(engine, "Arcane Signet", "B")
-        engine.move_card(signet.object_id, "hand")
-        engine.semantics.put(
-            SemanticProgram(
-                key=f"{signet.oracle_id}:spell:front",
-                label="Affinity family fixture",
-                oracle_id=signet.oracle_id,
-                effects=[],
-                destination="battlefield",
-                cost_schema={
-                    "payment_mechanics": [
-                        {"kind": "affinity", "card_type": "artifact"}
-                    ]
-                },
-            )
+        record = self.db.lookup("Myr Enforcer")
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (record,),
+            trust_level="provisional",
+            capability_registry=load_default_capability_registry(),
+            capability_profile=engine.state.config.review_profile,
+            promote_exact_runtime_handlers=True,
+            promote_exact_capability_declarations=True,
         )
-        for index in range(2):
+        enforcer = CardInstance(
+            object_id="fixture:preflight-myr-enforcer",
+            ref="B-preflight-affinity",
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner="B",
+            controller="B",
+            zone="hand",
+            zone_timestamp=engine.state.event_sequence + 1,
+            known_to=["B"],
+        )
+        engine.state.cards[enforcer.object_id] = enforcer
+        engine.state.players["B"].zones["hand"].append(enforcer.object_id)
+        for index in range(7):
             engine.create_token(
                 "B",
                 name=f"Affinity Artifact {index}",
@@ -879,14 +889,14 @@ class NormalizedZoneEventTests(unittest.TestCase):
         action = next(
             action
             for action in engine._priority_action_hints("B")["actions"]
-            if action.get("card") == signet.ref
+            if action.get("card") == enforcer.ref
         )
         self.assertEqual(
             0,
             action["cost_options"][0]["requirements"]["GENERIC"],
         )
-        engine._cast("B", {"card": signet.ref})
-        self.assertEqual("stack", signet.zone)
+        engine._cast("B", {"card": enforcer.ref})
+        self.assertEqual("stack", enforcer.zone)
 
 
 if __name__ == "__main__":

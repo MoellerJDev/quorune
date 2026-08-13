@@ -3595,17 +3595,8 @@ class CommanderEngine(
         keyword_values = {
             str(value).casefold() for value in record.keywords
         }
-        oracle = record.oracle_text.casefold()
         if "improvise" in keyword_values and "improvise" not in declared_kinds:
             mechanics.append({"kind": "improvise"})
-        if (
-            "affinity" in keyword_values
-            and "affinity" not in declared_kinds
-            and "affinity for artifacts" in oracle
-        ):
-            mechanics.append(
-                {"kind": "affinity", "card_type": "artifact"}
-            )
         return mechanics
 
     def _compiled_printed_cost(

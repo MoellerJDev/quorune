@@ -2,6 +2,7 @@
   "schema_version": 2,
   "fixture_kind": "compact_ci_card_database_inputs",
   "fixtures": [
+    "tests/fixtures/affinity-rules-cards.json",
     "tests/fixtures/amass-rules-cards.json",
     "tests/fixtures/browser-lifecycle-cards.json",
     "tests/fixtures/browser-ordered-scry-cards.json",

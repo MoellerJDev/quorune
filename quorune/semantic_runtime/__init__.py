@@ -48,10 +48,14 @@ from .cast_permissions import (
     FlashCastPermissionHandler,
 )
 from .cast_costs import (
+    AFFINITY_HANDLER_ID,
+    AffinityCostHandler,
+    AffinitySpec,
     CONVOKE_COST_EVENT,
     CONVOKE_HANDLER_ID,
     CastCostComponentRegistry,
     ConvokeCostHandler,
+    affinity_handler_descriptor,
     default_cast_cost_component_registry,
 )
 from .continuous_components import (
@@ -400,11 +404,15 @@ __all__ = [
     "ContinuousEffectComponentRegistry",
     "ContinuousEffectSourceContext",
     "CounterPlacementEventSpec",
+    "AFFINITY_HANDLER_ID",
+    "AffinityCostHandler",
+    "AffinitySpec",
     "CONVOKE_COST_EVENT",
     "CONVOKE_HANDLER_ID",
     "CastCostComponentRegistry",
     "CastPermissionRegistry",
     "ConvokeCostHandler",
+    "affinity_handler_descriptor",
     "CounterPlacementReplacementRegistry",
     "CounterPlacementReplacementResolution",
     "CounterQuantityReplacementHandler",

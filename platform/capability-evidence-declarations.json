@@ -1082,6 +1082,78 @@
       "applicability_note": "Replay the represented return payment to the identical authoritative hash."
     },
     {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_convoke_rules.AffinityRuntimeTests.test_typed_affinity_counts_only_active_controlled_artifacts",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Count effective phased-in artifacts controlled by the caster while excluding phased-out and opposing artifacts."
+    },
+    {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_convoke_rules.AffinityRuntimeTests.test_typed_affinity_counts_only_active_controlled_artifacts",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use only the four-player caster's controlled artifacts even when other players control matching public permanents."
+    },
+    {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_convoke_rules.AffinityCompilerTests.test_affinity_compiler_mutant_is_killed",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the source-spanned Affinity compiler production before a printed keyword can remain exact."
+    },
+    {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_convoke_rules.AffinityRuntimeTests.test_affinity_runtime_mutant_is_killed",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the current controlled-artifact reduction by asserting the exact remaining generic cost."
+    },
+    {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "negative",
+      "test_id": "tests.test_convoke_rules.AffinityCompilerTests.test_affinity_descriptor_and_unsupported_grammar_fail_closed",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed descriptors and leave nonartifact Affinity parameters as material source-spanned residuals."
+    },
+    {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "negative",
+      "test_id": "tests.test_convoke_rules.AffinityRuntimeTests.test_raw_affinity_keyword_without_compiled_descriptor_fails_closed",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prove raw Oracle text and keyword metadata cannot substitute for the selected face's trusted compiled Affinity descriptor."
+    },
+    {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "positive",
+      "test_id": "tests.test_convoke_rules.AffinityCompilerTests.test_affinity_for_artifacts_compiles_face_pinned_typed_program",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower exact printed Affinity for artifacts to a source-spanned selected-face cost descriptor with trusted capability closure."
+    },
+    {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_convoke_rules.AffinityRuntimeTests.test_typed_affinity_counts_only_active_controlled_artifacts",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep the Affinity spell private in its caster's hand while its cost reads only public battlefield characteristics."
+    },
+    {
+      "capability_id": "casting.payment.affinity_artifacts",
+      "evidence_class": "replay",
+      "test_id": "tests.test_convoke_rules.AffinityRuntimeTests.test_typed_affinity_cast_replays_exactly",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the compiled reduction, mana payment, spell movement, and final authoritative state hash exactly."
+    },
+    {
       "capability_id": "casting.payment.convoke",
       "evidence_class": "interaction",
       "test_id": "tests.test_convoke_rules.ConvokeModelTests.test_multicolor_creature_uses_the_payable_colored_assignment",
