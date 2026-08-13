@@ -220,6 +220,8 @@
     "test_broader_conditional_block_cost_stops_fail_closed",
     "test_sacrificed_mana_source_does_not_become_a_blocker",
     "test_oracle_ir_uses_the_runtime_declaration_cost_grammar",
+    "test_declaration_components_are_closed_typed_fragments",
+    "test_raw_oracle_declaration_text_has_no_runtime_authority",
     "test_selected_creature_can_require_another_declaration",
     "test_absolute_self_and_attached_restrictions_remove_domains",
     "test_block_alone_allows_other_blocker_on_different_attacker",
@@ -251,7 +253,7 @@
     "test_parser_exactly_lowers_current_turn_declaration_families"
   ],
   "implementation": {
-    "component": "DeclarationProblem, shared declaration-cost and declaration-restriction Oracle grammars, and the CommanderEngine blocker declaration/payment transition",
+    "component": "DeclarationProblem, compiler-only declaration grammar, shared effective layer-6 declaration fragments, and the CommanderEngine blocker declaration/payment transition",
     "version": "declare-blockers-step-v10"
   },
   "known_blockers": [

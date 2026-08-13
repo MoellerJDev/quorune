@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-11T09:04:00Z",
-  "repository": "MoellerJDev/quorune",
+  "observed_at": "2026-08-13T19:18:44Z",
+  "repository": "NullPriority/quorune",
   "escapes": [
     {
       "id": "ci-20260804-01",
@@ -256,6 +256,21 @@
       ],
       "impact_edge_status": "added",
       "resolution": "The immediate Echo correction added the two cards to the canonical fixture set. The compact dependency closure now structurally discovers card, Oracle-ID, helper, and deck requirements and blocks pull-request matrices before long shards when the canonical manifest is incomplete."
+    },
+    {
+      "id": "ci-20260813-18",
+      "run_id": 31733942575,
+      "head_sha": "fc9b98f80193250dee537d69b5efb6ab712a7eaa",
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "summary": "The combat declaration family registered three new static runtime components, but the focused local evidence omitted the global family-inventory ratchet; this recurred after the Bloodthirst registration escape.",
+      "failed_surfaces": ["compiler-cardprogram"],
+      "regressions": [
+        "test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_declaration_components_are_closed_typed_fragments",
+        "test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound"
+      ],
+      "impact_edge_status": "added",
+      "resolution": "The declaration-focused witness now verifies the three exact registered families and their shared capability dependency, the global ratchet includes those families, and AGENTS.md requires that exact global inventory test in any authorized focused check for registration changes."
     }
   ],
   "recent_pull_requests": [

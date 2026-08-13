@@ -381,7 +381,19 @@
             "colors": ["G"],
             "power": "1",
             "toughness": "1",
-            "oracle_text": "Whenever this token attacks, you may mill a card."
+            "oracle_text": "Whenever this token attacks, you may mill a card.",
+            "ability_fragments": [
+              {
+                "kind": "granted_triggered",
+                "value": {
+                  "schema_version": 1,
+                  "ability_id": "granted:moloid-attack",
+                  "semantic_key": "34994475-b914-44f6-8ca1-c2747b6d5956:granted:moloid-attack",
+                  "event": "creature.attacks",
+                  "label": "Moloid attack mill"
+                }
+              }
+            ]
           }
         }
       ],
@@ -392,6 +404,41 @@
         "source_oracle_hash": "701639a87af019a5dd4c96c3677ce9b85f0c847dd8a1d5c0af5736b7a0ba6e5b",
         "source_rulings_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
         "authored_by": "v0.8-exact-deck-closure",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "key": "34994475-b914-44f6-8ca1-c2747b6d5956:granted:moloid-attack",
+      "label": "Moloid attack mill",
+      "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
+      "ability_id": "granted:moloid-attack",
+      "active_zone": "battlefield",
+      "event": "creature.attacks",
+      "effects": [
+        {
+          "op": "choose_option",
+          "player": "$controller",
+          "prompt": "You may mill a card.",
+          "options": [
+            {"id": "mill", "label": "Mill a card"},
+            {"id": "decline", "label": "Do not mill"}
+          ],
+          "then_by_choice": {
+            "mill": [
+              {"op": "mill", "player": "$controller", "count": 1}
+            ],
+            "decline": []
+          }
+        }
+      ],
+      "trust_level": "trusted",
+      "coverage": ["granted_triggered_ability", "attack_trigger", "optional_mill"],
+      "tests": ["test_mole_man_plays_graveyard_land_and_moloid_attack_may_mill"],
+      "provenance": {
+        "source_oracle_hash": "701639a87af019a5dd4c96c3677ce9b85f0c847dd8a1d5c0af5736b7a0ba6e5b",
+        "source_rulings_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "authored_by": "v0.8-exact-deck-closure",
+        "granted_only": true,
         "review_status": "reviewed"
       }
     },

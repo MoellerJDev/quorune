@@ -21,6 +21,11 @@ from .characteristic_fragments import (
     ConditionalKeywordSpec,
     DynamicPowerToughnessSpec,
 )
+from .declaration_fragments import (
+    DeclarationCostTemplate,
+    DeclarationRequirementTemplate,
+    DeclarationRestrictionTemplate,
+)
 from .trigger_participation import TriggerMultiplierSpec, WardSpec
 from .replacement.immutable import thaw_value
 from .util import stable_json
@@ -605,6 +610,9 @@ StaticAbilityFragment: TypeAlias = (
     | WardSpec
     | ConditionalKeywordSpec
     | DynamicPowerToughnessSpec
+    | DeclarationCostTemplate
+    | DeclarationRequirementTemplate
+    | DeclarationRestrictionTemplate
 )
 
 
@@ -639,6 +647,12 @@ def ability_fragment_to_dict(
         kind = "conditional_keyword"
     elif isinstance(fragment, DynamicPowerToughnessSpec):
         kind = "dynamic_power_toughness"
+    elif isinstance(fragment, DeclarationCostTemplate):
+        kind = "declaration_cost"
+    elif isinstance(fragment, DeclarationRequirementTemplate):
+        kind = "declaration_requirement"
+    elif isinstance(fragment, DeclarationRestrictionTemplate):
+        kind = "declaration_restriction"
     else:
         raise AbilityFragmentError(
             f"Unsupported ability fragment {type(fragment).__name__}"
@@ -697,6 +711,21 @@ def ability_fragment_from_dict(
             return DynamicPowerToughnessSpec.from_dict(value["value"])
         except CharacteristicFragmentError as exc:
             raise AbilityFragmentError(str(exc)) from exc
+    if value["kind"] == "declaration_cost":
+        try:
+            return DeclarationCostTemplate.from_dict(value["value"])
+        except ValueError as exc:
+            raise AbilityFragmentError(str(exc)) from exc
+    if value["kind"] == "declaration_requirement":
+        try:
+            return DeclarationRequirementTemplate.from_dict(value["value"])
+        except ValueError as exc:
+            raise AbilityFragmentError(str(exc)) from exc
+    if value["kind"] == "declaration_restriction":
+        try:
+            return DeclarationRestrictionTemplate.from_dict(value["value"])
+        except ValueError as exc:
+            raise AbilityFragmentError(str(exc)) from exc
     raise AbilityFragmentError(
         f"Unsupported ability fragment kind {value['kind']!r}"
     )
@@ -724,6 +753,9 @@ def canonical_ability_fragments(
                 WardSpec,
                 ConditionalKeywordSpec,
                 DynamicPowerToughnessSpec,
+                DeclarationCostTemplate,
+                DeclarationRequirementTemplate,
+                DeclarationRestrictionTemplate,
             ),
         )
         else ability_fragment_from_dict(value)
@@ -804,6 +836,36 @@ def protection_specs(
         fragment
         for fragment in fragments
         if isinstance(fragment, ProtectionSpec)
+    )
+
+
+def declaration_cost_specs(
+    fragments: Iterable[StaticAbilityFragment],
+) -> tuple[DeclarationCostTemplate, ...]:
+    return tuple(
+        fragment
+        for fragment in fragments
+        if isinstance(fragment, DeclarationCostTemplate)
+    )
+
+
+def declaration_requirement_specs(
+    fragments: Iterable[StaticAbilityFragment],
+) -> tuple[DeclarationRequirementTemplate, ...]:
+    return tuple(
+        fragment
+        for fragment in fragments
+        if isinstance(fragment, DeclarationRequirementTemplate)
+    )
+
+
+def declaration_restriction_specs(
+    fragments: Iterable[StaticAbilityFragment],
+) -> tuple[DeclarationRestrictionTemplate, ...]:
+    return tuple(
+        fragment
+        for fragment in fragments
+        if isinstance(fragment, DeclarationRestrictionTemplate)
     )
 
 
@@ -897,6 +959,9 @@ __all__ = [
     "DamageKeywordTriggerKind",
     "DamageKeywordTriggerSpec",
     "DynamicPowerToughnessSpec",
+    "DeclarationCostTemplate",
+    "DeclarationRequirementTemplate",
+    "DeclarationRestrictionTemplate",
     "GrantedActivatedAbilitySpec",
     "GrantedTriggeredAbilitySpec",
     "ProtectionQualityKind",
@@ -915,6 +980,9 @@ __all__ = [
     "counter_maximum_specs",
     "counter_maximum_values",
     "damage_keyword_trigger_specs",
+    "declaration_cost_specs",
+    "declaration_requirement_specs",
+    "declaration_restriction_specs",
     "enchant_specs",
     "granted_activated_specs",
     "granted_triggered_specs",

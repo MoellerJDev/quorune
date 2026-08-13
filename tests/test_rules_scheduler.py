@@ -258,14 +258,46 @@ class RulesSchedulerTests(unittest.TestCase):
             for candidate in work["candidates"]
             if candidate["candidate_id"] == work["selected_candidate_id"]
         )
-        self.assertEqual("runtime_oracle_removal", selected["candidate_class"])
-        self.assertNotEqual(
-            "cross_subsystem_runtime_semantics", selected["universal_subsystem"]
-        )
         runtime_total = int(
             self.work_inputs["architecture_audit"]["architecture"]
             ["runtime_oracle_text_access"]
             ["prohibited_runtime_interpretation_count"]
+        )
+        if runtime_total == 0:
+            self.assertFalse(
+                any(
+                    candidate["candidate_class"]
+                    == "runtime_oracle_removal"
+                    for candidate in work["candidates"]
+                )
+            )
+            self.assertEqual(
+                "assurance:critical-interaction-recovery",
+                selected["candidate_id"],
+            )
+            self.assertEqual(
+                "interaction_assurance", selected["candidate_class"]
+            )
+            self.assertGreaterEqual(selected["priority_within_class"], 0)
+            card_candidates = [
+                candidate
+                for candidate in work["candidates"]
+                if candidate["candidate_class"]
+                in {"compiler_harvest", "card_family"}
+                and candidate["eligible"]
+            ]
+            self.assertTrue(card_candidates)
+            self.assertTrue(
+                all(
+                    selected["rank"] < candidate["rank"]
+                    for candidate in card_candidates
+                )
+            )
+            return
+        self.assertEqual("runtime_oracle_removal", selected["candidate_class"])
+        self.assertNotEqual(
+            "cross_subsystem_runtime_semantics",
+            selected["universal_subsystem"],
         )
         selected_runtime_count = int(
             selected["runtime_oracle_text_removal"]["expected_count"]

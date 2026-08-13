@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
+from declaration_support import compiled_declaration_fragments
 from quorune.model import CombatState
 from quorune.record import (
     authoritative_state_hash,
@@ -61,6 +62,10 @@ class DeclareBlockersRuleTests(unittest.TestCase):
             characteristics={
                 "type_line": "Token Creature — Test",
                 "oracle_text": oracle_text,
+                "ability_fragments": compiled_declaration_fragments(
+                    name,
+                    oracle_text,
+                ),
                 "power": "2",
                 "toughness": "2",
             },

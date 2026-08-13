@@ -1643,6 +1643,8 @@ class ExactZimoneClosureTests(unittest.TestCase):
             and card.zone == "battlefield"
         )
         moloid.acquired_control_turn_count = -1
+        moloid.annotations["token_characteristics"]["oracle_text"] = ""
+        moloid.annotations["copy_overrides"]["oracle_text"] = ""
 
         engine.permissions.invalidate_current()
         engine.state.pending_decision = None

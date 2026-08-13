@@ -160,13 +160,13 @@
     {
       "mechanic_id": "cr-508-declare-attackers-step",
       "path": "mechanics/contracts/declare-attackers-step.json",
-      "sha256": "43e355e24b8989bde07f830f0fe0def505221eedf0b15a65a4f5dac33526be28",
+      "sha256": "952841ed3b0020b0c6208a7e3f3765c6aec7a444f501e1e4dd67155e3c8e7d6a",
       "version": 10
     },
     {
       "mechanic_id": "cr-509-declare-blockers-step",
       "path": "mechanics/contracts/declare-blockers-step.json",
-      "sha256": "9dc25409d7a6af8078091e116a77c1179479232a66a8569bfcc3f9aa3fa91679",
+      "sha256": "68146673809f052e86a7b209018001a3d9ac7c9c8361d269d3c1a8c2a96d1367",
       "version": 10
     },
     {
@@ -8200,11 +8200,11 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/declare-attackers-step.json",
-      "contract_sha256": "43e355e24b8989bde07f830f0fe0def505221eedf0b15a65a4f5dac33526be28",
+      "contract_sha256": "952841ed3b0020b0c6208a7e3f3765c6aec7a444f501e1e4dd67155e3c8e7d6a",
       "contract_version": 10,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "DeclarationProblem, shared declaration-cost and declaration-restriction Oracle grammars, and the CommanderEngine attacker declaration/payment transition",
+      "implementation_component": "DeclarationProblem, compiler-only declaration grammar, shared effective layer-6 declaration fragments, and the CommanderEngine attacker declaration/payment transition",
       "implementation_version": "declare-attackers-step-v10",
       "kind": "rules_section",
       "known_blockers": [
@@ -8260,6 +8260,8 @@
         "test_broader_conditional_attack_tax_stops_fail_closed",
         "test_planeswalker_only_tax_does_not_tax_a_player_attack",
         "test_oracle_ir_uses_the_runtime_declaration_cost_grammar",
+        "test_declaration_components_are_closed_typed_fragments",
+        "test_raw_oracle_declaration_text_has_no_runtime_authority",
         "test_selected_creature_can_require_another_declaration",
         "test_global_maximum_applies_before_requirement_maximization",
         "test_absolute_self_and_attached_restrictions_remove_domains",
@@ -8299,11 +8301,11 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/declare-blockers-step.json",
-      "contract_sha256": "9dc25409d7a6af8078091e116a77c1179479232a66a8569bfcc3f9aa3fa91679",
+      "contract_sha256": "68146673809f052e86a7b209018001a3d9ac7c9c8361d269d3c1a8c2a96d1367",
       "contract_version": 10,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "DeclarationProblem, shared declaration-cost and declaration-restriction Oracle grammars, and the CommanderEngine blocker declaration/payment transition",
+      "implementation_component": "DeclarationProblem, compiler-only declaration grammar, shared effective layer-6 declaration fragments, and the CommanderEngine blocker declaration/payment transition",
       "implementation_version": "declare-blockers-step-v10",
       "kind": "rules_section",
       "known_blockers": [
@@ -8347,6 +8349,8 @@
         "test_broader_conditional_block_cost_stops_fail_closed",
         "test_sacrificed_mana_source_does_not_become_a_blocker",
         "test_oracle_ir_uses_the_runtime_declaration_cost_grammar",
+        "test_declaration_components_are_closed_typed_fragments",
+        "test_raw_oracle_declaration_text_has_no_runtime_authority",
         "test_selected_creature_can_require_another_declaration",
         "test_absolute_self_and_attached_restrictions_remove_domains",
         "test_block_alone_allows_other_blocker_on_different_attacker",

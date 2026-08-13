@@ -2,7 +2,7 @@
 title: "Typed Oracle IR"
 status: "current"
 authoritative_source: "Oracle compiler implementation, CardProgram schema, and pinned corpus reports"
-verified: "2026-08-06"
+verified: "2026-08-13"
 audience: "compiler, rules, and CardProgram contributors"
 maintenance: "hand-maintained"
 concern: "oracle-ir"
@@ -95,6 +95,11 @@ development-only arbitration boundary.
 
 No running game parses Oracle prose. The runtime consumes only validated,
 fingerprinted CardPrograms, registered descriptors, and typed rules owners.
+Combat declaration costs, restrictions, and requirements are lowered as
+closed static-ability fragments. Their registered handlers add the fragments
+to the same effective layer-6 ability snapshot used by other static abilities;
+the declaration solver filters that snapshot by typed fragment class and never
+consults display text.
 
 ## Residual and override policy
 

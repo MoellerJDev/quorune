@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "3b3eefb3fe9103d1e3052093dea4ba5b1a7af7e1131f1914caa23b0705c782fa"
+verified: "489b9221687892075093802b140618d048c76aa71df8c8e61b2e00fb9a2084e9"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -44,9 +44,9 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Jace, Mirror Mage | 163 | 22 | 4 | 4 | 10 | 13 | `blocked` |
 | Blaster, Combat DJ // Blaster, Morale Booster | 161 | 16 | 5 | 6 | 8 | 16 | `blocked` |
 | Dr. Madison Li | 160 | 21 | 7 | 4 | 5 | 10 | `blocked` |
-| Devoted Grafkeeper // Departed Soulkeeper | 159 | 19 | 5 | 6 | 7 | 7 | `blocked` |
 | Faithbound Judge // Sinner's Judgment | 159 | 21 | 5 | 7 | 8 | 1 | `blocked` |
 | Invasion of Pyrulea // Gargantuan Slabhorn | 159 | 16 | 4 | 4 | 7 | 18 | `blocked` |
+| Devoted Grafkeeper // Departed Soulkeeper | 157 | 19 | 5 | 6 | 6 | 7 | `blocked` |
 | Path of Mettle // Metzali, Tower of Triumph | 157 | 18 | 5 | 6 | 5 | 10 | `blocked` |
 | Starforged Sword | 157 | 16 | 5 | 4 | 6 | 11 | `blocked` |
 | Chandra, Fire of Kaladesh // Chandra, Roaring Flame | 156 | 19 | 4 | 5 | 7 | 15 | `blocked` |
@@ -59,8 +59,8 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Purging Stormbrood // Absorb Essence | 154 | 22 | 6 | 4 | 3 | 10 | `blocked` |
 | Ral, Monsoon Mage // Ral, Leyline Prodigy | 154 | 13 | 5 | 6 | 8 | 17 | `blocked` |
 | Invasion of Ikoria // Zilortha, Apex of Ikoria | 153 | 14 | 4 | 4 | 6 | 19 | `blocked` |
-| Norman Osborn // Green Goblin | 153 | 17 | 4 | 6 | 5 | 16 | `blocked` |
 | Invasion of New Capenna // Holy Frazzle-Cannon | 152 | 12 | 4 | 4 | 5 | 18 | `blocked` |
 | Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time | 152 | 20 | 6 | 6 | 8 | 3 | `blocked` |
 | Arcee, Sharpshooter // Arcee, Acrobatic Coupe | 151 | 16 | 5 | 5 | 7 | 14 | `blocked` |
+| Curse of Leeches // Leeching Lurker | 151 | 17 | 4 | 6 | 7 | 13 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |

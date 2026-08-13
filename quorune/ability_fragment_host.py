@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from .ability_fragments import StaticAbilityFragment
+from .ability_fragments import (
+    AbilityFragmentError,
+    StaticAbilityFragment,
+    canonical_ability_fragments,
+)
 from .carddb_characteristics import base_card_characteristics
 from .compiled_ability_fragments import (
     compiled_ability_fragment_dicts,
@@ -29,6 +33,25 @@ class AbilityFragmentHostMixin:
             card,
             face_name=face_name,
         )
+
+    def _effective_ability_fragments(
+        self,
+        card: Any,
+        *,
+        error_type: type[Exception] | None = None,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        """Return one canonical current layer-6 ability snapshot."""
+
+        try:
+            return canonical_ability_fragments(
+                self._effective_card_data(card).get(
+                    "ability_fragments", ()
+                )
+            )
+        except AbilityFragmentError as exc:
+            if error_type is None:
+                raise
+            raise error_type(str(exc)) from exc
 
     def _compiled_enchant_spec(
         self,

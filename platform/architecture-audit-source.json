@@ -433,24 +433,15 @@
         "quorune/combat_constraints.py",
         "quorune/combat_evasion_engine_adapter.py",
         "quorune/declaration_costs.py",
+        "quorune/declaration_fragments.py",
+        "quorune/declaration_requirements.py",
+        "quorune/declaration_requirement_runtime.py",
         "quorune/declaration_restrictions.py",
         "quorune/damage.py",
         "quorune/semantic_runtime/block_restrictions.py",
         "quorune/engine.py"
       ],
-      "missing_dedicated_owner": false,
-      "context": {
-        "prohibited_runtime_oracle_text_symbols": [
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._combat_oracle_lines"
-          },
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._complete_attackers"
-          }
-        ]
-      }
+      "missing_dedicated_owner": false
     },
     {
       "id": "commander_variant",

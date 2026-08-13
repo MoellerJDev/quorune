@@ -69,9 +69,10 @@ class ArchitectureCliTests(unittest.TestCase):
         self.assertGreater(writes["count"], 0)
         self.assertEqual(
             runtime_text["prohibited_runtime_interpretation_count"],
-            debt["runtime_oracle_text_access"]["by_classification"][
-                "prohibited_runtime_interpretation"
-            ],
+            debt["runtime_oracle_text_access"]["by_classification"].get(
+                "prohibited_runtime_interpretation",
+                0,
+            ),
         )
 
     def test_simctl_architecture_owners_reports_live_coordinates(self):

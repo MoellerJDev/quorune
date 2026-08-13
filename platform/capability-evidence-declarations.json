@@ -2762,6 +2762,94 @@
       "applicability_note": "Replay both real combat-damage steps and their intervening priority window exactly."
     },
     {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_global_maximum_constrains_requirement_solver",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose a typed global declaration maximum with the shared if-able requirement solver."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_monarch_rules.MonarchRuleTests.test_player_state_declaration_predicates_and_exact_replay",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Evaluate a typed public player-state predicate through declaration legality and exact replay."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_combat_declaration_costs.CombatDeclarationCostTests.test_prison_tax_is_projected_paid_atomically_and_replays",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project defender-scoped typed attack taxes and commit the selected multiplayer payment atomically."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_declaration_component_runtime_mutant_is_killed",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a mutation that removes typed declaration-cost fragments from the shared current ability snapshot."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "negative",
+      "test_id": "tests.test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_declaration_component_descriptors_reject_malformed_values",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed cost, restriction, and requirement fragment descriptors before runtime lowering."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "negative",
+      "test_id": "tests.test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_raw_oracle_declaration_text_has_no_runtime_authority",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Leave raw declaration display prose behaviorally inert when no typed fragment is present."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "positive",
+      "test_id": "tests.test_combat_declaration_costs.CombatDeclarationCostTests.test_prison_tax_is_projected_paid_atomically_and_replays",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Consume a typed fixed-mana declaration cost through projection, payment, and combat mutation."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "positive",
+      "test_id": "tests.test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_declaration_components_are_closed_typed_fragments",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile exact costs, restrictions, and requirements into three closed registered static fragments."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "positive",
+      "test_id": "tests.test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_global_maximum_constrains_requirement_solver",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply a typed quantified declaration restriction to the complete simultaneous declaration problem."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "replay",
+      "test_id": "tests.test_combat_declaration_costs.CombatDeclarationCostTests.test_prison_tax_is_projected_paid_atomically_and_replays",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay typed declaration-cost projection, payment, and the resulting attack state exactly."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "replay",
+      "test_id": "tests.test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_attack_or_block_alone_allows_different_defenders_and_replays",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay a typed simultaneous attack-or-block restriction across distinct legal defenders."
+    },
+    {
       "capability_id": "combat.goad.prohibition.controller_creatures",
       "evidence_class": "interaction",
       "test_id": "tests.test_goad_rules.GoadRuleTests.test_typed_goad_prohibition_is_controller_scoped_and_replays",
