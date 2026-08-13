@@ -247,6 +247,14 @@ def _validate_offer_fingerprint(
         )
 
 
+def _spell_semantic_key(
+    record: Any,
+    face: Mapping[str, Any] | None,
+) -> str:
+    face_key = str(face.get("name") or "") if face else "front"
+    return f"{record.oracle_id}:spell:{face_key}"
+
+
 def _cast_program_and_cost(
     host: CastProposalHost,
     request: CastProposalRequest,
@@ -287,10 +295,7 @@ def _cast_program_and_cost(
         else 0
     )
     _validate_declared_cost(host, request, card, commander_tax)
-    semantic_key = (
-        f"{record.oracle_id}:spell:"
-        f"{str(face.get('name')) if face else 'front'}"
-    )
+    semantic_key = _spell_semantic_key(record, face)
     program = host.semantics.get(semantic_key)
     options = tuple(
         CastCostOption.from_dict(value)
@@ -583,7 +588,7 @@ def build_cast_offer(
         ),
     ):
         return CastProposalResult("unavailable", "timing")
-    semantic_key = f"{record.oracle_id}:spell:front"
+    semantic_key = _spell_semantic_key(record, front)
     program = host.semantics.get(semantic_key)
     enchant_spec = host._compiled_enchant_spec(
         card,

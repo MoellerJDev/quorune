@@ -473,7 +473,7 @@ def _system_candidates(
     if covered > applicable:
         raise WorkSelectionError("Covered high-risk pairs exceed applicable pairs")
     uncovered = applicable - covered
-    assurance_gate_open = uncovered >= assurance_baseline
+    assurance_gate_open = uncovered > assurance_baseline
     return [
         _candidate(
             candidate_id="ci:compact-card-dependency-closure",
@@ -531,7 +531,7 @@ def _system_candidates(
             ),
             estimated_effort="medium" if assurance_gate_open else "ongoing",
             reranking_reason=(
-                "Uncovered high-risk interactions have not fallen below the verified "
+                "Uncovered high-risk interactions remain above the verified "
                 "stabilization baseline."
                 if assurance_gate_open
                 else "The stabilization exit gate is satisfied, though interaction debt remains."

@@ -1306,6 +1306,38 @@
       "capability_ids": ["zone.entry.tapped_state"],
       "interaction_order": 3,
       "assertion": "Ordinary land play suspends before battlefield mutation, projects only the affected seat's visible order choice, resumes the exact action, and replays the two-command Game Record exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_glasswing_faces_compose_aura_attachment_with_tapped_entry",
+      "piece_ids": ["capability.attachment.aura.simple_object", "capability.zone.entry.tapped_state"],
+      "capability_ids": ["attachment.aura.simple_object", "zone.entry.tapped_state"],
+      "interaction_order": 2,
+      "assertion": "The selected Age-Graced Chapel face enters tapped while a second copy's Glasswing Grace face uses the advertised creature target, resolves attached, and applies its typed characteristics without face-program leakage."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_lotus_field_composes_tapped_entry_with_controller_relative_hexproof",
+      "piece_ids": ["capability.target.protection.hexproof_permanent", "capability.zone.entry.tapped_state"],
+      "capability_ids": ["target.protection.hexproof_permanent", "zone.entry.tapped_state"],
+      "interaction_order": 2,
+      "assertion": "Lotus Field's typed entry program makes it enter tapped while current printed Hexproof excludes an opponent's target, permits its controller's target, and leaves nontarget checks unaffected."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_fell_faces_compose_target_revalidation_with_tapped_entry",
+      "piece_ids": ["capability.target.revalidate_resolution", "capability.zone.entry.tapped_state"],
+      "capability_ids": ["target.revalidate_resolution", "zone.entry.tapped_state"],
+      "interaction_order": 2,
+      "assertion": "The face-named Fell program supplies the advertised target schema and accepted cast while Fell Mire enters tapped; resolution then revalidates a departed target and performs no destruction."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "piece_ids": ["capability.zone.entry.tapped_state", "residual.target_or_choice.target-predicate"],
+      "capability_ids": ["zone.entry.tapped_state"],
+      "interaction_order": 2,
+      "assertion": "Trusted-only action authority rejects the unsupported target-predicate spell face without changing authoritative state while the exact Agadeem land face remains playable and enters tapped."
     }
   ]
 }

@@ -3931,61 +3931,49 @@
         {
           "classification": "rules_value",
           "file": "quorune/rules/casting/proposal.py",
-          "flow_id": "card-identity-flow:c6e75acd637d1d92c0f1",
-          "line": 285,
+          "flow_id": "card-identity-flow:89cdbb10d0b1fdf8966a",
+          "line": 255,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 285,
-          "symbol": "_cast_program_and_cost"
+          "source_line": 255,
+          "symbol": "_spell_semantic_key"
         },
         {
           "classification": "rules_value",
           "file": "quorune/rules/casting/proposal.py",
-          "flow_id": "card-identity-flow:cbc622b2e04530a16785",
-          "line": 291,
+          "flow_id": "card-identity-flow:c6e75acd637d1d92c0f1",
+          "line": 293,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 291,
+          "source_line": 293,
           "symbol": "_cast_program_and_cost"
         },
         {
           "classification": "rules_value",
           "file": "quorune/rules/casting/proposal.py",
           "flow_id": "card-identity-flow:e8688a395cb38ab86c59",
-          "line": 309,
+          "line": 314,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "printed_name",
           "source_kind": "attribute",
-          "source_line": 309,
+          "source_line": 314,
           "symbol": "_cast_program_and_cost"
         },
         {
           "classification": "rules_value",
           "file": "quorune/rules/casting/proposal.py",
-          "flow_id": "card-identity-flow:a8f6d6c1cde1132c32bb",
-          "line": 586,
-          "selector": null,
-          "sink_kind": "identity_as_data",
-          "source_field": "oracle_id",
-          "source_kind": "attribute",
-          "source_line": 586,
-          "symbol": "build_cast_offer"
-        },
-        {
-          "classification": "rules_value",
-          "file": "quorune/rules/casting/proposal.py",
           "flow_id": "card-identity-flow:639cf370c33ba2180831",
-          "line": 627,
+          "line": 632,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 627,
+          "source_line": 632,
           "symbol": "build_cast_offer"
         },
         {
@@ -4824,9 +4812,9 @@
           "generated_provenance": 12,
           "reviewed_historical_compatibility": 1,
           "reviewed_override": 3,
-          "rules_value": 195
+          "rules_value": 194
         },
-        "classified_flow_count": 397,
+        "classified_flow_count": 396,
         "prohibited_identity_dispatch_count": 0
       },
       "external_dependencies": {
@@ -10107,11 +10095,11 @@
       "applicable_high_risk_pairs": 111,
       "applicable_piece_pairs": 28662,
       "available": true,
-      "covered_high_risk_pairs": 26,
-      "covered_piece_pairs": 453,
+      "covered_high_risk_pairs": 30,
+      "covered_piece_pairs": 457,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "f4320185be0c20c5fe4214b878934c1bf3e07693a316a7b8ed2a02bb9be8cff7",
-      "uncovered_high_risk_pairs": 85
+      "source_fingerprint": "b9de6477ce4bed755c9c1570d4d8c5063d54f9f61cb7165f024fe17a366e91c0",
+      "uncovered_high_risk_pairs": 81
     },
     "migration_queue": [],
     "missing_dedicated_owners": [],
@@ -10499,7 +10487,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 149625,
+      "logical_lines": 149628,
       "methods": {
         "dunder": 413,
         "private": 754,
@@ -11041,10 +11029,10 @@
         },
         {
           "file": "quorune/rules/casting/proposal.py",
-          "functions_and_methods": 24,
+          "functions_and_methods": 25,
           "language": "python",
-          "logical_lines": 606,
-          "physical_lines": 649
+          "logical_lines": 609,
+          "physical_lines": 654
         },
         {
           "file": "quorune/carddb.py",
@@ -14000,7 +13988,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 164070,
+      "physical_lines": 164075,
       "python_file_count": 434,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -14018,7 +14006,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 2086,
+      "top_level_functions": 2087,
       "web_file_count": 16
     },
     "runtime_oracle_text_access": {
@@ -22042,7 +22030,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 36,
+        "primary_test_count": 37,
         "primary_tests": [
           "test_battlefield_rules",
           "test_capability_implementation_mutations",
@@ -22079,6 +22067,7 @@
           "test_targeting_v070",
           "test_trigger_targeting",
           "test_typed_ability_fragments",
+          "test_typed_land_entry_participation",
           "test_typed_untap_step_participation"
         ],
         "privacy_sensitivity": "Hidden-zone candidates and private choice payloads must never cross principal projections.",
@@ -23821,7 +23810,7 @@
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 261,
+          "interaction": 268,
           "multiplayer": 153,
           "mutation": 178,
           "negative": 297,
@@ -23831,12 +23820,12 @@
           "replay": 190,
           "rollback": 39
         },
-        "declaration_count": 1562,
-        "declaration_source_fingerprint": "f5202cd91b52c7a0510958dca1571fbc1212b065b9e6fae90754502b4f56f60f",
-        "fingerprint": "4633015ac33243d6cef22895a7ef30839bc194948a120c65015f502f563c7e90",
-        "registry_fingerprint": "9f184a281631c2cbe931bfc94a9cad6dab07327de5ad63ced4e4ed84dfd2353b"
+        "declaration_count": 1569,
+        "declaration_source_fingerprint": "a66a4377da1ef80b5ddb63580c00bf39262f211cfca45825d691d48c95cb9891",
+        "fingerprint": "d33d6ee5e7b98feed6fff54ef22ab29e3fd5c9afcf2a07f4fa269a0e72a9d558",
+        "registry_fingerprint": "72d0d918cab98847f41dc2a524e4196fcf69cec8cbcdb376c0245c7d6cf50b29"
       },
-      "fingerprint": "9f184a281631c2cbe931bfc94a9cad6dab07327de5ad63ced4e4ed84dfd2353b",
+      "fingerprint": "72d0d918cab98847f41dc2a524e4196fcf69cec8cbcdb376c0245c7d6cf50b29",
       "implementation_mutation_status_counts": {
         "killed": 155,
         "not_run": 5
@@ -24098,7 +24087,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 332,
         "exact_nodes": 535,
-        "fingerprint": "398e5258d3a3672e275dc4e02680ae6df97950f8240cd9a37d43b598de7ffb1b",
+        "fingerprint": "a6d4478699c10b6247e55c3ad767f8fcd860b9d99c0aa8d649c49cd073416fdc",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "dd4d9586ad713a5a8faa8bf705ed92a0ec9cfd8bc218315e28dc8d55fbaa415b",
         "present": true,
@@ -24110,7 +24099,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 345,
         "exact_nodes": 555,
-        "fingerprint": "fae0bdbed6e2e40888e8668c27aa996c1b7d26ec74550491b7a21200cc291a45",
+        "fingerprint": "234060844aa6aa748a3161aff95b397d11241003e3f4f45ff5aa625218dd70b9",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "d9cb9f014328fcef11de5e5faa8935a758cfad2cfbf0800e01fe4a890443f114",
         "present": true,
@@ -24129,7 +24118,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "510f8235485fc2d4d5f9a1ecf929dfd62f48e6fb5a094607ab758316f8ed1baf",
+      "fingerprint": "46de6758684dea22c933758ca12b67df81d41d519173e52e05bcae87f1277d0b",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -24988,8 +24977,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2794,
-      "discovered_total": 6094,
+      "conventional_ast_cases": 2799,
+      "discovered_total": 6099,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 130,

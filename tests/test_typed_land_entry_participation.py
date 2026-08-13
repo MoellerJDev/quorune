@@ -17,11 +17,16 @@ from quorune.entry_counters import capture_prospective_entry_characteristics
 from quorune.model import CardInstance
 from quorune.oracle_ir import generated_programs
 from quorune.projection import StateProjector
-from quorune.record import checkpoint_envelope, replay_record
+from quorune.record import (
+    authoritative_state_hash,
+    checkpoint_envelope,
+    replay_record,
+)
 from quorune.replacement_effects import ReplacementChoiceRequired
 from quorune.rules.capabilities import load_default_capability_registry
 from quorune.semantic_runtime import prepare_zone_change_replacement
 from quorune.semantic_runtime import typed_entry_life_payment_amount
+from quorune.targets import TargetGroup
 
 
 def _record(text: str, *, name: str = "Typed Entry Fixture") -> CardRecord:
@@ -198,6 +203,7 @@ class TypedLandEntryRuntimeTests(unittest.TestCase):
         name: str,
         ref: str,
         zone: str = "hand",
+        register_all: bool = False,
     ) -> CardInstance:
         record = self.db.lookup(name)
         self.assertIsNotNone(record, name)
@@ -215,7 +221,7 @@ class TypedLandEntryRuntimeTests(unittest.TestCase):
         )
         engine.state.cards[card.object_id] = card
         engine.state.players[seat].zones[zone].append(card.object_id)
-        if any(
+        if register_all or any(
             static_entry_state_handler(line, source_name=record.name)
             is not None
             for line in record.oracle_text.splitlines()
@@ -227,7 +233,7 @@ class TypedLandEntryRuntimeTests(unittest.TestCase):
                 capability_registry=self.capabilities,
                 capability_profile="commander_review",
             ):
-                if any(
+                if register_all or any(
                     handler.get("handler_id")
                     == "replacement.zone.entry-state.v1"
                     for handler in program.handlers
@@ -243,6 +249,32 @@ class TypedLandEntryRuntimeTests(unittest.TestCase):
         engine.state.priority_player = seat
         engine.state.priority_passes = []
         engine.state.players[seat].land_plays_remaining = 2
+
+    @staticmethod
+    def issue_priority(engine, seat: str = "A") -> None:
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.priority_player = seat
+        engine.state.priority_passes = []
+        engine._grant_priority(seat)
+        engine._issue_priority(seat)
+
+    def legal_actions(self, session, seat: str = "A") -> list[dict]:
+        decision = session.packet(f"pilot:{seat}", full=True)["decision"]
+        self.assertIsNotNone(decision)
+        return list(decision["legal_actions"])
+
+    def existing_creature(self, engine, seat: str):
+        return next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == seat
+            and not card.is_commander
+            and "creature"
+            in str(
+                engine._effective_card_data(card).get("type_line") or ""
+            ).casefold()
+        )
 
     def test_land_entry_families_use_typed_snapshot_and_canonical_owners(self):
         session = self.session(6140121)
@@ -412,6 +444,255 @@ class TypedLandEntryRuntimeTests(unittest.TestCase):
                 prospective_name="Agadeem, the Undercrypt",
             ),
         )
+
+    def test_glasswing_faces_compose_aura_attachment_with_tapped_entry(self):
+        session = self.session(61401263)
+        engine = session.engine
+        land = self.add_card(
+            engine,
+            seat="A",
+            name="Glasswing Grace // Age-Graced Chapel",
+            ref="G1",
+            register_all=True,
+        )
+        aura = self.add_card(
+            engine,
+            seat="A",
+            name="Glasswing Grace // Age-Graced Chapel",
+            ref="G2",
+            register_all=True,
+        )
+        target_ref = engine.create_token(
+            "A",
+            name="Assurance Creature",
+            characteristics={
+                "type_line": "Token Creature — Test",
+                "colors": ["W"],
+                "power": "2",
+                "toughness": "2",
+                "keywords": [],
+            },
+        )[0]
+        target = engine._resolve_object(
+            "A", target_ref, zones={"battlefield"}
+        )
+        engine.state.players["A"].mana_pool["W"] = 5
+        self.stage_main(engine)
+        self.issue_priority(engine)
+
+        land_action = next(
+            action
+            for action in self.legal_actions(session)
+            if action["id"] == f"play-land:{land.ref}"
+        )
+        played = session.act("pilot:A", {"action_id": land_action["id"]})
+        self.assertTrue(played.ok, played.summary)
+        self.assertEqual("battlefield", land.zone)
+        self.assertEqual("Age-Graced Chapel", land.active_face)
+        self.assertTrue(land.tapped)
+
+        cast_action = next(
+            action
+            for action in self.legal_actions(session)
+            if action["id"] == f"cast:{aura.ref}"
+        )
+        self.assertIn(target.ref, cast_action["target_schema"]["legal_refs"])
+        cast = session.act(
+            "pilot:A",
+            {
+                "action_id": cast_action["id"],
+                "targets": [target.ref],
+                "pay": "manual",
+                "payment": {"W": 5},
+            },
+        )
+        self.assertTrue(cast.ok, cast.summary)
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        engine._prepare_stack_resolution()
+
+        self.assertEqual("battlefield", aura.zone)
+        self.assertEqual("Glasswing Grace", aura.active_face)
+        self.assertEqual(target.object_id, aura.attached_to)
+        characteristics = engine._effective_card_data(target)
+        self.assertEqual("4", characteristics["power"])
+        self.assertEqual("4", characteristics["toughness"])
+        self.assertGreaterEqual(
+            {keyword.casefold() for keyword in characteristics["keywords"]},
+            {"flying", "lifelink"},
+        )
+
+    def test_lotus_field_composes_tapped_entry_with_controller_relative_hexproof(
+        self,
+    ):
+        session = self.session(61401264)
+        engine = session.engine
+        field = self.add_card(
+            engine,
+            seat="B",
+            name="Lotus Field",
+            ref="LF1",
+            register_all=True,
+        )
+        engine.move_card(
+            field.object_id,
+            "battlefield",
+            controller="B",
+            log=False,
+        )
+        self.assertTrue(field.tapped)
+        field_keywords = {
+            keyword.casefold()
+            for keyword in engine._effective_card_data(field)["keywords"]
+        }
+        self.assertIn(
+            "hexproof",
+            field_keywords,
+        )
+
+        group = TargetGroup.from_mapping(
+            {
+                "zones": ["battlefield"],
+                "categories": ["permanent"],
+            }
+        )
+        source_a = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "A"
+        )
+        row_a = next(
+            row
+            for row in engine._target_candidate_rows("A", group)
+            if row["ref"] == field.ref
+        )
+        self.assertFalse(
+            engine._target_row_matches(
+                "A", group, row_a, source_ref=source_a.ref, as_target=True
+            )
+        )
+        self.assertTrue(
+            engine._target_row_matches(
+                "A", group, row_a, source_ref=source_a.ref, as_target=False
+            )
+        )
+        source_b = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "B" and card is not field
+        )
+        row_b = next(
+            row
+            for row in engine._target_candidate_rows("B", group)
+            if row["ref"] == field.ref
+        )
+        self.assertTrue(
+            engine._target_row_matches(
+                "B", group, row_b, source_ref=source_b.ref, as_target=True
+            )
+        )
+
+    def test_fell_faces_compose_target_revalidation_with_tapped_entry(self):
+        session = self.session(61401265)
+        engine = session.engine
+        land = self.add_card(
+            engine,
+            seat="A",
+            name="Fell the Profane // Fell Mire",
+            ref="F1",
+            register_all=True,
+        )
+        spell = self.add_card(
+            engine,
+            seat="A",
+            name="Fell the Profane // Fell Mire",
+            ref="F2",
+            register_all=True,
+        )
+        target = self.existing_creature(engine, "B")
+        engine.move_card(
+            target.object_id,
+            "battlefield",
+            controller="B",
+            log=False,
+        )
+        engine.state.players["A"].mana_pool["B"] = 4
+        self.stage_main(engine)
+        self.issue_priority(engine)
+
+        played = session.act(
+            "pilot:A", {"action_id": f"play-land:{land.ref}"}
+        )
+        self.assertTrue(played.ok, played.summary)
+        self.assertEqual("Fell Mire", land.active_face)
+        self.assertTrue(land.tapped)
+
+        cast_action = next(
+            action
+            for action in self.legal_actions(session)
+            if action["id"] == f"cast:{spell.ref}"
+        )
+        self.assertIn("target_schema", cast_action, cast_action)
+        self.assertIn(target.ref, cast_action["target_schema"]["legal_refs"])
+        cast = session.act(
+            "pilot:A",
+            {
+                "action_id": cast_action["id"],
+                "targets": [target.ref],
+                "pay": "manual",
+                "payment": {"B": 4},
+            },
+        )
+        self.assertTrue(cast.ok, cast.summary)
+        self.assertEqual("stack", spell.zone)
+        engine.move_card(target.object_id, "hand", log=False)
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        engine._prepare_stack_resolution()
+
+        self.assertFalse(engine.state.stack)
+        self.assertEqual("graveyard", spell.zone)
+        self.assertEqual("hand", target.zone)
+
+    def test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes(
+        self,
+    ):
+        session = self.session(61401266)
+        engine = session.engine
+        card = self.add_card(
+            engine,
+            seat="A",
+            name="Agadeem's Awakening // Agadeem, the Undercrypt",
+            ref="A1",
+            register_all=True,
+        )
+        engine.state.config.semantic_policy = "trusted_only"
+        engine.state.players["A"].mana_pool["B"] = 3
+        self.stage_main(engine)
+        self.issue_priority(engine)
+        actions = self.legal_actions(session)
+        self.assertIn(
+            f"play-land:{card.ref}", {action["id"] for action in actions}
+        )
+        self.assertNotIn(
+            f"cast:{card.ref}", {action["id"] for action in actions}
+        )
+
+        before = authoritative_state_hash(engine.state)
+        rejected = session.act(
+            "pilot:A", {"action_id": f"cast:{card.ref}"}
+        )
+        self.assertFalse(rejected.ok)
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        played = session.act(
+            "pilot:A", {"action_id": f"play-land:{card.ref}"}
+        )
+        self.assertTrue(played.ok, played.summary)
+        self.assertEqual("battlefield", card.zone)
+        self.assertEqual("Agadeem, the Undercrypt", card.active_face)
+        self.assertTrue(card.tapped)
 
     def test_only_historical_v3_registry_can_use_entry_adapter(self):
         session = self.session(61401262)

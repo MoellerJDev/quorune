@@ -96,6 +96,10 @@ canonical proposal fingerprint and an expiry revision. Execution accepts the
 offer only while its source, cost, target, timing, and payability facts remain
 equivalent, then commits through `rules/casting/commit.py` or
 `rules/activation/commit.py`. Stale offers fail before mutation.
+For a modal double-faced card, offer construction and command validation derive
+the same spell-program key from the selected front face name. A typed land-face
+program cannot authorize an unsupported spell face, and a trusted spell target
+schema cannot disappear from its advertised offer.
 
 `abilities.py` generically lowers represented colon abilities, the supported
 Craft reminder grammar, and one typed activation-usage limit per

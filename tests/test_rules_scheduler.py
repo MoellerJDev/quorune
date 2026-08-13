@@ -271,14 +271,17 @@ class RulesSchedulerTests(unittest.TestCase):
                     for candidate in work["candidates"]
                 )
             )
-            self.assertEqual(
-                "assurance:critical-interaction-recovery",
-                selected["candidate_id"],
+            assurance = next(
+                candidate
+                for candidate in work["candidates"]
+                if candidate["candidate_id"]
+                == "assurance:critical-interaction-recovery"
             )
-            self.assertEqual(
-                "interaction_assurance", selected["candidate_class"]
+            debt = assurance["interaction_debt_introduced"]
+            gate_open = (
+                debt["uncovered_high_risk_pairs"]
+                > debt["starting_uncovered_high_risk_pairs"]
             )
-            self.assertGreaterEqual(selected["priority_within_class"], 0)
             card_candidates = [
                 candidate
                 for candidate in work["candidates"]
@@ -287,12 +290,24 @@ class RulesSchedulerTests(unittest.TestCase):
                 and candidate["eligible"]
             ]
             self.assertTrue(card_candidates)
-            self.assertTrue(
-                all(
-                    selected["rank"] < candidate["rank"]
-                    for candidate in card_candidates
+            if gate_open:
+                self.assertEqual(assurance, selected)
+                self.assertTrue(
+                    all(
+                        selected["rank"] < candidate["rank"]
+                        for candidate in card_candidates
+                    )
                 )
-            )
+            else:
+                self.assertFalse(assurance["eligible"])
+                self.assertEqual(
+                    "exit_gate_satisfied",
+                    assurance["assurance_readiness"]["status"],
+                )
+                self.assertIn(
+                    selected["candidate_class"],
+                    {"compiler_harvest", "card_family"},
+                )
             return
         self.assertEqual("runtime_oracle_removal", selected["candidate_class"])
         self.assertNotEqual(
@@ -347,6 +362,44 @@ class RulesSchedulerTests(unittest.TestCase):
         )
         self.assertTrue(
             all(selected["rank"] < candidate["rank"] for candidate in card_candidates)
+        )
+
+    def test_assurance_exit_gate_accepts_baseline_and_resumes_card_harvest(self):
+        inputs = deepcopy(self.work_inputs)
+        interaction = inputs["reusable_piece_delta"]["interaction_coverage"]
+        baseline = self.catalog["work_selection"]["interaction_assurance"][
+            "starting_uncovered_high_risk_pairs"
+        ]
+        interaction["covered_high_risk_pairs"] = (
+            interaction["applicable_high_risk_pairs"] - baseline
+        )
+
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=inputs,
+        )
+        assurance = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"]
+            == "assurance:critical-interaction-recovery"
+        )
+        selected = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"] == work["selected_candidate_id"]
+        )
+
+        self.assertFalse(assurance["eligible"])
+        self.assertEqual(
+            "exit_gate_satisfied",
+            assurance["assurance_readiness"]["status"],
+        )
+        self.assertEqual("compiler_harvest", selected["candidate_class"])
+        self.assertEqual(
+            "frontier:effect_clause:typed-spell-additional-cost-clause",
+            selected["candidate_id"],
         )
 
     def test_runtime_text_candidates_are_split_by_declared_subsystem(self):
