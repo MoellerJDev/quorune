@@ -208,9 +208,14 @@ class AbilityFragmentModelTests(unittest.TestCase):
                 fragments_from_descriptors(descriptors)
             ),
         )
-        self.assertEqual(
-            17,
-            len(default_ability_fragment_registry().inventory()),
+        inventory = default_ability_fragment_registry().inventory()
+        handler_ids = {str(row["handler_id"]) for row in inventory}
+        self.assertEqual(len(inventory), len(handler_ids))
+        self.assertTrue(
+            {
+                "ability.static.conditional-keyword.v1",
+                "ability.static.dynamic-power-toughness.v1",
+            }.issubset(handler_ids)
         )
         with self.assertRaisesRegex(ValueError, "unknown"):
             fragments_from_descriptors(

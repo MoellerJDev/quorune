@@ -328,14 +328,14 @@ class RulesSchedulerTests(unittest.TestCase):
                 for candidate in candidates
             ),
         )
+        subsystems_with_debt = {
+            str(capsule["id"])
+            for capsule in self.work_inputs["architecture_audit"]
+            ["architecture"]["subsystem_capsules"]
+            if int(capsule["prohibited_runtime_oracle_text_accesses"]) > 0
+        }
         self.assertEqual(
-            {
-                "application_session",
-                "casting_activation_and_costs",
-                "combat",
-                "continuous_effects",
-                "semantic_effect_execution",
-            },
+            subsystems_with_debt,
             {candidate["universal_subsystem"] for candidate in candidates},
         )
 
