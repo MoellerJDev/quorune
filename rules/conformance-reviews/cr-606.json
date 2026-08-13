@@ -121,12 +121,14 @@
         "mana_payment_continuations.execute_mana_choice_capable_priority_action",
         "replacement.replay.ReplacementContinuation",
         "CommanderEngine._ability_availability",
-        "CommanderEngine._loyalty_cost_modifier_present"
+        "CommanderEngine._loyalty_cost_modifier_present",
+        "quorune.semantic_runtime.casting_activation_metadata.active_loyalty_cost_modifiers"
       ],
       "executable_test_ids": [
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_loyalty_timing_control_and_once_per_permanent",
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_negative_loyalty_cost_requires_enough_counters",
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_typed_loyalty_cost_modifier_fails_closed",
+        "tests.test_casting_activation_metadata.LoyaltyCostModifierRuntimeTests.test_typed_loyalty_cost_modifier_replays_exactly",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_doubling_season_ignores_positive_loyalty_cost_but_doc_applies",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_negative_loyalty_removal_is_not_counter_placement",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
@@ -150,7 +152,7 @@
         "typed can't-place-counter effects are not consulted universally before advertising a positive loyalty-symbol cost"
       ],
       "notes": [
-        "Base positive loyalty-symbol costs now use the canonical non-effect counter-placement transaction, so represented all-placement quantity replacements apply, effect-only replacements do not, competing choices suspend atomically, and command replay is exact. Negative costs remain canonical counter removal. The separate cost-modification clause remains blocked."
+        "Base positive loyalty-symbol costs now use the canonical non-effect counter-placement transaction, so represented all-placement quantity replacements apply, effect-only replacements do not, competing choices suspend atomically, and command replay is exact. Negative costs remain canonical counter removal. Two source-spanned public modifier forms are detected from typed programs and fail closed; applying and ordering those modifiers remain blocked."
       ]
     },
     {
@@ -192,7 +194,8 @@
       "reviewed": true,
       "implementation_components": [
         "CommanderEngine._ability_availability",
-        "CommanderEngine._loyalty_cost_modifier_present"
+        "CommanderEngine._loyalty_cost_modifier_present",
+        "quorune.semantic_runtime.casting_activation_metadata.active_loyalty_cost_modifiers"
       ],
       "executable_test_ids": [
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_negative_loyalty_cost_requires_enough_counters",
@@ -212,7 +215,7 @@
         "generic additional loyalty costs and their ordering are not implemented"
       ],
       "notes": [
-        "A base minus-two ability is unpayable at one loyalty and payable at two; recognized modifier interactions fail closed."
+        "A base minus-two ability is unpayable at one loyalty and payable at two; source-spanned typed modifier interactions fail closed without consulting Oracle prose at runtime."
       ]
     }
   ]

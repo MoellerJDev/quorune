@@ -35764,22 +35764,28 @@
       "case_version": 1,
       "classification": "behavioral",
       "covered_scenarios": [
-        "negative"
+        "positive",
+        "negative",
+        "interaction",
+        "hidden_information",
+        "replay"
       ],
       "dependency_rule_ids": [
         "601"
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
+        "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
         "tests.test_casting_spells_rules.CastingSpellRuleTests.test_sorcery_timing_rejects_nonactive_cast_without_mutation"
       ],
       "implementation_components": [
         "CommanderEngine._cast",
         "CommanderEngine._compiled_zone_cast_permission",
+        "quorune.semantic_runtime.casting_activation_metadata.compiled_self_zone_cast_permission",
         "CommanderEngine._sorcery_timing"
       ],
       "notes": [
-        "Known ownership, zone, face, timing, and semantic restrictions are enforced; unknown material semantics stop rather than becoming executable."
+        "Known ownership, zone, face, timing, and semantic restrictions are enforced. One exact self-graveyard permission with a controlled creature-subtype condition is source-spanned, typed, principal-scoped, and replayed; unknown material semantics stop rather than becoming executable."
       ],
       "required_scenarios": [
         "positive",
@@ -39494,22 +39500,25 @@
         "positive",
         "negative",
         "interaction",
-        "hidden_information"
+        "hidden_information",
+        "replay"
       ],
       "dependency_rule_ids": [
         "604"
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
+        "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
         "tests.test_exact_zimone_closure.ExactZimoneClosureTests.test_gravecrawler_graveyard_cast_requires_controlled_zombie",
         "tests.test_activated_abilities.ActivatedAbilityAndCostTests.test_pilot_cannot_cast_from_graveyard_without_compiled_permission"
       ],
       "implementation_components": [
         "CommanderEngine._compiled_zone_cast_permission",
+        "quorune.semantic_runtime.casting_activation_metadata.compiled_self_zone_cast_permission",
         "CommanderEngine._compiled_land_play_permission"
       ],
       "notes": [
-        "Gravecrawler's graveyard permission is conditionally exposed, while an uncompiled graveyard cast fails closed."
+        "Gravecrawler's source-spanned typed graveyard permission is conditionally and principal-safely exposed with exact replay, while an uncompiled graveyard cast fails closed."
       ],
       "required_scenarios": [
         "positive",
@@ -40285,7 +40294,8 @@
       "executable_test_ids": [
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_loyalty_timing_control_and_once_per_permanent",
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_negative_loyalty_cost_requires_enough_counters",
-        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_loyalty_cost_modifier_fails_closed",
+        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_typed_loyalty_cost_modifier_fails_closed",
+        "tests.test_casting_activation_metadata.LoyaltyCostModifierRuntimeTests.test_typed_loyalty_cost_modifier_replays_exactly",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_doubling_season_ignores_positive_loyalty_cost_but_doc_applies",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_negative_loyalty_removal_is_not_counter_placement",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
@@ -40297,10 +40307,11 @@
         "mana_payment_continuations.execute_mana_choice_capable_priority_action",
         "replacement.replay.ReplacementContinuation",
         "CommanderEngine._ability_availability",
-        "CommanderEngine._loyalty_cost_modifier_present"
+        "CommanderEngine._loyalty_cost_modifier_present",
+        "quorune.semantic_runtime.casting_activation_metadata.active_loyalty_cost_modifiers"
       ],
       "notes": [
-        "Base positive loyalty-symbol costs now use the canonical non-effect counter-placement transaction, so represented all-placement quantity replacements apply, effect-only replacements do not, competing choices suspend atomically, and command replay is exact. Negative costs remain canonical counter removal. The separate cost-modification clause remains blocked."
+        "Base positive loyalty-symbol costs now use the canonical non-effect counter-placement transaction, so represented all-placement quantity replacements apply, effect-only replacements do not, competing choices suspend atomically, and command replay is exact. Negative costs remain canonical counter removal. Two source-spanned public modifier forms are detected from typed programs and fail closed; applying and ordering those modifiers remain blocked."
       ],
       "required_scenarios": [
         "positive",
@@ -40380,14 +40391,15 @@
       "effective_date": "2026-06-19",
       "executable_test_ids": [
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_negative_loyalty_cost_requires_enough_counters",
-        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_loyalty_cost_modifier_fails_closed"
+        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_typed_loyalty_cost_modifier_fails_closed"
       ],
       "implementation_components": [
         "CommanderEngine._ability_availability",
-        "CommanderEngine._loyalty_cost_modifier_present"
+        "CommanderEngine._loyalty_cost_modifier_present",
+        "quorune.semantic_runtime.casting_activation_metadata.active_loyalty_cost_modifiers"
       ],
       "notes": [
-        "A base minus-two ability is unpayable at one loyalty and payable at two; recognized modifier interactions fail closed."
+        "A base minus-two ability is unpayable at one loyalty and payable at two; source-spanned typed modifier interactions fail closed without consulting Oracle prose at runtime."
       ],
       "required_scenarios": [
         "positive",

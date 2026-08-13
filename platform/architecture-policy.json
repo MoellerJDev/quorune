@@ -340,6 +340,7 @@
       ,"quorune/zone_trigger_events.py": "immutable normalized CR 603.6 zone-change occurrence and event derivation"
       ,"quorune/zone_trigger_processing.py": "read-only zone-trigger detection coordinator delegating placement and mutation to canonical owners"
       ,"quorune/semantic_runtime/action_permissions.py": "read-only trusted static action-permission discovery over active battlefield sources"
+      ,"quorune/semantic_runtime/casting_activation_metadata.py": "read-only trusted casting-permission and loyalty-cost metadata discovery over current source-pinned programs"
       ,"quorune/semantic_runtime/untap_steps.py": "read-only trusted untap-step participation discovery over current effective characteristics"
       ,"quorune/untap_step_coordination.py": "read-only untap-step coordinator delegating mutation to canonical tap-state and turn-step owners"
       ,"quorune/damage_prevention_aftermath.py": "typed prevention-aftermath planner delegating mutation to canonical life and counter owners"

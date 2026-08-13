@@ -218,9 +218,11 @@
       "reviewed": true,
       "implementation_components": [
         "CommanderEngine._compiled_zone_cast_permission",
+        "quorune.semantic_runtime.casting_activation_metadata.compiled_self_zone_cast_permission",
         "CommanderEngine._compiled_land_play_permission"
       ],
       "executable_test_ids": [
+        "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
         "tests.test_exact_zimone_closure.ExactZimoneClosureTests.test_gravecrawler_graveyard_cast_requires_controlled_zombie",
         "tests.test_activated_abilities.ActivatedAbilityAndCostTests.test_pilot_cannot_cast_from_graveyard_without_compiled_permission"
       ],
@@ -235,7 +237,8 @@
         "positive",
         "negative",
         "interaction",
-        "hidden_information"
+        "hidden_information",
+        "replay"
       ],
       "blockers": [
         "zone cast/play permissions recognize selected trusted self-referential templates rather than the complete three wording families",
@@ -243,7 +246,7 @@
         "no generic exact replay covers every permission/restriction form"
       ],
       "notes": [
-        "Gravecrawler's graveyard permission is conditionally exposed, while an uncompiled graveyard cast fails closed."
+        "Gravecrawler's source-spanned typed graveyard permission is conditionally and principal-safely exposed with exact replay, while an uncompiled graveyard cast fails closed."
       ]
     },
     {
