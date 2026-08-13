@@ -1724,14 +1724,14 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
             "B",
             "The Eternal Wanderer",
             type_line="Token Planeswalker — Wanderer",
+            oracle_text=(
+                "No more than one creature can attack "
+                "The Eternal Wanderer each combat."
+            ),
         )
         walker.annotations["copy_overrides"].update(
             {
                 "loyalty": "5",
-                "oracle_text": (
-                    "No more than one creature can attack "
-                    "The Eternal Wanderer each combat."
-                ),
             }
         )
         walker.counters["loyalty"] = 5
