@@ -123,19 +123,7 @@
         "quorune/service.py",
         "quorune/session.py"
       ],
-      "missing_dedicated_owner": false,
-      "context": {
-        "prohibited_runtime_oracle_text_symbols": [
-          {
-            "file": "quorune/report.py",
-            "symbol": "_semantic_coverage"
-          },
-          {
-            "file": "quorune/report.py",
-            "symbol": "derive_review"
-          }
-        ]
-      }
+      "missing_dedicated_owner": false
     },
     {
       "id": "turn_priority_and_decisions",
