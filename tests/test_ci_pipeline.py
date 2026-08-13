@@ -486,7 +486,8 @@ class CiPipelineTests(unittest.TestCase):
         )
         self.assertIn("cancel-in-progress: true", pr)
         self.assertIn("PR / Certification", pr)
-        self.assertIn("opened, synchronize, reopened, edited, ready_for_review", pr)
+        self.assertIn("opened, synchronize, reopened, edited", pr)
+        self.assertNotIn("ready_for_review", pr)
         self.assertIn("python scripts/validate_pr_body.py", pr)
         self.assertLess(
             pr.index("python scripts/validate_pr_body.py"),

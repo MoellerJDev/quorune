@@ -335,7 +335,9 @@ inputs or outputs changed, the Generators run field must name
 `scripts/finalize_generated.py --write`. Do not claim a broad local pass without
 the exact command and numeric result, or a broad CI pass without the
 authoritative GitHub Actions run URL. The early `PR / Plan` job enforces this
-policy on open, synchronize, reopen, edit, and ready-for-review events.
+policy on open, synchronize, reopen, and edit events. Moving a draft to ready
+for review reuses the exact-head checks already produced for that unchanged
+pull request instead of launching the full regression matrix again.
 
 Public PR CI has a hard 20-job concurrency envelope. Its checked, mode-aware
 budget targets at most 18 simultaneous jobs so cancellation, certification,
