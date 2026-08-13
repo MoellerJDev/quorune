@@ -307,6 +307,42 @@ class TrustedOnlyPolicyTests(unittest.TestCase):
         self.assertEqual("battlefield", ring.zone)
         self.assertIsNone(pause_reason_for_state(engine.state))
 
+    def test_untrusted_permanent_program_does_not_auto_resolve_from_prose(self):
+        session = self.make_session(805)
+        engine = session.engine
+        engine.state.config.semantic_policy = "arbitrate_or_pause"
+        ring = self.card(engine, "Sol Ring", "A")
+        semantic_key = f"{ring.oracle_id}:spell:front"
+        engine.semantics.put(
+            SemanticProgram(
+                key=semantic_key,
+                label=ring.printed_name,
+                destination="battlefield",
+                requires_arbiter=True,
+                oracle_id=ring.oracle_id,
+            )
+        )
+        engine._remove_from_zone(ring)
+        ring.zone = "stack"
+        item = StackItem(
+            stack_id="untrusted-permanent-test",
+            ref="S-untrusted-permanent",
+            kind="spell",
+            controller="A",
+            label=ring.printed_name,
+            card_object_id=ring.object_id,
+            semantic_key=semantic_key,
+            default_destination="battlefield",
+            visibility=list(engine.seats),
+        )
+        engine.state.stack.append(item)
+        engine.state.priority_player = None
+
+        engine._prepare_stack_resolution()
+
+        self.assertEqual("stack", ring.zone)
+        self.assertEqual("arbiter.resolve", engine.state.pending_decision.kind)
+
     def test_pilot_cannot_supply_semantic_key(self):
         session = self.make_session(804)
         engine = session.engine

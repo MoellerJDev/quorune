@@ -1617,7 +1617,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
             ).details["outcome"],
         )
 
-    def test_siege_targeted_back_without_schema_fails_closed(self):
+    def test_siege_uncompiled_nonpermanent_back_fails_closed_without_prose(self):
         engine = self.make_engine(7069)
         siege = self.transforming_siege(engine)
         original_card_record = engine.card_record
@@ -1626,7 +1626,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
             siege,
             back_name="Uncompiled Victory",
             back_type_line="Sorcery",
-            back_oracle_text="Target player draws two cards.",
+            back_oracle_text="Draw two cards.",
         )
 
         def staged_record(value):
@@ -1662,8 +1662,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
         self.assertEqual("Uncompiled Victory", payload["transformed_face"])
         self.assertEqual(
             (
-                "transformed Siege spell has unresolved mandatory "
-                "target semantics"
+                "transformed Siege spell lacks trusted typed cast semantics"
             ),
             payload["reason"],
         )

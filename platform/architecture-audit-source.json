@@ -258,23 +258,7 @@
         "quorune/tap_state.py",
         "quorune/engine.py"
       ],
-      "missing_dedicated_owner": false,
-      "context": {
-        "prohibited_runtime_oracle_text_symbols": [
-          {
-            "file": "quorune/drawing/coordinator.py",
-            "symbol": "_complete_legacy_draw_replacement"
-          },
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._begin_siege_defeated_resolution"
-          },
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._program_can_auto_resolve"
-          }
-        ]
-      }
+      "missing_dedicated_owner": false
     },
     {
       "id": "search_target_and_choice",

@@ -31,6 +31,12 @@ source data, unknown dependencies, material residuals, or fingerprint drift
 fail closed. Historical semantic-pack records remain compatibility inputs, not
 a second current runtime authority.
 
+Stack resolution never uses display or Oracle prose to decide whether an
+untrusted permanent program may resolve without its arbiter boundary. An
+intrinsic Siege transformed-cast choice for a nonpermanent face likewise
+requires either a typed target schema or a current trusted target-free spell
+program before that choice is offered. Missing typed cast semantics fail closed.
+
 ## Trust and replay
 
 - Parsing success does not imply complete rules support.

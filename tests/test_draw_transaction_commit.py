@@ -110,6 +110,17 @@ class DrawTransactionCommitTests(unittest.TestCase):
             log=False,
             semantic_events=False,
         )
+        current_programs = (
+            engine.semantics.runtime_handler_programs_for_oracle(
+                source.oracle_id,
+                active_zone="graveyard",
+                event="draw",
+            )
+        )
+        for program in current_programs:
+            engine.semantics._programs.pop(program.key)
+        engine.semantics._card_program_cache = None
+        engine.semantics._runtime_handler_compatibility_enabled = True
         top_three = tuple(reversed(player.zones["library"][-3:]))
         effect = ReplacementEffect(
             effect_id="dredge:loam:test",
@@ -208,6 +219,72 @@ class DrawTransactionCommitTests(unittest.TestCase):
             )
         )
         self.assertEqual("draw.replaced.dredge", engine.state.events[-1].code)
+
+    def test_legacy_v3_dredge_requires_the_current_trusted_component(self):
+        engine = self.make_engine(12106)
+        source = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "B" and card.printed_name == "Life from the Loam"
+        )
+        engine.move_card(
+            source.object_id,
+            "graveyard",
+            log=False,
+            semantic_events=False,
+        )
+        program = next(
+            program
+            for program in engine.semantics.runtime_handler_programs_for_oracle(
+                source.oracle_id,
+                active_zone="graveyard",
+                event="draw",
+            )
+            if program.handlers
+        )
+        program.trust_level = "provisional"
+        zones_before = {
+            seat: {
+                zone: tuple(object_ids)
+                for zone, object_ids in player.zones.items()
+            }
+            for seat, player in engine.state.players.items()
+        }
+        decision = SimpleNamespace(
+            actors=["B"],
+            responses={"B": {"choice": source.ref}},
+            continuation={
+                "seat": "B",
+                "remaining_draws": 1,
+                "reason": "historical Game Record v3 draw",
+                "private": False,
+                "candidates": [
+                    {
+                        "id": source.ref,
+                        "name": source.printed_name,
+                        "mill": 3,
+                    }
+                ],
+                "after": {"kind": "none"},
+            },
+        )
+
+        with self.assertRaisesRegex(
+            DrawError,
+            "legacy Dredge replacement is no longer available",
+        ):
+            complete_draw_replacement(engine, decision)
+
+        self.assertEqual(
+            zones_before,
+            {
+                seat: {
+                    zone: tuple(object_ids)
+                    for zone, object_ids in player.zones.items()
+                }
+                for seat, player in engine.state.players.items()
+            },
+        )
 
 
 if __name__ == "__main__":

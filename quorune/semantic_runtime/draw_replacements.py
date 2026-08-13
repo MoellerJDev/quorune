@@ -584,6 +584,29 @@ def collect_draw_replacement_effects(
     return tuple(sorted(effects, key=lambda value: value.effect_id))
 
 
+def current_dredge_operation(
+    host: DrawReplacementHost,
+    player: str,
+    source_ref: str,
+) -> DredgeDraw | None:
+    """Return one live trusted Dredge operation for a legacy source choice."""
+
+    if type(source_ref) is not str or not source_ref:
+        raise SemanticNodeError("Dredge source reference must be nonempty")
+    operations = tuple(
+        operation
+        for effect in collect_draw_replacement_effects(host, player)
+        for operation in effect.operations
+        if isinstance(operation, DredgeDraw)
+        and operation.source_ref == source_ref
+    )
+    if len(operations) > 1:
+        raise SemanticNodeError(
+            "A Dredge source cannot provide multiple current operations"
+        )
+    return operations[0] if operations else None
+
+
 def collect_draw_instruction_replacement_effects(
     host: DrawReplacementHost,
     player: str,
@@ -632,6 +655,7 @@ def collect_draw_instruction_replacement_effects(
 __all__ = [
     "collect_draw_instruction_replacement_effects",
     "collect_draw_replacement_effects",
+    "current_dredge_operation",
     "default_draw_replacement_registry",
     "DRAW_INSTRUCTION_MULTIPLIER_HANDLER_ID",
     "DRAW_RESULT_MULTIPLIER_HANDLER_ID",
