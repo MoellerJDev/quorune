@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
+from declaration_support import compiled_declaration_fragments
 from quorune.ability_fragments import ability_fragment_to_dict
 from quorune.aura import SimpleEnchantSpec
 from quorune.engine import GameRuleError, TURN_STEPS
@@ -307,7 +308,11 @@ class CombatPhaseRuleTests(unittest.TestCase):
                     "Enchanted creature can't attack."
                 ),
                 "ability_fragments": [
-                    ability_fragment_to_dict(SimpleEnchantSpec("creature"))
+                    ability_fragment_to_dict(SimpleEnchantSpec("creature")),
+                    *compiled_declaration_fragments(
+                        "Late Restraint",
+                        "Enchanted creature can't attack.",
+                    ),
                 ],
             },
             aura_target_ref=attacker.ref,

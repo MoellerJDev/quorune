@@ -977,7 +977,6 @@ def _compile_face(
             card_name=face_name or record.name,
             span=span,
             residuals=residuals,
-            trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry,
             capability_profile=capability_profile,
         )

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Typed Oracle-IR lowering for combat declaration static abilities."""
 
-from typing import Any, Iterable
+from typing import Any
 
 from ..ability_fragments import ability_fragment_to_dict
 from ..declaration_costs import parse_declaration_cost_line
@@ -39,7 +39,6 @@ def _typed_declaration_node(
     template: DeclarationTemplate,
     handler_id: str,
     residuals: list[OracleResidual],
-    trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
     dependency_reason: str,
@@ -51,10 +50,7 @@ def _typed_declaration_node(
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )
-    missing = tuple(
-        f"mechanic:{mechanic}"
-        for mechanic in sorted(set(dependencies) - trusted_mechanics)
-    ) + gate.blockers
+    missing = gate.blockers
     residual_ids = (
         (
             append_residual(
@@ -107,13 +103,11 @@ def declaration_static_node(
     card_name: str,
     span: SourceSpan,
     residuals: list[OracleResidual],
-    trusted_mechanics: Iterable[str],
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
 ) -> OracleNode | None:
     """Compile one bounded declaration line or return ``None``."""
 
-    trusted = frozenset(trusted_mechanics)
     requirement = parse_declaration_requirement_line(line, card_name=card_name)
     if requirement is not None:
         return _typed_declaration_node(
@@ -123,7 +117,6 @@ def declaration_static_node(
             template=requirement,
             handler_id=DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID,
             residuals=residuals,
-            trusted_mechanics=trusted,
             capability_registry=capability_registry,
             capability_profile=capability_profile,
             dependency_reason=(
@@ -143,7 +136,6 @@ def declaration_static_node(
                 template=template,
                 handler_id=DECLARATION_COST_FRAGMENT_HANDLER_ID,
                 residuals=residuals,
-                trusted_mechanics=trusted,
                 capability_registry=capability_registry,
                 capability_profile=capability_profile,
                 dependency_reason=(
@@ -199,7 +191,6 @@ def declaration_static_node(
             template=template,
             handler_id=DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID,
             residuals=residuals,
-            trusted_mechanics=trusted,
             capability_registry=capability_registry,
             capability_profile=capability_profile,
             dependency_reason=(

@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
+from declaration_support import compiled_declaration_fragments
 from quorune.declaration_restrictions import (
     parse_declaration_restriction_line,
 )
@@ -63,6 +64,10 @@ class MonarchRuleTests(unittest.TestCase):
             characteristics={
                 "type_line": "Token Creature — Test",
                 "oracle_text": oracle_text,
+                "ability_fragments": compiled_declaration_fragments(
+                    name,
+                    oracle_text,
+                ),
                 "power": power,
                 "toughness": "2",
                 "keywords": ["Haste"],
@@ -79,6 +84,10 @@ class MonarchRuleTests(unittest.TestCase):
             characteristics={
                 "type_line": "Token Enchantment",
                 "oracle_text": oracle_text,
+                "ability_fragments": compiled_declaration_fragments(
+                    "Player-state restriction",
+                    oracle_text,
+                ),
             },
         )[0]
         return engine._resolve_object(seat, ref, zones={"battlefield"})
