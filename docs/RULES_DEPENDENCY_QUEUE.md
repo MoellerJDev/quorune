@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "94f78b177a9ec70068f4a732cd9700d5c579b807fcd0a58d531b0c405a89ca1d"
+verified: "0d9158d4a16b55eca005f7f116ca1c99dcb579d66d6ef312652aff18a09bce71"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `5524bf35276c270a96d08b3a754576897f806ea26c301cb4b0c8bd04eac65ee6`
+Source fingerprint: `a993f2ed6515c0e1537df4d52772b3aa9343e521f99931a5dacee08f8c26e3d2`
 
 ## Current top-level state
 
@@ -20,7 +20,7 @@ Source fingerprint: `5524bf35276c270a96d08b3a754576897f806ea26c301cb4b0c8bd04eac
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `frontier:effect_clause:typed-spell-additional-cost-clause`
+- Selected cross-program work: `frontier:effect_clause:deal-damage`
 - Selected work class: `compiler_harvest`
 
 ## Cross-program work selection
@@ -31,9 +31,9 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 122 | 123 | 0 | 0 |
-| 2 | deferred | `frontier:effect_clause:deal-damage` | `compiler_harvest` | 112 | 245 | 0 | 0 |
-| 3 | deferred | `frontier:effect_clause:exile` | `compiler_harvest` | 105 | 430 | 0 | 0 |
+| 1 | selected | `frontier:effect_clause:deal-damage` | `compiler_harvest` | 112 | 245 | 0 | 0 |
+| 2 | deferred | `frontier:effect_clause:exile` | `compiler_harvest` | 105 | 430 | 0 | 0 |
+| 3 | deferred | `frontier:effect_clause:destroy-target` | `compiler_harvest` | 98 | 249 | 0 | 0 |
 | 4 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
 | 5 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
 | 6 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |

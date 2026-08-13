@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "cc43811c797146676623501f7bfc20bd57154206e9e941c1dd19498943d72786"
+verified: "82a63309453727161ed403926430fda4de83a0336864247d0c71c638946bb9a9"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,7 +17,7 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 - Oracle states: `{"exact":3677,"partial":12458,"unresolved":15488}`
 - CardProgram states: `{"residual":27946,"trusted":3677}`
 - Hard construction failures: 0
-- Frontier fingerprint: `cc43811c797146676623501f7bfc20bd57154206e9e941c1dd19498943d72786`
+- Frontier fingerprint: `82a63309453727161ed403926430fda4de83a0336864247d0c71c638946bb9a9`
 
 ## Highest-leverage single families
 
@@ -26,7 +26,6 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `continuous_layer:continuous-effect-layers-and-dependencies` | 9,180 | 7,389 | 3,627 | 9,180 | missing_lowering | very_high |
 | `mechanic_dependency:cr-611-continuous-effects` | 480 | 440 | 204 | 346 | partial | high |
 | `mechanic_dependency:cr-111-tokens` | 338 | 333 | 123 | 338 | partial | high |
-| `effect_clause:typed-spell-additional-cost-clause` | 123 | 123 | 122 | 123 | missing_lowering | high |
 | `effect_clause:deal-damage` | 956 | 925 | 112 | 245 | missing_lowering | high |
 | `effect_clause:exile` | 985 | 939 | 105 | 430 | missing_lowering | high |
 | `effect_clause:destroy-target` | 572 | 540 | 98 | 249 | missing_lowering | high |
@@ -37,7 +36,7 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `effect_clause:intrinsic-basic-land-type-mana-capability` | 106 | 106 | 70 | 106 | missing_lowering | high |
 | `effect_clause:tap-state` | 373 | 364 | 69 | 136 | missing_lowering | high |
 | `activated_effect:return` | 418 | 417 | 68 | 139 | missing_lowering | high |
-| `effect_clause:typed-spell-result-clause` | 66 | 66 | 66 | 66 | missing_lowering | high |
+| `effect_clause:typed-spell-result-clause` | 157 | 157 | 66 | 66 | missing_lowering | high |
 | `activated_effect:unparsed-this-creature-gets` | 131 | 126 | 64 | 86 | missing_lowering | high |
 | `effect_clause:look-reveal` | 550 | 546 | 62 | 94 | missing_lowering | high |
 | `activated_effect:create-token` | 474 | 463 | 58 | 193 | missing_lowering | high |
@@ -48,13 +47,13 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `effect_clause:unparsed-until-end-of` | 68 | 68 | 37 | 48 | missing_lowering | high |
 | `keyword_dependency:morph` | 141 | 141 | 35 | 141 | missing_contract | medium |
 | `activated_effect:exile` | 386 | 357 | 30 | 95 | missing_lowering | high |
+| `activated_effect:unparsed-this-creature-gains` | 51 | 51 | 30 | 41 | missing_lowering | high |
 
 ## Highest-leverage bounded bundles
 
 | Families | Exact cards | Exact abilities | Residuals |
 |---|---:|---:|---:|
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-111-tokens` | 4,027 | 9,864 | 9,864 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:typed-spell-additional-cost-clause` | 3,981 | 9,649 | 9,649 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:deal-damage` | 3,970 | 9,771 | 9,771 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:exile` | 3,964 | 9,956 | 9,956 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:destroy-target` | 3,956 | 9,775 | 9,775 |
@@ -67,12 +66,13 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:create-token` | 3,932 | 9,719 | 9,792 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:tap-state` | 3,928 | 9,662 | 9,662 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:unparsed-this-creature-gets` | 3,924 | 9,612 | 9,625 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:typed-spell-result-clause` | 3,924 | 9,592 | 9,592 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:typed-spell-result-clause` | 3,924 | 9,592 | 9,683 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:look-reveal` | 3,920 | 9,620 | 9,620 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-111-tokens, effect_clause:typed-spell-additional-cost-clause` | 3,917 | 9,641 | 9,641 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-111-tokens, effect_clause:exile` | 3,912 | 9,948 | 9,948 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:unparsed-until-end-of` | 3,911 | 9,612 | 9,622 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-111-tokens, effect_clause:deal-damage` | 3,906 | 9,763 | 9,763 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:create-token` | 3,904 | 9,684 | 9,684 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:destroy-target` | 3,900 | 9,586 | 9,588 |
 
 ## Hard construction failures
 

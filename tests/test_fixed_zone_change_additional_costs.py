@@ -196,6 +196,121 @@ class FixedZoneChangeAdditionalCostCompilerTests(unittest.TestCase):
                 self.assertNotEqual("exact", ir.status)
                 self.assertTrue(ir.material_residuals)
 
+    def test_unsupported_cost_preserves_independent_result_residuals(self):
+        supported_result = (
+            "As an additional cost to cast this spell, discard two cards.\n"
+            "Draw three cards."
+        )
+        ir = self.compile(supported_result)
+        self.assertEqual(1, len(ir.material_residuals))
+        cost_residual = ir.material_residuals[0]
+        self.assertEqual("spell_additional_cost", cost_residual.kind)
+        self.assertEqual(
+            "As an additional cost to cast this spell, discard two cards.",
+            cost_residual.text,
+        )
+        self.assertEqual(
+            ("typed spell additional-cost clause",),
+            cost_residual.blockers,
+        )
+        self.assertEqual(
+            cost_residual.text,
+            supported_result[cost_residual.span.start : cost_residual.span.end],
+        )
+
+        unsupported_result = (
+            "As an additional cost to cast this spell, pay X life.\n"
+            "This spell deals X damage divided as you choose among any number "
+            "of target creatures."
+        )
+        ir = self.compile(unsupported_result)
+        self.assertEqual(
+            [
+                ("spell_additional_cost", ("typed spell additional-cost clause",)),
+                ("spell_effect", ("typed spell-result clause",)),
+            ],
+            [(row.kind, row.blockers) for row in ir.material_residuals],
+        )
+        self.assertEqual(
+            tuple(row.residual_id for row in ir.material_residuals),
+            ir.faces[0].nodes[0].residual_ids,
+        )
+        self.assertEqual(
+            [
+                "As an additional cost to cast this spell, pay X life.",
+                (
+                    "This spell deals X damage divided as you choose among "
+                    "any number of target creatures."
+                ),
+            ],
+            [row.text for row in ir.material_residuals],
+        )
+        for residual in ir.material_residuals:
+            self.assertEqual(
+                residual.text,
+                unsupported_result[residual.span.start : residual.span.end],
+            )
+
+    def test_unsupported_cost_preserves_result_composition_blockers(self):
+        text = (
+            "As an additional cost to cast this spell, discard two cards.\n"
+            "Draw two cards.\n"
+            "You gain 2 life."
+        )
+        ir = self.compile(text)
+        self.assertEqual(
+            [
+                ("typed spell additional-cost clause",),
+                (
+                    "additional-cost composition",
+                    "ordered multi-clause spell resolution",
+                ),
+            ],
+            [row.blockers for row in ir.material_residuals],
+        )
+        self.assertEqual(
+            "Draw two cards.\nYou gain 2 life.",
+            ir.material_residuals[1].text,
+        )
+        for residual in ir.material_residuals:
+            self.assertEqual(
+                residual.text,
+                text[residual.span.start : residual.span.end],
+            )
+
+    def test_unsupported_cost_preserves_result_dependency_blockers(self):
+        value = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+        dependency = next(
+            row
+            for row in value["capabilities"]
+            if row["id"] == "zone.draw.library_to_hand"
+        )
+        dependency["status"] = "blocked"
+        dependency["blockers"] = ["test mutation"]
+        registry = CapabilityRegistry(value)
+        registry.mark_evidence_verified("0" * 64)
+        text = (
+            "As an additional cost to cast this spell, discard two cards.\n"
+            "Draw three cards."
+        )
+        ir = compile_oracle_card(
+            fixture_card(text),
+            capability_registry=registry,
+            capability_profile="commander_review",
+        )
+        self.assertEqual(
+            ["spell_additional_cost", "dependency_contract"],
+            [row.kind for row in ir.material_residuals],
+        )
+        self.assertTrue(
+            any(
+                blocker.startswith("capability:")
+                and "zone.draw.library_to_hand" in blocker
+                for blocker in ir.material_residuals[1].blockers
+            ),
+            ir.material_residuals[1].blockers,
+        )
+
     def test_fixed_zone_change_descriptor_is_closed_and_immutable(self):
         descriptor = zone_change_cost(
             "As an additional cost to cast this spell, discard a red or green card."
