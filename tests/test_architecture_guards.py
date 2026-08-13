@@ -11,6 +11,7 @@ from scripts.architecture_identity_flow import (
     analyze_identity_source,
 )
 from scripts.architecture_observability import (
+    _declared_runtime_text_subsystems,
     classify_state_writes,
     runtime_text_accesses,
     runtime_text_growth,
@@ -191,6 +192,69 @@ class ArchitectureGuardTests(unittest.TestCase):
                 }
             ],
         )
+
+    def test_every_prohibited_runtime_text_symbol_has_one_subsystem(self):
+        source, _, analyses = analyze_production()
+        inventory = runtime_text_accesses(analyses)
+        assignments = _declared_runtime_text_subsystems(source, inventory)
+        expected = {
+            (str(row["file"]), str(row["symbol"]))
+            for row in inventory["prohibited_runtime_interpretation"]
+        }
+        self.assertEqual(expected, set(assignments))
+        self.assertEqual(
+            {
+                "application_session",
+                "casting_activation_and_costs",
+                "combat",
+                "continuous_effects",
+                "semantic_effect_execution",
+            },
+            set(assignments.values()),
+        )
+
+    def test_runtime_text_subsystem_attribution_rejects_drift(self):
+        inventory = {
+            "prohibited_runtime_interpretation": [
+                {"file": "quorune/example.py", "symbol": "interpret"}
+            ]
+        }
+        duplicate = {
+            "subsystem_ownership": [
+                {
+                    "id": subsystem,
+                    "context": {
+                        "prohibited_runtime_oracle_text_symbols": [
+                            {
+                                "file": "quorune/example.py",
+                                "symbol": "interpret",
+                            }
+                        ]
+                    },
+                }
+                for subsystem in ("first", "second")
+            ]
+        }
+        with self.assertRaisesRegex(ValueError, "multiple subsystems"):
+            _declared_runtime_text_subsystems(duplicate, inventory)
+
+        stale = {
+            "subsystem_ownership": [
+                {
+                    "id": "example",
+                    "context": {
+                        "prohibited_runtime_oracle_text_symbols": [
+                            {
+                                "file": "quorune/example.py",
+                                "symbol": "removed_interpreter",
+                            }
+                        ]
+                    },
+                }
+            ]
+        }
+        with self.assertRaisesRegex(ValueError, "stale or not prohibited"):
+            _declared_runtime_text_subsystems(stale, inventory)
 
     def test_raw_oracle_id_literal_ratchet_remains_independent(self):
         baseline = json.loads(

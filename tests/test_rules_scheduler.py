@@ -305,6 +305,40 @@ class RulesSchedulerTests(unittest.TestCase):
             all(selected["rank"] < candidate["rank"] for candidate in card_candidates)
         )
 
+    def test_runtime_text_candidates_are_split_by_declared_subsystem(self):
+        work = self.queue["work_selection"]
+        candidates = [
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_class"] == "runtime_oracle_removal"
+        ]
+        self.assertNotIn(
+            "architecture:runtime-oracle-text-subsystem-attribution",
+            {candidate["candidate_id"] for candidate in candidates},
+        )
+        runtime_total = int(
+            self.work_inputs["architecture_audit"]["architecture"]
+            ["runtime_oracle_text_access"]
+            ["prohibited_runtime_interpretation_count"]
+        )
+        self.assertEqual(
+            runtime_total,
+            sum(
+                int(candidate["runtime_oracle_text_removal"]["expected_count"])
+                for candidate in candidates
+            ),
+        )
+        self.assertEqual(
+            {
+                "application_session",
+                "casting_activation_and_costs",
+                "combat",
+                "continuous_effects",
+                "semantic_effect_execution",
+            },
+            {candidate["universal_subsystem"] for candidate in candidates},
+        )
+
     def test_every_serious_candidate_carries_auditable_reranking_context(self):
         required = {
             "candidate_id",

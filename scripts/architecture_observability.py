@@ -503,6 +503,56 @@ def _engine_methods_for_subsystem(
     return []
 
 
+def _declared_runtime_text_subsystems(
+    source: Mapping[str, Any],
+    runtime_text: Mapping[str, Any],
+) -> dict[tuple[str, str], str]:
+    assignments: dict[tuple[str, str], str] = {}
+    for owner in source["subsystem_ownership"]:
+        subsystem = str(owner["id"])
+        context = owner.get("context", {})
+        if not isinstance(context, Mapping):
+            raise ValueError(f"{subsystem} architecture context must be an object")
+        declared = context.get("prohibited_runtime_oracle_text_symbols", [])
+        if not isinstance(declared, list):
+            raise ValueError(
+                f"{subsystem} prohibited runtime Oracle-text symbols must be a list"
+            )
+        for value in declared:
+            if not isinstance(value, Mapping) or set(value) != {"file", "symbol"}:
+                raise ValueError(
+                    f"{subsystem} runtime Oracle-text attribution must contain only "
+                    "file and symbol"
+                )
+            relative = str(value["file"]).strip()
+            symbol = str(value["symbol"]).strip()
+            if not relative or not symbol:
+                raise ValueError(
+                    f"{subsystem} runtime Oracle-text attribution cannot be empty"
+                )
+            identity = (relative, symbol)
+            previous = assignments.get(identity)
+            if previous is not None:
+                raise ValueError(
+                    "Runtime Oracle-text symbol is assigned to multiple subsystems: "
+                    f"{relative}::{symbol} ({previous}, {subsystem})"
+                )
+            assignments[identity] = subsystem
+
+    known = {
+        (str(row["file"]), str(row["symbol"]))
+        for row in runtime_text["prohibited_runtime_interpretation"]
+    }
+    stale = sorted(set(assignments) - known)
+    if stale:
+        detail = ", ".join(f"{file}::{symbol}" for file, symbol in stale)
+        raise ValueError(
+            "Runtime Oracle-text subsystem attribution is stale or not prohibited: "
+            + detail
+        )
+    return assignments
+
+
 def build_subsystem_capsules(
     *,
     root: Path,
@@ -518,6 +568,9 @@ def build_subsystem_capsules(
     classifications = _module_classifications(module_classifications)
     pieces = _load_reusable_pieces(root)
     oversized_functions = production["oversized_functions_and_methods"]
+    declared_text_subsystems = _declared_runtime_text_subsystems(
+        source, runtime_text
+    )
     capsules = []
     for owner in source["subsystem_ownership"]:
         subsystem = str(owner["id"])
@@ -574,10 +627,23 @@ def build_subsystem_capsules(
         text_accesses = [
             row
             for row in runtime_text["accesses"]
-            if row["file"] in implementation_modules
+            if (
+                declared_text_subsystems.get(
+                    (str(row["file"]), str(row["symbol"]))
+                )
+                == subsystem
+            )
             or (
-                row["file"] == "quorune/engine.py"
-                and str(row["symbol"]).rsplit(".", 1)[-1] in engine_method_set
+                (str(row["file"]), str(row["symbol"]))
+                not in declared_text_subsystems
+                and (
+                    row["file"] in implementation_modules
+                    or (
+                        row["file"] == "quorune/engine.py"
+                        and str(row["symbol"]).rsplit(".", 1)[-1]
+                        in engine_method_set
+                    )
+                )
             )
         ]
         reusable_piece_ids = sorted(str(row["piece_id"]) for row in piece_rows)
