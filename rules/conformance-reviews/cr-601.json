@@ -193,12 +193,12 @@
       "status": "blocked",
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
-      "implementation_components": ["CommanderEngine._cast", "CommanderEngine._compiled_zone_cast_permission", "CommanderEngine._sorcery_timing"],
-      "executable_test_ids": ["tests.test_casting_spells_rules.CastingSpellRuleTests.test_sorcery_timing_rejects_nonactive_cast_without_mutation"],
+      "implementation_components": ["CommanderEngine._cast", "CommanderEngine._compiled_zone_cast_permission", "quorune.semantic_runtime.casting_activation_metadata.compiled_self_zone_cast_permission", "CommanderEngine._sorcery_timing"],
+      "executable_test_ids": ["tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays", "tests.test_casting_spells_rules.CastingSpellRuleTests.test_sorcery_timing_rejects_nonactive_cast_without_mutation"],
       "required_scenarios": ["positive", "negative", "interaction", "hidden_information", "replay"],
-      "covered_scenarios": ["negative"],
+      "covered_scenarios": ["positive", "negative", "interaction", "hidden_information", "replay"],
       "blockers": ["continuous casting permissions and prohibitions are represented by selected timing and zone handlers rather than a complete effect model", "prospective proposal qualities are not universally evaluated"],
-      "notes": ["Known ownership, zone, face, timing, and semantic restrictions are enforced; unknown material semantics stop rather than becoming executable."]
+      "notes": ["Known ownership, zone, face, timing, and semantic restrictions are enforced. One exact self-graveyard permission with a controlled creature-subtype condition is source-spanned, typed, principal-scoped, and replayed; unknown material semantics stop rather than becoming executable."]
     },
     {
       "rule_id": "601.3a",

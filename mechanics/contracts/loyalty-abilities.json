@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 2,
+  "contract_version": 3,
   "mechanic_id": "cr-606-loyalty-abilities",
   "official_name": "Loyalty Abilities",
   "effective_date": "2026-06-19",
@@ -110,7 +110,7 @@
     "test_loyalty_symbol_defines_ability_on_any_permanent",
     "test_loyalty_timing_control_and_once_per_permanent",
     "test_negative_loyalty_cost_requires_enough_counters",
-    "test_visible_loyalty_cost_modifier_fails_closed",
+    "test_visible_typed_loyalty_cost_modifier_fails_closed",
     "test_multiple_loyalty_costs_fail_closed_until_combined",
     "test_doubling_season_ignores_positive_loyalty_cost_but_doc_applies",
     "test_negative_loyalty_removal_is_not_counter_placement",
@@ -120,8 +120,8 @@
     "test_daretti_loyalty_exchange_and_emblem_return"
   ],
   "implementation": {
-    "component": "ActivatedAbility loyalty costs, typed activation proposal/commit, counter-placement transaction, strict priority-action cost continuation, and CommanderEngine availability facade",
-    "version": "loyalty-ability-foundation-v2"
+    "component": "ActivatedAbility loyalty costs, typed activation proposal/commit, typed public loyalty-cost modifier discovery, counter-placement transaction, strict priority-action cost continuation, and CommanderEngine availability facade",
+    "version": "loyalty-ability-foundation-v3"
   },
   "known_blockers": [
     "generic loyalty-cost modification and ordering are not represented",

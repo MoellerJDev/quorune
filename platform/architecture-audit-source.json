@@ -244,19 +244,7 @@
         "quorune/rules/activation",
         "quorune/activation_usage.py"
       ],
-      "missing_dedicated_owner": false,
-      "context": {
-        "prohibited_runtime_oracle_text_symbols": [
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._compiled_zone_cast_permission"
-          },
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._loyalty_cost_modifier_present"
-          }
-        ]
-      }
+      "missing_dedicated_owner": false
     },
     {
       "id": "semantic_effect_execution",

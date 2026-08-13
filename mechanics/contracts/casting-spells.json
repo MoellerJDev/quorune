@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 1,
+  "contract_version": 2,
   "mechanic_id": "cr-601-casting-spells",
   "official_name": "Casting Spells",
   "effective_date": "2026-06-19",
@@ -192,6 +192,7 @@
     "test_cast_trigger_is_queued_above_spell_before_priority_returns",
     "test_failed_cast_submission_restores_every_partial_payment",
     "test_sorcery_timing_rejects_nonactive_cast_without_mutation",
+    "test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
     "test_mana_ability_can_activate_during_spell_payment",
     "test_hybrid_cast_cost_exposes_only_payable_variants",
     "test_sai_cast_trigger_and_two_artifact_draw_cost",
@@ -200,8 +201,8 @@
     "test_siege_defeated_casts_back_face_for_free_during_resolution"
   ],
   "implementation": {
-    "component": "CommanderEngine priority advertisement, _cast, cost-option, target-validation, mana-payment, transaction, stack, and cast-trigger paths",
-    "version": "casting-foundation-v1"
+    "component": "CommanderEngine priority advertisement, typed self-zone cast-permission discovery, _cast, cost-option, target-validation, mana-payment, transaction, stack, and cast-trigger paths",
+    "version": "casting-foundation-v2"
   },
   "known_blockers": [
     "the spell object is moved to the stack after choices and costs instead of before CR 601.2b-h, so prospective stack characteristics and cost effects can be wrong",

@@ -1146,6 +1146,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/casting_activation_metadata_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/continuous_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -4843,6 +4858,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/casting_activation_metadata.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "read_only",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/color_set_mana_abilities.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -6157,5 +6187,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "6eec803105e2e54ed6b571449d78fe7ac5a8292774a0f57f2a1a819d1ee4fe49"
+  "fingerprint": "58214ce734650815605b1feb73d3a8cdc50fc4c2ff751247db1fb3d430852b2c"
 }
