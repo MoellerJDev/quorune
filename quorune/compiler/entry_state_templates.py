@@ -79,6 +79,8 @@ def _descriptor(
 def _unconditional_match(text: str, source_name: str) -> bool:
     if _UNCONDITIONAL.fullmatch(text) is not None:
         return True
+    if not source_name:
+        return False
     source = SourceReferenceSpec(source_name).regex_pattern
     return (
         re.fullmatch(

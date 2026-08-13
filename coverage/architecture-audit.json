@@ -10421,7 +10421,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 147065,
+      "logical_lines": 147067,
       "methods": {
         "dunder": 406,
         "private": 750,
@@ -12015,8 +12015,8 @@
           "file": "quorune/compiler/entry_state_templates.py",
           "functions_and_methods": 5,
           "language": "python",
-          "logical_lines": 168,
-          "physical_lines": 192
+          "logical_lines": 170,
+          "physical_lines": 194
         },
         {
           "file": "quorune/cycling_abilities.py",
@@ -13853,7 +13853,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 161176,
+      "physical_lines": 161178,
       "python_file_count": 420,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -24205,7 +24205,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "d84174f38b1a532576a432d3b835acb287a843ba29f25344e4a26e8649183fa3",
+      "fingerprint": "3eddae351cf9eaf88c156b49a5ceb0281dec3a9351b7d399c4df854a9284a925",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -25064,8 +25064,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2741,
-      "discovered_total": 6041,
+      "conventional_ast_cases": 2742,
+      "discovered_total": 6042,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 118,

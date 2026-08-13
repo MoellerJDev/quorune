@@ -121,6 +121,20 @@ class TypedLandEntryCompilerTests(unittest.TestCase):
                     )
                 )
 
+    def test_entry_state_probe_without_source_identity_fails_closed(self):
+        self.assertIsNone(
+            static_entry_state_handler(
+                "If you would draw a card, draw two cards instead.",
+                source_name="",
+            )
+        )
+        self.assertIsNotNone(
+            static_entry_state_handler(
+                "This land enters tapped.",
+                source_name="",
+            )
+        )
+
     def test_entry_state_compiler_mutation_is_killed(self):
         record = _record("This land enters tapped.")
         ordinary = compile_card_program(
