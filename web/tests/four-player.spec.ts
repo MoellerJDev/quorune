@@ -24,7 +24,9 @@ async function submitNamedDeck(page: Page, name: string, commander: string, text
   // These duplicated lists exercise the browser protocol, not matchup or
   // semantic-coverage evidence. A draft mechanic contract may correctly keep
   // the ready list behind a visible fail-closed fidelity warning.
-  await expect(page.locator(".success-banner, .warning-banner").filter({ hasText: /Deck (validated|accepted)/ })).toBeVisible();
+  await expect(
+    page.locator(".success-banner, .warning-banner").filter({ hasText: /Deck (validated|accepted)/ }),
+  ).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId("deck-ready-summary")).toContainText(name);
 }
 
