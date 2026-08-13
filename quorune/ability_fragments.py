@@ -16,6 +16,11 @@ from .counter_maximums import (
     CounterMaximumSpec,
     effective_counter_maximums,
 )
+from .characteristic_fragments import (
+    CharacteristicFragmentError,
+    ConditionalKeywordSpec,
+    DynamicPowerToughnessSpec,
+)
 from .trigger_participation import TriggerMultiplierSpec, WardSpec
 from .replacement.immutable import thaw_value
 from .util import stable_json
@@ -598,6 +603,8 @@ StaticAbilityFragment: TypeAlias = (
     | CounterMaximumSpec
     | TriggerMultiplierSpec
     | WardSpec
+    | ConditionalKeywordSpec
+    | DynamicPowerToughnessSpec
 )
 
 
@@ -628,6 +635,10 @@ def ability_fragment_to_dict(
         kind = "trigger_multiplier"
     elif isinstance(fragment, WardSpec):
         kind = "ward"
+    elif isinstance(fragment, ConditionalKeywordSpec):
+        kind = "conditional_keyword"
+    elif isinstance(fragment, DynamicPowerToughnessSpec):
+        kind = "dynamic_power_toughness"
     else:
         raise AbilityFragmentError(
             f"Unsupported ability fragment {type(fragment).__name__}"
@@ -676,6 +687,16 @@ def ability_fragment_from_dict(
         return TriggerMultiplierSpec.from_dict(value["value"])
     if value["kind"] == "ward":
         return WardSpec.from_dict(value["value"])
+    if value["kind"] == "conditional_keyword":
+        try:
+            return ConditionalKeywordSpec.from_dict(value["value"])
+        except CharacteristicFragmentError as exc:
+            raise AbilityFragmentError(str(exc)) from exc
+    if value["kind"] == "dynamic_power_toughness":
+        try:
+            return DynamicPowerToughnessSpec.from_dict(value["value"])
+        except CharacteristicFragmentError as exc:
+            raise AbilityFragmentError(str(exc)) from exc
     raise AbilityFragmentError(
         f"Unsupported ability fragment kind {value['kind']!r}"
     )
@@ -701,6 +722,8 @@ def canonical_ability_fragments(
                 CounterMaximumSpec,
                 TriggerMultiplierSpec,
                 WardSpec,
+                ConditionalKeywordSpec,
+                DynamicPowerToughnessSpec,
             ),
         )
         else ability_fragment_from_dict(value)
@@ -869,9 +892,11 @@ __all__ = [
     "CombatKeywordTriggerKind",
     "CombatKeywordTriggerSpec",
     "CounterMaximumSpec",
+    "ConditionalKeywordSpec",
     "CURRENT_ABILITY_FRAGMENT_COVERAGE",
     "DamageKeywordTriggerKind",
     "DamageKeywordTriggerSpec",
+    "DynamicPowerToughnessSpec",
     "GrantedActivatedAbilitySpec",
     "GrantedTriggeredAbilitySpec",
     "ProtectionQualityKind",

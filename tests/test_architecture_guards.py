@@ -202,14 +202,15 @@ class ArchitectureGuardTests(unittest.TestCase):
             for row in inventory["prohibited_runtime_interpretation"]
         }
         self.assertEqual(expected, set(assignments))
+        declared_with_debt = {
+            str(owner["id"])
+            for owner in source["subsystem_ownership"]
+            if owner.get("context", {}).get(
+                "prohibited_runtime_oracle_text_symbols"
+            )
+        }
         self.assertEqual(
-            {
-                "application_session",
-                "casting_activation_and_costs",
-                "combat",
-                "continuous_effects",
-                "semantic_effect_execution",
-            },
+            declared_with_debt,
             set(assignments.values()),
         )
 

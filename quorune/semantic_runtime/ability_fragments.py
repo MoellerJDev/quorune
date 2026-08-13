@@ -8,9 +8,11 @@ from ..ability_fragments import (
     AbilityFragmentError,
     CombatKeywordTriggerKind,
     CombatKeywordTriggerSpec,
+    ConditionalKeywordSpec,
     CounterMaximumSpec,
     DamageKeywordTriggerKind,
     DamageKeywordTriggerSpec,
+    DynamicPowerToughnessSpec,
     ProtectionSpec,
     SpellCastKeywordTriggerKind,
     SpellCastKeywordTriggerSpec,
@@ -47,6 +49,12 @@ TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID = (
 WARD_FRAGMENT_HANDLER_ID = "ability.trigger.ward.v1"
 TOXIC_FRAGMENT_HANDLER_ID = "ability.static.toxic.v1"
 COUNTER_MAXIMUM_FRAGMENT_HANDLER_ID = "ability.static.counter-maximum.v1"
+CONDITIONAL_KEYWORD_FRAGMENT_HANDLER_ID = (
+    "ability.static.conditional-keyword.v1"
+)
+DYNAMIC_POWER_TOUGHNESS_FRAGMENT_HANDLER_ID = (
+    "ability.static.dynamic-power-toughness.v1"
+)
 
 
 def _fragment(
@@ -63,7 +71,10 @@ def _fragment(
     )
     if descriptor["handler_id"] != handler_id:
         raise SemanticNodeError("Static ability fragment handler ID mismatch")
-    if descriptor["schema_version"] != 1:
+    if (
+        type(descriptor["schema_version"]) is not int
+        or descriptor["schema_version"] != 1
+    ):
         raise SemanticNodeError(
             f"Unsupported {handler_id} schema version"
         )
@@ -644,6 +655,71 @@ class CounterMaximumAbilityFragmentHandler:
         return (self.validate(descriptor),)
 
 
+@dataclass(frozen=True, slots=True)
+class ConditionalKeywordAbilityFragmentHandler:
+    handler_id: str = CONDITIONAL_KEYWORD_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.conditional_keyword"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("604.1", "611.3a", "613.1f")
+    capability_dependencies: tuple[str, ...] = (
+        "continuous.characteristics.conditional_keyword",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> ConditionalKeywordSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=ConditionalKeywordSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
+class DynamicPowerToughnessAbilityFragmentHandler:
+    handler_id: str = DYNAMIC_POWER_TOUGHNESS_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.dynamic_power_toughness"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = (
+        "604.1",
+        "611.3a",
+        "613.1g",
+        "613.4b",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "continuous.characteristics.dynamic_power_toughness",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> DynamicPowerToughnessSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=DynamicPowerToughnessSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
 class AbilityFragmentRegistry(
     RuntimeComponentRegistry[object, StaticAbilityFragment]
 ):
@@ -657,7 +733,9 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             BattleCryAbilityFragmentHandler(),
             BushidoAbilityFragmentHandler(),
             CounterMaximumAbilityFragmentHandler(),
+            ConditionalKeywordAbilityFragmentHandler(),
             DethroneAbilityFragmentHandler(),
+            DynamicPowerToughnessAbilityFragmentHandler(),
             EnchantAbilityFragmentHandler(),
             ExaltedAbilityFragmentHandler(),
             FlankingAbilityFragmentHandler(),
@@ -696,7 +774,9 @@ __all__ = [
     "BUSHIDO_FRAGMENT_HANDLER_ID",
     "BATTLE_CRY_FRAGMENT_HANDLER_ID",
     "COUNTER_MAXIMUM_FRAGMENT_HANDLER_ID",
+    "CONDITIONAL_KEYWORD_FRAGMENT_HANDLER_ID",
     "EXALTED_FRAGMENT_HANDLER_ID",
+    "DYNAMIC_POWER_TOUGHNESS_FRAGMENT_HANDLER_ID",
     "FLANKING_FRAGMENT_HANDLER_ID",
     "LINKED_GRAVEYARD_ENCHANT_HANDLER_ID",
     "PROTECTION_FRAGMENT_HANDLER_ID",
@@ -713,12 +793,14 @@ __all__ = [
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
     "CounterMaximumAbilityFragmentHandler",
+    "ConditionalKeywordAbilityFragmentHandler",
     "ExaltedAbilityFragmentHandler",
     "FlankingAbilityFragmentHandler",
     "LinkedGraveyardEnchantFragmentHandler",
     "MeleeAbilityFragmentHandler",
     "MentorAbilityFragmentHandler",
     "DethroneAbilityFragmentHandler",
+    "DynamicPowerToughnessAbilityFragmentHandler",
     "TrainingAbilityFragmentHandler",
     "RenownAbilityFragmentHandler",
     "ProwessAbilityFragmentHandler",

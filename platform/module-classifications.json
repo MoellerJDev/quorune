@@ -651,6 +651,18 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/characteristic_fragments.py",
+      "layer": "domain",
+      "owning_subsystem": "ability_fragments",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/choice_forms.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -2426,6 +2438,20 @@
         "semantics"
       ],
       "game_state_access": "mutable_owner",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/dynamic_characteristics.py",
+      "layer": "rules",
+      "owning_subsystem": "continuous_effects",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "read_only",
       "card_specificity_policy": "generic_no_growth",
       "visibility_sensitivity": "authoritative_internal",
       "replay_participation": "authoritative"
@@ -6131,5 +6157,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "6d695ad8edb1481b088ea82f48ea909b40d679e7037b24fa1e266e505acbc61f"
+  "fingerprint": "6eec803105e2e54ed6b571449d78fe7ac5a8292774a0f57f2a1a819d1ee4fe49"
 }

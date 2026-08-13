@@ -85,7 +85,8 @@
       "test_intrinsic_entry_counters",
       "test_proliferate_rules",
       "test_saga_counter_progression",
-      "test_support_counter_placement"
+      "test_support_counter_placement",
+      "test_typed_dynamic_characteristics"
     ],
     "casting-costs-mana": [
       "test_action_proposals",

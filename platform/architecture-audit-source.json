@@ -450,19 +450,7 @@
         "quorune/continuous_effects.py",
         "quorune/engine.py"
       ],
-      "missing_dedicated_owner": false,
-      "context": {
-        "prohibited_runtime_oracle_text_symbols": [
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._copyable_characteristics"
-          },
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._effective_card_data"
-          }
-        ]
-      }
+      "missing_dedicated_owner": false
     },
     {
       "id": "state_based_actions",

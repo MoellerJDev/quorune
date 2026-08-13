@@ -72,6 +72,17 @@ read-only; ordinary timing, quota, cost, control, zone-transition, and commit
 rules remain authoritative in their existing owners. Unrepresented wording
 fails closed rather than falling back to current Oracle text.
 
+Typed continuous-characteristic descriptors own the represented live-state
+families. `continuous.ability.fixed-query-keyword-grant.v1` lowers closed
+controller-scoped artifact Hexproof and creature-token Haste grants into
+immutable layer-6 effects. The `ability.static.conditional-keyword.v1` and
+`ability.static.dynamic-power-toughness.v1` fragment handlers preserve closed
+self conditions and count-derived modifiers on the effective ability set, then
+evaluate them from public battlefield or owner-graveyard state. Copies retain
+the typed fragments and reevaluate against current state; phased-out sources
+do not participate. Unsupported wording remains residual, and display Oracle
+text never selects these behaviors.
+
 `participation.untap-step.static.v1` lowers closed source, attached-object,
 global, and other-player static wording into immutable CR 502 participation
 values. The runtime query evaluates the complete typed `ObjectQuerySpec`

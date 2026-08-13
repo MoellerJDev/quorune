@@ -1,4 +1,4 @@
-{
+    {
   "schema_version": 1,
   "declarations": [
     {
@@ -2994,6 +2994,62 @@
       "applicability_note": "Round-trip the complete typed continuous effect and its fixed granted fragment without changing canonical identity."
     },
     {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_four_player_keyword_grants_are_controller_scoped_and_phase_with_source",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Grant Hexproof only to controlled artifacts and Haste only to controlled creature tokens, then remove both when their independent sources phase out."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_four_player_keyword_grants_are_controller_scoped_and_phase_with_source",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep both live sets scoped to the source controller in a four-player battlefield."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_characteristic_lowering_mutants_are_killed",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the exact compiler-to-component lowering before keyword behavior can retain trust."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_characteristic_descriptors_reject_malformed_values",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject unknown fields, noninteger schema versions, unsupported keywords, and attempts to bypass the source-controller relation."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_raw_oracle_text_without_fragment_does_not_select_behavior",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Leave identical visible rules prose inert when its trusted typed component is absent."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "positive",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_closed_characteristic_families_compile_exact_and_near_misses_remain_residual",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile exact controller-wide Artifact Hexproof and creature-token Haste sentences into source-spanned query descriptors while adjacent keyword and predicate forms remain residual."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "replay",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_dynamic_characteristics_replay_exactly",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Pin the widened continuous-component registry with a typed characteristic checkpoint and replay the following command exactly."
+    },
+    {
       "capability_id": "continuous.attached.fixed_characteristics",
       "evidence_class": "interaction",
       "test_id": "tests.test_attached_static_characteristics.AttachedContinuousModelTests.test_type_and_ability_removal_use_their_canonical_layers",
@@ -3152,6 +3208,118 @@
       "official_rule_ids": ["305.6", "305.7", "613.1d"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Apply additive basic-land-type wording in layer 4 and derive the corresponding intrinsic mana ability."
+    },
+    {
+      "capability_id": "continuous.characteristics.conditional_keyword",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_copied_dynamic_fragment_uses_current_public_state",
+      "official_rule_ids": ["604.1", "611.3a", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve executable characteristic fragments in the shared copyable-characteristics shape rather than copying runtime prose authority."
+    },
+    {
+      "capability_id": "continuous.characteristics.conditional_keyword",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_self_conditions_and_counts_use_typed_fragments_only",
+      "official_rule_ids": ["604.1", "611.3a", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Evaluate every in-game opponent in a four-player match without treating the controller as an opponent."
+    },
+    {
+      "capability_id": "continuous.characteristics.conditional_keyword",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_characteristic_lowering_mutants_are_killed",
+      "official_rule_ids": ["604.1", "611.3a", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the conditional fragment compiler boundary before runtime prose can become a fallback."
+    },
+    {
+      "capability_id": "continuous.characteristics.conditional_keyword",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_characteristic_descriptors_reject_malformed_values",
+      "official_rule_ids": ["604.1", "611.3a", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a negative life threshold before the fragment can enter current characteristics."
+    },
+    {
+      "capability_id": "continuous.characteristics.conditional_keyword",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_raw_oracle_text_without_fragment_does_not_select_behavior",
+      "official_rule_ids": ["604.1", "611.3a", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Do not grant Haste from current Oracle prose after removing the source-pinned typed fragment program."
+    },
+    {
+      "capability_id": "continuous.characteristics.conditional_keyword",
+      "evidence_class": "positive",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_self_conditions_and_counts_use_typed_fragments_only",
+      "official_rule_ids": ["604.1", "611.3a", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Grant Haste while any one of three opponents is at the compiled threshold and remove it as soon as all opponents are above that threshold."
+    },
+    {
+      "capability_id": "continuous.characteristics.conditional_keyword",
+      "evidence_class": "replay",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_dynamic_characteristics_replay_exactly",
+      "official_rule_ids": ["604.1", "611.3a", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Pin typed characteristic fragments and their runtime registry in the initial checkpoint before exact command replay."
+    },
+    {
+      "capability_id": "continuous.characteristics.dynamic_power_toughness",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_copied_dynamic_fragment_uses_current_public_state",
+      "official_rule_ids": ["604.1", "611.3a", "613.1g", "613.4b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Copy the typed dynamic fragment and make the original and copy consume the same current owner-graveyard count."
+    },
+    {
+      "capability_id": "continuous.characteristics.dynamic_power_toughness",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_self_conditions_and_counts_use_typed_fragments_only",
+      "official_rule_ids": ["604.1", "611.3a", "613.1g", "613.4b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep each graveyard count pinned to the object's owner in a four-player match."
+    },
+    {
+      "capability_id": "continuous.characteristics.dynamic_power_toughness",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_characteristic_lowering_mutants_are_killed",
+      "official_rule_ids": ["604.1", "611.3a", "613.1g", "613.4b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the count-derived fragment compiler boundary before dynamic power and toughness can retain trust."
+    },
+    {
+      "capability_id": "continuous.characteristics.dynamic_power_toughness",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_characteristic_descriptors_reject_malformed_values",
+      "official_rule_ids": ["604.1", "611.3a", "613.1g", "613.4b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject an unrepresented opponent-library count kind before characteristic evaluation."
+    },
+    {
+      "capability_id": "continuous.characteristics.dynamic_power_toughness",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_raw_oracle_text_without_fragment_does_not_select_behavior",
+      "official_rule_ids": ["604.1", "611.3a", "613.1g", "613.4b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Leave a custom copied object at printed zero power and toughness when it carries only matching Oracle prose and no typed fragment."
+    },
+    {
+      "capability_id": "continuous.characteristics.dynamic_power_toughness",
+      "evidence_class": "positive",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_self_conditions_and_counts_use_typed_fragments_only",
+      "official_rule_ids": ["604.1", "611.3a", "613.1g", "613.4b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply owner-graveyard creature counts per object and the fixed three-land threshold to current power and toughness."
+    },
+    {
+      "capability_id": "continuous.characteristics.dynamic_power_toughness",
+      "evidence_class": "replay",
+      "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_dynamic_characteristics_replay_exactly",
+      "official_rule_ids": ["604.1", "611.3a", "613.1g", "613.4b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Round-trip a token carrying the typed count fragment in a checkpoint and verify the following concession command exactly."
     },
     {
       "capability_id": "continuous.power_toughness.fixed_anthem",

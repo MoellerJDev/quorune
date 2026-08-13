@@ -2040,7 +2040,18 @@
             "colors": [],
             "power": "0",
             "toughness": "0",
-            "oracle_text": "This token gets +1/+1 for each artifact you control."
+            "oracle_text": "This token gets +1/+1 for each artifact you control.",
+            "ability_fragments": [{
+              "kind": "dynamic_power_toughness",
+              "value": {
+                "schema_version": 1,
+                "count_kind": "controller_battlefield_artifacts",
+                "calculation": "per_matching_object",
+                "power": 1,
+                "toughness": 1,
+                "minimum_count": 0
+              }
+            }]
           }
         }
       ],
@@ -3060,7 +3071,18 @@
           "power": "0",
           "toughness": "0",
           "colors": [],
-          "oracle_text": "This token gets +1/+1 for each artifact you control."
+          "oracle_text": "This token gets +1/+1 for each artifact you control.",
+          "ability_fragments": [{
+            "kind": "dynamic_power_toughness",
+            "value": {
+              "schema_version": 1,
+              "count_kind": "controller_battlefield_artifacts",
+              "calculation": "per_matching_object",
+              "power": 1,
+              "toughness": 1,
+              "minimum_count": 0
+            }
+          }]
         }
       }],
       "trust_level": "trusted",
