@@ -2,7 +2,7 @@
 title: "ADR 0024: canonical attack-transition trigger ownership"
 status: "ADR"
 authoritative_source: "this decision record and typed attack-transition implementation"
-verified: "2026-08-06"
+verified: "2026-08-13"
 audience: "rules, compiler, replay, and architecture contributors"
 maintenance: "hand-maintained"
 adr_id: "0024"
@@ -37,8 +37,14 @@ owns identity-pinned layer 7c results until end of turn.
 The compiler lowers only closed printed keyword grammar to typed ability
 fragments with source spans and fine-grained capabilities. Runtime code consumes
 those fragments and never branches on printed names or Oracle IDs. Conditional,
-granted, copied, face-down, put-attacking, and trigger-modification variants
-remain explicit residuals until their dependencies are represented.
+granted, copied, face-down, put-attacking, and trigger-modification variants of
+those keyword families remain explicit residuals until their dependencies are
+represented.
+
+Closed nonkeyword triggers may share the transition through the ordinary
+typed granted-trigger fragment and semantic-event path. Discovery receives the
+sealed attacker and recipient facts, not Oracle or token display prose, and
+the ordinary trigger subsystem still owns batching and APNAP placement.
 
 The ADR-bound specificity refresh records only the generic keyword literals
 introduced by this family. It does not authorize card-specific conditionals,

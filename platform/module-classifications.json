@@ -1371,6 +1371,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/declaration_nodes.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/dependency_gate.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -2306,6 +2321,46 @@
     },
     {
       "file": "quorune/declaration_costs.py",
+      "layer": "rules",
+      "owning_subsystem": "legacy_rules",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/declaration_fragments.py",
+      "layer": "domain",
+      "owning_subsystem": "legacy_domain",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/declaration_requirement_runtime.py",
+      "layer": "rules",
+      "owning_subsystem": "legacy_rules",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/declaration_requirements.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
       "allowed_dependency_layers": [
@@ -6217,5 +6272,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "113d7b24c5771fb2b65b68016a5aa715697641468144a9d38f575f29285f8491"
+  "fingerprint": "7fc5f6e5a2d8b9e02164c9b0cb99be5db4897f155efa08467aa77427822df8cb"
 }

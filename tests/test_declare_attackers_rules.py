@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session, pass_current
+from declaration_support import compiled_declaration_fragments
 from quorune.engine import TURN_STEPS
 from quorune.model import CombatState
 from quorune.tap_state import TapStateError, tap_declared_attackers
@@ -61,6 +62,10 @@ class DeclareAttackersRuleTests(unittest.TestCase):
         characteristics = {
             "type_line": type_line,
             "oracle_text": oracle_text,
+            "ability_fragments": compiled_declaration_fragments(
+                name,
+                oracle_text,
+            ),
             "power": "2",
             "toughness": "2",
         }

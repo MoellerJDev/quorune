@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 93,
+  "registry_version": 94,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -2466,6 +2466,33 @@
       "dependency_fail_closed_rationale": "The bounded restriction consumes only a current immutable public counter snapshot and has no optional capability dependency.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_unleash_block_runtime_mutation_is_killed removes typed prohibition lowering and the counter-bearing source is incorrectly allowed to block.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "combat.declaration.typed_components",
+      "version": 1,
+      "official_rules": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile bounded whole-line combat costs, restrictions, and if-able requirements into source-spanned typed ability fragments and consume only their current effective layer-6 presence during declaration solving.",
+        "inputs": ["exact source-spanned declaration grammar", "current trusted CardProgram", "current effective ability fragments", "complete public declaration domains", "current public source, attachment, controller, combat, and turn-history facts"],
+        "outputs": ["typed declaration costs", "typed declaration restrictions", "typed declaration requirements", "one shared projected and accepted declaration problem", "atomic rejection before combat mutation"],
+        "exclusions": ["unresolved or near-miss declaration grammar", "nonmana and variable declaration costs", "temporary declaration effects without a typed fragment producer", "unsupported ability-copy and face-down producers", "dynamic characteristic-count predicates whose evaluation would re-enter a type-changing layer dependency cycle"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.declaration_nodes.declaration_static_node", "quorune.declaration_fragments.DeclarationCostTemplate", "quorune.declaration_fragments.DeclarationRequirementTemplate", "quorune.declaration_fragments.DeclarationRestrictionTemplate", "quorune.declaration_requirement_runtime.typed_attacker_block_requirements", "quorune.declaration_requirement_runtime.typed_blocker_requirements", "quorune.semantic_runtime.ability_fragments.DeclarationCostAbilityFragmentHandler", "quorune.semantic_runtime.ability_fragments.DeclarationRequirementAbilityFragmentHandler", "quorune.semantic_runtime.ability_fragments.DeclarationRestrictionAbilityFragmentHandler", "AbilityFragmentHostMixin._effective_ability_fragments", "CommanderEngine._declaration_costs", "CommanderEngine._declaration_restrictions", "CommanderEngine._issue_attackers", "CommanderEngine._issue_next_blocker"],
+      "positive_tests": ["test_declaration_components_are_closed_typed_fragments", "test_prison_tax_is_projected_paid_atomically_and_replays", "test_global_maximum_constrains_requirement_solver"],
+      "negative_tests": ["test_declaration_component_descriptors_reject_malformed_values", "test_raw_oracle_declaration_text_has_no_runtime_authority"],
+      "interaction_tests": ["test_global_maximum_constrains_requirement_solver", "test_player_state_declaration_predicates_and_exact_replay"],
+      "multiplayer_tests": ["test_prison_tax_is_projected_paid_atomically_and_replays"],
+      "privacy_tests": [],
+      "replay_tests": ["test_prison_tax_is_projected_paid_atomically_and_replays", "test_attack_or_block_alone_allows_different_defenders_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded public solver consumes no optional capability dependency; unsupported grammar remains a compiler residual and raw prose has no current-game authority.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_declaration_component_runtime_mutant_is_killed removes the typed fragment lookup and the focused mandatory-cost assertion rejects the survivor.",
       "blockers": [],
       "status": "trusted"
     },

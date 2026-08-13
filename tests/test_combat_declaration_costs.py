@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
+from declaration_support import compiled_declaration_fragments
 from quorune.abilities import parse_activated_abilities
 from quorune.ability_fragments import ability_fragment_to_dict
 from quorune.aura import SimpleEnchantSpec
@@ -17,6 +18,7 @@ from quorune.record import (
     checkpoint_envelope,
     replay_record,
 )
+from quorune.rules.capabilities import load_default_capability_registry
 
 
 def _fixed_mana_fixture(card_name: str, oracle_text: str) -> dict:
@@ -45,6 +47,7 @@ class CombatDeclarationCostTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.db, cls.mishra, cls.zimone = load_assets()
+        cls.capabilities = load_default_capability_registry()
 
     @classmethod
     def tearDownClass(cls):
@@ -90,6 +93,10 @@ class CombatDeclarationCostTests(unittest.TestCase):
             characteristics={
                 "type_line": "Token Creature — Test",
                 "oracle_text": oracle_text,
+                "ability_fragments": compiled_declaration_fragments(
+                    name,
+                    oracle_text,
+                ),
                 "power": power,
                 "toughness": "2",
                 **(
@@ -120,15 +127,20 @@ class CombatDeclarationCostTests(unittest.TestCase):
 
     @staticmethod
     def prison(engine, seat: str, name: str, cost: str = "{2}"):
+        oracle_text = (
+            "Creatures can't attack you unless their controller "
+            f"pays {cost} for each creature they control that's "
+            "attacking you."
+        )
         ref = engine.create_token(
             seat,
             name=name,
             characteristics={
                 "type_line": "Token Enchantment",
-                "oracle_text": (
-                    "Creatures can't attack you unless their controller "
-                    f"pays {cost} for each creature they control that's "
-                    "attacking you."
+                "oracle_text": oracle_text,
+                "ability_fragments": compiled_declaration_fragments(
+                    name,
+                    oracle_text,
                 ),
             },
         )[0]
@@ -136,18 +148,23 @@ class CombatDeclarationCostTests(unittest.TestCase):
 
     @staticmethod
     def attach_tax(engine, seat: str, creature, *, cost: str = "{1}"):
+        oracle_text = (
+            "Enchant creature\n"
+            "Enchanted creature can't attack or block unless its "
+            f"controller pays {cost}."
+        )
         ref = engine.create_token(
             seat,
             name="Attached Tax",
             characteristics={
                 "type_line": "Token Enchantment — Aura",
-                "oracle_text": (
-                    "Enchant creature\n"
-                    "Enchanted creature can't attack or block unless its "
-                    f"controller pays {cost}."
-                ),
+                "oracle_text": oracle_text,
                 "ability_fragments": [
-                    ability_fragment_to_dict(SimpleEnchantSpec("creature"))
+                    ability_fragment_to_dict(SimpleEnchantSpec("creature")),
+                    *compiled_declaration_fragments(
+                        "Attached Tax",
+                        oracle_text,
+                    ),
                 ],
             },
             aura_target_ref=creature.ref,
@@ -439,29 +456,22 @@ class CombatDeclarationCostTests(unittest.TestCase):
         self.assertTrue(land.tapped)
 
     def test_broader_conditional_attack_tax_stops_fail_closed(self):
-        session = self.make_combat_session(508010410, players=2)
-        engine = session.engine
-        self.creature(
-            engine, "A", "Conditional Target", keywords=("Haste",)
-        )
-        self.creature(
-            engine,
-            "B",
-            "Domain Tax",
-            oracle_text=(
-                "Domain — Creatures can't attack you unless their "
-                "controller pays {X} for each creature they control that's "
-                "attacking you, where X is the number of basic land types "
-                "among lands you control."
+        base = self.db.lookup("Arcum Dagsson")
+        ir = compile_oracle_card(
+            replace(
+                base,
+                type_line="Enchantment",
+                oracle_text=(
+                    "Domain — Creatures can't attack you unless their "
+                    "controller pays {X} for each creature they control "
+                    "that's attacking you, where X is the number of basic "
+                    "land types among lands you control."
+                ),
             ),
+            trusted_mechanics={"cr-508-declare-attackers-step"},
+            capability_registry=self.capabilities,
         )
-
-        engine._issue_attackers()
-
-        self.assertIsNone(engine.state.pending_decision)
-        pause = engine._semantic_pause_annotation()
-        self.assertIsNotNone(pause)
-        self.assertIn("combat.attack_cost", pause["event"])
+        self.assertEqual("declaration_cost", ir.material_residuals[0].kind)
 
     def test_planeswalker_only_tax_does_not_tax_a_player_attack(self):
         session = self.make_combat_session(508010411, players=2)
@@ -657,20 +667,20 @@ class CombatDeclarationCostTests(unittest.TestCase):
         self.assertFalse(engine.state.combat.had_attacking_creature)
 
     def test_complex_attack_tax_pauses_fail_closed(self):
-        session = self.make_combat_session(508010807, players=2)
-        engine = session.engine
-        self.creature(
-            engine, "A", "Potential Attacker", keywords=("Haste",)
+        base = self.db.lookup("Arcum Dagsson")
+        ir = compile_oracle_card(
+            replace(
+                base,
+                type_line="Enchantment",
+                oracle_text=(
+                    "Creatures can't attack you unless their controller pays "
+                    "{W/P} for each creature they control that's attacking you."
+                ),
+            ),
+            trusted_mechanics={"cr-508-declare-attackers-step"},
+            capability_registry=self.capabilities,
         )
-        self.prison(engine, "B", "Phyrexian Prison", "{W/P}")
-
-        engine._issue_attackers()
-
-        self.assertIsNone(engine.state.pending_decision)
-        pause = engine._semantic_pause_annotation()
-        self.assertIsNotNone(pause)
-        self.assertEqual("Phyrexian Prison", pause["label"])
-        self.assertIn("combat.attack_cost", pause["event"])
+        self.assertEqual("declaration_cost", ir.material_residuals[0].kind)
 
     def test_attacking_archangel_taxes_each_declared_blocker(self):
         session = self.make_combat_session(509010401, players=2)
@@ -803,39 +813,20 @@ class CombatDeclarationCostTests(unittest.TestCase):
         self.assertTrue(land.tapped)
 
     def test_broader_conditional_block_cost_stops_fail_closed(self):
-        session = self.make_combat_session(509010404, players=2)
-        engine = session.engine
-        attacker = self.creature(
-            engine,
-            "A",
-            "Large Attacker",
-            keywords=("Haste",),
-            power="4",
-        )
-        self.creature(
-            engine,
-            "B",
-            "Conditional Blocker",
-            oracle_text=(
-                "This creature can't block creatures with power 3 or "
-                "greater unless you pay {1}."
+        base = self.db.lookup("Arcum Dagsson")
+        ir = compile_oracle_card(
+            replace(
+                base,
+                type_line="Creature — Test",
+                oracle_text=(
+                    "This creature can't block creatures with power 3 or "
+                    "greater unless you pay {1}."
+                ),
             ),
+            trusted_mechanics={"cr-509-declare-blockers-step"},
+            capability_registry=self.capabilities,
         )
-        engine.state.phase_index = 6
-        engine.state.step = "declare_blockers"
-        engine.state.combat = CombatState(
-            attackers={attacker.object_id: "B"},
-            attackers_declared=True,
-            defending_players=["B"],
-        )
-        attacker.attacking = "B"
-
-        engine._issue_next_blocker()
-
-        self.assertIsNone(engine.state.pending_decision)
-        pause = engine._semantic_pause_annotation()
-        self.assertIsNotNone(pause)
-        self.assertIn("combat.block_cost", pause["event"])
+        self.assertEqual("declaration_cost", ir.material_residuals[0].kind)
 
     def test_sacrificed_mana_source_does_not_become_a_blocker(self):
         session = self.make_combat_session(509010405, players=2)
@@ -888,7 +879,11 @@ class CombatDeclarationCostTests(unittest.TestCase):
         )
         trusted = {"cr-508-declare-attackers-step"}
 
-        ir = compile_oracle_card(exact, trusted_mechanics=trusted)
+        ir = compile_oracle_card(
+            exact,
+            trusted_mechanics=trusted,
+            capability_registry=self.capabilities,
+        )
 
         self.assertEqual("exact", ir.status)
         node = ir.faces[0].nodes[0]
@@ -910,6 +905,7 @@ class CombatDeclarationCostTests(unittest.TestCase):
                 "cr-508-declare-attackers-step",
                 "cr-509-declare-blockers-step",
             },
+            capability_registry=self.capabilities,
         )
         self.assertEqual("exact", attached.status)
         self.assertEqual(

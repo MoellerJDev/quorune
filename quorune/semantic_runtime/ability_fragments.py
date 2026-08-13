@@ -10,6 +10,9 @@ from ..ability_fragments import (
     CombatKeywordTriggerSpec,
     ConditionalKeywordSpec,
     CounterMaximumSpec,
+    DeclarationCostTemplate,
+    DeclarationRequirementTemplate,
+    DeclarationRestrictionTemplate,
     DamageKeywordTriggerKind,
     DamageKeywordTriggerSpec,
     DynamicPowerToughnessSpec,
@@ -22,6 +25,7 @@ from ..ability_fragments import (
 )
 from ..enchant_spec import SimpleEnchantSpec
 from ..enchant_spec import LinkedGraveyardCreatureEnchantSpec
+from ..declaration_fragments import DECLARATION_COMPONENT_CAPABILITY_ID
 from ..rules.capabilities import load_default_capability_registry
 from ..trigger_participation import TriggerMultiplierSpec, WardSpec
 from .component_registry import RuntimeComponentRegistry, exact_fields
@@ -54,6 +58,15 @@ CONDITIONAL_KEYWORD_FRAGMENT_HANDLER_ID = (
 )
 DYNAMIC_POWER_TOUGHNESS_FRAGMENT_HANDLER_ID = (
     "ability.static.dynamic-power-toughness.v1"
+)
+DECLARATION_COST_FRAGMENT_HANDLER_ID = (
+    "ability.static.declaration-cost.v1"
+)
+DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID = (
+    "ability.static.declaration-requirement.v1"
+)
+DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID = (
+    "ability.static.declaration-restriction.v1"
 )
 
 
@@ -146,6 +159,96 @@ class ProtectionAbilityFragmentHandler:
             handler_id=self.handler_id,
             event=self.event,
             expected_type=ProtectionSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
+class DeclarationCostAbilityFragmentHandler:
+    handler_id: str = DECLARATION_COST_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.declaration_cost"
+    event: str = "combat.declaration"
+    rule_references: tuple[str, ...] = ("508.1h", "509.1d")
+    capability_dependencies: tuple[str, ...] = (
+        DECLARATION_COMPONENT_CAPABILITY_ID,
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> DeclarationCostTemplate:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=DeclarationCostTemplate,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
+class DeclarationRequirementAbilityFragmentHandler:
+    handler_id: str = DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.declaration_requirement"
+    event: str = "combat.declaration"
+    rule_references: tuple[str, ...] = ("508.1d", "509.1c")
+    capability_dependencies: tuple[str, ...] = (
+        DECLARATION_COMPONENT_CAPABILITY_ID,
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> DeclarationRequirementTemplate:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=DeclarationRequirementTemplate,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
+class DeclarationRestrictionAbilityFragmentHandler:
+    handler_id: str = DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.declaration_restriction"
+    event: str = "combat.declaration"
+    rule_references: tuple[str, ...] = ("508.1c", "509.1b")
+    capability_dependencies: tuple[str, ...] = (
+        DECLARATION_COMPONENT_CAPABILITY_ID,
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> DeclarationRestrictionTemplate:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=DeclarationRestrictionTemplate,
         )
 
     def lower(
@@ -733,6 +836,9 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             BattleCryAbilityFragmentHandler(),
             BushidoAbilityFragmentHandler(),
             CounterMaximumAbilityFragmentHandler(),
+            DeclarationCostAbilityFragmentHandler(),
+            DeclarationRequirementAbilityFragmentHandler(),
+            DeclarationRestrictionAbilityFragmentHandler(),
             ConditionalKeywordAbilityFragmentHandler(),
             DethroneAbilityFragmentHandler(),
             DynamicPowerToughnessAbilityFragmentHandler(),
@@ -775,6 +881,9 @@ __all__ = [
     "BATTLE_CRY_FRAGMENT_HANDLER_ID",
     "COUNTER_MAXIMUM_FRAGMENT_HANDLER_ID",
     "CONDITIONAL_KEYWORD_FRAGMENT_HANDLER_ID",
+    "DECLARATION_COST_FRAGMENT_HANDLER_ID",
+    "DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID",
+    "DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID",
     "EXALTED_FRAGMENT_HANDLER_ID",
     "DYNAMIC_POWER_TOUGHNESS_FRAGMENT_HANDLER_ID",
     "FLANKING_FRAGMENT_HANDLER_ID",
@@ -793,6 +902,9 @@ __all__ = [
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
     "CounterMaximumAbilityFragmentHandler",
+    "DeclarationCostAbilityFragmentHandler",
+    "DeclarationRequirementAbilityFragmentHandler",
+    "DeclarationRestrictionAbilityFragmentHandler",
     "ConditionalKeywordAbilityFragmentHandler",
     "ExaltedAbilityFragmentHandler",
     "FlankingAbilityFragmentHandler",

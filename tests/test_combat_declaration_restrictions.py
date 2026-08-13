@@ -3,16 +3,29 @@ from __future__ import annotations
 from dataclasses import replace
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
-from quorune.ability_fragments import ability_fragment_to_dict
+from declaration_support import compiled_declaration_fragments
+from quorune.ability_fragments import (
+    ability_fragment_from_dict,
+    ability_fragment_to_dict,
+)
 from quorune.aura import SimpleEnchantSpec
 from quorune.declaration_restrictions import (
     parse_declaration_restriction_line,
 )
+from quorune.semantic_runtime.context import SemanticNodeError
 from quorune.model import CombatState
 from quorune.oracle_ir import compile_oracle_card
+from quorune.rules.capabilities import load_default_capability_registry
+from quorune.semantic_runtime.ability_fragments import (
+    DECLARATION_COST_FRAGMENT_HANDLER_ID,
+    DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID,
+    DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID,
+    default_ability_fragment_registry,
+)
 from quorune.record import (
     authoritative_state_hash,
     checkpoint_envelope,
@@ -24,6 +37,7 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.db, cls.mishra, cls.zimone = load_assets()
+        cls.capabilities = load_default_capability_registry()
 
     @classmethod
     def tearDownClass(cls):
@@ -72,6 +86,10 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
             characteristics={
                 "type_line": type_line or f"Token Creature — {subtype}",
                 "oracle_text": oracle_text,
+                "ability_fragments": compiled_declaration_fragments(
+                    name,
+                    oracle_text,
+                ),
                 "power": power,
                 "toughness": toughness,
                 "colors": list(colors),
@@ -88,6 +106,10 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
             characteristics={
                 "type_line": "Token Enchantment",
                 "oracle_text": oracle_text,
+                "ability_fragments": compiled_declaration_fragments(
+                    name,
+                    oracle_text,
+                ),
             },
         )[0]
         return engine._resolve_object(seat, ref, zones={"battlefield"})
@@ -107,7 +129,10 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
         characteristics = {
             "type_line": type_line,
             "oracle_text": oracle_text,
-            "ability_fragments": ability_fragments or [],
+            "ability_fragments": [
+                *(ability_fragments or []),
+                *compiled_declaration_fragments(name, oracle_text),
+            ],
         }
         if "planeswalker" in type_line.casefold():
             characteristics["loyalty"] = "3"
@@ -1848,7 +1873,147 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
         ]["domains"]
         self.assertIn(attacker.ref, domains)
 
+    def test_raw_oracle_declaration_text_has_no_runtime_authority(self):
+        session = self.make_combat_session(508010917, players=2)
+        engine = session.engine
+        ref = engine.create_token(
+            "A",
+            name="Raw Prose Attacker",
+            characteristics={
+                "type_line": "Token Creature — Test",
+                "oracle_text": "This creature can't attack.",
+                "power": "2",
+                "toughness": "2",
+            },
+            temporary_keywords=("Haste",),
+        )[0]
+
+        engine._issue_attackers()
+
+        domains = engine.state.pending_decision.payload_by_actor["A"][
+            "declaration_constraints"
+        ]["domains"]
+        self.assertIn(ref, domains)
+
+    def test_declaration_component_runtime_mutant_is_killed(self):
+        def assert_typed_cost(seed: int) -> None:
+            session = self.make_combat_session(seed, players=2)
+            engine = session.engine
+            self.creature(engine, "A", "Taxed", keywords=("Haste",))
+            self.static_source(
+                engine,
+                "B",
+                "Typed Prison",
+                (
+                    "Creatures can't attack you unless their controller "
+                    "pays {2} for each creature they control that's "
+                    "attacking you."
+                ),
+            )
+            engine._issue_attackers()
+            costs = engine.state.pending_decision.payload_by_actor["A"][
+                "declaration_costs"
+            ]
+            self.assertEqual(1, len(costs))
+
+        assert_typed_cost(508010918)
+        with patch(
+            "quorune.engine.declaration_cost_specs",
+            return_value=(),
+        ):
+            with self.assertRaises(AssertionError):
+                assert_typed_cost(508010919)
+
+    def test_declaration_components_are_closed_typed_fragments(self):
+        base = self.db.lookup("Arcum Dagsson")
+        record = replace(
+            base,
+            type_line="Creature — Goblin",
+            oracle_text=(
+                "This creature attacks each combat if able.\n"
+                "This creature can't attack or block unless you pay {2}.\n"
+                "This creature can't attack or block alone."
+            ),
+        )
+        ir = compile_oracle_card(
+            record,
+            trusted_mechanics={
+                "cr-508-declare-attackers-step",
+                "cr-509-declare-blockers-step",
+            },
+            capability_registry=self.capabilities,
+        )
+
+        self.assertEqual("exact", ir.status)
+        handlers = [node.handlers[0] for node in ir.faces[0].nodes]
+        self.assertEqual(
+            {
+                DECLARATION_COST_FRAGMENT_HANDLER_ID,
+                DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID,
+                DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID,
+            },
+            {handler["handler_id"] for handler in handlers},
+        )
+        self.assertTrue(
+            all(handler["event"] == "combat.declaration" for handler in handlers)
+        )
+        self.assertEqual(
+            3,
+            len(
+                {
+                    type(ability_fragment_from_dict(handler["fragment"]))
+                    for handler in handlers
+                }
+            ),
+        )
+
+    def test_declaration_component_descriptors_reject_malformed_values(self):
+        fragments = compiled_declaration_fragments(
+            "Closed Fixture",
+            (
+                "This creature attacks each combat if able.\n"
+                "This creature can't attack unless you pay {2}.\n"
+                "This creature can't attack alone."
+            ),
+        )
+        handler_ids = (
+            DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID,
+            DECLARATION_COST_FRAGMENT_HANDLER_ID,
+            DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID,
+        )
+        registry = default_ability_fragment_registry()
+        for handler_id, fragment in zip(handler_ids, fragments, strict=True):
+            malformed = dict(fragment)
+            malformed["value"] = dict(fragment["value"])
+            malformed["value"].pop(next(iter(malformed["value"])))
+            with self.subTest(handler_id=handler_id), self.assertRaises(
+                SemanticNodeError
+            ):
+                registry.validate(
+                    {
+                        "handler_id": handler_id,
+                        "schema_version": 1,
+                        "event": "combat.declaration",
+                        "fragment": malformed,
+                    }
+                )
+
     def test_oracle_ir_uses_runtime_restriction_grammar(self):
+        def restriction_fragment(node):
+            self.assertEqual((), node.effects)
+            self.assertEqual(1, len(node.handlers))
+            handler = node.handlers[0]
+            self.assertEqual(
+                DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID,
+                handler["handler_id"],
+            )
+            self.assertEqual("combat.declaration", handler["event"])
+            self.assertEqual(
+                "declaration_restriction",
+                handler["fragment"]["kind"],
+            )
+            return handler["fragment"]["value"]
+
         base = self.db.lookup("Arcum Dagsson")
         exact = replace(
             base,
@@ -1861,12 +2026,13 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
                 "cr-508-declare-attackers-step",
                 "cr-509-declare-blockers-step",
             },
+            capability_registry=self.capabilities,
         )
 
         self.assertEqual("exact", ir.status)
         node = ir.faces[0].nodes[0]
         self.assertEqual("intrinsic-attack-block-not-alone-v1", node.template_id)
-        self.assertEqual("declaration_restriction", node.effects[0]["op"])
+        restriction_fragment(node)
 
         evasion = compile_oracle_card(
             replace(
@@ -1877,6 +2043,7 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
                 ),
             ),
             trusted_mechanics={"cr-509-declare-blockers-step"},
+            capability_registry=self.capabilities,
         )
         self.assertEqual("exact", evasion.status)
         self.assertEqual(
@@ -1893,6 +2060,7 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
                 ),
             ),
             trusted_mechanics={"cr-508-declare-attackers-step"},
+            capability_registry=self.capabilities,
         )
         self.assertEqual("exact", conditional.status)
         conditional_node = conditional.faces[0].nodes[0]
@@ -1902,7 +2070,7 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
         )
         self.assertEqual(
             "defending_player",
-            conditional_node.effects[0]["condition"]["player"],
+            restriction_fragment(conditional_node)["condition"]["player"],
         )
 
         companion = compile_oracle_card(
@@ -1914,20 +2082,28 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
                 ),
             ),
             trusted_mechanics={"cr-508-declare-attackers-step"},
+            capability_registry=self.capabilities,
         )
         self.assertEqual("exact", companion.status)
-        companion_effect = companion.faces[0].nodes[0].effects[0]
-        self.assertEqual("minimum_matching_selections", companion_effect["mode"])
-        self.assertEqual(["B", "G"], companion_effect["matching"]["colors_any"])
+        companion_fragment = restriction_fragment(companion.faces[0].nodes[0])
+        self.assertEqual(
+            "minimum_matching_selections", companion_fragment["mode"]
+        )
+        self.assertEqual(
+            ["B", "G"], companion_fragment["matching"]["colors_any"]
+        )
 
         target_scope = compile_oracle_card(
             replace(exact, oracle_text="Creatures can't attack you."),
             trusted_mechanics={"cr-508-declare-attackers-step"},
+            capability_registry=self.capabilities,
         )
         self.assertEqual("exact", target_scope.status)
         self.assertEqual(
             "source_controller",
-            target_scope.faces[0].nodes[0].effects[0]["option_relation"],
+            restriction_fragment(target_scope.faces[0].nodes[0])[
+                "option_relation"
+            ],
         )
 
         history_condition = compile_oracle_card(
@@ -1939,6 +2115,7 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
                 ),
             ),
             trusted_mechanics={"cr-508-declare-attackers-step"},
+            capability_registry=self.capabilities,
         )
         self.assertEqual("exact", history_condition.status)
         self.assertFalse(history_condition.material_residuals)
@@ -1948,7 +2125,9 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
                 "fact": "cast_creature_spell",
                 "player": "source_controller",
             },
-            history_condition.faces[0].nodes[0].effects[0]["condition"],
+            restriction_fragment(history_condition.faces[0].nodes[0])[
+                "condition"
+            ],
         )
 
 

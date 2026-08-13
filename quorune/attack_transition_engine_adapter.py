@@ -280,6 +280,31 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
                     visibility=engine.seats,
                 )
             )
+        semantic_trigger_refs: list[str] = []
+        for assignment in event.assignments:
+            source = engine.state.cards.get(
+                assignment.attacker_object_id
+            )
+            if source is None:
+                raise AttackTransitionError(
+                    "A sealed attacker disappeared before trigger discovery"
+                )
+            semantic_trigger_refs.extend(
+                engine._dispatch_semantic_event(
+                    "creature.attacks",
+                    {
+                        "event_id": event.transition_id,
+                        "card": source.ref,
+                        "defender": assignment.recipient.reference,
+                        "defending_player": (
+                            assignment.recipient.defending_player
+                        ),
+                        "attack_transition": event.to_dict(),
+                    },
+                    sources=(source,),
+                    trigger_batch=stack_items,
+                )
+            )
     except (AbilityFragmentError, AttackTransitionError) as exc:
         raise StateInvariantError(str(exc)) from exc
     engine._log(
@@ -288,7 +313,7 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
         (
             f"Completed {len(event.assignments)} attack declaration(s) and "
             "created "
-            f"{len(occurrences) + len(mentor_occurrences) + len(counter_occurrences)} "
+            f"{len(stack_items)} "
             "represented "
             "trigger(s)."
         ),
@@ -305,6 +330,7 @@ def attack_transition_stack_items(engine: Any) -> tuple[Any, ...]:
                 occurrence.occurrence_id
                 for occurrence in counter_occurrences
             ],
+            "semantic_trigger_refs": semantic_trigger_refs,
         },
         importance=2,
         changed_objects=[

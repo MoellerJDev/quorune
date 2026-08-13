@@ -2,7 +2,7 @@
 title: "CardProgram architecture"
 status: "current"
 authoritative_source: "quorune/card_programs and schemas/card-program-v2.schema.json"
-verified: "2026-08-06"
+verified: "2026-08-13"
 audience: "compiler, rules, replay, and extension contributors"
 maintenance: "hand-maintained"
 ---
@@ -50,6 +50,19 @@ program before that choice is offered. Missing typed cast semantics fail closed.
 - Program descriptors may participate in later events through runtime
   components, but those components receive bounded immutable contexts and do
   not mutate state.
+
+Combat declaration grammar is compiler-only. Exact costs, restrictions, and
+if-able requirements lower to registered static-ability fragments;
+declaration queries consume the one current effective layer-6 fragment
+snapshot. This keeps copied, removed, and granted abilities on the shared
+characteristic boundary and gives raw Oracle or token display text no
+declaration authority.
+
+Nonkeyword attack triggers participate only through typed triggered-ability
+fragments. Their event is dispatched from the sealed canonical attack
+transition, batched through the ordinary trigger subsystem, and resolved by
+their trusted semantic program. Token reminder or Oracle text is never used
+to discover the trigger.
 
 ## Inspection and extension
 

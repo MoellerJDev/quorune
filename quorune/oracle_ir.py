@@ -30,9 +30,9 @@ from .compiler.activated_mana_nodes import (
 from .compiler.ability_keyword_fragments import (
     lower_ability_keyword_fragments,
 )
+from .compiler.declaration_nodes import declaration_static_node
 from .compiler.dependency_gate import (
     dependency_gate as _dependency_gate,
-    explicit_capability_gate as _explicit_capability_gate,
     keyword_dependency_gate,
 )
 from .compiler.draw_templates import (
@@ -86,8 +86,6 @@ from .compiler.spell_additional_cost_nodes import (
     typed_additional_cost_spell_node,
 )
 from .compiler.tap_state_templates import targeted_tap_state_effect_template
-from .declaration_costs import parse_declaration_cost_line
-from .declaration_restrictions import parse_declaration_restriction_line
 from .rules.capabilities import CapabilityRegistry
 from .rules.source_references import SourceReferenceSpec
 from .riot import RIOT_MECHANIC
@@ -97,7 +95,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v80"
+ORACLE_COMPILER_VERSION = "oracle-ir-v81"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -973,181 +971,18 @@ def _compile_face(
             nodes.append(counter_prohibition)
             continue
 
-        declaration_cost = parse_declaration_cost_line(
-            line,
+        declaration_node = declaration_static_node(
+            node_id=node_id,
+            line=line,
             card_name=face_name or record.name,
+            span=span,
+            residuals=residuals,
+            trusted_mechanics=trusted_mechanics,
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
         )
-        if declaration_cost.recognized:
-            template = declaration_cost.template
-            if declaration_cost.exact and template is not None:
-                dependencies = template.mechanics
-                missing = sorted(
-                    set(dependencies) - trusted_mechanics
-                )
-                residual_ids = (
-                    (
-                        _residual(
-                            residuals,
-                            kind="dependency_contract",
-                            text=line,
-                            span=span,
-                            reason=(
-                                "declaration cost depends on untrusted "
-                                "mechanic contracts"
-                            ),
-                            blockers=tuple(
-                                f"mechanic:{mechanic}"
-                                for mechanic in missing
-                            ),
-                        ),
-                    )
-                    if missing
-                    else ()
-                )
-                nodes.append(
-                    OracleNode(
-                        node_id=node_id,
-                        kind="static_ability",
-                        text=line,
-                        span=span,
-                        active_zone="battlefield",
-                        event="continuous",
-                        lowerable=True,
-                        exact=not missing,
-                        template_id=template.template_id,
-                        cost={
-                            "kind": "declaration_mana",
-                            "declarations": list(
-                                template.declarations
-                            ),
-                            "scope": template.scope,
-                            "mana": dict(template.mana),
-                            "printed": template.printed_cost,
-                            "source_condition": (
-                                template.source_condition
-                            ),
-                        },
-                        mechanics=dependencies,
-                        residual_ids=residual_ids,
-                    )
-                )
-                continue
-            residual_id = _residual(
-                residuals,
-                kind="declaration_cost",
-                text=line,
-                span=span,
-                reason=(
-                    declaration_cost.reason
-                    or "declaration cost grammar is unresolved"
-                ),
-                blockers=(
-                    "nonmana declaration costs",
-                    "variable and alternative mana declaration costs",
-                    "conditional declaration-cost grammar",
-                ),
-            )
-            nodes.append(
-                OracleNode(
-                    node_id=node_id,
-                    kind="static_ability",
-                    text=line,
-                    span=span,
-                    active_zone="battlefield",
-                    event="continuous",
-                    lowerable=False,
-                    exact=False,
-                    mechanics=declaration_cost.declarations,
-                    residual_ids=(residual_id,),
-                )
-            )
-            continue
-
-        declaration_restriction = parse_declaration_restriction_line(
-            line,
-            card_name=face_name or record.name,
-        )
-        if declaration_restriction.recognized:
-            template = declaration_restriction.template
-            if declaration_restriction.exact and template is not None:
-                dependencies = template.mechanics
-                missing = sorted(
-                    set(dependencies) - trusted_mechanics
-                )
-                residual_ids = (
-                    (
-                        _residual(
-                            residuals,
-                            kind="dependency_contract",
-                            text=line,
-                            span=span,
-                            reason=(
-                                "declaration restriction depends on "
-                                "untrusted mechanic contracts"
-                            ),
-                            blockers=tuple(
-                                f"mechanic:{mechanic}"
-                                for mechanic in missing
-                            ),
-                        ),
-                    )
-                    if missing
-                    else ()
-                )
-                nodes.append(
-                    OracleNode(
-                        node_id=node_id,
-                        kind="static_ability",
-                        text=line,
-                        span=span,
-                        active_zone="battlefield",
-                        event="continuous",
-                        lowerable=True,
-                        exact=not missing,
-                        template_id=template.template_id,
-                        effects=(template.effect(),),
-                        mechanics=dependencies,
-                        residual_ids=residual_ids,
-                    )
-                )
-                continue
-            dependencies = tuple(
-                mechanic
-                for declaration, mechanic in (
-                    ("attack", "cr-508-declare-attackers-step"),
-                    ("block", "cr-509-declare-blockers-step"),
-                )
-                if declaration in declaration_restriction.declarations
-            )
-            residual_id = _residual(
-                residuals,
-                kind="declaration_restriction",
-                text=line,
-                span=span,
-                reason=(
-                    declaration_restriction.reason
-                    or "declaration restriction grammar is unresolved"
-                ),
-                blockers=(
-                    "conditional declaration predicates",
-                    "temporary declaration restrictions",
-                    "broader evasion and group constraints",
-                ),
-            )
-            nodes.append(
-                OracleNode(
-                    node_id=node_id,
-                    kind="static_ability",
-                    text=line,
-                    span=span,
-                    active_zone="battlefield",
-                    event="continuous",
-                    lowerable=False,
-                    exact=False,
-                    mechanics=dependencies,
-                    residual_ids=(residual_id,),
-                )
-            )
+        if declaration_node is not None:
+            nodes.append(declaration_node)
             continue
 
         runtime_node = static_runtime_node(

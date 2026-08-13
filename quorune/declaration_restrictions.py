@@ -2,34 +2,31 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
-from typing import Literal
 
 from .declaration_costs import (
-    DeclarationKind,
     normalized_oracle_line,
     parse_declaration_cost_line,
 )
+from .declaration_fragments import (
+    ComparedStat,
+    DeclarationBattlefieldCondition,
+    DeclarationCombatCondition,
+    DeclarationCondition,
+    DeclarationConditionPlayer,
+    DeclarationKind,
+    DeclarationObjectPredicate,
+    DeclarationPlayerStateCondition,
+    DeclarationRestrictionMode,
+    DeclarationRestrictionScope,
+    DeclarationRestrictionTemplate,
+    DeclarationSharedSubtypeCondition,
+    DeclarationTurnHistoryCondition,
+    DeclarationTurnHistoryFact,
+    PowerOperand,
+    PowerOperator,
+    StatComparison,
+)
 
-
-DeclarationRestrictionScope = Literal[
-    "attached",
-    "attached_option",
-    "global",
-    "self",
-    "source_opponents",
-    "source_option",
-]
-DeclarationRestrictionMode = Literal[
-    "prohibit",
-    "minimum_matching_selections",
-    "minimum_total_selections",
-    "maximum_total_selections",
-    "minimum_option_uses",
-    "maximum_option_uses",
-]
-PowerOperand = Literal["fixed", "source"]
-PowerOperator = Literal["eq", "lt", "le", "gt", "ge"]
-ComparedStat = Literal["power", "toughness"]
 
 _COLORS = {
     "white": "W",
@@ -286,253 +283,6 @@ def _singular_subtype(value: str) -> str:
         last = last[:-1]
     words[-1] = last
     return " ".join(words).title()
-
-
-@dataclass(frozen=True, slots=True)
-class StatComparison:
-    stat: ComparedStat
-    operator: PowerOperator
-    operand: PowerOperand
-    value: int | None = None
-
-    def __post_init__(self) -> None:
-        if self.operand == "fixed" and self.value is None:
-            raise ValueError("A fixed stat comparison requires a value")
-        if self.operand == "source" and self.value is not None:
-            raise ValueError("A source stat comparison cannot set a value")
-
-    def to_dict(self) -> dict[str, object]:
-        return {
-            "stat": self.stat,
-            "operator": self.operator,
-            "operand": self.operand,
-            "value": self.value,
-        }
-
-
-@dataclass(frozen=True, slots=True)
-class DeclarationObjectPredicate:
-    """Declarative battlefield-object filter used by restrictions and conditions."""
-
-    types_any: tuple[str, ...] = ()
-    types_none: tuple[str, ...] = ()
-    supertypes_any: tuple[str, ...] = ()
-    supertypes_none: tuple[str, ...] = ()
-    subtypes_any: tuple[str, ...] = ()
-    subtypes_none: tuple[str, ...] = ()
-    colors_any: tuple[str, ...] = ()
-    colors_none: tuple[str, ...] = ()
-    keywords_any: tuple[str, ...] = ()
-    keywords_none: tuple[str, ...] = ()
-    token: bool | None = None
-    goaded: bool | None = None
-    stat: StatComparison | None = None
-    additional_stats: tuple[StatComparison, ...] = ()
-    tapped: bool | None = None
-    enchanted: bool | None = None
-
-    def to_dict(self) -> dict[str, object]:
-        return {
-            "types_any": list(self.types_any),
-            "types_none": list(self.types_none),
-            "supertypes_any": list(self.supertypes_any),
-            "supertypes_none": list(self.supertypes_none),
-            "subtypes_any": list(self.subtypes_any),
-            "subtypes_none": list(self.subtypes_none),
-            "colors_any": list(self.colors_any),
-            "colors_none": list(self.colors_none),
-            "keywords_any": list(self.keywords_any),
-            "keywords_none": list(self.keywords_none),
-            "token": self.token,
-            "goaded": self.goaded,
-            "stat": self.stat.to_dict() if self.stat else None,
-            "additional_stats": [
-                comparison.to_dict() for comparison in self.additional_stats
-            ],
-            "tapped": self.tapped,
-            "enchanted": self.enchanted,
-        }
-
-
-DeclarationConditionPlayer = Literal[
-    "attacking_player",
-    "defending_player",
-    "source_controller",
-]
-
-
-@dataclass(frozen=True, slots=True)
-class DeclarationBattlefieldCondition:
-    """A typed battlefield-state predicate gating a declaration restriction."""
-
-    player: DeclarationConditionPlayer
-    predicates_any: tuple[DeclarationObjectPredicate, ...]
-    minimum: int = 1
-    maximum: int | None = None
-    exclude_source: bool = False
-    compare_player: DeclarationConditionPlayer | None = None
-
-    def __post_init__(self) -> None:
-        if not self.predicates_any:
-            raise ValueError("A battlefield condition requires a predicate")
-        if self.minimum < 0:
-            raise ValueError("A battlefield condition minimum cannot be negative")
-        if self.maximum is not None and self.maximum < self.minimum:
-            raise ValueError("A battlefield condition maximum is below its minimum")
-        if self.compare_player is not None and (
-            self.minimum != 1 or self.maximum is not None
-        ):
-            raise ValueError("A comparative condition cannot set a count range")
-
-    def to_dict(self) -> dict[str, object]:
-        return {
-            "kind": "battlefield_count",
-            "player": self.player,
-            "predicates_any": [
-                predicate.to_dict() for predicate in self.predicates_any
-            ],
-            "minimum": self.minimum,
-            "maximum": self.maximum,
-            "exclude_source": self.exclude_source,
-            "compare_player": self.compare_player,
-        }
-
-
-@dataclass(frozen=True, slots=True)
-class DeclarationCombatCondition:
-    """A declaration-history condition available from the current combat."""
-
-    kind: Literal["attacking_alone"]
-
-    def __post_init__(self) -> None:
-        if self.kind != "attacking_alone":
-            raise ValueError(
-                f"Unknown declaration combat condition {self.kind!r}"
-            )
-
-    def to_dict(self) -> dict[str, object]:
-        return {"kind": self.kind}
-
-
-@dataclass(frozen=True, slots=True)
-class DeclarationSharedSubtypeCondition:
-    """Require one public creature subtype to occur on enough permanents."""
-
-    player: DeclarationConditionPlayer
-    minimum: int
-
-    def __post_init__(self) -> None:
-        if self.minimum < 1:
-            raise ValueError(
-                "A shared-subtype condition requires a positive minimum"
-            )
-
-    def to_dict(self) -> dict[str, object]:
-        return {
-            "kind": "shared_creature_subtype_count",
-            "player": self.player,
-            "minimum": self.minimum,
-        }
-
-
-@dataclass(frozen=True, slots=True)
-class DeclarationPlayerStateCondition:
-    """A public player designation or counter-derived status predicate."""
-
-    player: DeclarationConditionPlayer
-    state: Literal["monarch", "poisoned"]
-
-    def to_dict(self) -> dict[str, object]:
-        return {
-            "kind": "player_state",
-            "player": self.player,
-            "state": self.state,
-        }
-
-
-DeclarationTurnHistoryFact = Literal[
-    "cast_spell",
-    "cast_creature_spell",
-    "cast_noncreature_spell",
-    "creature_died_under_control",
-    "opponent_dealt_damage",
-    "attacked_player",
-]
-
-
-@dataclass(frozen=True, slots=True)
-class DeclarationTurnHistoryCondition:
-    """A typed current-turn look-back predicate for a declaration."""
-
-    fact: DeclarationTurnHistoryFact
-    player: DeclarationConditionPlayer | None = None
-
-    def __post_init__(self) -> None:
-        if self.fact == "attacked_player" and self.player is not None:
-            raise ValueError("An attacked-player condition is object-scoped")
-        if self.fact != "attacked_player" and self.player is None:
-            raise ValueError("A player-scoped turn-history condition needs a player")
-
-    def to_dict(self) -> dict[str, object]:
-        return {
-            "kind": "turn_history",
-            "fact": self.fact,
-            "player": self.player,
-        }
-
-
-DeclarationCondition = (
-    DeclarationBattlefieldCondition
-    | DeclarationCombatCondition
-    | DeclarationPlayerStateCondition
-    | DeclarationSharedSubtypeCondition
-    | DeclarationTurnHistoryCondition
-)
-
-
-@dataclass(frozen=True, slots=True)
-class DeclarationRestrictionTemplate:
-    """A reviewed whole-line static declaration-restriction template."""
-
-    template_id: str
-    declarations: tuple[DeclarationKind, ...]
-    scope: DeclarationRestrictionScope
-    mode: DeclarationRestrictionMode = "prohibit"
-    count: int = 0
-    subject: DeclarationObjectPredicate = DeclarationObjectPredicate()
-    opposing: DeclarationObjectPredicate = DeclarationObjectPredicate()
-    matching: DeclarationObjectPredicate = DeclarationObjectPredicate()
-    condition: DeclarationCondition | None = None
-    applies_when_condition: bool = True
-    option_relation: Literal["source_controller"] | None = None
-    includes_planeswalkers: bool = False
-
-    @property
-    def mechanics(self) -> tuple[str, ...]:
-        mechanics: list[str] = []
-        if "attack" in self.declarations:
-            mechanics.append("cr-508-declare-attackers-step")
-        if "block" in self.declarations:
-            mechanics.append("cr-509-declare-blockers-step")
-        return tuple(mechanics)
-
-    def effect(self) -> dict[str, object]:
-        return {
-            "op": "declaration_restriction",
-            "declarations": list(self.declarations),
-            "scope": self.scope,
-            "mode": self.mode,
-            "count": self.count,
-            "subject": self.subject.to_dict(),
-            "opposing": self.opposing.to_dict(),
-            "matching": self.matching.to_dict(),
-            "condition": (
-                self.condition.to_dict() if self.condition is not None else None
-            ),
-            "applies_when_condition": self.applies_when_condition,
-            "option_relation": self.option_relation,
-            "includes_planeswalkers": self.includes_planeswalkers,
-        }
 
 
 @dataclass(frozen=True, slots=True)
@@ -896,7 +646,7 @@ def parse_declaration_restriction_line(
 ) -> DeclarationRestrictionParse:
     """Parse reviewed static CR 508.1c/509.1b Oracle sentence families.
 
-    The parser is deliberately whole-line and shared by runtime and Oracle IR.
+    The parser is deliberately whole-line and compiler-only.
     Static-looking mutations in a recognized family become material residuals;
     triggered, activated, and resolving one-shot text is left to its own
     semantic compiler instead of being mistaken for a battlefield restriction.

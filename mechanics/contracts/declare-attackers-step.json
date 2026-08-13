@@ -252,6 +252,8 @@
     "test_broader_conditional_attack_tax_stops_fail_closed",
     "test_planeswalker_only_tax_does_not_tax_a_player_attack",
     "test_oracle_ir_uses_the_runtime_declaration_cost_grammar",
+    "test_declaration_components_are_closed_typed_fragments",
+    "test_raw_oracle_declaration_text_has_no_runtime_authority",
     "test_selected_creature_can_require_another_declaration",
     "test_global_maximum_applies_before_requirement_maximization",
     "test_absolute_self_and_attached_restrictions_remove_domains",
@@ -287,7 +289,7 @@
     "test_beginning_a_new_turn_resets_history_but_extra_combats_do_not"
   ],
   "implementation": {
-    "component": "DeclarationProblem, shared declaration-cost and declaration-restriction Oracle grammars, and the CommanderEngine attacker declaration/payment transition",
+    "component": "DeclarationProblem, compiler-only declaration grammar, shared effective layer-6 declaration fragments, and the CommanderEngine attacker declaration/payment transition",
     "version": "declare-attackers-step-v10"
   },
   "known_blockers": [

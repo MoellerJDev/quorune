@@ -2,23 +2,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
-from typing import Literal
-
+from .declaration_fragments import (
+    DECLARATION_MANA_KEYS as _MANA_KEYS,
+    DeclarationCostScope,
+    DeclarationCostTemplate,
+    DeclarationKind,
+)
 from .rules.source_references import SourceReferenceSpec
 from .util import mana_cost_to_vector
 
 
-DeclarationKind = Literal["attack", "block"]
-DeclarationCostScope = Literal[
-    "attached",
-    "global",
-    "self",
-    "source_controller",
-    "source_planeswalkers",
-]
-DeclarationSourceCondition = Literal["source_attacking", "source_untapped"]
-
-_MANA_KEYS = ("GENERIC", "W", "U", "B", "R", "G", "C")
 _SELF_COST = re.compile(
     r"this creature can't (?P<kind>attack|block|attack or block) unless "
     r"(?:its controller pays|you pay) "
@@ -123,33 +116,12 @@ def fixed_declaration_mana(
     requirements, complex_symbols = mana_cost_to_vector(cost_text)
     if complex_symbols:
         return None
-    return tuple(
+    fixed = tuple(
         (key, int(requirements.get(key, 0)))
         for key in _MANA_KEYS
         if int(requirements.get(key, 0)) > 0
     )
-
-
-@dataclass(frozen=True, slots=True)
-class DeclarationCostTemplate:
-    """A whole-line Oracle template for a required declaration cost."""
-
-    template_id: str
-    declarations: tuple[DeclarationKind, ...]
-    scope: DeclarationCostScope
-    mana: tuple[tuple[str, int], ...]
-    printed_cost: str
-    source_condition: DeclarationSourceCondition | None = None
-    includes_planeswalkers: bool = False
-
-    @property
-    def mechanics(self) -> tuple[str, ...]:
-        mechanics: list[str] = []
-        if "attack" in self.declarations:
-            mechanics.append("cr-508-declare-attackers-step")
-        if "block" in self.declarations:
-            mechanics.append("cr-509-declare-blockers-step")
-        return tuple(mechanics)
+    return fixed or None
 
 
 @dataclass(frozen=True, slots=True)

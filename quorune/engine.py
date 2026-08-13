@@ -17,7 +17,12 @@ from .aura import (
     simple_aura_attachment_is_legal,
 )
 from .ability_fragment_host import AbilityFragmentHostMixin
-from .ability_fragments import counter_maximum_values
+from .ability_fragments import (
+    counter_maximum_values,
+    declaration_cost_specs,
+    declaration_requirement_specs,
+    declaration_restriction_specs,
+)
 from .attachments import (
     detach_object,
 )
@@ -90,8 +95,10 @@ from .combat_constraints import (
 from .commander import initial_commander_state
 from .declaration_costs import (
     DeclarationCost,
-    normalized_oracle_line,
-    parse_declaration_cost_line,
+)
+from .declaration_requirement_runtime import (
+    typed_attacker_block_requirements,
+    typed_blocker_requirements,
 )
 from .declaration_restrictions import (
     DeclarationBattlefieldCondition,
@@ -103,7 +110,6 @@ from .declaration_restrictions import (
     DeclarationRestrictionTemplate,
     DeclarationSharedSubtypeCondition,
     DeclarationTurnHistoryCondition,
-    parse_declaration_restriction_line,
 )
 from .damage import (
     combat_damage_proposals,
@@ -3584,7 +3590,6 @@ class CommanderEngine(
         if is_builtin_activation_semantic(
             item.semantic_key
         ) or item.semantic_key in {
-            "builtin:optional-mill-one",
             "builtin:sacrifice-source",
             "builtin:storm",
         }:
@@ -3898,34 +3903,6 @@ class CommanderEngine(
         if attack_transitions.prepare_attack_keyword_trigger_resolution(
             self, item
         ) or block_triggers.prepare_block_keyword_trigger_resolution(self, item):
-            return
-        if item.semantic_key == "builtin:optional-mill-one":
-            self._begin_resolve_item(
-                item,
-                [
-                    {
-                        "op": "choose_option",
-                        "player": item.controller,
-                        "prompt": "You may mill a card.",
-                        "options": [
-                            {"id": "mill", "label": "Mill a card"},
-                            {"id": "decline", "label": "Do not mill"},
-                        ],
-                        "then_by_choice": {
-                            "mill": [
-                                {
-                                    "op": "mill",
-                                    "player": item.controller,
-                                    "count": 1,
-                                }
-                            ],
-                            "decline": [],
-                        },
-                    }
-                ],
-                None,
-                note="Moloid attack trigger",
-            )
             return
         if item.semantic_key == "builtin:daretti-emblem":
             card_ref = str(item.context.get("card") or "")
@@ -4737,13 +4714,14 @@ class CommanderEngine(
         ):
             if source.zone != "battlefield" or source.phased_out:
                 continue
-            for line in self._combat_oracle_lines(source):
-                parsed = parse_declaration_restriction_line(line)
-                template = parsed.template
+            for template in declaration_restriction_specs(
+                self._effective_ability_fragments(
+                    source,
+                    error_type=GameRuleError,
+                )
+            ):
                 if (
-                    not parsed.exact
-                    or template is None
-                    or "block" not in template.declarations
+                    "block" not in template.declarations
                     or template.mode != "prohibit"
                 ):
                     continue
@@ -4805,9 +4783,6 @@ class CommanderEngine(
             return False, "attacker_has_protection"
         return True, None
 
-    def _combat_oracle_text(self, card: CardInstance) -> str:
-        return " ".join(self._combat_oracle_lines(card))
-
     def _active_goad_designations(
         self,
         card: CardInstance,
@@ -4834,25 +4809,6 @@ class CommanderEngine(
                 if source.ref == prohibition.source_ref:
                     return source
         return None
-
-    def _combat_oracle_lines(
-        self,
-        card: CardInstance,
-    ) -> tuple[str, ...]:
-        """Return source-local normalized Oracle lines for combat grammar."""
-
-        lines: list[str] = []
-        for raw_line in str(
-            self._effective_card_data(card).get("oracle_text") or ""
-        ).splitlines():
-            line = normalized_oracle_line(
-                raw_line,
-                card_name=card.printed_name,
-            )
-            if not line:
-                continue
-            lines.append(line)
-        return tuple(lines)
 
     @staticmethod
     def _declaration_cost(
@@ -4887,18 +4843,21 @@ class CommanderEngine(
         """Derive a represented CR 508.1h or 509.1d locked-cost set."""
 
         costs: list[DeclarationCost] = []
-        unresolved: list[tuple[CardInstance, str]] = []
         by_ref = {card.ref: card for card in self.state.cards.values()}
         for source in sorted(
             self.state.cards.values(), key=lambda value: value.ref
         ):
             if source.zone != "battlefield" or source.phased_out:
                 continue
-            for line_index, line in enumerate(
-                self._combat_oracle_lines(source)
+            for template_index, template in enumerate(
+                declaration_cost_specs(
+                    self._effective_ability_fragments(
+                        source,
+                        error_type=GameRuleError,
+                    )
+                )
             ):
-                parsed = parse_declaration_cost_line(line)
-                if kind not in parsed.declarations:
+                if kind not in template.declarations:
                     continue
 
                 def source_planeswalker(option: str) -> bool:
@@ -4919,12 +4878,12 @@ class CommanderEngine(
                     return "planeswalker" in target_types
 
                 selections: list[tuple[str, str]] = []
-                if parsed.scope == "self" and source.ref in domains:
+                if template.scope == "self" and source.ref in domains:
                     selections.extend(
                         (source.ref, str(option))
                         for option in domains[source.ref]
                     )
-                elif parsed.scope == "attached":
+                elif template.scope == "attached":
                     attached = self.state.cards.get(
                         source.attached_to or ""
                     )
@@ -4934,7 +4893,7 @@ class CommanderEngine(
                             for option in domains[attached.ref]
                         )
                 elif (
-                    parsed.scope == "source_controller"
+                    template.scope == "source_controller"
                     and kind == "attack"
                 ):
                     for variable, options in sorted(domains.items()):
@@ -4943,13 +4902,12 @@ class CommanderEngine(
                             for option in options
                             if option == source.controller
                             or (
-                                parsed.template is not None
-                                and parsed.template.includes_planeswalkers
+                                template.includes_planeswalkers
                                 and source_planeswalker(str(option))
                             )
                         )
                 elif (
-                    parsed.scope == "source_planeswalkers"
+                    template.scope == "source_planeswalkers"
                     and kind == "attack"
                 ):
                     selections.extend(
@@ -4958,7 +4916,7 @@ class CommanderEngine(
                         for option in options
                         if source_planeswalker(str(option))
                     )
-                elif parsed.scope == "global" and kind == "block":
+                elif template.scope == "global" and kind == "block":
                     selections.extend(
                         (variable, str(option))
                         for variable, options in sorted(domains.items())
@@ -4966,11 +4924,6 @@ class CommanderEngine(
                     )
                 if not selections:
                     continue
-                if not parsed.exact:
-                    unresolved.append((source, line))
-                    continue
-                template = parsed.template
-                assert template is not None
                 if (
                     template.source_condition == "source_untapped"
                     and source.tapped
@@ -4985,8 +4938,8 @@ class CommanderEngine(
                     costs.append(
                         self._declaration_cost(
                             cost_id=(
-                                f"{kind}-cost:{parsed.scope}:{source.ref}:"
-                                f"{line_index}:{variable}:{option}"
+                                f"{kind}-cost:{template.scope}:{source.ref}:"
+                                f"{template_index}:{variable}:{option}"
                             ),
                             variable=variable,
                             option=option,
@@ -5000,7 +4953,7 @@ class CommanderEngine(
                             ),
                         )
                     )
-        return tuple(costs), tuple(unresolved)
+        return tuple(costs), ()
 
     def _attack_declaration_costs(
         self,
@@ -5433,28 +5386,26 @@ class CommanderEngine(
             for variable, options in original.items()
         }
         constraints: list[DeclarationRestriction] = []
-        unresolved: list[tuple[CardInstance, str]] = []
         by_ref = {card.ref: card for card in self.state.cards.values()}
         for source in sorted(
             self.state.cards.values(), key=lambda value: value.ref
         ):
             if source.zone != "battlefield" or source.phased_out:
                 continue
-            for line_index, line in enumerate(
-                self._combat_oracle_lines(source)
+            for template_index, template in enumerate(
+                declaration_restriction_specs(
+                    self._effective_ability_fragments(
+                        source,
+                        error_type=GameRuleError,
+                    )
+                )
             ):
-                parsed = parse_declaration_restriction_line(line)
-                if not parsed.recognized or kind not in parsed.declarations:
+                if kind not in template.declarations:
                     continue
                 if not self._restriction_is_relevant(
-                    parsed.scope, source, original
+                    template.scope, source, original
                 ):
                     continue
-                if not parsed.exact:
-                    unresolved.append((source, line))
-                    continue
-                template = parsed.template
-                assert template is not None
                 variables = self._restriction_variables(
                     template, source, original
                 )
@@ -5463,7 +5414,7 @@ class CommanderEngine(
                         DeclarationRestriction(
                             restriction_id=(
                                 f"{kind}:restriction:{source.ref}:"
-                                f"{line_index}:maximum"
+                                f"{template_index}:maximum"
                             ),
                             kind="maximum_total_selections",
                             count=template.count,
@@ -5509,7 +5460,7 @@ class CommanderEngine(
                         DeclarationRestriction(
                             restriction_id=(
                                 f"{kind}:restriction:{source.ref}:"
-                                f"{line_index}:option-uses"
+                                f"{template_index}:option-uses"
                             ),
                             kind=template.mode,
                             option=constrained_option,
@@ -5532,7 +5483,7 @@ class CommanderEngine(
                             DeclarationRestriction(
                                 restriction_id=(
                                     f"{kind}:restriction:{source.ref}:"
-                                    f"{line_index}:{variable}:minimum"
+                                    f"{template_index}:{variable}:minimum"
                                 ),
                                 kind="minimum_total_selections",
                                 count=template.count,
@@ -5560,7 +5511,7 @@ class CommanderEngine(
                             DeclarationRestriction(
                                 restriction_id=(
                                     f"{kind}:restriction:{source.ref}:"
-                                    f"{line_index}:{variable}:matching"
+                                    f"{template_index}:{variable}:matching"
                                 ),
                                 kind="minimum_variable_selections",
                                 count=template.count,
@@ -5644,7 +5595,7 @@ class CommanderEngine(
                 if options
             },
             tuple(constraints),
-            tuple(unresolved),
+            (),
         )
 
     def _selected_declaration_mana(
@@ -5698,12 +5649,22 @@ class CommanderEngine(
             if self._attack_declaration_error(card, active) is not None:
                 continue
             domains[card.ref] = tuple(defenders)
-            if "this creature attacks each combat if able" in (
-                self._combat_oracle_text(card)
+            for requirement_index, requirement in enumerate(
+                declaration_requirement_specs(
+                    self._effective_ability_fragments(
+                        card,
+                        error_type=GameRuleError,
+                    )
+                )
             ):
+                if requirement.kind != "attack_each_combat":
+                    continue
                 requirements.append(
                     DeclarationRequirement(
-                        requirement_id=f"attack:{card.ref}:each-combat",
+                        requirement_id=(
+                            f"attack:{card.ref}:each-combat:"
+                            f"{requirement_index}"
+                        ),
                         kind="choose",
                         variable=card.ref,
                         label=(
@@ -5824,58 +5785,24 @@ class CommanderEngine(
                 domains[blocker.ref] = legal
                 blockers_by_ref[blocker.ref] = blocker
 
-        requirements: list[DeclarationRequirement] = []
-        for blocker_ref, blocker in blockers_by_ref.items():
-            if "this creature blocks each combat if able" in (
-                self._combat_oracle_text(blocker)
-            ):
-                requirements.append(
-                    DeclarationRequirement(
-                        requirement_id=f"block:{blocker_ref}:each-combat",
-                        kind="choose",
-                        variable=blocker_ref,
-                        label=(
-                            f"{self.display_name(blocker.object_id)} blocks "
-                            "this combat if able."
-                        ),
-                    )
-                )
+        requirements = typed_blocker_requirements(
+            self,
+            blockers_by_ref,
+            error_type=GameRuleError,
+        )
 
         restrictions: list[DeclarationRestriction] = []
         menace_restrictions: list[menace.MenaceBlockRestriction] = []
         for attacker in attacker_cards:
-            oracle = self._combat_oracle_text(attacker)
-            if "this creature must be blocked if able" in oracle:
-                requirements.append(
-                    DeclarationRequirement(
-                        requirement_id=f"block:{attacker.ref}:if-able",
-                        kind="option_used",
-                        option=attacker.ref,
-                        label=(
-                            f"{self.display_name(attacker.object_id)} must "
-                            "be blocked if able."
-                        ),
-                    )
+            requirements.extend(
+                typed_attacker_block_requirements(
+                    self,
+                    attacker,
+                    domains,
+                    blockers_by_ref,
+                    error_type=GameRuleError,
                 )
-            if "all creatures able to block this creature do so" in oracle:
-                for blocker_ref, legal in domains.items():
-                    if attacker.ref not in legal:
-                        continue
-                    requirements.append(
-                        DeclarationRequirement(
-                            requirement_id=(
-                                f"block:{blocker_ref}:{attacker.ref}:all"
-                            ),
-                            kind="choose_option",
-                            variable=blocker_ref,
-                            option=attacker.ref,
-                            label=(
-                                f"{self.display_name(blockers_by_ref[blocker_ref].object_id)} "
-                                f"blocks {self.display_name(attacker.object_id)} "
-                                "if able."
-                            ),
-                        )
-                    )
+            )
             current_menace = menace.current_menace_restriction(
                 self._effective_card_data(attacker),
                 attacker.ref,
@@ -6320,34 +6247,6 @@ class CommanderEngine(
             changed_players=[active],
         )
         attack_triggers: list[StackItem] = []
-        for object_id in used:
-            attacker = self.state.cards[object_id]
-            if (
-                "whenever this token attacks, you may mill a card"
-                not in str(
-                    self._effective_card_data(attacker).get("oracle_text")
-                    or ""
-                ).casefold()
-            ):
-                continue
-            ref = self._next_ref("S")
-            attack_triggers.append(
-                StackItem(
-                    stack_id=self._stable_runtime_id("stack", ref),
-                    ref=ref,
-                    kind="triggered_ability",
-                    controller=attacker.controller,
-                    label=f"{self.display_name(object_id)} attack trigger",
-                    source_object_id=attacker.object_id,
-                    semantic_key="builtin:optional-mill-one",
-                    visibility=list(self.seats),
-                    context={
-                        "event": "creature.attacks",
-                        "card": attacker.ref,
-                        "defender": attacker.attacking,
-                    },
-                )
-            )
         attack_triggers.extend(
             attack_transitions.attack_transition_stack_items(self)
         )
