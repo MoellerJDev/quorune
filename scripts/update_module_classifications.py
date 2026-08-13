@@ -53,6 +53,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/activated_ability_descriptor.py",
         "quorune/ability_fragments.py",
         "quorune/bloodthirst.py",
+        "quorune/characteristic_fragments.py",
         "quorune/counter_maximums.py",
         "quorune/counter_names.py",
         "quorune/counter_snapshot.py",
@@ -176,6 +177,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/delayed_triggers.py",
         "quorune/destruction.py",
         "quorune/destruction_sets.py",
+        "quorune/dynamic_characteristics.py",
         "quorune/engine.py",
         "quorune/entry_counter_coordination.py",
         "quorune/entry_counters.py",
@@ -277,6 +279,7 @@ def _owner(relative: str, layer: str) -> str:
     if relative in {
         "quorune/ability_fragment_host.py",
         "quorune/ability_fragments.py",
+        "quorune/characteristic_fragments.py",
         "quorune/compiled_ability_fragments.py",
     }:
         return "ability_fragments"
@@ -354,6 +357,7 @@ def _owner(relative: str, layer: str) -> str:
     if relative == "quorune/tap_state.py":
         return "tap_state_effects"
     if relative in {
+        "quorune/dynamic_characteristics.py",
         "quorune/zone_object_keyword_model.py",
         "quorune/zone_object_keyword_grants.py",
         "quorune/zone_object_subtype_grants.py",
@@ -556,6 +560,7 @@ def build_classifications() -> dict[str, Any]:
                             "block_transition",
                             "ability_fragment_host.py",
                             "ability_fragments.py",
+                            "characteristic_fragments.py",
                             "aura/",
                             "engine.py",
                             "enchant_spec.py",
@@ -586,6 +591,7 @@ def build_classifications() -> dict[str, Any]:
                             "death_return.py",
                             "delayed_triggers.py",
                             "drawing/",
+                            "dynamic_characteristics.py",
                             "life_change.py",
                             "life_state.py",
                             "mana_activation.py",

@@ -127,6 +127,7 @@
     "quorune/combat_evasion_engine_adapter.py",
     "quorune/commander.py",
     "quorune/characteristic_evaluation.py",
+    "quorune/dynamic_characteristics.py",
     "quorune/continuous_effect_state.py",
     "quorune/continuous_effects.py",
     "quorune/continuous_effect_model.py",
@@ -365,6 +366,7 @@
       ,"quorune/selection/model.py": "immutable versioned selection contract and continuation model"
       ,"quorune/selection/target_query.py": "narrow read-only target identity and last-known-information query"
       ,"quorune/zone_transition_model.py": "typed read-only zone-transition host protocol, plan, and departure snapshot definitions"
+      ,"quorune/dynamic_characteristics.py": "typed read-only dynamic-characteristic evaluation over public battlefield and owner graveyard state"
     },
     "model_definition": "quorune/model.py"
   },

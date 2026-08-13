@@ -38,6 +38,10 @@ _BASIC_LAND_TYPE_HANDLER_ID = (
 _FIXED_QUERY_ABILITY_GRANT_HANDLER_ID = (
     "continuous.ability.fixed-query-grant.v1"
 )
+_FIXED_QUERY_KEYWORD_GRANT_HANDLER_ID = (
+    "continuous.ability.fixed-query-keyword-grant.v1"
+)
+_SUPPORTED_QUERY_KEYWORDS = frozenset({"Haste", "Hexproof"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,6 +71,13 @@ class FixedQueryAbilityGrantNode:
     predicate: ObjectQuerySpec
     exclude_source: bool
     fragments: tuple[StaticAbilityFragment, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class FixedQueryKeywordGrantNode:
+    predicate: ObjectQuerySpec
+    exclude_source: bool
+    abilities: tuple[str, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -642,6 +653,140 @@ class FixedQueryAbilityGrantHandler:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class FixedQueryKeywordGrantHandler:
+    """Grant a closed keyword set to a live queried object set."""
+
+    handler_id: str = _FIXED_QUERY_KEYWORD_GRANT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "continuous.fixed_query_keyword_grant"
+    event: str = "characteristics.evaluate"
+    rule_references: tuple[str, ...] = (
+        "604.1",
+        "611.3a",
+        "611.3b",
+        "611.3c",
+        "613.1f",
+        "613.6",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "continuous.ability.fixed_query_keyword_grant",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> FixedQueryKeywordGrantNode:
+        exact_fields(
+            descriptor,
+            {
+                "handler_id",
+                "schema_version",
+                "event",
+                "condition",
+                "modifier",
+            },
+            field="runtime handler",
+        )
+        if descriptor["handler_id"] != self.handler_id:
+            raise SemanticNodeError("Runtime handler ID does not match registry")
+        if (
+            type(descriptor["schema_version"]) is not int
+            or descriptor["schema_version"] != self.schema_version
+        ):
+            raise SemanticNodeError(
+                f"Unsupported {self.handler_id} schema version"
+            )
+        if descriptor["event"] != self.event:
+            raise SemanticNodeError(f"{self.handler_id} must handle {self.event}")
+        condition = descriptor["condition"]
+        if not isinstance(condition, Mapping):
+            raise SemanticNodeError("runtime handler condition must be an object")
+        exact_fields(
+            condition,
+            {"target_controller", "predicate", "exclude_source"},
+            field="runtime handler condition",
+        )
+        if condition["target_controller"] != "source_controller":
+            raise SemanticNodeError(
+                "fixed query keyword grants require source-controller targets"
+            )
+        if type(condition["exclude_source"]) is not bool:
+            raise SemanticNodeError(
+                "fixed query keyword grant exclude_source must be boolean"
+            )
+        try:
+            predicate = ObjectQuerySpec.from_dict(condition["predicate"])
+        except ObjectQueryError as exc:
+            raise SemanticNodeError(str(exc)) from exc
+        if (
+            predicate.owner is not None
+            or predicate.controller is not None
+            or predicate.exclude_ref is not None
+            or predicate.known_to_actor is not None
+        ):
+            raise SemanticNodeError(
+                "fixed query keyword grants reserve owner, controller, visibility, "
+                "and source exclusion"
+            )
+        if predicate.zones not in {(), ("battlefield",)}:
+            raise SemanticNodeError(
+                "fixed query keyword grants apply only on the battlefield"
+            )
+        modifier = descriptor["modifier"]
+        if not isinstance(modifier, Mapping):
+            raise SemanticNodeError("runtime handler modifier must be an object")
+        exact_fields(
+            modifier,
+            {"add_abilities"},
+            field="runtime handler modifier",
+        )
+        abilities = nonempty_strings(
+            modifier["add_abilities"],
+            field="modifier.add_abilities",
+        )
+        if (
+            not abilities
+            or len(set(abilities)) != len(abilities)
+            or any(ability not in _SUPPORTED_QUERY_KEYWORDS for ability in abilities)
+        ):
+            raise SemanticNodeError(
+                "fixed query keyword grants require unique supported keywords"
+            )
+        return FixedQueryKeywordGrantNode(
+            predicate=predicate,
+            exclude_source=condition["exclude_source"],
+            abilities=abilities,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: ContinuousEffectSourceContext,
+    ) -> tuple[ContinuousEffect, ...]:
+        node = self.validate(descriptor)
+        predicate = replace(
+            node.predicate,
+            zones=("battlefield",),
+            controller=context.source_controller,
+            exclude_ref=(context.source_ref if node.exclude_source else None),
+        )
+        return (
+            ContinuousEffect(
+                effect_id=f"{context.source_object_id}:{context.component_id}",
+                source_id=context.source_object_id,
+                layer=Layer.ABILITY,
+                sublayer="6",
+                timestamp=context.source_timestamp,
+                operations=tuple(
+                    ContinuousOperation("add_ability", ability)
+                    for ability in node.abilities
+                ),
+                origin=ContinuousEffectOrigin.STATIC_ABILITY,
+                applies=predicate,
+            ),
+        )
+
+
 class ContinuousEffectComponentRegistry(
     RuntimeComponentRegistry[
         ContinuousEffectSourceContext,
@@ -662,6 +807,7 @@ def default_continuous_effect_component_registry(
             FixedQueryPowerToughnessAnthemHandler(),
             AddBasicLandTypeHandler(),
             FixedQueryAbilityGrantHandler(),
+            FixedQueryKeywordGrantHandler(),
             AttachedFixedCharacteristicsHandler(),
         )
     )

@@ -24,7 +24,6 @@ from .attachments import (
 )
 from .carddb import CardDatabase, CardRecord
 from .carddb_characteristics import (
-    custom_copyable_characteristics,
     separate_custom_display_text,
 )
 from .card_programs.validation import (
@@ -33,9 +32,6 @@ from .card_programs.validation import (
 )
 from .card_programs.runtime import (
     collect_card_program_continuous_effects,
-)
-from .compiled_activated_abilities import (
-    compiled_activated_ability_dicts,
 )
 from .characteristic_evaluation import (
     evaluate_card_characteristics,
@@ -118,6 +114,7 @@ from .damage import (
 from .damage_results import (
     consume_deathtouch_damage_checks,
 )
+from .dynamic_characteristics import apply_dynamic_characteristic_fragments
 from .drawing import (
     begin_draw_batch,
     begin_draw_sequence,
@@ -877,162 +874,7 @@ class CommanderEngine(
             base,
             runtime_effects=runtime_effects,
         )
-        conditional_haste = re.search(
-            r"has haste as long as an opponent has "
-            r"(?P<life>\d+) or less life",
-            str(base.get("oracle_text") or ""),
-            re.IGNORECASE,
-        )
-        if (
-            conditional_haste
-            and any(
-                seat != card.controller
-                and player.in_game
-                and player.life <= int(conditional_haste.group("life"))
-                for seat, player in self.state.players.items()
-            )
-        ):
-            base["keywords"] = unique_preserving_order(
-                [*base["keywords"], "Haste"]
-            )
-        if card.zone == "battlefield":
-            card_types, _, _ = self._type_parts(
-                str(base.get("type_line") or "")
-            )
-            for permanent_id in self.state.players[
-                card.controller
-            ].zones["battlefield"]:
-                source = self.state.cards[permanent_id]
-                if source.controller != card.controller or source.phased_out:
-                    continue
-                source_record = self.card_record(source)
-                source_oracle = (
-                    str(source_record.oracle_text or "").casefold()
-                    if source_record is not None
-                    else str(
-                        dict(
-                            source.annotations.get(
-                                "token_characteristics", {}
-                            )
-                        ).get("oracle_text")
-                        or ""
-                    ).casefold()
-                )
-                if (
-                    "artifact" in card_types
-                    and "artifacts you control have hexproof"
-                    in source_oracle
-                ):
-                    base["keywords"] = unique_preserving_order(
-                        [*base["keywords"], "Hexproof"]
-                    )
-                if (
-                    card.is_token
-                    and "creature" in card_types
-                    and "creature tokens you control have haste"
-                    in source_oracle
-                ):
-                    base["keywords"] = unique_preserving_order(
-                        [*base["keywords"], "Haste"]
-                    )
-            oracle = str(base.get("oracle_text") or "").casefold()
-            if (
-                "gets +1/+1 for each artifact you control" in oracle
-                and "creature" in card_types
-            ):
-                artifact_count = sum(
-                    1
-                    for object_id in self.state.players[
-                        card.controller
-                    ].zones["battlefield"]
-                    if self.state.cards[object_id].controller
-                    == card.controller
-                    and not self.state.cards[object_id].phased_out
-                    and "artifact"
-                    in self._type_parts(
-                        str(
-                            dict(
-                                self.state.cards[
-                                    object_id
-                                ].annotations.get(
-                                    "copy_overrides", {}
-                                )
-                            ).get("type_line")
-                            or dict(
-                                self.state.cards[
-                                    object_id
-                                ].annotations.get(
-                                    "token_characteristics", {}
-                                )
-                            ).get("type_line")
-                            or (
-                                self.card_record(object_id).type_line
-                                if self.card_record(object_id)
-                                is not None
-                                else ""
-                            )
-                            or ""
-                        )
-                    )[0]
-                )
-                for stat in ("power", "toughness"):
-                    try:
-                        base[stat] = str(
-                            int(str(base.get(stat))) + artifact_count
-                        )
-                    except (TypeError, ValueError):
-                        pass
-            graveyard_ids = self.state.players[card.owner].zones[
-                "graveyard"
-            ]
-            if (
-                "gets +2/+2 as long as there are three or more land "
-                "cards in your graveyard"
-            ) in oracle:
-                land_count = sum(
-                    1
-                    for object_id in graveyard_ids
-                    if "land"
-                    in self._type_parts(
-                        str(
-                            self._effective_card_data(object_id).get(
-                                "type_line"
-                            )
-                            or ""
-                        )
-                    )[0]
-                )
-                if land_count >= 3:
-                    for stat in ("power", "toughness"):
-                        try:
-                            base[stat] = str(int(str(base.get(stat))) + 2)
-                        except (TypeError, ValueError):
-                            pass
-            graveyard_creature_modifier = re.search(
-                r"gets \+1/\+1 for each creature card in your graveyard",
-                oracle,
-            )
-            if graveyard_creature_modifier:
-                creature_count = sum(
-                    1
-                    for object_id in graveyard_ids
-                    if "creature"
-                    in self._type_parts(
-                        str(
-                            self._effective_card_data(object_id).get(
-                                "type_line"
-                            )
-                            or ""
-                        )
-                    )[0]
-                )
-                for stat in ("power", "toughness"):
-                    try:
-                        base[stat] = str(
-                            int(str(base.get(stat))) + creature_count
-                        )
-                    except (TypeError, ValueError):
-                        pass
+        base = apply_dynamic_characteristic_fragments(self, card, base)
         if (
             card.zone == "battlefield"
             and not printed_entry_characteristics
@@ -1057,74 +899,10 @@ class CommanderEngine(
         self, card: CardInstance
     ) -> dict[str, Any]:
         record = self.card_record(card)
-        token_characteristics = card.annotations.get(
-            "token_characteristics", {}
-        )
-        if record is None or "display_text" in token_characteristics:
-            base = custom_copyable_characteristics(card)
-        else:
-            face = None
-            if card.active_face:
-                face = next(
-                    (
-                        value
-                        for value in record.faces
-                        if str(value.get("name") or "")
-                        == card.active_face
-                    ),
-                    None,
-                )
-            base = {
-                "name": (
-                    str(face.get("name"))
-                    if face is not None
-                    else record.name
-                ),
-                "mana_cost": (
-                    str(face.get("mana_cost") or "")
-                    if face is not None
-                    else record.mana_cost
-                ),
-                "mana_value": record.mana_value,
-                "type_line": (
-                    str(face.get("type_line") or "")
-                    if face is not None
-                    else record.type_line
-                ),
-                "oracle_text": (
-                    str(face.get("oracle_text") or "")
-                    if face is not None
-                    else record.oracle_text
-                ),
-                "power": (
-                    face.get("power")
-                    if face is not None
-                    else record.power
-                ),
-                "toughness": (
-                    face.get("toughness")
-                    if face is not None
-                    else record.toughness
-                ),
-                "loyalty": (
-                    face.get("loyalty")
-                    if face is not None
-                    else record.loyalty
-                ),
-                "defense": (
-                    face.get("defense")
-                    if face is not None
-                    else record.defense
-                ),
-                "keywords": list(record.keywords),
-                "colors": list(record.colors),
-                "produced_mana": list(record.produced_mana),
-            }
-        base["ability_fragments"] = self._compiled_ability_fragment_dicts(
-            card
-        )
-        base["activated_abilities"] = (
-            compiled_activated_ability_dicts(self, card)
+        base = self._compiled_base_characteristics(
+            card,
+            record,
+            error_type=GameRuleError,
         )
         base.update(
             copy.deepcopy(dict(card.annotations.get("copy_overrides") or {}))

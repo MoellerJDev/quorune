@@ -10,6 +10,9 @@ from .action_permission_templates import static_action_permission_handler
 from .continuous_templates import (
     attached_fixed_characteristics_handler,
     basic_land_type_addition_handler,
+    conditional_self_keyword_handler,
+    dynamic_self_power_toughness_handler,
+    fixed_query_keyword_grant_handler,
     fixed_power_toughness_anthem_handler,
 )
 from .counter_replacement_templates import (
@@ -176,6 +179,89 @@ def _source_permanent_participation_template(
     )
 
 
+def _continuous_static_runtime_template(
+    text: str,
+    *,
+    source_name: str | None,
+) -> StaticRuntimeTemplate | None:
+    """Select one closed continuous-characteristic production."""
+
+    attached_characteristics = attached_fixed_characteristics_handler(text)
+    if attached_characteristics is not None:
+        return StaticRuntimeTemplate(
+            compiled=attached_characteristics,
+            kind="static_ability",
+            event="characteristics.evaluate",
+            dependency_reason=(
+                "generic attached characteristics depend on an untrusted "
+                "continuous-effect capability"
+            ),
+        )
+    basic_land_type = basic_land_type_addition_handler(text)
+    if basic_land_type is not None:
+        return StaticRuntimeTemplate(
+            compiled=basic_land_type,
+            kind="static_ability",
+            event="characteristics.evaluate",
+            dependency_reason=(
+                "generic basic-land-type addition depends on an untrusted "
+                "rules capability"
+            ),
+        )
+    keyword_grant = fixed_query_keyword_grant_handler(text)
+    if keyword_grant is not None:
+        return StaticRuntimeTemplate(
+            compiled=keyword_grant,
+            kind="static_ability",
+            event="characteristics.evaluate",
+            dependency_reason=(
+                "generic controlled keyword grants require their closed "
+                "continuous-effect capability"
+            ),
+        )
+    if source_name is not None:
+        conditional_keyword = conditional_self_keyword_handler(
+            text,
+            source_name=source_name,
+        )
+        if conditional_keyword is not None:
+            return StaticRuntimeTemplate(
+                compiled=conditional_keyword,
+                kind="static_ability",
+                event="continuous",
+                dependency_reason=(
+                    "generic conditional characteristics require their closed "
+                    "typed capability"
+                ),
+            )
+        dynamic_power_toughness = dynamic_self_power_toughness_handler(
+            text,
+            source_name=source_name,
+        )
+        if dynamic_power_toughness is not None:
+            return StaticRuntimeTemplate(
+                compiled=dynamic_power_toughness,
+                kind="static_ability",
+                event="continuous",
+                dependency_reason=(
+                    "generic count-derived characteristics require their "
+                    "closed typed capability"
+                ),
+            )
+    fixed_anthem = fixed_power_toughness_anthem_handler(text)
+    if fixed_anthem is None:
+        return None
+    return StaticRuntimeTemplate(
+        compiled=fixed_anthem,
+        kind="static_ability",
+        event="characteristics.evaluate",
+        dependency_reason=(
+            "generic fixed anthem depends on an untrusted continuous-effect "
+            "capability"
+        ),
+    )
+
+
 def static_runtime_template(
     text: str,
     *,
@@ -244,39 +330,12 @@ def static_runtime_template(
         if draw is not None:
             return draw
 
-    attached_characteristics = attached_fixed_characteristics_handler(text)
-    if attached_characteristics is not None:
-        return StaticRuntimeTemplate(
-            compiled=attached_characteristics,
-            kind="static_ability",
-            event="characteristics.evaluate",
-            dependency_reason=(
-                "generic attached characteristics depend on an untrusted "
-                "continuous-effect capability"
-            ),
-        )
-
-    basic_land_type = basic_land_type_addition_handler(text)
-    if basic_land_type is not None:
-        return StaticRuntimeTemplate(
-            compiled=basic_land_type,
-            kind="static_ability",
-            event="characteristics.evaluate",
-            dependency_reason=(
-                "generic basic-land-type addition depends on an untrusted "
-                "rules capability"
-            ),
-        )
-    fixed_anthem = fixed_power_toughness_anthem_handler(text)
-    if fixed_anthem is not None:
-        return StaticRuntimeTemplate(
-            compiled=fixed_anthem,
-            kind="static_ability",
-            event="characteristics.evaluate",
-            dependency_reason=(
-                "generic fixed anthem depends on an untrusted continuous-effect capability"
-            ),
-        )
+    continuous = _continuous_static_runtime_template(
+        text,
+        source_name=source_name,
+    )
+    if continuous is not None:
+        return continuous
     static_life = static_life_handler(text)
     if static_life is not None:
         return StaticRuntimeTemplate(

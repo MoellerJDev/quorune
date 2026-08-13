@@ -5,11 +5,18 @@ from typing import Any, Mapping
 
 from ..object_predicate import ObjectQuerySpec
 from ..ability_fragments import (
+    ConditionalKeywordSpec,
+    DynamicPowerToughnessSpec,
     ToxicSpec,
     ability_fragment_to_dict,
     parse_protection_line,
 )
+from ..characteristic_fragments import (
+    CharacteristicCountKind,
+    PowerToughnessCalculation,
+)
 from .creature_subtypes import canonical_creature_subtype
+from ..rules.source_references import SourceReferenceSpec
 
 
 _BASIC_LAND_TYPE_ADDITION = re.compile(
@@ -93,6 +100,12 @@ _CARD_TYPE_WORDS = frozenset(
         "land",
         "planeswalker",
     }
+)
+_CONTROLLED_KEYWORD_GRANT = re.compile(
+    r"^(?P<subject>Artifacts|Creature tokens) you control have "
+    r"(?P<keyword>hexproof|haste)\."
+    r"(?: \([^()]*\))?$",
+    re.IGNORECASE,
 )
 
 
@@ -192,6 +205,129 @@ def fixed_power_toughness_anthem_handler(
             "modifier": {"power": power, "toughness": toughness},
         },
         "continuous.power_toughness.fixed_anthem",
+    )
+
+
+def fixed_query_keyword_grant_handler(
+    oracle_line: str,
+) -> tuple[str, Mapping[str, Any], str] | None:
+    """Lower two closed controller-wide keyword grants."""
+
+    match = _CONTROLLED_KEYWORD_GRANT.fullmatch(oracle_line.strip())
+    if match is None:
+        return None
+    subject = match.group("subject").casefold()
+    keyword = match.group("keyword").title()
+    if (subject, keyword) not in {
+        ("artifacts", "Hexproof"),
+        ("creature tokens", "Haste"),
+    }:
+        return None
+    predicate = ObjectQuerySpec(
+        zones=("battlefield",),
+        types_all=(
+            ("artifact",) if subject == "artifacts" else ("creature",)
+        ),
+        token=(True if subject == "creature tokens" else None),
+    )
+    return (
+        "continuous-fixed-query-keyword-grant-v1",
+        {
+            "handler_id": "continuous.ability.fixed-query-keyword-grant.v1",
+            "schema_version": 1,
+            "event": "characteristics.evaluate",
+            "condition": {
+                "target_controller": "source_controller",
+                "predicate": predicate.to_dict(),
+                "exclude_source": False,
+            },
+            "modifier": {"add_abilities": [keyword]},
+        },
+        "continuous.ability.fixed_query_keyword_grant",
+    )
+
+
+def _self_subject_pattern(source_name: str) -> str:
+    source = SourceReferenceSpec(source_name).regex_pattern
+    return rf"(?:This creature|This token|{source})"
+
+
+def conditional_self_keyword_handler(
+    oracle_line: str,
+    *,
+    source_name: str,
+) -> tuple[str, Mapping[str, Any], str] | None:
+    pattern = re.compile(
+        rf"^{_self_subject_pattern(source_name)} has haste as long as an "
+        r"opponent has (?P<life>\d+) or less life\.?$",
+        re.IGNORECASE,
+    )
+    match = pattern.fullmatch(oracle_line.strip())
+    if match is None:
+        return None
+    fragment = ConditionalKeywordSpec(
+        keyword="Haste",
+        opponent_life_at_most=int(match.group("life")),
+    )
+    return (
+        "continuous-self-conditional-keyword-v1",
+        {
+            "handler_id": "ability.static.conditional-keyword.v1",
+            "schema_version": 1,
+            "event": "continuous",
+            "fragment": ability_fragment_to_dict(fragment),
+        },
+        "continuous.characteristics.conditional_keyword",
+    )
+
+
+def dynamic_self_power_toughness_handler(
+    oracle_line: str,
+    *,
+    source_name: str,
+) -> tuple[str, Mapping[str, Any], str] | None:
+    subject = _self_subject_pattern(source_name)
+    per_object = re.compile(
+        rf"^{subject} gets \+1/\+1 for each (?P<object>artifact you "
+        r"control|creature card in your graveyard)\.?$",
+        re.IGNORECASE,
+    ).fullmatch(oracle_line.strip())
+    if per_object is not None:
+        count_kind = (
+            CharacteristicCountKind.CONTROLLER_BATTLEFIELD_ARTIFACTS
+            if per_object.group("object").casefold().startswith("artifact")
+            else CharacteristicCountKind.OWNER_GRAVEYARD_CREATURE_CARDS
+        )
+        fragment = DynamicPowerToughnessSpec(
+            count_kind=count_kind,
+            calculation=PowerToughnessCalculation.PER_MATCHING_OBJECT,
+            power=1,
+            toughness=1,
+        )
+    else:
+        threshold = re.compile(
+            rf"^{subject} gets \+2/\+2 as long as there are three or more "
+            r"land cards in your graveyard\.?$",
+            re.IGNORECASE,
+        ).fullmatch(oracle_line.strip())
+        if threshold is None:
+            return None
+        fragment = DynamicPowerToughnessSpec(
+            count_kind=CharacteristicCountKind.OWNER_GRAVEYARD_LAND_CARDS,
+            calculation=PowerToughnessCalculation.FIXED_IF_THRESHOLD,
+            power=2,
+            toughness=2,
+            minimum_count=3,
+        )
+    return (
+        "continuous-self-dynamic-power-toughness-v1",
+        {
+            "handler_id": "ability.static.dynamic-power-toughness.v1",
+            "schema_version": 1,
+            "event": "continuous",
+            "fragment": ability_fragment_to_dict(fragment),
+        },
+        "continuous.characteristics.dynamic_power_toughness",
     )
 
 
