@@ -10128,7 +10128,7 @@
       "covered_high_risk_pairs": 26,
       "covered_piece_pairs": 453,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "b07d4acf4d639c867d6cd0605ae83d36ebc5c406cfd59bbe2035476cd579bc5e",
+      "source_fingerprint": "6acba5f01113d9ef682ba4a2d598853d261ab61330661c4ef98c1c3158cb3934",
       "uncovered_high_risk_pairs": 85
     },
     "migration_queue": [],
@@ -24306,7 +24306,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "9ed91fc396a0f487590a373c32571ee92d104b78ce2299317ca7cd4a54f2e16a",
+      "fingerprint": "e5061b243c6e5a8683030db3a36e6b8e20b0cae0e726902146aee586c21324aa",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
