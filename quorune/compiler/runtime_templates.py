@@ -3,6 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from .activation_restriction_templates import (
+    static_activation_restriction_handler,
+)
 from .action_permission_templates import static_action_permission_handler
 from .continuous_templates import (
     attached_fixed_characteristics_handler,
@@ -117,6 +120,17 @@ def _source_permanent_participation_template(
     *,
     source_name: str | None,
 ) -> StaticRuntimeTemplate | None:
+    activation_restriction = static_activation_restriction_handler(text)
+    if activation_restriction is not None:
+        return StaticRuntimeTemplate(
+            compiled=activation_restriction,
+            kind="static_ability",
+            event="activation.permission",
+            dependency_reason=(
+                "generic activation restriction requires its closed typed "
+                "runtime capability"
+            ),
+        )
     action_permission = static_action_permission_handler(text)
     if action_permission is not None:
         return StaticRuntimeTemplate(

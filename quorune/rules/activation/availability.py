@@ -5,13 +5,14 @@ from typing import Any, Protocol
 from ...abilities import ActivatedAbility, reduced_requirements
 from ...crew import available_crew_power
 from ...haste import summoning_sickness_prohibits_tap_or_untap_cost
+from ...semantic_runtime.activation_restrictions import (
+    nonmana_activation_prohibited_by_chosen_name,
+)
 from .conditions import activation_condition_status
 
 
 class ActivationAvailabilityHost(Protocol):
     state: Any
-
-    def _nonmana_ability_prohibited_by_name(self, card: Any) -> bool: ...
 
     def _loyalty_cost_modifier_present(self) -> bool: ...
 
@@ -52,7 +53,7 @@ def activation_availability(
         return "unavailable", "wrong_zone"
     if not ability.compiled_cost:
         return "unresolved", "unresolved_cost_semantics"
-    if not ability.mana_ability and host._nonmana_ability_prohibited_by_name(card):
+    if nonmana_activation_prohibited_by_chosen_name(host, card, ability):
         return "unavailable", "named_ability_prohibition"
     condition_status, condition_reason = activation_condition_status(
         host,
