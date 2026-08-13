@@ -257,10 +257,6 @@
           },
           {
             "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._cost_payment_mechanics"
-          },
-          {
-            "file": "quorune/engine.py",
             "symbol": "CommanderEngine._loyalty_cost_modifier_present"
           },
           {

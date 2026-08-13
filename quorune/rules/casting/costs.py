@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
-from ...compiled_cast_costs import compiled_convoke_specs
+from ...compiled_cast_costs import compiled_affinity_specs, compiled_convoke_specs
 from ...convoke import (
     CONVOKE_PAYMENT_SYMBOLS,
     ConvokeCandidate,
@@ -144,6 +144,29 @@ def _initial_options(
         str(host._effective_card_data(card).get("type_line") or "")
     )
     mechanics = host._cost_payment_mechanics(record, schema)
+    declared_affinity = any(
+        str(value.get("kind") or "").casefold() == "affinity"
+        for value in mechanics
+    )
+    mechanics = [
+        value
+        for value in mechanics
+        if str(value.get("kind") or "").casefold() != "affinity"
+    ]
+    compiled_affinity = compiled_affinity_specs(
+        host,
+        record.oracle_id,
+        spell_program=program,
+    )
+    if compiled_affinity:
+        mechanics.extend(
+            specification.to_payment_mechanic()
+            for specification in compiled_affinity
+        )
+    elif declared_affinity or "affinity" in {
+        str(value).casefold() for value in record.keywords
+    }:
+        return None
     declared_convoke = any(
         str(value.get("kind") or "").casefold() == "convoke"
         for value in mechanics
@@ -289,6 +312,7 @@ def _apply_affinity(
         1
         for object_id in host.state.players[seat].zones["battlefield"]
         if host.state.cards[object_id].controller == seat
+        and not host.state.cards[object_id].phased_out
         and card_type
         in host._type_parts(
             str(

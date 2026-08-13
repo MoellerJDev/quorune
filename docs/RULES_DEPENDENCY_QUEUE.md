@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "85a22190e1de21ee5dc58f7b848cb61316038e4ee0c3178a577f102483429186"
+verified: "914ea65bd59ffba5a132ec9dc5825a613484a7ed382bf820b3074968cae5c344"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `a9e329e9ef938ede739eb24c51a837482f3a692e950ce8b4a870d1e95e5df564`
+Source fingerprint: `2c3aa878a823de9c28b281ef4bf3fe5055aad86d64119cdb878430e33405be97`
 
 ## Current top-level state
 
@@ -31,7 +31,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `architecture:runtime-oracle-text-removal:casting_activation_and_costs` | `runtime_oracle_removal` | 0 | 0 | 6 | 0 |
+| 1 | selected | `architecture:runtime-oracle-text-removal:casting_activation_and_costs` | `runtime_oracle_removal` | 0 | 0 | 5 | 0 |
 | 2 | deferred | `architecture:runtime-oracle-text-removal:continuous_effects` | `runtime_oracle_removal` | 0 | 0 | 4 | 0 |
 | 3 | deferred | `architecture:runtime-oracle-text-removal:combat` | `runtime_oracle_removal` | 0 | 0 | 3 | 0 |
 | 4 | deferred | `architecture:runtime-oracle-text-removal:semantic_effect_execution` | `runtime_oracle_removal` | 0 | 0 | 3 | 0 |
@@ -44,11 +44,11 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 11 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
 | 12 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
 | 13 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
-| 14 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 198 | 346 | 0 | 0 |
+| 14 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 199 | 346 | 0 | 0 |
 | 15 | blocked | `frontier:mechanic_dependency:cr-509-declare-blockers-step` | `rules_foundation` | 157 | 392 | 0 | 0 |
 | 16 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 122 | 338 | 0 | 0 |
 
-Selected reason: 6 prohibited runtime-text accesses remain in the existing casting_activation_and_costs typed owner and outrank card expansion.
+Selected reason: 5 prohibited runtime-text accesses remain in the existing casting_activation_and_costs typed owner and outrank card expansion.
 
 ## Top blockers
 

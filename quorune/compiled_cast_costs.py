@@ -4,6 +4,7 @@ from typing import Any, Protocol
 
 from .convoke import ConvokeSpec
 from .semantic_runtime.cast_costs import (
+    AffinitySpec,
     CONVOKE_ACTIVE_ZONE,
     CONVOKE_COST_EVENT,
     default_cast_cost_component_registry,
@@ -49,8 +50,47 @@ def compiled_convoke_specs(
         for descriptor in program.handlers:
             if registry.describe(str(descriptor.get("handler_id") or "")) is None:
                 continue
-            result.extend(registry.lower(descriptor, None))
+            result.extend(
+                value
+                for value in registry.lower(descriptor, None)
+                if isinstance(value, ConvokeSpec)
+            )
     return (ConvokeSpec(),) if result else ()
 
 
-__all__ = ["CompiledCastCostHost", "compiled_convoke_specs"]
+def compiled_affinity_specs(
+    host: CompiledCastCostHost,
+    oracle_id: str,
+    *,
+    spell_program: Any,
+) -> tuple[AffinitySpec, ...]:
+    """Return the selected face's trusted precompiled Affinity descriptors."""
+
+    expected_face = _selected_face_id(spell_program)
+    registry = default_cast_cost_component_registry()
+    result: list[AffinitySpec] = []
+    for program in host.semantics.runtime_handler_programs_for_oracle(
+        oracle_id,
+        active_zone=CONVOKE_ACTIVE_ZONE,
+        event=CONVOKE_COST_EVENT,
+    ):
+        if not host.semantic_program_is_current_trusted(program):
+            continue
+        if str(program.provenance.get("face_id") or "") != expected_face:
+            continue
+        for descriptor in program.handlers:
+            if registry.describe(str(descriptor.get("handler_id") or "")) is None:
+                continue
+            result.extend(
+                value
+                for value in registry.lower(descriptor, None)
+                if isinstance(value, AffinitySpec)
+            )
+    return tuple(result)
+
+
+__all__ = [
+    "CompiledCastCostHost",
+    "compiled_affinity_specs",
+    "compiled_convoke_specs",
+]

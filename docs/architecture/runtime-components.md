@@ -46,6 +46,15 @@ records may use an explicit compatibility adapter, but the adapter cannot
 rewrite the recorded program or silently promote trust. Current records pin
 the descriptor and registry directly.
 
+`casting.payment.affinity-artifacts.v1` represents each exact printed
+`Affinity for artifacts` instance as a selected-face `cast.cost` descriptor.
+Cost calculation counts only current phased-in artifacts controlled by the
+caster through effective characteristics, reduces only generic mana, and
+applies multiple printed instances cumulatively. Other Affinity parameters,
+equivalent rules text, and dynamically granted or removed Affinity fail closed;
+runtime code does not inspect Oracle text or keyword metadata as substitute
+authority.
+
 `ability.activated.mana.color-set.v1` binds a compiler-pinned relative object
 query to the activating seat and reads only matching public battlefield
 objects or that seat's graveyard. It derives colors from current effective

@@ -247,7 +247,12 @@ def _generated_ability_id(
             len(parts) >= 2
             and parts[-1].isdigit()
             and parts[-2]
-            in {RIOT_MECHANIC, BLOODTHIRST_MECHANIC, _TOXIC_MECHANIC}
+            in {
+                RIOT_MECHANIC,
+                BLOODTHIRST_MECHANIC,
+                _TOXIC_MECHANIC,
+                "affinity",
+            }
         ):
             return (
                 f"static:{face_id}:n{line}:{parts[-2]}:"
@@ -262,6 +267,8 @@ def _generated_ability_id(
             and node_parts[-2] == "convoke"
         ):
             return f"static:{face_id}:n{line}:convoke"
+        if str(node_id or "").endswith(":affinity"):
+            return f"static:{face_id}:n{line}:affinity"
         return f"static:{face_id}:n{line}"
     return None
 

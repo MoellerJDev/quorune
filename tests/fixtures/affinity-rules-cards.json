@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_affinity_rules_card_data",
+  "source": "Scryfall Oracle subset for typed Affinity rules tests",
+  "cards": [
+    {
+      "oracle_id": "2d8e1054-654f-42e8-8c29-12c3cf13a3eb",
+      "name": "Myr Enforcer",
+      "mana_cost": "{7}",
+      "cmc": 7.0,
+      "type_line": "Artifact Creature — Myr",
+      "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
+      "power": "4",
+      "toughness": "4",
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": [],
+      "keywords": ["Affinity"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2015-05-22",
+      "legalities": {
+        "brawl": "legal",
+        "commander": "legal",
+        "competitivebrawl": "legal",
+        "duel": "legal",
+        "gladiator": "legal",
+        "legacy": "legal",
+        "modern": "legal",
+        "oathbreaker": "legal",
+        "pauper": "legal",
+        "paupercommander": "legal",
+        "predh": "legal",
+        "timeless": "legal",
+        "vintage": "legal"
+      }
+    }
+  ],
+  "rulings": []
+}
