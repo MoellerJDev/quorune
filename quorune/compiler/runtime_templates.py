@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from .action_permission_templates import static_action_permission_handler
 from .continuous_templates import (
     attached_fixed_characteristics_handler,
     basic_land_type_addition_handler,
@@ -116,6 +117,17 @@ def _source_permanent_participation_template(
     *,
     source_name: str | None,
 ) -> StaticRuntimeTemplate | None:
+    action_permission = static_action_permission_handler(text)
+    if action_permission is not None:
+        return StaticRuntimeTemplate(
+            compiled=action_permission,
+            kind="static_ability",
+            event="action.permission",
+            dependency_reason=(
+                "generic controller action permission requires its closed "
+                "typed runtime capability"
+            ),
+        )
     untap_step = (
         static_untap_step_handler(text, source_name=source_name)
         if source_name is not None

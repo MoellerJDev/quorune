@@ -217,6 +217,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "action.draw.reveal_first",
                 "prevention.damage.fixed",
                 "participation.untap_step.static",
+                "permission.action.static",
                 "replacement.counter.quantity",
                 "replacement.damage.quantity",
                 "replacement.damage.redirection.static",

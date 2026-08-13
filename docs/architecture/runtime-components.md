@@ -2,7 +2,7 @@
 title: "CardProgram runtime components"
 status: "current"
 authoritative_source: "quorune/semantic_runtime component registries and schemas/card-program-v2.schema.json"
-verified: "2026-08-06"
+verified: "2026-08-13"
 audience: "rules, compiler, runtime, replay, and extension contributors"
 maintenance: "hand-maintained"
 ---
@@ -62,6 +62,15 @@ characteristics, feeds manual offers and automatic payment through the same
 mode set, and treats an empty qualifying set as a legal activation that adds no
 mana. Runtime code does not parse Oracle prose. Wider dynamic or conditional
 mana wording remains residual.
+
+`permission.action.static` owns immutable controller-scoped action
+permissions discovered from current-face, trusted descriptors on phased-in
+battlefield sources. Its closed handlers authorize either an owned graveyard
+land through the ordinary land-play owner or controlled-creature activation
+through the existing as-though-haste availability owner. Discovery itself is
+read-only; ordinary timing, quota, cost, control, zone-transition, and commit
+rules remain authoritative in their existing owners. Unrepresented wording
+fails closed rather than falling back to current Oracle text.
 
 `participation.untap-step.static.v1` lowers closed source, attached-object,
 global, and other-player static wording into immutable CR 502 participation

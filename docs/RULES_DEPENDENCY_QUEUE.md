@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "ea6cde089973fc568e9ac560614f68754ccd923e5615288a3a5f7e3efccb80d7"
+verified: "0078b7ea242168396365d0ed37c9da0cb6652ed3740512ad921b65b4185b71ca"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `8863b4db5a097a4cae73aa6df9ca12d9c1c2cd7b8817420c92f950035c68fbde`
+Source fingerprint: `195f8cfbacf4fcd17456c2183e70c30fce1c88ab2261573c758c8514a63e5558`
 
 ## Current top-level state
 
@@ -31,7 +31,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `architecture:runtime-oracle-text-removal:casting_activation_and_costs` | `runtime_oracle_removal` | 0 | 0 | 5 | 0 |
+| 1 | selected | `architecture:runtime-oracle-text-removal:casting_activation_and_costs` | `runtime_oracle_removal` | 0 | 0 | 4 | 0 |
 | 2 | deferred | `architecture:runtime-oracle-text-removal:continuous_effects` | `runtime_oracle_removal` | 0 | 0 | 4 | 0 |
 | 3 | deferred | `architecture:runtime-oracle-text-removal:combat` | `runtime_oracle_removal` | 0 | 0 | 3 | 0 |
 | 4 | deferred | `architecture:runtime-oracle-text-removal:semantic_effect_execution` | `runtime_oracle_removal` | 0 | 0 | 3 | 0 |
@@ -48,7 +48,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 15 | blocked | `frontier:mechanic_dependency:cr-509-declare-blockers-step` | `rules_foundation` | 157 | 392 | 0 | 0 |
 | 16 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 122 | 338 | 0 | 0 |
 
-Selected reason: 5 prohibited runtime-text accesses remain in the existing casting_activation_and_costs typed owner and outrank card expansion.
+Selected reason: 4 prohibited runtime-text accesses remain in the existing casting_activation_and_costs typed owner and outrank card expansion.
 
 ## Top blockers
 

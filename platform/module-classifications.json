@@ -1014,6 +1014,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/action_permission_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/activated_ability_catalog.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -4682,6 +4697,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/action_permissions.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "read_only",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/activated_abilities.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -6071,5 +6101,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "59bfd0009a353566621fd9220e978d0cb400ea4ac939848e5e2fd056d7872214"
+  "fingerprint": "6a753c22ce13359e3b591e50b1a3719e53aee0067974e5dbf7edadde0cd7e522"
 }
