@@ -2,7 +2,7 @@
 title: "Oracle compiler architecture"
 status: "current"
 authoritative_source: "quorune/oracle_ir.py, quorune/compiler, and quorune/card_programs"
-verified: "2026-08-10"
+verified: "2026-08-13"
 audience: "compiler and rules contributors"
 maintenance: "hand-maintained"
 ---
@@ -102,6 +102,14 @@ descriptor per printed instance. The selected-face runtime reads only those
 typed descriptors and current effective artifact characteristics; other
 Affinity parameters and equivalent rules text remain residual instead of
 becoming runtime Oracle interpretation.
+
+Two exact controller-wide static permissions lower to selected-face
+`action.permission` descriptors: playing lands from the controller's own
+graveyard and activating abilities of controlled creatures as though they had
+haste. Runtime action and activation queries consume only those trusted typed
+descriptors. Additional-land, any-graveyard, opponent-relative, conditional,
+temporary, targeted, and ordinary haste wording remains source-spanned
+residual material.
 
 Printed Exhaust prefixes lower to a typed `ActivationLimit` on each distinct
 ability. The exact reminder sentence is stripped once by the ability parser;

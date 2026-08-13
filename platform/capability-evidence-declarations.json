@@ -306,6 +306,78 @@
       "applicability_note": "Replay a resumed positive loyalty-symbol cost to the exact authoritative state hash."
     },
     {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_creature_activation_permission_is_typed_active_and_seat_scoped",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose the typed controller permission with the existing creature, summoning-sickness, and tap-cost availability owner."
+    },
+    {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_creature_activation_permission_is_typed_active_and_seat_scoped",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Grant the four-player permission only to the current controller of the active phased-in source."
+    },
+    {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionCompilerTests.test_action_permission_compiler_mutant_is_killed",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the exact static-permission compiler production before runtime can fall back to prose."
+    },
+    {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "negative",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionCompilerTests.test_unsupported_permission_wording_and_malformed_descriptors_fail_closed",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Leave opponent-relative, ordinary haste, and malformed permission shapes outside the closed typed boundary."
+    },
+    {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "negative",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_raw_oracle_text_without_typed_permission_fails_closed",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prove live Oracle wording cannot authorize creature activation when the trusted typed descriptor is absent."
+    },
+    {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "positive",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionCompilerTests.test_closed_permission_sentences_compile_face_pinned_typed_programs",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower the exact sentence to a source-spanned current-face action-permission descriptor."
+    },
+    {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "positive",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_creature_activation_permission_is_typed_active_and_seat_scoped",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Allow a newly controlled creature's tap-cost ability through the typed as-though-haste permission."
+    },
+    {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_permission_offers_are_principal_scoped",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the newly available creature activation only to the source controller's pending priority decision."
+    },
+    {
+      "capability_id": "activation.permission.controlled_creature_as_haste",
+      "evidence_class": "replay",
+      "test_id": "tests.test_activating_abilities_rules.ActivatingAbilityRuleTests.test_haste_mana_activation_replays_exactly",
+      "official_rule_ids": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay a mana activation authorized by the controller-wide as-though-haste permission to the exact state hash."
+    },
+    {
       "capability_id": "activation.tap_untap_cost.haste",
       "evidence_class": "interaction",
       "test_id": "tests.test_activating_abilities_rules.ActivatingAbilityRuleTests.test_sick_mana_creature_requires_haste_or_as_though_permission",
@@ -8946,6 +9018,78 @@
         "commander_review"
       ],
       "applicability_note": "Persist, resume, and exactly replay the counter result, designation, and recorded Monstrosity value."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_land_play_permission_is_typed_active_and_seat_scoped",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose the typed zone permission with the ordinary land-play timing, quota, and zone-transition owners."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_land_play_permission_is_typed_active_and_seat_scoped",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Authorize only the active source controller's owned graveyard land in the four-player action catalog."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionCompilerTests.test_action_permission_compiler_mutant_is_killed",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the exact static-permission compiler production before runtime can fall back to prose."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "negative",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionCompilerTests.test_unsupported_permission_wording_and_malformed_descriptors_fail_closed",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Leave additional-land, any-graveyard, and malformed permission shapes outside the closed typed boundary."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "negative",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_raw_oracle_text_without_typed_permission_fails_closed",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prove live Oracle wording cannot authorize graveyard land play when the trusted typed descriptor is absent."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "positive",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionCompilerTests.test_closed_permission_sentences_compile_face_pinned_typed_programs",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower the exact sentence to a source-spanned current-face action-permission descriptor."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "positive",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_land_play_permission_is_typed_active_and_seat_scoped",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Advertise and commit an owned graveyard land play through the typed controller permission."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_permission_offers_are_principal_scoped",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the executable graveyard land offer only to the acting player's pending priority decision."
+    },
+    {
+      "capability_id": "land.play.from_own_graveyard",
+      "evidence_class": "replay",
+      "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_land_play_from_graveyard_replays_exactly",
+      "official_rule_ids": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the typed permission, land action, and resulting authoritative state exactly."
     },
     {
       "capability_id": "library.scry.fixed_controller",

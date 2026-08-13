@@ -7,6 +7,7 @@ from ..util import stable_json
 from .activated_abilities import (
     default_activated_ability_catalog_registry,
 )
+from .action_permissions import default_action_permission_registry
 from .ability_fragments import default_ability_fragment_registry
 from .block_restrictions import default_block_restriction_registry
 from .cast_permissions import default_cast_permission_registry
@@ -40,6 +41,7 @@ from .zone_replacements import default_zone_change_replacement_registry
 def runtime_component_registries() -> tuple[Any, ...]:
     return (
         default_activated_ability_catalog_registry(),
+        default_action_permission_registry(),
         default_ability_fragment_registry(),
         default_block_restriction_registry(),
         default_cast_permission_registry(),

@@ -116,6 +116,7 @@
       "test_spells_abilities_effects_general",
       "test_stack_rules",
       "test_static_abilities",
+      "test_static_action_permissions",
       "test_typed_activated_ability_catalog"
     ],
     "targets-choices-continuations": [

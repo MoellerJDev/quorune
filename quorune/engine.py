@@ -252,6 +252,10 @@ from .rules.activation import (
 )
 from .rules.action_catalog import build_priority_action_catalog
 from .semantics import SemanticProgram, SemanticRegistry
+from .semantic_runtime.action_permissions import (
+    ActionPermissionKind,
+    controller_has_action_permission,
+)
 from .semantic_runtime import (
     AddManaIntent,
     AddSubtypeIntent,
@@ -2808,28 +2812,6 @@ class CommanderEngine(
         if self.state.stack:
             raise GameRuleError("Sorcery-speed action requires an empty stack")
 
-    def _controller_has_oracle_text(
-        self,
-        seat: str,
-        text: str,
-    ) -> bool:
-        needle = text.casefold()
-        return any(
-            permanent.controller == seat
-            and not permanent.phased_out
-            and needle
-            in str(
-                self._effective_card_data(permanent).get("oracle_text")
-                or ""
-            ).casefold()
-            for permanent in (
-                self.state.cards[object_id]
-                for object_id in self.state.players[seat].zones[
-                    "battlefield"
-                ]
-            )
-        )
-
     def _temporary_play_permission(
         self,
         seat: str,
@@ -2863,9 +2845,10 @@ class CommanderEngine(
             return True
         return bool(
             card.zone == "graveyard"
-            and self._controller_has_oracle_text(
+            and controller_has_action_permission(
+                self,
                 seat,
-                "you may play lands from your graveyard",
+                ActionPermissionKind.LAND_PLAY_FROM_OWN_GRAVEYARD,
             )
         )
 
@@ -3370,10 +3353,10 @@ class CommanderEngine(
         )
         return bool(
             "creature" in types
-            and self._controller_has_oracle_text(
+            and controller_has_action_permission(
+                self,
                 seat,
-                "you may activate abilities of creatures you control as "
-                "though those creatures had haste",
+                ActionPermissionKind.ACTIVATE_CONTROLLED_CREATURE_AS_HASTE,
             )
         )
 

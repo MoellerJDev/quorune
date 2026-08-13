@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 88,
+  "registry_version": 89,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -2551,6 +2551,33 @@
       "status": "trusted"
     },
     {
+      "id": "activation.permission.controlled_creature_as_haste",
+      "version": 1,
+      "official_rules": ["302.6", "602.5b", "702.10c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and discover the exact static permission that lets one source controller activate abilities of creatures they control as though those creatures had haste.",
+        "inputs": ["current phased-in battlefield sources controlled by the activating player", "current source face", "trusted source-spanned CardProgram V2 action-permission descriptor", "candidate creature's current effective type and controller"],
+        "outputs": ["controller-scoped as-though-haste permission for creature activation", "shared permission result for action offers, accepted activations, and mana-source discovery"],
+        "exclusions": ["attack permissions", "permissions for creatures another player controls", "conditional, temporary, targeted, or dynamically granted wording", "permissions on an inactive face", "ordinary haste keyword evaluation", "noncreature activated abilities"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.action_permission_templates.static_action_permission_handler", "quorune.semantic_runtime.action_permissions.StaticActionPermissionHandler", "quorune.semantic_runtime.action_permissions.controller_has_action_permission", "CommanderEngine._may_activate_creature_as_haste"],
+      "positive_tests": ["test_closed_permission_sentences_compile_face_pinned_typed_programs", "test_creature_activation_permission_is_typed_active_and_seat_scoped"],
+      "negative_tests": ["test_unsupported_permission_wording_and_malformed_descriptors_fail_closed", "test_raw_oracle_text_without_typed_permission_fails_closed"],
+      "interaction_tests": ["test_creature_activation_permission_is_typed_active_and_seat_scoped"],
+      "multiplayer_tests": ["test_creature_activation_permission_is_typed_active_and_seat_scoped"],
+      "privacy_tests": ["test_permission_offers_are_principal_scoped"],
+      "replay_tests": ["test_haste_mana_activation_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The exact static descriptor is current-face and controller scoped, and the existing activation timing-cost owner performs the remaining creature, control, and tap-or-untap-cost checks.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_action_permission_compiler_mutant_is_killed removes the closed lowering and proves both represented sentences return to material residuals.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "activation.tap_untap_cost.haste",
       "version": 1,
       "official_rules": ["302.6", "602.2b", "702.10", "702.10a", "702.10c", "702.10d"],
@@ -2574,6 +2601,33 @@
       "dependency_fail_closed_rationale": "This bounded cost eligibility query consumes the authoritative current characteristic and control snapshots plus one represented permission and has no optional capability dependency.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_haste_attack_and_activation_mutant_is_killed changes the recognized current keyword and the activation availability assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "land.play.from_own_graveyard",
+      "version": 1,
+      "official_rules": ["116.2a", "305.2", "305.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and discover the exact static permission that lets one source controller play land cards they own from their graveyard through the ordinary land-play action.",
+        "inputs": ["current phased-in battlefield sources controlled by the acting player", "current source face", "trusted source-spanned CardProgram V2 action-permission descriptor", "owned land card in that player's graveyard", "ordinary land-play timing and quota"],
+        "outputs": ["controller-scoped permission to advertise and accept the ordinary graveyard land play", "ordinary land-play transaction, entry replacement, and zone-transition behavior after permission"],
+        "exclusions": ["casting land cards", "playing nonland cards", "playing another player's land", "additional land plays", "timing changes", "conditional, temporary, targeted, or dynamically granted wording", "permissions on an inactive face"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.action_permission_templates.static_action_permission_handler", "quorune.semantic_runtime.action_permissions.StaticActionPermissionHandler", "quorune.semantic_runtime.action_permissions.controller_has_action_permission", "CommanderEngine._compiled_land_play_permission", "quorune.rules.action_catalog.build_priority_action_catalog"],
+      "positive_tests": ["test_closed_permission_sentences_compile_face_pinned_typed_programs", "test_land_play_permission_is_typed_active_and_seat_scoped"],
+      "negative_tests": ["test_unsupported_permission_wording_and_malformed_descriptors_fail_closed", "test_raw_oracle_text_without_typed_permission_fails_closed"],
+      "interaction_tests": ["test_land_play_permission_is_typed_active_and_seat_scoped"],
+      "multiplayer_tests": ["test_land_play_permission_is_typed_active_and_seat_scoped"],
+      "privacy_tests": ["test_permission_offers_are_principal_scoped"],
+      "replay_tests": ["test_land_play_from_graveyard_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The exact static descriptor only authorizes the source controller's owned graveyard lands; ordinary land-play timing, quota, face selection, entry preparation, and zone mutation remain independently authoritative.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_action_permission_compiler_mutant_is_killed removes the closed lowering and proves both represented sentences return to material residuals.",
       "blockers": [],
       "status": "trusted"
     },

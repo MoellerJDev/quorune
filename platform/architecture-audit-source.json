@@ -253,10 +253,6 @@
           },
           {
             "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._controller_has_oracle_text"
-          },
-          {
-            "file": "quorune/engine.py",
             "symbol": "CommanderEngine._loyalty_cost_modifier_present"
           },
           {
