@@ -29,7 +29,9 @@ and resumes from the exact remaining count without growing the Python call stack
 continues an APNAP batch, draw-step entry, or the exact next spell instruction.
 `drawing/continuation.py` owns that strict immutable Game Record v3 value.
 Historical v3 Dredge continuations keep an explicit validated compatibility
-path and are not silently reinterpreted.
+path. That adapter revalidates the recorded source and count against the live
+trusted `DredgeDraw` component; it does not reparse Oracle text or silently
+promote historical data.
 
 Turn draws, fixed resolving-effect draws, conditional opponent-cast-color
 draws, optional-follow-up draws, and draw-each-player effects converge on this

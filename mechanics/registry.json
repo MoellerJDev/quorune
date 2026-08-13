@@ -58,7 +58,7 @@
     {
       "mechanic_id": "cr-310-battles",
       "path": "mechanics/contracts/battles.json",
-      "sha256": "31d42363c0d39e53cfa6d1e87033693162e2c916eb79ef4bc1e72dca1cfe734c",
+      "sha256": "2856c39fff9f94536d5e84b5eb4ea0e983d4a060dd2fc27ea616b17e37c12aa2",
       "version": 5
     },
     {
@@ -7416,7 +7416,7 @@
     {
       "category": "card_types",
       "contract_path": "mechanics/contracts/battles.json",
-      "contract_sha256": "31d42363c0d39e53cfa6d1e87033693162e2c916eb79ef4bc1e72dca1cfe734c",
+      "contract_sha256": "2856c39fff9f94536d5e84b5eb4ea0e983d4a060dd2fc27ea616b17e37c12aa2",
       "contract_version": 5,
       "coverage_status": "partial",
       "dependencies": [],
@@ -7459,7 +7459,7 @@
         "test_siege_protector_is_chosen_as_the_spell_resolves",
         "test_siege_defeated_casts_back_face_for_free_during_resolution",
         "test_siege_defeated_may_be_declined_after_exile",
-        "test_siege_targeted_back_without_schema_fails_closed",
+        "test_siege_uncompiled_nonpermanent_back_fails_closed_without_prose",
         "test_siege_targeted_back_uses_compiled_target_schema",
         "test_siege_trigger_does_not_follow_a_changed_object",
         "test_transform_back_face_cannot_be_cast_without_permission",

@@ -23631,7 +23631,7 @@
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_last_siege_defense_counter_queues_intrinsic_trigger",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_defeated_casts_back_face_for_free_during_resolution",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_defeated_may_be_declined_after_exile",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_targeted_back_without_schema_fails_closed",
+        "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_uncompiled_nonpermanent_back_fails_closed_without_prose",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_targeted_back_uses_compiled_target_schema",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_trigger_does_not_follow_a_changed_object",
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_transform_back_face_cannot_be_cast_without_permission",

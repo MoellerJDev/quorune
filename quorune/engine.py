@@ -3,7 +3,6 @@ from __future__ import annotations
 import copy
 import hashlib
 import random
-import re
 import uuid
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -3651,28 +3650,6 @@ class CommanderEngine(
             and item.context.get("copy_permanent_spell")
         ):
             return True
-        if item.kind == "spell" and item.card_object_id:
-            record = self.card_record(item.card_object_id)
-            if record and item.default_destination == "battlefield":
-                oracle = record.oracle_text.casefold()
-                replacement_markers = (
-                    "as ~ enters",
-                    "as this",
-                    "enters with",
-                    "you may have",
-                )
-                if any(marker in oracle for marker in replacement_markers):
-                    return False
-                if re.search(r"\b(?:when|whenever)\b", oracle) is None:
-                    return True
-                event_programs = self.semantics.programs_for_oracle(
-                    record.oracle_id
-                )
-                return bool(event_programs) and all(
-                    self.semantic_program_is_current_trusted(program)
-                    and not program.requires_arbiter
-                    for program in event_programs
-                )
         return False
 
     def _finish_siege_defeated_resolution(
@@ -3766,16 +3743,11 @@ class CommanderEngine(
         transformed_types, _, _ = self._type_parts(
             str(transformed_face_data.get("type_line") or "")
         )
-        if (
-            transformed_types.intersection({"instant", "sorcery"})
-            and re.search(
-                r"\btarget\b",
-                str(transformed_face_data.get("oracle_text") or ""),
-                re.IGNORECASE,
-            )
-            and (
-                program is None
-                or program.target_schema is None
+        if transformed_types.intersection({"instant", "sorcery"}) and (
+            program is None
+            or (
+                program.target_schema is None
+                and not self.semantic_program_is_current_trusted(program)
             )
         ):
             self.permissions.issue(
@@ -3796,8 +3768,8 @@ class CommanderEngine(
                         "semantic_key": item.semantic_key,
                         "default_destination": None,
                         "reason": (
-                            "transformed Siege spell has unresolved "
-                            "mandatory target semantics"
+                            "transformed Siege spell lacks trusted typed "
+                            "cast semantics"
                         ),
                         "battle": card.ref,
                         "transformed_face": transformed_face,

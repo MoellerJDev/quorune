@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import replace
-import re
 from typing import Any, Mapping, Protocol
 
 from ..model import GameState
@@ -16,6 +15,7 @@ from ..semantic_runtime.draw_replacements import (
     DrawReplacementHost,
     collect_draw_instruction_replacement_effects,
     collect_draw_replacement_effects,
+    current_dredge_operation,
 )
 from ..semantic_runtime.draw_restrictions import current_draw_permission
 from .continuation import (
@@ -59,8 +59,6 @@ class DrawCoordinatorHost(
     def _require_seat(self, seat: str, *, in_game: bool = False) -> Any: ...
 
     def _resolve_object(self, actor: str, ref: str, **kwargs: Any) -> Any: ...
-
-    def card_record(self, value: Any) -> Any: ...
 
     def _complete_draw_step_entry(self, active: str) -> None: ...
 
@@ -926,26 +924,25 @@ def _complete_legacy_draw_replacement(
         mill_count = candidate.get("mill")
         if type(mill_count) is not int or mill_count < 1:
             raise DrawError("Legacy Dredge count is malformed")
+        try:
+            operation = current_dredge_operation(host, seat, choice)
+        except SemanticNodeError as exc:
+            raise DrawError(str(exc)) from exc
+        if operation is None or operation.mill_count != mill_count:
+            raise DrawError(
+                "The legacy Dredge replacement is no longer available"
+            )
         card = host._resolve_object(
             seat,
             choice,
             zones={"graveyard"},
             owned_only=True,
         )
-        record = host.card_record(card)
-        match = (
-            re.search(
-                r"\bDredge\s+(?P<count>\d+)\b",
-                record.oracle_text,
-                re.IGNORECASE,
-            )
-            if record is not None
-            else None
-        )
         library = host.state.players[seat].zones[_LIBRARY_ZONE]
         if (
-            match is None
-            or int(match.group("count")) != mill_count
+            operation.source_object_id != card.object_id
+            or operation.source_zone_change_counter
+            != card.zone_change_counter
             or len(library) < mill_count
         ):
             raise DrawError(
