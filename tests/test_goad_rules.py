@@ -5,13 +5,19 @@ import tempfile
 import unittest
 from dataclasses import replace
 from pathlib import Path
+from unittest import mock
 
 from common import keep_all, load_assets, make_session
+from quorune.card_programs import compile_card_program
+from quorune.compiler.combat_metadata_templates import (
+    static_goad_prohibition_handler,
+)
 from quorune.engine import GameRuleError
-from quorune.model import CombatState, TurnEntry
+from quorune.model import CardInstance, CombatState, TurnEntry
 from quorune.oracle_ir import (
     compile_oracle_card,
     generated_programs,
+    register_generated_programs,
 )
 from quorune.projection import StateProjector
 from quorune.record import (
@@ -19,12 +25,20 @@ from quorune.record import (
     checkpoint_envelope,
     replay_record,
 )
+from quorune.rules.capabilities import load_default_capability_registry
+from quorune.semantic_runtime.combat_metadata import (
+    GOAD_PROHIBITION_EVENT,
+    GOAD_PROHIBITION_HANDLER_ID,
+    default_goad_prohibition_registry,
+)
+from quorune.semantic_runtime.context import SemanticNodeError
 
 
 class GoadRuleTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.db, cls.mishra, cls.zimone = load_assets()
+        cls.capabilities = load_default_capability_registry()
 
     @classmethod
     def tearDownClass(cls):
@@ -54,9 +68,14 @@ class GoadRuleTests(unittest.TestCase):
         return session
 
     @staticmethod
-    def attacker(engine, name: str = "Goaded Attacker"):
+    def attacker(
+        engine,
+        name: str = "Goaded Attacker",
+        *,
+        controller: str = "A",
+    ):
         ref = engine.create_token(
-            "A",
+            controller,
             name=name,
             characteristics={
                 "type_line": "Token Creature — Test",
@@ -65,7 +84,39 @@ class GoadRuleTests(unittest.TestCase):
             },
             temporary_keywords=["Haste"],
         )[0]
-        return engine._resolve_object("A", ref, zones={"battlefield"})
+        return engine._resolve_object(
+            controller,
+            ref,
+            zones={"battlefield"},
+        )
+
+    def add_typed_goad_prohibition(self, session, *, seat: str = "A"):
+        engine = session.engine
+        record = self.db.lookup("The Kami Knight")
+        source = CardInstance(
+            object_id=f"fixture:typed-goad-prohibition:{seat}",
+            ref=f"{seat}-typed-goad-prohibition",
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner=seat,
+            controller=seat,
+            zone="battlefield",
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+        )
+        engine.state.cards[source.object_id] = source
+        engine.state.players[seat].zones["battlefield"].append(source.object_id)
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (record,),
+            trust_level="provisional",
+            capability_registry=self.capabilities,
+            capability_profile=engine.state.config.review_profile,
+            promote_exact_runtime_handlers=True,
+            promote_exact_capability_declarations=True,
+        )
+        return source
 
     def test_contract_traces_every_goad_rule(self):
         root = Path(__file__).resolve().parents[1]
@@ -281,7 +332,111 @@ class GoadRuleTests(unittest.TestCase):
         self.assertEqual(ref, result)
         self.assertEqual(["B"], [value.player for value in card.goaded_by])
 
-    def test_exact_static_prohibition_makes_goad_have_no_effect(self):
+    def test_closed_goad_prohibition_compiles_source_spanned_program(self):
+        record = self.db.lookup("The Kami Knight")
+        card_program = compile_card_program(
+            self.db,
+            record,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            trust_level="trusted",
+        )
+
+        ability = next(
+            ability
+            for ability in card_program.abilities
+            if any(
+                descriptor.get("handler_id") == GOAD_PROHIBITION_HANDLER_ID
+                for descriptor in ability.handlers
+            )
+        )
+        self.assertEqual(GOAD_PROHIBITION_EVENT, ability.event)
+        self.assertEqual("battlefield", ability.active_zone)
+        self.assertEqual("front", ability.provenance["face_id"])
+        self.assertEqual(2, ability.provenance["source_span"]["line"])
+        self.assertIn(
+            "combat.goad.prohibition.controller_creatures",
+            ability.capability_dependencies,
+        )
+        descriptor = static_goad_prohibition_handler(
+            "Creatures you control can't be goaded."
+        )[1]
+        self.assertEqual(
+            "source_controller",
+            descriptor["affected_controller"],
+        )
+        self.assertEqual("creature", descriptor["affected_card_type"])
+
+    def test_goad_prohibition_near_miss_and_malformed_descriptor_fail_closed(
+        self,
+    ):
+        record = self.db.lookup("The Kami Knight")
+        unsupported = (
+            "Creatures you control can't be goaded this turn.",
+            "Other creatures you control can't be goaded.",
+            "Creatures your opponents control can't be goaded.",
+        )
+        for text in unsupported:
+            with self.subTest(text=text):
+                program = compile_card_program(
+                    self.db,
+                    replace(record, oracle_text=text),
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                    trust_level="provisional",
+                )
+                self.assertTrue(program.residuals)
+                self.assertFalse(
+                    any(
+                        ability.event == GOAD_PROHIBITION_EVENT
+                        for ability in program.abilities
+                    )
+                )
+
+        descriptor = static_goad_prohibition_handler(
+            "Creatures you control can't be goaded."
+        )[1]
+        malformed = (
+            {**descriptor, "affected_controller": "opponent"},
+            {**descriptor, "affected_card_type": "permanent"},
+            {**descriptor, "unknown": True},
+        )
+        registry = default_goad_prohibition_registry()
+        for value in malformed:
+            with self.subTest(descriptor=value):
+                with self.assertRaises(SemanticNodeError):
+                    registry.validate(value)
+
+    def test_goad_prohibition_compiler_mutant_is_killed(self):
+        record = self.db.lookup("The Kami Knight")
+
+        def assert_compiled() -> None:
+            program = compile_card_program(
+                self.db,
+                record,
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+                trust_level="provisional",
+            )
+            self.assertTrue(
+                any(
+                    ability.event == GOAD_PROHIBITION_EVENT
+                    for ability in program.abilities
+                )
+            )
+
+        assert_compiled()
+        with mock.patch(
+            "quorune.compiler.runtime_templates."
+            "static_goad_prohibition_handler",
+            return_value=None,
+        ):
+            with self.assertRaises(AssertionError):
+                assert_compiled()
+
+    def test_raw_oracle_goad_prohibition_without_typed_metadata_fails_closed(
+        self,
+    ):
         session = self.make_combat_session(7011508)
         engine = session.engine
         attacker = self.attacker(engine)
@@ -300,10 +455,64 @@ class GoadRuleTests(unittest.TestCase):
         )
 
         self.assertEqual(attacker.ref, result)
-        self.assertEqual([], attacker.goaded_by)
+        self.assertEqual(["B"], [value.player for value in attacker.goaded_by])
+        self.assertNotEqual("permanent.goad.prevented", engine.state.events[-1].code)
+
+    def test_typed_goad_prohibition_is_controller_scoped_and_replays(self):
+        session = self.make_combat_session(7011510)
+        engine = session.engine
+        self.add_typed_goad_prohibition(session)
+        protected = self.attacker(engine, "Protected Attacker")
+
+        result = engine.apply_effect(
+            {"op": "goad", "card": protected.ref},
+            actor="B",
+        )
+
+        self.assertEqual(protected.ref, result)
+        self.assertEqual([], protected.goaded_by)
+        self.assertEqual("permanent.goad.prevented", engine.state.events[-1].code)
+        engine._issue_attackers()
+        session.initial_checkpoint = checkpoint_envelope(session.state)
+        session.commands.clear()
+        session.decisions.clear()
+        accepted = session.act(
+            "pilot:A",
+            {"a": "attack", "atk": {protected.ref: "B"}},
+        )
+        self.assertTrue(accepted.ok, accepted.summary)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "typed-goad-prohibition"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+
+        scope_session = self.make_combat_session(7011511)
+        scope_engine = scope_session.engine
+        source = self.add_typed_goad_prohibition(scope_session)
+        other_controller = self.attacker(
+            scope_engine,
+            "Other Controller",
+            controller="C",
+        )
+        scope_engine.apply_effect(
+            {"op": "goad", "card": other_controller.ref},
+            actor="B",
+        )
         self.assertEqual(
-            "permanent.goad.prevented",
-            engine.state.events[-1].code,
+            ["B"],
+            [value.player for value in other_controller.goaded_by],
+        )
+
+        source.phased_out = True
+        unprotected = self.attacker(scope_engine, "Phased Source")
+        scope_engine.apply_effect(
+            {"op": "goad", "card": unprotected.ref},
+            actor="B",
+        )
+        self.assertEqual(
+            ["B"],
+            [value.player for value in unprotected.goaded_by],
         )
 
     def test_oracle_compiler_lowers_only_anchored_target_goad_templates(self):

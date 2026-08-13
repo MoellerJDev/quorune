@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_combat_goad_prohibition_card_data",
+  "source": "Scryfall Oracle subset for typed goad-prohibition tests",
+  "cards": [
+    {
+      "oracle_id": "192882de-ff15-4a01-abfd-fdbf01defe5b",
+      "name": "The Kami Knight",
+      "mana_cost": "{2}{W}",
+      "cmc": 3.0,
+      "type_line": "Legendary Creature — Spirit Warrior",
+      "oracle_text": "Other creatures you control gain all bonuses conferred by equipment attached to this creature.\nCreatures you control can't be goaded.",
+      "power": "3",
+      "toughness": "3",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["W"],
+      "color_identity": ["W"],
+      "keywords": [],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2024-06-29",
+      "legalities": {"commander": "not_legal"}
+    }
+  ],
+  "rulings": []
+}

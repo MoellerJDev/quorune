@@ -1161,6 +1161,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/combat_metadata_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/continuous_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -4888,6 +4903,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/combat_metadata.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/component_registry.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -6187,5 +6217,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "58214ce734650815605b1feb73d3a8cdc50fc4c2ff751247db1fb3d430852b2c"
+  "fingerprint": "113d7b24c5771fb2b65b68016a5aa715697641468144a9d38f575f29285f8491"
 }

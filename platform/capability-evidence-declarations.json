@@ -2762,6 +2762,70 @@
       "applicability_note": "Replay both real combat-damage steps and their intervening priority window exactly."
     },
     {
+      "capability_id": "combat.goad.prohibition.controller_creatures",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_goad_rules.GoadRuleTests.test_typed_goad_prohibition_is_controller_scoped_and_replays",
+      "official_rule_ids": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose the typed prohibition with ordinary creature validation, controller scope, phasing, goad mutation, and attack declaration."
+    },
+    {
+      "capability_id": "combat.goad.prohibition.controller_creatures",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_goad_rules.GoadRuleTests.test_typed_goad_prohibition_is_controller_scoped_and_replays",
+      "official_rule_ids": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Protect only creatures controlled by the source controller while other controllers remain goadable in a four-player game."
+    },
+    {
+      "capability_id": "combat.goad.prohibition.controller_creatures",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_goad_rules.GoadRuleTests.test_goad_prohibition_compiler_mutant_is_killed",
+      "official_rule_ids": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the closed goad-prohibition lowering and prove the represented sentence returns to a material residual."
+    },
+    {
+      "capability_id": "combat.goad.prohibition.controller_creatures",
+      "evidence_class": "negative",
+      "test_id": "tests.test_goad_rules.GoadRuleTests.test_goad_prohibition_near_miss_and_malformed_descriptor_fail_closed",
+      "official_rule_ids": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject conditional wording, differently scoped wording, unknown fields, and malformed affected-controller relations."
+    },
+    {
+      "capability_id": "combat.goad.prohibition.controller_creatures",
+      "evidence_class": "negative",
+      "test_id": "tests.test_goad_rules.GoadRuleTests.test_raw_oracle_goad_prohibition_without_typed_metadata_fails_closed",
+      "official_rule_ids": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prove raw Oracle words cannot manufacture a current-game goad prohibition without trusted typed metadata."
+    },
+    {
+      "capability_id": "combat.goad.prohibition.controller_creatures",
+      "evidence_class": "positive",
+      "test_id": "tests.test_goad_rules.GoadRuleTests.test_closed_goad_prohibition_compiles_source_spanned_program",
+      "official_rule_ids": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower the exact public sentence to one source-spanned typed descriptor without retaining Oracle prose as runtime authority."
+    },
+    {
+      "capability_id": "combat.goad.prohibition.controller_creatures",
+      "evidence_class": "positive",
+      "test_id": "tests.test_goad_rules.GoadRuleTests.test_typed_goad_prohibition_is_controller_scoped_and_replays",
+      "official_rule_ids": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prevent goad before designation mutation while the trusted source is phased in and controls the affected creature."
+    },
+    {
+      "capability_id": "combat.goad.prohibition.controller_creatures",
+      "evidence_class": "replay",
+      "test_id": "tests.test_goad_rules.GoadRuleTests.test_typed_goad_prohibition_is_controller_scoped_and_replays",
+      "official_rule_ids": ["101.2", "604.1", "701.15"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the public post-prevention combat state and subsequent legal attack command to the same final state."
+    },
+    {
       "capability_id": "combat.trigger.battle_cry",
       "evidence_class": "interaction",
       "test_id": "tests.test_attack_keyword_triggers.AttackKeywordTriggerIntegrationTests.test_attack_keyword_resolution_uses_source_lki_and_identity_pinned_layer",

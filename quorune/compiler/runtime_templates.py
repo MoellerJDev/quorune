@@ -11,6 +11,7 @@ from .casting_activation_metadata_templates import (
     static_loyalty_cost_modifier_handler,
     static_self_zone_cast_permission_handler,
 )
+from .combat_metadata_templates import static_goad_prohibition_handler
 from .continuous_templates import (
     attached_fixed_characteristics_handler,
     basic_land_type_addition_handler,
@@ -127,6 +128,17 @@ def _source_permanent_participation_template(
     *,
     source_name: str | None,
 ) -> StaticRuntimeTemplate | None:
+    goad_prohibition = static_goad_prohibition_handler(text)
+    if goad_prohibition is not None:
+        return StaticRuntimeTemplate(
+            compiled=goad_prohibition,
+            kind="static_ability",
+            event="combat.goad.prohibition",
+            dependency_reason=(
+                "controller-creature goad prohibition requires its closed "
+                "typed runtime capability"
+            ),
+        )
     self_zone_cast = static_self_zone_cast_permission_handler(text)
     if self_zone_cast is not None:
         return StaticRuntimeTemplate(

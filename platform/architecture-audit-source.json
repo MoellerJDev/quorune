@@ -476,10 +476,6 @@
           {
             "file": "quorune/engine.py",
             "symbol": "CommanderEngine._complete_attackers"
-          },
-          {
-            "file": "quorune/engine.py",
-            "symbol": "CommanderEngine._goad_prohibition_source"
           }
         ]
       }
