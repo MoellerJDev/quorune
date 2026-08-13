@@ -57,11 +57,11 @@ once.
 
 Branch names should use a short category and outcome, such as `fix/`,
 `rules/`, `docs/`, `test/`, or `chore/`. Start from the requested base and do
-not reuse a worktree that contains another change. Commits should be focused,
-imperative, and explain the durable outcome. Conventional prefixes such as
-`fix:`, `feat:`, `docs:`, `test:`, and `chore:` are preferred. Do not merge,
-rebase, force-push, or rewrite another contributor's branch without explicit
-coordination.
+not reuse a worktree that contains another change. Commits should be focused
+and explain the durable outcome. Every commit subject and pull-request title
+must use the Conventional Commit form `<type>: <imperative subject>`, for
+example `fix: preserve replay ordering`. Do not merge, rebase, force-push, or
+rewrite another contributor's branch without explicit coordination.
 
 ## Set up the local environment
 

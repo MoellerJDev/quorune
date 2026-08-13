@@ -145,6 +145,111 @@
       "layout": "normal",
       "released_at": "2026-04-24",
       "legalities": {"commander": "legal", "duel": "legal"}
+    },
+    {
+      "oracle_id": "3a3e8c9b-e458-4661-980d-0a84a4c2452b",
+      "name": "Glasswing Grace // Age-Graced Chapel",
+      "mana_cost": "{3}{W/B}{W/B} // ",
+      "cmc": 5.0,
+      "type_line": "Enchantment — Aura // Land",
+      "oracle_text": "Glasswing Grace: Enchant creature\nEnchanted creature gets +2/+2 and has flying and lifelink.\n//\nAge-Graced Chapel: This land enters tapped.\n{T}: Add {W} or {B}.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": ["B", "W"],
+      "keywords": ["Enchant"],
+      "produced_mana": ["B", "W"],
+      "layout": "modal_dfc",
+      "released_at": "2024-06-14",
+      "legalities": {"commander": "legal", "duel": "legal"},
+      "card_faces": [
+        {
+          "colors": ["B", "W"],
+          "defense": null,
+          "loyalty": null,
+          "mana_cost": "{3}{W/B}{W/B}",
+          "name": "Glasswing Grace",
+          "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2 and has flying and lifelink.",
+          "power": null,
+          "toughness": null,
+          "type_line": "Enchantment — Aura"
+        },
+        {
+          "colors": [],
+          "defense": null,
+          "loyalty": null,
+          "mana_cost": "",
+          "name": "Age-Graced Chapel",
+          "oracle_text": "This land enters tapped.\n{T}: Add {W} or {B}.",
+          "power": null,
+          "toughness": null,
+          "type_line": "Land"
+        }
+      ]
+    },
+    {
+      "oracle_id": "134d5b82-7940-4b33-a922-7f9d1f403e50",
+      "name": "Lotus Field",
+      "mana_cost": "",
+      "cmc": 0.0,
+      "type_line": "Land",
+      "oracle_text": "Hexproof\nThis land enters tapped.\nWhen this land enters, sacrifice two lands.\n{T}: Add three mana of any one color.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": [],
+      "keywords": ["Hexproof"],
+      "produced_mana": ["B", "G", "R", "U", "W"],
+      "layout": "normal",
+      "released_at": "2026-04-24",
+      "legalities": {"commander": "legal", "duel": "legal"}
+    },
+    {
+      "oracle_id": "053a69d8-2b5e-4f14-8b02-ca405891dc4a",
+      "name": "Fell the Profane // Fell Mire",
+      "mana_cost": "{2}{B}{B} // ",
+      "cmc": 4.0,
+      "type_line": "Instant // Land",
+      "oracle_text": "Fell the Profane: Destroy target creature or planeswalker.\n//\nFell Mire: As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": ["B"],
+      "keywords": [],
+      "produced_mana": ["B"],
+      "layout": "modal_dfc",
+      "released_at": "2024-06-14",
+      "legalities": {"commander": "legal", "duel": "legal"},
+      "card_faces": [
+        {
+          "colors": ["B"],
+          "defense": null,
+          "loyalty": null,
+          "mana_cost": "{2}{B}{B}",
+          "name": "Fell the Profane",
+          "oracle_text": "Destroy target creature or planeswalker.",
+          "power": null,
+          "toughness": null,
+          "type_line": "Instant"
+        },
+        {
+          "colors": [],
+          "defense": null,
+          "loyalty": null,
+          "mana_cost": "",
+          "name": "Fell Mire",
+          "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
+          "power": null,
+          "toughness": null,
+          "type_line": "Land"
+        }
+      ]
     }
   ],
   "rulings": []

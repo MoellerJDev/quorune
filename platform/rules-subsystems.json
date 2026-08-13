@@ -342,10 +342,10 @@
       "architecture_owner_extraction",
       "runtime_oracle_removal",
       "interaction_assurance",
-      "architecture_debt",
-      "rules_foundation",
       "compiler_harvest",
-      "card_family"
+      "card_family",
+      "rules_foundation",
+      "architecture_debt"
     ],
     "interaction_assurance": {
       "starting_uncovered_high_risk_pairs": 81

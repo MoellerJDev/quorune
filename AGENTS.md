@@ -325,14 +325,17 @@ totals are allowed only when the count itself is the contract being tested.
 Push the coherent exact head and let public pull-request CI run the broad
 Python, generated, package, platform and headless-browser checks. Use that CI
 window for independent Slot B work instead of repeating the same suite
-locally. Complete `.github/pull_request_template.md` before opening the pull
-request: remove its instructional comments, fill every required section and
-evidence row, give a concrete reason for every N/A, and check every safety
-assertion. When generated inputs or outputs changed, the Generators run field
-must name `scripts/finalize_generated.py --write`. Do not claim a broad local
-pass without the exact command and numeric result, or a broad CI pass without
-the authoritative GitHub Actions run URL. The early `PR / Plan` job enforces
-this policy on open, synchronize, reopen, edit, and ready-for-review events.
+locally. Every commit subject and pull-request title must use the Conventional
+Commit form `<type>: <imperative subject>`, for example `fix: preserve replay
+ordering`; choose the type that describes the durable outcome. Complete
+`.github/pull_request_template.md` before opening the pull request: remove its
+instructional comments, fill every required section and evidence row, give a
+concrete reason for every N/A, and check every safety assertion. When generated
+inputs or outputs changed, the Generators run field must name
+`scripts/finalize_generated.py --write`. Do not claim a broad local pass without
+the exact command and numeric result, or a broad CI pass without the
+authoritative GitHub Actions run URL. The early `PR / Plan` job enforces this
+policy on open, synchronize, reopen, edit, and ready-for-review events.
 
 Public PR CI has a hard 20-job concurrency envelope. Its checked, mode-aware
 budget targets at most 18 simultaneous jobs so cancellation, certification,
