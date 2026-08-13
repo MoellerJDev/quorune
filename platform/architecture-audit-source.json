@@ -123,7 +123,19 @@
         "quorune/service.py",
         "quorune/session.py"
       ],
-      "missing_dedicated_owner": false
+      "missing_dedicated_owner": false,
+      "context": {
+        "prohibited_runtime_oracle_text_symbols": [
+          {
+            "file": "quorune/report.py",
+            "symbol": "_semantic_coverage"
+          },
+          {
+            "file": "quorune/report.py",
+            "symbol": "derive_review"
+          }
+        ]
+      }
     },
     {
       "id": "turn_priority_and_decisions",
@@ -232,7 +244,31 @@
         "quorune/rules/activation",
         "quorune/activation_usage.py"
       ],
-      "missing_dedicated_owner": false
+      "missing_dedicated_owner": false,
+      "context": {
+        "prohibited_runtime_oracle_text_symbols": [
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._compiled_zone_cast_permission"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._controller_has_oracle_text"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._cost_payment_mechanics"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._loyalty_cost_modifier_present"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._nonmana_ability_prohibited_by_name"
+          }
+        ]
+      }
     },
     {
       "id": "semantic_effect_execution",
@@ -246,7 +282,23 @@
         "quorune/tap_state.py",
         "quorune/engine.py"
       ],
-      "missing_dedicated_owner": false
+      "missing_dedicated_owner": false,
+      "context": {
+        "prohibited_runtime_oracle_text_symbols": [
+          {
+            "file": "quorune/drawing/coordinator.py",
+            "symbol": "_complete_legacy_draw_replacement"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._begin_siege_defeated_resolution"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._program_can_auto_resolve"
+          }
+        ]
+      }
     },
     {
       "id": "search_target_and_choice",
@@ -410,7 +462,19 @@
         "quorune/continuous_effects.py",
         "quorune/engine.py"
       ],
-      "missing_dedicated_owner": false
+      "missing_dedicated_owner": false,
+      "context": {
+        "prohibited_runtime_oracle_text_symbols": [
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._copyable_characteristics"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._effective_card_data"
+          }
+        ]
+      }
     },
     {
       "id": "state_based_actions",
@@ -438,7 +502,23 @@
         "quorune/semantic_runtime/block_restrictions.py",
         "quorune/engine.py"
       ],
-      "missing_dedicated_owner": false
+      "missing_dedicated_owner": false,
+      "context": {
+        "prohibited_runtime_oracle_text_symbols": [
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._combat_oracle_lines"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._complete_attackers"
+          },
+          {
+            "file": "quorune/engine.py",
+            "symbol": "CommanderEngine._goad_prohibition_source"
+          }
+        ]
+      }
     },
     {
       "id": "commander_variant",

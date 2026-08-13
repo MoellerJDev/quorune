@@ -20142,14 +20142,14 @@
           "test_self_counter_keyword_actions"
         ],
         "privacy_sensitivity": "not explicitly declared",
-        "prohibited_runtime_oracle_text_accesses": 0,
+        "prohibited_runtime_oracle_text_accesses": 2,
         "public_ports_and_protocols": [],
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Application session.",
         "reusable_piece_count": 0,
         "reusable_pieces": [],
-        "runtime_oracle_text_accesses": 0,
+        "runtime_oracle_text_accesses": 2,
         "state_authority": {
           "classified_module_access": {
             "none": 2
@@ -20522,7 +20522,7 @@
           "test_typed_activated_ability_catalog"
         ],
         "privacy_sensitivity": "not explicitly declared",
-        "prohibited_runtime_oracle_text_accesses": 0,
+        "prohibited_runtime_oracle_text_accesses": 6,
         "public_ports_and_protocols": [],
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
@@ -20551,7 +20551,7 @@
           "capability.trigger.event.normalized_spell_cast",
           "mechanic.convoke"
         ],
-        "runtime_oracle_text_accesses": 4,
+        "runtime_oracle_text_accesses": 10,
         "state_authority": {
           "classified_module_access": {
             "mutable_owner": 5,
@@ -20676,7 +20676,7 @@
           "test_unleash_rules"
         ],
         "privacy_sensitivity": "not explicitly declared",
-        "prohibited_runtime_oracle_text_accesses": 0,
+        "prohibited_runtime_oracle_text_accesses": 3,
         "public_ports_and_protocols": [],
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
@@ -20703,7 +20703,7 @@
           "mechanic.double-strike",
           "mechanic.first-strike"
         ],
-        "runtime_oracle_text_accesses": 0,
+        "runtime_oracle_text_accesses": 3,
         "state_authority": {
           "classified_module_access": {
             "mutable_owner": 2,
@@ -20828,7 +20828,7 @@
           "test_typed_activated_ability_catalog"
         ],
         "privacy_sensitivity": "not explicitly declared",
-        "prohibited_runtime_oracle_text_accesses": 0,
+        "prohibited_runtime_oracle_text_accesses": 4,
         "public_ports_and_protocols": [],
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
@@ -20843,7 +20843,7 @@
           "capability.continuous.resolution.fixed_keyword_zone_object",
           "capability.keyword_action.amass.fixed"
         ],
-        "runtime_oracle_text_accesses": 0,
+        "runtime_oracle_text_accesses": 4,
         "state_authority": {
           "classified_module_access": {
             "mutable_owner": 1,
@@ -22499,7 +22499,7 @@
           "test_unleash_rules"
         ],
         "privacy_sensitivity": "not explicitly declared",
-        "prohibited_runtime_oracle_text_accesses": 0,
+        "prohibited_runtime_oracle_text_accesses": 3,
         "public_ports_and_protocols": [],
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
@@ -22596,7 +22596,7 @@
           "capability.zone.entry.tapped_state",
           "mechanic.vigilance"
         ],
-        "runtime_oracle_text_accesses": 0,
+        "runtime_oracle_text_accesses": 3,
         "state_authority": {
           "classified_module_access": {
             "mutable_owner": 6,
@@ -23249,6 +23249,18 @@
     ],
     "subsystem_ownership": [
       {
+        "context": {
+          "prohibited_runtime_oracle_text_symbols": [
+            {
+              "file": "quorune/report.py",
+              "symbol": "_semantic_coverage"
+            },
+            {
+              "file": "quorune/report.py",
+              "symbol": "derive_review"
+            }
+          ]
+        },
         "id": "application_session",
         "missing_dedicated_owner": false,
         "owners": [
@@ -23352,6 +23364,30 @@
         "status": "dedicated_typed_owner_with_compatibility_adapters"
       },
       {
+        "context": {
+          "prohibited_runtime_oracle_text_symbols": [
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._compiled_zone_cast_permission"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._controller_has_oracle_text"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._cost_payment_mechanics"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._loyalty_cost_modifier_present"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._nonmana_ability_prohibited_by_name"
+            }
+          ]
+        },
         "id": "casting_activation_and_costs",
         "missing_dedicated_owner": false,
         "owners": [
@@ -23367,6 +23403,22 @@
         "status": "typed_proposal_query_and_commit_subsystems_with_engine_facades"
       },
       {
+        "context": {
+          "prohibited_runtime_oracle_text_symbols": [
+            {
+              "file": "quorune/drawing/coordinator.py",
+              "symbol": "_complete_legacy_draw_replacement"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._begin_siege_defeated_resolution"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._program_can_auto_resolve"
+            }
+          ]
+        },
         "id": "semantic_effect_execution",
         "missing_dedicated_owner": false,
         "owners": [
@@ -23536,6 +23588,18 @@
         "status": "typed_delegated_result_owners_with_damage_coordinator"
       },
       {
+        "context": {
+          "prohibited_runtime_oracle_text_symbols": [
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._copyable_characteristics"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._effective_card_data"
+            }
+          ]
+        },
         "id": "continuous_effects",
         "missing_dedicated_owner": false,
         "owners": [
@@ -23558,6 +23622,22 @@
         "status": "dedicated_evaluator_with_engine_mutation"
       },
       {
+        "context": {
+          "prohibited_runtime_oracle_text_symbols": [
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._combat_oracle_lines"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._complete_attackers"
+            },
+            {
+              "file": "quorune/engine.py",
+              "symbol": "CommanderEngine._goad_prohibition_source"
+            }
+          ]
+        },
         "id": "combat",
         "missing_dedicated_owner": false,
         "owners": [
@@ -24205,7 +24285,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "50ef8739dc8682de2be120aebd018a8ec01b7ae9d3a1a87eb3b02bbcd983840e",
+      "fingerprint": "a433223544e206dbccc5c07c6260c6eac166e045d7baf97f910159129db11a90",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -25064,8 +25144,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2742,
-      "discovered_total": 6042,
+      "conventional_ast_cases": 2745,
+      "discovered_total": 6045,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 118,
