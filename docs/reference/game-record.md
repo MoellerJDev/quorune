@@ -112,6 +112,12 @@ used as replay inputs or edited to change game truth. Provider identity and
 usage remain configured, reported, observed, or verified facts; unavailable
 values remain unknown rather than estimated as observations.
 
+Derived semantic coverage accepts only current typed preflight and semantic
+trust evidence. Activation telemetry joins each recorded ability identity to
+the typed activated-ability catalog. Review construction does not infer either
+claim from Oracle prose or punctuation, and missing typed evidence remains
+unresolved.
+
 ## Legacy migration
 
 Legacy snapshot records that lack accepted command payloads cannot be promoted

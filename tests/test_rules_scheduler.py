@@ -284,7 +284,19 @@ class RulesSchedulerTests(unittest.TestCase):
                 selected["reranking_reason"],
             )
         else:
-            self.assertLess(selected_runtime_count, runtime_total)
+            runtime_candidates = [
+                candidate
+                for candidate in work["candidates"]
+                if candidate["candidate_class"] == "runtime_oracle_removal"
+            ]
+            if len(runtime_candidates) == 1:
+                self.assertEqual(
+                    selected["candidate_id"],
+                    runtime_candidates[0]["candidate_id"],
+                )
+                self.assertEqual(runtime_total, selected_runtime_count)
+            else:
+                self.assertLess(selected_runtime_count, runtime_total)
         self.assertGreater(selected["priority_within_class"], 0)
         card_candidates = [
             candidate

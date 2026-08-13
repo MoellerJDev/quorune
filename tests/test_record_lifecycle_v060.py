@@ -114,6 +114,80 @@ class RecordLifecycleAndTypedToolTests(unittest.TestCase):
         self.assertEqual("trusted", row["trust_level"])
         self.assertEqual("complete", coverage["status"])
 
+    def test_semantic_coverage_rejects_oracle_shape_without_typed_support(self):
+        session = make_session(
+            self.db, self.mishra, self.zimone, players=2, seed=421
+        )
+        island = next(
+            card
+            for card in session.engine.state.cards.values()
+            if card.printed_name == "Island"
+        )
+        session.engine.state.events.append(
+            Event(
+                event_id=1,
+                revision=0,
+                turn_sequence=1,
+                active_player=island.owner,
+                phase="main",
+                step="precombat_main",
+                actor=island.owner,
+                code="stack.cast",
+                summary="synthetic unsupported semantic observation",
+                details={"object": island.ref},
+            )
+        )
+
+        with patch(
+            "quorune.report.card_semantic_status",
+            return_value={"status": "unresolved"},
+        ):
+            coverage = _semantic_coverage(session.engine)
+
+        row = next(
+            card for card in coverage["cards"] if card["id"] == island.ref
+        )
+        self.assertEqual("unresolved", row["status"])
+        self.assertEqual(
+            "typed semantic authority did not certify the observed operation",
+            row["reason"],
+        )
+
+    def test_fetch_telemetry_matches_the_typed_activated_ability(self):
+        session = make_session(
+            self.db, self.mishra, self.zimone, players=2, seed=422
+        )
+        foothills = next(
+            card
+            for card in session.engine.state.cards.values()
+            if card.printed_name == "Wooded Foothills"
+        )
+        ability = next(
+            value
+            for value in session.engine._activated_abilities(foothills)
+            if value.library_search_types
+        )
+        activation = Event(
+            event_id=1,
+            revision=0,
+            turn_sequence=1,
+            active_player=foothills.owner,
+            phase="main",
+            step="precombat_main",
+            actor=foothills.owner,
+            code="stack.activate",
+            summary="activated typed library search",
+            details={"source": foothills.ref, "ability": ability.ability_id},
+        )
+        session.engine.state.events.append(activation)
+
+        review = derive_review(session.engine)
+        self.assertEqual(1, review["fetchlands"]["activations"])
+
+        activation.details["ability"] = "untyped-search"
+        review = derive_review(session.engine)
+        self.assertEqual(0, review["fetchlands"]["activations"])
+
     def test_typed_schema_enforces_plan_and_reason_bounds(self):
         spec = next(
             item for item in _tool_specs() if item["name"] == "submit_action"

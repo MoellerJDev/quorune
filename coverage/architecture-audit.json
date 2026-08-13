@@ -3392,48 +3392,48 @@
           "classification": "display_metadata",
           "file": "quorune/report.py",
           "flow_id": "card-identity-flow:ea9ab559b5659d9c6ec4",
-          "line": 151,
+          "line": 168,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 151,
+          "source_line": 168,
           "symbol": "_semantic_coverage"
         },
         {
           "classification": "display_metadata",
           "file": "quorune/report.py",
           "flow_id": "card-identity-flow:9be3d35a10fb81e6b6b2",
-          "line": 152,
+          "line": 169,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 152,
+          "source_line": 169,
           "symbol": "_semantic_coverage"
         },
         {
           "classification": "display_metadata",
           "file": "quorune/report.py",
           "flow_id": "card-identity-flow:6b8066d56b68e783d65c",
-          "line": 585,
+          "line": 600,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "printed_name",
           "source_kind": "attribute",
-          "source_line": 585,
+          "source_line": 600,
           "symbol": "derive_review"
         },
         {
           "classification": "display_metadata",
           "file": "quorune/report.py",
           "flow_id": "card-identity-flow:6f84063cf37dc672d768",
-          "line": 995,
+          "line": 1010,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "printed_name",
           "source_kind": "attribute",
-          "source_line": 995,
+          "source_line": 1010,
           "symbol": "derive_review"
         },
         {
@@ -10175,13 +10175,13 @@
       "file_count": 446,
       "largest_functions_and_methods": [
         {
-          "end_line": 1615,
+          "end_line": 1619,
           "file": "quorune/report.py",
           "kind": "function",
-          "line": 527,
-          "logical_lines": 1085,
+          "line": 542,
+          "logical_lines": 1074,
           "name": "derive_review",
-          "physical_lines": 1089,
+          "physical_lines": 1078,
           "symbol": "derive_review",
           "visibility": "public"
         },
@@ -10318,10 +10318,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 486,
+          "end_line": 501,
           "file": "quorune/report.py",
           "kind": "function",
-          "line": 254,
+          "line": 269,
           "logical_lines": 233,
           "name": "_event_description",
           "physical_lines": 233,
@@ -10505,7 +10505,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 148823,
+      "logical_lines": 148825,
       "methods": {
         "dunder": 409,
         "private": 755,
@@ -10522,10 +10522,10 @@
         },
         {
           "file": "quorune/report.py",
-          "functions_and_methods": 15,
+          "functions_and_methods": 16,
           "language": "python",
-          "logical_lines": 1752,
-          "physical_lines": 1788
+          "logical_lines": 1754,
+          "physical_lines": 1792
         },
         {
           "file": "web/src/App.tsx",
@@ -13639,13 +13639,13 @@
       "oversized_function_and_method_count": 29,
       "oversized_functions_and_methods": [
         {
-          "end_line": 1615,
+          "end_line": 1619,
           "file": "quorune/report.py",
           "kind": "function",
-          "line": 527,
-          "logical_lines": 1085,
+          "line": 542,
+          "logical_lines": 1074,
           "name": "derive_review",
-          "physical_lines": 1089,
+          "physical_lines": 1078,
           "symbol": "derive_review",
           "visibility": "public"
         },
@@ -13782,10 +13782,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 486,
+          "end_line": 501,
           "file": "quorune/report.py",
           "kind": "function",
-          "line": 254,
+          "line": 269,
           "logical_lines": 233,
           "name": "_event_description",
           "physical_lines": 233,
@@ -13969,10 +13969,10 @@
         },
         {
           "file": "quorune/report.py",
-          "functions_and_methods": 15,
+          "functions_and_methods": 16,
           "language": "python",
-          "logical_lines": 1752,
-          "physical_lines": 1788
+          "logical_lines": 1754,
+          "physical_lines": 1792
         },
         {
           "file": "web/src/App.tsx",
@@ -13996,7 +13996,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 163199,
+      "physical_lines": 163203,
       "python_file_count": 430,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -14014,7 +14014,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 2073,
+      "top_level_functions": 2074,
       "web_file_count": 16
     },
     "runtime_oracle_text_access": {
@@ -14802,43 +14802,13 @@
           "member": "oracle_text",
           "rationale": "Card storage, inspection, or projection metadata.",
           "symbol": "StateProjector._effective"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/report.py",
-          "lines": [
-            197,
-            200,
-            201
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "_semantic_coverage"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/report.py",
-          "lines": [
-            1308
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "derive_review"
         }
       ],
       "by_classification": {
         "compiler_input": 25,
         "display_only_metadata": 14,
         "generated_provenance": 11,
-        "prohibited_runtime_interpretation": 4,
+        "prohibited_runtime_interpretation": 2,
         "reviewed_historical_compatibility": 3
       },
       "classification_vocabulary": [
@@ -14876,40 +14846,10 @@
           "member": "oracle_text",
           "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
           "symbol": "CommanderEngine._complete_attackers"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/report.py",
-          "lines": [
-            197,
-            200,
-            201
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "_semantic_coverage"
-        },
-        {
-          "access_kind": "attribute",
-          "classification": "prohibited_runtime_interpretation",
-          "expressions": [
-            "record.oracle_text"
-          ],
-          "file": "quorune/report.py",
-          "lines": [
-            1308
-          ],
-          "member": "oracle_text",
-          "rationale": "Production runtime access can influence represented game behavior and must migrate to typed data.",
-          "symbol": "derive_review"
         }
       ],
-      "prohibited_runtime_interpretation_count": 4,
-      "total_accesses": 57
+      "prohibited_runtime_interpretation_count": 2,
+      "total_accesses": 55
     },
     "semantic_handlers": {
       "engine_string_dispatch_branch_count": 3,
@@ -20042,14 +19982,14 @@
           "test_self_counter_keyword_actions"
         ],
         "privacy_sensitivity": "not explicitly declared",
-        "prohibited_runtime_oracle_text_accesses": 2,
+        "prohibited_runtime_oracle_text_accesses": 0,
         "public_ports_and_protocols": [],
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Application session.",
         "reusable_piece_count": 0,
         "reusable_pieces": [],
-        "runtime_oracle_text_accesses": 2,
+        "runtime_oracle_text_accesses": 0,
         "state_authority": {
           "classified_module_access": {
             "none": 2
@@ -23226,18 +23166,6 @@
     ],
     "subsystem_ownership": [
       {
-        "context": {
-          "prohibited_runtime_oracle_text_symbols": [
-            {
-              "file": "quorune/report.py",
-              "symbol": "_semantic_coverage"
-            },
-            {
-              "file": "quorune/report.py",
-              "symbol": "derive_review"
-            }
-          ]
-        },
         "id": "application_session",
         "missing_dedicated_owner": false,
         "owners": [
@@ -24208,7 +24136,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "d514093182b001b5044c0ed083186026619a5f3a19c77f27d73f1ad562600a5b",
+      "fingerprint": "9488d332d50ed16d04f75f788d5eeafe240a77e4d38447c70d8dc0d81b128344",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -25067,11 +24995,11 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2788,
-      "discovered_total": 6088,
+      "conventional_ast_cases": 2790,
+      "discovered_total": 6090,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
-        "compiler_named": 128,
+        "compiler_named": 129,
         "fuzz_named": 1,
         "privacy_or_projection_named": 33,
         "replay_named": 184,

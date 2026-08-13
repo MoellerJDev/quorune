@@ -131,6 +131,23 @@ def _land_entry_review(engine: CommanderEngine) -> dict[str, Any]:
     }
 
 
+def _is_typed_library_search_activation(
+    engine: CommanderEngine,
+    event: Event,
+    by_ref: Mapping[str, Any],
+) -> bool:
+    if event.code != "stack.activate":
+        return False
+    source = by_ref.get(str(event.details.get("source") or ""))
+    ability_id = str(event.details.get("ability") or "")
+    if source is None or not ability_id:
+        return False
+    return any(
+        ability.ability_id == ability_id and bool(ability.library_search_types)
+        for ability in engine._activated_abilities(source)
+    )
+
+
 def _semantic_coverage(engine: CommanderEngine) -> dict[str, Any]:
     refs: dict[str, set[str]] = defaultdict(set)
     by_ref = _card_by_ref(engine)
@@ -169,7 +186,11 @@ def _semantic_coverage(engine: CommanderEngine) -> dict[str, Any]:
         preflight_fully_playable = (
             preflight_status["status"] == "fully_playable"
         )
-        builtin_fetch = bool(card and any(ability.library_search_types for ability in engine._activated_abilities(card)))
+        builtin_fetch = any(
+            str(event.details.get("source") or "") == ref
+            and _is_typed_library_search_activation(engine, event, by_ref)
+            for event in engine.state.events
+        )
         builtin_land_entry = operations == {"land.play"} and any(
             handler.get("handler_id")
             == "replacement.zone.entry-state.v1"
@@ -194,18 +215,12 @@ def _semantic_coverage(engine: CommanderEngine) -> dict[str, Any]:
         elif registered_programs and trust == "unresolved":
             status = "unresolved"
             reason = "semantic pack explicitly marks relevant behavior unresolved"
-        elif not record.oracle_text.strip():
-            status = "fully_supported"
-            reason = "no Oracle effect required"
-        elif "stack.cast" in operations and ":" in record.oracle_text and not any(
-            marker in record.oracle_text.casefold()
-            for marker in ("when ", "whenever ", "as ")
-        ):
+        elif preflight_status["status"] == "partial":
             status = "partially_supported"
-            reason = "permanent characteristics resolved; unactivated Oracle abilities were not exercised"
+            reason = "typed semantic preflight reports partial support"
         else:
             status = "unresolved"
-            reason = "relevant Oracle semantics were not registered or observed resolving"
+            reason = "typed semantic authority did not certify the observed operation"
         effective_trust = trust
         if status == "fully_supported" and (
             preflight_fully_playable
@@ -1295,18 +1310,7 @@ def derive_review(
         "land_entry": land_review,
         "fetchlands": {
             "activations": sum(
-                event.code == "stack.activate"
-                and (
-                    (
-                        (source := by_ref.get(str(event.details.get("source") or "")))
-                        is not None
-                    )
-                    and (
-                        (record := engine.card_record(source))
-                        is not None
-                    )
-                    and "search your library" in record.oracle_text.casefold()
-                )
+                _is_typed_library_search_activation(engine, event, by_ref)
                 for event in state.events
             ),
             "searches_resolved": counts["library.search"],
