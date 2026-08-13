@@ -3,10 +3,24 @@ from __future__ import annotations
 import json
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from common import keep_all, load_assets, make_session
 from quorune.abilities import parse_activated_abilities
+from quorune.carddb import CardRecord
 from quorune.model import CardInstance, StackItem
+from quorune.oracle_ir import generated_programs
+from quorune.rules.capabilities import load_default_capability_registry
+from quorune.semantic_runtime.casting_activation_metadata import (
+    LOYALTY_COST_MODIFIER_EVENT,
+)
+
+
+class _NoRulingsDatabase:
+    @staticmethod
+    def rulings(record):
+        del record
+        return ()
 
 
 class LoyaltyAbilityRuleTests(unittest.TestCase):
@@ -231,7 +245,7 @@ class LoyaltyAbilityRuleTests(unittest.TestCase):
             engine._ability_availability("A", daretti, minus),
         )
 
-    def test_visible_loyalty_cost_modifier_fails_closed(self):
+    def test_raw_loyalty_cost_words_without_typed_metadata_remain_payable(self):
         engine = self.make_engine(60604)
         daretti = self.card(engine, "A", "Daretti, Scrap Savant")
         engine.move_card(
@@ -254,24 +268,125 @@ class LoyaltyAbilityRuleTests(unittest.TestCase):
 
         ability = engine._activated_abilities(daretti)[0]
         self.assertEqual(
-            ("unresolved", "unresolved_loyalty_cost_modification"),
+            ("payable", None),
             engine._ability_availability("A", daretti, ability),
         )
-        hints = engine._priority_action_hints("A")
-        self.assertFalse(
-            any(
-                hint.get("s") == daretti.ref
-                for hint in hints["abilities"]
-            )
+
+    def test_visible_typed_loyalty_cost_modifier_fails_closed(self):
+        engine = self.make_engine(60605)
+        daretti = self.card(engine, "A", "Daretti, Scrap Savant")
+        engine.move_card(
+            daretti.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
         )
-        self.assertTrue(
-            any(
-                hint.get("s") == daretti.ref
-                and hint.get("reason")
-                == "unresolved_loyalty_cost_modification"
-                for hint in hints["diagnostic"]["unresolved_cost_semantics"]
-            )
+        record = CardRecord(
+            oracle_id="00000000-0000-4000-8000-000000606005",
+            name="Typed Loyalty Cost Modifier",
+            mana_cost="{2}{B}{G}",
+            mana_value=4.0,
+            type_line="Legendary Creature — Human Warrior",
+            oracle_text=(
+                "Planeswalkers' loyalty abilities you activate cost an "
+                "additional [+1] to activate."
+            ),
+            power="3",
+            toughness="3",
+            loyalty=None,
+            defense=None,
+            colors=("B", "G"),
+            color_identity=("B", "G"),
+            keywords=(),
+            produced_mana=(),
+            layout="normal",
+            released_at="2026-01-01",
+            legalities={"commander": "legal"},
+            faces=(),
+            raw={},
         )
+        source = CardInstance(
+            object_id="typed-loyalty-modifier",
+            ref="A-typed-loyalty-modifier",
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner="A",
+            controller="A",
+            zone="battlefield",
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+        )
+        engine.state.cards[source.object_id] = source
+        engine.state.players["A"].zones["battlefield"].append(source.object_id)
+        capabilities = load_default_capability_registry()
+        program = next(
+            program
+            for program in generated_programs(
+                _NoRulingsDatabase(),
+                record,
+                trust_level="trusted",
+                capability_registry=capabilities,
+                capability_profile=engine.state.config.review_profile,
+            )
+            if program.event == LOYALTY_COST_MODIFIER_EVENT
+        )
+        engine.semantics.put(program)
+        original_card_record = engine.card_record
+        original_trust = engine.semantic_program_is_current_trusted
+
+        def card_record(value):
+            card = (
+                value
+                if isinstance(value, CardInstance)
+                else engine.state.cards[value]
+            )
+            if card.oracle_id == record.oracle_id:
+                return record
+            return original_card_record(value)
+
+        def current_trusted(candidate):
+            if candidate.oracle_id == record.oracle_id:
+                return True
+            return original_trust(candidate)
+
+        self.prepare_main(engine)
+        ability = engine._activated_abilities(daretti)[0]
+        with mock.patch.object(engine, "card_record", side_effect=card_record), mock.patch.object(
+            engine,
+            "semantic_program_is_current_trusted",
+            side_effect=current_trusted,
+        ):
+            self.assertEqual(
+                ("unresolved", "unresolved_loyalty_cost_modification"),
+                engine._ability_availability("A", daretti, ability),
+            )
+            source.phased_out = True
+            self.assertEqual(
+                ("payable", None),
+                engine._ability_availability("A", daretti, ability),
+            )
+            source.phased_out = False
+            self.assertEqual(
+                ("unresolved", "unresolved_loyalty_cost_modification"),
+                engine._ability_availability("A", daretti, ability),
+            )
+            hints = engine._priority_action_hints("A")
+            self.assertFalse(
+                any(
+                    hint.get("s") == daretti.ref
+                    for hint in hints["abilities"]
+                )
+            )
+            self.assertTrue(
+                any(
+                    hint.get("s") == daretti.ref
+                    and hint.get("reason")
+                    == "unresolved_loyalty_cost_modification"
+                    for hint in hints["diagnostic"][
+                        "unresolved_cost_semantics"
+                    ]
+                )
+            )
 
     def test_multiple_loyalty_costs_fail_closed_until_combined(self):
         ability = parse_activated_abilities(

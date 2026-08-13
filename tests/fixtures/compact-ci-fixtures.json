@@ -7,6 +7,7 @@
     "tests/fixtures/browser-lifecycle-cards.json",
     "tests/fixtures/browser-ordered-scry-cards.json",
     "tests/fixtures/composition-assurance-cards.json",
+    "tests/fixtures/casting-activation-metadata-cards.json",
     "tests/fixtures/counter-replacement-cards.json",
     "tests/fixtures/damage-result-cards.json",
     "tests/fixtures/draw-rules-cards.json",

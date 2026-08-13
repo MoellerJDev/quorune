@@ -253,6 +253,10 @@ from .semantic_runtime.action_permissions import (
     ActionPermissionKind,
     controller_has_action_permission,
 )
+from .semantic_runtime.casting_activation_metadata import (
+    active_loyalty_cost_modifiers,
+    compiled_self_zone_cast_permission,
+)
 from .semantic_runtime import (
     AddManaIntent,
     AddSubtypeIntent,
@@ -2807,36 +2811,7 @@ class CommanderEngine(
             return False
         if card.zone in set(card.annotations.get("cast_from") or []):
             return True
-        record = self.card_record(card)
-        if record is None:
-            return False
-        oracle = record.oracle_text.casefold()
-        if (
-            card.zone == "graveyard"
-            and "you may cast this card from your graveyard as long as "
-            "you control a zombie"
-            in oracle
-        ):
-            return any(
-                candidate.controller == seat
-                and not candidate.phased_out
-                and "zombie"
-                in self._type_parts(
-                    str(
-                        self._effective_card_data(candidate).get(
-                            "type_line"
-                        )
-                        or ""
-                    )
-                )[1]
-                for candidate in (
-                    self.state.cards[object_id]
-                    for object_id in self.state.players[seat].zones[
-                        "battlefield"
-                    ]
-                )
-            )
-        return False
+        return compiled_self_zone_cast_permission(self, seat, card)
 
     def _cast(
         self,
@@ -3104,22 +3079,7 @@ class CommanderEngine(
         unresolved instead of executable at an incorrect cost.
         """
 
-        for owner in self.active_seats:
-            for object_id in self.state.players[owner].zones["battlefield"]:
-                permanent = self.state.cards[object_id]
-                if permanent.phased_out:
-                    continue
-                oracle_text = str(
-                    self._effective_card_data(permanent).get("oracle_text")
-                    or ""
-                ).casefold()
-                if (
-                    "loyalty abilities" in oracle_text
-                    and "cost" in oracle_text
-                    and "activate" in oracle_text
-                ):
-                    return True
-        return False
+        return bool(active_loyalty_cost_modifiers(self))
 
     def _may_activate_creature_as_haste(
         self,

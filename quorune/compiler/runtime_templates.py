@@ -7,6 +7,10 @@ from .activation_restriction_templates import (
     static_activation_restriction_handler,
 )
 from .action_permission_templates import static_action_permission_handler
+from .casting_activation_metadata_templates import (
+    static_loyalty_cost_modifier_handler,
+    static_self_zone_cast_permission_handler,
+)
 from .continuous_templates import (
     attached_fixed_characteristics_handler,
     basic_land_type_addition_handler,
@@ -123,6 +127,29 @@ def _source_permanent_participation_template(
     *,
     source_name: str | None,
 ) -> StaticRuntimeTemplate | None:
+    self_zone_cast = static_self_zone_cast_permission_handler(text)
+    if self_zone_cast is not None:
+        return StaticRuntimeTemplate(
+            compiled=self_zone_cast,
+            kind="static_ability",
+            event="cast.zone.permission",
+            active_zone="graveyard",
+            dependency_reason=(
+                "self-zone casting permission requires its closed typed "
+                "runtime capability"
+            ),
+        )
+    loyalty_cost_modifier = static_loyalty_cost_modifier_handler(text)
+    if loyalty_cost_modifier is not None:
+        return StaticRuntimeTemplate(
+            compiled=loyalty_cost_modifier,
+            kind="static_ability",
+            event="activation.cost.modify",
+            dependency_reason=(
+                "loyalty-cost modification detection requires its closed "
+                "typed runtime capability"
+            ),
+        )
     activation_restriction = static_activation_restriction_handler(text)
     if activation_restriction is not None:
         return StaticRuntimeTemplate(

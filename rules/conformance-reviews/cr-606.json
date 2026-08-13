@@ -126,7 +126,7 @@
       "executable_test_ids": [
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_loyalty_timing_control_and_once_per_permanent",
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_negative_loyalty_cost_requires_enough_counters",
-        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_loyalty_cost_modifier_fails_closed",
+        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_typed_loyalty_cost_modifier_fails_closed",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_doubling_season_ignores_positive_loyalty_cost_but_doc_applies",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_negative_loyalty_removal_is_not_counter_placement",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
@@ -196,7 +196,7 @@
       ],
       "executable_test_ids": [
         "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_negative_loyalty_cost_requires_enough_counters",
-        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_loyalty_cost_modifier_fails_closed"
+        "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_typed_loyalty_cost_modifier_fails_closed"
       ],
       "required_scenarios": [
         "positive",

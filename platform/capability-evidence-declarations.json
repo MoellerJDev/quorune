@@ -306,6 +306,62 @@
       "applicability_note": "Replay a resumed positive loyalty-symbol cost to the exact authoritative state hash."
     },
     {
+      "capability_id": "activation.loyalty_cost.modifier_detection",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_typed_loyalty_cost_modifier_fails_closed",
+      "official_rule_ids": ["606.4", "606.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Combine typed modifier discovery with phasing, activation legality, payment hints, and the existing loyalty activation transaction."
+    },
+    {
+      "capability_id": "activation.loyalty_cost.modifier_detection",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_casting_activation_metadata.CastingActivationMetadataCompilerTests.test_casting_activation_metadata_compiler_mutant_is_killed",
+      "official_rule_ids": ["606.4", "606.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the closed loyalty-cost lowering and prove the represented sentence returns to a material residual."
+    },
+    {
+      "capability_id": "activation.loyalty_cost.modifier_detection",
+      "evidence_class": "negative",
+      "test_id": "tests.test_casting_activation_metadata.CastingActivationMetadataCompilerTests.test_near_miss_and_malformed_casting_activation_metadata_fails_closed",
+      "official_rule_ids": ["606.4", "606.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject unrepresented controller relations, reductions, variable adjustments, and malformed loyalty-cost wording."
+    },
+    {
+      "capability_id": "activation.loyalty_cost.modifier_detection",
+      "evidence_class": "negative",
+      "test_id": "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_raw_loyalty_cost_words_without_typed_metadata_remain_payable",
+      "official_rule_ids": ["606.4", "606.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prove raw Oracle words cannot manufacture a current-game loyalty-cost modifier without trusted typed metadata."
+    },
+    {
+      "capability_id": "activation.loyalty_cost.modifier_detection",
+      "evidence_class": "positive",
+      "test_id": "tests.test_casting_activation_metadata.CastingActivationMetadataCompilerTests.test_closed_casting_activation_metadata_compiles_source_spanned_programs",
+      "official_rule_ids": ["606.4", "606.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower each represented loyalty-cost sentence to a source-spanned typed descriptor without retaining Oracle prose as runtime authority."
+    },
+    {
+      "capability_id": "activation.loyalty_cost.modifier_detection",
+      "evidence_class": "positive",
+      "test_id": "tests.test_loyalty_abilities.LoyaltyAbilityRuleTests.test_visible_typed_loyalty_cost_modifier_fails_closed",
+      "official_rule_ids": ["606.4", "606.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Discover a current phased-in typed loyalty-cost descriptor and leave the activation unresolved before any cost or stack mutation."
+    },
+    {
+      "capability_id": "activation.loyalty_cost.modifier_detection",
+      "evidence_class": "replay",
+      "test_id": "tests.test_casting_activation_metadata.LoyaltyCostModifierRuntimeTests.test_typed_loyalty_cost_modifier_replays_exactly",
+      "official_rule_ids": ["606.4", "606.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Checkpoint and replay the same activation result after the typed loyalty-cost modifier becomes inactive through phasing."
+    },
+    {
       "capability_id": "activation.permission.controlled_creature_as_haste",
       "evidence_class": "interaction",
       "test_id": "tests.test_static_action_permissions.StaticActionPermissionRuntimeTests.test_creature_activation_permission_is_typed_active_and_seat_scoped",
@@ -1400,6 +1456,78 @@
       "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "702.51", "702.51a", "702.51b", "702.51c", "702.51d"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject changed type, color, controller, tap, phase, or logical identity before spending mana, tapping a permanent, or moving the spell."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose the typed permission with current effective subtypes, phasing, ordinary timing, mana payment, proposal construction, and zone mutation."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Restrict the graveyard offer and accepted cast command to the owning seat in a four-player game."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_casting_activation_metadata.CastingActivationMetadataCompilerTests.test_casting_activation_metadata_compiler_mutant_is_killed",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the closed self-zone lowering and prove the represented permission returns to a material residual."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "negative",
+      "test_id": "tests.test_casting_activation_metadata.CastingActivationMetadataCompilerTests.test_near_miss_and_malformed_casting_activation_metadata_fails_closed",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject permissions for another zone or card and conditions outside the single controlled-creature-subtype boundary."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "negative",
+      "test_id": "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_raw_oracle_zone_permission_without_typed_metadata_fails_closed",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Prove raw Oracle prose cannot authorize a graveyard cast when trusted typed metadata is absent."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "positive",
+      "test_id": "tests.test_casting_activation_metadata.CastingActivationMetadataCompilerTests.test_closed_casting_activation_metadata_compiles_source_spanned_programs",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower the represented self-graveyard permission to one source-spanned typed descriptor with a canonical creature subtype."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "positive",
+      "test_id": "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Authorize only the owner's exact graveyard card while a current phased-in controlled permanent has the pinned subtype."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the public graveyard object while withholding another seat's server-issued cast action."
+    },
+    {
+      "capability_id": "casting.zone.self_graveyard.controlled_subtype",
+      "evidence_class": "replay",
+      "test_id": "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
+      "official_rule_ids": ["205.3m", "601.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the accepted typed graveyard cast through the ordinary command journal to the same final state."
     },
     {
       "capability_id": "combat.attack.defender",
