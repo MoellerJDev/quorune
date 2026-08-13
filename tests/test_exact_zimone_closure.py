@@ -1284,8 +1284,11 @@ class ExactZimoneClosureTests(unittest.TestCase):
         session = self.make_session(1010)
         engine = session.engine
         village = self.card(engine, "B", "Mistrise Village")
+        forest = self.card(engine, "B", "Forest")
         spell = self.card(engine, "B", "Sol Ring")
+        engine.move_card(forest.object_id, "battlefield", controller="B")
         engine.move_card(village.object_id, "battlefield", controller="B")
+        self.assertFalse(village.tapped)
         engine.move_card(spell.object_id, "hand")
         engine.state.players["B"].mana_pool["U"] = 1
         engine.state.priority_player = "B"
@@ -1330,9 +1333,12 @@ class ExactZimoneClosureTests(unittest.TestCase):
         session = self.make_session(1011)
         engine = session.engine
         archway = self.card(engine, "A", "Archway of Innovation")
+        island = self.card(engine, "A", "Island")
         artifact = self.card(engine, "A", "Lightning Greaves")
         spell = self.card(engine, "A", "Panharmonicon")
+        engine.move_card(island.object_id, "battlefield", controller="A")
         engine.move_card(archway.object_id, "battlefield", controller="A")
+        self.assertFalse(archway.tapped)
         engine.move_card(artifact.object_id, "battlefield", controller="A")
         engine.move_card(spell.object_id, "hand")
         engine.state.players["A"].mana_pool["U"] = 1
