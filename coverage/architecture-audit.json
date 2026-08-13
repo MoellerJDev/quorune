@@ -21418,7 +21418,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 90,
+        "primary_test_count": 91,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_additional_token_compiler",
@@ -21482,6 +21482,7 @@
           "test_ordinary_crew",
           "test_ordinary_cycling",
           "test_persist_undying_rules",
+          "test_preflight_v080",
           "test_prevention_immediate_sequencing",
           "test_proliferate_compiler",
           "test_proliferate_rules",
@@ -24301,7 +24302,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "22fb69057e436c2c043113d475a28a4a262c6d130bdf4ad484a215b3eaff2c33",
+      "fingerprint": "150321f042c86729118ca70964818455e975b8a3e09803a08176f586bf72695b",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
