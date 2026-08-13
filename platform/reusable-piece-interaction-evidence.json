@@ -1290,6 +1290,22 @@
       "capability_ids": ["counter.removal.rule_generated", "state_based.counter_maximum.fixed_self"],
       "interaction_order": 3,
       "assertion": "The strictest current typed maximum and simultaneous opposing power/toughness counter removal share one immutable SBA snapshot and one canonical exact-removal transaction."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_ambient_untapped_competes_with_intrinsic_tapped_entry",
+      "piece_ids": ["capability.zone.entry.tapped_state", "mechanic.cr-614-replacement-effects", "mechanic.cr-616-interaction-of-replacement-and-or-prevention-effects"],
+      "capability_ids": ["zone.entry.tapped_state"],
+      "interaction_order": 3,
+      "assertion": "Intrinsic tapped entry and controller-wide untapped entry participate in the same immutable CR 614 event and affected-controller CR 616 ordering loop."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_competing_land_entry_choice_is_private_and_replayable",
+      "piece_ids": ["capability.zone.entry.tapped_state", "mechanic.cr-403-battlefield", "mechanic.cr-616-interaction-of-replacement-and-or-prevention-effects"],
+      "capability_ids": ["zone.entry.tapped_state"],
+      "interaction_order": 3,
+      "assertion": "Ordinary land play suspends before battlefield mutation, projects only the affected seat's visible order choice, resumes the exact action, and replays the two-command Game Record exactly."
     }
   ]
 }

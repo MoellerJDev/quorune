@@ -158,6 +158,7 @@ class UnleashCompilerAndModelTests(unittest.TestCase):
             origin="stack",
             destination="battlefield",
             destination_controller="A",
+            entry_face_id="front",
             object_types=("creature",),
             is_card_object=True,
         )

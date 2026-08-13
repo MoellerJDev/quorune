@@ -9,6 +9,7 @@ from typing import Any
 
 from .abilities import parse_activated_abilities
 from .carddb import CardDatabase, CardRecord
+from .compiler.entry_state_templates import static_entry_state_handler
 from .card_programs.binding import bind_card_program_runtime
 from .card_programs.trust import compute_match_trust_closure
 from .deck import DeckDefinition, DeckLoader
@@ -241,15 +242,10 @@ def _static_lines_needing_program(record: CardRecord) -> list[str]:
             for part in keyword_parts
         ):
             continue
-        if record.is_land and (
-            lower == "this land enters tapped"
-            or lower
-            == "this land enters tapped unless you have two or more opponents"
-            or lower
-            == "this land enters tapped unless you control a forest"
-            or lower
-            == "you may pay 2 life. if you don't, it enters tapped"
-        ):
+        if record.is_land and static_entry_state_handler(
+            line,
+            source_name=record.name,
+        ) is not None:
             continue
         rows.append(line)
     return rows
@@ -321,18 +317,15 @@ def _kernel_compiles_cast_cost(record: CardRecord) -> bool:
 
 def _generic_land_status(record: CardRecord) -> tuple[str, list[str]]:
     oracle = record.oracle_text.casefold()
+    compiled_entry = any(
+        static_entry_state_handler(line, source_name=record.name) is not None
+        for line in _printed_static_lines(record)
+    )
     unresolved: list[str] = []
     supported = (
         not oracle
         or "add {" in oracle
-        or "enters tapped unless you have two or more opponents" in oracle
-        or "you may pay 2 life. if you don't, it enters tapped" in oracle
-        or "enters tapped unless you control a forest" in oracle
-        or (
-            "enters tapped" in oracle
-            and "unless" not in oracle
-            and "when " not in oracle
-        )
+        or compiled_entry
         or "search your library for a" in oracle
     )
     if "when " in oracle or "whenever " in oracle:

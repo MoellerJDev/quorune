@@ -2263,7 +2263,7 @@ class OracleIRTests(unittest.TestCase):
         entry = next(
             node
             for node in ir.faces[0].nodes
-            if node.template_id == "enters-tapped-self-v1"
+            if node.template_id == "zone-entry-state-self-tapped-v1"
         )
         self.assertTrue(entry.lowerable)
         engine.move_card(
@@ -2279,7 +2279,7 @@ class OracleIRTests(unittest.TestCase):
             controller="A",
             tapped=False,
         )
-        self.assertFalse(diamond.tapped)
+        self.assertTrue(diamond.tapped)
 
     def _generated_spell_session(self, *, trusted_only=False):
         deck_a = DeckDefinition(

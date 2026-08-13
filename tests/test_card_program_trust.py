@@ -226,6 +226,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "replacement.fixed_additional_token",
                 "replacement.life.gain.multiplier",
                 "replacement.zone.destination",
+                "replacement.zone.entry_state",
                 "replacement.zone.conditional-self-entry-counter",
                 "replacement.zone.riot-entry-choice",
                 "replacement.zone.self-entry-counter",

@@ -182,6 +182,7 @@ class ManaAbilityRuleTests(unittest.TestCase):
             tapped=False,
             log=False,
         )
+        pool.tapped = False
         self.prepare_main(engine, "B")
         abilities = {
             ability.ability_id: ability

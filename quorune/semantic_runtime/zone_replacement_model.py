@@ -114,8 +114,13 @@ class ZoneChangeSubjectSnapshot:
     origin: str
     destination: str
     destination_controller: str | None
+    entry_face_id: str
     object_types: tuple[str, ...]
     is_card_object: bool
+    requested_tapped: bool = False
+    entry_pay_life: bool | None = None
+    opponent_count: int = 0
+    controller_basic_land_types: tuple[str, ...] = ()
     opponent_was_dealt_damage_this_turn: bool = False
     intrinsic_entry_counters: tuple[IntrinsicEntryCounter, ...] = ()
     effect_entry_counters: tuple[EffectEntryCounter, ...] = ()
@@ -128,6 +133,7 @@ class ZoneChangeSubjectSnapshot:
             self.owner,
             self.origin,
             self.destination,
+            self.entry_face_id,
         )
         if any(type(value) is not str or not value for value in required):
             raise ZoneReplacementError(
@@ -175,6 +181,32 @@ class ZoneChangeSubjectSnapshot:
             raise ZoneReplacementError(
                 "Zone replacement card-object state must be boolean"
             )
+        if type(self.requested_tapped) is not bool:
+            raise ZoneReplacementError(
+                "Zone replacement requested tapped state must be boolean"
+            )
+        if self.entry_pay_life is not None and (
+            type(self.entry_pay_life) is not bool
+        ):
+            raise ZoneReplacementError(
+                "Zone replacement entry life choice must be boolean or null"
+            )
+        if type(self.opponent_count) is not int or self.opponent_count < 0:
+            raise ZoneReplacementError(
+                "Zone replacement opponent count must be nonnegative"
+            )
+        basic_types = tuple(sorted(set(self.controller_basic_land_types)))
+        if any(
+            type(value) is not str or not value for value in basic_types
+        ):
+            raise ZoneReplacementError(
+                "Zone replacement controlled basic land types must be strings"
+            )
+        object.__setattr__(
+            self,
+            "controller_basic_land_types",
+            basic_types,
+        )
         if type(self.opponent_was_dealt_damage_this_turn) is not bool:
             raise ZoneReplacementError(
                 "Zone replacement turn-history facts must be boolean"
@@ -245,9 +277,84 @@ class PreparedZoneChange:
     logical_object_id: str
     origin: str
     requested_destination: str
+    destination_controller: str | None
+    entry_face_id: str
+    state_revision: int
+    event_sequence: int
     destination: str
+    requested_tapped: bool = False
+    requested_entry_pay_life: bool | None = None
+    entry_tapped: bool = False
+    entry_life_payment: int = 0
     event: ReplaceableEvent | None = None
     effects: tuple[ReplacementEffect, ...] = ()
     counter_events: tuple[ReplaceableEvent, ...] = ()
     keyword_grants: tuple[EntryKeywordGrant, ...] = ()
     journal: tuple[ReplacementSelection, ...] = ()
+
+    def __post_init__(self) -> None:
+        required = (
+            self.object_id,
+            self.logical_object_id,
+            self.origin,
+            self.requested_destination,
+            self.entry_face_id,
+            self.destination,
+        )
+        if any(type(value) is not str or not value for value in required):
+            raise ZoneReplacementError(
+                "Prepared zone changes require an exact transition identity"
+            )
+        if self.destination_controller == "":
+            raise ZoneReplacementError(
+                "Prepared zone-change controllers cannot be empty"
+            )
+        if (
+            type(self.state_revision) is not int
+            or self.state_revision < 0
+            or type(self.event_sequence) is not int
+            or self.event_sequence < 0
+        ):
+            raise ZoneReplacementError(
+                "Prepared zone changes require nonnegative state coordinates"
+            )
+        if self.requested_destination not in SUPPORTED_ZONE_DESTINATIONS or (
+            self.destination not in SUPPORTED_ZONE_DESTINATIONS
+        ):
+            raise ZoneReplacementError(
+                "Prepared zone changes require supported destinations"
+            )
+        if type(self.requested_tapped) is not bool:
+            raise ZoneReplacementError(
+                "Prepared requested tapped state must be boolean"
+            )
+        if self.requested_entry_pay_life is not None and (
+            type(self.requested_entry_pay_life) is not bool
+        ):
+            raise ZoneReplacementError(
+                "Prepared entry life choice must be boolean or null"
+            )
+        if type(self.entry_tapped) is not bool:
+            raise ZoneReplacementError(
+                "Prepared entry tapped state must be boolean"
+            )
+        if type(self.entry_life_payment) is not int or (
+            self.entry_life_payment < 0
+        ):
+            raise ZoneReplacementError(
+                "Prepared entry life payment must be nonnegative"
+            )
+        if not isinstance(self.event, ReplaceableEvent):
+            raise ZoneReplacementError(
+                "Prepared zone changes require a typed resolved event"
+            )
+        for field_name, values, value_type in (
+            ("effects", tuple(self.effects), ReplacementEffect),
+            ("counter events", tuple(self.counter_events), ReplaceableEvent),
+            ("keyword grants", tuple(self.keyword_grants), EntryKeywordGrant),
+            ("journal", tuple(self.journal), ReplacementSelection),
+        ):
+            if any(not isinstance(value, value_type) for value in values):
+                raise ZoneReplacementError(
+                    f"Prepared zone-change {field_name} must be typed"
+                )

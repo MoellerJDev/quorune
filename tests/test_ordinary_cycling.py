@@ -236,7 +236,7 @@ class OrdinaryCyclingRuntimeTests(unittest.TestCase):
             capability_profile="commander_review",
             promote_exact_runtime_handlers=True,
         )
-        self.assertEqual(1, result["runtime_handlers_promoted"])
+        self.assertEqual(2, result["runtime_handlers_promoted"])
         engine.semantics = registry
         engine._semantic_trust_cache.clear()
 

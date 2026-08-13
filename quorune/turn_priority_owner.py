@@ -10,6 +10,7 @@ from .errors import GameRuleError, StateInvariantError
 from .mana_payment_continuations import (
     execute_mana_choice_capable_priority_action,
 )
+from .land_entry_coordination import execute_land_entry_priority_action
 from .mana_undo import (
     ManaUndoError,
     clear_mana_undo_stack,
@@ -213,8 +214,12 @@ class TurnPriorityDecisionOwner:
             self.set_yield(seat, response.get("yield"))
             self.pass_priority(seat)
         elif action == "play_land":
-            clear_mana_undo_stack(self.state.players[seat].stats)
-            self.host._play_land(seat, response)
+            execute_land_entry_priority_action(
+                self.host,
+                seat=seat,
+                response=response,
+                entry_action_id=decision.decision_id,
+            )
         elif action in {"cast", "activate"}:
             execute_mana_choice_capable_priority_action(
                 self.host,

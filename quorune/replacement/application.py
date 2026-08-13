@@ -40,7 +40,7 @@ _LIFE_LOSS_DIRECTION = "loss"
 
 _SET_FIELDS = {
     "damage": {"amount", "prevented", "prevented_by", "target"},
-    "zone.change": {"destination"},
+    "zone.change": {"destination", "tapped"},
     "token.create": {"quantity", "created_types", "created_subtypes"},
     "counter.place": {"amount"},
     "counter.add": {"amount", "quantity"},
@@ -56,6 +56,7 @@ _NUMERIC_FIELDS = {
     "counter.add": {"amount", "quantity"},
     "life.change": {"amount"},
     "draw.instruction": {"count"},
+    "zone.change": {"entry_life_payment"},
 }
 _SEQUENCE_FIELDS = {
     "token.create": {"tokens", "created_types", "created_subtypes"},

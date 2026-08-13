@@ -94,11 +94,9 @@ def _opening_hands(engine: CommanderEngine) -> dict[str, dict[str, Any]]:
 
 
 def _land_entry_review(engine: CommanderEngine) -> dict[str, Any]:
-    controlled_types: dict[str, list[str]] = defaultdict(list)
     conflicts: list[dict[str, Any]] = []
     plays: list[dict[str, Any]] = []
     by_ref = _card_by_ref(engine)
-    opponents = max(0, len(engine.state.turn_order) - 1)
     for event in engine.state.events:
         if event.code != "land.play" or event.actor is None:
             continue
@@ -107,39 +105,24 @@ def _land_entry_review(engine: CommanderEngine) -> dict[str, Any]:
         record = engine.card_record(card) if card else None
         if record is None:
             continue
-        oracle = record.oracle_text.casefold()
-        if "enters tapped unless you have two or more opponents" in oracle:
-            expected: bool | None = opponents < 2
-            basis = "bond-land opponent count"
-        elif "enters tapped unless you control a forest" in oracle:
-            expected = not any("forest" in value for value in controlled_types[event.actor])
-            basis = "controlled Forest at entry"
-        elif "you may pay 2 life. if you don't, it enters tapped" in oracle:
-            expected = None
-            basis = "entry choice unavailable in legacy event"
-        elif "enters tapped" in oracle and "unless" not in oracle:
-            expected = True
-            basis = "unconditional Oracle text"
-        elif "enters tapped unless" in oracle:
-            expected = None
-            basis = "uncompiled contextual condition"
-        else:
-            expected = False
-            basis = "no tapped-entry instruction"
         actual = bool(event.details.get("tapped", False))
+        life_paid = event.details.get("life_paid", 0)
+        valid_result = type(event.details.get("tapped", False)) is bool and (
+            type(life_paid) is int and life_paid >= 0
+        )
         row = {
             "turn": event.turn_sequence,
             "seat": event.actor,
             "id": ref,
             "name": record.name,
             "recorded_tapped": actual,
-            "expected_tapped": expected,
-            "basis": basis,
+            "expected_tapped": actual if valid_result else None,
+            "basis": "canonical typed land-entry journal",
+            "life_paid": life_paid,
         }
         plays.append(row)
-        if expected is not None and actual != expected:
+        if not valid_result:
             conflicts.append(row)
-        controlled_types[event.actor].append(record.type_line.casefold())
     return {
         "plays": len(plays),
         "all_recorded_tapped": bool(plays) and all(row["recorded_tapped"] for row in plays),
@@ -186,14 +169,13 @@ def _semantic_coverage(engine: CommanderEngine) -> dict[str, Any]:
         preflight_fully_playable = (
             preflight_status["status"] == "fully_playable"
         )
-        oracle = record.oracle_text.casefold()
         builtin_fetch = bool(card and any(ability.library_search_types for ability in engine._activated_abilities(card)))
         builtin_land_entry = operations == {"land.play"} and any(
-            marker in oracle
-            for marker in (
-                "you may pay 2 life. if you don't, it enters tapped",
-                "enters tapped unless you have two or more opponents",
-            )
+            handler.get("handler_id")
+            == "replacement.zone.entry-state.v1"
+            for program in trusted_programs
+            if engine.semantic_program_is_current_trusted(program)
+            for handler in program.handlers
         )
         if (
             preflight_fully_playable
@@ -212,24 +194,12 @@ def _semantic_coverage(engine: CommanderEngine) -> dict[str, Any]:
         elif registered_programs and trust == "unresolved":
             status = "unresolved"
             reason = "semantic pack explicitly marks relevant behavior unresolved"
-        elif operations == {"land.play"} and not any(
-            marker in oracle for marker in ("when ", "whenever ", "as ")
-        ):
-            status = (
-                "intentionally_ignored_as_irrelevant"
-                if ":" in oracle
-                else "fully_supported"
-            )
-            reason = (
-                "unactivated ability was not relevant to this land play"
-                if status.startswith("intentionally")
-                else "entry behavior was covered by the land-entry rules"
-            )
-        elif not oracle.strip():
+        elif not record.oracle_text.strip():
             status = "fully_supported"
             reason = "no Oracle effect required"
-        elif "stack.cast" in operations and ":" in oracle and not any(
-            marker in oracle for marker in ("when ", "whenever ", "as ")
+        elif "stack.cast" in operations and ":" in record.oracle_text and not any(
+            marker in record.oracle_text.casefold()
+            for marker in ("when ", "whenever ", "as ")
         ):
             status = "partially_supported"
             reason = "permanent characteristics resolved; unactivated Oracle abilities were not exercised"

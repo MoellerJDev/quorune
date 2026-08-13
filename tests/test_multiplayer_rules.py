@@ -185,9 +185,20 @@ class MultiplayerRuleTests(unittest.TestCase):
     def test_bond_land_uses_live_opponent_count(self):
         four = make_session(self.db, self.mishra, self.zimone, players=4, seed=38)
         two = make_session(self.db, self.mishra, self.zimone, players=2, seed=39)
-        record = self.db.lookup("Training Center")
-        self.assertFalse(four.engine._land_enters_tapped(record, {}))
-        self.assertTrue(two.engine._land_enters_tapped(record, {}))
+        for session, expected_tapped in ((four, False), (two, True)):
+            training_center = next(
+                card
+                for card in session.state.cards.values()
+                if card.owner == "A"
+                and card.printed_name == "Training Center"
+            )
+            session.engine.move_card(
+                training_center.object_id,
+                "battlefield",
+                controller="A",
+                log=False,
+            )
+            self.assertEqual(expected_tapped, training_center.tapped)
 
     def test_top_library_knowledge_and_reorder(self):
         session = make_session(self.db, self.mishra, self.zimone, seed=40)

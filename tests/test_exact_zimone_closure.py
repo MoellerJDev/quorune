@@ -12,6 +12,7 @@ from common import (
 )
 from quorune.model import CombatState, StackItem
 from quorune.preflight import card_semantic_status
+from quorune.projection import StateProjector
 from quorune.targets import TargetGroup
 
 
@@ -1283,8 +1284,11 @@ class ExactZimoneClosureTests(unittest.TestCase):
         session = self.make_session(1010)
         engine = session.engine
         village = self.card(engine, "B", "Mistrise Village")
+        forest = self.card(engine, "B", "Forest")
         spell = self.card(engine, "B", "Sol Ring")
+        engine.move_card(forest.object_id, "battlefield", controller="B")
         engine.move_card(village.object_id, "battlefield", controller="B")
+        self.assertFalse(village.tapped)
         engine.move_card(spell.object_id, "hand")
         engine.state.players["B"].mana_pool["U"] = 1
         engine.state.priority_player = "B"
@@ -1329,9 +1333,12 @@ class ExactZimoneClosureTests(unittest.TestCase):
         session = self.make_session(1011)
         engine = session.engine
         archway = self.card(engine, "A", "Archway of Innovation")
+        island = self.card(engine, "A", "Island")
         artifact = self.card(engine, "A", "Lightning Greaves")
         spell = self.card(engine, "A", "Panharmonicon")
+        engine.move_card(island.object_id, "battlefield", controller="A")
         engine.move_card(archway.object_id, "battlefield", controller="A")
+        self.assertFalse(archway.tapped)
         engine.move_card(artifact.object_id, "battlefield", controller="A")
         engine.move_card(spell.object_id, "hand")
         engine.state.players["A"].mana_pool["U"] = 1
@@ -1592,11 +1599,24 @@ class ExactZimoneClosureTests(unittest.TestCase):
             },
         )
         self.assertTrue(result.ok, result.summary)
+        self.assertEqual(
+            "replacement.order",
+            engine.state.pending_decision.kind,
+        )
+        projected = StateProjector(self.db, engine.state)._decision("pilot:B")
+        intrinsic = next(
+            option["id"]
+            for option in projected["ctx"]["options"]
+            if option["source"] == bog.ref
+        )
+        result = session.act(
+            "pilot:B",
+            {"action_id": "choose", "replacement": intrinsic},
+        )
+        self.assertTrue(result.ok, result.summary)
+        bog = engine.state.cards[bog.object_id]
         self.assertEqual("battlefield", bog.zone)
         self.assertFalse(bog.tapped)
-        self.assertFalse(
-            engine._land_enters_tapped("B", self.db.lookup("Bojuka Bog"))
-        )
 
     def test_mole_man_plays_graveyard_land_and_moloid_attack_may_mill(
         self,

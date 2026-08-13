@@ -45870,11 +45870,13 @@
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_oracle_ir.OracleIRTests.test_unconditional_entry_tapped_is_engine_derived"
+        "tests.test_typed_land_entry_participation.TypedLandEntryCompilerTests.test_closed_entry_state_family_lowers_to_capability_closed_programs",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners"
       ],
       "implementation_components": [
-        "CommanderEngine._unconditionally_enters_tapped",
-        "oracle_ir.OracleIRCompiler"
+        "compiler.entry_state_templates.static_entry_state_handler",
+        "semantic_runtime.entry_state.EntryStateReplacementHandler",
+        "zone_transitions.move_card"
       ],
       "notes": [
         "Definition of enters wording; the exact unconditional self-enters-tapped template is executable."
@@ -46562,21 +46564,25 @@
       "classification": "behavioral",
       "covered_scenarios": [
         "positive",
-        "negative"
+        "negative",
+        "interaction"
       ],
       "dependency_rule_ids": [
         "614"
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_oracle_ir.OracleIRTests.test_unconditional_entry_tapped_is_engine_derived"
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_selected_mdfc_face_isolates_entry_program",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_entry_preparation_rejects_stale_face_and_rolls_back"
       ],
       "implementation_components": [
-        "CommanderEngine._unconditionally_enters_tapped",
-        "CommanderEngine._effective_card_data"
+        "semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot",
+        "semantic_runtime.entry_state.EntryStateReplacementHandler",
+        "card_program_faces.program_matches_face"
       ],
       "notes": [
-        "An exact unconditional self-entry replacement is derived, but the full would-exist evaluator is not complete."
+        "The reviewed unconditional, bond, check, shock, and controlled-land untapped family uses exact selected-face programs and immutable pre-entry facts; the full would-exist evaluator remains incomplete."
       ],
       "required_scenarios": [
         "positive",
@@ -46605,21 +46611,25 @@
       "case_version": 1,
       "classification": "behavioral",
       "covered_scenarios": [
-        "negative"
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
       ],
       "dependency_rule_ids": [
         "614.12"
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_oracle_ir.OracleIRTests.test_unconditional_entry_tapped_is_engine_derived"
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_competing_land_entry_choice_is_private_and_replayable"
       ],
       "implementation_components": [
-        "CommanderEngine.move_card",
-        "CommanderEngine._create_semantic_choice"
+        "land_entry_coordination.execute_land_entry_priority_action",
+        "replacement_decisions.resume_replacement_order_choice",
+        "replacement.replay.ReplacementContinuation"
       ],
       "notes": [
-        "The unconditional template needs no choice; broader choice-bearing entry semantics remain incomplete."
+        "Competing typed land-entry state replacements suspend before mutation, expose a private seat-scoped choice, and replay exactly; broader choice-bearing entry semantics remain incomplete."
       ],
       "required_scenarios": [
         "positive",
@@ -47250,14 +47260,14 @@
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_oracle_ir.OracleIRTests.test_unconditional_entry_tapped_is_engine_derived"
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners"
       ],
       "implementation_components": [
         "CommanderEngine._effective_card_data",
         "CommanderEngine.move_card"
       ],
       "notes": [
-        "The implemented unconditional entry replacement is not a can't-effect and does not establish this family."
+        "The implemented typed land-entry state replacements are not can't-effects and do not establish this family."
       ],
       "required_scenarios": [
         "positive",
@@ -48056,7 +48066,7 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "generic engine choice packets are wired only into represented token creation, semantic zone change, effect-generated, positive-loyalty-cost, or bounded fixed casting-cost counter placement, ordinary combat/semantic damage, and mana-payment damage producers"
+        "generic engine choice packets are wired only into represented token creation, semantic zone change including ordinary typed land entry, effect-generated, positive-loyalty-cost, or bounded fixed casting-cost counter placement, ordinary combat/semantic damage, and mana-payment damage producers"
       ],
       "case_id": "cr-616.1",
       "case_version": 1,
@@ -48091,7 +48101,8 @@
         "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_mana_ability_damage_choice_resumes_exact_activation",
         "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_player_counter_choices_follow_four_player_apnap",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
-        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays"
+        "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_competing_land_entry_choice_is_private_and_replayable"
       ],
       "implementation_components": [
         "replacement_effects.ReplaceableEvent",
@@ -48103,6 +48114,7 @@
         "replacement_decisions.issue_combat_damage_replacement_choice",
         "replacement.ordering.next_batch_replacement_choice",
         "mana_payment_continuations.execute_mana_choice_capable_priority_action",
+        "land_entry_coordination.execute_land_entry_priority_action",
         "replacement.replay.ReplacementContinuation",
         "rules.activation.commit._commit_resource_costs",
         "rules.casting.commit._commit_counter_placement_additional_cost"
@@ -48111,7 +48123,7 @@
         "Affected-player and affected-object facts are captured before mutation, and simultaneous different-seat choices traverse APNAP order.",
         "Seat packets expose only visible option labels and IDs; authoritative batch IDs, event paths, payloads, and prior journals remain in the continuation.",
         "The chooser can explicitly order simultaneous same-chooser events when a finite or next-instance effect makes event order material.",
-        "The represented engine producers suspend and replay exact choices, including replacement choices discovered during mana payment, a positive loyalty-symbol cost, or a bounded fixed creature-counter casting cost, but universal producer coverage remains incomplete."
+        "The represented engine producers suspend and replay exact choices, including replacement choices discovered during typed land entry, mana payment, a positive loyalty-symbol cost, or a bounded fixed creature-counter casting cost, but universal producer coverage remains incomplete."
       ],
       "required_scenarios": [
         "positive",
@@ -48294,12 +48306,14 @@
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_rules_primitives.ReplacementOrderingTests.test_any_effect_in_the_current_class_may_be_chosen"
+        "tests.test_rules_primitives.ReplacementOrderingTests.test_any_effect_in_the_current_class_may_be_chosen",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_ambient_untapped_competes_with_intrinsic_tapped_entry"
       ],
       "implementation_components": [
         "replacement_effects.ReplacementClass.OTHER",
         "replacement_effects.replacement_choice",
-        "replacement_effects.apply_replacement"
+        "replacement_effects.apply_replacement",
+        "semantic_runtime.entry_state.EntryStateReplacementHandler"
       ],
       "notes": [
         "All currently applicable ordinary replacements are exposed and any listed option can be selected."
@@ -48339,6 +48353,7 @@
         "tests.test_rules_primitives.ReplacementOrderingTests.test_applicability_is_recomputed_after_each_replacement",
         "tests.test_replacement_event_tree.ReplacementBatchTests.test_forced_singletons_do_not_consume_later_explicit_selection",
         "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_counter_replacements_apply_in_affected_players_chosen_order",
+        "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_competing_land_entry_choice_is_private_and_replayable",
         "tests.test_damage_replacement_model.DamageReplacementModelTests.test_furnace_and_daunting_order_changes_final_damage",
         "tests.test_damage_replacement_model.DamageReplacementModelTests.test_damage_amount_pipeline_property_1000_deterministic_transitions"
       ],

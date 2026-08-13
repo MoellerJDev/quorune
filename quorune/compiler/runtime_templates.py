@@ -18,6 +18,7 @@ from .draw_templates import (
     static_draw_result_handler,
     static_draw_restriction_handler,
 )
+from .entry_state_templates import static_entry_state_handler
 from .life_templates import static_life_handler
 from .token_templates import static_additional_token_replacement_handler
 from .trigger_participation_templates import static_trigger_multiplier_handler
@@ -31,6 +32,7 @@ class StaticRuntimeTemplate:
     kind: str
     event: str
     dependency_reason: str
+    active_zone: str = "battlefield"
 
 
 def _trigger_multiplier_template(text: str) -> StaticRuntimeTemplate | None:
@@ -109,6 +111,45 @@ def _draw_template(text: str) -> StaticRuntimeTemplate | None:
     )
 
 
+def _source_permanent_participation_template(
+    text: str,
+    *,
+    source_name: str | None,
+) -> StaticRuntimeTemplate | None:
+    untap_step = (
+        static_untap_step_handler(text, source_name=source_name)
+        if source_name is not None
+        else None
+    )
+    if untap_step is not None:
+        return StaticRuntimeTemplate(
+            compiled=untap_step,
+            kind="static_ability",
+            event="untap.step",
+            dependency_reason=(
+                "generic untap-step participation requires its closed "
+                "typed runtime capability"
+            ),
+        )
+    entry_state = static_entry_state_handler(
+        text,
+        source_name=source_name or "",
+    )
+    if entry_state is None:
+        return None
+    relation = str(entry_state[1]["source_relation"])
+    return StaticRuntimeTemplate(
+        compiled=entry_state,
+        kind="replacement_effect",
+        event="zone.change",
+        active_zone="all" if relation == "affected_object" else "battlefield",
+        dependency_reason=(
+            "generic battlefield-entry state depends on an untrusted "
+            "rules capability"
+        ),
+    )
+
+
 def static_runtime_template(
     text: str,
     *,
@@ -120,21 +161,12 @@ def static_runtime_template(
     """Select one closed static runtime production for an Oracle line."""
 
     if source_permanent:
-        untap_step = (
-            static_untap_step_handler(text, source_name=source_name)
-            if source_name is not None
-            else None
+        participation = _source_permanent_participation_template(
+            text,
+            source_name=source_name,
         )
-        if untap_step is not None:
-            return StaticRuntimeTemplate(
-                compiled=untap_step,
-                kind="static_ability",
-                event="untap.step",
-                dependency_reason=(
-                    "generic untap-step participation requires its closed "
-                    "typed runtime capability"
-                ),
-            )
+        if participation is not None:
+            return participation
         counter_maximum = _counter_maximum_template(
             text,
             source_name=source_name,

@@ -162,9 +162,6 @@ from .selection.public_choice import PublicChoiceOwnerMixin
 from . import turn_counter_coordination
 from . import untap_step_coordination
 from .saga_progression import saga_final_chapter_snapshot
-from .life_state import (
-    pay_life_cost,
-)
 from . import haste
 from .keyword_abilities import normalized_characteristic_keywords
 from .combat_evasion_engine_adapter import engine_combat_evasion_verdict
@@ -288,6 +285,7 @@ from .semantic_runtime import (
     draw_resolution_batch,
     PreparedZoneChange,
     prepare_draw_resolution,
+    typed_entry_life_payment_amount,
 )
 from .semantic_choices import (
     ChoiceObjectView,
@@ -1217,30 +1215,6 @@ class CommanderEngine(
             destination,
             zone_timestamp=zone_timestamp,
         )
-    def _unconditionally_enters_tapped(
-        self,
-        card: CardInstance,
-    ) -> bool:
-        """Recognize the exact unconditional entry replacement template.
-
-        Conditional entry text remains in the dedicated land entry planner or
-        fails closed. Matching whole Oracle lines here prevents a phrase in
-        reminder text or a conditional sentence from changing entry state.
-        """
-
-        data = self._effective_card_data(card)
-        name = re.escape(str(data.get("name") or card.printed_name))
-        pattern = re.compile(
-            rf"(?:this (?:artifact|creature|enchantment|land|permanent)"
-            rf"|{name}) enters tapped\.?",
-            re.IGNORECASE,
-        )
-        return any(
-            pattern.fullmatch(line.strip()) is not None
-            for line in str(data.get("oracle_text") or "").splitlines()
-            if line.strip()
-        )
-
     @staticmethod
     def _trigger_item_matches_incarnation(
         card: CardInstance,
@@ -1350,6 +1324,7 @@ class CommanderEngine(
         *,
         controller: str | None = None,
         tapped: bool | None = None,
+        entry_pay_life: bool = False,
         enter_face: str | None = None,
         battle_protector: str | None = None,
         aura_target_ref: str | None = None,
@@ -1373,6 +1348,7 @@ class CommanderEngine(
             destination,
             controller=controller,
             tapped=tapped,
+            entry_pay_life=entry_pay_life,
             enter_face=enter_face,
             battle_protector=battle_protector,
             aura_target_ref=aura_target_ref,
@@ -2854,12 +2830,6 @@ class CommanderEngine(
             )
         )
 
-    def _lands_enter_untapped_for(self, seat: str) -> bool:
-        return self._controller_has_oracle_text(
-            seat,
-            "lands you control enter untapped",
-        )
-
     def _temporary_play_permission(
         self,
         seat: str,
@@ -2899,77 +2869,6 @@ class CommanderEngine(
             )
         )
 
-    def _land_enters_tapped(
-        self,
-        seat: str | CardRecord,
-        record: CardRecord | Mapping[str, Any],
-        choices: Mapping[str, Any] | None = None,
-        *,
-        face: Mapping[str, Any] | None = None,
-    ) -> bool:
-        # Preserve the 0.2 internal probe signature used by downstream rules
-        # tests while requiring a seat for contextual conditions in live play.
-        if isinstance(seat, CardRecord):
-            choices = record if isinstance(record, Mapping) else choices
-            record = seat
-            seat = self.state.active_player or self.seats[0]
-        choices = choices or {}
-        oracle = str(
-            face.get("oracle_text") if face is not None else record.oracle_text
-        ).casefold()
-        display_name = str(
-            face.get("name") if face is not None else record.name
-        )
-        if self._lands_enter_untapped_for(str(seat)):
-            return False
-        opponents = max(0, len(self.active_seats) - 1)
-        if "enters tapped unless you have two or more opponents" in oracle:
-            return opponents < 2
-        optional_life = re.search(
-            r"you may pay (?P<life>\d+) life\. if you don't, it enters tapped",
-            oracle,
-        )
-        if optional_life:
-            amount = int(optional_life.group("life"))
-            if choices.get("pay_life"):
-                if self.state.players[str(seat)].life < amount:
-                    raise GameRuleError("Cannot pay more life than the player has")
-                return False
-            return True
-        controlled_type = re.search(
-            r"enters (?:the battlefield )?tapped unless you control "
-            r"(?P<types>[^.\n]+)",
-            oracle,
-        )
-        if controlled_type:
-            required_types = set(
-                re.findall(
-                    r"\b(plains|island|swamp|mountain|forest)\b",
-                    controlled_type.group("types"),
-                )
-            )
-            if not required_types:
-                raise GameRuleError(
-                    f"{display_name} has an entry condition the rules engine "
-                    "has not compiled"
-                )
-            return not any(
-                required_types.intersection(
-                    str(
-                        self._effective_card_data(oid).get("type_line") or ""
-                    ).casefold().split()
-                )
-                for oid in self.state.players[seat].zones["battlefield"]
-                if self.state.cards[oid].controller == seat
-            )
-        if re.search(r"\benters (?:the battlefield )?tapped\b", oracle) and "unless" not in oracle:
-            return True
-        if "enters tapped unless" in oracle:
-            raise GameRuleError(
-                f"{display_name} has an entry condition the rules engine has not compiled"
-            )
-        return False
-
     @staticmethod
     def _land_play_faces(record: CardRecord) -> list[dict[str, Any] | None]:
         """Return the faces a player may choose for an ordinary land play."""
@@ -2987,19 +2886,21 @@ class CommanderEngine(
             return []
         return [None] if record.is_land else []
 
-    @staticmethod
     def _land_entry_life_amount(
+        self,
         record: CardRecord,
         face: Mapping[str, Any] | None = None,
     ) -> int:
-        oracle = str(
-            face.get("oracle_text") if face is not None else record.oracle_text
-        ).casefold()
-        match = re.search(
-            r"you may pay (?P<life>\d+) life\. if you don't, it enters tapped",
-            oracle,
-        )
-        return int(match.group("life")) if match else 0
+        try:
+            return typed_entry_life_payment_amount(
+                self,
+                record,
+                prospective_name=(
+                    str(face.get("name") or "") if face is not None else None
+                ),
+            )
+        except SemanticNodeError as exc:
+            raise GameRuleError(str(exc)) from exc
 
     def _play_land(self, seat: str, response: Mapping[str, Any]) -> None:
         self._check_priority(seat)
@@ -3046,34 +2947,33 @@ class CommanderEngine(
             )
         if "enters_tapped" in response or "tapped" in response:
             raise GameRuleError("Land entry state is derived by the rules engine")
-        tapped = self._land_enters_tapped(
-            seat,
-            record,
-            response,
-            face=face,
+        raw_entry_selections = response.get(
+            "_entry_replacement_selections", ()
         )
-        life_paid = (
-            self._land_entry_life_amount(record, face)
-            if response.get("pay_life")
-            else 0
-        )
-        if response.get("pay_life"):
-            if life_paid <= 0:
+        if not isinstance(raw_entry_selections, (list, tuple)):
+            raise GameRuleError("Land-entry replacement journal is malformed")
+        pay_entry_life = bool(response.get("pay_life", False))
+        entry_life_amount = self._land_entry_life_amount(record, face)
+        if pay_entry_life:
+            if entry_life_amount <= 0:
                 raise GameRuleError(
                     "This land play does not authorize an entry life payment"
                 )
-            pay_life_cost(self, seat, life_paid)
+        life_before = player.life
         card.annotations.pop("temporary_play_permission", None)
         self.move_card(
             card.object_id,
             "battlefield",
             controller=seat,
-            tapped=tapped,
+            entry_pay_life=pay_entry_life,
             enter_face=(str(face.get("name")) if face is not None else None),
             reason="land play",
             log=False,
             semantic_events=True,
+            replacement_selections=tuple(raw_entry_selections),
         )
+        tapped = card.tapped
+        life_paid = life_before - player.life
         player.land_plays_remaining -= 1
         self._log(
             seat,

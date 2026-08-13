@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "c1fd6524e21a0a694c1ce0016b372c509fea8b7a62975a44e5c198238f30d4fc",
-  "declaration_source_fingerprint": "afba2a09d1dee7a83f1020e1d0283959fbf502b3e695ff26155ea12ec10129dc",
+  "registry_fingerprint": "d5984a9ec762132d2744e7bb60d0c07fc5ece8da322bafb1e19c13b1e37518ed",
+  "declaration_source_fingerprint": "70628d798f2a9ced53b0a8098173bb5a8b934fb0082ba8b8f79811aac3888827",
   "declarations": [
     {
       "capability_id": "activation.crew.fixed_power",
@@ -29315,7 +29315,217 @@
         "commander_review"
       ],
       "applicability_note": "Replay the public reveal and exact-object conditional discard with the same final state."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_ambient_untapped_competes_with_intrinsic_tapped_entry",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Order an ambient enter-untapped effect against the entering land's intrinsic tapped replacement in the shared CR 616 event."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_bond_land_uses_current_four_player_opponent_count",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Derive bond-land entry from current active opponents, distinguishing a four-player game from a duel."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryCompilerTests.test_entry_state_compiler_mutation_is_killed",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the typed entry-state compiler lowering and prove exact trust fails closed instead of consulting Oracle text at runtime."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryCompilerTests.test_entry_state_near_misses_remain_residual",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Leave unrepresented types, conditions, variable payments, relations, and optional wording outside the closed grammar."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_entry_preparation_rejects_stale_face_and_rolls_back",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject reuse of a prepared zone-change event when its exact selected MDFC face no longer matches."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "negative",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_only_historical_v3_registry_can_use_entry_adapter",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep current registries from reparsing missing entry semantics while allowing only the explicit historical Game Record v3 replay adapter."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "positive",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve shock, bond, and check-land entry from source-pinned programs and commit only through the typed life and zone owners."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "positive",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_selected_mdfc_face_isolates_entry_program",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Bind an entry payment only to the selected MDFC land face and never to its spell face."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_competing_land_entry_choice_is_private_and_replayable",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Issue a competing land-entry replacement decision only to the affected land's controller after rolling back the land play."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "replay",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_competing_land_entry_choice_is_private_and_replayable",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "cd5da44225a31ad7cffac40a910bcca89993a4851ad11a33940bd8a08e184481"
+  "fingerprint": "77800d42c4a3dd3b636958581ad10fc73202a3e67c554a2597ee96fdfe891fa0"
 }

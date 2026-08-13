@@ -401,7 +401,6 @@ class SemanticChoiceIntentHostMixin:
             record = self.card_record(card)
             if record is None or not record.is_land:
                 raise GameRuleError("Land-entry movement requires a land card")
-            tapped = self._land_enters_tapped(intent.actor, record)
         elif intent.tapped_policy == "tapped":
             tapped = True
         elif intent.tapped_policy == "untapped":

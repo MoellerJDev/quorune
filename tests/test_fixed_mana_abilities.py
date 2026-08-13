@@ -306,6 +306,7 @@ class FixedManaRuntimeTests(unittest.TestCase):
             tapped=False,
             log=False,
         )
+        source.tapped = False
         engine.state.active_player = seat
         engine.state.phase = "precombat_main"
         engine.state.step = "main"

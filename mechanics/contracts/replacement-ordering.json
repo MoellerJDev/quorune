@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 4,
+  "contract_version": 5,
   "mechanic_id": "cr-616-interaction-of-replacement-and-or-prevention-effects",
   "official_name": "Interaction of Replacement and/or Prevention Effects",
   "effective_date": "2026-06-19",
@@ -14,13 +14,13 @@
     "zones": ["all zones touched by a replaceable event"],
     "objects": ["affected object or affected player"],
     "events": ["typed replaceable events"],
-    "state_reads": ["applicability conditions", "already applied effects", "affected player or object controller"],
+    "state_reads": ["applicability conditions", "already applied effects", "affected player or object controller", "immutable land-entry face, controller, opponent count, controlled basic types, requested tapped state, and optional life-payment intent"],
     "state_writes": ["an immutable transformed event tree, entry reservation scope, and exact applied-effect journal"],
     "costs": [],
     "timing": ["before the original event occurs", "repeat until no effect applies"],
     "targets": [],
-    "choices": ["affected player or object controller chooses among the current priority class", "containing-event choices precede contained-event choices"],
-    "hidden_information": ["choice packets expose visible option labels and IDs but never authoritative batch IDs, event paths, payloads, or prior journals"],
+    "choices": ["affected player or object controller chooses among the current priority class", "containing-event choices precede contained-event choices", "ordinary land play suspends and resumes through an exact action-bound replacement continuation"],
+    "hidden_information": ["choice packets expose visible option labels and IDs but never authoritative batch IDs, event paths, payloads, prior journals, or the suspended land-play command frame"],
     "apnap": ["simultaneous choices for different affected players are traversed in APNAP order"],
     "layers": ["as-enters copy/control effects interact with continuous-effect layer 1 or 2 after the event"],
     "replacement_effects": ["self replacement", "enters control", "enters copy", "enters back face", "other"],
@@ -29,7 +29,7 @@
     "zone_change": ["destination replacements transform the same zone-change event"],
     "source_leaves": ["applicability is rechecked after every chosen replacement"]
   },
-  "variants": ["optional replacement", "prevention shield", "nested event", "simultaneous event batch", "entry-zone reservation", "newly applicable effect"],
+  "variants": ["optional replacement", "prevention shield", "nested event", "simultaneous event batch", "entry-zone reservation", "newly applicable effect", "competing intrinsic tapped and ambient untapped land-entry effects"],
   "witness_cards": [],
   "rulings": [],
   "test_ids": [
@@ -63,19 +63,20 @@
     "test_replacement_nested_order_mutant_is_killed",
     "test_resolution_suspends_for_seat_scoped_replacement_order",
     "test_competing_zone_replacements_suspend_resume_and_replay_exactly",
+    "test_competing_land_entry_choice_is_private_and_replayable",
     "test_stack_object_controller_chooses_zone_replacement_order",
     "test_optional_decline_is_recorded_and_not_offered_again",
     "test_mandatory_replacement_cannot_be_declined",
     "test_prevention_never_prevents_more_than_remaining_damage"
   ],
   "implementation": {
-    "component": "replacement_effects event trees and batches plus replacement_decisions suspension and the counter_placement transaction owner",
-    "version": "replacement-ordering-v4"
+    "component": "replacement_effects event trees and batches plus replacement_decisions suspension, land_entry_coordination, and the counter_placement transaction owner",
+    "version": "replacement-ordering-v5"
   },
   "known_blockers": [
     "generic replacement choice packets are wired only into represented token-creation, semantic zone-change, effect-generated permanent-counter, and fixed-mana Cumulative Upkeep age-counter producers",
     "multiple simultaneous events for the same affected chooser do not expose an explicit event-order choice when order could matter",
-    "entry reservation scopes are not yet consumed by general as-enters choice transactions",
+    "entry reservation scopes are consumed by typed land-entry state transactions but not yet by general as-enters choice transactions",
     "draw, damage, remaining counter-placement producers, commander movement, and other replacement producers remain outside the universal event boundary"
   ],
   "review_status": "reviewed"

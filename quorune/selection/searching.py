@@ -6,7 +6,6 @@ import re
 from typing import Any, Mapping, Protocol, Sequence
 
 from ..errors import GameRuleError
-from ..life_state import pay_life_cost
 from ..model import CardInstance, StackItem
 from ..replacement.immutable import FrozenMap, thaw_value
 from .model import (
@@ -295,28 +294,24 @@ class HiddenSearchOwnerMixin:
             record = self.card_record(found)
             if record is None:
                 raise GameRuleError("Fetch search result has no card record")
-            tapped = self._land_enters_tapped(
-                seat,
-                record,
-                {"pay_life": bool(item.context.get("pay_life"))},
-            )
             entry_life = self._land_entry_life_amount(record)
-            life_paid = (
-                entry_life
-                if item.context.get("pay_life") and not tapped
-                else 0
-            )
-            if life_paid:
-                pay_life_cost(self, seat, life_paid)
+            pay_entry_life = bool(item.context.get("pay_life"))
+            if pay_entry_life and entry_life <= 0:
+                raise GameRuleError(
+                    "This search result does not authorize an entry life payment"
+                )
+            life_before = self.state.players[seat].life
             self.move_card(
                 found.object_id,
                 "battlefield",
                 controller=seat,
-                tapped=tapped,
+                entry_pay_life=pay_entry_life,
                 reason=f"{item.label} search",
                 log=False,
                 semantic_events=True,
             )
+            tapped = found.tapped
+            life_paid = life_before - self.state.players[seat].life
             self._log(
                 seat,
                 "library.search",
@@ -843,31 +838,16 @@ class HiddenSearchOwnerMixin:
                 owned_only=True,
             )
             tapped = bool(effect.get("enters_tapped_override", False))
-            if (
-                destination == "battlefield"
-                and tapped
-                and self._lands_enter_untapped_for(seat)
-            ):
-                tapped = False
+            pay_entry_life = False
             if (
                 destination == "battlefield"
                 and effect.get("enters_tapped_override") is None
             ):
                 record = self.card_record(card)
-                tapped = bool(
-                    record
-                    and record.is_land
-                    and self._land_enters_tapped(
-                        seat,
-                        record,
-                        {
-                            "pay_life": bool(
-                                response.get(
-                                    "entry_pay_life",
-                                    response.get("pay_life", False),
-                                )
-                            )
-                        },
+                pay_entry_life = bool(
+                    response.get(
+                        "entry_pay_life",
+                        response.get("pay_life", False),
                     )
                 )
                 entry_life = (
@@ -875,30 +855,23 @@ class HiddenSearchOwnerMixin:
                     if record is not None
                     else 0
                 )
-                if (
-                    entry_life
-                    and bool(
-                        response.get(
-                            "entry_pay_life",
-                            response.get("pay_life", False),
-                        )
+                if pay_entry_life and entry_life <= 0:
+                    raise GameRuleError(
+                        "This search result does not authorize an entry life payment"
                     )
-                    and not tapped
-                ):
-                    pay_life_cost(self, seat, entry_life)
-            moved.append(
-                self.move_card(
-                    card.object_id,
-                    destination,
-                    controller=seat if destination == "battlefield" else None,
-                    tapped=tapped,
-                    position=position,
-                    reveal_to=self.seats if reveal else None,
-                    reason=f"{item.label} search",
-                    log=False,
-                    semantic_events=destination == "battlefield",
-                )
+            moved_card = self.move_card(
+                card.object_id,
+                destination,
+                controller=seat if destination == "battlefield" else None,
+                tapped=tapped,
+                entry_pay_life=pay_entry_life,
+                position=position,
+                reveal_to=self.seats if reveal else None,
+                reason=f"{item.label} search",
+                log=False,
+                semantic_events=destination == "battlefield",
             )
+            moved.append(moved_card)
         return moved
 
     def _record_semantic_search_result(

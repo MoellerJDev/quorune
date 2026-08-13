@@ -10,7 +10,9 @@ from common import keep_all, load_assets, make_session
 from quorune.carddb import CardRecord
 from quorune.engine import GameRuleError, TURN_STEPS
 from quorune.model import StackItem
+from quorune.oracle_ir import generated_programs
 from quorune.record import checkpoint_envelope, replay_record
+from quorune.rules.capabilities import load_default_capability_registry
 
 
 class MainPhaseRuleTests(unittest.TestCase):
@@ -318,12 +320,30 @@ class MainPhaseRuleTests(unittest.TestCase):
             ),
             raw={},
         )
+        for program in generated_programs(
+            self.db,
+            agadeem,
+            trust_level="trusted",
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+        ):
+            if any(
+                handler.get("handler_id")
+                == "replacement.zone.entry-state.v1"
+                for handler in program.handlers
+            ):
+                engine.semantics.put(program)
 
         def record_for(value):
             instance = value if hasattr(value, "object_id") else engine.state.cards[value]
             return agadeem if instance.object_id == card.object_id else original_card_record(value)
 
-        with patch.object(engine, "card_record", side_effect=record_for):
+        with (
+            patch.object(engine, "card_record", side_effect=record_for),
+            patch.object(
+                engine.card_db, "by_oracle_id", return_value=agadeem
+            ),
+        ):
             action = next(
                 action
                 for action in engine._priority_action_hints("A")["actions"]

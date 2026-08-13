@@ -66,6 +66,25 @@ class LifeStatePlan:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class PreparedLifePayment:
+    """A nonreplaceable CR 119.4 life payment pinned before mutation."""
+
+    player: str
+    amount: int
+    plan: LifeStatePlan
+
+    def __post_init__(self) -> None:
+        if type(self.player) is not str or not self.player:
+            raise LifeStateError("Life payments require a player")
+        if type(self.amount) is not int or self.amount < 0:
+            raise LifeStateError(
+                "Life payment amounts must be nonnegative integers"
+            )
+        if not isinstance(self.plan, LifeStatePlan):
+            raise LifeStateError("Life payments require a typed state plan")
+
+
 def _current_life(host: LifeStateHost, player: str) -> int:
     state = host.state.players.get(player)
     if state is None or player not in host.state.active_seats():
@@ -186,6 +205,17 @@ def pay_life_cost(
 ) -> LifeTransition:
     """Pay a nonreplaceable life cost through the canonical state owner."""
 
+    prepared = prepare_life_payment(host, player, amount)
+    return commit_life_payment(host, prepared)
+
+
+def prepare_life_payment(
+    host: LifeStateHost,
+    player: str,
+    amount: int,
+) -> PreparedLifePayment:
+    """Pin a payable CR 119.4 subtraction without changing life totals."""
+
     if type(amount) is not int or amount < 0:
         raise LifeStateError(
             "Life payment amounts must be nonnegative integers"
@@ -193,5 +223,36 @@ def pay_life_cost(
     if _current_life(host, player) < amount:
         raise LifeStateError("Cannot pay more life than the player has")
     plan = plan_life_changes(host, (LifeChange(player, -amount),))
-    transitions = commit_life_changes(host, plan)
+    return PreparedLifePayment(player=player, amount=amount, plan=plan)
+
+
+def validate_life_payment(
+    host: LifeStateHost,
+    prepared: PreparedLifePayment,
+) -> None:
+    """Reject malformed, unaffordable, or stale prepared payments."""
+
+    if not isinstance(prepared, PreparedLifePayment):
+        raise LifeStateError("Life payment commits require a typed plan")
+    transitions = prepared.plan.transitions
+    if len(transitions) != 1:
+        raise LifeStateError("Life payment plans require one transition")
+    transition = transitions[0]
+    if (
+        transition.player != prepared.player
+        or transition.requested_delta != -prepared.amount
+        or transition.before < prepared.amount
+    ):
+        raise LifeStateError("Life payment plan does not match its request")
+    validate_life_changes(host, prepared.plan)
+
+
+def commit_life_payment(
+    host: LifeStateHost,
+    prepared: PreparedLifePayment,
+) -> LifeTransition:
+    """Commit a replay-validated nonreplaceable life payment."""
+
+    validate_life_payment(host, prepared)
+    transitions = apply_life_changes(host, prepared.plan)
     return transitions[0]

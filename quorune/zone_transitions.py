@@ -22,6 +22,11 @@ from .entry_counters import (
 )
 from .entry_results import commit_prepared_entry_results
 from .errors import GameRuleError, StateInvariantError
+from .life_state import (
+    LifeStateError,
+    commit_life_payment,
+    prepare_life_payment,
+)
 from .model import CardInstance, GameState, StackItem
 from .relative_power_target import pin_host_relative_power_source_departures
 from .semantic_runtime import (
@@ -134,6 +139,7 @@ class ZoneTransitionOwner:
         *,
         controller: str | None = None,
         tapped: bool | None = None,
+        entry_pay_life: bool = False,
         enter_face: str | None = None,
         battle_protector: str | None = None,
         aura_target_ref: str | None = None,
@@ -161,6 +167,7 @@ class ZoneTransitionOwner:
             destination,
             controller=controller,
             tapped=tapped,
+            entry_pay_life=entry_pay_life,
             enter_face=enter_face,
             battle_protector=battle_protector,
             aura_target_ref=aura_target_ref,
@@ -219,6 +226,7 @@ class ZoneTransitionOwner:
         *,
         controller: str | None,
         tapped: bool | None,
+        entry_pay_life: bool,
         enter_face: str | None,
         battle_protector: str | None,
         aura_target_ref: str | None,
@@ -274,6 +282,8 @@ class ZoneTransitionOwner:
             destination,
             destination_controller=controller,
             entry_characteristics=entry_characteristics,
+            requested_tapped=bool(tapped) if tapped is not None else False,
+            entry_pay_life=entry_pay_life,
             selections=tuple(replacement_selections),
             prepared=prepared_replacement,
             error_type=GameRuleError,
@@ -308,6 +318,22 @@ class ZoneTransitionOwner:
         )
         if aura_move.remain_in_origin:
             return card
+        prepared_life_payment = None
+        if replacement.entry_life_payment:
+            if replacement.destination != "battlefield" or (
+                replacement.destination_controller is None
+            ):
+                raise GameRuleError(
+                    "Entry life payments require a battlefield controller"
+                )
+            try:
+                prepared_life_payment = prepare_life_payment(
+                    self.host,
+                    replacement.destination_controller,
+                    replacement.entry_life_payment,
+                )
+            except LifeStateError as exc:
+                raise GameRuleError(str(exc)) from exc
         return ZoneMovePlan(
             card=card,
             requested_destination=requested_destination,
@@ -317,6 +343,7 @@ class ZoneTransitionOwner:
             library_position=library_position,
             destination_type_line=destination_type_line,
             prepared_replacement=replacement,
+            prepared_life_payment=prepared_life_payment,
             prospective_battle_protector=prospective_protector,
             aura_entry_plan=aura_move.entry_plan,
         )
@@ -371,6 +398,14 @@ class ZoneTransitionOwner:
         reveal_to: tuple[str, ...],
     ) -> None:
         card = plan.card
+        if plan.prepared_life_payment is not None:
+            try:
+                commit_life_payment(
+                    self.host,
+                    plan.prepared_life_payment,
+                )
+            except LifeStateError as exc:
+                raise GameRuleError(str(exc)) from exc
         if departure.origin == "stack":
             if not any(
                 item.card_object_id == card.object_id
@@ -423,11 +458,7 @@ class ZoneTransitionOwner:
         card = plan.card
         card.controller = controller or card.owner
         self.host._require_seat(card.controller)
-        card.tapped = (
-            self.host._unconditionally_enters_tapped(card)
-            if tapped is None
-            else bool(tapped)
-        )
+        card.tapped = plan.prepared_replacement.entry_tapped
         control_history.record_battlefield_acquisition(
             self.state,
             card,
