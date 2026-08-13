@@ -258,7 +258,7 @@ class SourceReferenceCompilerTests(unittest.TestCase):
         entry_node = next(
             node
             for node in entry_ir.faces[0].nodes
-            if node.template_id == "enters-tapped-self-v1"
+            if node.template_id == "zone-entry-state-self-tapped-v1"
         )
         self.assertEqual(entry_text, entry_node.text)
         self.assertEqual(
@@ -275,7 +275,7 @@ class SourceReferenceCompilerTests(unittest.TestCase):
         )
         self.assertFalse(
             any(
-                node.template_id == "enters-tapped-self-v1"
+                node.template_id == "zone-entry-state-self-tapped-v1"
                 for node in unsupported.faces[0].nodes
             )
         )
