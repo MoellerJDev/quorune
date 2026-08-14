@@ -1431,8 +1431,8 @@ def _collect_damage_result_triggers(
     dispatch_lifelink_gain_events(
         host,
         result.lifelink_gains,
-        trigger_sources=trigger_sources,
-        trigger_source_zones=trigger_source_zones,
+        sources=trigger_sources,
+        source_zones=trigger_source_zones,
         trigger_batch=trigger_batch,
     )
 
@@ -1526,8 +1526,8 @@ def _collect_damage_result_triggers(
             dispatch_prevention_life_gain_event(
                 host,
                 aftermath,
-                trigger_sources=trigger_sources,
-                trigger_source_zones=trigger_source_zones,
+                sources=trigger_sources,
+                source_zones=trigger_source_zones,
                 trigger_batch=trigger_batch,
             )
             host._dispatch_semantic_event(
