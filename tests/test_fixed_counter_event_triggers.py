@@ -232,6 +232,75 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             FixedCounterTriggerBinding("step.begin", "your upkeep", "body")
 
+        residual_cases = (
+            (
+                "Innkeeper's Talent",
+                "If you would put one or more counters",
+                {
+                    "replacement applicability",
+                    "self-replacement and prevention ordering",
+                },
+            ),
+            (
+                "Invasion of Moag // Bloomwielder Dryads",
+                "As a Siege enters",
+                {
+                    "replacement applicability",
+                    "self-replacement and prevention ordering",
+                },
+            ),
+            (
+                "Spore Flower",
+                "Prevent all combat damage",
+                set(),
+            ),
+        )
+        for name, residual_text, expected_blockers in residual_cases:
+            with self.subTest(name=name):
+                record = self.db.lookup(name, fuzzy=False)
+                compiled = compile_oracle_card(
+                    record,
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                trigger_nodes = [
+                    node
+                    for face in compiled.faces
+                    for node in face.nodes
+                    if node.template_id in TEMPLATE_IDS
+                ]
+                self.assertEqual(1, len(trigger_nodes))
+                self.assertTrue(trigger_nodes[0].exact)
+                self.assertNotEqual("exact", compiled.status)
+                self.assertTrue(
+                    any(
+                        residual_text in residual.text
+                        for residual in compiled.material_residuals
+                    )
+                )
+                blockers = {
+                    blocker
+                    for residual in compiled.material_residuals
+                    for blocker in residual.blockers
+                }
+                self.assertGreaterEqual(blockers, expected_blockers)
+
+                trigger_programs = [
+                    program
+                    for program in generated_programs(
+                        self.db,
+                        record,
+                        trust_level="trusted",
+                        capability_registry=self.capabilities,
+                        capability_profile="commander_review",
+                    )
+                    if program.provenance.get("template_id") in TEMPLATE_IDS
+                ]
+                self.assertEqual(1, len(trigger_programs))
+                self.assertTrue(
+                    trigger_programs[0].capability_closure["trusted"]
+                )
+
     def test_adjacent_event_and_effect_variants_remain_material(self):
         variants = (
             "Whenever you cast or copy a noncreature spell, put a +1/+1 counter on this creature.",

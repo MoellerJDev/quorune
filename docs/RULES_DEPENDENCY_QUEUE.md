@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "8f60e00859967e514de1c9583db9e7d8169ffb24efb75aff560b2b40f8a86b44"
+verified: "4f782d3ba1e1aaaea9412ae4d010283727b5c582bea91e5bf3a9fbe9bea90238"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `d12be5567afecb0a2a1d189b870a44122276648cd0584b4bef42c5bae90bab7d`
+Source fingerprint: `4c48506c46fb509b9222119fbc502262c11372956769e6ad4d5c66085eb53f0a`
 
 ## Current top-level state
 
@@ -20,8 +20,8 @@ Source fingerprint: `d12be5567afecb0a2a1d189b870a44122276648cd0584b4bef42c5bae90
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `assurance:critical-interaction-recovery`
-- Selected work class: `interaction_assurance`
+- Selected cross-program work: `rules:counter-producer-replacement-closure`
+- Selected work class: `rules_foundation`
 
 ## Cross-program work selection
 
@@ -31,16 +31,16 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 2 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 3 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
-| 4 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
-| 5 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
-| 6 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
+| 1 | selected | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 2 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
+| 3 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
+| 4 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
+| 5 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
+| 6 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
 | 7 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 207 | 346 | 0 | 0 |
 | 8 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 126 | 338 | 0 | 0 |
 
-Selected reason: Uncovered high-risk interactions remain above the verified stabilization baseline.
+Selected reason: The rules queue remains dependency-ready, but correctness, runtime-text, owner, and assurance gates may rank ahead of its unknown card gain.
 
 ## Top blockers
 
