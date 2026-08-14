@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "64464487936b79e42652c138b1658360ca9f50a17cefe7753ad5d066c3fd11fb"
+verified: "41a243d30a70cd627463a132dea737db4f63b3f61f4168ea5dc59078dd1c0832"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -22,8 +22,8 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 - Material abilities classified: 59,601
 - Unclassified material spans: 0
 - Mapped pinned rules: 815 / 3,300
-- Applicable piece pairs: 30,636
-- Covered piece pairs: 502
+- Applicable piece pairs: 30,637
+- Covered piece pairs: 505
 
 ## Ontology classes
 
@@ -35,12 +35,12 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `combat` — Combat | 24 |
 | `compiler_cardprogram` — Compiler and CardProgram pieces | 431 |
 | `continuous_effects` — Static abilities and continuous effects | 33 |
-| `costs_mana` — Costs and mana | 7 |
+| `costs_mana` — Costs and mana | 8 |
 | `events_mutations` — Typed events and mutations | 100 |
 | `keyword_mechanics` — Keyword actions and keyword abilities | 541 |
 | `multiplayer_commander` — Multiplayer, Commander, and profile pieces | 1 |
 | `object_identity` — Object identity and lifetime | 27 |
-| `one_shot_effects` — One-shot semantic effects | 137 |
+| `one_shot_effects` — One-shot semantic effects | 136 |
 | `players_format` — Players, relationships, and format state | 1 |
 | `proposals` — Casting and activation proposals | 13 |
 | `quantities` — Quantity and value expressions | 1 |
@@ -52,7 +52,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 | System | Status | Pieces | Blocking pieces |
 |---|---|---:|---:|
-| `action_legality_casting_activation_costs_mana` | `inventoried` | 54 | 6 |
+| `action_legality_casting_activation_costs_mana` | `inventoried` | 55 | 6 |
 | `combat` | `compositional` | 24 | 0 |
 | `derived_characteristics_static_layers` | `inventoried` | 33 | 7 |
 | `generic_triggers_stack_placement` | `inventoried` | 2 | 2 |
@@ -61,18 +61,17 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `replacement_prevention` | `inventoried` | 18 | 4 |
 | `state_turn_loops_stabilization` | `inventoried` | 0 | 0 |
 | `targets_modes_searches_references_choices` | `inventoried` | 15 | 10 |
-| `typed_transactions_events_mutations` | `inventoried` | 237 | 71 |
+| `typed_transactions_events_mutations` | `inventoried` | 236 | 70 |
 
 ## Highest current blocker leverage
 
 | Piece | Class | Residuals | Sole blockers | Expected cards | Runtime | Assurance |
 |---|---|---:|---:|---:|---|---|
-| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 9,180 | 3,642 | 3,642 | `absent` | `untested` |
+| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 9,180 | 3,657 | 3,657 | `absent` | `untested` |
 | `residual.effect_clause.unparsed-clause-grammar` | `one_shot_effects` | 2,947 | 252 | 252 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-611-continuous-effects` | `keyword_mechanics` | 480 | 207 | 207 | `absent` | `untested` |
 | `residual.activated_effect.unparsed-clause-grammar` | `one_shot_effects` | 2,195 | 178 | 178 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-111-tokens` | `keyword_mechanics` | 338 | 123 | 123 | `absent` | `untested` |
-| `residual.effect_clause.intrinsic-basic-land-type-mana-capability` | `one_shot_effects` | 106 | 70 | 70 | `absent` | `untested` |
 | `residual.effect_clause.typed-spell-result-clause` | `one_shot_effects` | 157 | 66 | 66 | `absent` | `untested` |
 | `residual.replacement.damage-prevention` | `replacement_prevention` | 208 | 45 | 45 | `absent` | `untested` |
 | `residual.activated_effect.create-token` | `one_shot_effects` | 474 | 36 | 36 | `absent` | `untested` |
@@ -97,6 +96,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `residual.mechanic_dependency.cr-400-general` | `keyword_mechanics` | 26 | 14 | 14 | `absent` | `untested` |
 | `residual.keyword_dependency.changeling` | `keyword_mechanics` | 62 | 13 | 13 | `absent` | `untested` |
 | `residual.effect_clause.draw` | `one_shot_effects` | 487 | 12 | 12 | `absent` | `untested` |
+| `residual.activated_effect.destroy-target` | `one_shot_effects` | 151 | 12 | 12 | `absent` | `untested` |
 
 ## Boundary
 

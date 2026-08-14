@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_intrinsic_basic_land_mana_card_data",
+  "source": "Scryfall Oracle/rulings subset for intrinsic basic-land mana interaction tests",
+  "cards": [
+    {
+      "oracle_id": "42b9d383-3fe2-4fc8-ab86-f80a288d502b",
+      "name": "Murmuring Bosk",
+      "mana_cost": "",
+      "cmc": 0.0,
+      "type_line": "Land — Forest",
+      "oracle_text": "({T}: Add {G}.)\nAs this land enters, you may reveal a Treefolk card from your hand. If you don't, this land enters tapped.\n{T}: Add {W} or {B}. This land deals 1 damage to you.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": ["B", "G", "W"],
+      "keywords": [],
+      "produced_mana": ["B", "G", "W"],
+      "layout": "normal",
+      "released_at": "2022-09-09",
+      "legalities": {
+        "alchemy": "not_legal",
+        "brawl": "not_legal",
+        "commander": "legal",
+        "competitivebrawl": "not_legal",
+        "duel": "legal",
+        "future": "not_legal",
+        "gladiator": "not_legal",
+        "historic": "not_legal",
+        "legacy": "legal",
+        "modern": "legal",
+        "oathbreaker": "legal",
+        "oldschool": "not_legal",
+        "pauper": "not_legal",
+        "paupercommander": "not_legal",
+        "penny": "legal",
+        "pioneer": "not_legal",
+        "predh": "legal",
+        "premodern": "not_legal",
+        "standard": "not_legal",
+        "standardbrawl": "not_legal",
+        "timeless": "not_legal",
+        "tlr": "legal",
+        "vintage": "legal"
+      }
+    }
+  ],
+  "rulings": [
+    {
+      "oracle_id": "42b9d383-3fe2-4fc8-ab86-f80a288d502b",
+      "published_at": "2008-04-01",
+      "source": "wotc",
+      "comment": "Murmuring Bosk is a Forest, but it isn't a basic land. Things that affect basic lands don't affect it. Things that affect basic land types do. For example, you can't find Murmuring Bosk with Fertilid's ability (\"searches their library for a basic land card\"), but you can find Murmuring Bosk with Everbark Shaman's ability (\"search your library for two Forest cards\")."
+    }
+  ]
+}

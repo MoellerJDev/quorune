@@ -5,12 +5,10 @@ from dataclasses import dataclass, field, replace
 from typing import Any, Iterable, Mapping
 
 from .carddb import CardRecord
+from .intrinsic_basic_land_mana import BASIC_LAND_MANA
 from .util import mana_cost_to_vector, normalize_mana_bundle
 
 MANA_COLORS = ("W", "U", "B", "R", "G", "C")
-BASIC_LAND_MANA = dict(
-    zip("plains island swamp mountain forest".split(), "WUBRG", strict=True)
-)
 SYMBOL_RE = re.compile(r"\{([WUBRGC])\}")
 ADD_CLAUSE_RE = re.compile(
     r"\{T\}(?P<costs>(?:\s*,\s*[^:\n]+)?)\s*:\s*Add\s+(?P<output>[^\.\n]+)",

@@ -16,8 +16,9 @@ from ..compiler.activated_ability_catalog import (
     with_activated_ability_catalog,
 )
 from ..compiler.card_form_rules import (
-    CardFormRuleNode,
-    compile_intrinsic_entry_counter_forms,
+    CardFormNode,
+    IntrinsicBasicLandManaRuleNode,
+    compile_card_form_rules,
 )
 from ..oracle_ir import ORACLE_COMPILER_VERSION, compile_oracle_card
 from ..rules.capabilities import CapabilityRegistry
@@ -120,7 +121,7 @@ def _bind_program_faces(
 def _card_form_rule_programs(
     record: CardRecord,
     *,
-    nodes: Iterable[CardFormRuleNode],
+    nodes: Iterable[CardFormNode],
     oracle_source_hash: str,
     rulings_hash: str,
     capability_registry: CapabilityRegistry | None,
@@ -138,39 +139,67 @@ def _card_form_rule_programs(
             profile=capability_profile,
         )
         if trust_level == "trusted" and not closure.trusted:
+            family = (
+                "intrinsic basic-land mana"
+                if isinstance(node, IntrinsicBasicLandManaRuleNode)
+                else "intrinsic entry-counter"
+            )
             raise ValueError(
                 f"{record.name} cannot be promoted to trusted generated "
-                "semantics: intrinsic entry-counter capability is blocked"
+                f"semantics: {family} capability is blocked"
             )
         descriptor = node.descriptor()
-        ability_id = (
-            f"static:{node.face_id}:intrinsic-entry-"
-            f"{descriptor['counter_name']}"
-        )
+        intrinsic_mana = isinstance(node, IntrinsicBasicLandManaRuleNode)
+        if intrinsic_mana:
+            subject = descriptor["basic_land_type"]
+            ability_id = (
+                f"static:{node.face_id}:intrinsic-mana-{subject}"
+            )
+            label = f"{record.name} — intrinsic {subject} mana ability"
+            event = "intrinsic_ability"
+            template_id = "intrinsic_basic_land_mana"
+            test_id = "card_form_rule:intrinsic_basic_land_mana"
+            coverage = [
+                "generated_card_form_rule",
+                "intrinsic_basic_land_mana",
+            ]
+        else:
+            subject = descriptor["counter_name"]
+            ability_id = f"static:{node.face_id}:intrinsic-entry-{subject}"
+            label = f"{record.name} — intrinsic {subject} entry counters"
+            event = "intrinsic_entry"
+            template_id = "intrinsic_entry_counter"
+            test_id = "card_form_rule:intrinsic_entry_counter"
+            coverage = [
+                "generated_card_form_rule",
+                "intrinsic_entry_counter",
+                *(
+                    ["saga_entry_counter"]
+                    if descriptor["required_type"] == "saga"
+                    else []
+                ),
+            ]
         programs.append(
             SemanticProgram(
                 key=f"{record.oracle_id}:{ability_id}",
-                label=(
-                    f"{record.name} — intrinsic "
-                    f"{descriptor['counter_name']} entry counters"
-                ),
+                label=label,
                 effects=[],
                 requires_arbiter=trust_level != "trusted",
                 oracle_id=record.oracle_id,
                 ability_id=ability_id,
                 active_zone="all",
-                event="intrinsic_entry",
+                event=event,
                 trust_level=trust_level,
                 provenance={
                     "source_oracle_hash": oracle_source_hash,
                     "source_rulings_hash": rulings_hash,
-                    "authored_by": "card-form-rule-compiler-v2",
+                    "authored_by": "card-form-rule-compiler-v3",
                     "review_status": (
                         "capability_closure_verified"
                         if trust_level == "trusted"
                         else "generated_review_required"
                     ),
-                    "template_id": "intrinsic_entry_counter",
+                    "template_id": template_id,
                     "face_id": node.face_id,
                     "source_kind": "type_line",
                     "source_span": asdict(node.span),
@@ -181,17 +210,9 @@ def _card_form_rule_programs(
                     "capability_closure_fingerprint": closure.fingerprint,
                     "capability_profile": closure.profile,
                 },
-                tests=["card_form_rule:intrinsic_entry_counter"],
+                tests=[test_id],
                 event_condition={"card_form_rule": descriptor},
-                coverage=[
-                    "generated_card_form_rule",
-                    "intrinsic_entry_counter",
-                    *(
-                        ["saga_entry_counter"]
-                        if descriptor["required_type"] == "saga"
-                        else []
-                    ),
-                ],
+                coverage=coverage,
                 capability_dependencies=list(
                     node.capability_dependencies
                 ),
@@ -219,6 +240,14 @@ def compile_card_program(
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )
+    faces = _record_faces(
+        record,
+        compiled_face_ids=(face.face_id for face in ir.faces),
+    )
+    card_form_compilation = compile_card_form_rules(
+        record,
+        compiled_face_ids=tuple(face.face_id for face in faces),
+    )
     programs = {
         program.key: program
         for program in generated_programs(
@@ -228,6 +257,9 @@ def compile_card_program(
             trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry,
             capability_profile=capability_profile,
+            has_rules_derived_trust_carrier=bool(
+                card_form_compilation.nodes
+            ),
         )
     }
     reviewed_keys: list[str] = []
@@ -252,15 +284,7 @@ def compile_card_program(
                         programs.pop(key)
             programs[program.key] = program
             reviewed_keys.append(program.key)
-    faces = _record_faces(
-        record,
-        compiled_face_ids=(face.face_id for face in ir.faces),
-    )
     ruling_hash = rulings_source_hash(db, record)
-    card_form_compilation = compile_intrinsic_entry_counter_forms(
-        record,
-        compiled_face_ids=tuple(face.face_id for face in faces),
-    )
     card_form_programs = _card_form_rule_programs(
         record,
         nodes=card_form_compilation.nodes,

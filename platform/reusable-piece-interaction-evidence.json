@@ -437,6 +437,22 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_intrinsic_basic_land_mana_uses_live_effective_land_types",
+      "piece_ids": ["capability.continuous.basic_land_type.add_all_lands", "capability.mana.intrinsic.basic_land_type"],
+      "capability_ids": ["continuous.basic_land_type.add_all_lands", "mana.intrinsic.basic_land_type"],
+      "interaction_order": 2,
+      "assertion": "The canonical layer-4 type evaluator adds and removes an opponent land's basic subtype while the CR 305.6 owner derives only the corresponding current intrinsic mana ability."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_murmuring_bosk_intrinsic_mana_executes_while_replacement_stays_residual",
+      "piece_ids": ["capability.mana.intrinsic.basic_land_type", "residual.replacement.replacement-applicability", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["mana.intrinsic.basic_land_type"],
+      "interaction_order": 3,
+      "assertion": "Murmuring Bosk's exact CR 305.6 Forest ability remains independently executable and replayable while its unsupported self-entry replacement retains both applicability and ordering residuals."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_landwalk_remains_cumulative_with_shadow_and_flying",
       "piece_ids": ["capability.combat.block.flying", "capability.combat.block.landwalk.basic_type", "capability.combat.block.reach", "mechanic.landwalk"],
       "capability_ids": ["combat.block.flying", "combat.block.landwalk.basic_type", "combat.block.reach"],

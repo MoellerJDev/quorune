@@ -10,6 +10,11 @@ from ..entry_counter_model import (
     IntrinsicEntryCounter,
     intrinsic_entry_counters,
 )
+from ..intrinsic_basic_land_mana import (
+    INTRINSIC_BASIC_LAND_MANA_CAPABILITY,
+    IntrinsicBasicLandManaSpec,
+    intrinsic_basic_land_mana_specs,
+)
 from .ir_model import SourceSpan
 
 
@@ -60,8 +65,39 @@ class CardFormRuleNode:
 
 
 @dataclass(frozen=True, slots=True)
+class IntrinsicBasicLandManaRuleNode:
+    """One CR 305.6 declaration pinned to an exact card face type line."""
+
+    face_id: str
+    source_text: str
+    span: SourceSpan
+    intrinsic_mana: IntrinsicBasicLandManaSpec
+    capability_dependencies: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        if not self.face_id or not self.source_text:
+            raise ValueError("Card-form rule nodes require face and source text")
+        if self.span.start != 0 or self.span.end != len(self.source_text):
+            raise ValueError("Card-form rule source span must cover the type line")
+        if self.span.line != 1:
+            raise ValueError("Card-form rule source span must use line one")
+        if self.capability_dependencies != (
+            INTRINSIC_BASIC_LAND_MANA_CAPABILITY,
+        ):
+            raise ValueError(
+                "Intrinsic mana nodes require their fine-grained capability"
+            )
+
+    def descriptor(self) -> dict[str, Any]:
+        return self.intrinsic_mana.to_dict()
+
+
+CardFormNode = CardFormRuleNode | IntrinsicBasicLandManaRuleNode
+
+
+@dataclass(frozen=True, slots=True)
 class CardFormRuleCompilation:
-    nodes: tuple[CardFormRuleNode, ...]
+    nodes: tuple[CardFormNode, ...]
     residuals: tuple[dict[str, Any], ...]
 
 
@@ -172,11 +208,63 @@ def compile_intrinsic_entry_counter_forms(
     )
 
 
+def compile_intrinsic_basic_land_mana_forms(
+    record: CardRecord,
+    *,
+    compiled_face_ids: Sequence[str],
+) -> CardFormRuleCompilation:
+    """Compile the CR 305.6 abilities derived from printed face type lines."""
+
+    nodes: list[IntrinsicBasicLandManaRuleNode] = []
+    for face_id, type_line, _characteristics in _face_sources(
+        record,
+        compiled_face_ids=compiled_face_ids,
+    ):
+        for spec in intrinsic_basic_land_mana_specs(type_line):
+            nodes.append(
+                IntrinsicBasicLandManaRuleNode(
+                    face_id=face_id,
+                    source_text=type_line,
+                    span=SourceSpan(start=0, end=len(type_line), line=1),
+                    intrinsic_mana=spec,
+                    capability_dependencies=(
+                        INTRINSIC_BASIC_LAND_MANA_CAPABILITY,
+                    ),
+                )
+            )
+    return CardFormRuleCompilation(nodes=tuple(nodes), residuals=())
+
+
+def compile_card_form_rules(
+    record: CardRecord,
+    *,
+    compiled_face_ids: Sequence[str],
+) -> CardFormRuleCompilation:
+    """Compile all rules-derived declarations for one pinned card record."""
+
+    entry = compile_intrinsic_entry_counter_forms(
+        record,
+        compiled_face_ids=compiled_face_ids,
+    )
+    mana = compile_intrinsic_basic_land_mana_forms(
+        record,
+        compiled_face_ids=compiled_face_ids,
+    )
+    return CardFormRuleCompilation(
+        nodes=(*entry.nodes, *mana.nodes),
+        residuals=(*entry.residuals, *mana.residuals),
+    )
+
+
 __all__ = [
     "CardFormRuleNode",
+    "CardFormNode",
     "CardFormRuleCompilation",
+    "IntrinsicBasicLandManaRuleNode",
     "INTRINSIC_ENTRY_COUNTER_CAPABILITY",
     "SAGA_LORE_COUNTER_CAPABILITY",
     "SAGA_FINAL_CHAPTER_CAPABILITY",
+    "compile_card_form_rules",
+    "compile_intrinsic_basic_land_mana_forms",
     "compile_intrinsic_entry_counter_forms",
 ]

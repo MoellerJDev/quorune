@@ -226,13 +226,11 @@ class FixedManaCompilerTests(unittest.TestCase):
             capability_registry=load_default_capability_registry(),
         )
 
-        self.assertNotEqual("exact", ir.status)
+        self.assertEqual("exact", ir.status)
         self.assertFalse(any(node.handlers for node in ir.faces[0].nodes))
-        self.assertTrue(
-            any(
-                "intrinsic basic-land-type ability owner" in residual.reason
-                for residual in ir.material_residuals
-            )
+        self.assertEqual(
+            ("mana.intrinsic.basic_land_type",),
+            ir.faces[0].nodes[0].capability_dependencies,
         )
 
     def test_fixed_output_mana_mode_mutants_are_killed(self):
