@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 98,
+  "registry_version": 99,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -97,6 +97,24 @@
       "mechanic_id": "support",
       "capabilities": [
         "counter.producer.support"
+      ]
+    },
+    {
+      "mechanic_id": "fading",
+      "capabilities": [
+        "counter.producer.fixed_keyword_entry"
+      ]
+    },
+    {
+      "mechanic_id": "graft",
+      "capabilities": [
+        "counter.producer.fixed_keyword_entry"
+      ]
+    },
+    {
+      "mechanic_id": "vanishing",
+      "capabilities": [
+        "counter.producer.fixed_keyword_entry"
       ]
     },
     {
@@ -1335,6 +1353,33 @@
       "dependency_fail_closed_rationale": "Support CardPrograms fail closed when the bounded target-set producer, target revalidation, or counter quantity-replacement closure is unavailable.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "Focused compiler and shape mutations remove Support lowering or alter its source exclusion and prevent trusted promotion.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.fixed_keyword_entry",
+      "version": 1,
+      "official_rules": ["122.1", "122.1a", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.32", "702.32a", "702.58", "702.58a", "702.58b", "702.63", "702.63a", "702.63b", "702.63c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve the independent positive fixed self-entry-counter component shared by printed Fading N, Graft N, and numeric Vanishing N through the canonical zone-change and counter-placement replacement tree.",
+        "inputs": ["one source-spanned printed Fading N, Graft N, or Vanishing N instance", "positive integral N", "same physical card proposing battlefield entry", "prospective battlefield controller", "complete represented zone and counter replacement set"],
+        "outputs": ["one independent mandatory affected-object entry replacement per keyword instance", "fade, +1/+1, or time counters selected by the typed mechanic descriptor", "replacement-aware counter placement", "canonical replacement journal", "exact continuation replay"],
+        "exclusions": ["Fading upkeep counter removal and sacrifice", "Graft enters trigger and counter movement", "Vanishing upkeep counter removal and last-counter sacrifice trigger", "Vanishing without a numeric value", "zero, negative, variable, or nonintegral values", "granted, copied, or removed abilities outside the shared typed ability-presence boundary", "Oracle-equivalent nonkeyword wording", "unrepresented zone or counter replacement families"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.fixed_keyword_entry_counters.FixedKeywordEntryCounterSpec", "quorune.compiler.fixed_keyword_entry_nodes.fixed_keyword_entry_nodes", "quorune.semantic_runtime.self_entry_counters.SelfEntryCounterHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.semantic_runtime.zone_replacements.commit_counter_events_from_resolution"],
+      "positive_tests": ["test_fixed_keyword_entry_models_and_compiler_split_are_closed"],
+      "negative_tests": ["test_nonfixed_forms_and_remaining_lifecycles_stay_material", "test_fixed_keyword_entry_dependency_and_compiler_mutations_fail_closed", "test_fixed_keyword_entry_runtime_mutation_is_killed", "test_stale_fixed_keyword_entry_choice_aborts_without_card_mutation"],
+      "interaction_tests": ["test_fixed_keyword_entries_use_quantity_replacement"],
+      "multiplayer_tests": ["test_four_player_fixed_keyword_entry_is_seat_scoped_and_replays_exactly"],
+      "privacy_tests": ["test_four_player_fixed_keyword_entry_is_seat_scoped_and_replays_exactly"],
+      "replay_tests": ["test_four_player_fixed_keyword_entry_is_seat_scoped_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Generated fixed keyword entry components remain untrusted whenever the canonical counter quantity-replacement capability is blocked; their unimplemented later lifecycles remain material independently.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and runtime mutations remove the source-spanned entry component or its affected-object replacement effect; the representative Fading, Graft, and Vanishing counter assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },
