@@ -118,6 +118,14 @@ descriptors carry that limit, and each nonmana result still needs its own
 ordinary effect and cost closure. Wording that permits another Exhaust use
 remains a material residual.
 
+The exact activated-effect sentence `Regenerate this creature.` lowers to one
+`regenerate` instruction over `$source.zone_object`. Cost compilation remains
+independent, so unsupported counter-removal, typed-sacrifice, snow, hybrid,
+exile, or restricted activation costs stay residual even when the effect
+sentence matches. Targeted, static, noncreature-self, repeated, qualified, and
+cannot-be-regenerated grammar remains residual rather than widening this
+self-activation family.
+
 Fixed mass-damage lowering uses the same complete `ObjectQuerySpec` descriptor
 consumed by the runtime affected-set snapshot. The compiler emits ordered
 player/permanent groups and an optional exact target-opponent controller; it

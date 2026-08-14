@@ -738,7 +738,8 @@
       ],
       "executable_test_ids": [
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_marked_damage_survives_type_loss_until_cleanup",
-        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_snapshot_distinguishes_put_into_graveyard_from_destroy"
+        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_snapshot_distinguishes_put_into_graveyard_from_destroy",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_taps_clears_damage_and_removes_from_combat"
       ],
       "required_scenarios": [
         "positive",
@@ -748,14 +749,14 @@
       ],
       "covered_scenarios": [
         "positive",
+        "negative",
         "interaction"
       ],
       "blockers": [
-        "regeneration and its damage-removal result are not implemented",
         "complete cleanup repetition and simultaneous trigger/state-action interactions remain incomplete"
       ],
       "notes": [
-        "Marked damage persists when the permanent stops being a creature and clears during cleanup; regeneration remains the explicit gap."
+        "Marked damage persists when the permanent stops being a creature, clears during cleanup, and is removed by a represented regeneration replacement."
       ]
     },
     {

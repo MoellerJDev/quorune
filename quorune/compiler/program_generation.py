@@ -46,6 +46,7 @@ from ..rules.node_capability_shapes import (
     fixed_scry_node_capabilities,
     single_explore_node_capabilities,
     single_proliferate_node_capabilities,
+    self_regeneration_node_capabilities,
     targeted_counter_node_capabilities,
     targeted_destruction_node_capabilities,
     targeted_exile_node_capabilities,
@@ -869,6 +870,25 @@ def _is_closed_targeted_destruction_program(
     )
 
 
+def _is_closed_self_regeneration_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize only the reviewed self-regeneration activation effect."""
+
+    required = set(
+        self_regeneration_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=(
+                value for value in program.coverage if value == "regenerate"
+            ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
 def _is_closed_mass_destruction_program(
     program: SemanticProgram,
 ) -> bool:
@@ -980,6 +1000,7 @@ def _closed_effect_recognizers():
         _is_closed_fixed_mana_echo_program,
         _is_closed_targeted_counter_program,
         _is_closed_targeted_destruction_program,
+        _is_closed_self_regeneration_program,
         _is_closed_mass_destruction_program,
         _is_closed_targeted_exile_program,
         _is_closed_targeted_return_to_hand_program,

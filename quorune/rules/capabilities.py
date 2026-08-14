@@ -37,6 +37,7 @@ from .node_capability_shapes import (
     fixed_scry_node_capabilities,
     single_explore_node_capabilities,
     single_proliferate_node_capabilities,
+    self_regeneration_node_capabilities,
     fixed_self_counter_keyword_action_node_capabilities,
     fixed_bolster_node_capabilities,
     fixed_amass_node_capabilities,
@@ -838,6 +839,7 @@ def _targeted_effect_capabilities(
         fixed_scry_node_capabilities,
         single_explore_node_capabilities,
         single_proliferate_node_capabilities,
+        self_regeneration_node_capabilities,
         fixed_self_counter_keyword_action_node_capabilities,
         fixed_bolster_node_capabilities,
         fixed_amass_node_capabilities,
@@ -1030,6 +1032,8 @@ def capability_covered_mechanics(
         {"permanent.destroy.effect", "permanent.destroy.fixed_set"}
     ):
         covered.add("destroy")
+    if "permanent.regeneration.self_activation" in supplied:
+        covered.add("regenerate")
     if "permanent.destroy.fixed_set" in supplied:
         covered.add("destroy-fixed-set")
     if "permanent.exile.effect" in supplied:

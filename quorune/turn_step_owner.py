@@ -410,6 +410,7 @@ class TurnStepOwner:
         for card in self.state.cards.values():
             card.marked_damage = 0
             card.deathtouch_damage = False
+            card.regeneration_shields = 0
             card.temporary_keywords.clear()
             card.attacking = None
             card.blocking = None

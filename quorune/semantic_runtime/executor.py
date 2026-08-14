@@ -3,9 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Protocol
 
-from .. import destruction, permanent_exile, return_to_hand, tap_state
+from .. import destruction, permanent_exile, regeneration, return_to_hand, tap_state
 from ..destruction import DestructionHost
 from ..permanent_exile import PermanentExileHost
+from ..regeneration import RegenerationHost
 from ..return_to_hand import ReturnToHandHost
 from ..tap_state import TapStateHost
 from .context import SemanticNodeError
@@ -20,6 +21,7 @@ from .intents import (
     CopyControlledTokensIntent,
     CopyStackItemIntent,
     CreateTokenIntent,
+    CreateRegenerationShieldIntent,
     DealFixedDamageSetIntent,
     DomainEffectIntent,
     DestroyPermanentIntent,
@@ -65,6 +67,7 @@ class SemanticIntentSink(
     DestructionHost,
     PermanentExileHost,
     ReturnToHandHost,
+    RegenerationHost,
     Protocol,
 ):
     def apply_domain_effect_intent(self, intent: DomainEffectIntent) -> Any: ...
@@ -290,14 +293,16 @@ def prepare_draw_resolution(
     )
 
 
-PermanentTransitionIntent = (
-    DestroyPermanentIntent
+PermanentObjectIntent = (
+    CreateRegenerationShieldIntent
+    | DestroyPermanentIntent
     | DestroyPermanentSetIntent
     | ExilePermanentIntent
     | ReturnPermanentToOwnerHandIntent
     | ReturnGraveyardCardToOwnerHandIntent
 )
-PERMANENT_TRANSITION_INTENT_TYPES = (
+PERMANENT_OBJECT_INTENT_TYPES = (
+    CreateRegenerationShieldIntent,
     DestroyPermanentIntent,
     DestroyPermanentSetIntent,
     ExilePermanentIntent,
@@ -306,10 +311,21 @@ PERMANENT_TRANSITION_INTENT_TYPES = (
 )
 
 
-def _execute_permanent_transition_intent(
+def _execute_permanent_object_intent(
     sink: SemanticIntentSink,
-    intent: PermanentTransitionIntent,
+    intent: PermanentObjectIntent,
 ) -> tuple[str, object]:
+    if isinstance(intent, CreateRegenerationShieldIntent):
+        return (
+            intent.object_ref,
+            regeneration.create_regeneration_shield(
+                sink,
+                intent.object_ref,
+                actor=intent.actor,
+                reason=intent.reason,
+                logical_object_id=intent.logical_object_id,
+            ),
+        )
     if isinstance(intent, DestroyPermanentIntent):
         return (
             intent.object_ref,
@@ -477,8 +493,8 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
             )
             results.append(("creatures", result))
             continue
-        if isinstance(intent, PERMANENT_TRANSITION_INTENT_TYPES):
-            results.append(_execute_permanent_transition_intent(sink, intent))
+        if isinstance(intent, PERMANENT_OBJECT_INTENT_TYPES):
+            results.append(_execute_permanent_object_intent(sink, intent))
             continue
         if isinstance(intent, AddManaIntent):
             result = sink.apply_mana_intent(intent)

@@ -13,6 +13,7 @@ from .counter_state import (
     validate_counter_changes,
 )
 from .keyword_abilities import normalized_effective_keywords
+from .regeneration import apply_regeneration_replacement, RegenerationError
 from .replacement.immutable import (
     FrozenMap,
     freeze_value,
@@ -34,6 +35,7 @@ class DestructionCause(str, Enum):
 class DestructionDisposition(str, Enum):
     DESTROY = "destroy"
     INDESTRUCTIBLE = "indestructible"
+    REGENERATION = "regeneration"
     SHIELD_COUNTER = "shield_counter"
 
 
@@ -49,6 +51,13 @@ class DestructionHost(Protocol):
     ) -> Any: ...
 
     def _effective_card_data(self, card: Any) -> Mapping[str, Any]: ...
+
+    def _remove_object_from_combat(
+        self,
+        card: Any,
+        *,
+        reason: str,
+    ) -> bool: ...
 
     def move_card(
         self,
@@ -110,6 +119,7 @@ class DestructionEntry:
     disposition: DestructionDisposition
     indestructible: bool
     shield_counters: int
+    regeneration_shields: int
 
     def __post_init__(self) -> None:
         if not all(
@@ -133,6 +143,13 @@ class DestructionEntry:
         if type(self.shield_counters) is not int or self.shield_counters < 0:
             raise DestructionError(
                 "Destruction shield snapshot must be a nonnegative integer"
+            )
+        if (
+            type(self.regeneration_shields) is not int
+            or self.regeneration_shields < 0
+        ):
+            raise DestructionError(
+                "Regeneration shield snapshot must be a nonnegative integer"
             )
 
 
@@ -175,11 +192,22 @@ class DestructionPlan:
                 cause=self.cause,
                 indestructible=entry.indestructible,
                 shield_counters=entry.shield_counters,
+                regeneration_shields=entry.regeneration_shields,
             )
             for entry in self.entries
         ):
             raise DestructionError(
                 "Destruction entry disposition contradicts its snapshot"
+            )
+        if self.cause is DestructionCause.EFFECT and any(
+            not entry.indestructible
+            and entry.shield_counters
+            and entry.regeneration_shields
+            for entry in self.entries
+        ):
+            raise DestructionError(
+                "Competing shield-counter and regeneration replacements "
+                "require an unsupported affected-player choice"
             )
         if not isinstance(self.shield_counter_plan, CounterStatePlan):
             raise DestructionError(
@@ -245,12 +273,14 @@ class DestructionPlan:
 class DestructionResult:
     destroyed_object_ids: tuple[str, ...]
     shielded_object_ids: tuple[str, ...]
+    regenerated_object_ids: tuple[str, ...]
     indestructible_object_ids: tuple[str, ...]
 
     def __post_init__(self) -> None:
         groups = (
             self.destroyed_object_ids,
             self.shielded_object_ids,
+            self.regenerated_object_ids,
             self.indestructible_object_ids,
         )
         if any(
@@ -293,6 +323,7 @@ def _destruction_disposition(
     cause: DestructionCause,
     indestructible: bool,
     shield_counters: int,
+    regeneration_shields: int = 0,
 ) -> DestructionDisposition:
     if not isinstance(cause, DestructionCause):
         raise DestructionError("Destruction cause must be typed")
@@ -304,8 +335,14 @@ def _destruction_disposition(
         raise DestructionError(
             "Destruction shield count must be a nonnegative integer"
         )
+    if type(regeneration_shields) is not int or regeneration_shields < 0:
+        raise DestructionError(
+            "Regeneration shield count must be a nonnegative integer"
+        )
     if indestructible:
         return DestructionDisposition.INDESTRUCTIBLE
+    if regeneration_shields:
+        return DestructionDisposition.REGENERATION
     if cause is DestructionCause.EFFECT and shield_counters:
         return DestructionDisposition.SHIELD_COUNTER
     return DestructionDisposition.DESTROY
@@ -394,11 +431,27 @@ def prepare_destructions(
                 "Shield counters must be nonnegative integers"
             )
         shield_count = raw_shield_count
+        regeneration_count = getattr(card, "regeneration_shields", None)
+        if type(regeneration_count) is not int or regeneration_count < 0:
+            raise DestructionError(
+                "Regeneration shields must be nonnegative integers"
+            )
         indestructible = "indestructible" in keywords
+        if (
+            cause is DestructionCause.EFFECT
+            and not indestructible
+            and shield_count
+            and regeneration_count
+        ):
+            raise DestructionError(
+                "Competing shield-counter and regeneration replacements "
+                "require an unsupported affected-player choice"
+            )
         disposition = _destruction_disposition(
             cause=cause,
             indestructible=indestructible,
             shield_counters=shield_count,
+            regeneration_shields=regeneration_count,
         )
         if disposition is DestructionDisposition.SHIELD_COUNTER:
             shield_changes.append(
@@ -420,6 +473,7 @@ def prepare_destructions(
                 disposition=disposition,
                 indestructible=indestructible,
                 shield_counters=shield_count,
+                regeneration_shields=regeneration_count,
             )
         )
 
@@ -484,16 +538,24 @@ def validate_destruction_plan(
         current_shields = card.counters.get("shield", 0)
         if type(current_shields) is not int or current_shields < 0:
             raise DestructionError("Destruction plan is stale")
+        current_regeneration = getattr(card, "regeneration_shields", None)
+        if (
+            type(current_regeneration) is not int
+            or current_regeneration < 0
+        ):
+            raise DestructionError("Destruction plan is stale")
         current_disposition = _destruction_disposition(
             cause=plan.cause,
             indestructible=current_indestructible,
             shield_counters=current_shields,
+            regeneration_shields=current_regeneration,
         )
         if (
             card.ref != entry.object_ref
             or card.controller != entry.controller
             or current_indestructible != entry.indestructible
             or current_shields != entry.shield_counters
+            or current_regeneration != entry.regeneration_shields
             or current_disposition is not entry.disposition
         ):
             raise DestructionError("Destruction plan is stale")
@@ -583,6 +645,7 @@ def commit_destruction_plan(
     apply_counter_changes(host, plan.shield_counter_plan)
 
     shielded: list[str] = []
+    regenerated: list[str] = []
     indestructible: list[str] = []
     for entry in plan.entries:
         if entry.disposition is DestructionDisposition.DESTROY:
@@ -616,6 +679,32 @@ def commit_destruction_plan(
                 changed_objects=[entry.object_id],
                 changed_players=[entry.controller],
             )
+        elif entry.disposition is DestructionDisposition.REGENERATION:
+            regenerated.append(entry.object_id)
+            try:
+                apply_regeneration_replacement(
+                    host,
+                    entry.object_id,
+                    actor=plan.actor,
+                    reason=plan.reason,
+                    logical_object_id=entry.logical_object_id,
+                    expected_shields=entry.regeneration_shields,
+                )
+            except RegenerationError as exc:
+                raise DestructionError(str(exc)) from exc
+            host._log(
+                plan.actor,
+                "permanent.destroy.regenerated",
+                f"A regeneration shield replaced destruction of {entry.object_ref}.",
+                {
+                    "object": entry.object_ref,
+                    "replacement": "regeneration",
+                    "reason": plan.reason,
+                },
+                importance=2,
+                changed_objects=[entry.object_id],
+                changed_players=[entry.controller],
+            )
         else:
             indestructible.append(entry.object_id)
             host._log(
@@ -634,6 +723,7 @@ def commit_destruction_plan(
     return DestructionResult(
         destroyed_object_ids=destroyed,
         shielded_object_ids=tuple(shielded),
+        regenerated_object_ids=tuple(regenerated),
         indestructible_object_ids=tuple(indestructible),
     )
 

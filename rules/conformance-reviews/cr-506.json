@@ -208,15 +208,16 @@
       "status": "blocked",
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
-      "implementation_components": ["CommanderEngine._remove_object_from_combat", "CommanderEngine._remove_invalid_combat_objects", "CommanderEngine.change_control", "CommanderEngine._reset_zone_change"],
+      "implementation_components": ["CommanderEngine._remove_object_from_combat", "CommanderEngine._remove_invalid_combat_objects", "CommanderEngine.change_control", "CommanderEngine._reset_zone_change", "quorune.destruction.commit_destruction_plan"],
       "executable_test_ids": [
         "tests.test_combat_phase_rules.CombatPhaseRuleTests.test_zone_and_control_changes_remove_objects_from_combat",
-        "tests.test_combat_phase_rules.CombatPhaseRuleTests.test_phasing_and_type_loss_remove_combatants_during_stabilization"
+        "tests.test_combat_phase_rules.CombatPhaseRuleTests.test_phasing_and_type_loss_remove_combatants_during_stabilization",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_taps_clears_damage_and_removes_from_combat"
       ],
       "required_scenarios": ["positive", "negative", "interaction", "multiplayer"],
       "covered_scenarios": ["positive", "negative", "interaction"],
-      "blockers": ["regeneration_explicit_removal_attacked_object_and_hybrid_type_cases_incomplete"],
-      "notes": ["Zone/control changes and stabilization for phasing, creature-type loss, or becoming a Battle remove represented combatants. Regeneration, attacked-object state, explicit removal, and hybrid type cases remain blocked."]
+      "blockers": ["explicit_removal_attacked_object_and_hybrid_type_cases_incomplete"],
+      "notes": ["Zone/control changes, stabilization for phasing or type loss, and regeneration remove represented combatants. Attacked-object state, explicit effect removal, and hybrid type cases remain blocked."]
     },
     {
       "rule_id": "506.4a",

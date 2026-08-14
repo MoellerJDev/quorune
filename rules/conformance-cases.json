@@ -13170,7 +13170,6 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "regeneration and its damage-removal result are not implemented",
         "complete cleanup repetition and simultaneous trigger/state-action interactions remain incomplete"
       ],
       "case_id": "cr-120.6",
@@ -13178,6 +13177,7 @@
       "classification": "behavioral",
       "covered_scenarios": [
         "positive",
+        "negative",
         "interaction"
       ],
       "dependency_rule_ids": [
@@ -13186,7 +13186,8 @@
       "effective_date": "2026-06-19",
       "executable_test_ids": [
         "tests.test_state_based_actions.StateBasedActionEngineTests.test_marked_damage_survives_type_loss_until_cleanup",
-        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_snapshot_distinguishes_put_into_graveyard_from_destroy"
+        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_snapshot_distinguishes_put_into_graveyard_from_destroy",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_taps_clears_damage_and_removes_from_combat"
       ],
       "implementation_components": [
         "CardInstance.marked_damage",
@@ -13194,7 +13195,7 @@
         "evaluate_permanent_state_based_actions"
       ],
       "notes": [
-        "Marked damage persists when the permanent stops being a creature and clears during cleanup; regeneration remains the explicit gap."
+        "Marked damage persists when the permanent stops being a creature, clears during cleanup, and is removed by a represented regeneration replacement."
       ],
       "required_scenarios": [
         "positive",
@@ -30864,7 +30865,7 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "regeneration_explicit_removal_attacked_object_and_hybrid_type_cases_incomplete"
+        "explicit_removal_attacked_object_and_hybrid_type_cases_incomplete"
       ],
       "case_id": "cr-506.4",
       "case_version": 1,
@@ -30880,16 +30881,18 @@
       "effective_date": "2026-06-19",
       "executable_test_ids": [
         "tests.test_combat_phase_rules.CombatPhaseRuleTests.test_zone_and_control_changes_remove_objects_from_combat",
-        "tests.test_combat_phase_rules.CombatPhaseRuleTests.test_phasing_and_type_loss_remove_combatants_during_stabilization"
+        "tests.test_combat_phase_rules.CombatPhaseRuleTests.test_phasing_and_type_loss_remove_combatants_during_stabilization",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_taps_clears_damage_and_removes_from_combat"
       ],
       "implementation_components": [
         "CommanderEngine._remove_object_from_combat",
         "CommanderEngine._remove_invalid_combat_objects",
         "CommanderEngine.change_control",
-        "CommanderEngine._reset_zone_change"
+        "CommanderEngine._reset_zone_change",
+        "quorune.destruction.commit_destruction_plan"
       ],
       "notes": [
-        "Zone/control changes and stabilization for phasing, creature-type loss, or becoming a Battle remove represented combatants. Regeneration, attacked-object state, explicit removal, and hybrid type cases remain blocked."
+        "Zone/control changes, stabilization for phasing or type loss, and regeneration remove represented combatants. Attacked-object state, explicit effect removal, and hybrid type cases remain blocked."
       ],
       "required_scenarios": [
         "positive",
@@ -46228,30 +46231,34 @@
       "status": "passing"
     },
     {
-      "assertion_kind": "unsupported_fail_closed",
-      "blockers": [
-        "regeneration shield state and destruction-event replacement are not implemented",
-        "tap, damage removal, and combat removal are not applied as one regeneration replacement"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-614.8",
       "case_version": 1,
       "classification": "behavioral",
       "covered_scenarios": [
-        "negative"
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
       ],
       "dependency_rule_ids": [
         "614"
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_rules_primitives.ReplacementOrderingTests.test_uncompiled_replacement_families_fail_closed"
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_replaces_effect_and_state_based_destruction",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_taps_clears_damage_and_removes_from_combat",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_stale_and_competing_replacements_fail_before_mutation"
       ],
       "implementation_components": [
-        "state_based_actions.StateAction",
-        "replacement_effects.apply_replacement"
+        "quorune.regeneration.create_regeneration_shield",
+        "quorune.destruction.prepare_destructions",
+        "quorune.destruction.commit_destruction_plan",
+        "CommanderEngine._remove_object_from_combat"
       ],
       "notes": [
-        "A regeneration operation is rejected rather than approximated."
+        "One represented regeneration shield replaces a destruction event and applies tapping, damage removal, and canonical combat removal as the alternate event."
       ],
       "required_scenarios": [
         "positive",
@@ -46268,7 +46275,7 @@
         "end_line": 3083,
         "start_line": 3082
       },
-      "status": "blocked"
+      "status": "passing"
     },
     {
       "assertion_kind": "executable_engine",
@@ -51696,23 +51703,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-701.19",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "701"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_regeneration_rules.RegenerationCompilerTests.test_exact_self_regeneration_compiles_and_harvests_frontier"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/regenerate.json"
+      ],
+      "notes": [
+        "Keyword-action heading; permanent.regeneration.self_activation owns the bounded exact self-creature activation family."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "701.19",
       "rule_text_sha256": "1651031bf58d8eeac8dc9c3e3d5eba20380197e7f638115570bc729064544c06",
       "schema_version": 1,
@@ -51721,26 +51732,51 @@
         "end_line": 3429,
         "start_line": 3428
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "generic prohibition effects and the affected-player ordering choice between regeneration and shield counters remain unsupported"
       ],
       "case_id": "cr-701.19a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "701.19"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_replaces_effect_and_state_based_destruction",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_taps_clears_damage_and_removes_from_combat",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_shields_expire_at_cleanup_and_zone_change",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_stale_and_competing_replacements_fail_before_mutation"
+      ],
+      "implementation_components": [
+        "quorune.regeneration.create_regeneration_shield",
+        "quorune.destruction.prepare_destructions",
+        "quorune.destruction.commit_destruction_plan",
+        "CommanderEngine._remove_object_from_combat",
+        "TurnStepOwner.finish_cleanup"
+      ],
+      "notes": [
+        "The bounded family creates an until-cleanup shield and atomically replaces represented effect or damage state-based destruction with consumption, tapping, damage removal, and canonical combat removal."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.19a",
       "rule_text_sha256": "a9eaba726cb9ba24bb673533f3d9265cdbd8bd074be9e9105733ecfa24a5abf5",
       "schema_version": 1,
@@ -51749,26 +51785,36 @@
         "end_line": 3431,
         "start_line": 3430
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "static abilities that regenerate a permanent every time it would be destroyed are not represented"
       ],
       "case_id": "cr-701.19b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "701.19"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_regeneration_rules.RegenerationCompilerTests.test_unsupported_regeneration_grammar_remains_residual"
+      ],
+      "implementation_components": [
+        "quorune.compiler.regeneration_templates.self_regeneration_effect_template"
+      ],
+      "notes": [
+        "Static regeneration wording remains a material compiler residual and cannot be confused with the one-shot shield family."
+      ],
+      "required_scenarios": [
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "701.19b",
       "rule_text_sha256": "fe8cd9708496959afdc1441d2406e45d2d21fc491977500b63a15303dfd8778c",
       "schema_version": 1,
@@ -51777,26 +51823,41 @@
         "end_line": 3433,
         "start_line": 3432
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "effects that say a permanent cannot be regenerated are not represented, so activation under that prohibition is not yet executable"
       ],
       "case_id": "cr-701.19c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "701.19"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_activation_creates_public_shield_and_replays"
+      ],
+      "implementation_components": [
+        "quorune.semantic_runtime.regeneration_handlers.CreateRegenerationShieldHandler",
+        "quorune.regeneration.create_regeneration_shield"
+      ],
+      "notes": [
+        "The represented activation creates a replacement shield rather than immediately regenerating the permanent; prohibition interaction remains explicit debt."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "701.19c",
       "rule_text_sha256": "dd25926b35fc0109dfdde07ce9ceac86b742f137d198d4eb3eb4ecc73b3a3606",
       "schema_version": 1,
@@ -51805,7 +51866,7 @@
         "end_line": 3435,
         "start_line": 3434
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",
@@ -82728,10 +82789,8 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "unsupported_fail_closed",
-      "blockers": [
-        "regeneration replacement of the destruction event is not implemented"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-704.5h",
       "case_version": 1,
       "classification": "behavioral",
@@ -82749,14 +82808,17 @@
       "executable_test_ids": [
         "tests.test_deathtouch_rules.DeathtouchStateBasedActionTests.test_check_proposes_destruction_before_typed_prohibitions",
         "tests.test_combat_keyword_rules.CombatKeywordRuleTests.test_indestructible_consumes_deathtouch_at_the_first_sba_check",
-        "tests.test_combat_keyword_rules.CombatKeywordRuleTests.test_four_player_deathtouch_result_is_source_derived_and_replays"
+        "tests.test_combat_keyword_rules.CombatKeywordRuleTests.test_four_player_deathtouch_result_is_source_derived_and_replays",
+        "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_replaces_effect_and_state_based_destruction"
       ],
       "implementation_components": [
         "quorune.state_based_actions.evaluate_permanent_state_based_actions",
-        "quorune.damage_results.consume_deathtouch_damage_checks"
+        "quorune.damage_results.consume_deathtouch_damage_checks",
+        "quorune.destruction.prepare_destructions",
+        "quorune.destruction.commit_destruction_plan"
       ],
       "notes": [
-        "Destructible positive-toughness creatures are destroyed; indestructible creatures survive and the since-last-check marker is consumed atomically."
+        "Destructible positive-toughness creatures are destroyed; Indestructible and regeneration apply their distinct outcomes, and the since-last-check marker is consumed atomically."
       ],
       "required_scenarios": [
         "positive",
@@ -82774,7 +82836,7 @@
         "end_line": 5507,
         "start_line": 5506
       },
-      "status": "blocked"
+      "status": "passing"
     },
     {
       "assertion_kind": "inventory_only",

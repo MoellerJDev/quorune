@@ -37,6 +37,7 @@ def reset_card_after_zone_change(
     card.tapped = False
     card.marked_damage = 0
     card.deathtouch_damage = False
+    card.regeneration_shields = 0
     card.temporary_keywords.clear()
     card.goaded_by.clear()
     card.monstrous_value = None

@@ -275,7 +275,7 @@
     "native Siege defeated-trigger transformed casting and future Battle subtypes remain unresolved",
     "maximum-counter abilities outside the reviewed numeric self-restriction sentence family remain unresolved",
     "Aura attachment to players and the complete enchant-quality grammar are not implemented",
-    "regeneration and complete loss-event replacement ordering are not integrated",
+    "represented regeneration replaces damage-based destruction; complete loss-event and competing destruction-replacement ordering remain incomplete",
     "all player losses and permanent actions are not yet transformed as one shared simultaneous replaceable event"
   ],
   "review_status": "reviewed"

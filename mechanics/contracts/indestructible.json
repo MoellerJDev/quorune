@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 3,
+  "contract_version": 4,
   "mechanic_id": "indestructible",
   "official_name": "Indestructible",
   "effective_date": "2026-06-19",
@@ -37,6 +37,6 @@
     "component": "quorune.destruction typed transaction plus quorune.state_based_actions producer",
     "version": "indestructible-bounded-ordinary-v3"
   },
-  "known_blockers": ["the fine-grained permanent.indestructible.ordinary capability is trusted only for represented current keyword producers and destruction owners", "qualified, conditional, and player-facing Indestructible wording remains unsupported", "unrepresented ability-changing, copy, face-down, merged-object, and characteristic producers remain blocked", "regeneration and competing unrepresented destruction replacements remain unsupported", "the aggregate mechanic contract remains partial and untrusted"],
+  "known_blockers": ["the fine-grained permanent.indestructible.ordinary capability is trusted only for represented current keyword producers and destruction owners", "qualified, conditional, and player-facing Indestructible wording remains unsupported", "unrepresented ability-changing, copy, face-down, merged-object, and characteristic producers remain blocked", "the affected-player ordering choice between represented regeneration and shield-counter replacements remains unsupported", "the aggregate mechanic contract remains partial and untrusted"],
   "review_status": "reviewed"
 }

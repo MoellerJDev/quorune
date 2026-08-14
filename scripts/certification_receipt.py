@@ -30,8 +30,9 @@ except ModuleNotFoundError:  # Direct execution from scripts/.
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RECEIPT_SCHEMA_VERSION = 1
+RECEIPT_SCHEMA_VERSION = 2
 RECEIPT_FILENAME = "certification-receipt.json"
+CERTIFICATION_MODES = frozenset({"executed", "reused"})
 REQUIRED_CHECK_SUITE = frozenset(
     {
         "browser",
@@ -49,6 +50,8 @@ _RECEIPT_FIELDS = frozenset(
         "pull_request",
         "exact_head_sha",
         "workflow_run_id",
+        "evidence_workflow_run_id",
+        "certification_mode",
         "workflow_name",
         "check_suite",
         "source_tree_fingerprint_algorithm",
@@ -94,6 +97,8 @@ class CertificationReceipt:
     check_suite: tuple[tuple[str, str], ...]
     source_tree_fingerprint: str
     workflow_name: str = "PR"
+    evidence_workflow_run_id: int | None = None
+    certification_mode: str = "executed"
 
     def __post_init__(self) -> None:
         if (
@@ -106,6 +111,33 @@ class CertificationReceipt:
             )
         _positive_integer(self.pull_request, field="pull_request")
         _positive_integer(self.workflow_run_id, field="workflow_run_id")
+        evidence_run = (
+            self.workflow_run_id
+            if self.evidence_workflow_run_id is None
+            else self.evidence_workflow_run_id
+        )
+        _positive_integer(
+            evidence_run,
+            field="evidence_workflow_run_id",
+        )
+        if self.certification_mode not in CERTIFICATION_MODES:
+            raise CertificationReceiptError(
+                "certification_mode must be executed or reused"
+            )
+        if (
+            self.certification_mode == "executed"
+            and evidence_run != self.workflow_run_id
+        ):
+            raise CertificationReceiptError(
+                "Executed certification evidence must come from its workflow run"
+            )
+        if (
+            self.certification_mode == "reused"
+            and evidence_run == self.workflow_run_id
+        ):
+            raise CertificationReceiptError(
+                "Reused certification must identify an earlier evidence run"
+            )
         if type(self.exact_head_sha) is not str or not _SHA.fullmatch(
             self.exact_head_sha
         ):
@@ -128,6 +160,7 @@ class CertificationReceipt:
                 "source_tree_fingerprint must be a lowercase SHA-256 value"
             )
         object.__setattr__(self, "check_suite", tuple(sorted(suite.items())))
+        object.__setattr__(self, "evidence_workflow_run_id", evidence_run)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -136,6 +169,8 @@ class CertificationReceipt:
             "pull_request": self.pull_request,
             "exact_head_sha": self.exact_head_sha,
             "workflow_run_id": self.workflow_run_id,
+            "evidence_workflow_run_id": self.evidence_workflow_run_id,
+            "certification_mode": self.certification_mode,
             "workflow_name": self.workflow_name,
             "check_suite": dict(self.check_suite),
             "source_tree_fingerprint_algorithm": (
@@ -169,6 +204,8 @@ class CertificationReceipt:
             pull_request=value.get("pull_request"),
             exact_head_sha=value.get("exact_head_sha"),
             workflow_run_id=value.get("workflow_run_id"),
+            evidence_workflow_run_id=value.get("evidence_workflow_run_id"),
+            certification_mode=value.get("certification_mode"),
             workflow_name=value.get("workflow_name"),
             check_suite=tuple(suite.items()),
             source_tree_fingerprint=value.get("source_tree_fingerprint"),
@@ -194,6 +231,33 @@ def build_receipt(
         source_tree_fingerprint=tracked_ref_source_fingerprint(
             root, exact_head_sha
         ),
+    )
+
+
+def build_reused_receipt(
+    prior: CertificationReceipt,
+    *,
+    workflow_run_id: int,
+) -> CertificationReceipt:
+    """Publish honest provenance for unchanged-head reused matrix evidence."""
+
+    if not isinstance(prior, CertificationReceipt):
+        raise CertificationReceiptError(
+            "Reused certification requires a validated prior receipt"
+        )
+    if workflow_run_id == prior.workflow_run_id:
+        raise CertificationReceiptError(
+            "Reused certification requires a new publication workflow"
+        )
+    return CertificationReceipt(
+        repository=prior.repository,
+        pull_request=prior.pull_request,
+        exact_head_sha=prior.exact_head_sha,
+        workflow_run_id=workflow_run_id,
+        evidence_workflow_run_id=prior.evidence_workflow_run_id,
+        certification_mode="reused",
+        check_suite=prior.check_suite,
+        source_tree_fingerprint=prior.source_tree_fingerprint,
     )
 
 
@@ -346,6 +410,72 @@ def _github_json(url: str, token: str) -> Any:
         raise CertificationReceiptError("GitHub returned malformed JSON") from exc
 
 
+def find_previous_pr_certification(
+    *,
+    repository: str,
+    pull_request: int,
+    exact_head_sha: str,
+    current_workflow_run_id: int,
+    token: str,
+    root: Path = ROOT,
+) -> CertificationReceipt:
+    """Find validated prior full-matrix evidence for this unchanged PR head."""
+
+    if type(repository) is not str or repository.count("/") != 1:
+        raise CertificationReceiptError(
+            "repository must be an owner/name coordinate"
+        )
+    _positive_integer(pull_request, field="pull_request")
+    _positive_integer(
+        current_workflow_run_id,
+        field="current_workflow_run_id",
+    )
+    if type(exact_head_sha) is not str or not _SHA.fullmatch(exact_head_sha):
+        raise CertificationReceiptError(
+            "exact_head_sha must be a lowercase full Git SHA"
+        )
+    api = f"https://api.github.com/repos/{repository}"
+    runs = successful_pr_runs(
+        _github_json(
+            f"{api}/actions/workflows/ci.yml/runs?event=pull_request"
+            f"&head_sha={quote(exact_head_sha)}&per_page=100",
+            token,
+        ),
+        exact_head_sha=exact_head_sha,
+    )
+    fingerprint = tracked_worktree_source_fingerprint(root)
+    last_error: CertificationReceiptError | None = None
+    for run in runs:
+        run_id = int(run["id"])
+        if run_id == current_workflow_run_id:
+            continue
+        try:
+            artifact = select_receipt_artifact(
+                _github_json(
+                    f"{api}/actions/runs/{run_id}/artifacts?per_page=100",
+                    token,
+                ),
+                workflow_run_id=run_id,
+            )
+            receipt = receipt_from_archive(
+                _github_request(str(artifact["archive_download_url"]), token)
+            )
+            validate_receipt(
+                receipt,
+                repository=repository,
+                pull_request=pull_request,
+                exact_head_sha=exact_head_sha,
+                workflow_run_id=run_id,
+                evaluated_source_tree_fingerprint=fingerprint,
+            )
+            return receipt
+        except CertificationReceiptError as exc:
+            last_error = exc
+    raise last_error or CertificationReceiptError(
+        "Pull request has no reusable exact-head certification receipt"
+    )
+
+
 def verify_main_certification(
     *,
     repository: str,
@@ -426,6 +556,21 @@ def _read_needs(raw: str) -> Mapping[str, Any]:
     return value
 
 
+def _write_receipt(receipt: CertificationReceipt, output: str | Path) -> None:
+    path = Path(output)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(receipt.to_dict(), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+
+def _write_github_output(path: str | Path, *, reusable: bool) -> None:
+    with Path(path).open("a", encoding="utf-8", newline="\n") as stream:
+        stream.write(f"reuse_certification={str(reusable).lower()}\n")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="operation", required=True)
@@ -436,11 +581,29 @@ def main(argv: list[str] | None = None) -> int:
     create.add_argument("--workflow-run-id", type=int, required=True)
     create.add_argument("--needs-json", required=True)
     create.add_argument("--output", required=True)
+    can_reuse = subparsers.add_parser("can-reuse-pr")
+    can_reuse.add_argument("--repository", required=True)
+    can_reuse.add_argument("--pull-request", type=int, required=True)
+    can_reuse.add_argument("--exact-head-sha", required=True)
+    can_reuse.add_argument("--workflow-run-id", type=int, required=True)
+    can_reuse.add_argument("--event-action", required=True)
+    can_reuse.add_argument("--github-output", required=True)
+    reuse = subparsers.add_parser("reuse-pr")
+    reuse.add_argument("--repository", required=True)
+    reuse.add_argument("--pull-request", type=int, required=True)
+    reuse.add_argument("--exact-head-sha", required=True)
+    reuse.add_argument("--workflow-run-id", type=int, required=True)
+    reuse.add_argument("--output", required=True)
     verify = subparsers.add_parser("verify-main")
     verify.add_argument("--repository", required=True)
     verify.add_argument("--merge-sha", required=True)
     args = parser.parse_args(argv)
     try:
+        token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+        if args.operation != "create" and not token:
+            raise CertificationReceiptError(
+                "GH_TOKEN or GITHUB_TOKEN is required"
+            )
         if args.operation == "create":
             receipt = build_receipt(
                 repository=args.repository,
@@ -449,20 +612,54 @@ def main(argv: list[str] | None = None) -> int:
                 workflow_run_id=args.workflow_run_id,
                 needs=_read_needs(args.needs_json),
             )
-            output = Path(args.output)
-            output.parent.mkdir(parents=True, exist_ok=True)
-            output.write_text(
-                json.dumps(receipt.to_dict(), indent=2, sort_keys=True) + "\n",
-                encoding="utf-8",
-                newline="\n",
-            )
+            _write_receipt(receipt, args.output)
             print(json.dumps(receipt.to_dict(), sort_keys=True))
             return 0
-        token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
-        if not token:
-            raise CertificationReceiptError(
-                "GH_TOKEN or GITHUB_TOKEN is required"
+        if args.operation == "can-reuse-pr":
+            reusable = False
+            reason = "source-changing or non-edit event"
+            if args.event_action == "edited":
+                try:
+                    find_previous_pr_certification(
+                        repository=args.repository,
+                        pull_request=args.pull_request,
+                        exact_head_sha=args.exact_head_sha,
+                        current_workflow_run_id=args.workflow_run_id,
+                        token=token,
+                    )
+                    reusable = True
+                    reason = "validated prior exact-head certification"
+                except CertificationReceiptError as exc:
+                    reason = str(exc)
+            _write_github_output(
+                args.github_output,
+                reusable=reusable,
             )
+            print(
+                json.dumps(
+                    {
+                        "reuse_certification": reusable,
+                        "reason": reason,
+                    },
+                    sort_keys=True,
+                )
+            )
+            return 0
+        if args.operation == "reuse-pr":
+            prior = find_previous_pr_certification(
+                repository=args.repository,
+                pull_request=args.pull_request,
+                exact_head_sha=args.exact_head_sha,
+                current_workflow_run_id=args.workflow_run_id,
+                token=token,
+            )
+            receipt = build_reused_receipt(
+                prior,
+                workflow_run_id=args.workflow_run_id,
+            )
+            _write_receipt(receipt, args.output)
+            print(json.dumps(receipt.to_dict(), sort_keys=True))
+            return 0
         receipt = verify_main_certification(
             repository=args.repository,
             merge_sha=args.merge_sha,

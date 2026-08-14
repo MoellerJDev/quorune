@@ -94,6 +94,28 @@ class UntapAllCreaturesIntent:
 
 
 @dataclass(frozen=True, slots=True)
+class CreateRegenerationShieldIntent:
+    actor: str
+    object_ref: str
+    logical_object_id: str
+    reason: str
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (
+                self.actor,
+                self.object_ref,
+                self.logical_object_id,
+                self.reason,
+            )
+        ):
+            raise ValueError(
+                "Regeneration intents require actor, object, incarnation, and reason"
+            )
+
+
+@dataclass(frozen=True, slots=True)
 class DestroyPermanentIntent:
     actor: str
     object_ref: str
@@ -1213,6 +1235,7 @@ SemanticIntent: TypeAlias = (
     | BecomeMonarchIntent
     | SetPermanentTappedIntent
     | UntapAllCreaturesIntent
+    | CreateRegenerationShieldIntent
     | DestroyPermanentIntent
     | DestroyPermanentSetIntent
     | ReturnPermanentToOwnerHandIntent

@@ -4,6 +4,7 @@ import io
 import json
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 import zipfile
 
 from scripts.certification_receipt import (
@@ -11,7 +12,9 @@ from scripts.certification_receipt import (
     CertificationReceiptError,
     RECEIPT_FILENAME,
     REQUIRED_CHECK_SUITE,
+    build_reused_receipt,
     canonical_check_suite,
+    find_previous_pr_certification,
     receipt_from_archive,
     select_merged_pull_request,
     select_receipt_artifact,
@@ -56,6 +59,24 @@ class CertificationReceiptTests(unittest.TestCase):
             workflow_run_id=value.workflow_run_id,
             evaluated_source_tree_fingerprint=value.source_tree_fingerprint,
         )
+
+    def test_metadata_only_publication_preserves_original_evidence_run(self):
+        prior = receipt()
+        first_reuse = build_reused_receipt(prior, workflow_run_id=23456)
+        second_reuse = build_reused_receipt(
+            first_reuse,
+            workflow_run_id=34567,
+        )
+        self.assertEqual("reused", first_reuse.certification_mode)
+        self.assertEqual(23456, first_reuse.workflow_run_id)
+        self.assertEqual(12345, first_reuse.evidence_workflow_run_id)
+        self.assertEqual(12345, second_reuse.evidence_workflow_run_id)
+        self.assertEqual(prior.check_suite, second_reuse.check_suite)
+        with self.assertRaisesRegex(
+            CertificationReceiptError,
+            "new publication workflow",
+        ):
+            build_reused_receipt(prior, workflow_run_id=12345)
 
     def test_materially_changed_source_tree_is_not_certified(self):
         value = receipt()
@@ -185,6 +206,69 @@ class CertificationReceiptTests(unittest.TestCase):
         with self.assertRaisesRegex(CertificationReceiptError, "only"):
             receipt_from_archive(stream.getvalue())
 
+    def test_prior_exact_head_lookup_validates_receipt_before_reuse(self):
+        prior = receipt()
+        archive = io.BytesIO()
+        with zipfile.ZipFile(archive, "w") as zipped:
+            zipped.writestr(
+                RECEIPT_FILENAME,
+                json.dumps(prior.to_dict(), sort_keys=True),
+            )
+        responses = iter(
+            (
+                {
+                    "workflow_runs": [
+                        {
+                            "id": 12345,
+                            "event": "pull_request",
+                            "head_sha": "a" * 40,
+                            "name": "PR",
+                            "path": ".github/workflows/ci.yml",
+                        },
+                        {
+                            "id": 23456,
+                            "event": "pull_request",
+                            "head_sha": "a" * 40,
+                            "name": "PR",
+                            "path": ".github/workflows/ci.yml",
+                        },
+                    ]
+                },
+                {
+                    "artifacts": [
+                        {
+                            "name": "exact-head-certification-12345",
+                            "expired": False,
+                            "archive_download_url": "https://example.invalid/receipt",
+                        }
+                    ]
+                },
+            )
+        )
+        with (
+            patch(
+                "scripts.certification_receipt._github_json",
+                side_effect=lambda *_args: next(responses),
+            ),
+            patch(
+                "scripts.certification_receipt._github_request",
+                return_value=archive.getvalue(),
+            ),
+            patch(
+                "scripts.certification_receipt."
+                "tracked_worktree_source_fingerprint",
+                return_value=prior.source_tree_fingerprint,
+            ),
+        ):
+            found = find_previous_pr_certification(
+                repository=prior.repository,
+                pull_request=prior.pull_request,
+                exact_head_sha=prior.exact_head_sha,
+                current_workflow_run_id=23456,
+                token="test-token",
+            )
+        self.assertEqual(prior, found)
+
     def test_workflow_preserves_required_gates_and_publishes_receipt(self):
         workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(
             encoding="utf-8"
@@ -198,6 +282,8 @@ class CertificationReceiptTests(unittest.TestCase):
         )
         self.assertIn("python scripts/verify_ci_needs.py", certification)
         self.assertIn("certification_receipt.py create", certification)
+        self.assertIn("certification_receipt.py reuse-pr", certification)
+        self.assertIn("needs.plan.outputs.reuse_certification", certification)
         self.assertIn("actions/upload-artifact@v4", certification)
 
 

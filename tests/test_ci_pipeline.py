@@ -489,6 +489,12 @@ class CiPipelineTests(unittest.TestCase):
         self.assertIn("opened, synchronize, reopened, edited", pr)
         self.assertNotIn("ready_for_review", pr)
         self.assertIn("python scripts/validate_pr_body.py", pr)
+        self.assertIn("certification_receipt.py can-reuse-pr", pr)
+        self.assertIn("--event-action \"${{ github.event.action }}\"", pr)
+        self.assertGreaterEqual(
+            pr.count("needs.plan.outputs.reuse_certification"),
+            12,
+        )
         self.assertLess(
             pr.index("python scripts/validate_pr_body.py"),
             pr.index("python scripts/ci_plan.py"),

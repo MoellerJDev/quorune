@@ -312,9 +312,12 @@ result and every other required job through `needs`, and fails unless all
 succeeded. Protect `main` with the exact required status context
 `PR / Certification`. After verifying those dependencies, the job publishes an
 untracked `exact-head-certification-<run-id>` artifact. Its strict receipt pins
-the repository, pull request, exact PR-head SHA, workflow run, complete required
+the repository, pull request, exact PR-head SHA, publication workflow run,
+original evidence workflow run, executed-or-reused mode, complete required
 check suite, fingerprint algorithm, and tracked source-tree fingerprint. It
-does not contain or predict the eventual merge SHA.
+does not contain or predict the eventual merge SHA. An unchanged-head metadata
+run may reissue a receipt only after downloading and validating the earlier
+live receipt; its provenance continues to name the original matrix run.
 
 The pre-sharding public baseline is run `31025126367`: its single Windows
 discovery process executed the complete test allocation in 2,265.245 seconds
@@ -373,7 +376,20 @@ GitHub API call and fails deterministically when the tracked template is still
 untouched, a required section or evidence result is blank, an N/A has no
 reason, or a safety assertion remains unchecked. Editing the description
 restarts the gate, so a contributor can correct metadata without changing the
-certified source tree.
+certified source tree. For an `edited` event, Plan validates the new body and
+then looks for a live successful certification receipt for the same pull
+request and exact head. When that receipt and the checked-out tracked-source
+fingerprint match, every expensive Linux, Windows, package, generated, and
+browser job is skipped and `PR / Certification` publishes a provenance-carrying
+reuse receipt. Missing, expired, malformed, mismatched, or unavailable evidence
+falls back to the complete matrix. Open, synchronize, and reopen events always
+run the complete matrix.
+
+The PR workflow intentionally does not subscribe to `ready_for_review`; moving
+an unchanged draft into review therefore does not start regression by itself.
+Finalize the full template before the first source push and do not replace a
+green run's pending-CI sentence with a passed-CI sentence: that description
+edit is unnecessary even though it is now lightweight and exact-head safe.
 
 Generated work named in the description must cite the canonical
 `scripts/finalize_generated.py --write` command. A claimed broad local pass

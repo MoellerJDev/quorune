@@ -712,6 +712,29 @@ def targeted_destruction_node_capabilities(
     )
 
 
+def self_regeneration_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return ownership only for one self-zone-object regeneration action."""
+
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if mechanics != {"regenerate"} or target_schema is not None:
+        return ()
+    if len(effects) != 1:
+        return ()
+    effect = effects[0]
+    if (
+        set(effect) != {"op", "card"}
+        or effect.get("op") != "regenerate"
+        or effect.get("card") != SOURCE_ZONE_OBJECT
+    ):
+        return ()
+    return ("permanent.regeneration.self_activation",)
+
+
 def mass_destruction_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -1560,6 +1583,7 @@ __all__ = [
     "fixed_mana_cumulative_upkeep_node_capabilities",
     "single_explore_node_capabilities",
     "single_proliferate_node_capabilities",
+    "self_regeneration_node_capabilities",
     "fixed_self_counter_keyword_action_node_capabilities",
     "fixed_bolster_node_capabilities",
     "fixed_amass_node_capabilities",

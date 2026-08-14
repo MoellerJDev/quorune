@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 3,
+  "contract_version": 4,
   "mechanic_id": "deathtouch",
   "official_name": "Deathtouch",
   "effective_date": "2026-06-19",
@@ -23,7 +23,7 @@
     "hidden_information": [],
     "apnap": ["combat assignments and replacement choices retain canonical APNAP order"],
     "layers": ["current represented abilities determine assignment; pinned source abilities determine the damage result"],
-    "replacement_effects": ["prevented damage creates no deathtouch result", "regeneration of the destruction event remains outside this bounded capability"],
+    "replacement_effects": ["prevented damage creates no deathtouch result", "one represented regeneration shield replaces the resulting state-based destruction and clears the one-check marker"],
     "copy": ["represented copiable characteristics may supply deathtouch"],
     "control_change": ["the source controller does not change deathtouch's lethal result"],
     "zone_change": ["the pinned source snapshot preserves represented last-known deathtouch"],
@@ -34,6 +34,6 @@
   "rulings": [],
   "test_ids": ["test_deathtouch_and_marked_damage_each_reduce_trample_lethal", "test_deathtouch_damage_from_another_attacker_is_lethal", "test_zero_deathtouch_assignment_is_not_lethal", "test_noncombat_deathtouch_uses_pinned_source_lki", "test_legacy_event_flag_cannot_grant_deathtouch", "test_persisted_marker_and_check_collection_fail_closed", "test_wither_damage_still_records_deathtouch_result", "test_indestructible_consumes_deathtouch_at_the_first_sba_check", "test_stale_check_batch_rolls_back_without_consuming_any_marker", "test_four_player_deathtouch_result_is_source_derived_and_replays", "test_deathtouch_assignment_and_result_mutants_are_killed"],
   "implementation": {"component": "quorune.deathtouch", "version": "deathtouch-assignment-result-v1"},
-  "known_blockers": ["regeneration is not implemented", "unsupported continuous-effect, copy, face-down, and ability-changing producers remain fail-closed"],
+  "known_blockers": ["unsupported continuous-effect, copy, face-down, and ability-changing producers remain fail-closed"],
   "review_status": "reviewed"
 }

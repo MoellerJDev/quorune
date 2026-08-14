@@ -85,6 +85,12 @@ marker remain in the historical no-history mode so later replay does not add
 control-acquisition or upkeep timestamps that were absent from their command
 hashes.
 
+Regeneration shields use the same additive compatibility rule. A positive
+`CardInstance.regeneration_shields` value is authoritative public
+logical-object state; zero is omitted so historical Game Record v3 card payloads
+retain their byte representation and hashes. Cleanup and any zone change that
+creates a new object clear the value.
+
 ## Lifecycle and atomicity
 
 Lifecycle values are `created`, `in_progress`, `paused`, `complete`, `aborted`,

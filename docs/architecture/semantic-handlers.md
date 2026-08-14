@@ -49,6 +49,13 @@ mutation. Broad legacy exile and return operations remain separate because they
 represent other origins, destinations, quantities, choices, or hidden-zone
 movement outside these closed direct-target grammars.
 
+Self-regeneration lowers through its own strict source-identity handler. It
+creates public until-cleanup shield state on the same logical source object;
+the destruction transaction consumes that state for represented effect or
+damage state-based destruction and coordinates tapping, damage removal, and
+combat removal. A simultaneous shield-counter choice fails before mutation
+until the affected-player ordering continuation is represented.
+
 The direct-target compiler families share structural builders for their one
 effect, closed target schema, and mechanics tuple, while each family retains
 its own grammar and capability owner. Their runtime handlers likewise share

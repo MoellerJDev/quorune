@@ -425,6 +425,8 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/state_based_execution.py",
     }:
         return "destruction"
+    if relative == "quorune/regeneration.py":
+        return "regeneration"
     if relative in {
         "quorune/damage.py",
         "quorune/damage_prevention.py",

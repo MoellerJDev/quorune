@@ -24,12 +24,15 @@ decisions, events, yields, and fidelity telemetry. During migration,
 `CommanderEngine` remains the declared general mutation owner. Casting and
 activation use read-only immutable proposal builders followed by declared
 typed commit owners; `mana_activation.py`, `tap_state.py`, and
-`token_creation.py`, `destruction.py`, `permanent_exile.py`, and
+`token_creation.py`, `regeneration.py`, `destruction.py`, `permanent_exile.py`, and
 `return_to_hand.py` own focused transactions behind typed host protocols.
 `stack_counter.py` owns represented counterability checks, stack removal,
 replacement-aware countered-spell movement, telemetry, and public journaling.
 Destruction delegates shield removal to the counter owner and permanent
-movement to the zone owner; direct exile and return snapshot owner, controller,
+movement to the zone owner. Regeneration shields are public logical-object
+state: the regeneration owner creates them, cleanup and zone-object reset clear
+them, and destruction consumes one while coordinating canonical tap, damage,
+and combat state. Direct exile and return snapshot owner, controller,
 and object identity through one closed single-object transition substrate before
 delegating their distinct requested destinations to that same replacement-aware
 zone owner.
@@ -41,10 +44,12 @@ temporary, continuous-grant, and keyword-counter instances already represented
 by that view. It prohibits only destruction: zero toughness, sacrifice, exile,
 and other nondestruction movement remain owned by their normal rules paths.
 Ordinary Trample still assigns lethal damage without treating Indestructible as
-damage already assigned. Regeneration, qualified or conditional wording,
-player-facing Indestructible, and unrepresented copy, face-down, merged-object,
-or ability-changing producers remain fail-closed blockers; the aggregate
-Indestructible mechanic remains partial.
+damage already assigned. The exact self-creature regeneration activation now
+replaces represented effect or damage state-based destruction; static,
+targeted, cannot-be-regenerated, and competing shield-counter choice grammar
+remains fail closed. Qualified or conditional player-facing Indestructible and
+unrepresented copy, face-down, merged-object, or ability-changing producers
+also remain blockers; both aggregate mechanics remain partial.
 Capability lifecycle and replay hydration have narrowly declared compatibility
 ownership. All other rules helpers return values or operate through an
 approved mutation boundary. Typed semantic handlers receive
