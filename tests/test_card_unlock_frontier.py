@@ -41,23 +41,7 @@ def _contracts() -> list[dict]:
     )
 
 
-class CardUnlockFrontierTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.db = CardDatabase(DB_PATH)
-        cls.capabilities = load_default_capability_registry()
-        cls.report = build_card_unlock_frontier(
-            cls.db,
-            registry=SemanticRegistry(),
-            capabilities=cls.capabilities,
-            mechanic_contracts=_contracts(),
-            limit=20,
-        )
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.db.close()
-
+class ResidualClassifierTests(unittest.TestCase):
     def test_residual_classifier_uses_dependency_sized_canonical_families(self):
         keyword = canonical_residual_families(
             {
@@ -106,11 +90,136 @@ class CardUnlockFrontierTests(unittest.TestCase):
             (
                 "effect_clause:create-token",
                 "effect_clause:destroy-target",
+                "effect_clause:ordered-effect-composition",
                 "reference_binding:linked-result-reference",
                 "target_or_choice:target-predicate",
             ),
             compound,
         )
+
+    def test_residual_classifier_separates_damage_grammar_families(self):
+        examples = (
+            (
+                (
+                    "Creatures you control gain first strike until end of turn. "
+                    "(They deal combat damage before creatures without first "
+                    "strike.)"
+                ),
+                (
+                    "duration:until-end-of-turn",
+                    "effect_clause:unparsed-creatures-you-control",
+                ),
+            ),
+            (
+                "Prevent all damage that creatures would deal this turn.",
+                ("replacement:damage-prevention",),
+            ),
+            (
+                "Fixture deals 3 damage to any target and you gain 3 life.",
+                (
+                    "effect_clause:deal-damage",
+                    "effect_clause:life-change",
+                    "effect_clause:ordered-effect-composition",
+                ),
+            ),
+            (
+                "Fixture deals 2 damage to any target. Scry 2.",
+                (
+                    "effect_clause:deal-damage",
+                    "effect_clause:ordered-effect-composition",
+                    "effect_clause:scry",
+                ),
+            ),
+            (
+                (
+                    "Fixture deals 3 damage divided as you choose among one, "
+                    "two, or three targets."
+                ),
+                (
+                    "effect_clause:deal-damage",
+                    "target_or_choice:divided-damage-allocation",
+                    "target_or_choice:multiple-targets",
+                ),
+            ),
+            (
+                "Fixture deals 2 damage to each creature without flying.",
+                (
+                    "effect_clause:deal-damage",
+                    "target_or_choice:target-predicate",
+                ),
+            ),
+            (
+                (
+                    "Fixture deals 6 damage to target creature and 2 damage "
+                    "to up to one other target creature token."
+                ),
+                (
+                    "effect_clause:deal-damage",
+                    "effect_clause:ordered-effect-composition",
+                    "target_or_choice:multiple-damage-recipients",
+                    "target_or_choice:multiple-targets",
+                    "target_or_choice:target-predicate",
+                ),
+            ),
+            (
+                "Fixture deals 4 damage to target white or blue creature.",
+                (
+                    "effect_clause:deal-damage",
+                    "target_or_choice:target-predicate",
+                ),
+            ),
+            (
+                "Fixture deals 4 damage to any target and 2 damage to you.",
+                (
+                    "effect_clause:deal-damage",
+                    "effect_clause:ordered-effect-composition",
+                    "target_or_choice:multiple-damage-recipients",
+                ),
+            ),
+            (
+                (
+                    "Until end of turn, creatures you control gain "
+                    '"{T}: This creature deals 1 damage to any target."'
+                ),
+                (
+                    "continuous_layer:granted-ability",
+                    "duration:until-end-of-turn",
+                ),
+            ),
+        )
+        for text, expected in examples:
+            with self.subTest(text=text):
+                self.assertEqual(
+                    expected,
+                    canonical_residual_families(
+                        {
+                            "kind": "spell_effect",
+                            "reason": (
+                                "spell effect has no exact generic template"
+                            ),
+                            "blockers": [],
+                            "text": text,
+                        }
+                    ),
+                )
+
+
+class CardUnlockFrontierTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.db = CardDatabase(DB_PATH)
+        cls.capabilities = load_default_capability_registry()
+        cls.report = build_card_unlock_frontier(
+            cls.db,
+            registry=SemanticRegistry(),
+            capabilities=cls.capabilities,
+            mechanic_contracts=_contracts(),
+            limit=20,
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.db.close()
 
     def test_limited_frontier_accounts_for_every_card_and_material_ability(self):
         report = self.report

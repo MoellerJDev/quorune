@@ -42,7 +42,10 @@ component identities remain distinct pieces and retain links to their existing
 authorities. Material frontier families become residual pieces. Card-text-
 shaped `unparsed-*` frontier clusters collapse to one shared grammar boundary
 per compiler stage; the exact clusters remain drill-down source IDs and are not
-misrepresented as reusable primitives.
+misrepresented as reusable primitives. Frontier classification excludes
+parenthesized reminder text and quoted granted-ability bodies from the outer
+clause, and records composition, prevention, target grammar, and duration as
+separate dependency leaves when they are visibly present.
 
 The closed relation vocabulary records intrinsic consumption, production,
 observation, modification, granting, removal, replacement, prevention,
