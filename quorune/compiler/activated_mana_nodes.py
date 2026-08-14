@@ -16,6 +16,10 @@ from ..fixed_mana_abilities import (
     compile_fixed_activated_mana_ability,
     fixed_mana_handler_descriptor,
 )
+from ..intrinsic_basic_land_mana import (
+    INTRINSIC_BASIC_LAND_MANA_CAPABILITY,
+    expected_intrinsic_basic_land_mana_reminder,
+)
 from ..rules.capabilities import CapabilityRegistry
 from .activated_costs import activated_ability_cost
 from .dependency_gate import (
@@ -395,12 +399,92 @@ def _activated_effect_material(ability: Any) -> str:
     ).strip()
 
 
+def _intrinsic_basic_land_mana_reminder_node(
+    *,
+    node_id: str,
+    line: str,
+    reminder_line: str,
+    type_line: str,
+    span: SourceSpan,
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleNode:
+    expected_reminder = expected_intrinsic_basic_land_mana_reminder(type_line)
+    if reminder_line != expected_reminder:
+        residual_id = append_residual(
+            residuals,
+            kind="mana_ability",
+            text=line,
+            span=span,
+            reason=(
+                "parenthesized mana reminder text is nonexecuting and "
+                "does not exactly match the intrinsic abilities derived "
+                "from the printed land types"
+            ),
+            blockers=("intrinsic basic-land-type mana capability",),
+        )
+        return OracleNode(
+            node_id=node_id,
+            kind="reminder_text",
+            text=line,
+            span=span,
+            active_zone="all",
+            event="none",
+            lowerable=False,
+            exact=False,
+            template_id="basic-land-mana-reminder-residual-v1",
+            residual_ids=(residual_id,),
+        )
+    gate = explicit_capabilities_gate(
+        (INTRINSIC_BASIC_LAND_MANA_CAPABILITY,),
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind="dependency_contract",
+                text=line,
+                span=span,
+                reason=(
+                    "intrinsic basic-land-type mana reminder lacks "
+                    "a trusted capability closure"
+                ),
+                blockers=gate.blockers,
+            ),
+        )
+        if gate.blockers
+        else ()
+    )
+    closure, profile, fingerprint = _dependency_metadata(gate)
+    return OracleNode(
+        node_id=node_id,
+        kind="reminder_text",
+        text=line,
+        span=span,
+        active_zone="all",
+        event="none",
+        lowerable=True,
+        exact=not gate.blockers,
+        template_id="intrinsic-basic-land-mana-reminder-v1",
+        runtime_coverage=("intrinsic_basic_land_mana",),
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=closure,
+        capability_profile=profile,
+        capability_fingerprint=fingerprint,
+    )
+
+
 def activated_oracle_node(
     *,
     node_id: str,
     line: str,
     span: SourceSpan,
     card_name: str,
+    type_line: str,
     keywords: Sequence[str],
     trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
@@ -420,29 +504,15 @@ def activated_oracle_node(
         reminder_line.casefold().startswith("({t}: add ")
         and reminder_line.endswith(")")
     ):
-        residual_id = append_residual(
-            residuals,
-            kind="mana_ability",
-            text=line,
-            span=span,
-            reason=(
-                "parenthesized mana reminder text is nonexecuting and "
-                "requires the separate intrinsic basic-land-type ability "
-                "owner"
-            ),
-            blockers=("intrinsic basic-land-type mana capability",),
-        )
-        return OracleNode(
+        return _intrinsic_basic_land_mana_reminder_node(
             node_id=node_id,
-            kind="reminder_text",
-            text=line,
+            line=line,
+            reminder_line=reminder_line,
+            type_line=type_line,
             span=span,
-            active_zone="all",
-            event="none",
-            lowerable=False,
-            exact=False,
-            template_id="basic-land-mana-reminder-residual-v1",
-            residual_ids=(residual_id,),
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+            residuals=residuals,
         )
     abilities = parse_activated_abilities(
         card_name=card_name,

@@ -302,6 +302,7 @@ def _validate_generated_program_trust(
     ir: Any,
     *,
     trust_level: str,
+    has_rules_derived_trust_carrier: bool,
 ) -> None:
     if trust_level != "trusted":
         return
@@ -320,6 +321,12 @@ def _validate_generated_program_trust(
         )
         is not None
     )
+    if not generated_nodes and has_rules_derived_trust_carrier:
+        # A rules-derived card-form declaration can be the only executable
+        # trust carrier (for example, a basic land whose Oracle line is solely
+        # nonexecuting reminder text).  CardProgram residual and card-form
+        # validation owns trust only when the caller found such a declaration.
+        return
     if generated_nodes and any(
         _generated_node_is_independently_exact(node)
         for node in generated_nodes
@@ -1029,6 +1036,7 @@ def generated_programs(
     trusted_mechanics: Iterable[str] = (),
     capability_registry: CapabilityRegistry | None = None,
     capability_profile: str = "traditional",
+    has_rules_derived_trust_carrier: bool = False,
 ) -> list[SemanticProgram]:
     """Lower exact Oracle IR nodes into the generic effect DSL."""
 
@@ -1042,7 +1050,11 @@ def generated_programs(
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )
-    _validate_generated_program_trust(ir, trust_level=trust_level)
+    _validate_generated_program_trust(
+        ir,
+        trust_level=trust_level,
+        has_rules_derived_trust_carrier=has_rules_derived_trust_carrier,
+    )
     programs: list[SemanticProgram] = []
     rulings_hash = rulings_source_hash(db, record)
     for face in ir.faces:

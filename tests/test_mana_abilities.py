@@ -1,17 +1,22 @@
 from __future__ import annotations
 
 import json
+import tempfile
 import unittest
 from types import SimpleNamespace
 from pathlib import Path
 
 from common import keep_all, load_assets, make_session
 from quorune.abilities import parse_activated_abilities
+from quorune.card_programs import compile_card_program
 from quorune.mana_undo import (
     available_mana_undo,
     undo_mana_activation,
 )
-from quorune.model import StackItem
+from quorune.model import CardInstance, StackItem
+from quorune.oracle_ir import compile_oracle_card
+from quorune.record import checkpoint_envelope, replay_record
+from quorune.rules.capabilities import load_default_capability_registry
 
 
 class ManaAbilityRuleTests(unittest.TestCase):
@@ -250,6 +255,182 @@ class ManaAbilityRuleTests(unittest.TestCase):
         )
         self.assertEqual(before_life - 1, engine.state.players["B"].life)
         self.assertEqual(1, engine.state.players["B"].mana_pool["B"])
+
+    def test_intrinsic_basic_land_mana_offer_submission_and_replay_are_controller_scoped(
+        self,
+    ):
+        session = make_session(
+            self.db,
+            self.mishra,
+            self.zimone,
+            players=4,
+            seed=60506,
+        )
+        keep_all(session)
+        engine = session.engine
+        pool = self.card(engine, "B", "Breeding Pool")
+        record = engine.card_record(pool)
+        card_program = compile_card_program(
+            self.db,
+            record,
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+            trust_level="trusted",
+        )
+        declarations = [
+            ability
+            for ability in card_program.to_dict()["abilities"]
+            if ability["runtime"]["provenance"].get("template_id")
+            == "intrinsic_basic_land_mana"
+        ]
+        self.assertEqual(
+            {"forest", "island"},
+            {
+                ability["runtime"]["provenance"]["card_form_descriptor"]
+                ["basic_land_type"]
+                for ability in declarations
+            },
+        )
+        pool = engine.move_card(
+            pool.object_id,
+            "battlefield",
+            controller="B",
+            tapped=False,
+            log=False,
+        )
+        pool.tapped = False
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.active_player = "B"
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine.state.stack.clear()
+        engine.state.priority_player = None
+        engine.state.priority_passes = []
+        engine._grant_priority("B")
+        engine._issue_priority("B")
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        packet = session.packet("pilot:B", full=True)
+        action = next(
+            value
+            for value in packet["decision"]["legal_actions"]
+            if value.get("action") == "activate"
+            and value.get("source") == pool.ref
+            and value.get("ability") == "intrinsic_forest"
+        )
+        self.assertEqual(
+            {"intrinsic_island", "intrinsic_forest"},
+            {
+                value["ability"]
+                for value in packet["decision"]["legal_actions"]
+                if value.get("action") == "activate"
+                and value.get("source") == pool.ref
+            },
+        )
+        before = {
+            seat: engine.state.players[seat].mana_pool["G"]
+            for seat in "ABCD"
+        }
+        result = session.act("pilot:B", {"action_id": action["id"]})
+        self.assertTrue(result.ok, result.summary)
+        self.assertTrue(pool.tapped)
+        self.assertEqual(before["B"] + 1, engine.state.players["B"].mana_pool["G"])
+        for seat in "ACD":
+            self.assertEqual(before[seat], engine.state.players[seat].mana_pool["G"])
+        self.assertEqual([], engine.state.stack)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "intrinsic-basic-land-mana"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+
+    def test_murmuring_bosk_intrinsic_mana_executes_while_replacement_stays_residual(
+        self,
+    ):
+        capabilities = load_default_capability_registry()
+        record = self.db.lookup("Murmuring Bosk", fuzzy=False)
+        compiled = compile_oracle_card(
+            record,
+            capability_registry=capabilities,
+            capability_profile="commander_review",
+        )
+        blockers = {
+            blocker
+            for residual in compiled.material_residuals
+            for blocker in residual.blockers
+        }
+        self.assertGreaterEqual(
+            blockers,
+            {
+                "replacement applicability",
+                "self-replacement and prevention ordering",
+            },
+        )
+        self.assertTrue(
+            any(
+                node.template_id
+                == "intrinsic-basic-land-mana-reminder-v1"
+                and node.capability_dependencies
+                == ("mana.intrinsic.basic_land_type",)
+                for node in compiled.faces[0].nodes
+            )
+        )
+
+        session = make_session(
+            self.db,
+            self.mishra,
+            self.zimone,
+            players=4,
+            seed=60507,
+        )
+        keep_all(session)
+        engine = session.engine
+        bosk = CardInstance(
+            object_id="fixture:murmuring-bosk",
+            ref="B-murmuring-bosk",
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner="B",
+            controller="B",
+            zone="battlefield",
+            zone_timestamp=engine._next_zone_timestamp(),
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+        )
+        engine.state.cards[bosk.object_id] = bosk
+        engine.state.players["B"].zones["battlefield"].append(bosk.object_id)
+        self.prepare_main(engine, "B")
+        engine.permissions.invalidate_current()
+        engine._grant_priority("B")
+        engine._issue_priority("B")
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        packet = session.packet("pilot:B", full=True)
+        action = next(
+            value
+            for value in packet["decision"]["legal_actions"]
+            if value.get("action") == "activate"
+            and value.get("source") == bosk.ref
+            and value.get("ability") == "intrinsic_forest"
+        )
+        before = engine.state.players["B"].mana_pool["G"]
+        result = session.act("pilot:B", {"action_id": action["id"]})
+        self.assertTrue(result.ok, result.summary)
+        self.assertTrue(bosk.tapped)
+        self.assertEqual(before + 1, engine.state.players["B"].mana_pool["G"])
+        self.assertEqual([], engine.state.stack)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "murmuring-bosk-intrinsic-mana"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
 
     def test_mana_ability_can_activate_during_spell_payment(self):
         engine = self.make_engine(60503)

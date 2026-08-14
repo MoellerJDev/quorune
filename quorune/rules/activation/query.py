@@ -11,7 +11,7 @@ from ...card_overrides.game_record_v3 import (
     historical_game_record_v3_activated_abilities,
 )
 from ...fixed_mana_abilities import FixedManaMode
-from ...mana import BASIC_LAND_MANA
+from ...intrinsic_basic_land_mana import intrinsic_basic_land_mana_specs
 from ...util import normalize_mana_bundle
 
 
@@ -19,10 +19,6 @@ class ActivatedAbilityQueryHost(Protocol):
     semantics: Any
 
     def _effective_card_data(self, card: Any) -> dict[str, Any]: ...
-
-    def _type_parts(
-        self, type_line: str
-    ) -> tuple[set[str], set[str], set[str]]: ...
 
 
 def activated_abilities(
@@ -55,7 +51,7 @@ def activated_abilities(
             historical_game_record_v3_activated_abilities(card, data)
         )
     abilities.sort(key=lambda ability: ability.line_index)
-    _append_intrinsic_land_abilities(host, data, abilities)
+    _append_intrinsic_land_abilities(data, abilities)
     abilities.extend(_typed_granted_abilities(data))
     return tuple(abilities)
 
@@ -101,37 +97,35 @@ def _typed_granted_abilities(
 
 
 def _append_intrinsic_land_abilities(
-    host: ActivatedAbilityQueryHost,
     data: dict[str, Any],
     abilities: list[ActivatedAbility],
 ) -> None:
-    card_types, subtypes, _ = host._type_parts(str(data.get("type_line") or ""))
-    if "land" not in card_types:
-        return
-    represented = {
-        color
-        for ability in abilities
-        if ability.mana_ability
-        for mode in ability.fixed_mana_outputs
-        for color, amount in mode.bundle.items()
-        if amount
-    }
-    for subtype, color in BASIC_LAND_MANA.items():
-        if subtype in subtypes and color not in represented:
-            abilities.append(
-                ActivatedAbility(
-                    ability_id=f"intrinsic_{subtype}",
-                    line_index=20_000 + len(abilities),
-                    oracle_line=f"{{T}}: Add {{{color}}}.",
-                    cost_text="{T}",
-                    effect_text=f"Add {{{color}}}.",
-                    zones=("battlefield",),
-                    mana=normalize_mana_bundle(None),
-                    tap_source=True,
-                    mana_ability=True,
-                    fixed_mana_outputs=(
-                        FixedManaMode.from_bundle({color: 1}),
-                    ),
-                )
+    ability_ids = {ability.ability_id for ability in abilities}
+    for spec in intrinsic_basic_land_mana_specs(
+        str(data.get("type_line") or "")
+    ):
+        subtype = spec.basic_land_type
+        color = spec.mana_symbol
+        ability_id = f"intrinsic_{subtype}"
+        if ability_id in ability_ids:
+            raise ValueError(
+                f"Activated ability id {ability_id} is reserved for CR 305.6"
             )
+        abilities.append(
+            ActivatedAbility(
+                ability_id=ability_id,
+                line_index=20_000 + len(abilities),
+                oracle_line=f"{{T}}: Add {{{color}}}.",
+                cost_text="{T}",
+                effect_text=f"Add {{{color}}}.",
+                zones=("battlefield",),
+                mana=normalize_mana_bundle(None),
+                tap_source=True,
+                mana_ability=True,
+                fixed_mana_outputs=(
+                    FixedManaMode.from_bundle({color: 1}),
+                ),
+            )
+        )
+        ability_ids.add(ability_id)
 __all__ = ["ActivatedAbilityQueryHost", "activated_abilities"]

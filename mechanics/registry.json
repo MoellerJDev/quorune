@@ -400,8 +400,8 @@
     {
       "mechanic_id": "cr-605-mana-abilities",
       "path": "mechanics/contracts/mana-abilities.json",
-      "sha256": "f92b7deaf7fc69d5285c817df7561afe4410c19b600a8a0a7595c036d8055af9",
-      "version": 1
+      "sha256": "0c41600c9578b285fb3ea9fbc350ed5fc13c76a3fbc6f48fcde9ea2500c7512e",
+      "version": 2
     },
     {
       "mechanic_id": "melee",
@@ -8782,20 +8782,19 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/mana-abilities.json",
-      "contract_sha256": "f92b7deaf7fc69d5285c817df7561afe4410c19b600a8a0a7595c036d8055af9",
-      "contract_version": 1,
+      "contract_sha256": "0c41600c9578b285fb3ea9fbc350ed5fc13c76a3fbc6f48fcde9ea2500c7512e",
+      "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "FixedActivatedManaAbilitySpec, FixedActivatedManaAbilityHandler, activation query, ManaAbilityRuntime, and the canonical mana-activation transaction",
-      "implementation_version": "fixed-output-mana-ability-v1",
+      "implementation_component": "FixedActivatedManaAbilitySpec, IntrinsicBasicLandManaSpec, typed CardProgram card-form declarations, activation query, ManaAbilityRuntime, and the canonical mana-activation transaction",
+      "implementation_version": "typed-mana-ability-v2",
       "kind": "rules_section",
       "known_blockers": [
         "triggered mana abilities are not generically identified or dispatched outside the stack",
         "dynamic, conditional, restricted, and side-effecting mana-output grammar remains outside the fixed-output capability",
         "explicit mana activation during arbitrary rule/effect payment windows is not exposed as a general nested decision",
         "activation reentrancy is not represented as a state that can be independently tested",
-        "mana-production replacement and trigger integration is incomplete",
-        "parenthesized basic-land reminder text remains assigned to the separate intrinsic basic-land-type ability owner"
+        "mana-production replacement and trigger integration is incomplete"
       ],
       "mechanic_id": "cr-605-mana-abilities",
       "official_name": "Mana Abilities",
@@ -8825,7 +8824,13 @@
         "test_invalid_mode_rolls_back_fixed_mandatory_costs",
         "test_compiled_fixed_output_is_controller_scoped_in_four_player_game",
         "test_compiled_fixed_output_projection_exposes_no_hidden_cards",
-        "test_compiled_fixed_output_activation_replays_exactly"
+        "test_compiled_fixed_output_activation_replays_exactly",
+        "test_intrinsic_basic_land_mana_compiler_binds_type_line_and_reminder",
+        "test_intrinsic_basic_land_mana_rejects_malformed_descriptors_and_near_misses",
+        "test_intrinsic_basic_land_mana_uses_live_effective_land_types",
+        "test_intrinsic_basic_land_mana_offer_submission_and_replay_are_controller_scoped",
+        "test_intrinsic_basic_land_mana_compiler_and_runtime_mutants_are_killed",
+        "test_murmuring_bosk_intrinsic_mana_executes_while_replacement_stays_residual"
       ],
       "trust_level": "untrusted"
     },

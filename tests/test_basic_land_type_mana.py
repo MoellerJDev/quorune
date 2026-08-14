@@ -307,6 +307,26 @@ class BasicLandTypeManaTests(unittest.TestCase):
         self.assertTrue(projected_black["mana_ability"])
         self.assertIn("Add {B}", projected_black["label"])
 
+    def test_intrinsic_basic_land_mana_uses_live_effective_land_types(self):
+        session = self.session(3056008)
+        engine = session.engine
+        urborg = self.named(engine, "A", "Urborg, Tomb of Yawgmoth")
+        citadel = self.named(engine, "B", "Darksteel Citadel")
+        engine.move_card(urborg.object_id, "battlefield", controller="A")
+        citadel = engine.move_card(
+            citadel.object_id, "battlefield", controller="B"
+        )
+
+        self.assertIn(
+            "intrinsic_swamp",
+            {ability.ability_id for ability in engine._activated_abilities(citadel)},
+        )
+        engine.move_card(urborg.object_id, "graveyard")
+        self.assertNotIn(
+            "intrinsic_swamp",
+            {ability.ability_id for ability in engine._activated_abilities(citadel)},
+        )
+
     def test_additive_basic_land_type_preserves_existing_types_text_and_mana(self):
         descriptor = basic_land_type_addition_handler(
             "Each land is a Swamp in addition to its other land types."

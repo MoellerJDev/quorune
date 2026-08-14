@@ -95,7 +95,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v83"
+ORACLE_COMPILER_VERSION = "oracle-ir-v84"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -933,8 +933,8 @@ def _compile_face(
 
         activated_node = activated_oracle_node(
             node_id=node_id, line=line, span=span,
-            card_name=face_name or record.name, keywords=keywords,
-            trusted_mechanics=trusted_mechanics,
+            card_name=face_name or record.name, type_line=type_line,
+            keywords=keywords, trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry,
             capability_profile=capability_profile, residuals=residuals,
             effect_template=contextual_effect_template,
