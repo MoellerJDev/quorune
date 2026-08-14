@@ -15,10 +15,12 @@ from quorune.cycling_abilities import (
     OrdinaryCyclingAbilitySpec,
     compile_ordinary_cycling_ability,
 )
+from quorune.model import CardInstance
 from quorune.oracle_ir import (
     compile_oracle_card,
     register_generated_programs,
 )
+from quorune.projection import StateProjector
 from quorune.record import (
     authoritative_state_hash,
     checkpoint_envelope,
@@ -31,6 +33,7 @@ from quorune.semantic_runtime.cycling_abilities import (
     ordinary_cycling_specs_from_descriptors,
 )
 from quorune.semantics import SemanticRegistry
+from quorune.session import CommanderSession
 
 
 def cycling_record(
@@ -311,6 +314,102 @@ class OrdinaryCyclingRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             game_dir = Path(temporary) / "ordinary-cycling-replay"
             session.save(game_dir)
+            replay = replay_record(game_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_cycling_discard_replacement_suspends_before_mutation_and_replays(self):
+        session = self.session(7022906, players=4)
+        engine = session.engine
+        source, action_id = self.prepare(session)
+        voidwalker_record = self.db.lookup("Dauthi Voidwalker")
+        voidwalker = CardInstance(
+            object_id="fixture:cycling-voidwalker",
+            ref="B-cycling-voidwalker",
+            oracle_id=voidwalker_record.oracle_id,
+            printed_name=voidwalker_record.name,
+            owner="B",
+            controller="B",
+            zone="battlefield",
+            zone_timestamp=engine.state.event_sequence + 1,
+            acquired_control_turn_count=-1,
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+        )
+        engine.state.cards[voidwalker.object_id] = voidwalker
+        engine.state.players["B"].zones["battlefield"].append(
+            voidwalker.object_id
+        )
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (voidwalker_record,),
+            trust_level="provisional",
+            capability_registry=self.capabilities,
+            capability_profile=engine.state.config.review_profile,
+            promote_exact_runtime_handlers=True,
+            promote_exact_effect_programs=True,
+            promote_exact_capability_declarations=True,
+        )
+        engine.create_token(
+            "B",
+            name="",
+            copy_of=voidwalker.ref,
+            reason="Cycling discard replacement ordering witness",
+        )
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        engine.state.priority_passes = []
+        engine._grant_priority("A")
+        engine.pump()
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        mana_before = sum(engine.state.players["A"].mana_pool.values())
+
+        result = session.act("pilot:A", {"action_id": action_id})
+
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        self.assertEqual("hand", source.zone)
+        self.assertFalse(engine.state.stack)
+        self.assertEqual(
+            mana_before,
+            sum(engine.state.players["A"].mana_pool.values()),
+        )
+        projector = StateProjector(self.db, engine.state)
+        projected = projector._decision("pilot:A")
+        self.assertIsNotNone(projected)
+        for seat in ("B", "C", "D"):
+            self.assertIsNone(projector._decision(f"pilot:{seat}"))
+        assert projected is not None
+        selected = projected["ctx"]["options"][0]["id"]
+
+        with tempfile.TemporaryDirectory() as temporary:
+            game_dir = Path(temporary) / "cycling-discard-replacement"
+            session.save(game_dir)
+            restarted = CommanderSession.load(self.db, game_dir)
+            restarted_packet = StateProjector(
+                self.db, restarted.engine.state
+            )._decision("pilot:A")
+            assert restarted_packet is not None
+            self.assertEqual(
+                selected,
+                restarted_packet["ctx"]["options"][0]["id"],
+            )
+            result = restarted.act(
+                "pilot:A",
+                {"a": "choose", "replacement": selected},
+            )
+            self.assertTrue(result.ok, result.summary)
+            self.assertEqual(
+                "exile",
+                restarted.engine.state.cards[source.object_id].zone,
+            )
+            self.assertTrue(restarted.engine.state.stack)
+            expected_hash = authoritative_state_hash(restarted.engine.state)
+            restarted.save(game_dir)
             replay = replay_record(game_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])

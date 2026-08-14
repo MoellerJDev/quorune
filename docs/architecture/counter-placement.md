@@ -181,6 +181,14 @@ counter from one permanent exploring once, and ordinary single-instruction
 Proliferate over players and permanents. These paths prepare before mutation
 and can safely suspend.
 
+Fixed ordinary-mana Level Up, Outlast, Reinforce, and fixed printed-power
+Scavenge also enter through `place_counters`. Their compiler-pinned activation
+descriptors own timing and source-zone costs, while this transaction continues
+to own counter replacement, APNAP choice, rollback, privacy, and replay. A
+battlefield source result is pinned to the activating incarnation; Reinforce
+and Scavenge revalidate their creature target. Variable Reinforce and dynamic-
+power Scavenge remain outside trust.
+
 The same `place_counters` operation also owns one closed multi-subject family:
 two or three printed-order source/direct-target permanent subjects receive the
 same fixed positive quantity of one counter kind. Each direct target is

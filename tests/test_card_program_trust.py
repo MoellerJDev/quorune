@@ -186,6 +186,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.activated.catalog",
                 "ability.activated.mana.color-set",
                 "ability.activated.mana.fixed-output",
+                "ability.activated.fixed-counter-keyword",
                 "ability.activated.cycling",
                 "ability.activated.crew",
                 "ability.enchant.linked_graveyard_creature",

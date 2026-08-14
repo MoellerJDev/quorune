@@ -31,6 +31,9 @@ from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
 from .echo_nodes import fixed_mana_echo_node
 from .crew_nodes import ordinary_crew_keyword_node
 from .cycling_nodes import ordinary_cycling_keyword_node
+from .counter_keyword_activation_nodes import (
+    fixed_counter_keyword_activation_node,
+)
 from .ability_keyword_fragments import lower_ability_keyword_fragments
 from .dependency_gate import (
     DependencyGate,
@@ -238,6 +241,7 @@ def closed_special_keyword_node(
     material_line: str,
     span: SourceSpan,
     mechanics: tuple[str, ...],
+    printed_power: str | None,
     trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
@@ -255,6 +259,12 @@ def closed_special_keyword_node(
         "capability_profile": capability_profile,
         "residuals": residuals,
     }
+    counter_activation = fixed_counter_keyword_activation_node(
+        **values,
+        printed_power=printed_power,
+    )
+    if counter_activation is not None:
+        return counter_activation
     renown = renown_keyword_node(
         **values,
         trusted_mechanics=trusted_mechanics,

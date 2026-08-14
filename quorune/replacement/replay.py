@@ -7,6 +7,7 @@ from ..additional_cost_vocabulary import FIXED_ZONE_CHANGE_COST_CONTRACTS
 from ..trigger_batches import PendingTriggerItem, TriggerBatchError
 from .immutable import FrozenMap, thaw_value
 from .model import (
+    ReplaceableEvent,
     ReplacementEffect,
     ReplacementEffectError,
     ReplacementEventBatch,
@@ -620,6 +621,169 @@ def _validate_replacement_journal(
                 )
 
 
+def _zone_cost_affected_object_matches(
+    event: ReplaceableEvent,
+    *,
+    seat: str,
+    origin: object,
+) -> bool:
+    affected = event.affected_object
+    return bool(
+        affected is not None
+        and (
+            (origin == "battlefield" and affected.controller == seat)
+            or (origin != "battlefield" and affected.owner == seat)
+        )
+    )
+
+
+def _activation_zone_cost_event_is_valid(
+    event: ReplaceableEvent,
+    response: Mapping[str, Any],
+    *,
+    seat: str,
+) -> bool:
+    payload = event.payload
+    origin = payload.get("origin")
+    destination = payload.get("destination")
+    source_ref = response.get("source")
+    cost_summary = response.get("cost_summary")
+    source_cost_flags = {
+        field
+        for field in ("discard_self", "exile_self", "sac_self")
+        if isinstance(cost_summary, Mapping) and field in cost_summary
+    }
+    source_cost_valid = bool(
+        isinstance(cost_summary, Mapping)
+        and (
+            (
+                source_cost_flags == {"discard_self"}
+                and type(cost_summary["discard_self"]) is int
+                and cost_summary["discard_self"] == 1
+                and origin == "hand"
+                and destination == "graveyard"
+            )
+            or (
+                source_cost_flags == {"exile_self"}
+                and type(cost_summary["exile_self"]) is int
+                and cost_summary["exile_self"] == 1
+                and destination == "exile"
+            )
+        )
+    )
+    return bool(
+        type(source_ref) is str
+        and source_ref
+        and response.get("from") == origin
+        and payload.get("object_ref") == source_ref
+        and source_cost_valid
+        and _zone_cost_affected_object_matches(event, seat=seat, origin=origin)
+        and event.event_id.startswith("zone.change:")
+        and event.event_id.endswith(f":{source_ref}")
+    )
+
+
+def _casting_zone_cost_event_is_valid(
+    event: ReplaceableEvent,
+    response: Mapping[str, Any],
+    *,
+    seat: str,
+) -> bool:
+    payload = event.payload
+    origin = payload.get("origin")
+    destination = payload.get("destination")
+    matching_fields = {
+        choice_field
+        for contract_origin, contract_destination, choice_field in (
+            FIXED_ZONE_CHANGE_COST_CONTRACTS.values()
+        )
+        if origin == contract_origin and destination == contract_destination
+    }
+    raw_refs = None
+    for field in sorted(matching_fields):
+        if response.get(field) is not None:
+            raw_refs = response[field]
+            break
+    # Historical fixed-sacrifice continuations used cost_cards before the
+    # typed zone-change cost vocabulary was introduced.
+    if (
+        raw_refs is None
+        and origin == "battlefield"
+        and destination == "graveyard"
+    ):
+        raw_refs = response.get("cost_cards")
+    selected_ref = (
+        raw_refs[0]
+        if isinstance(raw_refs, (list, tuple))
+        and len(raw_refs) == 1
+        and type(raw_refs[0]) is str
+        else None
+    )
+    return bool(
+        selected_ref
+        and matching_fields
+        and payload.get("object_ref") == selected_ref
+        and _zone_cost_affected_object_matches(event, seat=seat, origin=origin)
+        and event.event_id.startswith("zone.change:")
+        and event.event_id.endswith(f":{selected_ref}")
+    )
+
+
+def _priority_action_cost_event_ids(
+    batch: ReplacementEventBatch,
+    *,
+    action: str,
+    response: Mapping[str, Any],
+    seat: str,
+) -> set[str]:
+    if action not in {"cast", "activate"} or len(batch.events) != 1:
+        raise ReplacementEffectError(
+            "Priority-action cost continuation is malformed"
+        )
+    event = batch.events[0]
+    payload = event.payload
+    common_valid = False
+    action_valid = False
+    if event.kind == "counter.place":
+        common_valid = (
+            payload.get("effect_generated") is False
+            and payload.get("placing_player") == seat
+            and payload.get("target_kind") == "permanent"
+            and type(payload.get("counter_name")) is str
+            and bool(payload.get("counter_name"))
+            and type(payload.get("amount")) is int
+            and payload.get("amount", 0) > 0
+        )
+        if action == "activate":
+            action_valid = payload.get("counter_name") == "loyalty"
+        else:
+            payment_id = response.get("_mana_payment_id")
+            card_ref = response.get("card")
+            prefix = f"counter.cost:{payment_id}:{card_ref}:additional:"
+            suffix = event.event_id.removeprefix(prefix)
+            action_valid = bool(
+                type(payment_id) is str
+                and payment_id
+                and type(card_ref) is str
+                and card_ref
+                and event.event_id.startswith(prefix)
+                and suffix.isdecimal()
+                and str(int(suffix)) == suffix
+                and payload.get("source") == card_ref
+            )
+    elif event.kind == "zone.change":
+        common_valid = action_valid = (
+            _activation_zone_cost_event_is_valid(event, response, seat=seat)
+            if action == "activate"
+            else _casting_zone_cost_event_is_valid(event, response, seat=seat)
+        )
+    if not common_valid or not action_valid:
+        raise ReplacementEffectError(
+            "Priority-action cost continuation event is malformed"
+        )
+    return {event.event_id}
+
+
 def _decode_mana_continuation(
     continuation_type: type[ReplacementContinuation],
     value: Mapping[str, Any],
@@ -649,92 +813,12 @@ def _decode_mana_continuation(
     _validate_mana_frame(frame, seat)
     _validate_priority_response(action, response)
     if resume_kind == "priority_action_cost":
-        if action not in {"cast", "activate"} or len(batch.events) != 1:
-            raise ReplacementEffectError(
-                "Priority-action cost continuation is malformed"
-            )
-        event = batch.events[0]
-        payload = event.payload
-        action_valid = False
-        common_valid = False
-        if event.kind == "counter.place":
-            common_valid = (
-                payload.get("effect_generated") is False
-                and payload.get("placing_player") == seat
-                and payload.get("target_kind") == "permanent"
-                and type(payload.get("counter_name")) is str
-                and bool(payload.get("counter_name"))
-                and type(payload.get("amount")) is int
-                and payload.get("amount", 0) > 0
-            )
-        if event.kind == "counter.place" and action == "activate":
-            action_valid = payload.get("counter_name") == "loyalty"
-        elif event.kind == "counter.place" and action == "cast":
-            payment_id = response.get("_mana_payment_id")
-            card_ref = response.get("card")
-            prefix = f"counter.cost:{payment_id}:{card_ref}:additional:"
-            suffix = event.event_id.removeprefix(prefix)
-            action_valid = (
-                type(payment_id) is str
-                and bool(payment_id)
-                and type(card_ref) is str
-                and bool(card_ref)
-                and event.event_id.startswith(prefix)
-                and suffix.isdecimal()
-                and str(int(suffix)) == suffix
-                and payload.get("source") == card_ref
-            )
-        elif event.kind == "zone.change" and action == "cast":
-            origin = payload.get("origin")
-            destination = payload.get("destination")
-            matching_fields = {
-                choice_field
-                for contract_origin, contract_destination, choice_field in (
-                    FIXED_ZONE_CHANGE_COST_CONTRACTS.values()
-                )
-                if origin == contract_origin
-                and destination == contract_destination
-            }
-            raw_refs = None
-            for field in sorted(matching_fields):
-                if response.get(field) is not None:
-                    raw_refs = response[field]
-                    break
-            # Historical fixed-sacrifice continuations used cost_cards before
-            # the typed zone-change cost vocabulary was introduced.
-            if (
-                raw_refs is None
-                and origin == "battlefield"
-                and destination == "graveyard"
-            ):
-                raw_refs = response.get("cost_cards")
-            selected_ref = (
-                raw_refs[0]
-                if isinstance(raw_refs, (list, tuple))
-                and len(raw_refs) == 1
-                and type(raw_refs[0]) is str
-                else None
-            )
-            affected = event.affected_object
-            common_valid = (
-                selected_ref is not None
-                and bool(matching_fields)
-                and payload.get("object_ref") == selected_ref
-                and affected is not None
-                and (
-                    (origin == "battlefield" and affected.controller == seat)
-                    or (origin != "battlefield" and affected.owner == seat)
-                )
-            )
-            action_valid = (
-                event.event_id.startswith("zone.change:")
-                and event.event_id.endswith(f":{selected_ref}")
-            )
-        if not common_valid or not action_valid:
-            raise ReplacementEffectError(
-                "Priority-action cost continuation event is malformed"
-            )
-        event_ids = {event.event_id}
+        event_ids = _priority_action_cost_event_ids(
+            batch,
+            action=action,
+            response=response,
+            seat=seat,
+        )
     else:
         event_ids = {
             event.event_id for event in batch.events if event.kind == "damage"

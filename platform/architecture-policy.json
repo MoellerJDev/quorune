@@ -136,6 +136,7 @@
     "quorune/counter_placement_sets.py",
     "quorune/counter_placement_targets.py",
     "quorune/counter_state.py",
+    "quorune/counter_keyword_abilities.py",
     "quorune/crew.py",
     "quorune/cycling_abilities.py",
     "quorune/damage.py",

@@ -290,6 +290,7 @@ def _owner(relative: str, layer: str) -> str:
     if relative in {
         "quorune/activated_ability_descriptor.py",
         "quorune/compiled_activated_abilities.py",
+        "quorune/counter_keyword_abilities.py",
         "quorune/crew.py",
         "quorune/cycling_abilities.py",
     }:

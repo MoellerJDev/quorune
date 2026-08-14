@@ -927,7 +927,7 @@ def fixed_counter_placement_node_capabilities(
         if counter_mechanic is not None
         else ()
     )
-    if target_schema is None and effect.get("card") == "$source":
+    if target_schema is None and effect.get("card") in ("$source", SOURCE_ZONE_OBJECT):
         return ("counter.producer.fixed_effect", *characteristic_capabilities)
     if target_schema is None and isinstance(effect.get("card"), Mapping):
         try:

@@ -1,8 +1,208 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "938c907f28b9ca1551d3a93805a49a71045112da5006a96ed3d3a3d60865b9d7",
-  "declaration_source_fingerprint": "f6c6a5d50fdba9baf1790e70effc54e60f04d5c66fe0350d51220858c9973247",
+  "registry_fingerprint": "992c8fcfc0f25bbcf681136067266b9d61e0bf7ca13d37031092a4f26d051c42",
+  "declaration_source_fingerprint": "5bfd24932aad00b8f4b64dc91433f6d57e4d75e08358605f00776223d0f83748",
   "declarations": [
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_counter_keyword_quantity_replacement_suspends_and_replays",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose a source-pinned keyword activation with competing counter-quantity replacements before committing its fixed result."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_counter_keyword_quantity_replacement_suspends_and_replays",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the represented activation in four-player state while routing the affected-object replacement decision only to its chooser."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordCompilerTests.test_fixed_counter_keyword_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the shared fixed counter-keyword lowering before any represented mechanic can retain exact trust."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordCompilerTests.test_scavenge_dynamic_power_and_type_changing_boundary_fail_closed",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Exclude face-changing and dynamic-characteristic Scavenge quantities until a cycle-safe zone-characteristic boundary is certified."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordCompilerTests.test_unsupported_counter_keyword_variants_remain_precise_residuals",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep variable, hybrid, nonordinary-mana, and nonpositive quantity forms outside the bounded shared activation grammar."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordCompilerTests.test_four_fixed_counter_keywords_compile_source_spanned_activations",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower Level Up, Outlast, Reinforce, and fixed printed-power Scavenge to immutable source-spanned activation programs."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_each_fixed_counter_keyword_pays_cost_and_places_counters",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pay each represented keyword's typed costs and commit its fixed counter result through the canonical transaction owner."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_reinforce_source_cost_replacement_suspends_before_mutation",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep a hand-zone Reinforce source and its replacement continuation private to the activating affected seat."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_scavenge_fixed_power_activation_replays_exactly",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the compiled fixed-power Scavenge descriptor, exile cost, target, stack object, and counter result to the same authoritative hash."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_rejected_source_cost_activation_rolls_back_mana_and_zone",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject an illegal target without consuming mana or moving the hidden Reinforce source."
+    },
     {
       "capability_id": "activation.crew.fixed_power",
       "evidence_class": "interaction",
@@ -292,6 +492,28 @@
     {
       "capability_id": "activation.cycling.hand",
       "evidence_class": "interaction",
+      "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2h",
+        "602.1",
+        "602.2",
+        "602.2a",
+        "602.2b",
+        "701.8a",
+        "702.29",
+        "702.29a",
+        "702.29b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suspend a Cycling source discard before any payment or stack mutation when destination replacements compete."
+    },
+    {
+      "capability_id": "activation.cycling.hand",
+      "evidence_class": "interaction",
       "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_generic_cycling_discards_before_stack_draw_and_replays_exactly",
       "official_rule_ids": [
         "601.2h",
@@ -310,6 +532,28 @@
         "commander_review"
       ],
       "applicability_note": "Commit the source discard before stack placement and route the later resolving draw through the canonical draw owner."
+    },
+    {
+      "capability_id": "activation.cycling.hand",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2h",
+        "602.1",
+        "602.2",
+        "602.2a",
+        "602.2b",
+        "701.8a",
+        "702.29",
+        "702.29a",
+        "702.29b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preserve the exact four-player priority frame while only the affected activator receives the source-cost replacement choice."
     },
     {
       "capability_id": "activation.cycling.hand",
@@ -446,6 +690,28 @@
     {
       "capability_id": "activation.cycling.hand",
       "evidence_class": "privacy",
+      "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2h",
+        "602.1",
+        "602.2",
+        "602.2a",
+        "602.2b",
+        "701.8a",
+        "702.29",
+        "702.29a",
+        "702.29b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose neither the hidden Cycling source nor its replacement continuation to any nonchoosing seat."
+    },
+    {
+      "capability_id": "activation.cycling.hand",
+      "evidence_class": "privacy",
       "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_four_player_cycling_draw_is_private_and_seat_scoped",
       "official_rule_ids": [
         "601.2h",
@@ -464,6 +730,28 @@
         "commander_review"
       ],
       "applicability_note": "Keep the source hidden before activation and the newly drawn card private to the activating seat."
+    },
+    {
+      "capability_id": "activation.cycling.hand",
+      "evidence_class": "replay",
+      "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "601.2h",
+        "602.1",
+        "602.2",
+        "602.2a",
+        "602.2b",
+        "701.8a",
+        "702.29",
+        "702.29a",
+        "702.29b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload the pending source-discard replacement and replay the resumed activation to the same authoritative hash."
     },
     {
       "capability_id": "activation.cycling.hand",
@@ -1175,6 +1463,195 @@
         "commander_review"
       ],
       "applicability_note": "Replay the source-pinned chosen-name designation to the exact authoritative state used by typed activation availability."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose a discard-self activation cost with two canonical destination replacements and resume the exact rolled-back priority action."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preserve the four-player priority frame while the affected activator privately orders competing source-cost replacements."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_activation_zone_cost_resume_mutant_is_killed",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill the former behavior that rejected a zone-change replacement suspension merely because the priority action was an activation."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_activation_source_cost_replacement_journal_fails_closed",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a replacement journal whose zone-change event identity is not pinned to the activation source."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_rejected_source_cost_activation_rolls_back_mana_and_zone",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject an activation with an illegal target before mana or the hidden source card can mutate."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_each_fixed_counter_keyword_pays_cost_and_places_counters",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Commit both discard-self Reinforce and exile-self Scavenge costs before their ordinary stack results."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the hidden source identity and replacement continuation absent from every nonchoosing seat projection."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "replay",
+      "test_id": "tests.test_ordinary_cycling.OrdinaryCyclingRuntimeTests.test_cycling_discard_replacement_suspends_before_mutation_and_replays",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reload and finish the pending source-zone cost once, then replay the exact resumed activation state."
+    },
+    {
+      "capability_id": "activation.source_zone_change.fixed",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_reinforce_source_cost_replacement_suspends_before_mutation",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "602.2",
+        "602.2b",
+        "614.1",
+        "616.1",
+        "701.9a",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Roll back mana, source movement, and stack placement before issuing the Reinforce source-cost replacement decision."
     },
     {
       "capability_id": "activation.tap_untap_cost.haste",
@@ -32630,5 +33107,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "9b7f76e49b13ba8ae091b1ef09b8f2f4eae3f64b58d32c7f42b3a7ff8fd091a7"
+  "fingerprint": "20e41fbdd2f1f2095e93d8e826658a11403576e5d95c0ed09aee9ce1674b0fd1"
 }
