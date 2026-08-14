@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "6e2b7626974ae42b545d4fafb73cf7ec5cfcb4d9ee99119a4ce788ccf43267c9"
+verified: "b015759e5da9d9803d758e651c876dcc2cc1f42efcae43da3a961c6cd3a1d417"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -39,6 +39,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Invasion of Fiora // Marchesa, Resolute Monarch | 175 | 17 | 5 | 7 | 6 | 17 | `blocked` |
 | Ojer Taq, Deepest Foundation // Temple of Civilization | 175 | 23 | 7 | 6 | 9 | 2 | `blocked` |
 | Ral, Monsoon Mage // Ral, Leyline Prodigy | 174 | 17 | 5 | 6 | 12 | 17 | `blocked` |
+| Invasion of Moag // Bloomwielder Dryads | 173 | 20 | 6 | 4 | 5 | 16 | `blocked` |
 | Miles Morales // Ultimate Spider-Man | 172 | 24 | 6 | 5 | 6 | 11 | `blocked` |
 | Kytheon, Hero of Akros // Gideon, Battle-Forged | 171 | 14 | 5 | 5 | 11 | 18 | `blocked` |
 | Invasion of Kaladesh // Aetherwing, Golden-Scale Flagship | 170 | 18 | 5 | 5 | 6 | 17 | `blocked` |
@@ -49,6 +50,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Invasion of Kaldheim // Pyre of the World Tree | 168 | 16 | 5 | 4 | 5 | 22 | `blocked` |
 | Jace, Mirror Mage | 168 | 23 | 4 | 4 | 11 | 13 | `blocked` |
 | Chandra, Fire of Kaladesh // Chandra, Roaring Flame | 166 | 21 | 4 | 5 | 9 | 15 | `blocked` |
+| Athreos, Shroud-Veiled | 165 | 18 | 5 | 4 | 3 | 24 | `blocked` |
 | Dr. Madison Li | 165 | 22 | 7 | 4 | 6 | 10 | `blocked` |
 | Starscream, Power Hungry // Starscream, Seeker Leader | 165 | 17 | 4 | 8 | 4 | 19 | `blocked` |
 | Titania, Gaea Incarnate | 165 | 23 | 6 | 4 | 6 | 11 | `blocked` |
@@ -61,6 +63,4 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Invasion of Pyrulea // Gargantuan Slabhorn | 159 | 16 | 4 | 4 | 7 | 18 | `blocked` |
 | Devoted Grafkeeper // Departed Soulkeeper | 157 | 19 | 5 | 6 | 6 | 7 | `blocked` |
 | Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time | 157 | 21 | 6 | 6 | 9 | 3 | `blocked` |
-| Starforged Sword | 157 | 16 | 5 | 4 | 6 | 11 | `blocked` |
-| Arcee, Sharpshooter // Arcee, Acrobatic Coupe | 156 | 17 | 5 | 5 | 8 | 14 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |

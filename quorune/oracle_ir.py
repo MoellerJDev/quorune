@@ -42,6 +42,9 @@ from .compiler.draw_templates import (
 from .compiler.fixed_controller_effect_sequences import (
     fixed_controller_effect_sequence_template,
 )
+from .compiler.fixed_counter_trigger_nodes import (
+    fixed_counter_event_trigger_node,
+)
 from .compiler.fixed_keyword_entry_nodes import fixed_keyword_entry_nodes
 from .compiler.explore_templates import single_explore_effect_template
 from .compiler.fixed_numbers import fixed_number as _number
@@ -98,7 +101,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v86"
+ORACLE_COMPILER_VERSION = "oracle-ir-v87"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -914,6 +917,40 @@ def _typed_additional_cost_face(
     )
 
 
+def _activated_or_fixed_counter_trigger_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    card_name: str,
+    type_line: str,
+    keywords: Sequence[str],
+    trusted_mechanics: frozenset[str],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+    effect_template: Any,
+) -> OracleNode | None:
+    activated = activated_oracle_node(
+        node_id=node_id, line=line, span=span,
+        card_name=card_name, type_line=type_line,
+        keywords=keywords, trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile, residuals=residuals,
+        effect_template=effect_template,
+    )
+    if activated is not None:
+        return activated
+    return fixed_counter_event_trigger_node(
+        node_id=node_id, line=line, material_line=material_line, span=span,
+        card_name=card_name, trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile, residuals=residuals,
+        effect_template=effect_template,
+    )
+
+
 def _compile_face(
     record: CardRecord,
     *,
@@ -969,16 +1006,16 @@ def _compile_face(
             nodes.extend(keyword_nodes)
             continue
 
-        activated_node = activated_oracle_node(
-            node_id=node_id, line=line, span=span,
+        ability_node = _activated_or_fixed_counter_trigger_node(
+            node_id=node_id, line=line, material_line=material_line, span=span,
             card_name=face_name or record.name, type_line=type_line,
             keywords=keywords, trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry,
             capability_profile=capability_profile, residuals=residuals,
             effect_template=contextual_effect_template,
         )
-        if activated_node is not None:
-            nodes.append(activated_node)
+        if ability_node is not None:
+            nodes.append(ability_node)
             continue
 
         event_nodes = draw_reveal_or_trigger_nodes(

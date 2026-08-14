@@ -1551,6 +1551,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/fixed_counter_trigger_nodes.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/fixed_keyword_entry_nodes.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -6431,5 +6446,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "71124bdbfe3c53978073d92d311b532b1928bea7f5491516cad169ea47531cb7"
+  "fingerprint": "1213794cd008c371926822e8c6e0d4cc543155561bba14f0a74749e0a5760f84"
 }
