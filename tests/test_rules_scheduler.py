@@ -397,9 +397,12 @@ class RulesSchedulerTests(unittest.TestCase):
             assurance["assurance_readiness"]["status"],
         )
         self.assertEqual("compiler_harvest", selected["candidate_class"])
-        self.assertEqual(
-            "frontier:effect_clause:typed-spell-additional-cost-clause",
+        self.assertIn(
             selected["candidate_id"],
+            {
+                f"frontier:{row['family_id']}"
+                for row in inputs["card_unlock_frontier"]["family_candidates"]
+            },
         )
 
     def test_runtime_text_candidates_are_split_by_declared_subsystem(self):

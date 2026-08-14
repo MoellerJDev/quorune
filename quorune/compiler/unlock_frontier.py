@@ -17,7 +17,7 @@ from .ir_model import OracleCardIR, OracleNode, OracleResidual
 
 
 CARD_UNLOCK_FRONTIER_SCHEMA_VERSION = 1
-CARD_UNLOCK_FRONTIER_ALGORITHM_VERSION = "card-unlock-frontier-v1"
+CARD_UNLOCK_FRONTIER_ALGORITHM_VERSION = "card-unlock-frontier-v2"
 MAX_BUNDLE_FAMILIES = 48
 BASE_RESIDUAL_FAMILIES = frozenset(
     {
@@ -130,7 +130,6 @@ _CLAUSE_SIGNATURES: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("add-mana", ("add ",)),
     ("counter", ("counter target", "counter all")),
     ("create-token", ("create ", "creates ", "amass ", "incubate ")),
-    ("deal-damage", ("deal ", "deals ")),
     ("destroy", ("destroy ",)),
     ("discard", ("discard ", "each player discards")),
     ("draw", ("draw ", "you draw", "each player draws")),
@@ -143,6 +142,7 @@ _CLAUSE_SIGNATURES: tuple[tuple[str, tuple[str, ...]], ...] = (
     (_RETURN_MARKER, (_RETURN_MARKER + " ",)),
     (_SACRIFICE_MARKER, (_SACRIFICE_MARKER + " ",)),
     ("search", ("search ",)),
+    ("scry", ("scry ",)),
     ("tap-state", ("tap ", "untap ")),
 )
 
@@ -160,6 +160,66 @@ def _family(base: str, detail: str) -> str:
     if base not in BASE_RESIDUAL_FAMILIES:
         raise ValueError(f"Unknown residual-family base: {base}")
     return f"{base}:{_slug(detail)}"
+
+
+def _without_parenthetical_text(text: str) -> str:
+    """Remove nested reminder text before executable-clause classification."""
+
+    result: list[str] = []
+    depth = 0
+    for character in text:
+        if character == "(":
+            depth += 1
+        elif character == ")" and depth:
+            depth -= 1
+        elif not depth:
+            result.append(character)
+    return "".join(result)
+
+
+def _material_clause_text(text: str) -> str:
+    without_reminders = _without_parenthetical_text(text)
+    without_quoted_abilities = re.sub(
+        r'"[^"\r\n]*"|“[^”\r\n]*”',
+        " ",
+        without_reminders,
+    )
+    return " ".join(without_quoted_abilities.casefold().split())
+
+
+def _grants_quoted_ability(text: str) -> bool:
+    material = " ".join(_without_parenthetical_text(text).casefold().split())
+    return bool(
+        re.search(
+            r'\bgains?\b[^.!?]{0,120}(?:"[^"\r\n]*"|“[^”\r\n]*”)',
+            material,
+        )
+    )
+
+
+def _damage_instruction_count(material: str) -> int:
+    amount = (
+        r"(?:\d+|x|\{x\}|that much|twice that much|an amount of)"
+    )
+    fixed_or_variable = re.compile(
+        rf"\bdeals?\s+{amount}\s+damage\b|"
+        rf"\band\s+{amount}\s+damage\b"
+    )
+    equal_to = re.compile(
+        r"\bdeals?\s+damage\b[^.!?]{0,120}\b(?:equal to|for each)\b"
+    )
+    return len(fixed_or_variable.findall(material)) + len(
+        equal_to.findall(material)
+    )
+
+
+def _has_life_change(material: str) -> bool:
+    return bool(
+        re.search(
+            r"\b(?:gain|gains|lose|loses)\b[^.!?]{0,48}\blife\b",
+            material,
+        )
+    )
 
 
 def _kind_base(kind: str) -> str:
@@ -190,7 +250,7 @@ def _capability_id(blocker: str) -> str:
 
 
 def _clause_signature(text: str, *, kind: str, reason: str) -> str:
-    material = " ".join(text.casefold().split())
+    material = _material_clause_text(text)
     counter_signatures = _counter_clause_signatures(material)
     if "remove-counter" in counter_signatures:
         return "remove-counter"
@@ -199,6 +259,10 @@ def _clause_signature(text: str, *, kind: str, reason: str) -> str:
         return "put-counter"
     if "put-onto-battlefield" in put_signatures:
         return "put-onto-battlefield"
+    if _damage_instruction_count(material):
+        return "deal-damage"
+    if _has_life_change(material):
+        return "life-change"
     for signature, markers in _CLAUSE_SIGNATURES:
         if any(material.startswith(marker) for marker in markers):
             return signature
@@ -219,12 +283,23 @@ def _clause_families(text: str, *, kind: str, reason: str) -> set[str]:
     compiler remains the authority for exact lowering.
     """
 
-    material = " ".join(text.casefold().split())
+    material = _material_clause_text(text)
+    prevents_damage = bool(
+        re.search(r"\bprevent\b[^.!?]{0,160}\bdamage\b", material)
+    )
+    grants_quoted_ability = _grants_quoted_ability(text)
+    damage_instruction_count = (
+        0 if prevents_damage else _damage_instruction_count(material)
+    )
     signatures = {
         signature
         for signature, markers in _CLAUSE_SIGNATURES
         if any(marker in material for marker in markers)
     }
+    if damage_instruction_count:
+        signatures.add("deal-damage")
+    if _has_life_change(material):
+        signatures.add("life-change")
     signatures.update(_counter_clause_signatures(material))
     signatures.update(_put_clause_signatures(material))
     if "destroy " in material:
@@ -235,20 +310,66 @@ def _clause_families(text: str, *, kind: str, reason: str) -> set[str]:
             signatures.add("destroy-target")
         else:
             signatures.add("destroy")
-    if not signatures:
-        signatures.add(_clause_signature(text, kind=kind, reason=reason))
+    has_standalone_family = prevents_damage or grants_quoted_ability
+    if not signatures and not has_standalone_family:
+        signatures.add(_clause_signature(material, kind=kind, reason=reason))
     result = {_family(_kind_base(kind), signature) for signature in signatures}
+    if prevents_damage:
+        result.add(_family("replacement", "damage-prevention"))
+    if grants_quoted_ability:
+        result.add(_family("continuous_layer", "granted-ability"))
+    if "until end of turn" in material:
+        result.add(_family("duration", "until-end-of-turn"))
+    material_sentences = len(
+        [
+            sentence
+            for sentence in re.split(r"[.!?]+", material)
+            if sentence.strip()
+        ]
+    )
+    if (
+        len(signatures) > 1
+        or material_sentences > 1
+        or damage_instruction_count > 1
+        or re.search(r"\bthen\b", material)
+    ):
+        result.add(_family(_kind_base(kind), "ordered-effect-composition"))
     if re.search(r"\b(if|unless)\b", material):
         result.add(_family("target_or_choice", "conditional-effect"))
     if re.search(r"\b(for each|number of|equal to)\b|\bx\b", material):
         result.add(_family("quantity_expression", "dynamic-quantity"))
     if re.search(
-        r"\b(with (?:power|toughness)|attacking|blocking|nonbasic|"
+        r"\b(with (?:power|toughness)|without [a-z-]+|attacking|blocking|nonbasic|"
         r"nonblack|nonblue|nongreen|nonred|nonwhite|mana value|"
-        r"dealt damage this turn|entered this turn)\b",
+        r"dealt damage this turn|entered this turn)\b|"
+        r"\b(?:target|each|all)\s+(?:[a-z-]+\s+|"
+        r"[a-z-]+\s+or\s+[a-z-]+\s+)"
+        r"(?:cards?|creatures?|permanents?|artifacts?|enchantments?|lands?|"
+        r"planeswalkers?|players?|opponents?|spells?)\b|"
+        r"\b(?:target|each|all)\s+(?:[a-z-]+\s+){0,3}"
+        r"(?:cards?|creatures?|permanents?|artifacts?|enchantments?|lands?|"
+        r"planeswalkers?|players?|opponents?|spells?)\b[^.!?]{0,64}"
+        r"\b(?:with|without|that|which|you|an opponent)\b|"
+        r"\btarget creature token\b",
         material,
     ):
         result.add(_family("target_or_choice", "target-predicate"))
+    if re.search(r"\bdivided\b[^.!?]{0,96}\b(?:choose|among)\b", material):
+        result.add(_family("target_or_choice", "divided-damage-allocation"))
+    if re.search(
+        r"\b(?:two|three|four|five|up to (?:two|three|four|five)) targets?\b|"
+        r"\bone, two, or three targets?\b|\bone or two targets?\b|"
+        r"\btarget\b[^.!?]{0,96}\band target\b|\b(?:an)?other target\b",
+        material,
+    ):
+        result.add(_family("target_or_choice", "multiple-targets"))
+    if damage_instruction_count > 1 or re.search(
+        r"\bdamage to\b[^.!?]{0,96}\band (?:each|all)\b",
+        material,
+    ):
+        result.add(_family("target_or_choice", "multiple-damage-recipients"))
+    if re.search(r"\broll (?:a|one or more) d(?:6|20)\b", material):
+        result.add(_family("target_or_choice", "random-outcome"))
     if "can't be regenerated" in material or "cannot be regenerated" in material:
         result.add(_family("replacement", _REGENERATION_MARKER))
     if re.search(

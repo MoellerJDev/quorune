@@ -1868,132 +1868,132 @@
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:709be229c277ae6fdccf",
-          "line": 494,
+          "line": 615,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "face_id",
           "source_kind": "mapping_subscript",
-          "source_line": 494,
+          "source_line": 615,
           "symbol": "analyze_card_unlocks"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:70e82277f6b1e7c639e4",
-          "line": 494,
+          "line": 615,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "face_id",
           "source_kind": "attribute",
-          "source_line": 494,
+          "source_line": 615,
           "symbol": "analyze_card_unlocks"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:9e3f5dd4cb853f2a9789",
-          "line": 499,
+          "line": 620,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "face_id",
           "source_kind": "attribute",
-          "source_line": 499,
+          "source_line": 620,
           "symbol": "analyze_card_unlocks"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:b08d8509fa9a096f4b8e",
-          "line": 499,
+          "line": 620,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "face_id",
           "source_kind": "mapping_subscript",
-          "source_line": 499,
+          "source_line": 620,
           "symbol": "analyze_card_unlocks"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:786b514f7662dcfc4c12",
-          "line": 532,
+          "line": 653,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 532,
+          "source_line": 653,
           "symbol": "analyze_card_unlocks"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:df6510a9a81f659a6011",
-          "line": 533,
+          "line": 654,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "card_name",
           "source_kind": "attribute",
-          "source_line": 533,
+          "source_line": 654,
           "symbol": "analyze_card_unlocks"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:02f1930dd332d2711661",
-          "line": 599,
+          "line": 720,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "mapping_subscript",
-          "source_line": 599,
+          "source_line": 720,
           "symbol": "_aggregate_candidates"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:b2810fc07ca29329f5ea",
-          "line": 739,
+          "line": 860,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 739,
+          "source_line": 860,
           "symbol": "build_card_unlock_frontier"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:97fd48c702c1565dc82d",
-          "line": 843,
+          "line": 964,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "mapping_get",
-          "source_line": 843,
+          "source_line": 964,
           "symbol": "validate_card_unlock_frontier"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:2e7f482eba4b508fa0b3",
-          "line": 996,
+          "line": 1117,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "mapping_subscript",
-          "source_line": 996,
+          "source_line": 1117,
           "symbol": "render_card_unlock_frontier_markdown"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/unlock_frontier.py",
           "flow_id": "card-identity-flow:956c05a5a9cacd817caf",
-          "line": 996,
+          "line": 1117,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "card_name",
           "source_kind": "mapping_subscript",
-          "source_line": 996,
+          "source_line": 1117,
           "symbol": "render_card_unlock_frontier_markdown"
         },
         {
@@ -10092,14 +10092,14 @@
       ]
     },
     "interaction_assurance_baseline": {
-      "applicable_high_risk_pairs": 111,
-      "applicable_piece_pairs": 28671,
+      "applicable_high_risk_pairs": 133,
+      "applicable_piece_pairs": 30316,
       "available": true,
       "covered_high_risk_pairs": 30,
       "covered_piece_pairs": 457,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "8bac689035b11ece1e78ffe0979fa7b1e0de7113bedc4785dd56ca19830d1307",
-      "uncovered_high_risk_pairs": 81
+      "source_fingerprint": "a970e7d9be177ac76e676f7f070c031b5a5c3afcc7402018ca2d9c4bab966aae",
+      "uncovered_high_risk_pairs": 103
     },
     "migration_queue": [],
     "missing_dedicated_owners": [],
@@ -10487,7 +10487,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 149744,
+      "logical_lines": 149854,
       "methods": {
         "dunder": 413,
         "private": 754,
@@ -10650,6 +10650,13 @@
           "physical_lines": 1150
         },
         {
+          "file": "quorune/compiler/unlock_frontier.py",
+          "functions_and_methods": 25,
+          "language": "python",
+          "logical_lines": 1075,
+          "physical_lines": 1143
+        },
+        {
           "file": "quorune/abilities.py",
           "functions_and_methods": 36,
           "language": "python",
@@ -10683,13 +10690,6 @@
           "language": "python",
           "logical_lines": 969,
           "physical_lines": 1046
-        },
-        {
-          "file": "quorune/compiler/unlock_frontier.py",
-          "functions_and_methods": 20,
-          "language": "python",
-          "logical_lines": 965,
-          "physical_lines": 1022
         },
         {
           "file": "quorune/replacement/replay.py",
@@ -13988,7 +13988,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 164197,
+      "physical_lines": 164318,
       "python_file_count": 434,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -14006,7 +14006,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 2089,
+      "top_level_functions": 2094,
       "web_file_count": 16
     },
     "runtime_oracle_text_access": {
@@ -24118,7 +24118,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "f4485cf676ee2375e9b3c1d86984ce03909e039a173dbcd3622c2045b8e723e3",
+      "fingerprint": "ae01bc27d1b01692b163983f9f5b4b417a42e5ff5b4ae8124587e17b5aefea52",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -24977,8 +24977,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2802,
-      "discovered_total": 6102,
+      "conventional_ast_cases": 2803,
+      "discovered_total": 6103,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 130,
