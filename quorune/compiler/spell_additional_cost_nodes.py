@@ -136,7 +136,7 @@ def _unsupported_cost_result_residuals(
                     "additional-cost spell has no exact generic "
                     "spell-result template"
                 ),
-                blockers=("typed spell-result clause",),
+                blockers=(),
             ),
         )
 
@@ -187,14 +187,22 @@ def _additional_cost_result_node(
         card_name=card_name,
     )
     if template is None:
-        return _residual_spell_node(
+        residual_id = append_residual(
+            residuals,
+            kind="spell_effect",
+            text=rows[1][0],
+            span=rows[1][2],
+            reason=(
+                "typed additional cost has no exact generic "
+                "spell-result template"
+            ),
+            blockers=(),
+        )
+        return _unlowerable_spell_node(
             node_id=node_id,
             text=text,
             span=span,
-            residuals=residuals,
-            kind="spell_effect",
-            reason="typed additional cost has no exact generic spell-result template",
-            blockers=("typed spell-result clause",),
+            residual_ids=(residual_id,),
             cost=cost.cost_schema,
         )
     mechanics = tuple(dict.fromkeys(

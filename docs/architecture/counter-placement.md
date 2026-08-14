@@ -2,7 +2,7 @@
 title: "Counter placement and removal transactions"
 status: "current"
 authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_names.py, quorune/counter_state.py, quorune/counter_maximums.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_maximum_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/ability_fragments.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
-verified: "2026-08-11"
+verified: "2026-08-14"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
 ---
@@ -159,6 +159,17 @@ and mutation, while the separate continuous-effect owner commits the later
 layer-6 or layer-7c result. A stale target/source or failed later commit rolls
 back the complete resumed transaction. Optional, variable, compound, chosen,
 multi-target, and arbitrary granted-ability text remain residuals.
+
+The fixed counter/controller sequence family separately composes exactly one
+source or direct-target fixed counter instruction with exactly one controller
+draw, life-change, or Scry instruction in either printed order. A source
+placement resolves through `$source.zone_object`, so departure makes only that
+instruction inapplicable while an independent controller instruction still
+resolves. Counter replacement may suspend after an earlier controller result
+without replaying it; the continuation carries only the remaining printed
+instructions. This family adds no counter write path and excludes optional,
+modal, conditional, variable, linked, repeated, movement, and affected-set
+variants.
 
 ## Current producer inventory
 

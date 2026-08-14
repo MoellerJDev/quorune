@@ -11954,6 +11954,118 @@
       "applicability_note": "Roll back the entire choice command when the pinned remaining instruction is invalid, preserving the library, life, decision, and state hash."
     },
     {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_furnace_skullbomb_target_predicate_and_draw_compose",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose direct-permanent target validation with the ordered two-counter placement and independent controller draw on Furnace Skullbomb."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_source_departure_skips_counter_but_preserves_draw",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve the independent controller draw when the later source-zone-object counter instruction no longer has a current recipient."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_sphinx_draws_before_counter_replacement_and_replays",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit the printed draw before suspending the later counter instruction for competing quantity replacements, then resume only the remaining instruction."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_sphinx_draws_before_counter_replacement_and_replays",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve the sequence in a four-player game with the counter replacement decision assigned only to the affected permanent's controller."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceCompilerTests.test_fixed_counter_controller_compiler_mutant_is_killed",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the composite compiler production and require the formerly exact activation to return to a material residual."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_fixed_counter_controller_runtime_mutant_is_killed",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Bypass the canonical counter placement sink and require the authoritative counter assertion to reject the survivor."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceCompilerTests.test_fixed_counter_controller_shape_and_dependency_mutants_fail_closed",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed amounts, actors, visibility, source identities, operation composition, and blocked composite or counter dependencies."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceCompilerTests.test_unsupported_fixed_counter_controller_variants_remain_material_residuals",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Leave optional, variable, modal, three-instruction, movement, and noncontroller-result wording as material residuals."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_stale_source_replacement_resume_rolls_back_choice",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject replacement resume against a departed and returned source before any counter mutation."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceCompilerTests.test_spell_trigger_and_activated_contexts_share_fixed_counter_controller_lowering",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reuse one source-spanned fixed counter/controller sequence compiler in spell, trigger, and activated contexts while preserving printed instruction order."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_sphinx_draws_before_counter_replacement_and_replays",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve a real compiled Sphinx activation through the canonical draw owner and resumable counter-placement transaction."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_sphinx_draws_before_counter_replacement_and_replays",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose the replacement-order choice to seat A alone without serializing the permanent object identifier into the projected choice."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_sphinx_draws_before_counter_replacement_and_replays",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the compiled activation, printed-order draw, replacement selection, and resumed counter result to the identical authoritative state hash."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_counter_controller",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_stale_source_replacement_resume_rolls_back_choice",
+      "official_rule_ids": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Roll back the rejected replacement-choice command while preserving the draw that committed in the earlier instruction."
+    },
+    {
       "capability_id": "resolution.effect_sequence.fixed_source",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_source_effect_sequences.FixedSourceEffectSequenceRuntimeTests.test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
@@ -12520,6 +12632,14 @@
       "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Use one current effective-characteristic predicate for offer generation, submitted-command validation, and CR 608.2b resolution revalidation."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_furnace_skullbomb_target_predicate_and_draw_compose",
+      "official_rule_ids": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Offer, validate, and resolve only the acting player's artifact-or-creature target while rejecting the same type combination under another player's control."
     },
     {
       "capability_id": "target.permanent.characteristic_predicate",
@@ -14889,6 +15009,14 @@
         "commander_review"
       ],
       "applicability_note": "Resolve each represented draw through the immutable replacement pipeline before committing ordinary draw or Dredge results."
+    },
+    {
+      "capability_id": "zone.draw.library_to_hand",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_furnace_skullbomb_target_predicate_and_draw_compose",
+      "official_rule_ids": ["121.1", "121.2", "121.2a", "121.2b", "121.2c", "121.3", "121.3a", "121.4", "121.5", "121.6", "121.6a", "121.6b", "702.52a", "702.52b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit the controller's library-to-hand draw after Furnace Skullbomb places counters on its validated direct permanent target."
     },
     {
       "capability_id": "zone.draw.library_to_hand",

@@ -2,7 +2,7 @@
 title: "Oracle compiler architecture"
 status: "current"
 authoritative_source: "quorune/oracle_ir.py, quorune/compiler, and quorune/card_programs"
-verified: "2026-08-13"
+verified: "2026-08-14"
 audience: "compiler and rules contributors"
 maintenance: "hand-maintained"
 ---
@@ -49,6 +49,14 @@ end of turn. Both instructions lower to `$source.zone_object`; runtime
 resolution validates the same physical and logical battlefield incarnation
 before counter replacement and again when a suspended continuation resumes.
 This production contains no card names or mechanic-specific runtime behavior.
+
+`compiler/fixed_counter_controller_effect_sequences.py` owns a third closed
+two-clause grammar. It accepts exactly one fixed counter placement on the
+current source zone object or one direct permanent target plus exactly one
+fixed controller draw, life-change, or Scry instruction, in either printed
+order. Each clause reuses its existing typed owner; the sequence adds only the
+immutable ordering and continuation boundary. Optional, modal, conditional,
+variable, linked, repeated, and larger instruction families remain residual.
 
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,

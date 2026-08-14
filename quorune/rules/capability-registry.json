@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 95,
+  "registry_version": 96,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -600,7 +600,7 @@
       "implementation_components": ["quorune.rules.node_capability_shapes.fixed_draw_node_capabilities", "quorune.compiler.activated_mana_nodes.activated_oracle_node", "quorune.compiler.program_generation.register_generated_programs", "quorune.drawing.model.prepare_draw_instruction", "quorune.drawing.model.prepare_draw_event", "quorune.drawing.restrictions.DrawPermission", "quorune.drawing.transaction.commit_prepared_draw", "quorune.drawing.coordinator.begin_draw_sequence", "quorune.drawing.coordinator.begin_draw_batch", "quorune.semantic_runtime.draw_replacements.DrawInstructionMultiplierHandler", "quorune.semantic_runtime.draw_replacements.DredgeReplacementHandler", "quorune.semantic_runtime.draw_restrictions.DrawMaximumHandler", "quorune.semantic_choices.optional_draw.OptionalDrawHandler", "quorune.semantic_choices.conditional_draw.OpponentCastColorDrawHandler"],
       "positive_tests": ["test_ordinary_draw_commits_zone_history_and_events_once", "test_dredge_mills_top_cards_and_returns_the_pinned_source", "test_draw_handler_lowers_typed_intent_through_read_only_context", "test_mandatory_multi_draw_partially_occurs_under_maximum_one", "test_two_draw_doublers_modify_instruction_before_individual_draws", "test_optional_empty_library_draw_remains_legal_without_a_prohibition", "test_two_thousand_replacement_free_draws_do_not_recurse", "test_two_thousand_prevented_draws_do_not_recurse", "test_ordinary_activated_draw_is_exact_and_source_spanned"],
       "negative_tests": ["test_changed_library_or_source_fails_before_draw_mutation", "test_prevented_empty_draw_does_not_mark_empty_library_loss", "test_registered_node_validation_fails_before_mutation", "test_draw_prohibition_is_checked_before_dredge_replacements", "test_max_one_removes_optional_multi_draw_before_task_issue", "test_draw_past_library_records_each_empty_attempt", "test_fixed_draw_shapes_are_strict_and_capability_scoped"],
-      "interaction_tests": ["test_trusted_draw_replacement_finishes_before_priority", "test_draw_prevention_applies_even_to_an_empty_library", "test_semantic_choice_preparation_draw_uses_replacement_coordinator", "test_veil_conditional_draw_pauses_for_dredge_before_permissions", "test_dredge_does_not_consume_maximum_one_draw_allowance", "test_restriction_rechecks_control_phasing_and_source_zone", "test_large_sequence_suspends_and_resumes_from_remaining_count", "test_large_zero_count_batch_is_trampolined", "test_draw_replacement_completes_after_cost_and_before_resolution", "test_target_player_draw_validates_target_resolves_privately_and_replays", "test_any_target_damage_then_draw_revalidates_and_draws_privately", "test_aura_equipment_anthem_temporary_effect_and_draw_compose"],
+      "interaction_tests": ["test_trusted_draw_replacement_finishes_before_priority", "test_draw_prevention_applies_even_to_an_empty_library", "test_semantic_choice_preparation_draw_uses_replacement_coordinator", "test_veil_conditional_draw_pauses_for_dredge_before_permissions", "test_dredge_does_not_consume_maximum_one_draw_allowance", "test_restriction_rechecks_control_phasing_and_source_zone", "test_large_sequence_suspends_and_resumes_from_remaining_count", "test_large_zero_count_batch_is_trampolined", "test_draw_replacement_completes_after_cost_and_before_resolution", "test_target_player_draw_validates_target_resolves_privately_and_replays", "test_any_target_damage_then_draw_revalidates_and_draws_privately", "test_aura_equipment_anthem_temporary_effect_and_draw_compose", "test_furnace_skullbomb_target_predicate_and_draw_compose"],
       "multiplayer_tests": ["test_draw_each_player_uses_apnap_order_and_exact_engine_path", "test_draw_each_player_pauses_and_resumes_in_apnap_order_for_dredge", "test_four_player_chooser_uses_prospective_drawer_legality", "test_each_player_activation_draws_in_four_player_game"],
       "privacy_tests": ["test_draw_replacement_choice_is_visible_only_to_affected_seat", "test_optional_draw_choice_is_seat_scoped_and_replays_exactly", "test_resumed_multi_draw_sequence_is_private_and_replays_exactly", "test_draw_replacement_completes_after_cost_and_before_resolution"],
       "replay_tests": ["test_first_turn_profile_modifier_and_exact_replay", "test_migrated_semantic_effect_replays_exactly", "test_optional_draw_choice_is_seat_scoped_and_replays_exactly", "test_generic_draw_prohibition_replays_exactly", "test_resumed_multi_draw_sequence_is_private_and_replays_exactly", "test_sacrifice_draw_activation_is_offered_resolves_and_replays", "test_each_player_activation_draws_in_four_player_game"],
@@ -3313,6 +3313,33 @@
       "status": "trusted"
     },
     {
+      "id": "resolution.effect_sequence.fixed_counter_controller",
+      "version": 1,
+      "official_rules": ["109.2", "115.1", "115.3", "119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2b", "608.2c", "608.2h", "614.16", "616.1", "701.22", "701.22a", "701.22b", "122.1", "122.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve exactly two mandatory fixed instructions in printed order: one positive fixed counter placement on the current source zone object or one direct permanent target, and one fixed controller draw, life-change, or Scry instruction.",
+        "inputs": ["one complete source-spanned effect body", "exactly two mandatory fixed instructions", "one positive fixed counter placement", "one fixed controller draw, life gain, life loss, or Scry instruction", "stable source and target identity", "the canonical semantic continuation"],
+        "outputs": ["one capability-closed CardProgram node", "printed-order execution", "resolution-time target revalidation where targeted", "replacement-aware resumable counter placement", "typed controller effect result", "exact continuation replay"],
+        "exclusions": ["optional, modal, conditional, repeated, distributed, variable, linked-result, or more-than-two-instruction sequences", "multiple counter instructions or kinds", "affected sets and player counters", "counter movement or removal", "controller effects with dynamic quantities", "table-wide or opponent controller effects", "a source that left or changed logical identity before the source-counter instruction"]
+      },
+      "dependencies": ["counter.producer.fixed_effect"],
+      "implementation_components": ["quorune.compiler.fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceTemplate", "quorune.rules.fixed_controller_effect_shapes.fixed_counter_controller_effect_sequence_node_capabilities", "CommanderEngine._continue_resolution", "quorune.semantic_runtime.values.resolve_semantic_value", "quorune.semantic_choices.counter_coordination", "quorune.counter_placement.place_counters_on_refs", "quorune.drawing.coordinator.begin_draw_sequence", "quorune.semantic_choices.scry.ScryChoiceHandler", "quorune.effect_runtime.life_effects._commit"],
+      "positive_tests": ["test_spell_trigger_and_activated_contexts_share_fixed_counter_controller_lowering", "test_sphinx_draws_before_counter_replacement_and_replays"],
+      "negative_tests": ["test_fixed_counter_controller_shape_and_dependency_mutants_fail_closed", "test_unsupported_fixed_counter_controller_variants_remain_material_residuals", "test_stale_source_replacement_resume_rolls_back_choice"],
+      "interaction_tests": ["test_sphinx_draws_before_counter_replacement_and_replays", "test_source_departure_skips_counter_but_preserves_draw", "test_furnace_skullbomb_target_predicate_and_draw_compose"],
+      "multiplayer_tests": ["test_sphinx_draws_before_counter_replacement_and_replays"],
+      "privacy_tests": ["test_sphinx_draws_before_counter_replacement_and_replays"],
+      "replay_tests": ["test_sphinx_draws_before_counter_replacement_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The strict composite shape separately requires canonical fixed counter placement and the exact draw, life, or Scry capability represented by its controller instruction; blocking either owner retains a material residual.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and runtime mutations remove the composite lowering or bypass canonical counter placement; exact compilation and authoritative counter assertions reject the survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "untap.step.static_participation",
       "version": 1,
       "official_rules": ["502.3", "604.1", "611.3b"],
@@ -3732,7 +3759,7 @@
       "implementation_components": ["quorune.compiler.direct_target.DirectPermanentTargetSpec", "quorune.compiler.direct_target.direct_permanent_target_spec", "quorune.targets.TargetGroup", "quorune.target_characteristics.TargetCharacteristicSnapshot", "quorune.engine.CommanderEngine._target_row_matches"],
       "positive_tests": ["test_closed_direct_target_grammar_compiles_typed_predicates", "test_compound_target_sequence_harvests_enchantment_creature"],
       "negative_tests": ["test_unsupported_and_malformed_direct_target_predicates_fail_closed"],
-      "interaction_tests": ["test_current_effective_characteristics_govern_offer_command_and_resolution"],
+      "interaction_tests": ["test_current_effective_characteristics_govern_offer_command_and_resolution", "test_furnace_skullbomb_target_predicate_and_draw_compose"],
       "multiplayer_tests": ["test_four_player_target_predicate_privacy_rollback_and_replay"],
       "privacy_tests": ["test_four_player_target_predicate_privacy_rollback_and_replay"],
       "replay_tests": ["test_four_player_target_predicate_privacy_rollback_and_replay"],

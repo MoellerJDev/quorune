@@ -54,6 +54,7 @@ from ..rules.node_capability_shapes import (
     targeted_tap_state_node_capabilities,
 )
 from ..rules.fixed_controller_effect_shapes import (
+    fixed_counter_controller_effect_sequence_node_capabilities,
     fixed_controller_effect_sequence_node_capabilities,
     fixed_life_node_capabilities,
 )
@@ -464,6 +465,23 @@ def _is_closed_fixed_controller_effect_sequence_program(
 
     required = set(
         fixed_controller_effect_sequence_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_counter_controller_effect_sequence_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize one fixed counter and controller-effect sequence."""
+
+    required = set(
+        fixed_counter_controller_effect_sequence_node_capabilities(
             effects=program.effects,
             target_schema=program.target_schema,
             mechanic_ids=program.coverage,
@@ -987,6 +1005,7 @@ def _closed_effect_recognizers():
         _is_closed_fixed_life_program,
         _is_closed_fixed_scry_program,
         _is_closed_fixed_controller_effect_sequence_program,
+        _is_closed_fixed_counter_controller_effect_sequence_program,
         _is_closed_single_explore_program,
         _is_closed_single_proliferate_program,
         _is_closed_fixed_counter_placement_program,
