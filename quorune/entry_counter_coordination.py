@@ -97,6 +97,7 @@ def prepare_resolving_entry_replacement(
             entry_destination,
             destination_controller=item.controller,
             entry_characteristics=entry_characteristics,
+            mana_colors_spent=item.mana_colors_spent,
             selections=tuple(selections),
             error_type=error_type,
         )

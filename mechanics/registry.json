@@ -1,5 +1,5 @@
 {
-  "contract_count": 106,
+  "contract_count": 107,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -564,6 +564,12 @@
       "path": "mechanics/contracts/state-based-actions.json",
       "sha256": "b4cb21bdae1057deeb85e252ffb4b1dd5fb9f19fd38e4b56abace19c33bc6c9e",
       "version": 9
+    },
+    {
+      "mechanic_id": "sunburst",
+      "path": "mechanics/contracts/sunburst.json",
+      "sha256": "75d93b044cdb242afff37e5b3f1d8dbd0bc35ea359d6f1ab5cc088916c63f3bc",
+      "version": 1
     },
     {
       "mechanic_id": "tap-and-untap",
@@ -4431,19 +4437,41 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/sunburst.json",
+      "contract_sha256": "75d93b044cdb242afff37e5b3f1d8dbd0bc35ea359d6f1ab5cc088916c63f3bc",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.model.StackItem, quorune.rules.casting.commit, quorune.compiler.keyword_nodes.sunburst_keyword_node, quorune.entry_counter_coordination, quorune.semantic_runtime.sunburst, and canonical zone/counter replacement",
+      "implementation_version": "typed-sunburst-cast-entry-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Modular—Sunburst variable linkage",
+        "granted, copied, removed, and face-down Sunburst outside trusted typed ability propagation",
+        "Oracle-equivalent nonkeyword wording",
+        "unrepresented zone and counter replacement families",
+        "aggregate counters and replacement effects remain incomplete"
+      ],
       "mechanic_id": "sunburst",
       "official_name": "Sunburst",
       "rule_references": [
         "702.44"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_sunburst_compiles_printed_counter_kind_with_precise_spans",
+        "test_sunburst_models_snapshots_and_descriptors_reject_malformed_values",
+        "test_unsupported_sunburst_wording_remains_material_residual",
+        "test_sunburst_dependencies_and_compiler_runtime_mutations_fail_closed",
+        "test_multiple_sunburst_instances_apply_independently",
+        "test_cast_payment_colors_create_entry_counters",
+        "test_printed_type_boundary_ignores_entry_type_changes",
+        "test_zero_colors_nonstack_entry_and_spell_copy_create_no_counters",
+        "test_sunburst_counter_uses_canonical_quantity_replacement",
+        "test_four_player_controller_scope_checkpoint_and_replay",
+        "test_sunburst_runtime_mutation_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {

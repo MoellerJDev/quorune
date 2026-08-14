@@ -11,6 +11,7 @@ from ..bloodthirst import BLOODTHIRST_MECHANIC
 from ..object_predicate import ObjectQuerySpec
 from ..modular import MODULAR_MECHANIC_ID
 from ..riot import RIOT_MECHANIC
+from ..semantic_runtime.sunburst import SUNBURST_MECHANIC_ID
 from ..renown import RENOWN_MECHANIC_ID
 from ..unleash import UNLEASH_MECHANIC
 from ..rules.capabilities import (
@@ -252,6 +253,7 @@ def _generated_ability_id(
             in {
                 RIOT_MECHANIC,
                 BLOODTHIRST_MECHANIC,
+                SUNBURST_MECHANIC_ID,
                 _TOXIC_MECHANIC,
                 "affinity",
             }

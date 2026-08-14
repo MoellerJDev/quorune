@@ -57,6 +57,7 @@ from .compiler.keyword_nodes import (
     modular_keyword_nodes,
     prowess_keyword_node,
     riot_keyword_node,
+    sunburst_keyword_node,
     unleash_keyword_nodes,
 )
 from .compiler.ir_model import (
@@ -95,7 +96,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v85"
+ORACLE_COMPILER_VERSION = "oracle-ir-v86"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -616,6 +617,7 @@ def _keyword_nodes(
     material_line: str,
     span: SourceSpan,
     keywords: Sequence[str],
+    printed_card_types: tuple[str, ...],
     trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
@@ -642,6 +644,21 @@ def _keyword_nodes(
     )
     nodes: list[OracleNode] = []
     for plan in plans:
+        if plan.mechanics == ("sunburst",):
+            node = sunburst_keyword_node(
+                node_id=plan.node_id,
+                line=plan.line,
+                material_line=plan.material_line,
+                span=plan.span,
+                mechanics=plan.mechanics,
+                printed_card_types=printed_card_types,
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+                residuals=residuals,
+            )
+            if node is not None:
+                nodes.append(node)
+            continue
         if plan.mechanics == (RIOT_MECHANIC,):
             nodes.append(
                 riot_keyword_node(
@@ -921,7 +938,7 @@ def _compile_face(
             line=line,
             material_line=material_line,
             span=span,
-            keywords=keywords,
+            keywords=keywords, printed_card_types=tuple(sorted(card_types)),
             trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry,
             capability_profile=capability_profile,

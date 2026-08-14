@@ -24,6 +24,7 @@ from ..unleash import (
     unleash_entry_handler_descriptor,
 )
 from ..riot import RIOT_MECHANIC, riot_entry_handler_descriptor
+from ..semantic_runtime.sunburst import SUNBURST_MECHANIC_ID, SunburstSpec
 from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from ..modular import MODULAR_MECHANIC_ID, ModularSpec
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
@@ -57,6 +58,7 @@ _PROWESS_MECHANIC = "prowess"
 _CONVOKE_MECHANIC = "convoke"
 _AFFINITY_MECHANIC = "affinity"
 _BLOODTHIRST_MECHANIC = BLOODTHIRST_MECHANIC
+_SUNBURST_MECHANIC = SUNBURST_MECHANIC_ID
 _RENOWN_MECHANIC = RENOWN_MECHANIC_ID
 _MODULAR_MECHANIC = MODULAR_MECHANIC_ID
 _ECHO_MECHANIC = ECHO_MECHANIC_ID
@@ -64,12 +66,14 @@ _TOXIC_MECHANIC = "toxic"
 _GROUPED_SPLIT_MECHANICS = (
     _AFFINITY_MECHANIC,
     _BLOODTHIRST_MECHANIC,
+    _SUNBURST_MECHANIC,
     _TOXIC_MECHANIC,
     _EVOLVE_MECHANIC,
 )
 _PARAMETERIZED_SPLIT_MECHANICS = frozenset(
     {
         _BLOODTHIRST_MECHANIC,
+        _SUNBURST_MECHANIC,
         _RENOWN_MECHANIC,
         _MODULAR_MECHANIC,
         _ECHO_MECHANIC,
@@ -80,6 +84,7 @@ _PARAMETERIZED_SPLIT_MECHANICS = frozenset(
 _INSTANCE_PART_MECHANICS = (
     _AFFINITY_MECHANIC,
     _BLOODTHIRST_MECHANIC,
+    _SUNBURST_MECHANIC,
     _EVOLVE_MECHANIC,
     _PERSIST_MECHANIC,
     _RIOT_MECHANIC,
@@ -453,6 +458,82 @@ def bloodthirst_keyword_node(
         template_id="bloodthirst-opponent-damage-entry-counter-v1",
         handlers=(spec.handler_descriptor(),),
         runtime_coverage=("conditional_self_entry_counter",),
+        mechanics=mechanics,
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        capability_profile=(
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    )
+
+
+def sunburst_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    mechanics: tuple[str, ...],
+    printed_card_types: tuple[str, ...],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleNode | None:
+    """Lower one ordinary Sunburst using the printed type boundary."""
+
+    if mechanics != (_SUNBURST_MECHANIC,):
+        return None
+    ordinary = (
+        material_line.strip().rstrip(".").casefold()
+        == _SUNBURST_MECHANIC
+    )
+    gate = explicit_capability_gate(
+        "counter.producer.sunburst",
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    blockers = (
+        gate.blockers
+        if ordinary
+        else ("mechanic:sunburst-unsupported-wording",)
+    )
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind="dependency_contract" if ordinary else "keyword_grammar",
+                text=line,
+                span=span,
+                reason=(
+                    "Sunburst depends on a blocked typed capability"
+                    if ordinary
+                    else "Sunburst wording is outside the ordinary keyword grammar"
+                ),
+                blockers=blockers,
+            ),
+        )
+        if blockers
+        else ()
+    )
+    spec = SunburstSpec.for_printed_types(printed_card_types)
+    return OracleNode(
+        node_id=node_id,
+        kind="static_ability",
+        text=line,
+        span=span,
+        active_zone="all",
+        event="zone.change",
+        lowerable=ordinary,
+        exact=ordinary and not blockers,
+        template_id="sunburst-cast-entry-counter-v1" if ordinary else None,
+        handlers=(spec.handler_descriptor(),) if ordinary else (),
+        runtime_coverage=("cast_mana_color_entry_counter",) if ordinary else (),
         mechanics=mechanics,
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,

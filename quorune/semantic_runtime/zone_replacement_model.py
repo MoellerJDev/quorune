@@ -122,6 +122,7 @@ class ZoneChangeSubjectSnapshot:
     opponent_count: int = 0
     controller_basic_land_types: tuple[str, ...] = ()
     opponent_was_dealt_damage_this_turn: bool = False
+    mana_colors_spent: tuple[str, ...] = ()
     intrinsic_entry_counters: tuple[IntrinsicEntryCounter, ...] = ()
     effect_entry_counters: tuple[EffectEntryCounter, ...] = ()
 
@@ -211,6 +212,19 @@ class ZoneChangeSubjectSnapshot:
             raise ZoneReplacementError(
                 "Zone replacement turn-history facts must be boolean"
             )
+        mana_colors = tuple(self.mana_colors_spent)
+        if any(
+            type(value) is not str or value not in "WUBRG"
+            for value in mana_colors
+        ) or len(mana_colors) != len(set(mana_colors)):
+            raise ZoneReplacementError(
+                "Zone replacement cast colors must be distinct WUBRG symbols"
+            )
+        object.__setattr__(
+            self,
+            "mana_colors_spent",
+            tuple(color for color in "WUBRG" if color in mana_colors),
+        )
 
     @property
     def chooser(self) -> str:

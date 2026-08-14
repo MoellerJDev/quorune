@@ -355,6 +355,20 @@ instances remain independent. Modular—Sunburst, nonpositive or variable
 values, Oracle-equivalent prose, trigger multipliers, and granted or copied
 Modular outside trusted typed ability propagation remain explicit residuals.
 
+Ordinary printed Sunburst now has a dedicated cast-payment entry owner. Cast
+commit freezes the distinct WUBRG colors actually spent on the spell as a
+typed stack fact; stack copies deliberately receive an empty fact because they
+were not cast. The compiler selects +1/+1 counters for a printed creature face
+and charge counters for every other printed face before runtime characteristic
+evaluation, matching CR 702.44a's instruction to ignore type-changing effects
+without introducing a characteristic dependency cycle. A resolving card
+carries the frozen colors into its immutable prospective zone-change snapshot,
+and each printed Sunburst instance creates one replacement-aware counter event.
+Colorless casts, entries from outside the stack, and spell copies produce no
+Sunburst counters. Modular—Sunburst linkage, nonkeyword equivalents, and
+granted, removed, copied, or face-down abilities outside typed propagation
+remain explicit residuals.
+
 Oracle IR v76 lowers the closed reusable fixed-placement grammars through the
 typed operation in spell, triggered, and activated contexts. It accepts one
 positive exact quantity of one named counter on the source, the exact named

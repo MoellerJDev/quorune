@@ -43,6 +43,11 @@ MUTATION_TESTS = {
         "BloodthirstRuntimeTests."
         "test_bloodthirst_runtime_mutation_is_killed"
     ),
+    "counter.producer.sunburst": (
+        "tests.test_sunburst_rules."
+        "SunburstRuntimeTests."
+        "test_sunburst_runtime_mutation_is_killed"
+    ),
     "counter.producer.effect_entry": (
         "tests.test_persist_undying_rules."
         "PersistUndyingRuntimeTests."

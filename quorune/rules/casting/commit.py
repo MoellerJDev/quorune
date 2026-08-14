@@ -594,6 +594,7 @@ def _create_spell_item(
     program: Any,
     selected_option: Mapping[str, Any],
     details: Mapping[str, Any],
+    spent: Mapping[str, int],
 ) -> StackItem:
     card.annotations.pop("temporary_play_permission", None)
     host._remove_from_zone(card)
@@ -644,6 +645,11 @@ def _create_spell_item(
         notes=str(details.get("note") or ""),
         default_destination=destination,
         visibility=list(host.seats),
+        mana_colors_spent=tuple(
+            color
+            for color in "WUBRG"
+            if type(spent.get(color, 0)) is int and spent.get(color, 0) > 0
+        ),
         context={
             "target_groups": thaw_json(proposal.target_groups),
             "target_snapshots": thaw_json(proposal.target_snapshots),
@@ -894,7 +900,14 @@ def commit_cast(
         host, proposal, response, card, selected_option
     )
     item = _create_spell_item(
-        host, proposal, card, record, program, selected_option, details
+        host,
+        proposal,
+        card,
+        record,
+        program,
+        selected_option,
+        details,
+        spent,
     )
     item.x_value = response.get("x")
     item.notes = str(response.get("note") or "")
