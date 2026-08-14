@@ -7,6 +7,7 @@ import tempfile
 import unittest
 
 from common import keep_all, load_assets, make_session
+from quorune.attachments import attach_objects
 from quorune.compiler.continuous_templates import (
     controlled_creature_fixed_modifier,
     controlled_creature_until_end_of_turn_effect,
@@ -32,8 +33,10 @@ from quorune.continuous_effects import (
 )
 from quorune.model import CardInstance, GameState, StackItem
 from quorune.object_predicate import ObjectQuerySpec
+from quorune.oracle_ir import compile_oracle_card, register_generated_programs
 from quorune.projection import StateProjector
 from quorune.record import checkpoint_envelope, replay_record
+from quorune.rules.capabilities import load_default_capability_registry
 from quorune.semantic_runtime import (
     ContinuousEffectSourceContext,
     FixedQueryPowerToughnessAnthemHandler,
@@ -518,6 +521,44 @@ class ContinuousEffectEngineTests(unittest.TestCase):
         )[0]
         return engine._resolve_object(controller, ref, zones={"battlefield"})
 
+    def add_registered_card(
+        self,
+        engine,
+        *,
+        seat: str,
+        name: str,
+        ref: str,
+        active_face: str | None = None,
+    ) -> CardInstance:
+        record = self.db.lookup(name)
+        self.assertIsNotNone(record, name)
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (record,),
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+        )
+        value = CardInstance(
+            object_id=f"continuous-assurance:{ref}",
+            ref=ref,
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner=seat,
+            controller=seat,
+            zone="battlefield",
+            active_face=active_face,
+            zone_timestamp=engine.state.timestamp_sequence + 1,
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+        )
+        engine.state.cards[value.object_id] = value
+        engine.state.players[seat].zones["battlefield"].append(
+            value.object_id
+        )
+        return value
+
     def test_mass_resolution_locks_set_across_entry_control_and_zone_change(self):
         session = self.session(6112001, players=4)
         engine = session.engine
@@ -580,6 +621,92 @@ class ContinuousEffectEngineTests(unittest.TestCase):
         self.assertEqual("2", public_object["q"])
         self.assertEqual(1, expire_end_of_turn_continuous_effects(engine.state))
         self.assertEqual(1, engine._numeric_stat(creature.object_id, "power"))
+
+    def test_exact_continuous_effects_compose_while_replacements_stay_residual(
+        self,
+    ):
+        session = self.session(6112006)
+        engine = session.engine
+        registry = load_default_capability_registry()
+        witness_names = (
+            "Drogskol Infantry // Drogskol Armaments",
+            "Wilt-Leaf Liege",
+            "Flamekin Village",
+        )
+        for name in witness_names:
+            compiled = compile_oracle_card(
+                self.db.lookup(name),
+                capability_registry=registry,
+                capability_profile="commander_review",
+            )
+            blockers = {
+                blocker
+                for residual in compiled.material_residuals
+                for blocker in residual.blockers
+            }
+            self.assertGreaterEqual(
+                blockers,
+                {
+                    "replacement applicability",
+                    "self-replacement and prevention ordering",
+                },
+            )
+
+        target_ref = engine.create_token(
+            "A",
+            name="Residual-boundary creature",
+            characteristics={
+                "type_line": "Token Creature — Spirit",
+                "colors": ["G", "W"],
+                "power": "2",
+                "toughness": "2",
+                "keywords": [],
+            },
+        )[0]
+        target = engine._resolve_object(
+            "A", target_ref, zones={"battlefield"}
+        )
+        anthem = self.add_registered_card(
+            engine,
+            seat="A",
+            name="Wilt-Leaf Liege",
+            ref="ASSURANCE-ANTHEM",
+        )
+        aura = self.add_registered_card(
+            engine,
+            seat="A",
+            name="Drogskol Infantry // Drogskol Armaments",
+            ref="ASSURANCE-ARMAMENTS",
+            active_face="Drogskol Armaments",
+        )
+        village = self.add_registered_card(
+            engine,
+            seat="A",
+            name="Flamekin Village",
+            ref="ASSURANCE-VILLAGE",
+        )
+        attach_objects(
+            engine.state.cards,
+            aura,
+            target,
+            source_timestamp=engine._next_zone_timestamp(),
+        )
+        engine.apply_effect(
+            {
+                "op": "grant_keyword_until_end_of_turn",
+                "card": target.ref,
+                "keyword": "Haste",
+            },
+            actor="A",
+        )
+
+        characteristics = engine._effective_card_data(target)
+        self.assertEqual("6", characteristics["power"])
+        self.assertEqual("6", characteristics["toughness"])
+        self.assertIn("Haste", characteristics["keywords"])
+        self.assertEqual("battlefield", anthem.zone)
+        self.assertEqual(target.object_id, aura.attached_to)
+        self.assertEqual("battlefield", village.zone)
 
     def test_malformed_mass_predicate_rolls_back_without_effect(self):
         session = self.session(6112003)

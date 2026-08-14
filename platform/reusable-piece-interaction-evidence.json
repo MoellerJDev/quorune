@@ -1338,6 +1338,30 @@
       "capability_ids": ["zone.entry.tapped_state"],
       "interaction_order": 2,
       "assertion": "Trusted-only action authority rejects the unsupported target-predicate spell face without changing authoritative state while the exact Agadeem land face remains playable and enters tapped."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_aura_equipment_anthem_temporary_effect_and_draw_compose",
+      "piece_ids": ["capability.attachment.aura.simple_object", "capability.attachment.equip.fixed_mana", "capability.continuous.attached.fixed_characteristics", "capability.continuous.power_toughness.fixed_anthem", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "capability.zone.draw.library_to_hand"],
+      "capability_ids": ["attachment.aura.simple_object", "attachment.equip.fixed_mana", "continuous.attached.fixed_characteristics", "continuous.power_toughness.fixed_anthem", "continuous.resolution.fixed_characteristics_until_end_of_turn", "zone.draw.library_to_hand"],
+      "interaction_order": 6,
+      "assertion": "A fixed Equipment activation, a targeted Aura spell, both attached modifiers, a live Thopter anthem, a locked until-end-of-turn modifier, and a canonical draw execute together on one authoritative battlefield without losing attachment or characteristic state."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "piece_ids": ["capability.continuous.attached.fixed_characteristics", "capability.continuous.power_toughness.fixed_anthem", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "residual.replacement.replacement-applicability", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["continuous.attached.fixed_characteristics", "continuous.power_toughness.fixed_anthem", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
+      "interaction_order": 5,
+      "assertion": "Exact attached, anthem, and until-end-of-turn characteristic owners compose on one object while every witness card retains explicit replacement-applicability and replacement-ordering residuals instead of lowering unsupported prose."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "piece_ids": ["capability.counter.characteristic.keyword", "capability.counter.placement.quantity_replacement", "capability.damage.amount.positive", "capability.damage.result.deathtouch", "capability.damage.result.infect", "capability.damage.result.lifelink", "residual.replacement.replacement-applicability", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["counter.characteristic.keyword", "counter.placement.quantity_replacement", "damage.amount.positive", "damage.result.deathtouch", "damage.result.infect", "damage.result.lifelink"],
+      "interaction_order": 8,
+      "assertion": "Positive damage from a Deathtouch- and Lifelink-counter source with Infect produces the exact damage results; Doubling Season correctly excludes the rule-generated Infect counters, doubles a later effect-generated placement, and keeps its unsupported token replacement explicitly residual."
     }
   ]
 }
