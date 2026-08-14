@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "93720477a4d618826089b6c86b55513711cc77697dfd2042c0b41c67e10133f7",
-  "declaration_source_fingerprint": "147b00761720028f5e7d8eb349f1f6577cd3a8987d382cd34d3938219e01efa4",
+  "registry_fingerprint": "a3b01f7852ec55152893047db31653bf9afd6a3de975528e4625fbcfe4d9fc1e",
+  "declaration_source_fingerprint": "b2cc09c5ed46cba0504592df2bb15a04ed519235d4b820215f848ef3be9355e8",
   "declarations": [
     {
       "capability_id": "activation.crew.fixed_power",
@@ -23094,7 +23094,7 @@
         "commander_duel",
         "commander_review"
       ],
-      "applicability_note": "Keep optional, qualified, modal, aggregate, regeneration, and compound destruction wording outside the bounded family."
+      "applicability_note": "Keep optional, qualified, modal, aggregate, cannot-be-regenerated, and compound destruction wording outside the bounded direct-target family; regeneration is owned separately."
     },
     {
       "capability_id": "permanent.destroy.effect",
@@ -23979,6 +23979,244 @@
         "commander_review"
       ],
       "applicability_note": "Reject a destruction plan after the current Indestructible characteristic changes and preserve the authoritative state hash."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_replaces_effect_and_state_based_destruction",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Consume one regeneration shield for both represented effect destruction and lethal or Deathtouch state-based destruction."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_shields_expire_at_cleanup_and_zone_change",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Clear unused shields at cleanup and whenever the protected logical object changes zones."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_taps_clears_damage_and_removes_from_combat",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply tapping, damage removal, Deathtouch-marker removal, and canonical combat removal as the single replacement result."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_activation_creates_public_shield_and_replays",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Offer and resolve the activation under four-player priority without seat-specific behavior."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_regeneration_rules.RegenerationCompilerTests.test_regeneration_shape_and_dependency_mutants_fail_closed",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill altered exact source shapes, missing compiler ownership, and blocked destruction dependencies."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_disposition_mutant_is_killed",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a destruction disposition that ignores an available regeneration shield."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "negative",
+      "test_id": "tests.test_regeneration_rules.RegenerationCompilerTests.test_unsupported_regeneration_grammar_remains_residual",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep targeted, static, noncreature, repeated, and qualified regeneration wording outside the exact grammar."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "negative",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_does_not_replace_sacrifice_exile_or_zero_toughness",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Leave sacrifice, permanent exile, and zero-toughness state-based graveyard movement outside destruction replacement while canonical zone changes clear the obsolete shield."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "negative",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_stale_and_competing_replacements_fail_before_mutation",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject stale shield counts and the unsupported affected-player choice between regeneration and shield-counter replacements before mutation."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "positive",
+      "test_id": "tests.test_regeneration_rules.RegenerationCompilerTests.test_exact_self_regeneration_compiles_and_harvests_frontier",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower the exact self-creature instruction with its compiled cost and source-zone-object identity into one trusted capability-closed program."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "positive",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_activation_creates_public_shield_and_replays",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pay and resolve an offered self-regeneration activation into one public shield on the same source incarnation."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_activation_creates_public_shield_and_replays",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the public shield count identically to every seat without adding hidden-zone or decision data."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "replay",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_activation_creates_public_shield_and_replays",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the offered activation, paid cost, resolving source identity, public shield, journal, and final state hash exactly."
+    },
+    {
+      "capability_id": "permanent.regeneration.self_activation",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_regeneration_rules.RegenerationRuntimeTests.test_stale_and_competing_replacements_fail_before_mutation",
+      "official_rule_ids": [
+        "506.4",
+        "701.19",
+        "701.19a",
+        "701.19c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preflight identity and replacement state before consuming protection or changing zones, tap state, damage, or combat."
     },
     {
       "capability_id": "permanent.return.owner_hand",
@@ -31502,5 +31740,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "b79771ff6a2bfc15d2422062459b7b6ab64fa88ce491461b67138a56fa44caad"
+  "fingerprint": "9bb054d511abaca0d0b67f60ca0652bd2789bbd9421145aefd4e4fabe2d27174"
 }

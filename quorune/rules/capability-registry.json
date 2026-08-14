@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 94,
+  "registry_version": 95,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -123,6 +123,12 @@
       "mechanic_id": "destroy",
       "capabilities": [
         "permanent.destroy.effect"
+      ]
+    },
+    {
+      "mechanic_id": "regenerate",
+      "capabilities": [
+        "permanent.regeneration.self_activation"
       ]
     },
     {
@@ -2963,8 +2969,8 @@
       "applicability": {
         "summary": "Compile and execute one mandatory direct-target destruction instruction through target revalidation and a typed precommit transaction that distinguishes actual destruction, Indestructible prohibition, and the intrinsic shield-counter replacement.",
         "inputs": ["closed typed direct-target clause", "revalidated phased-in battlefield permanent", "current represented effective keywords", "current shield-counter count", "physical and logical object identity"],
-        "outputs": ["canonical destruction zone event", "one removed shield counter instead of effect destruction", "Indestructible no-change result", "public typed result journal"],
-        "exclusions": ["regeneration and effects that say a permanent cannot be regenerated", "optional, modal, aggregate, quantified, relational, qualified, or compound destruction clauses", "complete ability-changing, copy, face-down, and dependency interactions", "unrepresented destruction replacement effects; cards representing those interactions remain material residuals and fail match trust closed"]
+        "outputs": ["canonical destruction zone event", "one removed shield counter instead of effect destruction", "one consumed regeneration shield with its alternate result", "Indestructible no-change result", "public typed result journal"],
+        "exclusions": ["effects that say a permanent cannot be regenerated", "affected-player ordering between regeneration and shield-counter replacements", "optional, modal, aggregate, quantified, relational, qualified, or compound destruction clauses", "complete ability-changing, copy, face-down, and dependency interactions", "other unrepresented destruction replacement effects; cards representing those interactions remain material residuals and fail match trust closed"]
       },
       "dependencies": ["target.revalidate_resolution"],
       "implementation_components": ["quorune.compiler.destruction_templates.TargetedDestructionEffectTemplate", "quorune.rules.node_capability_shapes.targeted_destruction_node_capabilities", "quorune.semantic_runtime.destruction_handlers.DestroyPermanentHandler", "quorune.destruction.prepare_destructions", "quorune.destruction.commit_destruction_plan"],
@@ -2990,8 +2996,8 @@
       "applicability": {
         "summary": "Compile and execute one mandatory fixed public battlefield-set destruction instruction as a simultaneous typed precommit transaction with immutable APNAP selection, Indestructible prohibition, shield-counter replacement, and canonical zone-change ownership.",
         "inputs": ["closed typed affected-permanent set", "complete public APNAP battlefield snapshot", "current represented effective types, colors, supertypes, keywords, token state, and tapped state", "physical and logical object identity", "current shield-counter counts"],
-        "outputs": ["one immutable affected-set snapshot", "canonical simultaneous destruction zone events", "shield-counter and Indestructible dispositions", "public typed result journal"],
-        "exclusions": ["regeneration and cannot-be-regenerated riders", "variable, quantified, comparative, chosen, named, or history-dependent predicates", "negative color, subtype, or keyword predicates", "linked destroyed-this-way results, costs, modes, choices, and delayed destruction", "unrepresented continuous-effect, copy, face-down, and replacement interactions; cards representing those interactions remain material residuals and fail match trust closed"]
+        "outputs": ["one immutable affected-set snapshot", "canonical simultaneous destruction zone events", "regeneration, shield-counter, and Indestructible dispositions", "public typed result journal"],
+        "exclusions": ["cannot-be-regenerated riders", "affected-player ordering between regeneration and shield-counter replacements", "variable, quantified, comparative, chosen, named, or history-dependent predicates", "negative color, subtype, or keyword predicates", "linked destroyed-this-way results, costs, modes, choices, and delayed destruction", "unrepresented continuous-effect, copy, face-down, and replacement interactions; cards representing those interactions remain material residuals and fail match trust closed"]
       },
       "dependencies": [],
       "implementation_components": ["quorune.affected_permanents.AffectedPermanentSetSpec", "quorune.destruction_sets.snapshot_destruction_set", "quorune.destruction_sets.resolve_destruction_set", "quorune.compiler.destruction_templates.MassDestructionEffectTemplate", "quorune.rules.node_capability_shapes.mass_destruction_node_capabilities", "quorune.semantic_runtime.destruction_handlers.DestroyPermanentSetHandler", "quorune.destruction.prepare_destructions", "quorune.destruction.commit_destruction_plan"],
@@ -3010,6 +3016,33 @@
       "status": "trusted"
     },
     {
+      "id": "permanent.regeneration.self_activation",
+      "version": 1,
+      "official_rules": ["506.4", "701.19", "701.19a", "701.19c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and execute one exact self-creature regeneration activation by creating an identity-pinned until-cleanup shield, then replace one represented effect or damage state-based destruction with shield consumption, tapping, damage removal, and canonical combat removal.",
+        "inputs": ["exact Regenerate this creature instruction", "compiled supported activation cost", "same phased-in battlefield source incarnation", "represented effect or lethal/deathtouch state-based destruction"],
+        "outputs": ["one public regeneration shield", "one replaced destruction event", "tapped permanent with no marked or Deathtouch damage", "canonical removal from combat", "exact command replay"],
+        "exclusions": ["static regeneration abilities", "targeted or noncreature self-regeneration grammar", "effects that prohibit regeneration", "affected-player ordering between regeneration and shield-counter replacements", "sacrifice, exile, zero-toughness, and other non-destruction zone changes", "destruction events outside the represented effect and damage state-based owners"]
+      },
+      "dependencies": ["permanent.destroy.effect", "permanent.destroy.state_based_damage"],
+      "implementation_components": ["quorune.compiler.regeneration_templates.SelfRegenerationEffectTemplate", "quorune.rules.node_capability_shapes.self_regeneration_node_capabilities", "quorune.semantic_runtime.regeneration_handlers.CreateRegenerationShieldHandler", "quorune.regeneration.create_regeneration_shield", "quorune.regeneration.apply_regeneration_replacement", "quorune.destruction.prepare_destructions", "quorune.destruction.commit_destruction_plan", "quorune.tap_state.set_permanent_tapped", "quorune.damage_results.clear_permanent_damage"],
+      "positive_tests": ["test_exact_self_regeneration_compiles_and_harvests_frontier", "test_activation_creates_public_shield_and_replays"],
+      "negative_tests": ["test_unsupported_regeneration_grammar_remains_residual", "test_regeneration_does_not_replace_sacrifice_exile_or_zero_toughness", "test_stale_and_competing_replacements_fail_before_mutation"],
+      "interaction_tests": ["test_regeneration_replaces_effect_and_state_based_destruction", "test_regeneration_taps_clears_damage_and_removes_from_combat", "test_regeneration_shields_expire_at_cleanup_and_zone_change"],
+      "multiplayer_tests": ["test_activation_creates_public_shield_and_replays"],
+      "privacy_tests": ["test_activation_creates_public_shield_and_replays"],
+      "replay_tests": ["test_activation_creates_public_shield_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The exact node closes over both represented destruction causes; blocking either destruction owner prevents the regeneration CardProgram from becoming trusted.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_regeneration_shape_and_dependency_mutants_fail_closed and test_regeneration_disposition_mutant_is_killed change the exact source shape, dependency closure, and regeneration disposition; focused compiler and destruction assertions reject each mutant.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "permanent.destroy.state_based_damage",
       "version": 1,
       "official_rules": ["701.8", "701.8a", "701.8b", "702.2", "702.12b", "704.5g", "704.5h"],
@@ -3017,8 +3050,8 @@
       "applicability": {
         "summary": "Evaluate lethal marked damage and since-last-check Deathtouch damage from one immutable permanent snapshot, then commit the resulting destruction set through the canonical typed destruction and simultaneous zone-change owners.",
         "inputs": ["one immutable state-based-action snapshot", "current represented creature type and toughness", "marked damage and one-check Deathtouch result", "current represented effective Indestructible ability", "physical and logical object identity"],
-        "outputs": ["canonical state-based destruction set", "Indestructible no-change result", "one simultaneous battlefield-to-owner-graveyard transaction", "consumed Deathtouch check marker"],
-        "exclusions": ["regeneration and effects that say a permanent cannot be regenerated", "unsupported continuous-effect, copy, face-down, merged-object, and ability-changing producers", "zero-toughness and other non-destruction state-based graveyard moves", "unrepresented destruction replacement effects; cards representing those interactions remain material residuals and fail match trust closed"]
+        "outputs": ["canonical state-based destruction set", "one regeneration alternate result when applicable", "Indestructible no-change result", "one simultaneous battlefield-to-owner-graveyard transaction", "consumed Deathtouch check marker"],
+        "exclusions": ["effects that say a permanent cannot be regenerated", "unsupported continuous-effect, copy, face-down, merged-object, and ability-changing producers", "zero-toughness and other non-destruction state-based graveyard moves", "other unrepresented destruction replacement effects; cards representing those interactions remain material residuals and fail match trust closed"]
       },
       "dependencies": ["damage.result.creature_mark", "damage.result.deathtouch"],
       "implementation_components": ["CommanderEngine._permanent_sba_snapshots", "quorune.state_based_actions.evaluate_permanent_state_based_actions", "quorune.state_based_execution.prepare_state_based_execution", "quorune.state_based_execution.commit_state_based_zone_changes", "quorune.destruction.prepare_destructions", "quorune.destruction.commit_destruction_plan"],
@@ -3045,7 +3078,7 @@
         "summary": "Treat one or more current represented Indestructible instances on a battlefield permanent as a static prohibition against represented effect, fixed-set, lethal-damage, and Deathtouch destruction without changing damage assignment or preventing nondestruction zone movement.",
         "inputs": ["phased-in battlefield permanent", "current represented effective keyword state", "typed effect or state-based destruction proposal", "current combat-damage assignment characteristics"],
         "outputs": ["prohibited represented destruction", "unchanged lethal-assignment threshold", "redundant multiple-instance result", "ordinary nondestruction movement remains permitted"],
-        "exclusions": ["regeneration and competing unrepresented destruction replacements", "conditional or qualified Indestructible wording", "player abilities", "unsupported continuous-effect, copy, face-down, merged-object, and ability-changing producers", "objects outside the battlefield and zone moves that do not destroy"]
+        "exclusions": ["affected-player ordering between regeneration and shield-counter replacements", "other unrepresented destruction replacements", "conditional or qualified Indestructible wording", "player abilities", "unsupported continuous-effect, copy, face-down, merged-object, and ability-changing producers", "objects outside the battlefield and zone moves that do not destroy"]
       },
       "dependencies": ["combat.damage.assignment.trample", "permanent.destroy.effect", "permanent.destroy.fixed_set", "permanent.destroy.state_based_damage"],
       "implementation_components": ["quorune.keyword_abilities.normalized_effective_keywords", "quorune.destruction.prepare_destructions", "quorune.destruction.validate_destruction_plan", "quorune.destruction.commit_destruction_plan", "quorune.state_based_actions.evaluate_permanent_state_based_actions", "quorune.state_based_execution.prepare_state_based_execution", "quorune.combat_damage_trample.trample_assignment_error"],

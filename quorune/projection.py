@@ -351,6 +351,8 @@ class StateProjector:
             obj["ctr"] = dict(card.counters)
         if card.marked_damage:
             obj["dmg"] = card.marked_damage
+        if card.regeneration_shields:
+            obj["regen"] = card.regeneration_shields
         if card.is_token:
             obj["tok"] = 1
         if card.is_commander:

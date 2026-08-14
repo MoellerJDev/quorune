@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "c6327ce089164bcbfd0ce105bffe895c5225f683820b11bf9ebff87a14739933"
+verified: "de09106951c97a37b4b57856655e607d0be7dc88495aab04331f5b409d36447b"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,16 +11,16 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `14126d502275cce2ac60101392578eb807d7f09bd4b0913aafdb4c3fb98b92a4`
+Source fingerprint: `ebb6a953f9a57dd743d3bd393c0d3e566da4dd95273535e58153d4c920fed614`
 
 ## Current top-level state
 
 - Pinned rules: `3300`
-- Queued rules: `2919`
+- Queued rules: `2916`
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `frontier:activated_effect:unparsed-regenerate-this-creature`
+- Selected cross-program work: `frontier:effect_clause:intrinsic-basic-land-type-mana-capability`
 - Selected work class: `compiler_harvest`
 
 ## Cross-program work selection
@@ -31,17 +31,16 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `frontier:activated_effect:unparsed-regenerate-this-creature` | `compiler_harvest` | 76 | 145 | 0 | 0 |
-| 2 | deferred | `frontier:effect_clause:intrinsic-basic-land-type-mana-capability` | `compiler_harvest` | 70 | 106 | 0 | 0 |
-| 3 | deferred | `frontier:effect_clause:typed-spell-result-clause` | `compiler_harvest` | 66 | 157 | 0 | 0 |
-| 4 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 5 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
-| 6 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
-| 7 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
-| 8 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
-| 9 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 10 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 204 | 346 | 0 | 0 |
-| 11 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 123 | 338 | 0 | 0 |
+| 1 | selected | `frontier:effect_clause:intrinsic-basic-land-type-mana-capability` | `compiler_harvest` | 70 | 106 | 0 | 0 |
+| 2 | deferred | `frontier:effect_clause:typed-spell-result-clause` | `compiler_harvest` | 66 | 157 | 0 | 0 |
+| 3 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 4 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
+| 5 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
+| 6 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
+| 7 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
+| 8 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
+| 9 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 207 | 346 | 0 | 0 |
+| 10 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 123 | 338 | 0 | 0 |
 
 Selected reason: Meets the post-stabilization 50-card threshold but remains behind higher-priority correctness and architecture gates.
 

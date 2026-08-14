@@ -1,5 +1,5 @@
 {
-  "contract_count": 105,
+  "contract_count": 106,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -100,7 +100,7 @@
     {
       "mechanic_id": "cr-506-combat-phase",
       "path": "mechanics/contracts/combat-phase.json",
-      "sha256": "0bf2bab678f07716ac5711e5e203cb939acd106f9ba7101dfbcc16ae58dcd7a7",
+      "sha256": "165b977f02ed332f952288fc827361b5d122916c1d3a42c168496df85e1beea1",
       "version": 3
     },
     {
@@ -154,8 +154,8 @@
     {
       "mechanic_id": "deathtouch",
       "path": "mechanics/contracts/deathtouch.json",
-      "sha256": "d2a8a82e2458d3762f26346aee470b8e84c27506ea8aab28b7b31182ef0282b6",
-      "version": 3
+      "sha256": "e25c7d6a2945b794a8b1ff5558ee4d213b5117ee28f1c39189533123a31e17b9",
+      "version": 4
     },
     {
       "mechanic_id": "cr-508-declare-attackers-step",
@@ -184,8 +184,8 @@
     {
       "mechanic_id": "destroy",
       "path": "mechanics/contracts/destroy.json",
-      "sha256": "43727e9ea1e7ec94d89012f77a62bc1ab6d5ac1539c4bbde75e1917ee4442e96",
-      "version": 1
+      "sha256": "87150806ac5a99851e55a5e41d0a1d02b2c02bff757045dbb5b72bc0e72346f6",
+      "version": 2
     },
     {
       "mechanic_id": "dethrone",
@@ -346,8 +346,8 @@
     {
       "mechanic_id": "indestructible",
       "path": "mechanics/contracts/indestructible.json",
-      "sha256": "2cba02ae424baf7f591e5adcdfc344a28d179303830fac8717bb3e475b82e271",
-      "version": 3
+      "sha256": "d5ad8656ebb9734d017e225f658f893323f426c2efc4f2bc906e44c6e0b9f19f",
+      "version": 4
     },
     {
       "mechanic_id": "infect",
@@ -482,6 +482,12 @@
       "version": 1
     },
     {
+      "mechanic_id": "regenerate",
+      "path": "mechanics/contracts/regenerate.json",
+      "sha256": "4c9b6a291ae23f6762cf205ab16d6a915559540ff0e7223bdc5e113fec209cc3",
+      "version": 1
+    },
+    {
       "mechanic_id": "renown",
       "path": "mechanics/contracts/renown.json",
       "sha256": "9210316939779be83dfb01c6a117d0ce50a6d04e5ababdc287c54495a2c44d7c",
@@ -556,7 +562,7 @@
     {
       "mechanic_id": "cr-704-state-based-actions",
       "path": "mechanics/contracts/state-based-actions.json",
-      "sha256": "e20b9dfc94ce3efbbbdd1b33fdf4890a0b88aaab36e9188338ce4ad15d4b25ac",
+      "sha256": "b4cb21bdae1057deeb85e252ffb4b1dd5fb9f19fd38e4b56abace19c33bc6c9e",
       "version": 9
     },
     {
@@ -1441,8 +1447,8 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/deathtouch.json",
-      "contract_sha256": "d2a8a82e2458d3762f26346aee470b8e84c27506ea8aab28b7b31182ef0282b6",
-      "contract_version": 3,
+      "contract_sha256": "e25c7d6a2945b794a8b1ff5558ee4d213b5117ee28f1c39189533123a31e17b9",
+      "contract_version": 4,
       "coverage_status": "tested",
       "dependencies": [
         "702"
@@ -1451,7 +1457,6 @@
       "implementation_version": "deathtouch-assignment-result-v1",
       "kind": "keyword_ability",
       "known_blockers": [
-        "regeneration is not implemented",
         "unsupported continuous-effect, copy, face-down, and ability-changing producers remain fail-closed"
       ],
       "mechanic_id": "deathtouch",
@@ -2833,8 +2838,8 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/indestructible.json",
-      "contract_sha256": "2cba02ae424baf7f591e5adcdfc344a28d179303830fac8717bb3e475b82e271",
-      "contract_version": 3,
+      "contract_sha256": "d5ad8656ebb9734d017e225f658f893323f426c2efc4f2bc906e44c6e0b9f19f",
+      "contract_version": 4,
       "coverage_status": "partial",
       "dependencies": [
         "702"
@@ -2846,7 +2851,7 @@
         "the fine-grained permanent.indestructible.ordinary capability is trusted only for represented current keyword producers and destruction owners",
         "qualified, conditional, and player-facing Indestructible wording remains unsupported",
         "unrepresented ability-changing, copy, face-down, merged-object, and characteristic producers remain blocked",
-        "regeneration and competing unrepresented destruction replacements remain unsupported",
+        "the affected-player ordering choice between represented regeneration and shield-counter replacements remains unsupported",
         "the aggregate mechanic contract remains partial and untrusted"
       ],
       "mechanic_id": "indestructible",
@@ -5381,18 +5386,18 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/destroy.json",
-      "contract_sha256": "43727e9ea1e7ec94d89012f77a62bc1ab6d5ac1539c4bbde75e1917ee4442e96",
-      "contract_version": 1,
+      "contract_sha256": "87150806ac5a99851e55a5e41d0a1d02b2c02bff757045dbb5b72bc0e72346f6",
+      "contract_version": 2,
       "coverage_status": "tested",
       "dependencies": [
         "701"
       ],
       "implementation_component": "typed direct-target compiler, strict destruction semantic handler, canonical destruction transaction, counter owner, and zone-transition owner",
-      "implementation_version": "destruction-v1",
+      "implementation_version": "destruction-v2",
       "kind": "keyword_action",
       "known_blockers": [
-        "regeneration and effects that say a permanent cannot be regenerated are not represented",
-        "competing destruction replacement ordering beyond shield counters is incomplete",
+        "effects that say a permanent cannot be regenerated are not represented",
+        "competing shield-counter and regeneration replacement ordering is incomplete",
         "optional, modal, aggregate, quantified, relational, qualified, and compound destruction clauses remain precise compiler residuals",
         "complete ability-changing, copy, face-down, and continuous-effect dependency interactions remain blocked",
         "the mechanic contract is broader than the trusted bounded direct-target effect capability"
@@ -5997,19 +6002,38 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/regenerate.json",
+      "contract_sha256": "4c9b6a291ae23f6762cf205ab16d6a915559540ff0e7223bdc5e113fec209cc3",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "701"
       ],
-      "implementation_component": null,
+      "implementation_component": "typed self-regeneration compiler and semantic handler, regeneration shield owner, canonical destruction transaction, tap-state owner, damage-result owner, combat relationship owner, zone-object reset, and cleanup owner",
+      "implementation_version": "self-regeneration-v1",
       "kind": "keyword_action",
+      "known_blockers": [
+        "static regeneration abilities are not compiled",
+        "targeted, noncreature-self, prohibition, modal, qualified, and compound regeneration grammar remains residual",
+        "the affected-player ordering choice between regeneration and shield counters is not represented",
+        "the aggregate mechanic remains broader than the trusted self-activation capability"
+      ],
       "mechanic_id": "regenerate",
       "official_name": "Regenerate",
       "rule_references": [
         "701.19"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_exact_self_regeneration_compiles_and_harvests_frontier",
+        "test_unsupported_regeneration_grammar_remains_residual",
+        "test_regeneration_shape_and_dependency_mutants_fail_closed",
+        "test_activation_creates_public_shield_and_replays",
+        "test_regeneration_replaces_effect_and_state_based_destruction",
+        "test_regeneration_taps_clears_damage_and_removes_from_combat",
+        "test_regeneration_shields_expire_at_cleanup_and_zone_change",
+        "test_stale_and_competing_replacements_fail_before_mutation",
+        "test_regeneration_disposition_mutant_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {
@@ -8130,7 +8154,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/combat-phase.json",
-      "contract_sha256": "0bf2bab678f07716ac5711e5e203cb939acd106f9ba7101dfbcc16ae58dcd7a7",
+      "contract_sha256": "165b977f02ed332f952288fc827361b5d122916c1d3a42c168496df85e1beea1",
       "contract_version": 3,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8140,7 +8164,7 @@
       "known_blockers": [
         "single-defender, shared-team-turn, limited-range, and other multiplayer combat options are not implemented",
         "generic effects that put objects attacking or blocking are not implemented",
-        "regeneration and explicit remove-from-combat effect grammar are not implemented",
+        "explicit remove-from-combat effect grammar is not implemented outside represented regeneration",
         "explicit remove-an-attacked-permanent-from-combat effects and complete hybrid planeswalker/Battle type transitions remain incomplete",
         "attack-requirement provenance and had-to-attack queries are not implemented",
         "attacks-alone, attacking-alone, blocks-alone, and blocking-alone queries are not exposed generically",
@@ -8162,7 +8186,8 @@
         "test_tapping_and_untapping_do_not_remove_a_creature_from_combat",
         "test_double_strike_creates_two_real_damage_steps_and_replays",
         "test_no_attackers_skips_blockers_and_combat_damage_steps",
-        "test_objects_leave_combat_only_after_step_ends_and_replay_exactly"
+        "test_objects_leave_combat_only_after_step_ends_and_replay_exactly",
+        "test_regeneration_taps_clears_damage_and_removes_from_combat"
       ],
       "trust_level": "untrusted"
     },
@@ -9255,7 +9280,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/state-based-actions.json",
-      "contract_sha256": "e20b9dfc94ce3efbbbdd1b33fdf4890a0b88aaab36e9188338ce4ad15d4b25ac",
+      "contract_sha256": "b4cb21bdae1057deeb85e252ffb4b1dd5fb9f19fd38e4b56abace19c33bc6c9e",
       "contract_version": 9,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9270,7 +9295,7 @@
         "native Siege defeated-trigger transformed casting and future Battle subtypes remain unresolved",
         "maximum-counter abilities outside the reviewed numeric self-restriction sentence family remain unresolved",
         "Aura attachment to players and the complete enchant-quality grammar are not implemented",
-        "regeneration and complete loss-event replacement ordering are not integrated",
+        "represented regeneration replaces damage-based destruction; complete loss-event and competing destruction-replacement ordering remain incomplete",
         "all player losses and permanent actions are not yet transformed as one shared simultaneous replaceable event"
       ],
       "mechanic_id": "cr-704-state-based-actions",

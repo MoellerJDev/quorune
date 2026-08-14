@@ -57,6 +57,7 @@
       "test_permanent_exile_rules",
       "test_prevention_immediate_sequencing",
       "test_prevention_trigger_stack",
+      "test_regeneration_rules",
       "test_replacement_event_ordering",
       "test_replacement_event_tree",
       "test_replacement_model_hardening",

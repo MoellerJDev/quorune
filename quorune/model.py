@@ -159,6 +159,10 @@ class CardInstance:
     counters: dict[str, int] = field(default_factory=dict)
     marked_damage: int = 0
     deathtouch_damage: bool = False
+    # CR 701.19a one-shot destruction replacement effects attached to this
+    # logical object. Zero is omitted from Game Record v3 for checkpoint
+    # compatibility.
+    regeneration_shields: int = 0
     temporary_keywords: list[str] = field(default_factory=list)
     goaded_by: list[GoadDesignation] = field(default_factory=list)
     # CR 701.37b noncopiable permanent designation. ``None`` means the
@@ -206,6 +210,13 @@ class CardInstance:
             )
         if type(self.deathtouch_damage) is not bool:
             raise ValueError("Deathtouch damage state must be a boolean")
+        if (
+            type(self.regeneration_shields) is not int
+            or self.regeneration_shields < 0
+        ):
+            raise ValueError(
+                "Regeneration shield state must be a nonnegative integer"
+            )
         if self.monstrous_value is not None and (
             type(self.monstrous_value) is not int
             or self.monstrous_value < 0
@@ -253,6 +264,9 @@ class CardInstance:
         if not self.renowned:
             # Keep historical Game Record v3 card payloads byte-compatible.
             payload.pop("renowned")
+        if not self.regeneration_shields:
+            # Keep checkpoints created before regeneration byte-compatible.
+            payload.pop("regeneration_shields")
         if not self.acquired_control_timestamp:
             # Preserve historical records that predate upkeep-relative
             # control history. New battlefield acquisitions serialize it.

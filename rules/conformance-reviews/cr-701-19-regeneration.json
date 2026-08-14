@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 701.19 — Regeneration",
+  "cases": [
+    {
+      "rule_id": "701.19",
+      "rule_text_sha256": "1651031bf58d8eeac8dc9c3e3d5eba20380197e7f638115570bc729064544c06",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/regenerate.json"],
+      "executable_test_ids": ["tests.test_regeneration_rules.RegenerationCompilerTests.test_exact_self_regeneration_compiles_and_harvests_frontier"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword-action heading; permanent.regeneration.self_activation owns the bounded exact self-creature activation family."]
+    },
+    {
+      "rule_id": "701.19a",
+      "rule_text_sha256": "a9eaba726cb9ba24bb673533f3d9265cdbd8bd074be9e9105733ecfa24a5abf5",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.regeneration.create_regeneration_shield", "quorune.destruction.prepare_destructions", "quorune.destruction.commit_destruction_plan", "CommanderEngine._remove_object_from_combat", "TurnStepOwner.finish_cleanup"],
+      "executable_test_ids": ["tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_replaces_effect_and_state_based_destruction", "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_taps_clears_damage_and_removes_from_combat", "tests.test_regeneration_rules.RegenerationRuntimeTests.test_regeneration_shields_expire_at_cleanup_and_zone_change", "tests.test_regeneration_rules.RegenerationRuntimeTests.test_stale_and_competing_replacements_fail_before_mutation"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "blockers": ["generic prohibition effects and the affected-player ordering choice between regeneration and shield counters remain unsupported"],
+      "notes": ["The bounded family creates an until-cleanup shield and atomically replaces represented effect or damage state-based destruction with consumption, tapping, damage removal, and canonical combat removal."]
+    },
+    {
+      "rule_id": "701.19b",
+      "rule_text_sha256": "fe8cd9708496959afdc1441d2406e45d2d21fc491977500b63a15303dfd8778c",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.regeneration_templates.self_regeneration_effect_template"],
+      "executable_test_ids": ["tests.test_regeneration_rules.RegenerationCompilerTests.test_unsupported_regeneration_grammar_remains_residual"],
+      "required_scenarios": ["negative"],
+      "covered_scenarios": ["negative"],
+      "blockers": ["static abilities that regenerate a permanent every time it would be destroyed are not represented"],
+      "notes": ["Static regeneration wording remains a material compiler residual and cannot be confused with the one-shot shield family."]
+    },
+    {
+      "rule_id": "701.19c",
+      "rule_text_sha256": "dd25926b35fc0109dfdde07ce9ceac86b742f137d198d4eb3eb4ecc73b3a3606",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.semantic_runtime.regeneration_handlers.CreateRegenerationShieldHandler", "quorune.regeneration.create_regeneration_shield"],
+      "executable_test_ids": ["tests.test_regeneration_rules.RegenerationRuntimeTests.test_activation_creates_public_shield_and_replays"],
+      "required_scenarios": ["positive", "negative", "interaction", "replay"],
+      "covered_scenarios": ["positive", "replay"],
+      "blockers": ["effects that say a permanent cannot be regenerated are not represented, so activation under that prohibition is not yet executable"],
+      "notes": ["The represented activation creates a replacement shield rather than immediately regenerating the permanent; prohibition interaction remains explicit debt."]
+    }
+  ]
+}

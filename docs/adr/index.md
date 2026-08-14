@@ -79,3 +79,5 @@ deployment modes, or architecture review thresholds.
 - [ADR 0062 — cross-program work selection](0062-cross-program-work-selection.md)
 - [ADR 0063 — compiler-pinned activated-ability catalog](0063-compiler-pinned-activated-ability-catalog.md)
 - [ADR 0064 — context-aware card-identity guard](0064-context-aware-card-identity-guard.md)
+- [ADR 0065 — typed self-regeneration](0065-typed-self-regeneration.md)
+- [ADR 0066 — metadata-only CI certification reuse](0066-metadata-only-ci-certification-reuse.md)

@@ -29,6 +29,7 @@ from .ir_model import (
     OracleResidual,
     SourceSpan,
 )
+from .regeneration_templates import self_regeneration_effect_template
 
 
 def fixed_activated_mana_node(
@@ -284,6 +285,7 @@ def _activated_effect_dependency_gate(
             "explore",
             "offer_draw",
             "proliferate",
+            "regenerate",
             "place_counters",
             "place_counter_batch",
             "place_counters_on_set",
@@ -466,10 +468,15 @@ def activated_oracle_node(
     )
     if color_set_mana is not None:
         return color_set_mana
-    template, effects, target_schema, mechanics = effect_template(
-        _activated_effect_material(ability),
-        card_name=card_name,
-    )
+    effect_material = _activated_effect_material(ability)
+    regeneration = self_regeneration_effect_template(effect_material)
+    if regeneration is not None:
+        template, effects, target_schema, mechanics = regeneration.compiled()
+    else:
+        template, effects, target_schema, mechanics = effect_template(
+            effect_material,
+            card_name=card_name,
+        )
     if ability.activation_limit is ActivationLimit.EXHAUST_ONCE:
         mechanics = tuple(dict.fromkeys((*mechanics, "exhaust")))
     residual_ids = _activated_effect_residuals(

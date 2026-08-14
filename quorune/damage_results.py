@@ -69,6 +69,12 @@ class DamageResultHost(Protocol):
     def _queue_siege_defeated_trigger(self, battle: Any) -> None: ...
 
 
+class DamageMarkerHost(Protocol):
+    """Minimal state port for canonical marked-damage ownership."""
+
+    state: Any
+
+
 @dataclass(frozen=True, slots=True)
 class PreparedDamageResults:
     events: tuple[ReplaceableEvent, ...]
@@ -1420,3 +1426,38 @@ def consume_deathtouch_damage_checks(
     for card in cards:
         card.deathtouch_damage = False
     return values
+
+
+def clear_permanent_damage(
+    host: DamageMarkerHost,
+    object_id: str,
+    *,
+    logical_object_id: str,
+) -> bool:
+    """Clear represented damage from one exact battlefield incarnation."""
+
+    if any(
+        type(value) is not str or not value
+        for value in (object_id, logical_object_id)
+    ):
+        raise DamageResultError(
+            "Damage clearing requires physical and logical object identity"
+        )
+    card = host.state.cards.get(object_id)
+    if (
+        card is None
+        or card.zone != "battlefield"
+        or bool(card.phased_out)
+        or card.logical_object_id != logical_object_id
+    ):
+        raise DamageResultError(
+            "Damage-clearing permanent changed logical identity"
+        )
+    if type(card.marked_damage) is not int or card.marked_damage < 0:
+        raise DamageResultError("Marked-damage state is malformed")
+    if type(card.deathtouch_damage) is not bool:
+        raise DamageResultError("Deathtouch-damage state is malformed")
+    changed = bool(card.marked_damage or card.deathtouch_damage)
+    card.marked_damage = 0
+    card.deathtouch_damage = False
+    return changed

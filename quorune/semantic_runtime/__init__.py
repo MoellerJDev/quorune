@@ -198,6 +198,10 @@ from .destruction_handlers import (
     DestroyPermanentHandler,
     DestroyPermanentSetHandler,
 )
+from .regeneration_handlers import (
+    CreateRegenerationShieldHandler,
+    REGENERATION_HANDLERS,
+)
 from .permanent_exile_handlers import (
     ExilePermanentHandler,
     PERMANENT_EXILE_HANDLERS,
@@ -233,6 +237,7 @@ from .intents import (
     DomainEffectIntent,
     DestroyPermanentIntent,
     DestroyPermanentSetIntent,
+    CreateRegenerationShieldIntent,
     IntentPlan,
     EliminatePlayersIntent,
     ExploreCompletedIntent,
@@ -329,6 +334,7 @@ def default_semantic_handler_registry() -> SemanticHandlerRegistry:
             *GENERIC_HANDLERS,
             *TAP_STATE_HANDLERS,
             *DESTRUCTION_HANDLERS,
+            *REGENERATION_HANDLERS,
             *PERMANENT_EXILE_HANDLERS,
             *FIXED_DAMAGE_SET_HANDLERS,
             *RETURN_TO_HAND_HANDLERS,
@@ -396,6 +402,8 @@ __all__ = [
     "DestroyPermanentIntent",
     "DestroyPermanentSetIntent",
     "DestroyPermanentSetHandler",
+    "CreateRegenerationShieldHandler",
+    "CreateRegenerationShieldIntent",
     "ExilePermanentHandler",
     "ExilePermanentIntent",
     "FixedDamageSetHandler",

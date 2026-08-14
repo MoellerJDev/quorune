@@ -140,6 +140,7 @@ VALID_EFFECT_OPERATIONS = {
     "put_land_from_hand",
     "protection_from_everything_until_next_turn",
     "proliferate",
+    "regenerate",
     "pump_controlled_creatures",
     "reanimate",
     "retarget_stack_item",
