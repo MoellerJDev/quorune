@@ -9,10 +9,6 @@ import unittest
 from unittest.mock import patch
 
 from common import ROOT, keep_all, make_session
-from high_risk_interaction_support import (
-    COST_AND_REPLACEMENT_PAIRS,
-    assert_high_risk_boundary_pairs,
-)
 from quorune.carddb import CardDatabase
 from quorune import damage_results, tap_state
 from quorune.compiler.regeneration_templates import (
@@ -195,11 +191,6 @@ class RegenerationCompilerTests(unittest.TestCase):
             )
 
     def test_unsupported_regeneration_grammar_remains_residual(self):
-        assert_high_risk_boundary_pairs(
-            self,
-            COST_AND_REPLACEMENT_PAIRS,
-            database=self.db,
-        )
         variants = (
             "{B}: Regenerate this creature",
             "{B}: Regenerate target creature.",

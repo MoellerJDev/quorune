@@ -1409,7 +1409,7 @@ def _build_indexes(
     interactions = _with_fingerprint(
         {
             "schema_version": REUSABLE_PIECE_SCHEMA_VERSION,
-            "algorithm_version": "reusable-piece-interactions-v3",
+            "algorithm_version": "reusable-piece-interactions-v4",
             "profile": policy["profile"],
             "matrix_fingerprint": matrix["fingerprint"],
             "summary": {
@@ -1417,11 +1417,37 @@ def _build_indexes(
                 "covered_piece_pairs": sum(
                     bool(row["covered"]) for row in interaction_rows
                 ),
+                "covered_runtime_composition_pairs": sum(
+                    "runtime_composition"
+                    in row["evidence_assurance_kinds"]
+                    for row in interaction_rows
+                ),
+                "covered_fail_closed_runtime_admission_pairs": sum(
+                    "fail_closed_runtime_admission"
+                    in row["evidence_assurance_kinds"]
+                    for row in interaction_rows
+                ),
                 "applicable_high_risk_pairs": sum(
                     bool(row["high_risk"]) for row in interaction_rows
                 ),
                 "covered_high_risk_pairs": sum(
                     bool(row["high_risk"] and row["covered"])
+                    for row in interaction_rows
+                ),
+                "covered_high_risk_runtime_composition_pairs": sum(
+                    bool(
+                        row["high_risk"]
+                        and "runtime_composition"
+                        in row["evidence_assurance_kinds"]
+                    )
+                    for row in interaction_rows
+                ),
+                "covered_high_risk_fail_closed_runtime_admission_pairs": sum(
+                    bool(
+                        row["high_risk"]
+                        and "fail_closed_runtime_admission"
+                        in row["evidence_assurance_kinds"]
+                    )
                     for row in interaction_rows
                 ),
             },
@@ -1445,6 +1471,7 @@ def build_reusable_piece_artifacts(
     platform_status: Mapping[str, Any],
     policy: Mapping[str, Any],
     interaction_evidence: Mapping[str, Any],
+    known_test_ids: Iterable[str],
     baseline: Mapping[str, Any] | None = None,
     ruling_counts: Mapping[str, int] | None = None,
 ) -> dict[str, dict[str, Any]]:
@@ -1465,7 +1492,11 @@ def build_reusable_piece_artifacts(
         for relation in card["pieces"]:
             pieces[str(relation["piece_id"])].ruling_cards.add(oracle_id)
     interaction_rows, per_piece_interactions = _build_interactions(
-        cards, pieces, policy, interaction_evidence
+        cards,
+        pieces,
+        policy,
+        interaction_evidence,
+        known_test_ids=known_test_ids,
     )
     piece_rows = [
         _piece_record(

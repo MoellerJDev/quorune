@@ -37,6 +37,18 @@ _CONTROLLER_SPELL_CAST_TRIGGER = re.compile(
     r"spell, (?P<body>.+)$",
     re.IGNORECASE,
 )
+_CONTROLLER_LIFE_GAIN_TRIGGER = re.compile(
+    r"^Whenever you gain life, (?P<body>.+)$",
+    re.IGNORECASE,
+)
+_CONTROLLER_CARD_DRAW_TRIGGER = re.compile(
+    r"^Whenever you draw a card, (?P<body>.+)$",
+    re.IGNORECASE,
+)
+_CONTROLLER_SECOND_DRAW_TRIGGER = re.compile(
+    r"^Whenever you draw your second card each turn, (?P<body>.+)$",
+    re.IGNORECASE,
+)
 
 
 class FixedCounterTriggerEvent(str, Enum):
@@ -45,6 +57,9 @@ class FixedCounterTriggerEvent(str, Enum):
     STEP_BEGIN = "step.begin"
     CONTROLLED_LAND_ENTER = "land.enter"
     CONTROLLER_SPELL_CAST = "spell.cast"
+    CONTROLLER_LIFE_GAIN = "life.gained"
+    CONTROLLER_CARD_DRAW = "card.drawn"
+    CONTROLLER_SECOND_DRAW = "card.second_draw"
 
 
 @dataclass(frozen=True, slots=True)
@@ -72,6 +87,12 @@ class FixedCounterTriggerBinding:
                 "fixed-counter-controlled-land-entry-trigger-v1",
             FixedCounterTriggerEvent.CONTROLLER_SPELL_CAST:
                 "fixed-counter-controller-spell-cast-trigger-v1",
+            FixedCounterTriggerEvent.CONTROLLER_LIFE_GAIN:
+                "fixed-counter-controller-life-gain-trigger-v1",
+            FixedCounterTriggerEvent.CONTROLLER_CARD_DRAW:
+                "fixed-counter-controller-card-draw-trigger-v1",
+            FixedCounterTriggerEvent.CONTROLLER_SECOND_DRAW:
+                "fixed-counter-controller-second-draw-trigger-v1",
         }[self.event]
 
     @property
@@ -85,6 +106,15 @@ class FixedCounterTriggerBinding:
             ),
             FixedCounterTriggerEvent.CONTROLLER_SPELL_CAST: (
                 "trigger-event-normalized-spell-cast",
+            ),
+            FixedCounterTriggerEvent.CONTROLLER_LIFE_GAIN: (
+                "trigger-event-normalized-life-gain",
+            ),
+            FixedCounterTriggerEvent.CONTROLLER_CARD_DRAW: (
+                "trigger-event-normalized-card-draw",
+            ),
+            FixedCounterTriggerEvent.CONTROLLER_SECOND_DRAW: (
+                "trigger-event-normalized-card-draw",
             ),
         }[self.event]
 
@@ -121,6 +151,16 @@ class FixedCounterTriggerBinding:
                     },
                     type_condition,
                 ]
+            }
+        if self.event in {
+            FixedCounterTriggerEvent.CONTROLLER_LIFE_GAIN,
+            FixedCounterTriggerEvent.CONTROLLER_CARD_DRAW,
+            FixedCounterTriggerEvent.CONTROLLER_SECOND_DRAW,
+        }:
+            return {
+                "field": "player",
+                "op": "eq",
+                "value": "$source.controller",
             }
         step, controller_only = {
             "your upkeep": ("upkeep", True),
@@ -172,6 +212,27 @@ def fixed_counter_trigger_binding(
                 else "instant_or_sorcery"
             ),
             body=spell_cast.group("body"),
+        )
+    life_gain = _CONTROLLER_LIFE_GAIN_TRIGGER.fullmatch(material_line)
+    if life_gain is not None:
+        return FixedCounterTriggerBinding(
+            event=FixedCounterTriggerEvent.CONTROLLER_LIFE_GAIN,
+            variant="controller_life_gain",
+            body=life_gain.group("body"),
+        )
+    card_draw = _CONTROLLER_CARD_DRAW_TRIGGER.fullmatch(material_line)
+    if card_draw is not None:
+        return FixedCounterTriggerBinding(
+            event=FixedCounterTriggerEvent.CONTROLLER_CARD_DRAW,
+            variant="controller_card_draw",
+            body=card_draw.group("body"),
+        )
+    second_draw = _CONTROLLER_SECOND_DRAW_TRIGGER.fullmatch(material_line)
+    if second_draw is not None:
+        return FixedCounterTriggerBinding(
+            event=FixedCounterTriggerEvent.CONTROLLER_SECOND_DRAW,
+            variant="controller_second_draw",
+            body=second_draw.group("body"),
         )
     return None
 

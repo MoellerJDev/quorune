@@ -226,6 +226,118 @@ def validate_reusable_piece_card_index(
     _validate_fingerprint(value, label="Reusable-piece card index")
 
 
+def _validate_reusable_piece_interaction_row(
+    row: Mapping[str, Any], known: set[str]
+) -> tuple[str, str]:
+    _require_fields(
+        row,
+        {
+            "piece_ids",
+            "class_ids",
+            "card_count",
+            "ability_count",
+            "covered",
+            "high_risk",
+            "applicability_bases",
+            "evidence_test_ids",
+            "evidence_assurance_kinds",
+            "evidence_basis",
+        },
+        label="Reusable-piece interaction row",
+    )
+    piece_ids = row.get("piece_ids")
+    if row.get("evidence_basis") != "explicit_interaction_declaration_v2":
+        raise ValueError(
+            "Reusable-piece interaction evidence basis is unsupported"
+        )
+    if (
+        not isinstance(piece_ids, list)
+        or len(piece_ids) != 2
+        or piece_ids != sorted(piece_ids)
+        or len(set(piece_ids)) != 2
+        or not set(piece_ids) <= known
+    ):
+        raise ValueError("Reusable-piece interaction pair is invalid")
+    applicability_bases = row.get("applicability_bases")
+    allowed_bases = {
+        "corpus_cooccurrence",
+        "declared_ambient_high_risk",
+        "explicit_interaction_evidence",
+    }
+    if (
+        not isinstance(applicability_bases, list)
+        or not applicability_bases
+        or applicability_bases != sorted(set(applicability_bases))
+        or not set(applicability_bases) <= allowed_bases
+    ):
+        raise ValueError("Reusable-piece interaction applicability is invalid")
+    if bool(row.get("covered")) != bool(row.get("evidence_test_ids")):
+        raise ValueError("Reusable-piece interaction evidence is invalid")
+    assurance_kinds = row.get("evidence_assurance_kinds")
+    if (
+        not isinstance(assurance_kinds, list)
+        or assurance_kinds != sorted(set(assurance_kinds))
+        or not set(assurance_kinds)
+        <= {"fail_closed_runtime_admission", "runtime_composition"}
+        or bool(assurance_kinds) != bool(row.get("covered"))
+    ):
+        raise ValueError("Reusable-piece interaction assurance kind is invalid")
+    expected_assurance_kinds = (
+        ["fail_closed_runtime_admission"]
+        if row.get("covered")
+        and any(piece_id.startswith("residual.") for piece_id in piece_ids)
+        else ["runtime_composition"]
+        if row.get("covered")
+        else []
+    )
+    if assurance_kinds != expected_assurance_kinds:
+        raise ValueError(
+            "Reusable-piece interaction assurance kind does not match "
+            "the represented boundary"
+        )
+    return tuple(piece_ids)
+
+
+def _reusable_piece_interaction_summary(
+    pairs: list[Mapping[str, Any]],
+) -> dict[str, int]:
+    return {
+        "applicable_piece_pairs": len(pairs),
+        "covered_piece_pairs": sum(bool(row["covered"]) for row in pairs),
+        "covered_runtime_composition_pairs": sum(
+            "runtime_composition" in row["evidence_assurance_kinds"]
+            for row in pairs
+        ),
+        "covered_fail_closed_runtime_admission_pairs": sum(
+            "fail_closed_runtime_admission"
+            in row["evidence_assurance_kinds"]
+            for row in pairs
+        ),
+        "applicable_high_risk_pairs": sum(
+            bool(row["high_risk"]) for row in pairs
+        ),
+        "covered_high_risk_pairs": sum(
+            bool(row["high_risk"] and row["covered"]) for row in pairs
+        ),
+        "covered_high_risk_runtime_composition_pairs": sum(
+            bool(
+                row["high_risk"]
+                and "runtime_composition"
+                in row["evidence_assurance_kinds"]
+            )
+            for row in pairs
+        ),
+        "covered_high_risk_fail_closed_runtime_admission_pairs": sum(
+            bool(
+                row["high_risk"]
+                and "fail_closed_runtime_admission"
+                in row["evidence_assurance_kinds"]
+            )
+            for row in pairs
+        ),
+    }
+
+
 def validate_reusable_piece_interactions(
     value: Mapping[str, Any],
     *,
@@ -251,67 +363,22 @@ def validate_reusable_piece_interactions(
         raise ValueError("Reusable-piece interactions target a stale matrix")
     if value.get("complete_snapshot_claimed") is not False:
         raise ValueError("Reusable-piece interactions cannot claim completion")
-    known = {str(row["piece_id"]) for row in matrix["pieces"]}
     pairs = value.get("pairs")
-    if not isinstance(pairs, list):
+    if not isinstance(pairs, list) or not all(
+        isinstance(row, Mapping) for row in pairs
+    ):
         raise ValueError("Reusable-piece interaction pairs are missing")
-    identities = []
-    for row in pairs:
-        if not isinstance(row, Mapping):
-            raise ValueError("Reusable-piece interaction rows must be mappings")
-        _require_fields(
-            row,
-            {
-                "piece_ids",
-                "class_ids",
-                "card_count",
-                "ability_count",
-                "covered",
-                "high_risk",
-                "applicability_bases",
-                "evidence_test_ids",
-                "evidence_basis",
-            },
-            label="Reusable-piece interaction row",
-        )
-        piece_ids = row.get("piece_ids")
-        if row.get("evidence_basis") != "explicit_interaction_declaration_v1":
-            raise ValueError(
-                "Reusable-piece interaction evidence basis is unsupported"
-            )
-        if (
-            not isinstance(piece_ids, list)
-            or len(piece_ids) != 2
-            or piece_ids != sorted(piece_ids)
-            or len(set(piece_ids)) != 2
-            or not set(piece_ids) <= known
-        ):
-            raise ValueError("Reusable-piece interaction pair is invalid")
-        identities.append(tuple(piece_ids))
-        applicability_bases = row.get("applicability_bases")
-        allowed_bases = {
-            "corpus_cooccurrence",
-            "declared_ambient_high_risk",
-            "explicit_interaction_evidence",
-        }
-        if (
-            not isinstance(applicability_bases, list)
-            or not applicability_bases
-            or applicability_bases != sorted(set(applicability_bases))
-            or not set(applicability_bases) <= allowed_bases
-        ):
-            raise ValueError(
-                "Reusable-piece interaction applicability is invalid"
-            )
-        if bool(row.get("covered")) != bool(row.get("evidence_test_ids")):
-            raise ValueError("Reusable-piece interaction evidence is invalid")
+    known = {str(row["piece_id"]) for row in matrix["pieces"]}
+    identities = [
+        _validate_reusable_piece_interaction_row(row, known) for row in pairs
+    ]
     if identities != sorted(identities) or len(identities) != len(set(identities)):
         raise ValueError("Reusable-piece interaction pairs are not canonical")
     summary = value.get("summary")
     if not isinstance(summary, Mapping):
         raise ValueError("Reusable-piece interaction summary is missing")
-    if summary.get("applicable_piece_pairs") != len(pairs):
-        raise ValueError("Reusable-piece interaction count is stale")
+    if dict(summary) != _reusable_piece_interaction_summary(pairs):
+        raise ValueError("Reusable-piece interaction summary is stale")
     _validate_fingerprint(value, label="Reusable-piece interactions")
 
 

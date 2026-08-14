@@ -353,6 +353,7 @@ def _owner(relative: str, layer: str) -> str:
         return "life_state"
     if relative in {
         "quorune/delayed_triggers.py",
+        "quorune/player_result_events.py",
         "quorune/trigger_batches.py",
         "quorune/trigger_discovery.py",
         "quorune/trigger_participation.py",

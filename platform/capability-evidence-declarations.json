@@ -5273,10 +5273,26 @@
     {
       "capability_id": "counter.producer.fixed_event_trigger",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_draw_counter_triggers_use_public_normalized_events",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Consume one committed public draw occurrence without hidden card identity and resolve its fixed counter result through the canonical transaction."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "interaction",
       "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_land_entry_counter_trigger_uses_normalized_event",
       "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Consume one committed controlled-land battlefield entry, preserve its normalized object facts on the trigger, and place the source counter on resolution."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_life_gain_counter_trigger_uses_replacement_resolved_amount",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Observe the replacement-resolved life-gain amount and route the resulting trigger's counter through the independent counter replacement owner."
     },
     {
       "capability_id": "counter.producer.fixed_event_trigger",
@@ -5293,6 +5309,14 @@
       "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Resolve a two-counter upkeep trigger into the canonical resumable quantity-replacement tree and commit only after the affected controller orders both replacements."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_draw_and_second_draw_counter_triggers_share_one_batch",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Collect the ordinary draw and exact second-draw counter occurrences into one four-player APNAP batch before owner ordering."
     },
     {
       "capability_id": "counter.producer.fixed_event_trigger",
@@ -5344,11 +5368,27 @@
     },
     {
       "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_player_result_counter_replacement_is_private_and_replays_exactly",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the player-result counter replacement order only to its affected third-seat controller without exposing object identity."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
       "evidence_class": "replay",
       "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_four_player_counter_trigger_choice_is_private_and_replays_exactly",
       "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the suspended counter-trigger replacement continuation to the identical authoritative counter state hash."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_player_result_counter_replacement_is_private_and_replays_exactly",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the life-result trigger and suspended counter replacement continuation to the identical authoritative hash."
     },
     {
       "capability_id": "counter.producer.fixed_event_trigger",
@@ -10261,6 +10301,14 @@
     },
     {
       "capability_id": "life.change.effect",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "119.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend a semantic-choice life gain before mutation, resolve competing replacements through its closed typed identity, and commit the adjusted result exactly once."
+    },
+    {
+      "capability_id": "life.change.effect",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_table_wide_loss_and_drain_are_simultaneous_typed_batches",
       "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "119.9"],
@@ -10274,6 +10322,14 @@
       "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "119.9"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Commit a represented fixed life gain or life loss instruction through one replacement-capable typed life-change batch before mutating player life totals."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_tampered_semantic_life_intent_fails_closed_without_mutation",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "119.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Change the private resumable life amount and prove closed semantic-intent validation rejects the command without changing life or any authoritative state."
     },
     {
       "capability_id": "life.change.effect",
@@ -10301,11 +10357,27 @@
     },
     {
       "capability_id": "life.change.effect",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "119.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep the semantic response, typed life intent, replacement batch, and internal source identity out of every projected replacement choice."
+    },
+    {
+      "capability_id": "life.change.effect",
       "evidence_class": "replay",
       "test_id": "tests.test_oracle_ir.OracleIRTests.test_fixed_life_self_enter_trigger_replays_exactly",
       "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "119.9"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Commit a represented fixed life gain or life loss instruction through one replacement-capable typed life-change batch before mutating player life totals."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "replay",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
+      "official_rule_ids": ["119.1", "119.2", "119.3", "119.4", "119.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the semantic object choice and replacement selection to the identical authoritative life total and final state hash."
     },
     {
       "capability_id": "life.gain.replacement.static_multiplier",
@@ -10338,6 +10410,14 @@
     },
     {
       "capability_id": "life.gain.replacement.static_multiplier",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
+      "official_rule_ids": ["119.3", "119.10", "120.4c", "614.1", "615.5", "616.1", "616.1f", "616.1g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply two compiled fixed multipliers to a suspended semantic-choice life gain and commit four times the requested amount exactly once."
+    },
+    {
+      "capability_id": "life.gain.replacement.static_multiplier",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_life_change.LifeChangeTransactionTests.test_simultaneous_four_player_life_gain_uses_one_typed_batch",
       "official_rule_ids": ["119.3", "119.10", "120.4c", "614.1", "615.5", "616.1", "616.1f", "616.1g"],
@@ -10364,6 +10444,14 @@
         "commander_review"
       ],
       "applicability_note": "Apply a trusted generically compiled fixed integral multiplier to a canonical positive life-gain event."
+    },
+    {
+      "capability_id": "life.gain.replacement.static_multiplier",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_tampered_semantic_life_intent_fails_closed_without_mutation",
+      "official_rule_ids": ["119.3", "119.10", "120.4c", "614.1", "615.5", "616.1", "616.1f", "616.1g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Change the pending life input after multiplier discovery and prove the closed continuation rejects stale replacement application before mutation."
     },
     {
       "capability_id": "life.gain.replacement.static_multiplier",
@@ -10425,6 +10513,14 @@
     },
     {
       "capability_id": "life.gain.replacement.static_multiplier",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
+      "official_rule_ids": ["119.3", "119.10", "120.4c", "614.1", "615.5", "616.1", "616.1f", "616.1g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose the replacement options only to the affected player without projecting the semantic response, event batch, effects, or source identity."
+    },
+    {
+      "capability_id": "life.gain.replacement.static_multiplier",
       "evidence_class": "replay",
       "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_damage_result_replacement_choice_is_private_and_replays",
       "official_rule_ids": [
@@ -10443,6 +10539,14 @@
         "commander_review"
       ],
       "applicability_note": "Apply a trusted generically compiled fixed integral multiplier to a canonical positive life-gain event."
+    },
+    {
+      "capability_id": "life.gain.replacement.static_multiplier",
+      "evidence_class": "replay",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
+      "official_rule_ids": ["119.3", "119.10", "120.4c", "614.1", "615.5", "616.1", "616.1f", "616.1g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the ordered multiplier choice through the closed semantic-intent continuation to the same authoritative state hash."
     },
     {
       "capability_id": "mana.activated.color_set",
@@ -14108,6 +14212,118 @@
       "applicability_note": "Apply a reviewed mandatory replacement that adds a fixed token definition to one nonempty token-creation event controlled by the replacement source's controller."
     },
     {
+      "capability_id": "trigger.event.normalized_card_draw",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_draw_and_second_draw_counter_triggers_share_one_batch",
+      "official_rule_ids": ["121.1", "121.2", "121.4", "603.2", "603.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Derive ordinary-draw and exact-second-draw occurrences from the same commit and collect both into one trigger batch."
+    },
+    {
+      "capability_id": "trigger.event.normalized_card_draw",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_draw_and_second_draw_counter_triggers_share_one_batch",
+      "official_rule_ids": ["121.1", "121.2", "121.4", "603.2", "603.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve the table's four-player APNAP order while the drawing controller orders two simultaneous occurrences."
+    },
+    {
+      "capability_id": "trigger.event.normalized_card_draw",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_player_result_event_dispatch_mutants_are_killed",
+      "official_rule_ids": ["121.1", "121.2", "121.4", "603.2", "603.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the canonical draw-event dispatcher and prove no alternate hidden-identity or legacy path creates the represented trigger."
+    },
+    {
+      "capability_id": "trigger.event.normalized_card_draw",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_normalized_player_result_events_are_strict_public_values",
+      "official_rule_ids": ["121.1", "121.2", "121.4", "603.2", "603.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject nonpositive ordinals and contradictory draw-step facts before an occurrence can reach trigger discovery."
+    },
+    {
+      "capability_id": "trigger.event.normalized_card_draw",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_normalized_player_result_events_are_strict_public_values",
+      "official_rule_ids": ["121.1", "121.2", "121.4", "603.2", "603.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Construct an immutable exact card-draw occurrence with public controller-relative ordinals and no drawn-card identity."
+    },
+    {
+      "capability_id": "trigger.event.normalized_card_draw",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_draw_counter_triggers_use_public_normalized_events",
+      "official_rule_ids": ["121.1", "121.2", "121.4", "603.2", "603.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Put only public drawer and ordinal facts on the trigger context while the drawn object's reference and printed name remain hidden."
+    },
+    {
+      "capability_id": "trigger.event.normalized_card_draw",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_player_result_counter_replacement_is_private_and_replays_exactly",
+      "official_rule_ids": ["121.1", "121.2", "121.4", "603.2", "603.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Share the player-result trigger envelope and replay-stable counter continuation used by normalized draw consumers."
+    },
+    {
+      "capability_id": "trigger.event.normalized_life_gain",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_life_gain_counter_trigger_uses_replacement_resolved_amount",
+      "official_rule_ids": ["119.3", "119.9", "120.3f", "603.2", "603.3", "615.5"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Dispatch only after the life multiplier resolves so trigger context carries the actual doubled gain."
+    },
+    {
+      "capability_id": "trigger.event.normalized_life_gain",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_player_result_counter_replacement_is_private_and_replays_exactly",
+      "official_rule_ids": ["119.3", "119.9", "120.3f", "603.2", "603.3", "615.5"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Observe a third-seat gain in four-player state and preserve ordinary APNAP trigger and counter-replacement ownership."
+    },
+    {
+      "capability_id": "trigger.event.normalized_life_gain",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_player_result_event_dispatch_mutants_are_killed",
+      "official_rule_ids": ["119.3", "119.9", "120.3f", "603.2", "603.3", "615.5"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the canonical life-gain dispatcher and prove life still changes while the represented trigger disappears."
+    },
+    {
+      "capability_id": "trigger.event.normalized_life_gain",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_normalized_player_result_events_are_strict_public_values",
+      "official_rule_ids": ["119.3", "119.9", "120.3f", "603.2", "603.3", "615.5"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject zero or negative normalized gain amounts and omit source details that are not required public trigger facts."
+    },
+    {
+      "capability_id": "trigger.event.normalized_life_gain",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_life_gain_counter_trigger_covers_effect_intent_lifelink_and_aftermath",
+      "official_rule_ids": ["119.3", "119.9", "120.3f", "603.2", "603.3", "615.5"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Emit one public normalized gain occurrence from immediate effects, semantic-choice intents, Lifelink, and prevention aftermath."
+    },
+    {
+      "capability_id": "trigger.event.normalized_life_gain",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_player_result_counter_replacement_is_private_and_replays_exactly",
+      "official_rule_ids": ["119.3", "119.9", "120.3f", "603.2", "603.3", "615.5"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose only public player and amount facts while the later replacement decision remains visible solely to its chooser."
+    },
+    {
+      "capability_id": "trigger.event.normalized_life_gain",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_player_result_counter_replacement_is_private_and_replays_exactly",
+      "official_rule_ids": ["119.3", "119.9", "120.3f", "603.2", "603.3", "615.5"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the normalized gain occurrence, trigger resolution, and suspended counter replacement to the identical state hash."
+    },
+    {
       "capability_id": "trigger.event.normalized_spell_cast",
       "evidence_class": "interaction",
       "test_id": "tests.test_prowess_rules.ProwessRuntimeTests.test_prowess_and_opponent_cast_trigger_share_one_apnap_batch",
@@ -16321,6 +16537,5 @@
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
-
   ]
 }

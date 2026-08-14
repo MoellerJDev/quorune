@@ -17,6 +17,7 @@ from ..life_change import (
 from ..life_state import (
     LifeChange,
 )
+from ..player_result_events import dispatch_life_gain_records
 from ..replacement import (
     ReplacementChoiceRequired,
     ReplacementEventBatch,
@@ -107,9 +108,10 @@ def _commit(
             pending=prepared.pending,
         )
     try:
-        commit_life_change_batch(host, prepared)
+        committed = commit_life_change_batch(host, prepared)
     except LifeChangeError as exc:
         raise GameRuleError(str(exc)) from exc
+    dispatch_life_gain_records(host, committed.records)
     return prepared
 
 

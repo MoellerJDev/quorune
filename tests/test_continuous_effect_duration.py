@@ -7,11 +7,6 @@ import tempfile
 import unittest
 
 from common import keep_all, load_assets, make_session
-from high_risk_interaction_support import (
-    ATTACHMENT_AND_CONTINUOUS_PAIRS,
-    CONTINUOUS_AND_REPLACEMENT_PAIRS,
-    assert_high_risk_boundary_pairs,
-)
 from quorune.attachments import attach_objects
 from quorune.compiler.continuous_templates import (
     controlled_creature_fixed_modifier,
@@ -630,14 +625,6 @@ class ContinuousEffectEngineTests(unittest.TestCase):
     def test_exact_continuous_effects_compose_while_replacements_stay_residual(
         self,
     ):
-        assert_high_risk_boundary_pairs(
-            self,
-            (
-                *ATTACHMENT_AND_CONTINUOUS_PAIRS,
-                *CONTINUOUS_AND_REPLACEMENT_PAIRS,
-            ),
-            database=self.db,
-        )
         session = self.session(6112006)
         engine = session.engine
         registry = load_default_capability_registry()

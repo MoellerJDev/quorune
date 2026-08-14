@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "726725a42e2fd446cfbb8aae751c215f485aefd7e15757af1afe48464abb7205"
+verified: "c648fbbc72fa998044040c8e594dab0d05fe2623b556dbdf416bac1452d43822"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -26,6 +26,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Elesh Norn // The Argent Etchings | 187 | 21 | 7 | 7 | 12 | 2 | `blocked` |
 | Conqueror's Galleon // Conqueror's Foothold | 186 | 24 | 6 | 7 | 6 | 14 | `blocked` |
 | Jin-Gitaxias // The Great Synthesis | 185 | 20 | 6 | 7 | 11 | 6 | `blocked` |
+| Cleric Class | 183 | 22 | 6 | 6 | 7 | 12 | `blocked` |
 | Garruk Relentless // Garruk, the Veil-Cursed | 183 | 22 | 5 | 6 | 16 | 6 | `blocked` |
 | Ojer Axonil, Deepest Might // Temple of Power | 183 | 23 | 7 | 6 | 9 | 6 | `blocked` |
 | Sorin of House Markov // Sorin, Ravenous Neonate | 183 | 20 | 4 | 7 | 11 | 19 | `blocked` |
@@ -62,5 +63,4 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Faithbound Judge // Sinner's Judgment | 159 | 21 | 5 | 7 | 8 | 1 | `blocked` |
 | Invasion of Pyrulea // Gargantuan Slabhorn | 159 | 16 | 4 | 4 | 7 | 18 | `blocked` |
 | Devoted Grafkeeper // Departed Soulkeeper | 157 | 19 | 5 | 6 | 6 | 7 | `blocked` |
-| Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time | 157 | 21 | 6 | 6 | 9 | 3 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |

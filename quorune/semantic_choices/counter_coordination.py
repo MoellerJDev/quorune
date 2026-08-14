@@ -15,6 +15,7 @@ from ..counter_placement import (
 )
 from ..semantic_runtime import (
     IntentPlan,
+    LifeChangeIntent,
     PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
@@ -124,6 +125,7 @@ def _issue_semantic_intent_replacement_choice(
     response: Mapping[str, Any],
     intent: (
         PlaceCountersOnSetIntent
+        | LifeChangeIntent
         | PlaceCounterBatchIntent
         | PlaceCountersOnTargetsIntent
         | PlacePlayerCountersIntent
@@ -246,6 +248,7 @@ def continue_semantic_completion(
                 intent,
                 (
                     PlaceCountersOnSetIntent,
+                    LifeChangeIntent,
                     PlaceCounterBatchIntent,
                     PlaceCountersOnTargetsIntent,
                     PlacePlayerCountersIntent,

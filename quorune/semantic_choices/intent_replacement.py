@@ -12,6 +12,7 @@ from ..replacement.immutable import FrozenMap, thaw_value
 from ..semantic_runtime import (
     CounterPlacementAmount,
     CreateTokenIntent,
+    LifeChangeIntent,
     PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
@@ -109,6 +110,13 @@ _CREATE_TOKEN_FIELDS = {
     "sacrifice_at_end_step",
     "sacrifice_on_controller_end_step",
 }
+_LIFE_CHANGE_FIELDS = {
+    "actor",
+    "player",
+    "amount",
+    _REASON_FIELD,
+    "source_ref",
+}
 
 
 def counter_intent_identity(intent: PlaceCountersIntent) -> dict[str, Any]:
@@ -174,6 +182,17 @@ def validate_counter_intent_identity(value: Mapping[str, Any]) -> dict[str, Any]
 def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
     """Return the closed identity of a replacement-capable typed intent."""
 
+    if isinstance(intent, LifeChangeIntent):
+        return (
+            "life_change",
+            {
+                "actor": intent.actor,
+                "player": intent.player,
+                "amount": intent.amount,
+                _REASON_FIELD: intent.reason,
+                "source_ref": intent.source_ref,
+            },
+        )
     if isinstance(intent, PlaceCountersIntent):
         return "place_counters", counter_intent_identity(intent)
     if isinstance(intent, PlaceCounterBatchIntent):
@@ -480,6 +499,8 @@ def validate_semantic_intent_identity(
     kind: str,
     value: Mapping[str, Any],
 ) -> dict[str, Any]:
+    if kind == "life_change":
+        return _validate_life_change_intent_identity(value)
     if kind == "place_counters":
         return validate_counter_intent_identity(value)
     if kind == "place_counter_batch":
@@ -603,6 +624,36 @@ def validate_semantic_intent_identity(
             }
         )
     return result
+
+
+def _validate_life_change_intent_identity(
+    value: Mapping[str, Any],
+) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or set(value) != _LIFE_CHANGE_FIELDS:
+        raise SemanticChoiceError(
+            "Life-change intent identity fields are malformed"
+        )
+    actor = value["actor"]
+    player = value["player"]
+    amount = value["amount"]
+    reason = value[_REASON_FIELD]
+    source = value["source_ref"]
+    if (
+        any(
+            type(item) is not str or not item
+            for item in (actor, player, reason)
+        )
+        or type(amount) is not int
+        or (source is not None and (type(source) is not str or not source))
+    ):
+        raise SemanticChoiceError("Life-change intent identity is malformed")
+    return {
+        "actor": actor,
+        "player": player,
+        "amount": amount,
+        _REASON_FIELD: reason,
+        "source_ref": source,
+    }
 
 
 def _validate_counter_batch_intent_identity(
@@ -785,6 +836,7 @@ def with_replacement_selections(
     selections: Sequence[str | FrozenMap | Mapping[str, Any]],
 ) -> (
     PlaceCountersIntent
+    | LifeChangeIntent
     | PlaceCounterBatchIntent
     | PlaceCountersOnSetIntent
     | PlaceCountersOnTargetsIntent
@@ -797,6 +849,7 @@ def with_replacement_selections(
         intent,
         (
             PlaceCountersIntent,
+            LifeChangeIntent,
             PlaceCounterBatchIntent,
             PlaceCountersOnSetIntent,
             PlaceCountersOnTargetsIntent,

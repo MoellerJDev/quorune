@@ -313,6 +313,7 @@
         "quorune/delayed_triggers.py",
         "quorune/trigger_batches.py",
         "quorune/trigger_discovery.py",
+        "quorune/player_result_events.py",
         "quorune/trigger_processing.py",
         "quorune/trigger_targeting.py",
         "quorune/zone_trigger_events.py",
@@ -396,6 +397,7 @@
       "owners": [
         "quorune/damage.py",
         "quorune/damage_results.py",
+        "quorune/player_result_events.py",
         "quorune/counter_placement.py",
         "quorune/counter_removal.py",
         "quorune/counter_state.py",

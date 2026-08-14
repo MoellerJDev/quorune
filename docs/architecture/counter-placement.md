@@ -1,7 +1,7 @@
 ---
 title: "Counter placement and removal transactions"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_names.py, quorune/counter_state.py, quorune/counter_maximums.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/fixed_keyword_entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_maximum_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_counter_trigger_nodes.py, quorune/compiler/fixed_keyword_entry_nodes.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/ability_fragments.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_names.py, quorune/counter_state.py, quorune/counter_maximums.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/player_result_events.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/fixed_keyword_entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_maximum_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_counter_trigger_nodes.py, quorune/compiler/fixed_keyword_entry_nodes.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/ability_fragments.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
 verified: "2026-08-14"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -189,15 +189,19 @@ battlefield source result is pinned to the activating incarnation; Reinforce
 and Scavenge revalidate their creature target. Variable Reinforce and dynamic-
 power Scavenge remain outside trust.
 
-Mandatory fixed counter effects on three represented trigger families now
-enter through the same `place_counters` operations. The compiler binds closed
-upkeep/end-step/beginning-combat schedules, controlled-land entries, and
-controller noncreature or instant-or-sorcery casts to normalized event facts;
-the trigger subsystem performs ordinary APNAP placement and the effect body
-retains existing target and replacement semantics. This adds no counter write
-path and no runtime Oracle parser. Granted, copied, or removed instances remain
-outside trust until all static components share the layer-6 ability-presence
-query; cast classification also excludes type-changing stack interactions.
+Mandatory fixed counter effects on represented trigger families enter through
+the same `place_counters` operations. The compiler binds closed upkeep,
+end-step, and beginning-combat schedules; controlled-land entries; controller
+noncreature or instant-or-sorcery casts; controller life gains; controller card
+draws; and the controller's exact second draw to normalized event facts. Draw
+events expose only public player and ordinal facts. Positive life-gain events
+are emitted after the canonical replacement-capable effect or semantic-choice
+life transaction, Lifelink result, or prevention aftermath commits. The trigger
+subsystem performs ordinary APNAP placement and the effect body retains existing
+target and replacement semantics. This adds no counter write path and no runtime
+Oracle parser. Granted, copied, or removed instances remain outside trust until
+all static components share the layer-6 ability-presence query; cast
+classification also excludes type-changing stack interactions.
 
 The same `place_counters` operation also owns one closed multi-subject family:
 two or three printed-order source/direct-target permanent subjects receive the

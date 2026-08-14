@@ -5,6 +5,7 @@ from typing import Iterable
 import unittest
 
 from common import DB_PATH
+from quorune.card_programs import CardProgram, bind_card_program_runtime
 from quorune.card_programs.adapters import (
     compile_best_available_card_program,
 )
@@ -605,19 +606,21 @@ def assert_high_risk_boundary_pairs(
     *,
     database: CardDatabase | None = None,
 ) -> None:
-    """Prove each exact corpus pair keeps unsupported siblings fail-closed."""
+    """Prove each residual pair stays blocked at runtime admission."""
 
     expected = tuple(pairs)
     case.assertEqual(len(expected), len(set(expected)))
     registry = load_default_capability_registry()
     owned_database = database is None
     db = database or CardDatabase(DB_PATH)
-    analyzed: dict[str, dict] = {}
+    analyzed: dict[
+        str, tuple[dict, CardProgram | None, dict | None, str | None]
+    ] = {}
     try:
         for pair in expected:
             key = _PAIR_WITNESS[pair]
-            row = analyzed.get(key)
-            if row is None:
+            analysis = analyzed.get(key)
+            if analysis is None:
                 record = _record(key)
                 oracle_ir = compile_oracle_card(
                     record,
@@ -643,12 +646,38 @@ def assert_high_risk_boundary_pairs(
                     capabilities=registry,
                     profile="commander_review",
                 )
-                analyzed[key] = row
+                binding = (
+                    bind_card_program_runtime(
+                        program,
+                        capability_registry=registry,
+                        profile="commander_review",
+                    )
+                    if program is not None
+                    else None
+                )
+                analysis = (row, program, binding, program_error)
+                analyzed[key] = analysis
+            row, program, binding, program_error = analysis
             observed = _observed_piece_ids(row)
             with case.subTest(pair=pair, witness=row["card_name"]):
                 case.assertLessEqual(set(pair), observed)
                 case.assertEqual("residual", row["card_program_status"])
                 case.assertIsNone(row["hard_construction_failure"])
+                case.assertIsNone(program_error)
+                case.assertIsNotNone(program)
+                case.assertIsNotNone(binding)
+                if program is None or binding is None:
+                    case.fail("Residual witness did not reach runtime admission")
+                case.assertEqual(
+                    "unresolved",
+                    program.trust_closure["trust_basis"],
+                )
+                case.assertFalse(
+                    program.trust_closure["strict_capability_ready"]
+                )
+                case.assertFalse(binding["strict_capability_ready"])
+                case.assertFalse(binding["compatible_ready"])
+                case.assertIn("trust_basis:unresolved", binding["blockers"])
                 for piece_id in pair:
                     if piece_id.startswith("capability."):
                         capability_id = piece_id.removeprefix("capability.")

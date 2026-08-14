@@ -36,6 +36,13 @@ stable inventory. A handler may request a narrowly defined continuation for a
 choice or replacement-aware transaction, but it may not retain mutable state
 or commit around the canonical owner. Rollback must leave no partial mutation.
 
+A fixed semantic-choice life gain uses `LifeChangeIntent` rather than writing a
+life total directly. The intent host prepares the canonical life-change batch;
+when multiple replacements apply, the ordinary private replacement task stores
+a closed life-intent identity and resumes only that uncommitted intent. The
+continuation decoder rejects unknown intent kinds and changed identity, and
+exact replay reissues the same semantic response and replacement selection.
+
 Behavior that participates in later events—replacements, prevention, static
 effects, and other persistent descriptors—belongs to
 [runtime components](runtime-components.md), not this boundary. Family-specific

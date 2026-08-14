@@ -241,10 +241,11 @@ def _inputs() -> dict:
         },
         "policy": policy,
         "interaction_evidence": {
-            "schema_version": 1,
+            "schema_version": 2,
             "declarations": [
                 {
                     "evidence_class": "interaction",
+                    "assurance_kind": "runtime_composition",
                     "test_id": "test_flying_reach",
                     "piece_ids": [
                         "capability.combat.block.flying",
@@ -259,6 +260,7 @@ def _inputs() -> dict:
                 }
             ],
         },
+        "known_test_ids": {"test_flying_reach"},
         "ruling_counts": {"oracle-exact": 2},
     }
 
@@ -274,6 +276,7 @@ class ReusablePieceInventoryTests(unittest.TestCase):
 
         for mutation in (
             {"evidence_class": "positive"},
+            {"assurance_kind": "fail_closed_runtime_admission"},
             {"piece_ids": ["mechanic.flying"]},
             {"interaction_order": True},
             {"capability_ids": ["combat.block.reach"]},
@@ -333,10 +336,13 @@ class ReusablePieceInventoryTests(unittest.TestCase):
 
         self.assertTrue(pair["covered"])
         self.assertEqual(["test_flying_reach"], pair["evidence_test_ids"])
+        self.assertEqual(
+            ["runtime_composition"], pair["evidence_assurance_kinds"]
+        )
 
         incidental = _inputs()
         incidental["interaction_evidence"] = {
-            "schema_version": 1,
+            "schema_version": 2,
             "declarations": [],
         }
         uncovered = build_reusable_piece_artifacts(**incidental)[
@@ -350,6 +356,7 @@ class ReusablePieceInventoryTests(unittest.TestCase):
         )
         self.assertFalse(pair["covered"])
         self.assertEqual([], pair["evidence_test_ids"])
+        self.assertEqual([], pair["evidence_assurance_kinds"])
 
     def test_ambient_cross_card_pair_is_visible_before_and_after_evidence(self) -> None:
         pair_ids = {
@@ -375,6 +382,7 @@ class ReusablePieceInventoryTests(unittest.TestCase):
         inputs["interaction_evidence"]["declarations"].append(
             {
                 "evidence_class": "interaction",
+                "assurance_kind": "fail_closed_runtime_admission",
                 "test_id": "test_flying_reach",
                 "piece_ids": sorted(pair_ids),
                 "capability_ids": ["combat.block.flying"],
@@ -393,6 +401,10 @@ class ReusablePieceInventoryTests(unittest.TestCase):
         )
         self.assertTrue(covered["covered"])
         self.assertEqual(["test_flying_reach"], covered["evidence_test_ids"])
+        self.assertEqual(
+            ["fail_closed_runtime_admission"],
+            covered["evidence_assurance_kinds"],
+        )
         self.assertEqual(
             [
                 "declared_ambient_high_risk",
