@@ -8,6 +8,7 @@ from typing import Any, Iterable, Mapping
 from ..carddb import CardDatabase, CardRecord
 from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..bloodthirst import BLOODTHIRST_MECHANIC
+from ..fixed_keyword_entry_counters import FIXED_KEYWORD_ENTRY_MECHANICS
 from ..object_predicate import ObjectQuerySpec
 from ..modular import MODULAR_MECHANIC_ID
 from ..riot import RIOT_MECHANIC
@@ -240,10 +241,11 @@ def _generated_ability_id(
             suffix == "entry"
             and len(parts) >= 3
             and parts[-2].isdigit()
-            and parts[-3] == MODULAR_MECHANIC_ID
+            and parts[-3]
+            in {MODULAR_MECHANIC_ID, *FIXED_KEYWORD_ENTRY_MECHANICS}
         ):
             return (
-                f"static:{face_id}:n{line}:{MODULAR_MECHANIC_ID}:"
+                f"static:{face_id}:n{line}:{parts[-3]}:"
                 f"{parts[-2]}:entry"
             )
         if (

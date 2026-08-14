@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "992c8fcfc0f25bbcf681136067266b9d61e0bf7ca13d37031092a4f26d051c42",
-  "declaration_source_fingerprint": "5bfd24932aad00b8f4b64dc91433f6d57e4d75e08358605f00776223d0f83748",
+  "registry_fingerprint": "5000e4cdc92f6413f7a1ff6e6a47ccb63bc26982e0e3b01e4234409c9f427b0c",
+  "declaration_source_fingerprint": "3137c540e1346256eeacffcd59bb74f0ca785fd5af8a26875676d50f5d544983",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -12602,6 +12602,296 @@
         "commander_review"
       ],
       "applicability_note": "Replay four priority passes and the affected-seat replacement choice to the identical authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_fixed_keyword_entries_use_quantity_replacement",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Route Fading entry counters through the nested quantity-replacement event so Doubling Season changes five fade counters to ten before entry commits."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_four_player_fixed_keyword_entry_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve one Vanishing entry in four-player state and route its affected-object replacement ordering only to the destination controller."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryCompilerTests.test_fixed_keyword_entry_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the shared fixed keyword entry lowering before any represented mechanic can retain exact component trust."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryCompilerTests.test_fixed_keyword_entry_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Block exact entry-component trust when the canonical quantity-replacement dependency or shared lowering is unavailable."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryCompilerTests.test_nonfixed_forms_and_remaining_lifecycles_stay_material",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep bare Vanishing, nonpositive or variable values, and every unimplemented removal, movement, and sacrifice lifecycle explicitly material."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_fixed_keyword_entry_runtime_mutation_is_killed",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the shared affected-object self-entry replacement and prove the required Graft entry counters disappear."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryCompilerTests.test_fixed_keyword_entry_models_and_compiler_split_are_closed",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Split positive fixed Fading, Graft, and numeric Vanishing instances into one source-spanned self-entry-counter component while retaining their later lifecycle as a separate residual."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_four_player_fixed_keyword_entry_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the pending entry replacement only to its affected controller without exposing physical object identity to other seats."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_four_player_fixed_keyword_entry_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the destination-controller choice, Vanishing entry, and time-counter result to the same authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.fixed_keyword_entry",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_stale_fixed_keyword_entry_choice_aborts_without_card_mutation",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.32",
+        "702.32a",
+        "702.58",
+        "702.58a",
+        "702.58b",
+        "702.63",
+        "702.63a",
+        "702.63b",
+        "702.63c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Abort a stale Fading entry continuation after the proposed object leaves the stack without placing counters, reentering the object, or mutating any card snapshot."
     },
     {
       "capability_id": "counter.producer.fixed_multikind_effect",
@@ -33107,5 +33397,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "20e41fbdd2f1f2095e93d8e826658a11403576e5d95c0ed09aee9ce1674b0fd1"
+  "fingerprint": "b4df29dcc4156f9ede0cdcf570c8e001d8e0f89d09fabbc0baf2bcf550e1bb01"
 }

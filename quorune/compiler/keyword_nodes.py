@@ -18,6 +18,7 @@ from ..death_return import (
 )
 from ..evolve import EVOLVE_EVENT_CONDITION_FIELD
 from ..echo import ECHO_MECHANIC_ID
+from ..fixed_keyword_entry_counters import FIXED_KEYWORD_ENTRY_MECHANICS
 from ..unleash import (
     UNLEASH_MECHANIC,
     unleash_block_handler_descriptor,
@@ -72,6 +73,7 @@ _GROUPED_SPLIT_MECHANICS = (
     _SUNBURST_MECHANIC,
     _TOXIC_MECHANIC,
     _EVOLVE_MECHANIC,
+    *tuple(sorted(FIXED_KEYWORD_ENTRY_MECHANICS)),
 )
 _PARAMETERIZED_SPLIT_MECHANICS = frozenset(
     {
@@ -82,6 +84,7 @@ _PARAMETERIZED_SPLIT_MECHANICS = frozenset(
         _ECHO_MECHANIC,
         _TOXIC_MECHANIC,
         _AFFINITY_MECHANIC,
+        *FIXED_KEYWORD_ENTRY_MECHANICS,
     }
 )
 _INSTANCE_PART_MECHANICS = (
@@ -100,6 +103,7 @@ _INSTANCE_PART_MECHANICS = (
     _ECHO_MECHANIC,
     _TOXIC_MECHANIC,
     _CONVOKE_MECHANIC,
+    *tuple(sorted(FIXED_KEYWORD_ENTRY_MECHANICS)),
 )
 _SPLIT_MECHANICS = frozenset(
     {

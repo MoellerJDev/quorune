@@ -42,6 +42,7 @@ from .compiler.draw_templates import (
 from .compiler.fixed_controller_effect_sequences import (
     fixed_controller_effect_sequence_template,
 )
+from .compiler.fixed_keyword_entry_nodes import fixed_keyword_entry_nodes
 from .compiler.explore_templates import single_explore_effect_template
 from .compiler.fixed_numbers import fixed_number as _number
 from .compiler.keyword_templates import keyword_mechanics
@@ -87,6 +88,7 @@ from .compiler.spell_additional_cost_nodes import (
     typed_additional_cost_spell_node,
 )
 from .compiler.tap_state_templates import targeted_tap_state_effect_template
+from .fixed_keyword_entry_counters import FIXED_KEYWORD_ENTRY_MECHANICS
 from .rules.capabilities import CapabilityRegistry
 from .rules.source_references import SourceReferenceSpec
 from .riot import RIOT_MECHANIC
@@ -645,6 +647,23 @@ def _keyword_nodes(
     )
     nodes: list[OracleNode] = []
     for plan in plans:
+        if (
+            len(plan.mechanics) == 1
+            and plan.mechanics[0] in FIXED_KEYWORD_ENTRY_MECHANICS
+        ):
+            nodes.extend(
+                fixed_keyword_entry_nodes(
+                    node_id=plan.node_id,
+                    line=plan.line,
+                    material_line=plan.material_line,
+                    span=plan.span,
+                    mechanics=plan.mechanics,
+                    capability_registry=capability_registry,
+                    capability_profile=capability_profile,
+                    residuals=residuals,
+                )
+            )
+            continue
         if plan.mechanics == ("sunburst",):
             node = sunburst_keyword_node(
                 node_id=plan.node_id,
