@@ -14,13 +14,20 @@ from quorune.counter_removal import (
     CounterRemoval,
     plan_counter_removals,
 )
+from quorune.damage import (
+    commit_prepared_damage_batch,
+    damage_proposal,
+    prepare_damage_batch,
+)
 from quorune.destruction import destroy_permanent_refs
-from quorune.model import CombatState
+from quorune.model import CardInstance, CombatState
+from quorune.oracle_ir import compile_oracle_card, register_generated_programs
 from quorune.record import (
     authoritative_state_hash,
     checkpoint_envelope,
     replay_record,
 )
+from quorune.rules.capabilities import load_default_capability_registry
 
 
 class KeywordCounterCompositionTests(unittest.TestCase):
@@ -92,6 +99,42 @@ class KeywordCounterCompositionTests(unittest.TestCase):
             for card in engine.state.cards.values()
             if card.owner == seat and card.printed_name == name
         )
+
+    def add_registered_permanent(
+        self,
+        engine,
+        *,
+        seat: str,
+        name: str,
+        ref: str,
+    ) -> CardInstance:
+        record = self.db.lookup(name)
+        self.assertIsNotNone(record, name)
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (record,),
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+        )
+        value = CardInstance(
+            object_id=f"keyword-assurance:{ref}",
+            ref=ref,
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner=seat,
+            controller=seat,
+            zone="battlefield",
+            zone_timestamp=engine.state.timestamp_sequence + 1,
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+        )
+        engine.state.cards[value.object_id] = value
+        engine.state.players[seat].zones["battlefield"].append(
+            value.object_id
+        )
+        return value
 
     def prepare_red_elemental_blast(self, session):
         engine = session.engine
@@ -395,6 +438,107 @@ class KeywordCounterCompositionTests(unittest.TestCase):
         self.assertEqual("outside", second.zone)
         self.assertEqual("battlefield", attacker.zone)
         self.assert_replays(session, "keyword-counter-deathtouch")
+
+    def test_keyword_damage_composes_with_exact_counter_replacement_and_residuals(
+        self,
+    ):
+        session = self.session(122_001_015, step="combat_damage")
+        engine = session.engine
+        engine.state.phase_index = 7
+        doubling_record = self.db.lookup("Doubling Season")
+        compiled = compile_oracle_card(
+            doubling_record,
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+        )
+        blockers = {
+            blocker
+            for residual in compiled.material_residuals
+            for blocker in residual.blockers
+        }
+        self.assertGreaterEqual(
+            blockers,
+            {
+                "replacement applicability",
+                "self-replacement and prevention ordering",
+            },
+        )
+
+        attacker = self.token(
+            engine,
+            "A",
+            "Counter-granted damage source",
+            power=1,
+            toughness=5,
+            temporary_keywords=("Infect",),
+        )
+        for counter_name in ("deathtouch", "lifelink"):
+            self.place_keyword_counter(engine, attacker, counter_name)
+        doubling = self.add_registered_permanent(
+            engine,
+            seat="B",
+            name="Doubling Season",
+            ref="ASSURANCE-DOUBLING",
+        )
+        created = engine.create_token(
+            "B",
+            name="Indestructible damage recipient",
+            characteristics={
+                "type_line": "Token Creature — Test",
+                "colors": ["W"],
+                "power": "0",
+                "toughness": "5",
+                "keywords": ["Indestructible"],
+            },
+        )
+        self.assertEqual(1, len(created))
+        target = engine._resolve_object(
+            "B", created[0], zones={"battlefield"}
+        )
+        engine.state.players["A"].life = 20
+        proposal = damage_proposal(
+            engine,
+            proposal_id="damage:classified-residual-assurance",
+            actor="A",
+            source_ref=attacker.ref,
+            target=target.ref,
+            amount=1,
+            combat=False,
+            reason="classified residual interaction assurance",
+        )
+        commit_prepared_damage_batch(
+            engine,
+            prepare_damage_batch(engine, (proposal,)),
+        )
+        self.assertEqual(21, engine.state.players["A"].life)
+        self.assertEqual(1, target.counters["-1/-1"])
+        self.assertEqual(0, target.marked_damage)
+        self.assertTrue(target.deathtouch_damage)
+        self.assertEqual("battlefield", target.zone)
+        placed = place_counters(
+            engine,
+            (
+                CounterPlacementRequest(
+                    subject_kind="permanent",
+                    subject_id=target.object_id,
+                    counter_name="stun",
+                    amount=1,
+                    placing_player="A",
+                    source_ref=attacker.ref,
+                ),
+            ),
+            reason="classified residual interaction assurance",
+        )
+        self.assertEqual(2, placed[0].placed)
+        self.assertEqual(2, target.counters["stun"])
+        replacement = next(
+            event
+            for event in reversed(engine.state.events)
+            if event.code == "replacement.apply"
+            and event.details.get("source") == doubling.ref
+        )
+        self.assertEqual(1, replacement.details["requested"])
+        self.assertEqual(2, replacement.details["resolved"])
 
     def test_trample_counter_feeds_offer_and_command_spill_legality(self):
         session = self.session(122_001_007, step="combat_damage")

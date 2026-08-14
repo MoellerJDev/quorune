@@ -572,6 +572,14 @@
     {
       "capability_id": "attachment.aura.simple_object",
       "evidence_class": "interaction",
+      "test_id": "tests.test_attached_static_characteristics.AttachedStaticEngineTests.test_aura_equipment_anthem_temporary_effect_and_draw_compose",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve a targeted simple Aura beside a fixed Equipment activation, attached and global modifiers, a temporary modifier, and a canonical draw without losing its reciprocal attachment."
+    },
+    {
+      "capability_id": "attachment.aura.simple_object",
+      "evidence_class": "interaction",
       "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_control_relation_and_protection_are_live_attachment_legality",
       "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -664,6 +672,14 @@
       "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the seat-scoped entry selection and exact reciprocal attachment."
+    },
+    {
+      "capability_id": "attachment.equip.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attached_static_characteristics.AttachedStaticEngineTests.test_aura_equipment_anthem_temporary_effect_and_draw_compose",
+      "official_rule_ids": ["301.5", "602.1", "602.2", "608.2b", "608.2h", "701.3", "702.6a", "702.6b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Activate and resolve a fixed-mana Equip ability beside an Aura, attached and global modifiers, a temporary modifier, and a canonical draw while retaining the selected attachment."
     },
     {
       "capability_id": "attachment.equip.fixed_mana",
@@ -3348,6 +3364,14 @@
     {
       "capability_id": "continuous.attached.fixed_characteristics",
       "evidence_class": "interaction",
+      "test_id": "tests.test_attached_static_characteristics.AttachedStaticEngineTests.test_aura_equipment_anthem_temporary_effect_and_draw_compose",
+      "official_rule_ids": ["301.5", "303.4", "604.1", "611.3a", "611.3b", "613.1d", "613.1f", "613.1g", "613.6", "701.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply fixed characteristics from both live attachments beside a fixed anthem, a locked temporary modifier, and a canonical draw without crossing attachment identity."
+    },
+    {
+      "capability_id": "continuous.attached.fixed_characteristics",
+      "evidence_class": "interaction",
       "test_id": "tests.test_attached_static_characteristics.AttachedStaticEngineTests.test_live_generic_equipment_effect_moves_detaches_and_tracks_control",
       "official_rule_ids": ["301.5", "303.4", "604.1", "611.3a", "611.3b", "613.1d", "613.1f", "613.1g", "613.6", "701.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -3360,6 +3384,14 @@
       "official_rule_ids": ["301.5", "303.4", "604.1", "611.3a", "611.3b", "613.1d", "613.1f", "613.1g", "613.6", "701.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "End source-bound effects on departure and do not follow a returned logical object."
+    },
+    {
+      "capability_id": "continuous.attached.fixed_characteristics",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectEngineTests.test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "official_rule_ids": ["301.5", "303.4", "604.1", "611.3a", "611.3b", "613.1d", "613.1f", "613.1g", "613.6", "701.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose an attached fixed modifier with exact anthem and until-end-of-turn owners while keeping unsupported replacement prose explicitly residual."
     },
     {
       "capability_id": "continuous.attached.fixed_characteristics",
@@ -3612,6 +3644,14 @@
     {
       "capability_id": "continuous.power_toughness.fixed_anthem",
       "evidence_class": "interaction",
+      "test_id": "tests.test_attached_static_characteristics.AttachedStaticEngineTests.test_aura_equipment_anthem_temporary_effect_and_draw_compose",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1g", "613.4c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply a live fixed anthem beside Aura and Equipment modifiers, a locked temporary modifier, and a canonical draw on the same authoritative battlefield."
+    },
+    {
+      "capability_id": "continuous.power_toughness.fixed_anthem",
+      "evidence_class": "interaction",
       "test_id": "tests.test_continuous_effect_components.ContinuousEffectComponentTests.test_layer_four_subtype_change_enables_layer_seven_anthem",
       "official_rule_ids": [
         "604.1",
@@ -3646,6 +3686,14 @@
         "commander_review"
       ],
       "applicability_note": "Apply a reviewed battlefield static ability that gives same-controller permanents with declared subtypes a fixed power/toughness modifier in layer 7c."
+    },
+    {
+      "capability_id": "continuous.power_toughness.fixed_anthem",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectEngineTests.test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1g", "613.4c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose a fixed anthem with exact attached and until-end-of-turn modifiers while keeping unsupported replacement prose explicitly residual."
     },
     {
       "capability_id": "continuous.power_toughness.fixed_anthem",
@@ -3741,6 +3789,22 @@
         "commander_review"
       ],
       "applicability_note": "Apply a reviewed battlefield static ability that gives same-controller permanents with declared subtypes a fixed power/toughness modifier in layer 7c."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attached_static_characteristics.AttachedStaticEngineTests.test_aura_equipment_anthem_temporary_effect_and_draw_compose",
+      "official_rule_ids": ["611.2a", "611.2c", "613.1d", "613.1f", "613.1g", "613.4c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep a locked until-end-of-turn characteristic modifier live beside Aura, Equipment, attached and anthem effects, and a canonical draw."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectEngineTests.test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "official_rule_ids": ["611.2a", "611.2c", "613.1d", "613.1f", "613.1g", "613.4c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose an exact until-end-of-turn characteristic modifier with attached and anthem owners while keeping unsupported replacement prose explicitly residual."
     },
     {
       "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
@@ -3937,6 +4001,14 @@
     {
       "capability_id": "counter.characteristic.keyword",
       "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "official_rule_ids": ["122.1b", "613.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Derive Deathtouch and Lifelink from keyword counters while positive Infect damage and a separate exact counter-quantity replacement resolve with residual replacement limits intact."
+    },
+    {
+      "capability_id": "counter.characteristic.keyword",
+      "evidence_class": "interaction",
       "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_lifelink_counter_feeds_final_damage_result",
       "official_rule_ids": ["122.1b", "613.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -4059,6 +4131,14 @@
       "official_rule_ids": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Apply a counter replacement once in the containing damage-result tree and commit the resolved amount without rediscovery."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "official_rule_ids": ["122.1", "122.6", "614.1", "614.16", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Exclude rule-generated Infect counters from Doubling Season, then double an effect-generated stun-counter placement while keyword-derived damage results remain authoritative."
     },
     {
       "capability_id": "counter.placement.quantity_replacement",
@@ -6801,6 +6881,14 @@
     {
       "capability_id": "damage.amount.positive",
       "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "official_rule_ids": ["120.1", "120.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit one positive noncombat damage event through Deathtouch, Infect, and Lifelink results before a distinct effect-generated counter placement."
+    },
+    {
+      "capability_id": "damage.amount.positive",
+      "evidence_class": "interaction",
       "test_id": "tests.test_turn_history_rules.CurrentTurnHistoryRuleTests.test_only_damage_not_life_loss_or_prevented_damage_unlocks_attack",
       "official_rule_ids": [
         "120.1",
@@ -8073,6 +8161,14 @@
     },
     {
       "capability_id": "damage.result.deathtouch",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "official_rule_ids": ["120.3e", "120.4", "702.2", "702.2a", "702.2b", "702.2d", "702.2e", "702.2f", "704.5h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Record Deathtouch from a keyword counter on positive noncombat damage that simultaneously applies Infect and Lifelink results."
+    },
+    {
+      "capability_id": "damage.result.deathtouch",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_combat_keyword_rules.CombatKeywordRuleTests.test_four_player_deathtouch_result_is_source_derived_and_replays",
       "official_rule_ids": ["120.3e", "120.4", "702.2", "702.2a", "702.2b", "702.2d", "702.2e", "702.2f", "704.5h"],
@@ -8189,6 +8285,14 @@
     },
     {
       "capability_id": "damage.result.infect",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "official_rule_ids": ["120.3b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Convert positive creature damage to a rule-generated minus counter without incorrectly applying an effect-only Doubling Season replacement."
+    },
+    {
+      "capability_id": "damage.result.infect",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_damage_result_events.DamageResultEventTests.test_four_player_keyword_results_keep_source_attribution",
       "official_rule_ids": [
@@ -8292,6 +8396,14 @@
         "commander_review"
       ],
       "applicability_note": "Gain life for a lifelink source's final dealt damage across every recipient kind."
+    },
+    {
+      "capability_id": "damage.result.lifelink",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "official_rule_ids": ["120.3f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Gain life from Lifelink supplied by a keyword counter while the same positive damage also produces Deathtouch and Infect results."
     },
     {
       "capability_id": "damage.result.lifelink",
@@ -14555,6 +14667,14 @@
         "commander_review"
       ],
       "applicability_note": "Commit a resolved, revalidated player target through the canonical draw transaction while keeping the drawn card identity private and replay-stable."
+    },
+    {
+      "capability_id": "zone.draw.library_to_hand",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attached_static_characteristics.AttachedStaticEngineTests.test_aura_equipment_anthem_temporary_effect_and_draw_compose",
+      "official_rule_ids": ["121.1", "121.2", "121.2a", "121.2b", "121.2c", "121.3", "121.3a", "121.4", "121.5", "121.6", "121.6a", "121.6b", "702.52a", "702.52b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit a canonical library-to-hand draw after Aura and Equipment resolution while attached, anthem, and temporary characteristic state remains authoritative."
     },
     {
       "capability_id": "zone.draw.library_to_hand",

@@ -31,7 +31,7 @@ from quorune.continuous_effects import (
 from quorune.errors import GameRuleError
 from quorune.model import CardInstance
 from quorune.model import StackItem
-from quorune.oracle_ir import compile_oracle_card
+from quorune.oracle_ir import compile_oracle_card, register_generated_programs
 from quorune.record import checkpoint_envelope, replay_record
 from quorune.rules.capabilities import (
     load_default_capability_registry,
@@ -496,6 +496,49 @@ class AttachedStaticEngineTests(unittest.TestCase):
                 log=False,
             )
 
+    def add_card(
+        self,
+        engine,
+        *,
+        seat: str,
+        name: str,
+        ref: str,
+        zone: str,
+    ) -> CardInstance:
+        record = self.db.lookup(name)
+        self.assertIsNotNone(record, name)
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (record,),
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+        )
+        value = CardInstance(
+            object_id=f"attachment-assurance:{ref}",
+            ref=ref,
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner=seat,
+            controller=seat,
+            zone=zone,
+            zone_timestamp=engine.state.timestamp_sequence + 1,
+            known_to=(
+                [seat]
+                if zone in {"hand", "library"}
+                else list(engine.seats)
+            ),
+            revealed_to=(
+                []
+                if zone in {"hand", "library"}
+                else list(engine.seats)
+            ),
+        )
+        engine.state.cards[value.object_id] = value
+        engine.state.players[seat].zones[zone].append(value.object_id)
+        return value
+
     @staticmethod
     def resolve_top(engine):
         engine.permissions.invalidate_current()
@@ -684,6 +727,98 @@ class AttachedStaticEngineTests(unittest.TestCase):
         self.assertEqual("4", data["power"])
         self.assertEqual("3", data["toughness"])
         self.assertIn("Shroud", data["keywords"])
+
+    def test_aura_equipment_anthem_temporary_effect_and_draw_compose(self):
+        session = self.session(6131006)
+        engine = session.engine
+        target_ref = engine.create_token(
+            "A",
+            name="Assurance Thopter",
+            characteristics={
+                "type_line": "Token Artifact Creature — Thopter",
+                "colors": ["B"],
+                "power": "3",
+                "toughness": "3",
+                "keywords": [],
+            },
+        )[0]
+        target = engine._resolve_object(
+            "A", target_ref, zones={"battlefield"}
+        )
+        anthem = self.find(engine, "A", "Stridehangar Automaton")
+        self.put_on_battlefield(engine, anthem)
+        equipment = self.add_card(
+            engine,
+            seat="A",
+            name="Skullclamp",
+            ref="ASSURANCE-EQUIPMENT",
+            zone="battlefield",
+        )
+        aura = self.add_card(
+            engine,
+            seat="A",
+            name="Scavenged Weaponry",
+            ref="ASSURANCE-AURA",
+            zone="hand",
+        )
+        engine.state.active_player = "A"
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine.state.priority_player = "A"
+        engine.state.priority_passes = []
+        engine.state.players["A"].mana_pool["C"] = 1
+
+        engine._activate(
+            "A",
+            {
+                "source": equipment.ref,
+                "ability": "ab3",
+                "targets": [target.ref],
+            },
+        )
+        self.resolve_top(engine)
+        self.assertEqual(target.object_id, equipment.attached_to)
+
+        engine.apply_effect(
+            {
+                "op": "modify_stats_until_end_of_turn",
+                "card": target.ref,
+                "power": 1,
+                "toughness": 1,
+            },
+            actor="A",
+        )
+        engine.state.players["A"].mana_pool["B"] = 3
+        library_before = len(engine.state.players["A"].zones["library"])
+        engine._cast(
+            "A",
+            {
+                "card": aura.ref,
+                "targets": [target.ref],
+                "pay": "manual",
+                "payment": {"B": 3},
+            },
+        )
+        self.resolve_top(engine)
+        self.assertEqual("battlefield", aura.zone)
+        self.assertEqual(target.object_id, aura.attached_to)
+        self.assertTrue(engine.state.stack)
+        for _ in range(3):
+            if not engine.state.stack:
+                break
+            self.resolve_top(engine)
+        engine.apply_effect(
+            {"op": "draw", "player": "A", "count": 1},
+            actor="A",
+        )
+
+        characteristics = engine._effective_card_data(target)
+        self.assertEqual("7", characteristics["power"])
+        self.assertEqual("5", characteristics["toughness"])
+        self.assertEqual(
+            library_before - 1,
+            len(engine.state.players["A"].zones["library"]),
+        )
 
     def test_projection_hides_relation_identity_and_replay_is_exact(self):
         session = self.session(6131005)

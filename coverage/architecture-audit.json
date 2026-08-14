@@ -10092,14 +10092,14 @@
       ]
     },
     "interaction_assurance_baseline": {
-      "applicable_high_risk_pairs": 133,
-      "applicable_piece_pairs": 30316,
+      "applicable_high_risk_pairs": 135,
+      "applicable_piece_pairs": 30331,
       "available": true,
-      "covered_high_risk_pairs": 30,
-      "covered_piece_pairs": 457,
+      "covered_high_risk_pairs": 55,
+      "covered_piece_pairs": 502,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "a970e7d9be177ac76e676f7f070c031b5a5c3afcc7402018ca2d9c4bab966aae",
-      "uncovered_high_risk_pairs": 103
+      "source_fingerprint": "5e81203591d74ccc2fe8deda4d9779de073c82840bb9f58d101ec603a60bc7ec",
+      "uncovered_high_risk_pairs": 80
     },
     "migration_queue": [],
     "missing_dedicated_owners": [],
@@ -20478,7 +20478,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 25,
+        "primary_test_count": 26,
         "primary_tests": [
           "test_capability_implementation_mutations",
           "test_combat_declaration_constraints",
@@ -20494,6 +20494,7 @@
           "test_damage_replacement_model",
           "test_damage_replacement_multiplayer",
           "test_damage_result_events",
+          "test_keyword_counter_composition",
           "test_menace_rules",
           "test_monarch_rules",
           "test_oracle_ir",
@@ -21257,7 +21258,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 96,
+        "primary_test_count": 97,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_activation_restrictions",
@@ -21312,6 +21313,7 @@
           "test_generated_artifacts",
           "test_goad_rules",
           "test_indestructible_rules",
+          "test_keyword_counter_composition",
           "test_loyalty_abilities",
           "test_loyalty_counter_cost_replacements",
           "test_main_phase_rules",
@@ -23810,7 +23812,7 @@
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 268,
+          "interaction": 283,
           "multiplayer": 153,
           "mutation": 178,
           "negative": 297,
@@ -23820,12 +23822,12 @@
           "replay": 190,
           "rollback": 39
         },
-        "declaration_count": 1569,
-        "declaration_source_fingerprint": "a66a4377da1ef80b5ddb63580c00bf39262f211cfca45825d691d48c95cb9891",
-        "fingerprint": "d33d6ee5e7b98feed6fff54ef22ab29e3fd5c9afcf2a07f4fa269a0e72a9d558",
-        "registry_fingerprint": "72d0d918cab98847f41dc2a524e4196fcf69cec8cbcdb376c0245c7d6cf50b29"
+        "declaration_count": 1584,
+        "declaration_source_fingerprint": "147b00761720028f5e7d8eb349f1f6577cd3a8987d382cd34d3938219e01efa4",
+        "fingerprint": "b79771ff6a2bfc15d2422062459b7b6ab64fa88ce491461b67138a56fa44caad",
+        "registry_fingerprint": "93720477a4d618826089b6c86b55513711cc77697dfd2042c0b41c67e10133f7"
       },
-      "fingerprint": "72d0d918cab98847f41dc2a524e4196fcf69cec8cbcdb376c0245c7d6cf50b29",
+      "fingerprint": "93720477a4d618826089b6c86b55513711cc77697dfd2042c0b41c67e10133f7",
       "implementation_mutation_status_counts": {
         "killed": 155,
         "not_run": 5
@@ -24087,7 +24089,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 332,
         "exact_nodes": 535,
-        "fingerprint": "8d227746d60896a30360d82e28ec3a260caac328fa71c2d12b0064e0a3be2d58",
+        "fingerprint": "193d111798788fc98619f4bcb8c4d64788203bacfacd2598fa49717d3d8bf6c3",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "dd4d9586ad713a5a8faa8bf705ed92a0ec9cfd8bc218315e28dc8d55fbaa415b",
         "present": true,
@@ -24099,7 +24101,7 @@
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
         "exact_cards_with_template": 345,
         "exact_nodes": 555,
-        "fingerprint": "e76e17fb3774dc5f2cb6876e2697a05174a7b933483404b9803aea09d212535c",
+        "fingerprint": "d4c01974023ac404192dd4ff5ce335efeff92b453d30b2715643df81ec2d031e",
         "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
         "identity_fingerprint": "d9cb9f014328fcef11de5e5faa8935a758cfad2cfbf0800e01fe4a890443f114",
         "present": true,
@@ -24118,7 +24120,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "ae01bc27d1b01692b163983f9f5b4b417a42e5ff5b4ae8124587e17b5aefea52",
+      "fingerprint": "bbb4ddd684878d1a082e359684d4bbfeb08b95cc8fcc4cd04f94c1eb627bc962",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -24977,8 +24979,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2803,
-      "discovered_total": 6103,
+      "conventional_ast_cases": 2806,
+      "discovered_total": 6106,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
         "compiler_named": 130,
