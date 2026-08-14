@@ -31,6 +31,28 @@ def _json(relative: str):
     return json.loads((ROOT / relative).read_text(encoding="utf-8"))
 
 
+def _with_dependency_ready_compiler_harvest(inputs):
+    updated = deepcopy(inputs)
+    updated["card_unlock_frontier"]["family_candidates"] = [
+        {
+            "family_id": "effect_clause:fixture-harvest",
+            "base_family": "effect_clause:fixture-harvest",
+            "expected_exact_card_gain": 50,
+            "estimated_effort": "medium",
+            "prerequisites": [],
+            "runtime_compiler_readiness": "missing_lowering",
+            "affected_cards": 60,
+            "sole_blocker_cards": 50,
+            "one_additional_blocker_cards": 10,
+            "two_additional_blocker_cards": 0,
+            "expected_exact_ability_gain": 60,
+            "expected_material_residual_gain": 60,
+            "interaction_risk": "medium",
+        }
+    ]
+    return updated
+
+
 class RulesSchedulerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -252,14 +274,19 @@ class RulesSchedulerTests(unittest.TestCase):
             )
 
     def test_cross_program_selection_ranks_correctness_before_card_gain(self):
-        work = self.queue["work_selection"]
+        inputs = _with_dependency_ready_compiler_harvest(self.work_inputs)
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=inputs,
+        )
         selected = next(
             candidate
             for candidate in work["candidates"]
             if candidate["candidate_id"] == work["selected_candidate_id"]
         )
         runtime_total = int(
-            self.work_inputs["architecture_audit"]["architecture"]
+            inputs["architecture_audit"]["architecture"]
             ["runtime_oracle_text_access"]
             ["prohibited_runtime_interpretation_count"]
         )
@@ -365,7 +392,7 @@ class RulesSchedulerTests(unittest.TestCase):
         )
 
     def test_assurance_exit_gate_accepts_baseline_and_resumes_card_harvest(self):
-        inputs = deepcopy(self.work_inputs)
+        inputs = _with_dependency_ready_compiler_harvest(self.work_inputs)
         interaction = inputs["reusable_piece_delta"]["interaction_coverage"]
         baseline = self.catalog["work_selection"]["interaction_assurance"][
             "starting_uncovered_high_risk_pairs"

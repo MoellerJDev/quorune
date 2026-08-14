@@ -32,6 +32,9 @@ from .fixed_target_effect_sequences import (
 from .fixed_source_effect_sequences import (
     fixed_source_effect_sequence_template,
 )
+from .fixed_counter_controller_effect_sequences import (
+    fixed_counter_controller_effect_sequence_template,
+)
 from .proliferate_templates import single_proliferate_effect_template
 from .return_to_hand_templates import (
     targeted_own_graveyard_return_to_hand_effect_template,
@@ -59,6 +62,14 @@ def typed_resolution_effect_template(
 ) -> CompiledEffectTemplate | None:
     """Lower the closed direct-damage and permanent-transition families."""
 
+    fixed_counter_controller_sequence = (
+        fixed_counter_controller_effect_sequence_template(
+            text,
+            card_name=card_name,
+        )
+    )
+    if fixed_counter_controller_sequence is not None:
+        return fixed_counter_controller_sequence.compiled()
     fixed_damage = fixed_damage_effect_template(text, card_name=card_name)
     if fixed_damage is not None:
         return fixed_damage.compiled()

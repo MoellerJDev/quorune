@@ -47053,13 +47053,19 @@
         "tests.test_loyalty_counter_cost_replacements.CounterQuantityReplacementV2Tests.test_generic_compiler_accepts_closed_family_and_rejects_near_misses",
         "tests.test_loyalty_counter_cost_replacements.LoyaltyCounterCostReplacementTests.test_competing_cost_replacements_suspend_before_mutation_and_replay",
         "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
-        "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_four_player_group_replacement_is_seat_scoped_and_replays"
+        "tests.test_fixed_counter_placement_groups.FixedCounterPlacementGroupRuntimeTests.test_four_player_group_replacement_is_seat_scoped_and_replays",
+        "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceCompilerTests.test_spell_trigger_and_activated_contexts_share_fixed_counter_controller_lowering",
+        "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceCompilerTests.test_unsupported_fixed_counter_controller_variants_remain_material_residuals",
+        "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_sphinx_draws_before_counter_replacement_and_replays",
+        "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_stale_source_replacement_resume_rolls_back_choice"
       ],
       "implementation_components": [
         "replacement_effects.replacement_tree_choice",
         "compiler.token_templates.static_additional_token_replacement_handler",
         "compiler.counter_replacement_templates.static_counter_quantity_replacement_handler",
         "compiler.counter_placement_group_templates.fixed_counter_placement_group_effect_template",
+        "compiler.fixed_counter_controller_effect_sequences.fixed_counter_controller_effect_sequence_template",
+        "rules.fixed_controller_effect_shapes.fixed_counter_controller_effect_sequence_node_capabilities",
         "semantic_runtime.token_replacements.resolve_token_creation_replacements",
         "replacement.operations.CreateAdditionalToken",
         "semantic_runtime.counter_replacements.CounterQuantityReplacementV2Handler",
@@ -47080,7 +47086,7 @@
         "counter_placement.prepare_counter_placement_specs"
       ],
       "notes": [
-        "The closed mandatory fixed additional-token wording family compiles to an immutable typed operation on the same token event. Added token types and subtypes participate in replacement rediscovery, each source applies at most once, and the token owner commits one timestamped batch after ordering completes. Prospective Planeswalker and Battle tokens now exhaust those token replacements before resolving one simultaneous intrinsic-counter batch against reserved identity; sequential affected-controller choices suspend without mutation and replay exactly. Represented effect-generated and all-placement fixed quantity wording compiles to a typed v2 counter component over bounded permanent/player predicates. Fixed same-kind and same-amount instructions over two or three printed-order permanent subjects, positive loyalty-symbol costs, and bounded fixed creature-counter casting costs enter that same transaction, suspend before mutation, and replay exactly. Remaining producer and replacement families keep this aggregate rule blocked."
+        "The closed mandatory fixed additional-token wording family compiles to an immutable typed operation on the same token event. Added token types and subtypes participate in replacement rediscovery, each source applies at most once, and the token owner commits one timestamped batch after ordering completes. Prospective Planeswalker and Battle tokens now exhaust those token replacements before resolving one simultaneous intrinsic-counter batch against reserved identity; sequential affected-controller choices suspend without mutation and replay exactly. Represented effect-generated and all-placement fixed quantity wording compiles to a typed v2 counter component over bounded permanent/player predicates. Fixed same-kind and same-amount instructions over two or three printed-order permanent subjects, fixed source or direct-target counter instructions sequenced with one fixed controller result, positive loyalty-symbol costs, and bounded fixed creature-counter casting costs enter that same transaction, suspend before mutation, and replay exactly. Remaining producer and replacement families keep this aggregate rule blocked."
       ],
       "required_scenarios": [
         "positive",

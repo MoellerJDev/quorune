@@ -48,6 +48,7 @@ from .node_capability_shapes import (
     targeted_tap_state_node_capabilities,
 )
 from .fixed_controller_effect_shapes import (
+    fixed_counter_controller_effect_sequence_node_capabilities,
     fixed_controller_effect_sequence_node_capabilities,
     fixed_life_node_capabilities,
 )
@@ -144,6 +145,9 @@ _EXILE_MECHANIC = "exile"
 _FIXED_TARGET_SEQUENCE_MECHANIC = "fixed-target-effect-sequence"
 _FIXED_SOURCE_SEQUENCE_MECHANIC = "fixed-source-effect-sequence"
 _FIXED_CONTROLLER_SEQUENCE_MECHANIC = "fixed-controller-effect-sequence"
+_FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC = (
+    "fixed-counter-controller-effect-sequence"
+)
 MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _CYCLING_MECHANIC: ("activation.cycling.hand",),
     _CREW_MECHANIC: ("activation.crew.fixed_power",),
@@ -230,6 +234,9 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _FIXED_CONTROLLER_SEQUENCE_MECHANIC: (
         "resolution.effect_sequence.fixed_controller",
     ),
+    _FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC: (
+        "resolution.effect_sequence.fixed_counter_controller",
+    ),
 }
 _SHAPE_GATED_MECHANICS = frozenset(
     {
@@ -243,6 +250,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         _FIXED_TARGET_SEQUENCE_MECHANIC,
         _FIXED_SOURCE_SEQUENCE_MECHANIC,
         _FIXED_CONTROLLER_SEQUENCE_MECHANIC,
+        _FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC,
         "adapt",
         "monstrosity",
         "bolster",
@@ -836,6 +844,7 @@ def _targeted_effect_capabilities(
         fixed_draw_node_capabilities,
         fixed_life_node_capabilities,
         fixed_controller_effect_sequence_node_capabilities,
+        fixed_counter_controller_effect_sequence_node_capabilities,
         fixed_scry_node_capabilities,
         single_explore_node_capabilities,
         single_proliferate_node_capabilities,

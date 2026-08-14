@@ -1521,6 +1521,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/fixed_counter_controller_effect_sequences.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/fixed_numbers.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -6330,5 +6345,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "b15803c3b1f5f987c49a5d7b7633639e4f6605a97ccfecc768e5cd1a9ab5c5dc"
+  "fingerprint": "7028d3b3e1d8580042257a236aee72ed536ffb7265ecf05756324dc5d53725d0"
 }

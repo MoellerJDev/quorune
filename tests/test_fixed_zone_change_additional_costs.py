@@ -227,7 +227,7 @@ class FixedZoneChangeAdditionalCostCompilerTests(unittest.TestCase):
         self.assertEqual(
             [
                 ("spell_additional_cost", ("typed spell additional-cost clause",)),
-                ("spell_effect", ("typed spell-result clause",)),
+                ("spell_effect", ()),
             ],
             [(row.kind, row.blockers) for row in ir.material_residuals],
         )
@@ -250,6 +250,28 @@ class FixedZoneChangeAdditionalCostCompilerTests(unittest.TestCase):
                 residual.text,
                 unsupported_result[residual.span.start : residual.span.end],
             )
+
+    def test_supported_cost_keeps_unsupported_result_residual_result_scoped(self):
+        text = (
+            "As an additional cost to cast this spell, discard a card.\n"
+            "Draw cards equal to the discarded card's mana value."
+        )
+
+        ir = self.compile(text)
+
+        self.assertEqual(1, len(ir.material_residuals))
+        residual = ir.material_residuals[0]
+        self.assertEqual("spell_effect", residual.kind)
+        self.assertEqual((), residual.blockers)
+        self.assertEqual(
+            "Draw cards equal to the discarded card's mana value.",
+            residual.text,
+        )
+        self.assertEqual(
+            residual.text,
+            text[residual.span.start : residual.span.end],
+        )
+        self.assertEqual((residual.residual_id,), ir.faces[0].nodes[0].residual_ids)
 
     def test_unsupported_cost_preserves_result_composition_blockers(self):
         text = (

@@ -27,7 +27,7 @@ def _clauses(text: str) -> tuple[str, str] | None:
     return None
 
 
-def _fixed_controller_clause(
+def fixed_controller_effect_clause(
     text: str,
 ) -> tuple[Mapping[str, Any], tuple[str, ...]] | None:
     draw = fixed_draw_effect_template(text)
@@ -90,7 +90,7 @@ def fixed_controller_effect_sequence_template(
     clauses = _clauses(text)
     if clauses is None:
         return None
-    lowered = tuple(_fixed_controller_clause(clause) for clause in clauses)
+    lowered = tuple(fixed_controller_effect_clause(clause) for clause in clauses)
     if any(value is None for value in lowered):
         return None
     compiled = tuple(value for value in lowered if value is not None)
@@ -113,5 +113,6 @@ def fixed_controller_effect_sequence_template(
 __all__ = [
     "FIXED_CONTROLLER_SEQUENCE_MECHANIC",
     "FixedControllerEffectSequenceTemplate",
+    "fixed_controller_effect_clause",
     "fixed_controller_effect_sequence_template",
 ]
