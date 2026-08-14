@@ -9,6 +9,10 @@ import unittest
 from unittest.mock import patch
 
 from common import DB_PATH, keep_all, load_assets, make_session
+from high_risk_interaction_support import (
+    ZONE_AND_CHOICE_PAIRS,
+    assert_high_risk_boundary_pairs,
+)
 from quorune.card_programs.adapters import compile_card_program
 from quorune.carddb import CardDatabase, CardRecord
 from quorune.compiler.entry_state_templates import static_entry_state_handler
@@ -659,6 +663,11 @@ class TypedLandEntryRuntimeTests(unittest.TestCase):
     def test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes(
         self,
     ):
+        assert_high_risk_boundary_pairs(
+            self,
+            ZONE_AND_CHOICE_PAIRS,
+            database=self.db,
+        )
         session = self.session(61401266)
         engine = session.engine
         card = self.add_card(

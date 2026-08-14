@@ -5,6 +5,10 @@ import tempfile
 import unittest
 
 from common import keep_all, load_assets, make_session
+from high_risk_interaction_support import (
+    DECLARATION_AND_REPLACEMENT_PAIRS,
+    assert_high_risk_boundary_pairs,
+)
 from quorune.combat_evasion import (
     CombatantEvasionCharacteristics,
     CombatEvasionRuleError,
@@ -115,6 +119,10 @@ class CombatEvasionRestrictionTests(unittest.TestCase):
         )
 
     def test_all_represented_restrictions_are_cumulative(self):
+        assert_high_risk_boundary_pairs(
+            self,
+            DECLARATION_AND_REPLACEMENT_PAIRS,
+        )
         attacker = _combatant(
             "fear",
             "horsemanship",

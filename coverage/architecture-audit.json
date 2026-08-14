@@ -10191,11 +10191,11 @@
       "applicable_high_risk_pairs": 142,
       "applicable_piece_pairs": 32560,
       "available": true,
-      "covered_high_risk_pairs": 62,
-      "covered_piece_pairs": 516,
+      "covered_high_risk_pairs": 142,
+      "covered_piece_pairs": 596,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "18fd903aadec963ce4bf80b305670affdb0965cb164b8c576759b593248b6373",
-      "uncovered_high_risk_pairs": 80
+      "source_fingerprint": "0009242d3970c31fa81ac80bdcd6ba20ca2d558264d7a8274ff51a7aa2f284ba",
+      "uncovered_high_risk_pairs": 0
     },
     "migration_queue": [],
     "missing_dedicated_owners": [],
@@ -10583,7 +10583,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 152452,
+      "logical_lines": 152459,
       "methods": {
         "dunder": 421,
         "private": 757,
@@ -11001,8 +11001,8 @@
           "file": "quorune/work_selection.py",
           "functions_and_methods": 16,
           "language": "python",
-          "logical_lines": 726,
-          "physical_lines": 766
+          "logical_lines": 733,
+          "physical_lines": 773
         },
         {
           "file": "quorune/destruction.py",
@@ -14168,7 +14168,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 167180,
+      "physical_lines": 167187,
       "python_file_count": 446,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -24547,7 +24547,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "b013694eef864c7c12711de08059be697657cca0aa6206e2f6f010ecb39f8953",
+      "fingerprint": "11b57defe8fe3be8bf1702e8584b10f582032376d45f72be87e8d827665072ee",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {

@@ -348,7 +348,7 @@
       "architecture_debt"
     ],
     "interaction_assurance": {
-      "starting_uncovered_high_risk_pairs": 80
+      "starting_uncovered_high_risk_pairs": 0
     },
     "coverage_family": {
       "minimum_complete_card_gain": 50,
