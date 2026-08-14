@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 
 
 ASSURANCE_SCHEMA_VERSION = 1
-ASSURANCE_ALGORITHM_VERSION = "fixed-target-corpus-assurance-v1"
+ASSURANCE_ALGORITHM_VERSION = "fixed-target-corpus-assurance-v2"
 STANDALONE_TEMPLATE_ID = (
     "fixed-target-characteristics-until-end-of-turn-v1"
 )
@@ -44,6 +44,13 @@ SEQUENCE_TEMPLATE_ID = (
 )
 TARGET_TEMPLATE_IDS = frozenset(
     {STANDALONE_TEMPLATE_ID, SEQUENCE_TEMPLATE_ID}
+)
+COMPOSING_TEMPLATE_IDS = frozenset(
+    {
+        "fixed-counter-step-trigger-v1",
+        "fixed-counter-controlled-land-entry-trigger-v1",
+        "fixed-counter-controller-spell-cast-trigger-v1",
+    }
 )
 SUPPORTED_CONTEXTS = (
     "activated_ability",
@@ -588,10 +595,14 @@ def _target_source_exclusion(
         ) from exc
 
 
-def _required_capabilities(node: OracleNode) -> tuple[str, ...]:
+def _required_capabilities(
+    node: OracleNode,
+    *,
+    target_template_id: str,
+) -> tuple[str, ...]:
     resolver = (
         fixed_target_characteristics_node_capabilities
-        if node.template_id == STANDALONE_TEMPLATE_ID
+        if target_template_id == STANDALONE_TEMPLATE_ID
         else fixed_target_effect_sequence_node_capabilities
     )
     return resolver(
@@ -612,7 +623,10 @@ def _observation(
     body: str,
 ) -> TargetEffectObservation:
     compiled = _compiled_template(body, card_name=face_name or record.name)
-    if compiled is None or compiled[0] != node.template_id:
+    if compiled is None or (
+        compiled[0] != node.template_id
+        and node.template_id not in COMPOSING_TEMPLATE_IDS
+    ):
         raise TargetEffectAssuranceError(
             "promoted target-effect node is outside the exact source grammar: "
             f"{record.oracle_id}:{face_id}:{node.node_id}"
@@ -630,7 +644,10 @@ def _observation(
             "promoted target-effect node lost grammar mechanics: "
             f"{record.oracle_id}:{face_id}:{node.node_id}"
         )
-    required = _required_capabilities(node)
+    required = _required_capabilities(
+        node,
+        target_template_id=template_id,
+    )
     if not required:
         raise TargetEffectAssuranceError(
             "promoted target-effect node is outside the closed capability shape: "
@@ -710,12 +727,19 @@ class TargetEffectCorpusCollector:
                 expected_template = compiled[0] if compiled is not None else None
                 if expected_template in TARGET_TEMPLATE_IDS and (
                     node.template_id != expected_template
+                    and node.template_id not in COMPOSING_TEMPLATE_IDS
                 ):
                     raise TargetEffectAssuranceError(
                         "accepted target-effect source was routed to a different "
                         f"template: {record.oracle_id}:{face.face_id}:{node.node_id}"
                     )
-                if node.template_id not in TARGET_TEMPLATE_IDS:
+                if (
+                    node.template_id not in TARGET_TEMPLATE_IDS
+                    and not (
+                        expected_template in TARGET_TEMPLATE_IDS
+                        and node.template_id in COMPOSING_TEMPLATE_IDS
+                    )
+                ):
                     continue
                 if body is None:
                     raise TargetEffectAssuranceError(

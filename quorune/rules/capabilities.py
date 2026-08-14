@@ -227,6 +227,12 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     "trigger-event-normalized-zone-change": (
         "trigger.event.normalized_zone_change",
     ),
+    "trigger-event-normalized-spell-cast": (
+        "trigger.event.normalized_spell_cast",
+    ),
+    "fixed-counter-event-trigger": (
+        "counter.producer.fixed_event_trigger",
+    ),
     _FIXED_TARGET_SEQUENCE_MECHANIC: (
         "resolution.effect_sequence.fixed_target",
     ),

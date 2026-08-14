@@ -1410,6 +1410,38 @@
       "capability_ids": ["target.permanent.characteristic_predicate", "zone.draw.library_to_hand"],
       "interaction_order": 2,
       "assertion": "Furnace Skullbomb exposes only a controller-owned artifact or creature target, rejects an opponent-controlled creature without mutation, then places counters on the legal target and performs the independent private draw."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_cast_counter_trigger_uses_normalized_event",
+      "piece_ids": ["capability.counter.producer.fixed_event_trigger", "capability.trigger.event.normalized_spell_cast"],
+      "capability_ids": ["counter.producer.fixed_event_trigger", "trigger.event.normalized_spell_cast"],
+      "interaction_order": 2,
+      "assertion": "A fixed controller-cast counter trigger consumes exactly one committed normalized spell-cast occurrence and resolves its already typed fixed counter body."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_land_entry_counter_trigger_uses_normalized_event",
+      "piece_ids": ["capability.counter.producer.fixed_event_trigger", "capability.trigger.event.normalized_zone_change"],
+      "capability_ids": ["counter.producer.fixed_event_trigger", "trigger.event.normalized_zone_change"],
+      "interaction_order": 2,
+      "assertion": "A fixed controlled-land counter trigger consumes exactly one committed normalized land-entry occurrence and retains the entered object's immutable event facts."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_scheduled_counter_trigger_suspends_for_quantity_replacement",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_event_trigger"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_event_trigger"],
+      "interaction_order": 2,
+      "assertion": "A fixed scheduled counter trigger suspends its two-counter body before mutation and resumes only after the affected controller orders competing quantity replacements."
+    },
+    {
+      "evidence_class": "interaction",
+      "test_id": "test_multiple_scheduled_counter_triggers_use_one_apnap_batch",
+      "piece_ids": ["capability.counter.producer.fixed_event_trigger", "capability.trigger.placement.apnap"],
+      "capability_ids": ["counter.producer.fixed_event_trigger", "trigger.placement.apnap"],
+      "interaction_order": 2,
+      "assertion": "Two simultaneous fixed counter triggers controlled by different players enter one ordinary four-player APNAP placement batch."
     }
   ]
 }

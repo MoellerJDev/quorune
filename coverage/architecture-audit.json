@@ -1676,228 +1676,228 @@
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:b340b714bbf3ab8dc306",
-          "line": 521,
+          "line": 528,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 521,
+          "source_line": 528,
           "symbol": "_resolution_body"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:64cada27a521626825ce",
-          "line": 614,
+          "line": 625,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 614,
+          "source_line": 625,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:b5fd615601c37b527b6c",
-          "line": 618,
+          "line": 632,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 618,
+          "source_line": 632,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:eba37eae8fc5560bdbee",
-          "line": 626,
+          "line": 640,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 626,
+          "source_line": 640,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:8f6734e9042498e8a14a",
-          "line": 631,
+          "line": 645,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 631,
+          "source_line": 645,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:efe1d4732531a27f5dc7",
-          "line": 637,
+          "line": 654,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 637,
+          "source_line": 654,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:dca93914b8ef7f5e28ab",
-          "line": 643,
+          "line": 660,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 643,
+          "source_line": 660,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:16b8cd58fdf4f675c982",
-          "line": 650,
+          "line": 667,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 650,
+          "source_line": 667,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:2b3612d7e0dca28cd19a",
-          "line": 661,
+          "line": 678,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 661,
+          "source_line": 678,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:61c053a5475b083cc3b6",
-          "line": 672,
+          "line": 689,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 672,
+          "source_line": 689,
           "symbol": "_observation"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:847483bea1e989e08189",
-          "line": 716,
+          "line": 734,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "face_id",
           "source_kind": "attribute",
-          "source_line": 716,
+          "source_line": 734,
           "symbol": "TargetEffectCorpusCollector.observe"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:a06c96bd1f85d7e16c58",
-          "line": 716,
+          "line": 734,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 716,
+          "source_line": 734,
           "symbol": "TargetEffectCorpusCollector.observe"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:56ef3c222e10999bddcb",
-          "line": 723,
+          "line": 747,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "face_id",
           "source_kind": "attribute",
-          "source_line": 723,
+          "source_line": 747,
           "symbol": "TargetEffectCorpusCollector.observe"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:98e9a53f6b714b1bb8e7",
-          "line": 723,
+          "line": 747,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 723,
+          "source_line": 747,
           "symbol": "TargetEffectCorpusCollector.observe"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:a4f414a3390298ecae79",
-          "line": 731,
+          "line": 755,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "face_id",
           "source_kind": "attribute",
-          "source_line": 731,
+          "source_line": 755,
           "symbol": "TargetEffectCorpusCollector.observe"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:ac611bb37278208c3f55",
-          "line": 774,
+          "line": 798,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 774,
+          "source_line": 798,
           "symbol": "TargetEffectCorpusCollector.report"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:d75c8f7b729aea5236bd",
-          "line": 775,
+          "line": 799,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "face_id",
           "source_kind": "attribute",
-          "source_line": 775,
+          "source_line": 799,
           "symbol": "TargetEffectCorpusCollector.report"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:96828fa1d9d30a83a715",
-          "line": 825,
+          "line": 849,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 825,
+          "source_line": 849,
           "symbol": "TargetEffectCorpusCollector.report"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "flow_id": "card-identity-flow:a41cc2956e49e7621df7",
-          "line": 828,
+          "line": 852,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 828,
+          "source_line": 852,
           "symbol": "TargetEffectCorpusCollector.report"
         },
         {
@@ -2828,132 +2828,132 @@
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:38a099498ebb84bc100c",
-          "line": 899,
+          "line": 902,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 899,
+          "source_line": 902,
           "symbol": "_typed_additional_cost_face"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:33ab03f7a87df4ae588e",
-          "line": 974,
+          "line": 1011,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 974,
+          "source_line": 1011,
           "symbol": "_compile_face"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:f4e6485e01070c020a41",
-          "line": 987,
+          "line": 1024,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 987,
+          "source_line": 1024,
           "symbol": "_compile_face"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:09039002041bd9c3eb9b",
-          "line": 1015,
+          "line": 1052,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 1015,
+          "source_line": 1052,
           "symbol": "_compile_face"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:965f313de8afd427688a",
-          "line": 1029,
+          "line": 1066,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 1029,
+          "source_line": 1066,
           "symbol": "_compile_face"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:a7bc33544925ad781532",
-          "line": 1073,
+          "line": 1110,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 1073,
+          "source_line": 1110,
           "symbol": "_compile_face"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:7346d1eaaf26f3265879",
-          "line": 1200,
+          "line": 1237,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 1200,
+          "source_line": 1237,
           "symbol": "compile_oracle_card"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:e940d1657f2c50e0c254",
-          "line": 1210,
+          "line": 1247,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 1210,
+          "source_line": 1247,
           "symbol": "compile_oracle_card"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:e74f7a56bee107887778",
-          "line": 1234,
+          "line": 1271,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 1234,
+          "source_line": 1271,
           "symbol": "compile_oracle_card"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:ba1d8e759a9413cf0cca",
-          "line": 1241,
+          "line": 1278,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 1241,
+          "source_line": 1278,
           "symbol": "compile_oracle_card"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/oracle_ir.py",
           "flow_id": "card-identity-flow:21373b31e949e2b8ac74",
-          "line": 1242,
+          "line": 1279,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "name",
           "source_kind": "attribute",
-          "source_line": 1242,
+          "source_line": 1279,
           "symbol": "compile_oracle_card"
         },
         {
@@ -7821,7 +7821,7 @@
           "module": "quorune.semantic_runtime.context"
         },
         {
-          "fan_in": 51,
+          "fan_in": 52,
           "fan_out": 9,
           "module": "quorune.rules.capabilities"
         },
@@ -7889,7 +7889,7 @@
         },
         {
           "fan_in": 11,
-          "fan_out": 36,
+          "fan_out": 37,
           "module": "quorune.oracle_ir"
         },
         {
@@ -7953,7 +7953,7 @@
           "module": "quorune.compiler.runtime_templates"
         }
       ],
-      "internal_edges": 1803,
+      "internal_edges": 1807,
       "modules": [
         {
           "fan_in": 2,
@@ -8436,7 +8436,7 @@
           "module": "quorune.compiler.declaration_nodes"
         },
         {
-          "fan_in": 14,
+          "fan_in": 15,
           "fan_out": 4,
           "module": "quorune.compiler.dependency_gate"
         },
@@ -8487,6 +8487,11 @@
         },
         {
           "fan_in": 1,
+          "fan_out": 3,
+          "module": "quorune.compiler.fixed_counter_trigger_nodes"
+        },
+        {
+          "fan_in": 1,
           "fan_out": 4,
           "module": "quorune.compiler.fixed_keyword_entry_nodes"
         },
@@ -8511,7 +8516,7 @@
           "module": "quorune.compiler.intrinsic_counter_nodes"
         },
         {
-          "fan_in": 17,
+          "fan_in": 18,
           "fan_out": 0,
           "module": "quorune.compiler.ir_model"
         },
@@ -9087,7 +9092,7 @@
         },
         {
           "fan_in": 11,
-          "fan_out": 36,
+          "fan_out": 37,
           "module": "quorune.oracle_ir"
         },
         {
@@ -9356,7 +9361,7 @@
           "module": "quorune.rules.amass_capability_shapes"
         },
         {
-          "fan_in": 51,
+          "fan_in": 52,
           "fan_out": 9,
           "module": "quorune.rules.capabilities"
         },
@@ -10183,14 +10188,14 @@
       ]
     },
     "interaction_assurance_baseline": {
-      "applicable_high_risk_pairs": 139,
-      "applicable_piece_pairs": 31809,
+      "applicable_high_risk_pairs": 142,
+      "applicable_piece_pairs": 32560,
       "available": true,
       "covered_high_risk_pairs": 59,
-      "covered_piece_pairs": 509,
+      "covered_piece_pairs": 513,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "3dcdabcb5a7d9d7d88eda83377cf149b6822e3328343cf1382498387f2025af9",
-      "uncovered_high_risk_pairs": 80
+      "source_fingerprint": "9d7e3df964bfde2ac9eb08e6137ab60729006a48646b5d5deccff579c00bf5b8",
+      "uncovered_high_risk_pairs": 83
     },
     "migration_queue": [],
     "missing_dedicated_owners": [],
@@ -10245,7 +10250,7 @@
       ]
     },
     "production": {
-      "file_count": 461,
+      "file_count": 462,
       "largest_functions_and_methods": [
         {
           "end_line": 1619,
@@ -10336,10 +10341,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 1174,
+          "end_line": 1211,
           "file": "quorune/oracle_ir.py",
           "kind": "function",
-          "line": 917,
+          "line": 954,
           "logical_lines": 250,
           "name": "_compile_face",
           "physical_lines": 258,
@@ -10424,10 +10429,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 430,
+          "end_line": 433,
           "file": "quorune/oracle_ir.py",
           "kind": "function",
-          "line": 230,
+          "line": 233,
           "logical_lines": 200,
           "name": "_effect_template",
           "physical_lines": 201,
@@ -10578,12 +10583,12 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 152121,
+      "logical_lines": 152452,
       "methods": {
-        "dunder": 420,
+        "dunder": 421,
         "private": 757,
-        "public": 1640,
-        "total": 2817
+        "public": 1643,
+        "total": 2821
       },
       "modules": [
         {
@@ -10671,6 +10676,13 @@
           "physical_lines": 1398
         },
         {
+          "file": "quorune/oracle_ir.py",
+          "functions_and_methods": 16,
+          "language": "python",
+          "logical_lines": 1294,
+          "physical_lines": 1347
+        },
+        {
           "file": "quorune/semantic_choices/intent_host.py",
           "functions_and_methods": 47,
           "language": "python",
@@ -10683,13 +10695,6 @@
           "language": "python",
           "logical_lines": 1268,
           "physical_lines": 1382
-        },
-        {
-          "file": "quorune/oracle_ir.py",
-          "functions_and_methods": 15,
-          "language": "python",
-          "logical_lines": 1259,
-          "physical_lines": 1310
         },
         {
           "file": "quorune/compiler/program_generation.py",
@@ -10744,8 +10749,8 @@
           "file": "quorune/rules/capabilities.py",
           "functions_and_methods": 28,
           "language": "python",
-          "logical_lines": 1076,
-          "physical_lines": 1145
+          "logical_lines": 1082,
+          "physical_lines": 1151
         },
         {
           "file": "quorune/compiler/unlock_frontier.py",
@@ -10832,6 +10837,13 @@
           "physical_lines": 942
         },
         {
+          "file": "quorune/compiler/target_effect_corpus_assurance.py",
+          "functions_and_methods": 22,
+          "language": "python",
+          "logical_lines": 891,
+          "physical_lines": 955
+        },
+        {
           "file": "quorune/rules/casting/commit.py",
           "functions_and_methods": 32,
           "language": "python",
@@ -10844,13 +10856,6 @@
           "language": "python",
           "logical_lines": 869,
           "physical_lines": 993
-        },
-        {
-          "file": "quorune/compiler/target_effect_corpus_assurance.py",
-          "functions_and_methods": 22,
-          "language": "python",
-          "logical_lines": 867,
-          "physical_lines": 931
         },
         {
           "file": "quorune/token_creation.py",
@@ -11789,6 +11794,13 @@
           "language": "python",
           "logical_lines": 274,
           "physical_lines": 329
+        },
+        {
+          "file": "quorune/compiler/fixed_counter_trigger_nodes.py",
+          "functions_and_methods": 7,
+          "language": "python",
+          "logical_lines": 266,
+          "physical_lines": 291
         },
         {
           "file": "quorune/counter_keyword_abilities.py",
@@ -13905,10 +13917,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 1174,
+          "end_line": 1211,
           "file": "quorune/oracle_ir.py",
           "kind": "function",
-          "line": 917,
+          "line": 954,
           "logical_lines": 250,
           "name": "_compile_face",
           "physical_lines": 258,
@@ -13993,10 +14005,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 430,
+          "end_line": 433,
           "file": "quorune/oracle_ir.py",
           "kind": "function",
-          "line": 230,
+          "line": 233,
           "logical_lines": 200,
           "name": "_effect_template",
           "physical_lines": 201,
@@ -14156,8 +14168,8 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 166822,
-      "python_file_count": 445,
+      "physical_lines": 167180,
+      "python_file_count": 446,
       "review_thresholds": {
         "function_logical_lines_review": 150,
         "module_logical_lines_review": 1500
@@ -14174,7 +14186,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 2121,
+      "top_level_functions": 2125,
       "web_file_count": 16
     },
     "runtime_oracle_text_access": {
@@ -14643,7 +14655,7 @@
           ],
           "file": "quorune/compiler/target_effect_corpus_assurance.py",
           "lines": [
-            320
+            327
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -14699,9 +14711,9 @@
           ],
           "file": "quorune/oracle_ir.py",
           "lines": [
-            945,
-            948,
-            1171
+            982,
+            985,
+            1208
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -14715,7 +14727,7 @@
           ],
           "file": "quorune/oracle_ir.py",
           "lines": [
-            180
+            183
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -14729,7 +14741,7 @@
           ],
           "file": "quorune/oracle_ir.py",
           "lines": [
-            911
+            914
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -14743,8 +14755,8 @@
           ],
           "file": "quorune/oracle_ir.py",
           "lines": [
-            1212,
-            1231
+            1249,
+            1268
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -14758,7 +14770,7 @@
           ],
           "file": "quorune/oracle_ir.py",
           "lines": [
-            1222
+            1259
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -14772,7 +14784,7 @@
           ],
           "file": "quorune/oracle_ir.py",
           "lines": [
-            1202
+            1239
           ],
           "member": "oracle_text",
           "rationale": "Bounded compilation, validation, or corpus input.",
@@ -17339,7 +17351,7 @@
       "card_specific_operation_branch_occurrences": {
         "remora_tax": 1
       },
-      "count": 269,
+      "count": 270,
       "limitations": "AST heuristic covers if/match conditions whose source names op or operation.",
       "locations": [
         {
@@ -17785,6 +17797,13 @@
             "op"
           ],
           "symbol": "fixed_controller_effect_sequence_template"
+        },
+        {
+          "condition": "isinstance(operation, str) and operation",
+          "file": "quorune/compiler/fixed_counter_trigger_nodes.py",
+          "line": 183,
+          "string_literals": [],
+          "symbol": "_nested_operations"
         },
         {
           "condition": "self.operation not in FIXED_ZONE_CHANGE_COST_CONTRACTS",
@@ -18686,7 +18705,7 @@
         {
           "condition": "isinstance(operation, str) and operation",
           "file": "quorune/rules/capabilities.py",
-          "line": 895,
+          "line": 901,
           "string_literals": [],
           "symbol": "nested_operations"
         },
@@ -20360,7 +20379,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 178,
+        "primary_test_count": 179,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_activating_abilities_rules",
@@ -20437,6 +20456,7 @@
           "test_fixed_controller_effect_sequences",
           "test_fixed_counter_additional_costs",
           "test_fixed_counter_controller_effect_sequences",
+          "test_fixed_counter_event_triggers",
           "test_fixed_counter_keyword_activations",
           "test_fixed_counter_placement_effects",
           "test_fixed_counter_placement_groups",
@@ -20460,8 +20480,7 @@
           "test_graveyard_rules",
           "test_hexproof_targeting",
           "test_indestructible_rules",
-          "test_intrinsic_basic_land_mana",
-          "test_intrinsic_entry_counters"
+          "test_intrinsic_basic_land_mana"
         ],
         "privacy_sensitivity": "not explicitly declared",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -20519,6 +20538,7 @@
           "casting.payment.convoke",
           "casting.zone.self_graveyard.controlled_subtype",
           "continuous.ability.fixed_query_grant",
+          "counter.producer.fixed_event_trigger",
           "counter.producer.sunburst",
           "land.play.from_own_graveyard",
           "mana.activated.color_set",
@@ -20528,7 +20548,7 @@
           "timing.cast.printed_flash",
           "trigger.event.normalized_spell_cast"
         ],
-        "capability_count": 28,
+        "capability_count": 29,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -20615,7 +20635,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Casting activation and costs.",
-        "reusable_piece_count": 30,
+        "reusable_piece_count": 31,
         "reusable_pieces": [
           "capability.activation.counter_keyword.fixed",
           "capability.activation.crew.fixed_power",
@@ -20637,6 +20657,7 @@
           "capability.casting.payment.convoke",
           "capability.casting.zone.self_graveyard.controlled_subtype",
           "capability.continuous.ability.fixed_query_grant",
+          "capability.counter.producer.fixed_event_trigger",
           "capability.counter.producer.sunburst",
           "capability.land.play.from_own_graveyard",
           "capability.mana.activated.color_set",
@@ -20989,6 +21010,7 @@
           "counter.producer.evolve",
           "counter.producer.fixed_attached_effect",
           "counter.producer.fixed_effect",
+          "counter.producer.fixed_event_trigger",
           "counter.producer.fixed_keyword_entry",
           "counter.producer.fixed_multikind_effect",
           "counter.producer.fixed_permanent_group_effect",
@@ -21017,7 +21039,7 @@
           "resolution.effect_sequence.fixed_target",
           "state_based.saga_final_chapter"
         ],
-        "capability_count": 38,
+        "capability_count": 39,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -21084,7 +21106,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Counter placement.",
-        "reusable_piece_count": 38,
+        "reusable_piece_count": 39,
         "reusable_pieces": [
           "capability.activation.counter_keyword.fixed",
           "capability.activation.loyalty.positive_counter_cost",
@@ -21097,6 +21119,7 @@
           "capability.counter.producer.evolve",
           "capability.counter.producer.fixed_attached_effect",
           "capability.counter.producer.fixed_effect",
+          "capability.counter.producer.fixed_event_trigger",
           "capability.counter.producer.fixed_keyword_entry",
           "capability.counter.producer.fixed_multikind_effect",
           "capability.counter.producer.fixed_permanent_group_effect",
@@ -21156,6 +21179,7 @@
           "counter.producer.evolve",
           "counter.producer.fixed_attached_effect",
           "counter.producer.fixed_effect",
+          "counter.producer.fixed_event_trigger",
           "counter.producer.fixed_multikind_effect",
           "counter.producer.fixed_permanent_group_effect",
           "counter.producer.fixed_permanent_set_effect",
@@ -21201,7 +21225,7 @@
           "resolution.effect_sequence.fixed_target",
           "zone.entry.tapped_state"
         ],
-        "capability_count": 54,
+        "capability_count": 55,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -21267,7 +21291,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Damage results life and counters.",
-        "reusable_piece_count": 57,
+        "reusable_piece_count": 58,
         "reusable_pieces": [
           "capability.activation.counter_keyword.fixed",
           "capability.activation.loyalty.positive_counter_cost",
@@ -21279,6 +21303,7 @@
           "capability.counter.producer.evolve",
           "capability.counter.producer.fixed_attached_effect",
           "capability.counter.producer.fixed_effect",
+          "capability.counter.producer.fixed_event_trigger",
           "capability.counter.producer.fixed_multikind_effect",
           "capability.counter.producer.fixed_permanent_group_effect",
           "capability.counter.producer.fixed_permanent_set_effect",
@@ -21375,6 +21400,7 @@
           "counter.producer.fabricate",
           "counter.producer.fixed_attached_effect",
           "counter.producer.fixed_effect",
+          "counter.producer.fixed_event_trigger",
           "counter.producer.fixed_keyword_entry",
           "counter.producer.fixed_multikind_effect",
           "counter.producer.fixed_permanent_group_effect",
@@ -21436,7 +21462,7 @@
           "zone.draw.specifically_drawn_card_actions",
           "zone.entry.tapped_state"
         ],
-        "capability_count": 86,
+        "capability_count": 87,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -21489,6 +21515,7 @@
           "quorune/compiler/explore_templates.py",
           "quorune/compiler/fixed_controller_effect_sequences.py",
           "quorune/compiler/fixed_counter_controller_effect_sequences.py",
+          "quorune/compiler/fixed_counter_trigger_nodes.py",
           "quorune/compiler/fixed_keyword_entry_nodes.py",
           "quorune/compiler/fixed_numbers.py",
           "quorune/compiler/fixed_source_effect_sequences.py",
@@ -21524,10 +21551,10 @@
         "oversized_symbol_count": 3,
         "oversized_symbols": [
           {
-            "end_line": 1174,
+            "end_line": 1211,
             "file": "quorune/oracle_ir.py",
             "kind": "function",
-            "line": 917,
+            "line": 954,
             "logical_lines": 250,
             "name": "_compile_face",
             "physical_lines": 258,
@@ -21535,10 +21562,10 @@
             "visibility": "private"
           },
           {
-            "end_line": 430,
+            "end_line": 433,
             "file": "quorune/oracle_ir.py",
             "kind": "function",
-            "line": 230,
+            "line": 233,
             "logical_lines": 200,
             "name": "_effect_template",
             "physical_lines": 201,
@@ -21557,7 +21584,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 104,
+        "primary_test_count": 105,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_activation_restrictions",
@@ -21595,6 +21622,7 @@
           "test_fixed_controller_effect_sequences",
           "test_fixed_counter_additional_costs",
           "test_fixed_counter_controller_effect_sequences",
+          "test_fixed_counter_event_triggers",
           "test_fixed_counter_keyword_activations",
           "test_fixed_counter_placement_effects",
           "test_fixed_counter_placement_groups",
@@ -21657,8 +21685,7 @@
           "test_trigger_processing_owner",
           "test_typed_ability_fragments",
           "test_typed_activated_ability_catalog",
-          "test_typed_dynamic_characteristics",
-          "test_typed_land_entry_participation"
+          "test_typed_dynamic_characteristics"
         ],
         "privacy_sensitivity": "not explicitly declared",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -21666,7 +21693,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Oracle compiler.",
-        "reusable_piece_count": 88,
+        "reusable_piece_count": 89,
         "reusable_pieces": [
           "capability.activation.counter_keyword.fixed",
           "capability.activation.crew.fixed_power",
@@ -21694,6 +21721,7 @@
           "capability.counter.producer.fabricate",
           "capability.counter.producer.fixed_attached_effect",
           "capability.counter.producer.fixed_effect",
+          "capability.counter.producer.fixed_event_trigger",
           "capability.counter.producer.fixed_keyword_entry",
           "capability.counter.producer.fixed_multikind_effect",
           "capability.counter.producer.fixed_permanent_group_effect",
@@ -21760,7 +21788,7 @@
         "runtime_oracle_text_accesses": 11,
         "state_authority": {
           "classified_module_access": {
-            "none": 68
+            "none": 69
           },
           "direct_write_count": 0,
           "engine_direct_write_count": 0
@@ -21799,7 +21827,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 64,
+        "primary_test_count": 65,
         "primary_tests": [
           "test_amass_rules",
           "test_attached_counter_placement",
@@ -21823,6 +21851,7 @@
           "test_fabricate_compiler",
           "test_fixed_counter_additional_costs",
           "test_fixed_counter_controller_effect_sequences",
+          "test_fixed_counter_event_triggers",
           "test_fixed_counter_keyword_activations",
           "test_fixed_counter_placement_effects",
           "test_fixed_counter_placement_groups",
@@ -21929,7 +21958,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 154,
+        "primary_test_count": 155,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_activating_abilities_rules",
@@ -21995,6 +22024,7 @@
           "test_fixed_controller_effect_sequences",
           "test_fixed_counter_additional_costs",
           "test_fixed_counter_controller_effect_sequences",
+          "test_fixed_counter_event_triggers",
           "test_fixed_counter_keyword_activations",
           "test_fixed_counter_placement_effects",
           "test_fixed_counter_placement_groups",
@@ -22029,8 +22059,7 @@
           "test_maximum_counter_state_action",
           "test_mentor_rules",
           "test_modular_rules",
-          "test_monarch_rules",
-          "test_native_v3_slice"
+          "test_monarch_rules"
         ],
         "privacy_sensitivity": "not explicitly declared",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -22501,6 +22530,7 @@
           "counter.producer.fabricate",
           "counter.producer.fixed_attached_effect",
           "counter.producer.fixed_effect",
+          "counter.producer.fixed_event_trigger",
           "counter.producer.fixed_keyword_entry",
           "counter.producer.fixed_multikind_effect",
           "counter.producer.fixed_permanent_group_effect",
@@ -22561,10 +22591,9 @@
           "trigger.keyword.ward.fixed_generic",
           "untap.step.static_participation",
           "variant.monarch.designate",
-          "zone.change.destination_replacement",
-          "zone.draw.library_to_hand"
+          "zone.change.destination_replacement"
         ],
-        "capability_count": 104,
+        "capability_count": 105,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -22731,7 +22760,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Semantic effect execution.",
-        "reusable_piece_count": 105,
+        "reusable_piece_count": 106,
         "reusable_pieces": [
           "capability.activation.counter_keyword.fixed",
           "capability.activation.crew.fixed_power",
@@ -22771,6 +22800,7 @@
           "capability.counter.producer.fabricate",
           "capability.counter.producer.fixed_attached_effect",
           "capability.counter.producer.fixed_effect",
+          "capability.counter.producer.fixed_event_trigger",
           "capability.counter.producer.fixed_keyword_entry",
           "capability.counter.producer.fixed_multikind_effect",
           "capability.counter.producer.fixed_permanent_group_effect",
@@ -22831,8 +22861,7 @@
           "capability.trigger.keyword.ward.fixed_generic",
           "capability.untap.step.static_participation",
           "capability.variant.monarch.designate",
-          "capability.zone.change.destination_replacement",
-          "capability.zone.draw.library_to_hand"
+          "capability.zone.change.destination_replacement"
         ],
         "runtime_oracle_text_accesses": 0,
         "state_authority": {
@@ -23007,6 +23036,7 @@
           "attachment.reference.current_or_lki",
           "counter.producer.dethrone",
           "counter.producer.evolve",
+          "counter.producer.fixed_event_trigger",
           "counter.producer.modular",
           "counter.producer.persist",
           "counter.producer.renown",
@@ -23025,7 +23055,7 @@
           "trigger.multiplier.artifact_or_creature_enters",
           "trigger.placement.apnap"
         ],
-        "capability_count": 20,
+        "capability_count": 21,
         "compiler_cardprogram_representations": [
           "semantic trigger nodes and runtime trigger components"
         ],
@@ -23076,13 +23106,14 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 12,
+        "primary_test_count": 13,
         "primary_tests": [
           "test_attack_counter_triggers",
           "test_capability_implementation_mutations",
           "test_delayed_triggers",
           "test_echo_rules",
           "test_exact_mishra_closure",
+          "test_fixed_counter_event_triggers",
           "test_prevention_trigger_stack",
           "test_saga_counter_progression",
           "test_trigger_batches",
@@ -23099,11 +23130,12 @@
         "removal_condition": "No missing-owner condition remains. Future trigger work must migrate specialized producers through the normalized occurrence port without restoring runtime Oracle-text interpretation or moving decision authority out of the server-issued capability path.",
         "replay_behavior": "Controller-at-trigger-time, LKI, occurrence identity, ordering, and pending batches are authoritative replay state.",
         "responsibility": "Own normalized event subscription, immutable trigger occurrences, simultaneous collection, APNAP placement, target/mode selection, stack commitment, and pending batches.",
-        "reusable_piece_count": 20,
+        "reusable_piece_count": 21,
         "reusable_pieces": [
           "capability.attachment.reference.current_or_lki",
           "capability.counter.producer.dethrone",
           "capability.counter.producer.evolve",
+          "capability.counter.producer.fixed_event_trigger",
           "capability.counter.producer.modular",
           "capability.counter.producer.persist",
           "capability.counter.producer.renown",
@@ -23280,6 +23312,7 @@
         ],
         "architecture_exceptions": [],
         "capabilities": [
+          "counter.producer.fixed_event_trigger",
           "counter.producer.sunburst",
           "permanent.designation.monstrous",
           "permanent.designation.renowned",
@@ -23288,7 +23321,7 @@
           "trigger.event.normalized_zone_change",
           "zone.entry.tapped_state"
         ],
-        "capability_count": 7,
+        "capability_count": 8,
         "compiler_cardprogram_representations": [
           "typed zone-transition semantic intents"
         ],
@@ -23349,7 +23382,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 132,
+        "primary_test_count": 133,
         "primary_tests": [
           "test_aerial_blocking",
           "test_amass_rules",
@@ -23410,6 +23443,7 @@
           "test_fixed_controller_effect_sequences",
           "test_fixed_counter_additional_costs",
           "test_fixed_counter_controller_effect_sequences",
+          "test_fixed_counter_event_triggers",
           "test_fixed_counter_keyword_activations",
           "test_fixed_counter_placement_effects",
           "test_fixed_counter_placement_groups",
@@ -23449,8 +23483,7 @@
           "test_prevention_immediate_sequencing",
           "test_prevention_trigger_stack",
           "test_proliferate_rules",
-          "test_prowess_rules",
-          "test_record_lifecycle_v060"
+          "test_prowess_rules"
         ],
         "privacy_sensitivity": "Hand and library destinations require owner-scoped projection while public references preserve only legal continuity.",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -23460,8 +23493,9 @@
         "removal_condition": "No missing-owner condition remains. Compatibility facades may be removed only after historical callers use the typed transition port and exact Game Record v3 replay remains unchanged; future move producers must not restore direct engine zone-list mutation.",
         "replay_behavior": "Physical identity and logical incarnation transitions are serialized in Game Record v3 state and event journals.",
         "responsibility": "Own physical identity, logical incarnations, zone membership, destination replacement, LKI, attachment cleanup, and normalized zone events.",
-        "reusable_piece_count": 8,
+        "reusable_piece_count": 9,
         "reusable_pieces": [
+          "capability.counter.producer.fixed_event_trigger",
           "capability.counter.producer.sunburst",
           "capability.permanent.designation.monstrous",
           "capability.permanent.designation.renowned",
@@ -23916,8 +23950,8 @@
     "card_program_v2_present": true,
     "commander_legal_oracle": {
       "current_snapshot_complete": false,
-      "exact_fraction": 0.121684,
-      "material_residuals": 42985,
+      "exact_fraction": 0.122506,
+      "material_residuals": 42869,
       "residual_kinds": {
         "cost": 1756,
         "declaration_cost": 10,
@@ -23930,8 +23964,8 @@
         "replacement_effect": 1290,
         "spell_additional_cost": 137,
         "spell_effect": 8373,
-        "static_ability": 9075,
-        "trigger": 12643,
+        "static_ability": 9055,
+        "trigger": 12547,
         "unsupported_crew_cost": 1,
         "unsupported_cumulative_upkeep_cost": 6,
         "unsupported_cycling_cost": 11,
@@ -23949,23 +23983,23 @@
         "scryfall_rulings_updated_at": "2026-08-06T09:00:37.813+00:00"
       },
       "status_counts": {
-        "exact": 3848,
-        "partial": 12460,
-        "unresolved": 15315
+        "exact": 3874,
+        "partial": 12511,
+        "unresolved": 15238
       },
-      "template_count": 432,
+      "template_count": 435,
       "total_faces": 32431,
       "total_oracle_ids": 31623
     },
     "compiler_module": "quorune/oracle_ir.py",
-    "compiler_module_logical_lines": 1259,
-    "compiler_module_physical_lines": 1310,
-    "compiler_version": "oracle-ir-v86",
+    "compiler_module_logical_lines": 1294,
+    "compiler_module_physical_lines": 1347,
+    "compiler_version": "oracle-ir-v87",
     "current_ir": "OracleCardIR lowered to canonical CardProgram V2 with a derived SemanticProgram compatibility index",
     "full_oracle": {
       "current_snapshot_complete": false,
-      "exact_fraction": 0.178339,
-      "material_residuals": 50363,
+      "exact_fraction": 0.179116,
+      "material_residuals": 50236,
       "residual_kinds": {
         "cost": 1988,
         "declaration_cost": 11,
@@ -23978,8 +24012,8 @@
         "replacement_effect": 1512,
         "spell_additional_cost": 144,
         "spell_effect": 10514,
-        "static_ability": 10542,
-        "trigger": 14917,
+        "static_ability": 10515,
+        "trigger": 14817,
         "unsupported_crew_cost": 1,
         "unsupported_cumulative_upkeep_cost": 6,
         "unsupported_cycling_cost": 11,
@@ -23997,11 +24031,11 @@
         "scryfall_rulings_updated_at": "2026-08-06T09:00:37.813+00:00"
       },
       "status_counts": {
-        "exact": 6888,
-        "partial": 13572,
-        "unresolved": 18163
+        "exact": 6918,
+        "partial": 13628,
+        "unresolved": 18077
       },
-      "template_count": 444,
+      "template_count": 447,
       "total_faces": 41840,
       "total_oracle_ids": 38623
     },
@@ -24193,29 +24227,29 @@
       "dependency_fail_closed_status_counts": {
         "not_applicable": 60,
         "not_run": 3,
-        "passed": 104
+        "passed": 105
       },
       "effective_date": "2026-06-19",
       "evidence": {
         "class_counts": {
-          "interaction": 298,
-          "multiplayer": 161,
-          "mutation": 187,
-          "negative": 314,
-          "positive": 314,
-          "privacy": 133,
+          "interaction": 302,
+          "multiplayer": 162,
+          "mutation": 188,
+          "negative": 316,
+          "positive": 315,
+          "privacy": 134,
           "property": 15,
-          "replay": 198,
-          "rollback": 44
+          "replay": 199,
+          "rollback": 45
         },
-        "declaration_count": 1664,
-        "declaration_source_fingerprint": "3137c540e1346256eeacffcd59bb74f0ca785fd5af8a26875676d50f5d544983",
-        "fingerprint": "b4df29dcc4156f9ede0cdcf570c8e001d8e0f89d09fabbc0baf2bcf550e1bb01",
-        "registry_fingerprint": "5000e4cdc92f6413f7a1ff6e6a47ccb63bc26982e0e3b01e4234409c9f427b0c"
+        "declaration_count": 1676,
+        "declaration_source_fingerprint": "c0fbe3281be909a6fca9fd8253add6b7dc65a14d93ddcea376360d7752f332bb",
+        "fingerprint": "f7d689548251e2937c09a531252c2fa0035486b94fe91199b959813dac260b73",
+        "registry_fingerprint": "b4fca7f952bc01cf0d81bb176ff84a70bd7b93b30a270054635490beddce5e4c"
       },
-      "fingerprint": "5000e4cdc92f6413f7a1ff6e6a47ccb63bc26982e0e3b01e4234409c9f427b0c",
+      "fingerprint": "b4fca7f952bc01cf0d81bb176ff84a70bd7b93b30a270054635490beddce5e4c",
       "implementation_mutation_status_counts": {
-        "killed": 162,
+        "killed": 163,
         "not_run": 5
       },
       "profiles": [
@@ -24223,15 +24257,15 @@
         "commander_duel",
         "commander_review"
       ],
-      "registry_version": 99,
+      "registry_version": 100,
       "schema_version": 1,
       "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
       "status_counts": {
         "blocked": 4,
         "tested": 2,
-        "trusted": 161
+        "trusted": 162
       },
-      "total": 167
+      "total": 168
     },
     "stages": [
       {
@@ -24239,11 +24273,11 @@
         "current_status": "interleaved",
         "evidence": {
           "_source_lines": [
-            "quorune/oracle_ir.py:132"
+            "quorune/oracle_ir.py:135"
           ],
           "_without_parenthetical_reminder": [
-            "quorune/compiler/target_effect_corpus_assurance.py:487",
-            "quorune/oracle_ir.py:149",
+            "quorune/compiler/target_effect_corpus_assurance.py:494",
+            "quorune/oracle_ir.py:152",
             "quorune/preflight.py:105"
           ]
         },
@@ -24258,10 +24292,10 @@
         "current_status": "interleaved",
         "evidence": {
           "_compile_face": [
-            "quorune/oracle_ir.py:917"
+            "quorune/oracle_ir.py:954"
           ],
           "_source_lines": [
-            "quorune/oracle_ir.py:132"
+            "quorune/oracle_ir.py:135"
           ]
         },
         "evidence_symbols": [
@@ -24282,7 +24316,7 @@
         "current_status": "regex_and_helper_parsers_interleaved",
         "evidence": {
           "_effect_template": [
-            "quorune/oracle_ir.py:230"
+            "quorune/oracle_ir.py:233"
           ],
           "parse_activated_abilities": [
             "quorune/abilities.py:1137",
@@ -24314,11 +24348,11 @@
             "quorune/__init__.py:39",
             "quorune/compiler/ir_model.py:151",
             "quorune/compiler/unlock_frontier.py:16",
-            "quorune/oracle_ir.py:64"
+            "quorune/oracle_ir.py:67"
           ],
           "OracleFaceIR": [
             "quorune/compiler/ir_model.py:124",
-            "quorune/oracle_ir.py:64"
+            "quorune/oracle_ir.py:67"
           ],
           "OracleNode": [
             "quorune/compiler/activated_mana_nodes.py:30",
@@ -24329,6 +24363,7 @@
             "quorune/compiler/declaration_nodes.py:24",
             "quorune/compiler/draw_templates.py:9",
             "quorune/compiler/echo_nodes.py:10",
+            "quorune/compiler/fixed_counter_trigger_nodes.py:10",
             "quorune/compiler/fixed_keyword_entry_nodes.py:14",
             "quorune/compiler/intrinsic_counter_nodes.py:6",
             "quorune/compiler/ir_model.py:61",
@@ -24336,7 +24371,7 @@
             "quorune/compiler/spell_additional_cost_nodes.py:9",
             "quorune/compiler/static_runtime_nodes.py:9",
             "quorune/compiler/unlock_frontier.py:16",
-            "quorune/oracle_ir.py:64"
+            "quorune/oracle_ir.py:67"
           ]
         },
         "evidence_symbols": [
@@ -24351,7 +24386,7 @@
         "current_status": "generated_abilities_extracted_and_aggregated_to_card_program_v2",
         "evidence": {
           "_compile_face": [
-            "quorune/oracle_ir.py:917"
+            "quorune/oracle_ir.py:954"
           ],
           "compile_card_program": [
             "quorune/__init__.py:9",
@@ -24361,7 +24396,7 @@
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
             "quorune/compiler/program_generation.py:1054",
-            "quorune/oracle_ir.py:1253"
+            "quorune/oracle_ir.py:1290"
           ]
         },
         "evidence_symbols": [
@@ -24387,6 +24422,7 @@
             "quorune/compiler/dependency_gate.py:10",
             "quorune/compiler/draw_templates.py:6",
             "quorune/compiler/echo_nodes.py:8",
+            "quorune/compiler/fixed_counter_trigger_nodes.py:8",
             "quorune/compiler/fixed_keyword_entry_nodes.py:12",
             "quorune/compiler/intrinsic_counter_nodes.py:3",
             "quorune/compiler/keyword_nodes.py:50",
@@ -24395,10 +24431,10 @@
             "quorune/compiler/spell_additional_cost_nodes.py:20",
             "quorune/compiler/static_runtime_nodes.py:7",
             "quorune/compiler/unlock_frontier.py:13",
-            "quorune/oracle_ir.py:92",
+            "quorune/oracle_ir.py:95",
             "quorune/preflight.py:29",
             "quorune/rules/__init__.py:3",
-            "quorune/rules/capabilities.py:424"
+            "quorune/rules/capabilities.py:430"
           ],
           "explicit_capability_gate": [
             "quorune/compiler/crew_nodes.py:11",
@@ -24415,7 +24451,7 @@
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
             "quorune/compiler/program_generation.py:1054",
-            "quorune/oracle_ir.py:1253"
+            "quorune/oracle_ir.py:1290"
           ]
         },
         "evidence_symbols": [
@@ -24430,7 +24466,7 @@
         "current_status": "implemented_interleaved",
         "evidence": {
           "_residual": [
-            "quorune/oracle_ir.py:64"
+            "quorune/oracle_ir.py:67"
           ],
           "oracle_corpus_coverage": [
             "quorune/__init__.py:39",
@@ -24462,7 +24498,7 @@
           ],
           "register_generated_programs": [
             "quorune/compiler/program_generation.py:1248",
-            "quorune/oracle_ir.py:1276",
+            "quorune/oracle_ir.py:1313",
             "quorune/preflight.py:17",
             "quorune/session.py:14"
           ]
@@ -24478,27 +24514,27 @@
     "target_effect_corpus_assurance": {
       "commander": {
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
-        "exact_cards_with_template": 333,
-        "exact_nodes": 535,
-        "fingerprint": "a0e03b4fd843b515b17ee8236274a71bd3f54b51212245889149e7741b328771",
-        "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
-        "identity_fingerprint": "dd4d9586ad713a5a8faa8bf705ed92a0ec9cfd8bc218315e28dc8d55fbaa415b",
+        "exact_cards_with_template": 334,
+        "exact_nodes": 537,
+        "fingerprint": "c44acadb48c476ca143c076cedab43369bf30e71a3eb47a407accae19135fca4",
+        "grammar_source_fingerprint": "712ade2f20ad2477d9f59191fc71a74a79e996d509732219b7b160614e017b7e",
+        "identity_fingerprint": "6032b2c3e309613f8283ad80c1f88ba952e36ac7c9527eb06c6902ccbcff5202",
         "present": true,
-        "shape_count": 109,
-        "total_cards": 552,
-        "total_nodes": 575
+        "shape_count": 111,
+        "total_cards": 554,
+        "total_nodes": 577
       },
       "full": {
         "contract_fingerprint": "2034904f2d53c43ad80587dce0f806a633a0bdce84187039b184ed5c954c8642",
-        "exact_cards_with_template": 346,
-        "exact_nodes": 555,
-        "fingerprint": "b420ff54619045468eda15faf9d0d837ebbee7331ea00e9bc6b929573b7030a1",
-        "grammar_source_fingerprint": "0d14abdc71736ed9a7af683fd5bc0802e9e7c59982eaa742f00757e23028b0e4",
-        "identity_fingerprint": "d9cb9f014328fcef11de5e5faa8935a758cfad2cfbf0800e01fe4a890443f114",
+        "exact_cards_with_template": 347,
+        "exact_nodes": 558,
+        "fingerprint": "e37a19c41c8811ef44a4eb29dbf655f09bb70afc09f44e0b4094745cbeddf125",
+        "grammar_source_fingerprint": "712ade2f20ad2477d9f59191fc71a74a79e996d509732219b7b160614e017b7e",
+        "identity_fingerprint": "6e2c8fe3e5fdf744b0a6fac6ac9ffb608cc93036d7437c4fc1f4d651467f9a32",
         "present": true,
-        "shape_count": 112,
-        "total_cards": 573,
-        "total_nodes": 596
+        "shape_count": 114,
+        "total_cards": 576,
+        "total_nodes": 599
       },
       "source": "coverage/oracle-coverage-commander.json"
     }
@@ -24511,7 +24547,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "990e4cc497a1fdd6d9bc9969e2d4a088fdbd4fa270e4355601d3c804e720d432",
+      "fingerprint": "f9cd12ecc62bf347d1385d51e9f6911aaf90a6d5328d646dde9719404de4f6b4",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -25342,7 +25378,7 @@
       "playwright_e2e_journeys": 10
     },
     "mutation_testing": {
-      "capability_mutation_declarations": 187,
+      "capability_mutation_declarations": 188,
       "configured_tools": [],
       "focused_executable_suite": true,
       "mutation_score": null
@@ -25370,18 +25406,18 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 2871,
-      "discovered_total": 6171,
+      "conventional_ast_cases": 2880,
+      "discovered_total": 6180,
       "generated_rule_conformance_cases": 3300,
       "named_cross_cutting_counts": {
-        "compiler_named": 137,
+        "compiler_named": 138,
         "fuzz_named": 1,
         "privacy_or_projection_named": 33,
-        "replay_named": 192,
+        "replay_named": 193,
         "server_named": 27
       },
       "reconciles": true,
-      "test_files": 272
+      "test_files": 273
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 99,
+  "registry_version": 100,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -1353,6 +1353,33 @@
       "dependency_fail_closed_rationale": "Support CardPrograms fail closed when the bounded target-set producer, target revalidation, or counter quantity-replacement closure is unavailable.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "Focused compiler and shape mutations remove Support lowering or alter its source exclusion and prevent trusted promotion.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.fixed_event_trigger",
+      "version": 1,
+      "official_rules": ["115.1", "603.2", "603.3", "603.3b", "603.6", "608.2b", "608.2c", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one mandatory exact counter-producing effect triggered by a represented beginning-of-step, controlled-land-entry, or controller-spell-cast event through ordinary APNAP trigger placement and the canonical resumable counter transaction.",
+        "inputs": ["one source-spanned closed normalized-event trigger", "one already represented exact effect body containing a counter-placement operation", "current battlefield source and controller", "immutable normalized event facts"],
+        "outputs": ["one ordinary triggered CardProgram", "typed event predicate", "ordinary APNAP trigger placement", "body-specific target revalidation", "replacement-aware counter placement", "exact continuation replay"],
+        "exclusions": ["spell copies", "opponent or arbitrary-player casts", "land entry outside the source controller relation", "intervening-if, reflexive, optional, conditional, variable, linked, modal, repeated, delayed, and state triggers", "counter movement, removal, prevention, and prohibition", "granted, copied, or removed abilities outside the shared typed ability-presence boundary", "unsupported event or effect-body grammar"]
+      },
+      "dependencies": ["trigger.placement.apnap"],
+      "implementation_components": ["quorune.compiler.fixed_counter_trigger_nodes.FixedCounterTriggerBinding", "quorune.compiler.fixed_counter_trigger_nodes.fixed_counter_event_trigger_node", "quorune.rules.casting.commit._dispatch_cast_events", "quorune.zone_trigger_processing.dispatch_zone_change_occurrence", "quorune.trigger_discovery.dispatch_semantic_event", "quorune.semantic_runtime.counter_placement_handlers.FixedCounterPlacementHandler", "quorune.counter_placement.place_counters_on_refs"],
+      "positive_tests": ["test_closed_event_bindings_compile_exact_counter_effect_bodies"],
+      "negative_tests": ["test_adjacent_event_and_effect_variants_remain_material", "test_fixed_counter_event_trigger_dependencies_and_compiler_mutation_fail_closed", "test_stale_counter_target_rolls_back_trigger_resolution"],
+      "interaction_tests": ["test_cast_counter_trigger_uses_normalized_event", "test_land_entry_counter_trigger_uses_normalized_event", "test_scheduled_counter_trigger_suspends_for_quantity_replacement", "test_multiple_scheduled_counter_triggers_use_one_apnap_batch"],
+      "multiplayer_tests": ["test_four_player_counter_trigger_choice_is_private_and_replays_exactly"],
+      "privacy_tests": ["test_four_player_counter_trigger_choice_is_private_and_replays_exactly"],
+      "replay_tests": ["test_four_player_counter_trigger_choice_is_private_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The source-spanned trigger remains material when normalized event production, APNAP placement, counter replacement, or any body-specific effect dependency is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler mutation removes the shared normalized-event lowering and proves every representative scheduled, controlled-land-entry, and spell-cast counter trigger loses exact trust.",
       "blockers": [],
       "status": "trusted"
     },
