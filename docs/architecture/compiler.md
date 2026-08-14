@@ -81,6 +81,16 @@ subtypes. The same owner preserves two or three printed fixed placements on
 one shared source or direct permanent target as one typed batch node; runtime
 code receives the typed node and never reparses Oracle text.
 
+`compiler/counter_keyword_activation_nodes.py` composes that counter owner
+with one source-pinned activation family for fixed ordinary-mana Level Up,
+Outlast, Reinforce, and Scavenge. Level Up and Outlast resolve the exact current
+source zone object; Reinforce and Scavenge use one revalidated creature target
+and the shared replacement-aware source-zone cost transaction. Scavenge lowers
+only a positive integral power printed on a single-face card. Star power,
+characteristic-defining or otherwise dynamic counts, and copy, face, text, or
+type-changing interactions remain residual until a cycle-safe zone-
+characteristic boundary owns them.
+
 ## Invariants
 
 - Every lowered node retains its exact source provenance.

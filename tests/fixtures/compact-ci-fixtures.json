@@ -15,6 +15,7 @@
     "tests/fixtures/draw-rules-cards.json",
     "tests/fixtures/echo-rules-cards.json",
     "tests/fixtures/explore-cards.json",
+    "tests/fixtures/fixed-counter-keyword-activations.json",
     "tests/fixtures/intrinsic-basic-land-mana-cards.json",
     "tests/fixtures/scryfall-exact-lists.json",
     "tests/fixtures/static-action-permission-cards.json",

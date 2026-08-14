@@ -465,17 +465,17 @@ def _keyword_node_for_mechanics(
     material_line: str,
     span: SourceSpan,
     mechanics: tuple[str, ...],
+    printed_power: str | None,
     trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
     residuals: list[OracleResidual],
 ) -> OracleNode:
     closed_special = closed_special_keyword_node(
-        node_id=node_id,
-        line=line,
-        material_line=material_line,
+        node_id=node_id, line=line, material_line=material_line,
         span=span,
         mechanics=mechanics,
+        printed_power=printed_power,
         trusted_mechanics=trusted_mechanics,
         capability_registry=capability_registry,
         capability_profile=capability_profile,
@@ -618,6 +618,7 @@ def _keyword_nodes(
     span: SourceSpan,
     keywords: Sequence[str],
     printed_card_types: tuple[str, ...],
+    printed_power: str | None,
     trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
@@ -702,15 +703,16 @@ def _keyword_nodes(
             continue
         nodes.append(
             _keyword_node_for_mechanics(
-            node_id=plan.node_id,
-            line=plan.line,
-            material_line=plan.material_line,
-            span=plan.span,
-            mechanics=plan.mechanics,
-            trusted_mechanics=trusted_mechanics,
-            capability_registry=capability_registry,
-            capability_profile=capability_profile,
-            residuals=residuals,
+                node_id=plan.node_id,
+                line=plan.line,
+                material_line=plan.material_line,
+                span=plan.span,
+                mechanics=plan.mechanics,
+                printed_power=printed_power,
+                trusted_mechanics=trusted_mechanics,
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+                residuals=residuals,
             )
         )
     return tuple(nodes)
@@ -934,11 +936,11 @@ def _compile_face(
         line, material_line, span = row
         node_id = f"{face_id}:n{index}"
         keyword_nodes = _keyword_nodes(
-            node_id=node_id,
-            line=line,
+            node_id=node_id, line=line,
             material_line=material_line,
             span=span,
             keywords=keywords, printed_card_types=tuple(sorted(card_types)),
+            printed_power=None if record.faces else record.power,
             trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry,
             capability_profile=capability_profile,

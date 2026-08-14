@@ -310,7 +310,10 @@ def _pay_object_and_mana_costs(
 
 
 def _commit_source_cost(
-    host: ActivationCommitHost, source: Any, ability: ActivatedAbility
+    host: ActivationCommitHost,
+    source: Any,
+    ability: ActivatedAbility,
+    response: Mapping[str, Any],
 ) -> str:
     origin = source.zone
     destination = None
@@ -329,11 +332,38 @@ def _commit_source_cost(
     elif ability.exile_source:
         destination = "exile"
     if destination is not None:
+        raw_journal = response.get("_mana_replacement_selections") or {}
+        if not isinstance(raw_journal, Mapping):
+            raise ActivationProposalError(
+                "Activation replacement journal is malformed",
+                reason="replacement_journal_malformed",
+            )
+        zone_entries = tuple(
+            (event_id, selections)
+            for event_id, selections in raw_journal.items()
+            if type(event_id) is str
+            and event_id.startswith("zone.change:")
+        )
+        if len(zone_entries) > 1 or any(
+            not event_id.endswith(f":{source.ref}")
+            for event_id, _selections in zone_entries
+        ):
+            raise ActivationProposalError(
+                "Activation source-cost replacement journal is ambiguous",
+                reason="replacement_journal_malformed",
+            )
+        selections = zone_entries[0][1] if zone_entries else ()
+        if not isinstance(selections, (list, tuple)):
+            raise ActivationProposalError(
+                "Activation source-cost replacement selections are malformed",
+                reason="replacement_journal_malformed",
+            )
         host.move_card(
             source.object_id,
             destination,
             reason="activated ability cost",
             semantic_events=True,
+            replacement_selections=tuple(selections),
         )
     return origin
 
@@ -462,7 +492,7 @@ def commit_activation(
             )
     except ActivationUsageError as exc:
         raise GameRuleError(str(exc)) from exc
-    origin = _commit_source_cost(host, source, ability)
+    origin = _commit_source_cost(host, source, ability, response)
     if ability.mana_ability:
         complete_mana_activation(
             host,

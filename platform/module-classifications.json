@@ -1206,6 +1206,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/counter_keyword_activation_nodes.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/counter_maximum_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -2013,6 +2028,20 @@
       "file": "quorune/convoke.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/counter_keyword_abilities.py",
+      "layer": "rules",
+      "owning_subsystem": "activated_abilities",
       "allowed_dependency_layers": [
         "domain",
         "rules",
@@ -5106,6 +5135,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/counter_keyword_abilities.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/counter_placement_handlers.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -6360,5 +6404,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "9b469c1e8e841e85b0b6a7b0a37f911c163dec10263127762af671a18ba95c73"
+  "fingerprint": "4090070f0dcb1ec3bdad0a7b549cd7811620b9f8e583c9a13170e232dc7489e9"
 }
