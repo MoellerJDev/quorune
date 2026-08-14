@@ -397,6 +397,7 @@ class RulesSchedulerTests(unittest.TestCase):
         baseline = self.catalog["work_selection"]["interaction_assurance"][
             "starting_uncovered_high_risk_pairs"
         ]
+        self.assertEqual(0, baseline)
         interaction["covered_high_risk_pairs"] = (
             interaction["applicable_high_risk_pairs"] - baseline
         )
@@ -422,6 +423,10 @@ class RulesSchedulerTests(unittest.TestCase):
         self.assertEqual(
             "exit_gate_satisfied",
             assurance["assurance_readiness"]["status"],
+        )
+        self.assertIn(
+            "no uncovered high-risk interaction debt remains",
+            assurance["reranking_reason"],
         )
         self.assertEqual("compiler_harvest", selected["candidate_class"])
         self.assertIn(

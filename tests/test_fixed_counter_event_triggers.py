@@ -8,6 +8,10 @@ import unittest
 from unittest.mock import patch
 
 from common import ROOT, keep_all, make_session
+from high_risk_interaction_support import (
+    TRIGGER_AND_REPLACEMENT_PAIRS,
+    assert_high_risk_boundary_pairs,
+)
 from quorune.carddb import CardDatabase
 from quorune.compiler.fixed_counter_trigger_nodes import (
     FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
@@ -86,6 +90,11 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
         )
 
     def test_closed_event_bindings_compile_exact_counter_effect_bodies(self):
+        assert_high_risk_boundary_pairs(
+            self,
+            TRIGGER_AND_REPLACEMENT_PAIRS,
+            database=self.db,
+        )
         expected = (
             (
                 "At the beginning of your upkeep, put two charge counters on this artifact.",

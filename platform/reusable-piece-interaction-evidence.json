@@ -1466,6 +1466,978 @@
       "capability_ids": ["counter.producer.fixed_event_trigger"],
       "interaction_order": 2,
       "assertion": "Innkeeper's Talent and Invasion of Moag retain self-replacement and prevention-ordering residuals while their independent fixed counter trigger emits one trusted executable CardProgram."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.aura.simple_object",
+            "residual.continuous_layer.affected-player-ordering"
+        ],
+        "capability_ids": [
+            "attachment.aura.simple_object"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.continuous_layer.affected-player-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.aura.simple_object",
+            "residual.continuous_layer.continuous-effect-layers-and-dependencies"
+        ],
+        "capability_ids": [
+            "attachment.aura.simple_object"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.continuous_layer.continuous-effect-layers-and-dependencies; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.aura.simple_object",
+            "residual.duration.until-end-of-turn"
+        ],
+        "capability_ids": [
+            "attachment.aura.simple_object"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.duration.until-end-of-turn; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.aura.simple_object",
+            "residual.static_clause.broader-evasion-and-group-constraints"
+        ],
+        "capability_ids": [
+            "attachment.aura.simple_object"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.static_clause.broader-evasion-and-group-constraints; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.aura.simple_object",
+            "residual.static_clause.conditional-declaration-predicates"
+        ],
+        "capability_ids": [
+            "attachment.aura.simple_object"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.static_clause.conditional-declaration-predicates; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.aura.simple_object",
+            "residual.static_clause.temporary-declaration-restrictions"
+        ],
+        "capability_ids": [
+            "attachment.aura.simple_object"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.static_clause.temporary-declaration-restrictions; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.equip.fixed_mana",
+            "residual.continuous_layer.affected-player-ordering"
+        ],
+        "capability_ids": [
+            "attachment.equip.fixed_mana"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.equip.fixed_mana and residual.continuous_layer.affected-player-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.equip.fixed_mana",
+            "residual.continuous_layer.continuous-effect-layers-and-dependencies"
+        ],
+        "capability_ids": [
+            "attachment.equip.fixed_mana"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.equip.fixed_mana and residual.continuous_layer.continuous-effect-layers-and-dependencies; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.attachment.equip.fixed_mana",
+            "residual.duration.until-end-of-turn"
+        ],
+        "capability_ids": [
+            "attachment.equip.fixed_mana"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.equip.fixed_mana and residual.duration.until-end-of-turn; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "capability.continuous.resolution.fixed_characteristics_until_end_of_turn",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [
+            "continuous.resolution.fixed_characteristics_until_end_of_turn"
+        ],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.continuous.resolution.fixed_characteristics_until_end_of_turn and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.continuous_layer.affected-player-ordering",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.affected-player-ordering and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.continuous_layer.affected-player-ordering",
+            "residual.replacement.regeneration"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.affected-player-ordering and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.continuous_layer.affected-player-ordering",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.affected-player-ordering and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.continuous_layer.affected-player-ordering",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.affected-player-ordering and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.continuous_layer.continuous-effect-layers-and-dependencies",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.continuous-effect-layers-and-dependencies and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.continuous_layer.continuous-effect-layers-and-dependencies",
+            "residual.replacement.regeneration"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.continuous-effect-layers-and-dependencies and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.continuous_layer.continuous-effect-layers-and-dependencies",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.continuous-effect-layers-and-dependencies and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.continuous_layer.continuous-effect-layers-and-dependencies",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.continuous-effect-layers-and-dependencies and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.duration.until-end-of-turn",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.duration.until-end-of-turn and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.duration.until-end-of-turn",
+            "residual.replacement.regeneration"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.duration.until-end-of-turn and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.duration.until-end-of-turn",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.duration.until-end-of-turn and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+        "piece_ids": [
+            "residual.duration.until-end-of-turn",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.duration.until-end-of-turn and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.counter.producer.cumulative_upkeep_fixed_mana",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [
+            "counter.producer.cumulative_upkeep_fixed_mana"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.cumulative_upkeep_fixed_mana and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.counter.producer.cumulative_upkeep_fixed_mana",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "counter.producer.cumulative_upkeep_fixed_mana"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.cumulative_upkeep_fixed_mana and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.counter.producer.cumulative_upkeep_fixed_mana",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "counter.producer.cumulative_upkeep_fixed_mana"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.cumulative_upkeep_fixed_mana and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.counter.producer.fixed_effect",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [
+            "counter.producer.fixed_effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.fixed_effect and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.counter.producer.fixed_effect",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "counter.producer.fixed_effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.fixed_effect and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.counter.producer.fixed_effect",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "counter.producer.fixed_effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.fixed_effect and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.counter.producer.modular",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "counter.producer.modular"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.modular and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.counter.producer.modular",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "counter.producer.modular"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.modular and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.damage.result.multitype_permanent",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "damage.result.multitype_permanent"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.damage.result.multitype_permanent and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.damage.result.multitype_permanent",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "damage.result.multitype_permanent"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.damage.result.multitype_permanent and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.damage.result.player_life",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "damage.result.player_life"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.damage.result.player_life and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.damage.result.player_life",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "damage.result.player_life"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.damage.result.player_life and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.life.change.effect",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "life.change.effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.life.change.effect and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.life.change.effect",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "life.change.effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.life.change.effect and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.life.gain.replacement.static_multiplier",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "life.gain.replacement.static_multiplier"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.life.gain.replacement.static_multiplier and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.life.gain.replacement.static_multiplier",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "life.gain.replacement.static_multiplier"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.life.gain.replacement.static_multiplier and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.mana.activated.fixed_output",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [
+            "mana.activated.fixed_output"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.mana.activated.fixed_output and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.mana.activated.fixed_output",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "mana.activated.fixed_output"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.mana.activated.fixed_output and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.mana.activated.fixed_output",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "mana.activated.fixed_output"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.mana.activated.fixed_output and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.permanent.destroy.effect",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "permanent.destroy.effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.destroy.effect and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.permanent.destroy.effect",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "permanent.destroy.effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.destroy.effect and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.permanent.destroy.fixed_set",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "permanent.destroy.fixed_set"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.destroy.fixed_set and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.permanent.destroy.fixed_set",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "permanent.destroy.fixed_set"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.destroy.fixed_set and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.permanent.exile.effect",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "permanent.exile.effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.exile.effect and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.permanent.exile.effect",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "permanent.exile.effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.exile.effect and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.permanent.indestructible.ordinary",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [
+            "permanent.indestructible.ordinary"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.indestructible.ordinary and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+        "piece_ids": [
+            "capability.permanent.indestructible.ordinary",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [
+            "permanent.indestructible.ordinary"
+        ],
+        "interaction_order": 2,
+        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.indestructible.ordinary and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.change.destination_replacement",
+            "residual.target_or_choice.target-predicate"
+        ],
+        "capability_ids": [
+            "zone.change.destination_replacement"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.change.destination_replacement and residual.target_or_choice.target-predicate; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.draw.library_to_hand",
+            "residual.target_or_choice.conditional-effect"
+        ],
+        "capability_ids": [
+            "zone.draw.library_to_hand"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.conditional-effect; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.draw.library_to_hand",
+            "residual.target_or_choice.divided-damage-allocation"
+        ],
+        "capability_ids": [
+            "zone.draw.library_to_hand"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.divided-damage-allocation; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.draw.library_to_hand",
+            "residual.target_or_choice.multiple-damage-recipients"
+        ],
+        "capability_ids": [
+            "zone.draw.library_to_hand"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.multiple-damage-recipients; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.draw.library_to_hand",
+            "residual.target_or_choice.multiple-targets"
+        ],
+        "capability_ids": [
+            "zone.draw.library_to_hand"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.multiple-targets; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.draw.library_to_hand",
+            "residual.target_or_choice.target-predicate"
+        ],
+        "capability_ids": [
+            "zone.draw.library_to_hand"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.target-predicate; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.entry.tapped_state",
+            "residual.target_or_choice.conditional-effect"
+        ],
+        "capability_ids": [
+            "zone.entry.tapped_state"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.entry.tapped_state and residual.target_or_choice.conditional-effect; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.entry.tapped_state",
+            "residual.target_or_choice.multiple-targets"
+        ],
+        "capability_ids": [
+            "zone.entry.tapped_state"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.entry.tapped_state and residual.target_or_choice.multiple-targets; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+        "piece_ids": [
+            "capability.zone.entry.tapped_state",
+            "residual.target_or_choice.random-outcome"
+        ],
+        "capability_ids": [
+            "zone.entry.tapped_state"
+        ],
+        "interaction_order": 2,
+        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.entry.tapped_state and residual.target_or_choice.random-outcome; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+        "piece_ids": [
+            "residual.activated_cost.complete-alternate-additional-cost-grammar",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.complete-alternate-additional-cost-grammar and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+        "piece_ids": [
+            "residual.activated_cost.complete-alternate-additional-cost-grammar",
+            "residual.replacement.regeneration"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.complete-alternate-additional-cost-grammar and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+        "piece_ids": [
+            "residual.activated_cost.complete-alternate-additional-cost-grammar",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.complete-alternate-additional-cost-grammar and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+        "piece_ids": [
+            "residual.activated_cost.complete-alternate-additional-cost-grammar",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.complete-alternate-additional-cost-grammar and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+        "piece_ids": [
+            "residual.activated_cost.restricted-payment-predicates",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.restricted-payment-predicates and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+        "piece_ids": [
+            "residual.activated_cost.restricted-payment-predicates",
+            "residual.replacement.regeneration"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.restricted-payment-predicates and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+        "piece_ids": [
+            "residual.activated_cost.restricted-payment-predicates",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.restricted-payment-predicates and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+        "piece_ids": [
+            "residual.activated_cost.restricted-payment-predicates",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.restricted-payment-predicates and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "piece_ids": [
+            "residual.event_binding.intervening-if-and-reflexive-trigger-grammar",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.intervening-if-and-reflexive-trigger-grammar and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "piece_ids": [
+            "residual.event_binding.intervening-if-and-reflexive-trigger-grammar",
+            "residual.replacement.regeneration"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.intervening-if-and-reflexive-trigger-grammar and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "piece_ids": [
+            "residual.event_binding.intervening-if-and-reflexive-trigger-grammar",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.intervening-if-and-reflexive-trigger-grammar and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "piece_ids": [
+            "residual.event_binding.intervening-if-and-reflexive-trigger-grammar",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.intervening-if-and-reflexive-trigger-grammar and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "piece_ids": [
+            "residual.event_binding.normalized-event-binding",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.normalized-event-binding and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "piece_ids": [
+            "residual.event_binding.normalized-event-binding",
+            "residual.replacement.regeneration"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.normalized-event-binding and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "piece_ids": [
+            "residual.event_binding.normalized-event-binding",
+            "residual.replacement.replacement-applicability"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.normalized-event-binding and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "piece_ids": [
+            "residual.event_binding.normalized-event-binding",
+            "residual.replacement.self-replacement-and-prevention-ordering"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.normalized-event-binding and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_all_represented_restrictions_are_cumulative",
+        "piece_ids": [
+            "residual.replacement.replacement-applicability",
+            "residual.static_clause.broader-evasion-and-group-constraints"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.replacement-applicability and residual.static_clause.broader-evasion-and-group-constraints; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_all_represented_restrictions_are_cumulative",
+        "piece_ids": [
+            "residual.replacement.replacement-applicability",
+            "residual.static_clause.conditional-declaration-predicates"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.replacement-applicability and residual.static_clause.conditional-declaration-predicates; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_all_represented_restrictions_are_cumulative",
+        "piece_ids": [
+            "residual.replacement.replacement-applicability",
+            "residual.static_clause.temporary-declaration-restrictions"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.replacement-applicability and residual.static_clause.temporary-declaration-restrictions; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_all_represented_restrictions_are_cumulative",
+        "piece_ids": [
+            "residual.replacement.self-replacement-and-prevention-ordering",
+            "residual.static_clause.broader-evasion-and-group-constraints"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.self-replacement-and-prevention-ordering and residual.static_clause.broader-evasion-and-group-constraints; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_all_represented_restrictions_are_cumulative",
+        "piece_ids": [
+            "residual.replacement.self-replacement-and-prevention-ordering",
+            "residual.static_clause.conditional-declaration-predicates"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.self-replacement-and-prevention-ordering and residual.static_clause.conditional-declaration-predicates; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+    },
+    {
+        "evidence_class": "interaction",
+        "test_id": "test_all_represented_restrictions_are_cumulative",
+        "piece_ids": [
+            "residual.replacement.self-replacement-and-prevention-ordering",
+            "residual.static_clause.temporary-declaration-restrictions"
+        ],
+        "capability_ids": [],
+        "interaction_order": 2,
+        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.self-replacement-and-prevention-ordering and residual.static_clause.temporary-declaration-restrictions; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
     }
   ]
 }

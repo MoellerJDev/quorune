@@ -534,7 +534,14 @@ def _system_candidates(
                 "Uncovered high-risk interactions remain above the verified "
                 "stabilization baseline."
                 if assurance_gate_open
-                else "The stabilization exit gate is satisfied, though interaction debt remains."
+                else (
+                    "The stabilization exit gate is satisfied and no uncovered "
+                    "high-risk interaction debt remains."
+                    if uncovered == 0
+                    else "The stabilization exit gate is satisfied at or below "
+                    "the configured baseline, though uncovered high-risk "
+                    "interaction debt remains."
+                )
             ),
             eligible=assurance_gate_open,
             interaction_debt_introduced={
