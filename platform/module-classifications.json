@@ -5571,6 +5571,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/sunburst.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/tap_state_handlers.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -6345,5 +6360,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "7028d3b3e1d8580042257a236aee72ed536ffb7265ecf05756324dc5d53725d0"
+  "fingerprint": "9b469c1e8e841e85b0b6a7b0a37f911c163dec10263127762af671a18ba95c73"
 }

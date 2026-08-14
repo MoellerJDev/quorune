@@ -131,6 +131,7 @@ _UNDYING_MECHANIC = "undying"
 _UNLEASH_MECHANIC = "unleash"
 _RIOT_MECHANIC = "riot"
 _BLOODTHIRST_MECHANIC = "bloodthirst"
+_SUNBURST_MECHANIC = "sunburst"
 _ECHO_MECHANIC = "echo"
 _BASIC_LANDWALK_MECHANICS = (
     "plainswalk",
@@ -161,6 +162,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     ),
     _RIOT_MECHANIC: ("counter.producer.riot",),
     _BLOODTHIRST_MECHANIC: ("counter.producer.bloodthirst",),
+    _SUNBURST_MECHANIC: ("counter.producer.sunburst",),
     _ECHO_MECHANIC: ("trigger.keyword.echo.fixed_mana",),
     **{
         mechanic: ("combat.block.landwalk.basic_type",)

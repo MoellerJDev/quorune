@@ -241,6 +241,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "replacement.zone.conditional-self-entry-counter",
                 "replacement.zone.riot-entry-choice",
                 "replacement.zone.self-entry-counter",
+                "replacement.zone.sunburst",
                 "restriction.activation.chosen_name_nonmana",
                 "restriction.draw.maximum_per_turn",
             },

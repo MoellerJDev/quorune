@@ -38,6 +38,7 @@ from .counter_replacements import (
 )
 from .self_entry_counters import SelfEntryCounterHandler
 from .conditional_entry_counters import ConditionalSelfEntryCounterHandler
+from .sunburst import SunburstEntryCounterHandler
 from .entry_choices import RiotEntryChoiceHandler
 from .entry_state import ENTRY_STATE_HANDLER_ID, EntryStateReplacementHandler
 from .zone_replacement_model import (
@@ -358,6 +359,7 @@ def default_zone_change_replacement_registry(
             EntryStateReplacementHandler(),
             RiotEntryChoiceHandler(),
             SelfEntryCounterHandler(),
+            SunburstEntryCounterHandler(),
             ZoneDestinationReplacementHandler(),
         )
     )
@@ -534,6 +536,7 @@ def _validated_zone_change_snapshot_inputs(
     effect_entry_counters: Mapping[
         str, Sequence[EffectEntryCounter]
     ] | None,
+    mana_colors_spent: Mapping[str, Sequence[str]] | None,
     requested_tapped: Mapping[str, bool] | None,
     entry_pay_life: Mapping[str, bool | None] | None,
     error_type: type[Exception],
@@ -542,6 +545,7 @@ def _validated_zone_change_snapshot_inputs(
     Mapping[str, str | None],
     Mapping[str, Mapping[str, Any]],
     Mapping[str, Sequence[EffectEntryCounter]],
+    Mapping[str, Sequence[str]],
     Mapping[str, bool],
     Mapping[str, bool | None],
 ]:
@@ -564,6 +568,7 @@ def _validated_zone_change_snapshot_inputs(
     controllers = destination_controllers or {}
     characteristics = entry_characteristics or {}
     effect_counters = effect_entry_counters or {}
+    cast_colors = mana_colors_spent or {}
     tapped_requests = requested_tapped or {}
     life_choices = entry_pay_life or {}
     if set(controllers) - set(object_ids):
@@ -581,6 +586,19 @@ def _validated_zone_change_snapshot_inputs(
     if set(effect_counters) - set(object_ids):
         raise error_type(
             "Zone replacement effect entry counters reference unknown objects"
+        )
+    if set(cast_colors) - set(object_ids):
+        raise error_type(
+            "Zone replacement cast colors reference unknown objects"
+        )
+    if any(
+        not isinstance(values, (list, tuple))
+        or any(type(value) is not str or value not in "WUBRG" for value in values)
+        or len(values) != len(set(values))
+        for values in cast_colors.values()
+    ):
+        raise error_type(
+            "Zone replacement cast colors must be distinct WUBRG sequences"
         )
     if set(tapped_requests) - set(object_ids):
         raise error_type(
@@ -622,6 +640,7 @@ def _validated_zone_change_snapshot_inputs(
         controllers,
         characteristics,
         effect_counters,
+        cast_colors,
         tapped_requests,
         life_choices,
     )
@@ -634,6 +653,7 @@ def _zone_change_snapshot_subjects(
     destination_controllers: Mapping[str, str | None],
     entry_characteristics: Mapping[str, Mapping[str, Any]],
     effect_entry_counters: Mapping[str, Sequence[EffectEntryCounter]],
+    mana_colors_spent: Mapping[str, Sequence[str]],
     requested_tapped: Mapping[str, bool],
     entry_pay_life: Mapping[str, bool | None],
     error_type: type[Exception],
@@ -711,6 +731,9 @@ def _zone_change_snapshot_subjects(
                         )
                         if destination_controller is not None
                         else False
+                    ),
+                    mana_colors_spent=tuple(
+                        mana_colors_spent.get(card.object_id, ())
                     ),
                     intrinsic_entry_counters=intrinsic_entry_counters(
                         characteristics,
@@ -867,6 +890,7 @@ def capture_zone_change_replacement_snapshot(
     effect_entry_counters: Mapping[
         str, Sequence[EffectEntryCounter]
     ] | None = None,
+    mana_colors_spent: Mapping[str, Sequence[str]] | None = None,
     requested_tapped: Mapping[str, bool] | None = None,
     entry_pay_life: Mapping[str, bool | None] | None = None,
     sources: Sequence[Any] | None = None,
@@ -880,6 +904,7 @@ def capture_zone_change_replacement_snapshot(
         controllers,
         characteristics,
         effect_counters,
+        cast_colors,
         tapped_requests,
         life_choices,
     ) = _validated_zone_change_snapshot_inputs(
@@ -888,6 +913,7 @@ def capture_zone_change_replacement_snapshot(
         destination_controllers=destination_controllers,
         entry_characteristics=entry_characteristics,
         effect_entry_counters=effect_entry_counters,
+        mana_colors_spent=mana_colors_spent,
         requested_tapped=requested_tapped,
         entry_pay_life=entry_pay_life,
         error_type=error_type,
@@ -898,6 +924,7 @@ def capture_zone_change_replacement_snapshot(
         destination_controllers=controllers,
         entry_characteristics=characteristics,
         effect_entry_counters=effect_counters,
+        mana_colors_spent=cast_colors,
         requested_tapped=tapped_requests,
         entry_pay_life=life_choices,
         error_type=error_type,
@@ -1047,6 +1074,7 @@ def prepare_zone_change_replacement(
     destination_controller: str | None = None,
     entry_characteristics: Mapping[str, Any] | None = None,
     effect_entry_counters: Sequence[EffectEntryCounter] = (),
+    mana_colors_spent: Sequence[str] = (),
     requested_tapped: bool = False,
     entry_pay_life: bool = False,
     selections: Sequence[str | None | Mapping[str, Any]] = (),
@@ -1112,6 +1140,11 @@ def prepare_zone_change_replacement(
             if effect_entry_counters
             else None
         ),
+        mana_colors_spent=(
+            {card.object_id: tuple(mana_colors_spent)}
+            if mana_colors_spent
+            else None
+        ),
         requested_tapped={card.object_id: requested_tapped},
         entry_pay_life={card.object_id: entry_pay_life},
         sources=sources,
@@ -1134,6 +1167,7 @@ def prepare_zone_change_replacement_batch(
     effect_entry_counters: Mapping[
         str, Sequence[EffectEntryCounter]
     ] | None = None,
+    mana_colors_spent: Mapping[str, Sequence[str]] | None = None,
     requested_tapped: Mapping[str, bool] | None = None,
     entry_pay_life: Mapping[str, bool | None] | None = None,
     selections: Sequence[str | None | Mapping[str, Any]] = (),
@@ -1147,6 +1181,7 @@ def prepare_zone_change_replacement_batch(
         destination_controllers=destination_controllers,
         entry_characteristics=entry_characteristics,
         effect_entry_counters=effect_entry_counters,
+        mana_colors_spent=mana_colors_spent,
         requested_tapped=requested_tapped,
         entry_pay_life=entry_pay_life,
         sources=sources,

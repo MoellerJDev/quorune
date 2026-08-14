@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "03411cb28295d8d3e24479bee67e89d9886aaed3d75eca40826a8972618cf04f",
-  "declaration_source_fingerprint": "d3ab5b8c58edd2cc7ff2f9571693c075ea2b64a64df80bcb2b6d357064e8f84b",
+  "registry_fingerprint": "938c907f28b9ca1551d3a93805a49a71045112da5006a96ed3d3a3d60865b9d7",
+  "declaration_source_fingerprint": "f6c6a5d50fdba9baf1790e70effc54e60f04d5c66fe0350d51220858c9973247",
   "declarations": [
     {
       "capability_id": "activation.crew.fixed_power",
@@ -16011,6 +16011,270 @@
         "commander_review"
       ],
       "applicability_note": "Replay successive choices across two simultaneous Saga counter events to the same counters, chapter batch, and authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_printed_type_boundary_ignores_entry_type_changes",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Choose the counter kind from the printed face at compilation even when prospective entry characteristics currently include Creature."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_sunburst_counter_uses_canonical_quantity_replacement",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose a Sunburst entry result with the canonical counter-quantity replacement tree before the battlefield move commits."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_four_player_controller_scope_checkpoint_and_replay",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use the four-player spell's prospective destination controller as the placing player for its immutable Sunburst counter events."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_sunburst_runtime_mutation_is_killed",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Removing the typed cast-payment entry replacement prevents the required Sunburst counters and is detected by focused runtime evidence."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "negative",
+      "test_id": "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_sunburst_models_snapshots_and_descriptors_reject_malformed_values",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject unknown counter kinds, duplicate or colorless cast-color facts, missing rule identity, and unknown descriptor fields."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "negative",
+      "test_id": "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_unsupported_sunburst_wording_remains_material_residual",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep parameterized and qualified near misses outside the ordinary printed Sunburst grammar as precise material residuals."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "negative",
+      "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_zero_colors_nonstack_entry_and_spell_copy_create_no_counters",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Do not create Sunburst counters for colorless casts, entries not produced by resolving a spell, or spell copies that were never cast."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "positive",
+      "test_id": "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_sunburst_compiles_printed_counter_kind_with_precise_spans",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile each printed Sunburst instance to its own source-spanned typed program and choose +1/+1 or charge from the printed face type."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "positive",
+      "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_cast_payment_colors_create_entry_counters",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Record distinct WUBRG colors actually spent on the cast and create the matching printed counter kind as the spell resolves."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_four_player_controller_scope_checkpoint_and_replay",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep unrelated opposing hands out of every seat projection while public cast-payment and counter results remain replayable."
+    },
+    {
+      "capability_id": "counter.producer.sunburst",
+      "evidence_class": "replay",
+      "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_four_player_controller_scope_checkpoint_and_replay",
+      "official_rule_ids": [
+        "122.1a",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.44",
+        "702.44a",
+        "702.44b",
+        "702.44c",
+        "702.44d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Restore distinct cast colors from the checkpoint and replay the resulting Sunburst entry counters to the same authoritative hash."
     },
     {
       "capability_id": "counter.producer.support",
@@ -32366,5 +32630,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "7c350b8f73a36d46f2eb63db3a1ea482d93c3d397c8c5a04ad40d67e1cd15d1e"
+  "fingerprint": "9b7f76e49b13ba8ae091b1ef09b8f2f4eae3f64b58d32c7f42b3a7ff8fd091a7"
 }

@@ -111,6 +111,14 @@ typed descriptors and current effective artifact characteristics; other
 Affinity parameters and equivalent rules text remain residual instead of
 becoming runtime Oracle interpretation.
 
+Printed `Sunburst` lowers as one source-spanned `zone.change` descriptor per
+instance. The descriptor contains the counter kind derived from the printed
+selected-face card types, never a runtime type query. Cast commit separately
+records the distinct WUBRG colors actually spent; only a resolving cast card
+with a nonempty payment fact can apply the descriptor. Parameterized or
+qualified wording, Modular—Sunburst linked values, nonkeyword equivalents,
+and ability propagation outside the typed fragment remain material residuals.
+
 Two exact controller-wide static permissions lower to selected-face
 `action.permission` descriptors: playing lands from the controller's own
 graveyard and activating abilities of controlled creatures as though they had

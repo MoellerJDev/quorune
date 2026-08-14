@@ -65325,23 +65325,27 @@
       "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.44",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_sunburst_compiles_printed_counter_kind_with_precise_spans"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/sunburst.json"
+      ],
+      "notes": [
+        "Keyword heading; the bounded ordinary printed family is represented by counter.producer.sunburst while linked variable and propagated ability forms remain explicit residuals."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.44",
       "rule_text_sha256": "78a6fbadb4319aa4ddbacdb0db42b47f835ca6d34020cc74c020875ba892ef71",
       "schema_version": 1,
@@ -65350,26 +65354,56 @@
         "end_line": 4335,
         "start_line": 4334
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "granted, copied, removed, and face-down Sunburst outside trusted typed ability propagation is not compiled",
+        "Oracle-equivalent nonkeyword wording remains outside the closed grammar",
+        "unrepresented zone and counter replacement families remain fail-closed"
       ],
       "case_id": "cr-702.44a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.44"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_sunburst_compiles_printed_counter_kind_with_precise_spans",
+        "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_multiple_sunburst_instances_apply_independently",
+        "tests.test_sunburst_rules.SunburstRuntimeTests.test_cast_payment_colors_create_entry_counters",
+        "tests.test_sunburst_rules.SunburstRuntimeTests.test_printed_type_boundary_ignores_entry_type_changes",
+        "tests.test_sunburst_rules.SunburstRuntimeTests.test_sunburst_counter_uses_canonical_quantity_replacement",
+        "tests.test_sunburst_rules.SunburstRuntimeTests.test_four_player_controller_scope_checkpoint_and_replay"
+      ],
+      "implementation_components": [
+        "quorune.semantic_runtime.sunburst.SunburstSpec",
+        "quorune.compiler.keyword_nodes.sunburst_keyword_node",
+        "quorune.semantic_runtime.sunburst.SunburstEntryCounterHandler",
+        "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot"
+      ],
+      "notes": [
+        "Each ordinary printed instance derives +1/+1 versus charge from the printed selected face at compile time, snapshots distinct paid colors on the cast stack object, and produces one nested replacement-aware counter event before battlefield entry."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.44a",
       "rule_text_sha256": "78648d0638da66f88e8cb7eefe35d1e7ef136cc0e364d8a05a8ca50a956453d4",
       "schema_version": 1,
@@ -65378,26 +65412,53 @@
         "end_line": 4337,
         "start_line": 4336
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "cost-payment replacement families beyond the represented casting owner remain unsupported",
+        "granted or copied Sunburst outside trusted typed ability propagation remains unsupported",
+        "ambient zone and counter replacement families outside typed owners remain unsupported"
       ],
       "case_id": "cr-702.44b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.44"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_sunburst_rules.SunburstRuntimeTests.test_cast_payment_colors_create_entry_counters",
+        "tests.test_sunburst_rules.SunburstRuntimeTests.test_zero_colors_nonstack_entry_and_spell_copy_create_no_counters",
+        "tests.test_sunburst_rules.SunburstRuntimeTests.test_four_player_controller_scope_checkpoint_and_replay"
+      ],
+      "implementation_components": [
+        "quorune.rules.casting.commit._create_spell_item",
+        "quorune.model.StackItem",
+        "quorune.entry_counter_coordination.prepare_resolving_entry_replacement",
+        "quorune.semantic_runtime.sunburst.SunburstEntryCounterHandler"
+      ],
+      "notes": [
+        "The payment owner freezes all distinct colored mana actually spent. Only that nonempty fact on a card resolving from the stack authorizes the entry replacement; colorless casts, direct entries, and spell copies produce none."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.44b",
       "rule_text_sha256": "b5d7045e0fb152319d9f2c6c0669c75894afc9c815cf638c83dc1449c12d6da0",
       "schema_version": 1,
@@ -65406,26 +65467,38 @@
         "end_line": 4339,
         "start_line": 4338
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Sunburst-defined variable linkage such as Modular—Sunburst has no typed linked-value owner"
       ],
       "case_id": "cr-702.44c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.44"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_modular_rules.ModularCompilerTests.test_modular_sunburst_and_malformed_values_fail_closed",
+        "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_unsupported_sunburst_wording_remains_material_residual"
+      ],
+      "implementation_components": [
+        "quorune.compiler.keyword_nodes.sunburst_keyword_node",
+        "quorune.compiler.keyword_nodes.modular_keyword_nodes"
+      ],
+      "notes": [
+        "Variable linkage is deliberately excluded from the ordinary standalone Sunburst production and remains a material residual rather than borrowing the fixed Modular grammar."
+      ],
+      "required_scenarios": [
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "702.44c",
       "rule_text_sha256": "0b5ca313e8f0c35e8d045af1c82010e47810bfddfbc9403bd7d0f686188df1f8",
       "schema_version": 1,
@@ -65434,26 +65507,44 @@
         "end_line": 4342,
         "start_line": 4340
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "multiple granted or copied Sunburst instances outside trusted typed ability propagation remain unsupported",
+        "the aggregate ability-copy and face-change interaction matrix remains incomplete"
       ],
       "case_id": "cr-702.44d",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "interaction",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.44"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_sunburst_compiles_printed_counter_kind_with_precise_spans",
+        "tests.test_sunburst_rules.SunburstCompilerAndModelTests.test_multiple_sunburst_instances_apply_independently"
+      ],
+      "implementation_components": [
+        "quorune.compiler.keyword_nodes.keyword_node_plans",
+        "quorune.compiler.program_generation._generated_ability_id",
+        "quorune.semantic_runtime.sunburst.SunburstEntryCounterHandler"
+      ],
+      "notes": [
+        "Each represented printed instance has a distinct source span, program key, and replacement identity, so all instances apply independently to the same resolving card."
+      ],
+      "required_scenarios": [
+        "positive",
+        "interaction",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.44d",
       "rule_text_sha256": "914d0025c96470d2ab47e1dce160cd72537d65aee38089e8c3e118af9b1f211a",
       "schema_version": 1,
@@ -65462,7 +65553,7 @@
         "end_line": 4344,
         "start_line": 4343
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "static_traceability",

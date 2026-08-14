@@ -15,6 +15,7 @@ from .trigger_batches import PendingTriggerBatch, TriggerBatchError
 from .util import normalize_mana_bundle, stable_json
 
 CONTROL_HISTORY_VERSION = 1
+_COLORED_MANA_SYMBOLS = tuple("WUBRG")
 
 ZoneName = Literal[
     "library",
@@ -425,12 +426,31 @@ class StackItem:
     default_destination: str | None = None
     visibility: list[str] = field(default_factory=list)
     context: dict[str, Any] = field(default_factory=dict)
+    # Immutable public cast-payment provenance used by typed rules such as
+    # Sunburst.  This records distinct colors, not mana amounts, and remains
+    # empty for stack copies because they were not cast.
+    mana_colors_spent: tuple[str, ...] = ()
     # Public physical objects explicitly referred to by this stack object for
     # CR 609.7a source choices. This is deliberately separate from arbitrary
     # semantic context so private implementation data is never searched.
     referred_object_ids: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
+        mana_colors = self.mana_colors_spent
+        if not isinstance(mana_colors, (list, tuple)) or any(
+            type(value) is not str or value not in _COLORED_MANA_SYMBOLS
+            for value in mana_colors
+        ):
+            raise ValueError(
+                "Stack mana colors spent must be WUBRG symbols"
+            )
+        if len(mana_colors) != len(set(mana_colors)):
+            raise ValueError(
+                "Stack mana colors spent cannot contain duplicates"
+            )
+        self.mana_colors_spent = tuple(
+            color for color in _COLORED_MANA_SYMBOLS if color in mana_colors
+        )
         values = self.referred_object_ids
         if not isinstance(values, (list, tuple)) or any(
             type(value) is not str or not value for value in values
@@ -442,6 +462,9 @@ class StackItem:
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
+        if not self.mana_colors_spent:
+            # Preserve historical Game Record v3 checkpoint payloads.
+            payload.pop("mana_colors_spent")
         if not self.referred_object_ids:
             # Preserve historical Game Record v3 checkpoint payloads.
             payload.pop("referred_object_ids")

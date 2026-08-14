@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 96,
+  "registry_version": 97,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -1392,6 +1392,33 @@
       "dependency_fail_closed_rationale": "Generated Bloodthirst programs cannot become trusted when canonical counter-quantity replacement is blocked.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "The focused compiler and runtime mutations remove the source-spanned Bloodthirst handler or its conditional replacement and the expected entry counter is absent.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.sunburst",
+      "version": 1,
+      "official_rules": ["122.1a", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.44", "702.44a", "702.44b", "702.44c", "702.44d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve each ordinary printed Sunburst instance as a mandatory affected-object entry-counter replacement whose quantity is the number of distinct colors of mana spent to cast the resolving spell.",
+        "inputs": ["one source-spanned printed Sunburst keyword instance", "printed face creature or noncreature card type", "same physical card resolving from the stack", "immutable distinct WUBRG cast-payment provenance", "prospective battlefield controller", "complete represented zone and counter replacement set"],
+        "outputs": ["one independent entry replacement per Sunburst instance", "printed creatures receive +1/+1 counters and other permanents receive charge counters", "replacement-aware counter placement by the destination controller", "canonical replacement ordering and journal", "exact replay"],
+        "exclusions": ["objects entering from a zone other than the stack", "spell copies and other objects that were not cast", "casts with no colored mana spent", "granted, copied, removed, or face-down Sunburst outside trusted typed ability propagation", "Modular—Sunburst variable linkage", "unrepresented zone or counter replacement families"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.model.StackItem", "quorune.rules.casting.commit._create_spell_item", "quorune.semantic_runtime.sunburst.SunburstSpec", "quorune.compiler.keyword_nodes.sunburst_keyword_node", "quorune.entry_counter_coordination.prepare_resolving_entry_replacement", "quorune.semantic_runtime.sunburst.SunburstEntryCounterHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot"],
+      "positive_tests": ["test_sunburst_compiles_printed_counter_kind_with_precise_spans", "test_cast_payment_colors_create_entry_counters"],
+      "negative_tests": ["test_sunburst_models_snapshots_and_descriptors_reject_malformed_values", "test_zero_colors_nonstack_entry_and_spell_copy_create_no_counters", "test_unsupported_sunburst_wording_remains_material_residual"],
+      "interaction_tests": ["test_sunburst_counter_uses_canonical_quantity_replacement"],
+      "multiplayer_tests": ["test_four_player_controller_scope_checkpoint_and_replay"],
+      "privacy_tests": ["test_four_player_controller_scope_checkpoint_and_replay"],
+      "replay_tests": ["test_four_player_controller_scope_checkpoint_and_replay"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Generated Sunburst programs cannot become trusted when canonical counter-quantity replacement is blocked.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and runtime mutations remove the typed Sunburst handler or its cast-payment replacement, so the expected entry counters are absent.",
       "blockers": [],
       "status": "trusted"
     },

@@ -86,6 +86,7 @@
       "test_intrinsic_entry_counters",
       "test_proliferate_rules",
       "test_saga_counter_progression",
+      "test_sunburst_rules",
       "test_support_counter_placement",
       "test_typed_dynamic_characteristics"
     ],

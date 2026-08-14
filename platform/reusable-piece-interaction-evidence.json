@@ -269,6 +269,14 @@
     },
     {
       "evidence_class": "interaction",
+      "test_id": "test_sunburst_counter_uses_canonical_quantity_replacement",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.sunburst"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.sunburst"],
+      "interaction_order": 2,
+      "assertion": "A typed Sunburst entry-counter event passes through the canonical quantity-replacement pipeline before its counters are committed."
+    },
+    {
+      "evidence_class": "interaction",
       "test_id": "test_only_damage_not_life_loss_or_prevented_damage_unlocks_attack",
       "piece_ids": ["capability.damage.amount.positive", "mechanic.cr-508-declare-attackers-step"],
       "capability_ids": ["damage.amount.positive"],
