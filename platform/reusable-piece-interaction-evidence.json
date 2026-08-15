@@ -2933,6 +2933,24 @@
         "capability_ids": [],
         "interaction_order": 2,
         "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_subtype_entry_trigger_filters_and_uses_replacement_owner",
+      "piece_ids": ["capability.counter.producer.fixed_event_trigger", "capability.trigger.event.normalized_zone_change"],
+      "capability_ids": ["counter.producer.fixed_event_trigger", "trigger.event.normalized_zone_change"],
+      "interaction_order": 2,
+      "assertion": "A committed permanent-entry occurrence carries immutable public subtypes into the typed Human predicate and admits exactly one fixed counter trigger for the matching controller."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_subtype_entry_trigger_filters_and_uses_replacement_owner",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_event_trigger"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_event_trigger"],
+      "interaction_order": 2,
+      "assertion": "The matched single-subtype entry trigger resolves its fixed +1/+1 counter body through an actual applicable quantity replacement and commits the doubled result."
     }
   ]
 }

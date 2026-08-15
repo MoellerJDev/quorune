@@ -63,6 +63,17 @@ _ZONE_CHANGE_TRIGGER = re.compile(
     r"(?P<transition>enters|dies), (?P<body>.+)$",
     re.IGNORECASE,
 )
+_SUBTYPE_ENTRY_TRIGGER = re.compile(
+    r"^Whenever "
+    r"(?:(?P<this_source>this (?:artifact|creature|enchantment|permanent)) or )?"
+    r"(?P<article>another|a|an) "
+    r"(?P<subtype>[A-Z][A-Za-z'-]*)"
+    r"(?: (?P<relation>you control|an opponent controls|you don't control))? "
+    r"enters, (?P<body>.+)$",
+)
+_ZONE_SUBJECT_TYPES = frozenset(
+    {"artifact", "creature", "enchantment", "land", "permanent"}
+)
 
 
 class FixedCounterTriggerEvent(str, Enum):
@@ -97,14 +108,11 @@ class FixedCounterZoneSubject:
     controller: FixedCounterZoneController
     exclude_source: bool = False
     token: bool | None = None
+    subtype: str | None = None
+    include_source: bool = False
 
     def __post_init__(self) -> None:
-        if self.permanent_type not in {
-            "artifact",
-            "creature",
-            "enchantment",
-            "permanent",
-        }:
+        if self.permanent_type not in _ZONE_SUBJECT_TYPES - {"land"}:
             raise ValueError("Fixed counter zone subjects require a closed type")
         if not isinstance(self.controller, FixedCounterZoneController):
             raise ValueError(
@@ -117,6 +125,29 @@ class FixedCounterZoneSubject:
         if self.token is not None and type(self.token) is not bool:
             raise ValueError(
                 "Fixed counter zone subject token state must be boolean or absent"
+            )
+        if self.subtype is not None:
+            normalized_subtype = self.subtype.casefold()
+            if (
+                self.permanent_type != "permanent"
+                or re.fullmatch(r"[a-z][a-z'-]*", normalized_subtype) is None
+                or normalized_subtype in _ZONE_SUBJECT_TYPES
+            ):
+                raise ValueError(
+                    "Fixed counter zone subject subtypes must be one closed "
+                    "non-type word over permanent-entry facts"
+                )
+            object.__setattr__(self, "subtype", normalized_subtype)
+        if type(self.include_source) is not bool:
+            raise ValueError(
+                "Fixed counter zone subject source inclusion must be a boolean"
+            )
+        if self.include_source and (
+            self.subtype is None or self.exclude_source
+        ):
+            raise ValueError(
+                "Fixed counter zone source inclusion requires one subtype and "
+                "cannot exclude the source"
             )
 
     @property
@@ -137,6 +168,26 @@ class FixedCounterZoneSubject:
                     "op": "ne",
                     "value": "$source.controller",
                 }
+            )
+        if self.subtype is not None:
+            subtype_condition: Mapping[str, Any] = {
+                "field": "subtypes",
+                "op": "contains_any",
+                "value": [self.subtype],
+            }
+            conditions.append(
+                {
+                    "any": [
+                        {
+                            "field": "card",
+                            "op": "eq",
+                            "value": "$source.ref",
+                        },
+                        subtype_condition,
+                    ]
+                }
+                if self.include_source
+                else subtype_condition
             )
         if self.exclude_source:
             conditions.append(
@@ -174,9 +225,10 @@ class FixedCounterZoneSubject:
             else "any_object"
         )
         source = "other" if self.exclude_source else "including_source"
-        return ":".join(
-            (self.permanent_type, self.controller.value, source, token)
-        )
+        values = [self.permanent_type, self.controller.value, source, token]
+        if self.subtype is not None:
+            values.append(f"subtype-{self.subtype}")
+        return ":".join(values)
 
 
 @dataclass(frozen=True, slots=True)
@@ -209,6 +261,8 @@ class FixedCounterTriggerBinding:
 
     @property
     def template_id(self) -> str:
+        if self.zone_subject is not None and self.zone_subject.subtype is not None:
+            return "fixed-counter-subtype-entry-trigger-v1"
         return {
             FixedCounterTriggerEvent.STEP_BEGIN:
                 "fixed-counter-step-trigger-v1",
@@ -349,19 +403,57 @@ def _zone_change_trigger_binding(
     if card_name:
         named_source = re.match(
             rf"^Whenever {re.escape(card_name)} or another "
-            r"(?P<kind>artifact|creature|enchantment|permanent)\b",
+            r"(?P<subject>[A-Za-z][A-Za-z'-]*)\b",
             material_line,
             re.IGNORECASE,
         )
         if named_source is not None:
-            kind = named_source.group("kind")
+            subject = named_source.group("subject")
+            source_kind = (
+                subject
+                if subject.casefold() in _ZONE_SUBJECT_TYPES - {"land"}
+                else "permanent"
+            )
             normalized_line = (
-                f"Whenever this {kind} or another {kind}"
+                f"Whenever this {source_kind} or another {subject}"
                 + material_line[named_source.end() :]
             )
     match = _ZONE_CHANGE_TRIGGER.fullmatch(normalized_line)
     if match is None:
-        return None
+        subtype_match = _SUBTYPE_ENTRY_TRIGGER.fullmatch(normalized_line)
+        if subtype_match is None:
+            return None
+        article = subtype_match.group("article").casefold()
+        subtype = subtype_match.group("subtype").casefold()
+        expected_article = "an" if subtype[0] in "aeiou" else "a"
+        if (
+            subtype in _ZONE_SUBJECT_TYPES
+            or article not in {"another", expected_article}
+        ):
+            return None
+        this_source = subtype_match.group("this_source")
+        if this_source is not None and article != "another":
+            return None
+        relation = str(subtype_match.group("relation") or "").casefold()
+        controller = {
+            "": FixedCounterZoneController.ANY,
+            "you control": FixedCounterZoneController.SOURCE,
+            "an opponent controls": FixedCounterZoneController.OPPONENT,
+            "you don't control": FixedCounterZoneController.OPPONENT,
+        }[relation]
+        subject = FixedCounterZoneSubject(
+            permanent_type="permanent",
+            controller=controller,
+            exclude_source=(article == "another" and this_source is None),
+            subtype=subtype,
+            include_source=this_source is not None,
+        )
+        return FixedCounterTriggerBinding(
+            event=FixedCounterTriggerEvent.PERMANENT_ENTER,
+            variant=subject.variant,
+            body=subtype_match.group("body"),
+            zone_subject=subject,
+        )
     article = match.group("article").casefold()
     kind = match.group("kind").casefold()
     expected_article = (

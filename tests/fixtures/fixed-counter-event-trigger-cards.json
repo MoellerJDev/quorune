@@ -237,6 +237,25 @@
       "legalities": {"commander": "legal"}
     },
     {
+      "oracle_id": "faeaa3eb-6eb8-4621-98c7-0c6f58bbff85",
+      "name": "Champion of the Parish",
+      "mana_cost": "{W}",
+      "cmc": 1.0,
+      "type_line": "Creature — Human Soldier",
+      "oracle_text": "Whenever another Human you control enters, put a +1/+1 counter on this creature.",
+      "power": "1",
+      "toughness": "1",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["W"],
+      "color_identity": ["W"],
+      "keywords": [],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2011-09-30",
+      "legalities": {"commander": "legal"}
+    },
+    {
       "oracle_id": "c87440aa-4616-49ff-a211-ebdc37767f62",
       "name": "Lorescale Coatl",
       "mana_cost": "{1}{G}{U}",
