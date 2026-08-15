@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "f27d02e4dfbadfa8b64edd470de37f9b44d88f888e7179883073296119556ff8"
+verified: "89f9bc25b0188bebc4f22e3791d3a34e253f6bc875585138cd9ae61ab37fc973"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `481ab1ff0f6dd1b525f99b9d3a3696c9acb649699306681ee38fe820dc79650b`
+Source fingerprint: `c4547776c612f934dff9b49bc55288200c452b61f5757cefa3799da211d4bc4a`
 
 ## Current top-level state
 
@@ -37,8 +37,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 4 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
 | 5 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
 | 6 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 7 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 234 | 381 | 0 | 0 |
-| 8 | blocked | `frontier:mechanic_dependency:cr-111-tokens` | `rules_foundation` | 127 | 338 | 0 | 0 |
+| 7 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 237 | 381 | 0 | 0 |
 
 Selected reason: The rules queue remains dependency-ready, but correctness, runtime-text, owner, and assurance gates may rank ahead of its unknown card gain.
 

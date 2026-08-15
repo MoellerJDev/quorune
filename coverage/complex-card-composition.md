@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "de1f71b1eed7e118e87f4b92fce7104b47f7644aa15ae5f0b222963e3fb5ee70"
+verified: "f5d34876c13da2eb75c92b79b10cac7b90e79d8198f979af4ad2abeec44e391e"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -18,19 +18,19 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Terra, Magical Adept // Esper Terra | 203 | 21 | 7 | 6 | 10 | 14 | `blocked` |
 | Joshua, Phoenix's Dominant // Phoenix, Warden of Fire | 201 | 23 | 7 | 6 | 10 | 10 | `blocked` |
 | Clive, Ifrit's Dominant // Ifrit, Warden of Inferno | 196 | 17 | 6 | 5 | 10 | 21 | `blocked` |
-| Invasion of Innistrad // Deluge of the Dead | 196 | 23 | 6 | 5 | 10 | 16 | `blocked` |
+| Garruk Relentless // Garruk, the Veil-Cursed | 195 | 25 | 6 | 6 | 15 | 6 | `blocked` |
+| Invasion of Innistrad // Deluge of the Dead | 194 | 23 | 6 | 5 | 9 | 16 | `blocked` |
 | Twists and Turns // Mycoid Maze | 194 | 25 | 6 | 6 | 9 | 7 | `blocked` |
 | Vorinclex // The Grand Evolution | 193 | 23 | 7 | 7 | 10 | 4 | `blocked` |
 | Sheoldred // The True Scriptures | 192 | 22 | 7 | 7 | 11 | 4 | `blocked` |
-| Dion, Bahamut's Dominant // Bahamut, Warden of Light | 191 | 23 | 6 | 7 | 9 | 10 | `blocked` |
+| Sorin of House Markov // Sorin, Ravenous Neonate | 190 | 23 | 4 | 7 | 10 | 19 | `blocked` |
+| Dion, Bahamut's Dominant // Bahamut, Warden of Light | 189 | 23 | 6 | 7 | 8 | 10 | `blocked` |
 | Elesh Norn // The Argent Etchings | 187 | 21 | 7 | 7 | 12 | 2 | `blocked` |
 | Invasion of Ulgrotha // Grandmother Ravi Sengir | 187 | 24 | 6 | 4 | 5 | 17 | `blocked` |
 | Conqueror's Galleon // Conqueror's Foothold | 186 | 24 | 6 | 7 | 6 | 14 | `blocked` |
 | Jin-Gitaxias // The Great Synthesis | 185 | 20 | 6 | 7 | 11 | 6 | `blocked` |
 | Cleric Class | 183 | 22 | 6 | 6 | 7 | 12 | `blocked` |
-| Garruk Relentless // Garruk, the Veil-Cursed | 183 | 22 | 5 | 6 | 16 | 6 | `blocked` |
 | Ojer Axonil, Deepest Might // Temple of Power | 183 | 23 | 7 | 6 | 9 | 6 | `blocked` |
-| Sorin of House Markov // Sorin, Ravenous Neonate | 183 | 20 | 4 | 7 | 11 | 19 | `blocked` |
 | Flamewar, Brash Veteran // Flamewar, Streetwise Operative | 181 | 21 | 6 | 6 | 9 | 15 | `blocked` |
 | Urabrask // The Great Work | 181 | 20 | 6 | 7 | 11 | 4 | `blocked` |
 | Grist, Voracious Larva // Grist, the Plague Swarm | 180 | 24 | 5 | 5 | 10 | 14 | `blocked` |
@@ -47,10 +47,10 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Invasion of Kaladesh // Aetherwing, Golden-Scale Flagship | 170 | 18 | 5 | 5 | 6 | 17 | `blocked` |
 | Jill, Shiva's Dominant // Shiva, Warden of Ice | 170 | 17 | 6 | 5 | 10 | 8 | `blocked` |
 | Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar | 169 | 19 | 6 | 6 | 11 | 10 | `blocked` |
-| Ajani, Nacatl Pariah // Ajani, Nacatl Avenger | 168 | 23 | 4 | 5 | 11 | 15 | `blocked` |
 | Gwen Stacy // Ghost-Spider | 168 | 22 | 5 | 5 | 8 | 13 | `blocked` |
 | Invasion of Kaldheim // Pyre of the World Tree | 168 | 16 | 5 | 4 | 5 | 22 | `blocked` |
 | Jace, Mirror Mage | 168 | 23 | 4 | 4 | 11 | 13 | `blocked` |
+| Ajani, Nacatl Pariah // Ajani, Nacatl Avenger | 166 | 23 | 4 | 5 | 10 | 15 | `blocked` |
 | Chandra, Fire of Kaladesh // Chandra, Roaring Flame | 166 | 21 | 4 | 5 | 9 | 15 | `blocked` |
 | Athreos, Shroud-Veiled | 165 | 18 | 5 | 4 | 3 | 24 | `blocked` |
 | Dr. Madison Li | 165 | 22 | 7 | 4 | 6 | 10 | `blocked` |

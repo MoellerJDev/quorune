@@ -4400,6 +4400,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/token_creation_capability_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules_corpus.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -6588,5 +6602,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "7e24295591a325b6c8535caf772d4702507d2e733948709232b2a748481294fe"
+  "fingerprint": "646f301fdbcb7125796e6cebcb60a300527f973cf6ec651d2d5a8821e3aca8df"
 }

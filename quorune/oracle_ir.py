@@ -47,7 +47,6 @@ from .compiler.fixed_counter_trigger_nodes import (
 )
 from .compiler.fixed_keyword_entry_nodes import fixed_keyword_entry_nodes
 from .compiler.explore_templates import single_explore_effect_template
-from .compiler.fixed_numbers import fixed_number as _number
 from .compiler.keyword_templates import keyword_mechanics
 from .compiler.life_templates import fixed_life_effect_template
 from .compiler.keyword_nodes import (
@@ -92,6 +91,7 @@ from .compiler.spell_additional_cost_nodes import (
     typed_additional_cost_spell_node,
 )
 from .compiler.tap_state_templates import targeted_tap_state_effect_template
+from .compiler.token_templates import fixed_token_creation_effect_template
 from .fixed_keyword_entry_counters import FIXED_KEYWORD_ENTRY_MECHANICS
 from .rules.capabilities import CapabilityRegistry
 from .rules.source_references import SourceReferenceSpec
@@ -103,7 +103,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v90"
+ORACLE_COMPILER_VERSION = "oracle-ir-v91"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -393,52 +393,9 @@ def _effect_template(
             None,
             ("cr-400-general",),
         )
-    match = re.fullmatch(
-        r"create (?P<count>a|one|two|three|four|five|six|seven|eight|"
-        r"nine|ten|\d+) (?P<power>\d+)/(?P<toughness>\d+) "
-        r"(?P<color>white|blue|black|red|green|colorless) "
-        r"(?P<subtypes>[A-Za-z][A-Za-z -]*?) "
-        r"(?P<artifact>artifact )?creature tokens?\.?",
-        normalized,
-        re.IGNORECASE,
-    )
-    if match:
-        colors = {
-            "white": ["W"],
-            "blue": ["U"],
-            "black": ["B"],
-            "red": ["R"],
-            "green": ["G"],
-            "colorless": [],
-        }[match.group("color").casefold()]
-        subtypes = " ".join(
-            word.capitalize()
-            for word in match.group("subtypes").split()
-        )
-        artifact = bool(match.group("artifact"))
-        return (
-            "create-basic-creature-token-v1",
-            (
-                {
-                    "op": "create_token",
-                    "controller": "$controller",
-                    "name": subtypes,
-                    "quantity": _number(match.group("count")),
-                    "characteristics": {
-                        "type_line": (
-                            "Token "
-                            + ("Artifact " if artifact else "")
-                            + f"Creature — {subtypes}"
-                        ),
-                        "colors": colors,
-                        "power": match.group("power"),
-                        "toughness": match.group("toughness"),
-                    },
-                },
-            ),
-            None,
-            ("cr-111-tokens",),
-        )
+    token_creation = fixed_token_creation_effect_template(normalized)
+    if token_creation is not None:
+        return token_creation.compiled()
     scry_template = fixed_scry_effect_template(normalized)
     if scry_template is not None:
         return scry_template.compiled()

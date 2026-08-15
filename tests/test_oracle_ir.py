@@ -1930,7 +1930,7 @@ class OracleIRTests(unittest.TestCase):
                 self.db.lookup("Sprout"),
                 (
                     "Create a 1/1 green Saproling creature token "
-                    "with flying."
+                    "and you gain 1 life."
                 ),
             ),
             (
