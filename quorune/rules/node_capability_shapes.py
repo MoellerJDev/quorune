@@ -33,10 +33,15 @@ from ..compiler.fixed_source_effect_sequences import (
     FIXED_SOURCE_SEQUENCE_MECHANIC,
     SOURCE_ZONE_OBJECT,
 )
-from ..compiler.direct_target import DirectPermanentTargetSpec
 from ..keyword_counters import keyword_counter_mechanic
 from ..zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
 from .amass_capability_shapes import fixed_amass_node_capabilities
+from .permanent_predicate_capability_shapes import (
+    direct_target_predicate_capabilities,
+    fixed_counter_target_schema_is_closed,
+    fixed_counter_target_set_state_capabilities,
+    public_state_query_capabilities,
+)
 from ..affected_permanents import (
     AffectedPermanentSetError,
     AffectedPermanentSetSpec,
@@ -871,32 +876,6 @@ def targeted_counter_node_capabilities(
     )
 
 
-def fixed_counter_target_schema_is_closed(
-    target_schema: Mapping[str, Any] | None,
-    *,
-    allow_commander: bool = False,
-) -> bool:
-    try:
-        DirectPermanentTargetSpec.from_target_schema(
-            target_schema,  # type: ignore[arg-type]
-            allow_commander=allow_commander,
-        )
-    except (TypeError, ValueError):
-        return False
-    return True
-
-
-def direct_target_predicate_capabilities(
-    target_schema: Mapping[str, Any],
-) -> tuple[str, ...]:
-    target_spec = DirectPermanentTargetSpec.from_target_schema(target_schema)
-    return (
-        ("target.permanent.characteristic_predicate",)
-        if target_spec.uses_compound_characteristics
-        else ()
-    )
-
-
 def fixed_counter_placement_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -1310,6 +1289,9 @@ def fixed_counter_placement_set_node_capabilities(
         return ()
     if not fixed_counter_set_spec_is_closed(spec):
         return ()
+    state_capabilities = public_state_query_capabilities(
+        spec.query.state_predicate
+    )
     if spec.controller_relation is AffectedControllerRelation.TARGET_PLAYER:
         if (
             "cr-115-targets" not in mechanics
@@ -1333,6 +1315,7 @@ def fixed_counter_placement_set_node_capabilities(
         return (
             "counter.producer.fixed_permanent_set_effect",
             *characteristic_capabilities,
+            *state_capabilities,
             "target.revalidate_resolution",
         )
     if target_schema is not None:
@@ -1340,6 +1323,7 @@ def fixed_counter_placement_set_node_capabilities(
     return (
         "counter.producer.fixed_permanent_set_effect",
         *characteristic_capabilities,
+        *state_capabilities,
     )
 
 
@@ -1397,6 +1381,7 @@ def fixed_counter_placement_target_set_node_capabilities(
         "controller_relation",
         "source_exclusion",
         "support_source_context",
+        "state_predicate",
         "up_to",
     }
     if (
@@ -1430,6 +1415,12 @@ def fixed_counter_placement_target_set_node_capabilities(
             return ()
     if "source_exclusion" in schema and schema["source_exclusion"] is not True:
         return ()
+    state_capabilities = fixed_counter_target_set_state_capabilities(
+        schema,
+        types_any=tuple(types_any),
+    )
+    if state_capabilities is None:
+        return ()
     if support:
         source_context = schema.get("support_source_context")
         if (
@@ -1438,6 +1429,7 @@ def fixed_counter_placement_target_set_node_capabilities(
             or tuple(types_any) != ("creature",)
             or "types_none" in schema
             or "controller_relation" in schema
+            or bool(state_capabilities)
             or source_context not in {"permanent", "spell"}
             or (
                 source_context == "permanent"
@@ -1459,6 +1451,7 @@ def fixed_counter_placement_target_set_node_capabilities(
     return (
         "counter.producer.fixed_permanent_target_set_effect",
         *characteristic_capabilities,
+        *state_capabilities,
         "target.revalidate_resolution",
     )
 

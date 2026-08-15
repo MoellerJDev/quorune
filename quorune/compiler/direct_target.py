@@ -6,6 +6,10 @@ from dataclasses import dataclass
 import re
 from typing import Any, Mapping, Sequence
 
+from ..object_predicate import (
+    ObjectQueryError,
+    PermanentStatePredicateSpec,
+)
 from .creature_subtypes import canonical_creature_subtype
 
 
@@ -44,6 +48,7 @@ DIRECT_PERMANENT_TYPES = frozenset(
     }
 )
 _DIRECT_KEYWORDS = frozenset({"flying"})
+_DIRECT_COLORS = frozenset({"W", "U", "B", "R", "G"})
 
 
 def _canonical_terms(
@@ -59,6 +64,21 @@ def _canonical_terms(
     return normalized
 
 
+def _canonical_colors(
+    values: Sequence[str],
+    *,
+    field: str,
+) -> tuple[str, ...]:
+    normalized = tuple(
+        sorted(value.upper() for value in _closed_values(values, field=field))
+    )
+    if len(set(normalized)) != len(normalized) or not set(
+        normalized
+    ).issubset(_DIRECT_COLORS):
+        raise ValueError(f"Direct-target {field} values are unsupported")
+    return normalized
+
+
 @dataclass(frozen=True, slots=True)
 class DirectPermanentTargetSpec:
     """One closed, immutable direct-permanent target predicate.
@@ -71,7 +91,11 @@ class DirectPermanentTargetSpec:
     types_any: tuple[str, ...] = ()
     types_all: tuple[str, ...] = ()
     subtypes_any: tuple[str, ...] = ()
+    subtypes_none: tuple[str, ...] = ()
     keywords_all: tuple[str, ...] = ()
+    colors_none: tuple[str, ...] = ()
+    colorless: bool | None = None
+    state_predicate: PermanentStatePredicateSpec | None = None
     controller_relation: str = "any"
     source_exclusion: bool = False
     commander: bool | None = None
@@ -81,6 +105,7 @@ class DirectPermanentTargetSpec:
             "types_any",
             "types_all",
             "subtypes_any",
+            "subtypes_none",
             "keywords_all",
         ):
             object.__setattr__(
@@ -88,6 +113,11 @@ class DirectPermanentTargetSpec:
                 field_name,
                 _canonical_terms(getattr(self, field_name), field=field_name),
             )
+        object.__setattr__(
+            self,
+            "colors_none",
+            _canonical_colors(self.colors_none, field="colors_none"),
+        )
         if self.types_any and self.types_all:
             raise ValueError(
                 "Direct permanent targets cannot mix any/all type predicates"
@@ -113,6 +143,15 @@ class DirectPermanentTargetSpec:
                     raise ValueError(
                         f"Direct permanent target subtype {subtype!r} is unsupported"
                     )
+        if self.subtypes_none:
+            if self.types_any != ("creature",) or len(self.subtypes_none) != 1:
+                raise ValueError(
+                    "Direct permanent excluded subtypes require one creature predicate"
+                )
+            if self.subtypes_none != ("human",):
+                raise ValueError(
+                    "Direct permanent excluded subtype must be Human"
+                )
         if self.keywords_all:
             if (
                 self.types_all != ("creature",)
@@ -122,6 +161,41 @@ class DirectPermanentTargetSpec:
             ):
                 raise ValueError(
                     "Direct permanent keyword targets require a closed creature predicate"
+                )
+        if self.colors_none and (
+            self.types_any != ("creature",) or self.colors_none != ("B",)
+        ):
+            raise ValueError(
+                "Direct permanent excluded colors require the closed nonblack creature predicate"
+            )
+        if self.colorless is not None and (
+            self.colorless is not True or self.types_any != ("creature",)
+        ):
+            raise ValueError(
+                "Direct permanent colorless predicates require a creature target"
+            )
+        if self.state_predicate is not None:
+            state = self.state_predicate
+            if not isinstance(state, PermanentStatePredicateSpec):
+                raise ValueError(
+                    "Direct permanent public-state predicate must be typed"
+                )
+            state_kinds = sum(
+                (
+                    state.entered_this_turn,
+                    state.tapped is not None,
+                    state.counter_name is not None,
+                )
+            )
+            if state_kinds != 1 or (
+                (state.entered_this_turn or state.tapped is not None)
+                and self.types_any != ("creature",)
+            ) or (
+                state.counter_name is not None
+                and self.types_any not in {(), ("creature",)}
+            ):
+                raise ValueError(
+                    "Direct permanent public-state predicate is unsupported"
                 )
         if self.controller_relation not in {"any", "you", "opponent"}:
             raise ValueError("Direct permanent target controller relation is unsupported")
@@ -148,6 +222,14 @@ class DirectPermanentTargetSpec:
             predicate = "permanent"
         if self.keywords_all:
             predicate += "-with-" + "-and-".join(self.keywords_all)
+        if self.subtypes_none:
+            predicate += "-non-" + "-and-".join(self.subtypes_none)
+        if self.colors_none:
+            predicate += "-non-" + "-and-".join(
+                value.casefold() for value in self.colors_none
+            )
+        if self.colorless:
+            predicate += "-colorless"
         if self.commander:
             predicate = f"commander-{predicate}"
         return predicate
@@ -159,6 +241,17 @@ class DirectPermanentTargetSpec:
             predicate += f"-{self.controller_relation}"
         if self.source_exclusion:
             predicate += "-another"
+        if self.state_predicate is not None:
+            state = self.state_predicate
+            if state.entered_this_turn:
+                predicate += "-entered-this-turn"
+            elif state.tapped is not None:
+                predicate += "-tapped" if state.tapped else "-untapped"
+            else:
+                assert state.counter_name is not None
+                predicate += "-with-" + direct_target_slug(
+                    state.counter_name
+                ) + "-counter"
         return predicate
 
     @property
@@ -170,7 +263,14 @@ class DirectPermanentTargetSpec:
             or self.keywords_all
             or len(self.types_any) > 1
             or len(self.subtypes_any) > 1
+            or self.subtypes_none
+            or self.colors_none
+            or self.colorless is not None
         )
+
+    @property
+    def uses_public_state(self) -> bool:
+        return self.state_predicate is not None
 
     def to_target_schema(self) -> dict[str, Any]:
         schema: dict[str, Any] = {
@@ -182,11 +282,17 @@ class DirectPermanentTargetSpec:
             "types_any",
             "types_all",
             "subtypes_any",
+            "subtypes_none",
             "keywords_all",
+            "colors_none",
         ):
             values = getattr(self, field_name)
             if values:
                 schema[field_name] = list(values)
+        if self.colorless is not None:
+            schema["colorless"] = self.colorless
+        if self.state_predicate is not None:
+            schema["state_predicate"] = self.state_predicate.to_dict()
         if self.controller_relation != "any":
             schema["controller_relation"] = self.controller_relation
         if self.source_exclusion:
@@ -212,7 +318,11 @@ class DirectPermanentTargetSpec:
             "types_any",
             "types_all",
             "subtypes_any",
+            "subtypes_none",
             "keywords_all",
+            "colors_none",
+            "colorless",
+            "state_predicate",
             "controller_relation",
             "source_exclusion",
             *(('commander',) if allow_commander else ()),
@@ -229,11 +339,24 @@ class DirectPermanentTargetSpec:
         source_exclusion = schema.get("source_exclusion", False)
         if type(source_exclusion) is not bool:
             raise ValueError("Direct permanent target source exclusion must be boolean")
+        raw_state = schema.get("state_predicate")
+        try:
+            state_predicate = (
+                PermanentStatePredicateSpec.from_dict(raw_state)
+                if raw_state is not None
+                else None
+            )
+        except ObjectQueryError as exc:
+            raise ValueError(str(exc)) from exc
         spec = cls(
             types_any=tuple(schema.get("types_any", ())),
             types_all=tuple(schema.get("types_all", ())),
             subtypes_any=tuple(schema.get("subtypes_any", ())),
+            subtypes_none=tuple(schema.get("subtypes_none", ())),
             keywords_all=tuple(schema.get("keywords_all", ())),
+            colors_none=tuple(schema.get("colors_none", ())),
+            colorless=schema.get("colorless"),
+            state_predicate=state_predicate,
             controller_relation=schema.get("controller_relation", "any"),
             source_exclusion=source_exclusion,
             commander=schema.get("commander"),
@@ -264,6 +387,34 @@ def direct_permanent_target_spec(
     else:
         return None
 
+    state_predicate: PermanentStatePredicateSpec | None = None
+    counter_state = re.fullmatch(
+        r"(?P<body>.+) with (?:a|an) "
+        r"(?P<counter>[+-]\d+/[+-]\d+|[a-z][a-z'-]*(?: [a-z][a-z'-]*){0,2}) "
+        r"counter on it",
+        phrase,
+    )
+    if counter_state is not None:
+        phrase = counter_state.group("body")
+        try:
+            state_predicate = PermanentStatePredicateSpec(
+                counter_name=counter_state.group("counter"),
+                minimum_counter_count=1,
+            )
+        except ObjectQueryError:
+            return None
+    else:
+        for suffix in (
+            " that entered the battlefield this turn",
+            " that entered this turn",
+        ):
+            if phrase.endswith(suffix):
+                phrase = phrase[: -len(suffix)]
+                state_predicate = PermanentStatePredicateSpec(
+                    entered_this_turn=True
+                )
+                break
+
     relation = "any"
     for suffix, candidate in (
         (" an opponent controls", "opponent"),
@@ -278,8 +429,27 @@ def direct_permanent_target_spec(
     kwargs: dict[str, Any] = {
         "controller_relation": relation,
         "source_exclusion": exclude_source,
+        "state_predicate": state_predicate,
     }
-    if phrase == "artifact or creature":
+    if phrase == "tapped creature":
+        if state_predicate is not None:
+            return None
+        kwargs["types_any"] = ("creature",)
+        kwargs["state_predicate"] = PermanentStatePredicateSpec(tapped=True)
+    elif phrase == "nonblack creature":
+        kwargs["types_any"] = ("creature",)
+        kwargs["colors_none"] = ("B",)
+    elif phrase == "colorless creature":
+        kwargs["types_any"] = ("creature",)
+        kwargs["colorless"] = True
+    elif re.fullmatch(r"non-[a-z][a-z' -]* creature", phrase):
+        raw_subtype = phrase[len("non-") : -len(" creature")]
+        subtype = canonical_creature_subtype(raw_subtype)
+        if subtype is None:
+            return None
+        kwargs["types_any"] = ("creature",)
+        kwargs["subtypes_none"] = (subtype,)
+    elif phrase == "artifact or creature":
         kwargs["types_any"] = ("artifact", "creature")
     elif phrase == "enchantment creature":
         kwargs["types_all"] = ("enchantment", "creature")

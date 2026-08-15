@@ -34,7 +34,7 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "2d61f1169f1e27d3d4e7ab8979c60fc39a8263d8c7daaed52245b704a5443f46",
+      "sha256": "724fdfd3b738963861053c0457e7c2a0312ce3a4fd2fdb57e4d3b275395ea4c8",
       "version": 16
     },
     {
@@ -6963,12 +6963,12 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "2d61f1169f1e27d3d4e7ab8979c60fc39a8263d8c7daaed52245b704a5443f46",
+      "contract_sha256": "724fdfd3b738963861053c0457e7c2a0312ce3a4fd2fdb57e4d3b275395ea4c8",
       "contract_version": 16,
       "coverage_status": "partial",
       "dependencies": [],
       "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, normalized fixed counter zone-change trigger, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v18",
+      "implementation_version": "counter-placement-transaction-v19",
       "kind": "rules_section",
       "known_blockers": [
         "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual; Amass X, zero, copied, granted, optional, repeated, conditional, modal, compound, and linked-result forms remain residual; variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions remain residual",
@@ -6998,6 +6998,12 @@
         "test_counter_quantity_replacement_mutant_is_killed",
         "test_spell_trigger_and_activated_contexts_share_fixed_counter_lowering",
         "test_closed_subject_grammar_uses_typed_types_subtypes_and_relations",
+        "test_public_state_direct_targets_compile_typed_predicates",
+        "test_public_state_target_capability_dependency_fails_closed",
+        "test_public_state_targets_share_offer_command_and_resolution_revalidation",
+        "test_public_state_predicate_runtime_mutation_is_killed",
+        "test_four_player_target_predicate_privacy_rollback_and_replay",
+        "test_ruins_of_oran_rief_composes_tapped_entry_with_characteristic_target",
         "test_fixed_counter_template_property_is_deterministic_for_exact_counts",
         "test_unsupported_fixed_counter_variants_remain_material_residuals",
         "test_fixed_counter_shape_and_dependency_mutants_fail_closed",
@@ -7008,6 +7014,8 @@
         "test_fixed_counter_effect_suspends_for_quantity_replacement",
         "test_four_player_fixed_counter_replacement_choice_is_seat_scoped",
         "test_spell_trigger_and_activated_contexts_share_fixed_counter_set_lowering",
+        "test_public_state_counter_sets_are_typed_and_deterministic",
+        "test_public_state_counter_set_resolves_current_membership_once",
         "test_fixed_counter_set_resolves_canonical_apnap_batch",
         "test_fixed_counter_set_suspends_for_quantity_replacement",
         "test_target_player_counter_set_is_seat_scoped_and_replays_exactly",
@@ -7015,6 +7023,7 @@
         "test_inactive_target_player_counter_set_rolls_back_without_mutation",
         "test_fixed_counter_set_compiler_mutant_is_killed",
         "test_spell_trigger_and_activated_contexts_share_target_set_lowering",
+        "test_tapped_target_set_revalidates_public_state_before_placement",
         "test_runtime_canonicalizes_still_legal_targets_in_apnap_order",
         "test_partial_target_revalidation_places_only_on_still_legal_targets",
         "test_all_original_targets_illegal_is_countered_before_counter_mutation",

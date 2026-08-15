@@ -24,7 +24,10 @@ from quorune.counter_placement_sets import (
 from quorune.deck import DeckLoader
 from quorune.errors import GameRuleError
 from quorune.model import CardInstance, StackItem
-from quorune.object_predicate import ObjectQuerySpec
+from quorune.object_predicate import (
+    ObjectQuerySpec,
+    PermanentStatePredicateSpec,
+)
 from quorune.object_query import ObjectQueryResult
 from quorune.oracle_ir import compile_oracle_card
 from quorune.projection import StateProjector
@@ -109,6 +112,8 @@ def _row(
     subtypes: tuple[str, ...] = (),
     token: bool = False,
     phased_out: bool = False,
+    counters: dict[str, int] | None = None,
+    entered_this_turn: bool = False,
 ) -> ObjectQueryResult:
     return ObjectQueryResult(
         object_id=f"object:{ref}",
@@ -122,6 +127,8 @@ def _row(
         subtypes=subtypes,
         token=token,
         phased_out=phased_out,
+        counters=counters or {},
+        entered_this_turn=entered_this_turn,
     )
 
 
@@ -329,6 +336,98 @@ class FixedCounterPlacementSetCompilerTests(unittest.TestCase):
                 self.assertTrue(expected.items() <= query.items())
                 self.assertEqual(first.compiled(), second.compiled())
 
+    def test_public_state_counter_sets_are_typed_and_deterministic(self):
+        cases = (
+            (
+                "Put a +1/+1 counter on each creature you control with a +1/+1 counter on it.",
+                PermanentControllerRelation.ACTOR,
+                (),
+                (),
+                {
+                    "entered_this_turn": False,
+                    "tapped": None,
+                    "counter_name": "+1/+1",
+                    "minimum_counter_count": 1,
+                },
+            ),
+            (
+                "Put a +1/+1 counter on each green creature that entered this turn.",
+                PermanentControllerRelation.ANY,
+                ("G",),
+                (),
+                {
+                    "entered_this_turn": True,
+                    "tapped": None,
+                    "counter_name": None,
+                    "minimum_counter_count": None,
+                },
+            ),
+            (
+                "Put a +1/+1 counter on each Frog, Rabbit, Raccoon, or Squirrel you control that entered the battlefield this turn.",
+                PermanentControllerRelation.ACTOR,
+                (),
+                ("frog", "rabbit", "raccoon", "squirrel"),
+                {
+                    "entered_this_turn": True,
+                    "tapped": None,
+                    "counter_name": None,
+                    "minimum_counter_count": None,
+                },
+            ),
+        )
+        for text, relation, colors, subtypes, expected_state in cases:
+            with self.subTest(text=text):
+                first = fixed_counter_placement_set_effect_template(text)
+                second = fixed_counter_placement_set_effect_template(text)
+                self.assertIsNotNone(first)
+                self.assertEqual(first, second)
+                assert first is not None
+                self.assertEqual(relation, first.spec.controller_relation)
+                self.assertEqual(colors, first.spec.query.colors_any)
+                self.assertEqual(subtypes, first.spec.query.subtypes_any)
+                assert first.spec.query.state_predicate is not None
+                self.assertEqual(
+                    expected_state,
+                    first.spec.query.state_predicate.to_dict(),
+                )
+                dependencies = capability_dependencies_for_node(
+                    effects=first.effects,
+                    target_schema=first.target_schema,
+                    mechanic_ids=first.mechanics,
+                )
+                self.assertIn(
+                    "state_query.permanent.public_state_predicate",
+                    dependencies,
+                )
+                ir = self.compile(text)
+                self.assertEqual("exact", ir.status)
+                self.assertEqual(first.compiled(), second.compiled())
+
+        value = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+        dependency = next(
+            row
+            for row in value["capabilities"]
+            if row["id"] == "state_query.permanent.public_state_predicate"
+        )
+        dependency["status"] = "blocked"
+        dependency["blockers"] = ["focused dependency mutation"]
+        blocked = compile_oracle_card(
+            replace(
+                self.base,
+                name="Fixture",
+                oracle_text=(
+                    "Put a +1/+1 counter on each creature that entered this turn."
+                ),
+                type_line="Sorcery",
+                keywords=(),
+                faces=(),
+            ),
+            capability_registry=CapabilityRegistry(value),
+            capability_profile="commander_review",
+        )
+        self.assertNotEqual("exact", blocked.status)
+        self.assertTrue(blocked.material_residuals)
+
     def test_target_player_set_has_exact_target_schema(self):
         template = fixed_counter_placement_set_effect_template(
             "Put a -1/-1 counter on each creature target opponent controls."
@@ -349,12 +448,10 @@ class FixedCounterPlacementSetCompilerTests(unittest.TestCase):
         texts = (
             "You may put a +1/+1 counter on each creature you control.",
             "Put X +1/+1 counters on each creature you control.",
-            "Put a +1/+1 counter on each creature you control with a +1/+1 counter on it.",
             "Put a +1/+1 counter on each modified creature you control.",
             "Put a +1/+1 counter on each attacking creature.",
             "Put a +1/+1 counter on each face-down creature you control.",
             "Put a +1/+1 counter on each colorless creature you control.",
-            "Put a +1/+1 counter on each creature that entered this turn.",
             "Put a +1/+1 counter on each of them.",
             "Put a +1/+1 counter on each Cat and Dog you control.",
             "Put a +1/+1 counter on each creature you control and a loyalty counter on each planeswalker you control.",
@@ -613,6 +710,58 @@ class FixedCounterPlacementSetRuntimeTests(unittest.TestCase):
             ][-3:],
         )
 
+    def test_public_state_counter_set_resolves_current_membership_once(self):
+        session = self.session(12280805)
+        engine = session.engine
+        engine.state.active_player = "C"
+        self.assertGreater(engine.state.turn_sequence, 0)
+        current = self.add_permanent(
+            engine,
+            seat="B",
+            name="Scute Swarm",
+            ref="current-entry-set-creature",
+        )
+        current.entered_battlefield_turn_sequence = engine.state.turn_sequence
+        previous = self.add_permanent(
+            engine,
+            seat="C",
+            name="Scute Swarm",
+            ref="previous-entry-set-creature",
+        )
+        previous.entered_battlefield_turn_sequence = max(
+            0, engine.state.turn_sequence - 1
+        )
+        template = fixed_counter_placement_set_effect_template(
+            "Put a +1/+1 counter on each creature that entered this turn."
+        )
+        self.assertIsNotNone(template)
+        assert template is not None
+        plan = FixedCounterPlacementSetHandler().lower(
+            self.effect(template.spec),
+            self.context(apnap=("C", "D", "A", "B")),
+        )
+        late = self.add_permanent(
+            engine,
+            seat="D",
+            name="Scute Swarm",
+            ref="late-current-entry-set-creature",
+        )
+        late.entered_battlefield_turn_sequence = engine.state.turn_sequence
+
+        execute_intent_plan(engine, plan)
+
+        self.assertEqual(1, current.counters["+1/+1"])
+        self.assertNotIn("+1/+1", previous.counters)
+        self.assertEqual(1, late.counters["+1/+1"])
+        self.assertEqual(
+            [late.ref, current.ref],
+            [
+                event.details["object"]
+                for event in engine.state.events
+                if event.code == "counter.add"
+            ][-2:],
+        )
+
     def test_typed_counter_set_handler_rejects_malformed_effects(self):
         valid = self.effect(
             self.creature_set(PermanentControllerRelation.ACTOR)
@@ -673,12 +822,13 @@ class FixedCounterPlacementSetRuntimeTests(unittest.TestCase):
             name="Scute Swarm",
             ref="counter-set-source",
         )
-        self.add_permanent(
+        other = self.add_permanent(
             engine,
             seat="A",
             name="Scute Swarm",
             ref="counter-set-other",
         )
+        other.entered_battlefield_turn_sequence = engine.state.turn_sequence
         self.add_permanent(
             engine,
             seat="A",
@@ -691,8 +841,15 @@ class FixedCounterPlacementSetRuntimeTests(unittest.TestCase):
             name="Doc Samson, Super Psychiatrist",
             ref="counter-set-doc",
         )
-        spec = self.creature_set(
-            PermanentControllerRelation.ACTOR,
+        spec = AffectedPermanentSetSpec(
+            query=ObjectQuerySpec(
+                zones=("battlefield",),
+                types_all=("creature",),
+                state_predicate=PermanentStatePredicateSpec(
+                    entered_this_turn=True
+                ),
+            ),
+            controller_relation=PermanentControllerRelation.ACTOR,
             exclude_source=True,
         )
         program = SemanticProgram(
@@ -755,8 +912,17 @@ class FixedCounterPlacementSetRuntimeTests(unittest.TestCase):
             name="Scute Swarm",
             ref="c-untargeted-set",
         )
-        spec = self.creature_set(
-            PermanentControllerRelation.TARGET_PLAYER,
+        targets[0].counters["+1/+1"] = 1
+        spec = AffectedPermanentSetSpec(
+            query=ObjectQuerySpec(
+                zones=("battlefield",),
+                types_all=("creature",),
+                state_predicate=PermanentStatePredicateSpec(
+                    counter_name="+1/+1",
+                    minimum_counter_count=1,
+                ),
+            ),
+            controller_relation=PermanentControllerRelation.TARGET_PLAYER,
             target_controller="$target.0",
         )
         program = SemanticProgram(
@@ -812,7 +978,10 @@ class FixedCounterPlacementSetRuntimeTests(unittest.TestCase):
         for seat in engine.seats:
             result = session.act(f"pilot:{seat}", {"action_id": "pass"})
             self.assertTrue(result.ok, result.summary)
-        self.assertEqual([1, 1], [card.counters["+1/+1"] for card in targets])
+        self.assertEqual(
+            [2, 0],
+            [card.counters.get("+1/+1", 0) for card in targets],
+        )
         self.assertEqual(0, other.counters.get("+1/+1", 0))
         expected_hash = authoritative_state_hash(engine.state)
 

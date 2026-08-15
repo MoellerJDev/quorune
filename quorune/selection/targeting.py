@@ -5,6 +5,10 @@ from typing import Any, Mapping, Protocol, Sequence
 
 from ..errors import GameRuleError
 from ..model import CardInstance, StackItem
+from ..object_predicate import (
+    ObjectQueryError,
+    permanent_state_predicate_matches,
+)
 from ..replacement.immutable import FrozenMap, thaw_value
 from ..semantics import SemanticProgram
 from ..target_characteristics import TargetCharacteristicSnapshot
@@ -38,6 +42,33 @@ class TargetSelectionHost(Protocol):
     def _effective_card_data(self, card: Any) -> Mapping[str, Any]: ...
     def _type_parts(self, type_line: str) -> tuple[set[str], set[str], set[str]]: ...
     def _increment_optimization(self, seat: str, key: str, amount: int = 1) -> None: ...
+
+
+def _target_group_public_state_matches(
+    group: TargetGroup,
+    *,
+    card: CardInstance | None,
+    turn_sequence: int,
+) -> bool:
+    """Evaluate one target group's typed current public-state predicate."""
+
+    if group.state_predicate is None:
+        return True
+    if card is None:
+        return False
+    try:
+        return permanent_state_predicate_matches(
+            group.state_predicate,
+            counters=card.counters,
+            entered_this_turn=(
+                card.zone == "battlefield"
+                and card.entered_battlefield_turn_sequence > 0
+                and card.entered_battlefield_turn_sequence == turn_sequence
+            ),
+            tapped=card.tapped,
+        )
+    except ObjectQueryError as exc:
+        raise GameRuleError(str(exc)) from exc
 
 
 class TargetSelectionOwnerMixin:
@@ -272,6 +303,8 @@ class TargetSelectionOwnerMixin:
             return False
         if group.colors_all and not set(group.colors_all).issubset(colors):
             return False
+        if group.colors_none and colors.intersection(group.colors_none):
+            return False
         if group.colorless is not None and (not colors) != group.colorless:
             return False
         mana_value = characteristics.mana_value
@@ -301,6 +334,12 @@ class TargetSelectionOwnerMixin:
             return False
         if group.tapped is not None and (
             bool(card and card.tapped) != group.tapped
+        ):
+            return False
+        if not _target_group_public_state_matches(
+            group,
+            card=card if isinstance(card, CardInstance) else None,
+            turn_sequence=self.state.turn_sequence,
         ):
             return False
         if group.commander is not None and (

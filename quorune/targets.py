@@ -3,6 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Mapping, Sequence
 
+from .object_predicate import (
+    ObjectQueryError,
+    PermanentStatePredicateSpec,
+)
 from .relative_power_target import (
     RelativePowerTargetCondition,
     RelativePowerTargetError,
@@ -76,6 +80,7 @@ _TARGET_GROUP_FIELDS = frozenset(
         "types_all",
         "types_none",
         "subtypes_any",
+        "subtypes_none",
         "subtype",
         "supertypes_any",
         "supertype",
@@ -83,6 +88,7 @@ _TARGET_GROUP_FIELDS = frozenset(
         "colors_any",
         "colors",
         "colors_all",
+        "colors_none",
         "colorless",
         "mana_value_min",
         "mana_value_max",
@@ -110,6 +116,7 @@ _TARGET_GROUP_FIELDS = frozenset(
         "different_from_groups",
         "predicate",
         "resolution_condition",
+        "state_predicate",
         "id",
         "group",
         # Validated by the owning compiler/capability shape rather than by
@@ -143,10 +150,12 @@ class TargetGroup:
     types_all: tuple[str, ...] = ()
     types_none: tuple[str, ...] = ()
     subtypes_any: tuple[str, ...] = ()
+    subtypes_none: tuple[str, ...] = ()
     supertypes_any: tuple[str, ...] = ()
     keywords_all: tuple[str, ...] = ()
     colors_any: tuple[str, ...] = ()
     colors_all: tuple[str, ...] = ()
+    colors_none: tuple[str, ...] = ()
     colorless: bool | None = None
     mana_value_min: float | None = None
     mana_value_max: float | None = None
@@ -174,6 +183,7 @@ class TargetGroup:
     different_from_groups: tuple[str, ...] = ()
     predicate: str = ""
     resolution_condition: dict[str, Any] = field(default_factory=dict)
+    state_predicate: PermanentStatePredicateSpec | None = None
 
     def matches_type_characteristics(
         self,
@@ -198,6 +208,12 @@ class TargetGroup:
                 self.subtypes_any
                 and not actual_subtypes.intersection(
                     value.casefold() for value in self.subtypes_any
+                )
+            )
+            or (
+                self.subtypes_none
+                and actual_subtypes.intersection(
+                    value.casefold() for value in self.subtypes_none
                 )
             )
             or (
@@ -280,6 +296,15 @@ class TargetGroup:
                 ).to_dict()
             except RelativePowerTargetError as exc:
                 raise ValueError(str(exc)) from exc
+        raw_state_predicate = raw.get("state_predicate")
+        try:
+            state_predicate = (
+                PermanentStatePredicateSpec.from_dict(raw_state_predicate)
+                if raw_state_predicate is not None
+                else None
+            )
+        except ObjectQueryError as exc:
+            raise ValueError(str(exc)) from exc
         return cls(
             group_id=str(raw.get("id") or raw.get("group") or default_id),
             zones=zones,
@@ -290,6 +315,7 @@ class TargetGroup:
             types_all=_strings(raw.get("types_all")),
             types_none=_strings(raw.get("types_none")),
             subtypes_any=_strings(raw.get("subtypes_any", raw.get("subtype"))),
+            subtypes_none=_strings(raw.get("subtypes_none")),
             supertypes_any=_strings(
                 raw.get("supertypes_any", raw.get("supertype"))
             ),
@@ -300,6 +326,9 @@ class TargetGroup:
             ),
             colors_all=tuple(
                 color.upper() for color in _strings(raw.get("colors_all"))
+            ),
+            colors_none=tuple(
+                color.upper() for color in _strings(raw.get("colors_none"))
             ),
             colorless=_optional_bool(raw.get("colorless")),
             mana_value_min=(
@@ -344,6 +373,7 @@ class TargetGroup:
             different_from_groups=_strings(raw.get("different_from_groups")),
             predicate=predicate,
             resolution_condition=resolution_condition,
+            state_predicate=state_predicate,
         )
 
     def public_dict(self, legal_refs: Sequence[str]) -> dict[str, Any]:

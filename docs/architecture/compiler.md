@@ -76,16 +76,20 @@ fixed counter-placement grammar. Direct targets lower once to
 `DirectPermanentTargetSpec`, whose deterministic runtime schema supports the
 represented type conjunctions and disjunctions, pinned creature-subtype
 disjunctions, reviewed Vehicle subtype, Flying predicate, controller relation,
-and source exclusion. Arbitrary adjectives are never inferred as creature
-subtypes. The same owner preserves two or three printed fixed placements on
+source exclusion, closed negative subtype and color forms, and one shared
+typed public-state predicate for tapped state, named-counter presence, or
+current-turn battlefield entry. Arbitrary adjectives are never inferred as
+creature subtypes. The same owner preserves two or three printed fixed placements on
 one shared source or direct permanent target as one typed batch node; runtime
 code receives the typed node and never reparses Oracle text.
 
 The same compiler owner lowers optional bounded permanent target sets from
 both “up to N target” and “each of up to N target” wording. It emits one
 zero-to-N target schema and one typed simultaneous placement instruction;
-spell, triggered, and activated contexts share that production. Variable
-limits, subtype or combat-state predicates, and compound instructions remain
+spell, triggered, and activated contexts share that production. The closed
+tapped-creature form uses the same public-state predicate and resolution
+revalidation as a single direct target. Variable limits, subtype or other
+combat-state predicates, and compound instructions remain
 source-spanned residuals.
 
 `compiler/fixed_counter_trigger_nodes.py` composes that already typed effect

@@ -593,6 +593,71 @@ class TypedLandEntryRuntimeTests(unittest.TestCase):
             )
         )
 
+    def test_ruins_of_oran_rief_composes_tapped_entry_with_characteristic_target(
+        self,
+    ):
+        session = self.session(61401266)
+        engine = session.engine
+        ruins = self.add_card(
+            engine,
+            seat="A",
+            name="Ruins of Oran-Rief",
+            ref="ROR1",
+            register_all=True,
+        )
+        target_ref = engine.create_token(
+            "A",
+            name="Colorless Entrant",
+            characteristics={
+                "type_line": "Token Creature — Construct",
+                "colors": [],
+                "power": "1",
+                "toughness": "1",
+                "keywords": [],
+            },
+        )[0]
+        target = engine._resolve_object(
+            "A", target_ref, zones={"battlefield"}
+        )
+        self.assertEqual(
+            engine.state.turn_sequence,
+            target.entered_battlefield_turn_sequence,
+        )
+        engine.move_card(
+            ruins.object_id,
+            "battlefield",
+            controller="A",
+            log=False,
+        )
+        self.assertTrue(ruins.tapped)
+
+        self.stage_main(engine)
+        self.issue_priority(engine)
+        action_id = f"activate:{ruins.ref}:ab3"
+        self.assertNotIn(
+            action_id,
+            {action["id"] for action in self.legal_actions(session)},
+        )
+
+        ruins.tapped = False
+        self.issue_priority(engine)
+        action = next(
+            action
+            for action in self.legal_actions(session)
+            if action["id"] == action_id
+        )
+        self.assertIn(target.ref, action["target_schema"]["legal_refs"])
+        activated = session.act(
+            "pilot:A",
+            {"action_id": action_id, "targets": [target.ref]},
+        )
+        self.assertTrue(activated.ok, activated.summary)
+        self.assertTrue(ruins.tapped)
+        for seat in engine.seats:
+            passed = session.act(f"pilot:{seat}", {"action_id": "pass"})
+            self.assertTrue(passed.ok, passed.summary)
+        self.assertEqual(1, target.counters.get("+1/+1", 0))
+
     def test_fell_faces_compose_target_revalidation_with_tapped_entry(self):
         session = self.session(61401265)
         engine = session.engine

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 100,
+  "registry_version": 101,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -912,7 +912,7 @@
       "implementation_components": ["quorune.compiler.entry_state_templates.static_entry_state_handler", "quorune.semantic_runtime.entry_state.EntryStateReplacementHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.life_state.prepare_life_payment", "quorune.zone_transitions.ZoneTransitionOwner", "quorune.land_entry_coordination.execute_land_entry_priority_action"],
       "positive_tests": ["test_closed_entry_state_family_lowers_to_capability_closed_programs", "test_land_entry_families_use_typed_snapshot_and_canonical_owners", "test_selected_mdfc_face_isolates_entry_program"],
       "negative_tests": ["test_entry_state_near_misses_remain_residual", "test_entry_preparation_rejects_stale_face_and_rolls_back", "test_only_historical_v3_registry_can_use_entry_adapter"],
-      "interaction_tests": ["test_ambient_untapped_competes_with_intrinsic_tapped_entry", "test_shock_land_payment_is_prepared_before_zone_mutation", "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes", "test_fell_faces_compose_target_revalidation_with_tapped_entry", "test_glasswing_faces_compose_aura_attachment_with_tapped_entry", "test_lotus_field_composes_tapped_entry_with_controller_relative_hexproof"],
+      "interaction_tests": ["test_ambient_untapped_competes_with_intrinsic_tapped_entry", "test_shock_land_payment_is_prepared_before_zone_mutation", "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes", "test_fell_faces_compose_target_revalidation_with_tapped_entry", "test_glasswing_faces_compose_aura_attachment_with_tapped_entry", "test_lotus_field_composes_tapped_entry_with_controller_relative_hexproof", "test_ruins_of_oran_rief_composes_tapped_entry_with_characteristic_target"],
       "multiplayer_tests": ["test_bond_land_uses_current_four_player_opponent_count", "test_competing_land_entry_choice_is_private_and_replayable"],
       "privacy_tests": ["test_competing_land_entry_choice_is_private_and_replayable"],
       "replay_tests": ["test_competing_land_entry_choice_is_private_and_replayable"],
@@ -4030,21 +4030,48 @@
       "status": "trusted"
     },
     {
-      "id": "target.permanent.characteristic_predicate",
+      "id": "state_query.permanent.public_state_predicate",
       "version": 1,
-      "official_rules": ["115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "official_rules": ["110.5", "115.1", "115.2", "115.6", "122.1", "122.1a", "122.6", "608.2b", "608.2h"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
-        "summary": "Compile one closed direct-permanent target predicate and enforce its current effective types, subtypes, keywords, controller relation, and source exclusion identically at offer, command-validation, and resolution time.",
-        "inputs": ["one public battlefield permanent", "canonical effective card types and subtypes", "canonical effective keyword set", "acting controller", "stable source identity", "one immutable typed direct-target descriptor"],
+        "summary": "Evaluate one immutable public battlefield-state predicate for direct targets and affected sets from authoritative tapped state, current counters, and current-turn battlefield-entry history.",
+        "inputs": ["one public battlefield permanent", "current tapped state", "canonical current counter map", "positive battlefield-entry turn sequence", "current game turn sequence", "one immutable typed public-state predicate"],
+        "outputs": ["deterministic target offer and command verdict", "resolution-time target revalidation", "deterministic affected-set membership", "exact replay"],
+        "exclusions": ["hidden-zone state", "arbitrary Oracle-text predicates", "generic counter-presence without a named counter", "counter quantities other than a fixed positive minimum", "entered-before or left-this-turn history", "combat, attachment, modification, damage, or controller-history predicates"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.object_predicate.PermanentStatePredicateSpec", "quorune.object_predicate.permanent_state_predicate_matches", "quorune.object_query.ObjectQueryResult", "quorune.targets.TargetGroup", "quorune.selection.targeting.TargetSelectionOwnerMixin._target_row_matches", "quorune.affected_permanents.select_affected_permanents"],
+      "positive_tests": ["test_public_state_direct_targets_compile_typed_predicates", "test_public_state_counter_sets_are_typed_and_deterministic"],
+      "negative_tests": ["test_unsupported_and_malformed_direct_target_predicates_fail_closed", "test_unsupported_counter_set_variants_remain_material_residuals"],
+      "interaction_tests": ["test_public_state_targets_share_offer_command_and_resolution_revalidation", "test_public_state_counter_set_resolves_current_membership_once", "test_tapped_target_set_revalidates_public_state_before_placement"],
+      "multiplayer_tests": ["test_public_state_counter_set_resolves_current_membership_once", "test_target_player_counter_set_is_seat_scoped_and_replays_exactly"],
+      "privacy_tests": ["test_four_player_target_predicate_privacy_rollback_and_replay", "test_target_player_counter_set_is_seat_scoped_and_replays_exactly"],
+      "replay_tests": ["test_four_player_target_predicate_privacy_rollback_and_replay", "test_target_player_counter_set_is_seat_scoped_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Every compiler shape using public permanent state declares this capability, so blocking it leaves the containing CardProgram partial before runtime mutation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_public_state_predicate_runtime_mutation_is_killed bypasses the shared state evaluator; current-versus-previous-turn target assertions reject the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "target.permanent.characteristic_predicate",
+      "version": 2,
+      "official_rules": ["105.2", "115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile one closed direct-permanent target predicate and enforce its current effective types, subtypes, colors, keywords, controller relation, and source exclusion identically at offer, command-validation, and resolution time.",
+        "inputs": ["one public battlefield permanent", "canonical effective card types, subtypes, and colors", "canonical effective keyword set", "acting controller", "stable source identity", "one immutable typed direct-target descriptor"],
         "outputs": ["deterministic public legal-target set", "submitted-command verdict", "resolution-time CR 608.2b revalidation", "exact replay"],
-        "exclusions": ["hidden-zone targets", "arbitrary Oracle-text predicates", "counter-presence, modified, combat-state, attachment-state, tapped, token, name, mana-value, color, or owner predicates", "keywords other than the represented Flying predicate", "noncreature subtypes other than Vehicle", "target-changing effects"]
+        "exclusions": ["hidden-zone targets", "arbitrary Oracle-text predicates", "modified, combat-state, attachment-state, token, name, mana-value, or owner predicates", "colors outside the represented nonblack and colorless creature forms", "negative subtypes outside the represented non-Human creature form", "keywords other than the represented Flying predicate", "noncreature subtypes other than Vehicle", "target-changing effects"]
       },
       "dependencies": ["target.revalidate_resolution"],
       "implementation_components": ["quorune.compiler.direct_target.DirectPermanentTargetSpec", "quorune.compiler.direct_target.direct_permanent_target_spec", "quorune.targets.TargetGroup", "quorune.target_characteristics.TargetCharacteristicSnapshot", "quorune.engine.CommanderEngine._target_row_matches"],
-      "positive_tests": ["test_closed_direct_target_grammar_compiles_typed_predicates", "test_compound_target_sequence_harvests_enchantment_creature"],
+      "positive_tests": ["test_closed_direct_target_grammar_compiles_typed_predicates", "test_compound_target_sequence_harvests_enchantment_creature", "test_public_state_direct_targets_compile_typed_predicates"],
       "negative_tests": ["test_unsupported_and_malformed_direct_target_predicates_fail_closed"],
-      "interaction_tests": ["test_current_effective_characteristics_govern_offer_command_and_resolution", "test_furnace_skullbomb_target_predicate_and_draw_compose"],
+      "interaction_tests": ["test_current_effective_characteristics_govern_offer_command_and_resolution", "test_public_state_targets_share_offer_command_and_resolution_revalidation", "test_furnace_skullbomb_target_predicate_and_draw_compose", "test_ruins_of_oran_rief_composes_tapped_entry_with_characteristic_target"],
       "multiplayer_tests": ["test_four_player_target_predicate_privacy_rollback_and_replay"],
       "privacy_tests": ["test_four_player_target_predicate_privacy_rollback_and_replay"],
       "replay_tests": ["test_four_player_target_predicate_privacy_rollback_and_replay"],
