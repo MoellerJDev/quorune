@@ -108,10 +108,10 @@ def _commit(
             pending=prepared.pending,
         )
     try:
-        committed = commit_life_change_batch(host, prepared)
+        commit_life_change_batch(host, prepared)
     except LifeChangeError as exc:
         raise GameRuleError(str(exc)) from exc
-    dispatch_life_gain_records(host, committed.records)
+    dispatch_life_gain_records(host, prepared.records)
     return prepared
 
 

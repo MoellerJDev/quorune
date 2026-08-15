@@ -395,10 +395,10 @@ class DrawRevealCoordinatorTests(unittest.TestCase):
         revealed_from_zones: list[str] = []
         original_dispatch = engine._dispatch_semantic_event
 
-        def observe_dispatch(event: str, context: dict):
+        def observe_dispatch(event: str, context: dict, **kwargs):
             if event == "card.draw.revealed_by_source":
                 revealed_from_zones.append(engine.state.cards[object_id].zone)
-            return original_dispatch(event, context)
+            return original_dispatch(event, context, **kwargs)
 
         with (
             mock.patch.object(
