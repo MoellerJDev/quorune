@@ -721,6 +721,24 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_optional_target_loyalty_activation_pays_cost_without_a_target_and_replays",
+      "piece_ids": ["capability.activation.loyalty.positive_counter_cost", "capability.counter.producer.fixed_permanent_target_set_effect"],
+      "capability_ids": ["activation.loyalty.positive_counter_cost", "counter.producer.fixed_permanent_target_set_effect"],
+      "interaction_order": 2,
+      "assertion": "An optional fixed target-set effect may choose no target while its positive loyalty-symbol cost still enters the replacement-aware cost transaction, creates the stack object, resolves without target mutation, and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.counter.producer.fixed_permanent_target_set_effect", "residual.replacement.damage-prevention"],
+      "capability_ids": ["counter.producer.fixed_permanent_target_set_effect"],
+      "interaction_order": 2,
+      "assertion": "A card that combines an exact optional fixed counter-target ability with unresolved damage-prevention prose remains unavailable at strict CardProgram runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_partial_target_revalidation_preserves_remaining_subject",
       "piece_ids": ["capability.counter.producer.fixed_permanent_group_effect", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.producer.fixed_permanent_group_effect", "target.revalidate_resolution"],

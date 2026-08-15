@@ -20,7 +20,7 @@ from quorune.counter_placement_targets import (
 from quorune.deck import DeckLoader
 from quorune.model import CardInstance, StackItem
 from quorune.object_query import ObjectQueryResult
-from quorune.oracle_ir import compile_oracle_card
+from quorune.oracle_ir import compile_oracle_card, register_generated_programs
 from quorune.projection import StateProjector
 from quorune.record import (
     authoritative_state_hash,
@@ -55,6 +55,7 @@ def focused_card_database(directory: str) -> CardDatabase:
         [
             ROOT / "tests" / "fixtures" / "scryfall-exact-lists.json",
             ROOT / "tests" / "fixtures" / "counter-replacement-cards.json",
+            ROOT / "tests" / "fixtures" / "optional-counter-targets.json",
         ],
         database,
     )
@@ -198,6 +199,13 @@ class FixedCounterPlacementTargetSetCompilerTests(unittest.TestCase):
                     "types_none": ["creature"],
                 },
             ),
+            (
+                "+1: Put a +1/+1 counter on up to one target creature.",
+                "Legendary Planeswalker — Adept",
+                "activated_ability",
+                1,
+                {"types_any": ["creature"]},
+            ),
         )
         for text, type_line, kind, maximum, predicates in contexts:
             with self.subTest(text=text):
@@ -230,6 +238,11 @@ class FixedCounterPlacementTargetSetCompilerTests(unittest.TestCase):
                     "target.revalidate_resolution",
                     node.capability_dependencies,
                 )
+                if text.startswith("+1:"):
+                    self.assertIn(
+                        "activation.loyalty.positive_counter_cost",
+                        node.capability_dependencies,
+                    )
                 self.assertEqual(text, text[node.span.start : node.span.end])
 
     def test_target_set_shape_and_dependency_mutants_fail_closed(self):
@@ -316,6 +329,8 @@ class FixedCounterPlacementTargetSetCompilerTests(unittest.TestCase):
         texts = (
             "Put a +1/+1 counter on each of up to X target creatures.",
             "You may put a +1/+1 counter on each of up to two target creatures.",
+            "Put a +1/+1 counter on up to one target attacking creature.",
+            "Put a +1/+1 counter on up to one target Dinosaur you control.",
             "Put a +1/+1 counter on each of up to two target attacking creatures.",
             "Put a +1/+1 counter on each of up to two target Merfolk you control.",
             "Put a +1/+1 counter on each of up to two target creatures with a counter on them.",
@@ -485,6 +500,19 @@ class FixedCounterPlacementTargetSetRuntimeTests(unittest.TestCase):
         )
         engine.state.stack.append(item)
         return item
+
+    @staticmethod
+    def pass_until(session, predicate, *, limit: int = 24) -> None:
+        for _ in range(limit):
+            if predicate():
+                return
+            principals = session.pending_principals()
+            if not principals:
+                raise AssertionError("Resolution stopped without a decision")
+            result = session.act(principals[0], {"action_id": "pass"})
+            if not result.ok:
+                raise AssertionError(result.summary)
+        raise AssertionError("Resolution did not reach the expected state")
 
     def test_runtime_canonicalizes_still_legal_targets_in_apnap_order(self):
         session = self.session(12290801)
@@ -743,6 +771,77 @@ class FixedCounterPlacementTargetSetRuntimeTests(unittest.TestCase):
             replay = replay_record(record_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(5, replay["commands"])
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_optional_target_loyalty_activation_pays_cost_without_a_target_and_replays(
+        self,
+    ):
+        session = self.session(12290806)
+        engine = session.engine
+        record = self.db.lookup("Optional Counter Adept")
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (record,),
+            trust_level="provisional",
+            capability_registry=load_default_capability_registry(),
+            capability_profile=engine.state.config.review_profile,
+            promote_exact_effect_programs=True,
+        )
+        source = self.add_permanent(
+            engine,
+            seat="A",
+            name=record.name,
+            ref="optional-counter-adept",
+        )
+        source.counters["loyalty"] = 3
+        target = self.add_permanent(
+            engine,
+            seat="B",
+            name="Scute Swarm",
+            ref="optional-counter-target",
+        )
+        engine.state.active_player = "A"
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine._grant_priority("A")
+        engine._issue_priority("A")
+        action_id = f"activate:{source.ref}:ab1"
+        action = next(
+            value
+            for value in session.packet("pilot:A", full=True)["decision"][
+                "ctx"
+            ]["legal"]["actions"]
+            if value["id"] == action_id
+        )
+        self.assertEqual(1, action["target_schema"]["up_to"])
+        self.assertEqual(0, action["target_schema"]["groups"][0]["min"])
+        self.assertEqual(1, action["target_schema"]["groups"][0]["max"])
+        self.assertIn(
+            target.ref,
+            action["target_schema"]["legal_refs"],
+        )
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        result = session.act(
+            "pilot:A",
+            {"action_id": action_id, "targets": []},
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual(4, source.counters["loyalty"])
+        self.assertEqual([], engine.state.stack[-1].targets)
+
+        self.pass_until(session, lambda: not engine.state.stack)
+
+        self.assertEqual({}, target.counters)
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "optional-counter-target-replay"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
 
 

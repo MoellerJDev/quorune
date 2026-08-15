@@ -333,6 +333,18 @@ _WITNESSES = {
         "{4}{W}{W}",
         loyalty="4",
     ),
+    "oko-trickster": _Witness(
+        "Oko, the Trickster",
+        "Legendary Planeswalker — Oko",
+        "+1: Put two +1/+1 counters on up to one target creature you "
+        "control.\n"
+        "0: Until end of turn, Oko becomes a copy of target creature you "
+        "control. Prevent all damage that would be dealt to him this turn.\n"
+        "−7: Until end of turn, each creature you control has base power "
+        "and toughness 10/10 and gains trample.",
+        "{4}{G}{U}",
+        loyalty="4",
+    ),
     "runesword": _Witness(
         "Runesword",
         "Artifact",
@@ -407,6 +419,7 @@ EFFECT_AND_REPLACEMENT_PAIRS = (
     _pair("capability.permanent.exile.effect", "residual.replacement.self-replacement-and-prevention-ordering"),
     _pair("capability.permanent.indestructible.ordinary", "residual.replacement.replacement-applicability"),
     _pair("capability.permanent.indestructible.ordinary", "residual.replacement.self-replacement-and-prevention-ordering"),
+    _pair("capability.counter.producer.fixed_permanent_target_set_effect", "residual.replacement.damage-prevention"),
 )
 
 ZONE_AND_CHOICE_PAIRS = (
@@ -520,6 +533,7 @@ _bind("rancid-earth", *EFFECT_AND_REPLACEMENT_PAIRS[19:21])
 _bind("cleansing-meditation", *EFFECT_AND_REPLACEMENT_PAIRS[21:23])
 _bind("legacy-weapon", *EFFECT_AND_REPLACEMENT_PAIRS[23:25])
 _bind("tekuthal", *EFFECT_AND_REPLACEMENT_PAIRS[25:27])
+_bind("oko-trickster", EFFECT_AND_REPLACEMENT_PAIRS[27])
 _bind("dauthi-voidwalker", ZONE_AND_CHOICE_PAIRS[0])
 _bind("sphinxs-insight", ZONE_AND_CHOICE_PAIRS[1])
 _bind("electrolyze", ZONE_AND_CHOICE_PAIRS[2], ZONE_AND_CHOICE_PAIRS[4])

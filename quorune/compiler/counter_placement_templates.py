@@ -899,7 +899,7 @@ def fixed_counter_placement_target_set_effect_template(
         return None
     subject = " ".join(match.group("subject").casefold().split())
     target = re.fullmatch(
-        rf"each of up to (?P<maximum>{_COUNT}) target "
+        rf"(?:each of )?up to (?P<maximum>{_COUNT}) target "
         r"(?P<noncreature>noncreature )?"
         r"(?P<kind>artifact|artifacts|battle|battles|creature|creatures|"
         r"enchantment|enchantments|land|lands|permanent|permanents|"

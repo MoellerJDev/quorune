@@ -236,6 +236,15 @@ replacement-aware `PlaceCountersIntent`, so APNAP choice, rollback, privacy,
 and replay reuse the existing counter transaction rather than a second
 mutation path.
 
+One optional bounded target-set owner accepts the closed “on up to N target”
+and “on each of up to N target” forms for represented permanent types and
+controller relations. Choosing zero targets is a complete legal activation or
+cast choice, not a skipped instruction: non-target costs still commit, the
+stack object still resolves, and the resulting empty placement batch performs
+no mutation. Selected targets are revalidated independently before the shared
+replacement-aware transaction. Variable quantities, subtype and combat-state
+predicates, linked choices, and compound results remain residual.
+
 Intrinsic Planeswalker loyalty and Battle defense now use the same boundary.
 The card-form compiler reads the canonical parsed type set and printed integral
 characteristic once, emits a type-line-spanned CardProgram declaration, and
