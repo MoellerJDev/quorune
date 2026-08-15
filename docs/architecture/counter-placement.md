@@ -1,7 +1,7 @@
 ---
 title: "Counter placement and removal transactions"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_names.py, quorune/counter_state.py, quorune/counter_maximums.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/player_result_events.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/fixed_keyword_entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_maximum_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_counter_trigger_nodes.py, quorune/compiler/fixed_keyword_entry_nodes.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, semantic_runtime/ability_fragments.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_names.py, quorune/counter_state.py, quorune/counter_maximums.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/player_result_events.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/fixed_keyword_entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_maximum_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_counter_trigger_nodes.py, quorune/compiler/fixed_keyword_entry_nodes.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, quorune/rules/optional_counter_capability_shapes.py, semantic_runtime/ability_fragments.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, semantic_choices/optional_counter_placement.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
 verified: "2026-08-14"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
@@ -223,6 +223,17 @@ alternate-zone, and combined zone-change triggers remain residual. Granted,
 copied, or removed instances remain outside trust until all static components
 share the layer-6 ability-presence query; cast classification also excludes
 type-changing stack interactions.
+
+Those same closed event and effect-body families accept an exact leading “you
+may” as a separate optional capability. Resolution issues one controller-owned
+put-or-decline semantic choice. Declining completes without mutation;
+accepting prepends the already validated fixed counter operation and therefore
+retains its ordinary target revalidation, quantity-replacement ordering,
+rollback, privacy, and replay behavior. The choice handler validates the nested
+operation through the shared typed semantic interpreter and never commits a
+counter itself. Optional effects outside these represented event triggers,
+multiple instructions, variable amounts, linked “if you do” results, and other
+conditional forms remain residual.
 
 The same `place_counters` operation also owns one closed multi-subject family:
 two or three printed-order source/direct-target permanent subjects receive the

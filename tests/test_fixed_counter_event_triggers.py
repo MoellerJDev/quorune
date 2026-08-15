@@ -20,6 +20,8 @@ from quorune.damage_modifier_state import (
 from quorune.effect_runtime import dispatch_effect
 from quorune.compiler.fixed_counter_trigger_nodes import (
     FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
+    OPTIONAL_COUNTER_PLACEMENT_OPERATION,
+    OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
     FixedCounterTriggerBinding,
     FixedCounterTriggerEvent,
     FixedCounterZoneController,
@@ -51,6 +53,14 @@ from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
 )
+from quorune.semantic_choices.context import (
+    SemanticChoiceContext,
+    SnapshotSemanticChoiceQuery,
+)
+from quorune.semantic_choices.model import SemanticChoiceError
+from quorune.semantic_choices.optional_counter_placement import (
+    OptionalCounterPlacementHandler,
+)
 from quorune.semantic_runtime import LifeChangeIntent
 from quorune.trigger_processing import collect_trigger_items, enqueue_trigger_batch
 from scripts.build_test_database import build_fixture_database
@@ -70,6 +80,11 @@ TEMPLATE_IDS = {
     "fixed-counter-enchantment-entry-trigger-v1",
     "fixed-counter-creature-death-trigger-v1",
 }
+OPTIONAL_TEMPLATE_IDS = {
+    template_id.removesuffix("-v1") + "-optional-v1"
+    for template_id in TEMPLATE_IDS
+}
+ALL_TEMPLATE_IDS = TEMPLATE_IDS | OPTIONAL_TEMPLATE_IDS
 
 
 def focused_database(directory: str) -> CardDatabase:
@@ -114,6 +129,113 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             capability_registry=self.capabilities,
             capability_profile="commander_review",
         )
+
+    def test_optional_fixed_counter_event_triggers_compile_exactly(self):
+        cases = (
+            (
+                "At the beginning of your upkeep, you may put two charge counters on this artifact.",
+                "Artifact",
+                "fixed-counter-step-trigger-optional-v1",
+            ),
+            (
+                "Landfall — Whenever a land you control enters, you may put a +1/+1 counter on this creature.",
+                "Creature — Elemental",
+                "fixed-counter-controlled-land-entry-trigger-optional-v1",
+            ),
+            (
+                "Whenever you cast a noncreature spell, you may put a charge counter on this artifact.",
+                "Artifact",
+                "fixed-counter-controller-spell-cast-trigger-optional-v1",
+            ),
+            (
+                "Whenever you draw a card, you may put a +1/+1 counter on this creature.",
+                "Creature — Snake",
+                "fixed-counter-controller-card-draw-trigger-optional-v1",
+            ),
+            (
+                "Whenever another creature you control dies, you may put a +1/+1 counter on this creature.",
+                "Creature — Vampire",
+                "fixed-counter-creature-death-trigger-optional-v1",
+            ),
+            (
+                "At the beginning of combat on your turn, you may put a +1/+1 counter on target creature you control.",
+                "Artifact",
+                "fixed-counter-step-trigger-optional-v1",
+            ),
+        )
+        for text, type_line, template_id in cases:
+            with self.subTest(text=text):
+                ir = self.compile(text, type_line=type_line)
+                self.assertEqual("exact", ir.status)
+                node = next(
+                    value
+                    for value in ir.faces[0].nodes
+                    if value.template_id == template_id
+                )
+                self.assertTrue(node.exact)
+                self.assertEqual(
+                    OPTIONAL_COUNTER_PLACEMENT_OPERATION,
+                    node.effects[0]["op"],
+                )
+                self.assertEqual("$controller", node.effects[0]["player"])
+                self.assertEqual(
+                    "place_counters",
+                    node.effects[0]["effect"]["op"],
+                )
+                self.assertIn(
+                    OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
+                    node.mechanics,
+                )
+                self.assertNotIn(
+                    FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
+                    node.mechanics,
+                )
+                self.assertTrue(
+                    {
+                        "counter.producer.optional_fixed_event_trigger",
+                        "counter.producer.fixed_effect",
+                        "trigger.placement.apnap",
+                    }.issubset(node.capability_dependencies)
+                )
+                self.assertIn(
+                    "counter.placement.quantity_replacement",
+                    node.capability_closure,
+                )
+
+    def test_optional_counter_choice_rejects_malformed_nested_effect(self):
+        handler = OptionalCounterPlacementHandler()
+        query = SnapshotSemanticChoiceQuery(
+            seat_order=("A", "B"),
+            active_order=("A", "B"),
+        )
+        context = SemanticChoiceContext(
+            actor="A",
+            stack_ref="S1",
+            stack_controller="A",
+            stack_label="Optional counter fixture",
+            source_ref="source",
+            card_ref=None,
+            semantic_program_id="optional-counter-fixture",
+            semantic_program_version=1,
+            query=query,
+        )
+        malformed = {
+            "op": OPTIONAL_COUNTER_PLACEMENT_OPERATION,
+            "player": "A",
+            "effect": {
+                "op": "place_counters",
+                "card": "source",
+                "counter": "charge",
+                "amount": True,
+                "source": "source",
+            },
+        }
+        with self.assertRaises(SemanticChoiceError):
+            handler.prepare(malformed, context)
+        malformed["player"] = "B"
+        malformed["effect"]["amount"] = 1
+        with self.assertRaises(SemanticChoiceError):
+            handler.prepare(malformed, context)
 
     def test_normalized_player_result_events_are_strict_public_values(self):
         draw = CardDrawEvent(
@@ -559,18 +681,20 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             "Whenever an opponent gains life, put a +1/+1 counter on this creature.",
             "Whenever an opponent draws a card, put a +1/+1 counter on this creature.",
             "Whenever you draw your third card each turn, put a +1/+1 counter on this creature.",
-            "Whenever you gain life, you may put a +1/+1 counter on this creature.",
             "At the beginning of your upkeep, if you control a creature, put a charge counter on this artifact.",
-            "At the beginning of your upkeep, you may put a charge counter on this artifact.",
             "At the beginning of your upkeep, put X charge counters on this artifact.",
+            "At the beginning of your upkeep, you may put X charge counters on this artifact.",
+            "At the beginning of your upkeep, you may put a charge counter on this artifact. If you do, draw a card.",
+            "At the beginning of your upkeep, you may put a charge counter on this artifact, then gain 1 life.",
+            "You may put a charge counter on this artifact.",
             "At the beginning of your upkeep, move a charge counter from this artifact onto target creature.",
             "At the beginning of your upkeep, remove a charge counter from this artifact.",
             "Whenever another Zombie you control dies, put a +1/+1 counter on this creature.",
             "Whenever one or more creatures die, put a +1/+1 counter on this creature.",
             "Whenever another creature you control enters or dies, put a +1/+1 counter on this creature.",
             "Whenever another creature you control leaves the battlefield, put a +1/+1 counter on this creature.",
-            "Whenever another creature you control dies, you may put a +1/+1 counter on this creature.",
             "Whenever another creature with a counter on it dies, put a +1/+1 counter on this creature.",
+            "Whenever another Zombie you control dies, you may put a +1/+1 counter on this creature.",
             "Whenever another artifact dies, put a charge counter on this artifact.",
             "Whenever this artifact or another creature enters, put a charge counter on this artifact.",
         )
@@ -579,7 +703,7 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                 ir = self.compile(text, type_line="Creature — Fixture")
                 self.assertFalse(
                     any(
-                        node.template_id in TEMPLATE_IDS
+                        node.template_id in ALL_TEMPLATE_IDS
                         for node in ir.faces[0].nodes
                     )
                 )
@@ -663,6 +787,57 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                 for node in mutated.faces[0].nodes
             )
         )
+        self.assertNotEqual("exact", mutated.status)
+
+    def test_optional_counter_event_trigger_dependencies_and_mutations_fail_closed(
+        self,
+    ):
+        record = self.db.lookup("Optional Scheduled Counter Trigger Fixture")
+        for dependency_id in (
+            "counter.producer.optional_fixed_event_trigger",
+            "counter.producer.fixed_effect",
+            "counter.placement.quantity_replacement",
+            "trigger.placement.apnap",
+        ):
+            with self.subTest(dependency=dependency_id):
+                registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+                dependency = next(
+                    row
+                    for row in registry["capabilities"]
+                    if row["id"] == dependency_id
+                )
+                dependency["status"] = "blocked"
+                dependency["blockers"] = ["focused dependency mutation"]
+                ir = compile_oracle_card(
+                    record,
+                    capability_registry=CapabilityRegistry(registry),
+                    capability_profile="commander_review",
+                )
+                node = next(
+                    value
+                    for value in ir.faces[0].nodes
+                    if value.template_id in OPTIONAL_TEMPLATE_IDS
+                )
+                self.assertFalse(node.exact)
+                self.assertTrue(node.residual_ids)
+                self.assertNotEqual("exact", ir.status)
+
+        with patch(
+            "quorune.compiler.fixed_counter_trigger_nodes.OPTIONAL_COUNTER_PLACEMENT_OPERATION",
+            "mutated_optional_counter_operation",
+        ):
+            mutated = compile_oracle_card(
+                record,
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+            )
+        node = next(
+            value
+            for value in mutated.faces[0].nodes
+            if value.template_id in OPTIONAL_TEMPLATE_IDS
+        )
+        self.assertFalse(node.exact)
+        self.assertTrue(node.residual_ids)
         self.assertNotEqual("exact", mutated.status)
 
 
@@ -759,7 +934,7 @@ class FixedCounterEventTriggerRuntimeTests(unittest.TestCase):
                 capability_registry=self.capabilities,
                 capability_profile="commander_review",
             )
-            if program.provenance.get("template_id") in TEMPLATE_IDS
+            if program.provenance.get("template_id") in ALL_TEMPLATE_IDS
         ]
         self.assertEqual(1, len(programs))
         engine.semantics.put(programs[0])
@@ -1619,6 +1794,90 @@ class FixedCounterEventTriggerRuntimeTests(unittest.TestCase):
         self.assertFalse(source.counters)
         self.finish_replacements(session, "A")
         self.assertIn(source.counters.get("charge"), {5, 6})
+
+    def test_optional_counter_trigger_choice_composes_with_replacement_and_replay(
+        self,
+    ):
+        session = self.session(120007, players=4)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="C",
+            name="Optional Scheduled Counter Trigger Fixture",
+            ref="optional-counter-trigger-source",
+            zone="battlefield",
+        )
+        self.add_card(
+            engine,
+            seat="C",
+            name="Doubling Season",
+            ref="optional-trigger-doubling",
+            zone="battlefield",
+        )
+        self.add_card(
+            engine,
+            seat="C",
+            name="Doc Samson, Super Psychiatrist",
+            ref="optional-trigger-addition",
+            zone="battlefield",
+        )
+        self.register_trigger(engine, source)
+
+        def begin_choice() -> None:
+            engine.permissions.invalidate_current()
+            engine.state.pending_decision = None
+            engine.state.priority_player = None
+            engine.state.priority_passes = []
+            engine._dispatch_semantic_event(
+                "step.begin",
+                self.step_context(player="C"),
+            )
+            engine._stabilize()
+            self.resolve_top(engine)
+            self.assertEqual(
+                "semantic.choice",
+                engine.state.pending_decision.kind,
+            )
+
+        begin_choice()
+        declined = session.act(
+            "pilot:C",
+            {"action_id": "choose", "choice": "decline"},
+        )
+        self.assertTrue(declined.ok, declined.summary)
+        self.assertFalse(source.counters)
+
+        begin_choice()
+        projector = StateProjector(self.db, engine.state)
+        for seat in ("A", "B", "D"):
+            self.assertIsNone(projector._decision(f"pilot:{seat}"))
+        projected = projector._decision("pilot:C")
+        self.assertIsNotNone(projected)
+        self.assertNotIn(source.object_id, json.dumps(projected, sort_keys=True))
+
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        accepted = session.act(
+            "pilot:C",
+            {"action_id": "choose", "choice": "put"},
+        )
+        self.assertTrue(accepted.ok, accepted.summary)
+        self.assertEqual(
+            "replacement.order",
+            engine.state.pending_decision.kind,
+        )
+        self.assertFalse(source.counters)
+        self.finish_replacements(session, "C")
+        self.assertIn(source.counters.get("charge"), {5, 6})
+
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "optional-counter-trigger-replay"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
 
     def test_multiple_scheduled_counter_triggers_use_one_apnap_batch(self):
         session = self.session(120004, players=4)

@@ -48,6 +48,9 @@ from .node_capability_shapes import (
     targeted_return_to_hand_node_capabilities,
     targeted_tap_state_node_capabilities,
 )
+from .optional_counter_capability_shapes import (
+    optional_fixed_counter_event_trigger_node_capabilities,
+)
 from .fixed_controller_effect_shapes import (
     fixed_counter_controller_effect_sequence_node_capabilities,
     fixed_controller_effect_sequence_node_capabilities,
@@ -242,6 +245,9 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     "fixed-counter-event-trigger": (
         "counter.producer.fixed_event_trigger",
     ),
+    "optional-fixed-counter-event-trigger": (
+        "counter.producer.optional_fixed_event_trigger",
+    ),
     _FIXED_TARGET_SEQUENCE_MECHANIC: (
         "resolution.effect_sequence.fixed_target",
     ),
@@ -261,6 +267,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         "cr-119-life",
         "scry",
         "counter",
+        "optional-fixed-counter-event-trigger",
         "destroy",
         _EXILE_MECHANIC,
         "return-to-owner-hand",
@@ -854,6 +861,7 @@ def _targeted_effect_capabilities(
         fixed_counter_placement_set_node_capabilities,
         fixed_counter_placement_target_set_node_capabilities,
         fixed_player_counter_placement_node_capabilities,
+        optional_fixed_counter_event_trigger_node_capabilities,
         fixed_target_characteristics_node_capabilities,
         fixed_target_effect_sequence_node_capabilities,
         fixed_source_effect_sequence_node_capabilities,

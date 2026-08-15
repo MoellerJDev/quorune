@@ -4304,6 +4304,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/optional_counter_capability_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/single_object_zone_transition.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -4786,6 +4800,21 @@
     },
     {
       "file": "quorune/semantic_choices/object_selection.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_choices",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
+      "file": "quorune/semantic_choices/optional_counter_placement.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_choices",
       "allowed_dependency_layers": [
@@ -6533,5 +6562,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "43ac4696f177da5535cd8c067fb1b826bfc134eb5508f3db7eab7084d4c50b6c"
+  "fingerprint": "3ec27bb79ddfa19fffcd150323f1dc8af121c8f751baedf4d0264919b207e9ef"
 }
