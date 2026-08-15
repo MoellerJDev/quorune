@@ -15,11 +15,42 @@ import re
 from ..util import normalize_card_name
 
 
-SOURCE_REFERENCE_SCHEMA_VERSION = 1
+SOURCE_REFERENCE_SCHEMA_VERSION = 2
+
+
+_SOURCE_SELF_PERMANENT_TYPES = {
+    "this artifact": "artifact",
+    "this aura": "enchantment",
+    "this battle": "battle",
+    "this creature": "creature",
+    "this enchantment": "enchantment",
+    "this equipment": "artifact",
+    "this land": "land",
+    "this permanent": "permanent",
+    "this planeswalker": "planeswalker",
+    "this saga": "enchantment",
+    "this spacecraft": "artifact",
+    "this vehicle": "artifact",
+}
 
 
 class SourceReferenceError(ValueError):
     """Raised when a source-reference vocabulary cannot be constructed."""
+
+
+def source_self_permanent_type(candidate: object) -> str | None:
+    """Return a compile-time self descriptor's canonical permanent type.
+
+    Oracle's ``this Aura``-style wording identifies the source object; the
+    descriptor is not a resolution-time characteristic predicate.  Returning
+    the canonical card type lets compiler templates retain stable labels while
+    their executable reference remains the physical ``$source`` identity.
+    """
+
+    if type(candidate) is not str:
+        return None
+    normalized = " ".join(candidate.casefold().split())
+    return _SOURCE_SELF_PERMANENT_TYPES.get(normalized)
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -100,4 +131,5 @@ __all__ = [
     "SOURCE_REFERENCE_SCHEMA_VERSION",
     "SourceReferenceError",
     "SourceReferenceSpec",
+    "source_self_permanent_type",
 ]

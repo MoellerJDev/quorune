@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-13T19:18:44Z",
+  "observed_at": "2026-08-15T07:48:40Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -271,6 +271,20 @@
       ],
       "impact_edge_status": "added",
       "resolution": "The declaration-focused witness now verifies the three exact registered families and their shared capability dependency, the global ratchet includes those families, and AGENTS.md requires that exact global inventory test in any authorized focused check for registration changes."
+    },
+    {
+      "id": "ci-20260815-19",
+      "run_id": 31872123798,
+      "head_sha": "728942056a4bfdfd8cdb198dbcd526caa40ee8f3",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "The typed activation-tail harvest correctly promoted Scryb Ranger from partial to exact, but an existing compiler regression still asserted the prior partial status.",
+      "failed_surfaces": ["compiler-cardprogram"],
+      "regressions": [
+        "test_oracle_ir.OracleIRTests.test_mixed_keyword_line_preserves_runtime_and_capability_coverage"
+      ],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The regression now asserts exact status and zero material residuals. The path policy already selected compiler-cardprogram, so no missing impact edge existed; the incident remains recorded to prevent stale promotion assertions from being overlooked during focused compiler harvest review."
     }
   ],
   "recent_pull_requests": [

@@ -1458,7 +1458,8 @@ class OracleIRTests(unittest.TestCase):
             if "protection" in node.mechanics
         )
 
-        self.assertEqual("partial", ir.status)
+        self.assertEqual("exact", ir.status)
+        self.assertEqual(0, len(ir.material_residuals))
         self.assertTrue(compound.exact)
         self.assertEqual(
             ("protection.typed.debt",),

@@ -22,6 +22,7 @@ from quorune.rules.source_references import (
     SOURCE_REFERENCE_SCHEMA_VERSION,
     SourceReferenceError,
     SourceReferenceSpec,
+    source_self_permanent_type,
 )
 
 
@@ -125,6 +126,34 @@ class SourceReferenceModelTests(unittest.TestCase):
             with self.subTest(value=value):
                 with self.assertRaises(SourceReferenceError):
                     SourceReferenceSpec(value)  # type: ignore[arg-type]
+
+    def test_source_self_descriptors_are_identity_not_runtime_type_predicates(self):
+        expected = {
+            "this artifact": "artifact",
+            "this Aura": "enchantment",
+            "this battle": "battle",
+            "this creature": "creature",
+            "this enchantment": "enchantment",
+            "this Equipment": "artifact",
+            "this land": "land",
+            "this permanent": "permanent",
+            "this planeswalker": "planeswalker",
+            "this Saga": "enchantment",
+            "this Spacecraft": "artifact",
+            "this Vehicle": "artifact",
+        }
+        for text, card_type in expected.items():
+            with self.subTest(text=text):
+                self.assertEqual(card_type, source_self_permanent_type(text))
+        for text in (
+            None,
+            "this card",
+            "this token",
+            "this Vehicle you control",
+            "target Vehicle",
+        ):
+            with self.subTest(text=text):
+                self.assertIsNone(source_self_permanent_type(text))
 
 
 class SourceReferenceCompilerTests(unittest.TestCase):

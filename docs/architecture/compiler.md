@@ -191,9 +191,13 @@ Source-self wording uses one immutable `SourceReferenceSpec` across represented
 counter, damage, prevention, trigger, entry, activation-cost, and declaration
 grammar. It accepts the full Oracle name and bounded complete leading forms
 before a comma, the title delimiters “the” or “of,” or a bounded ordinary
-two-word name. It never guesses an arbitrary prefix, suffix, or nickname.
-Lowered instructions use `$source`; runtime handlers do not receive names or
-reinterpret Oracle text. See
+two-word name. The same owner recognizes a closed compile-time vocabulary of
+`this` permanent descriptors, including Aura, Equipment, Saga, Spacecraft, and
+Vehicle. Those descriptors identify the physical source; they are not current
+characteristic predicates, so type-changing effects do not retarget or cancel
+an already represented result. The model never guesses an arbitrary prefix,
+suffix, nickname, or subtype. Lowered instructions use `$source`; runtime
+handlers do not receive names or reinterpret Oracle text. See
 [ADR 0040](../adr/0040-closed-source-self-references.md).
 
 ## Extending the compiler

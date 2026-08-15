@@ -17,7 +17,10 @@ from ..affected_permanents import (
 )
 from ..object_predicate import ObjectQuerySpec
 from ..keyword_counters import keyword_counter_mechanic
-from ..rules.source_references import SourceReferenceSpec
+from ..rules.source_references import (
+    SourceReferenceSpec,
+    source_self_permanent_type,
+)
 from .creature_subtypes import canonical_creature_subtype
 from .direct_target import (
     DIRECT_PERMANENT_TYPES,
@@ -731,17 +734,13 @@ def fixed_counter_placement_effect_template(
         return None
     counter_name = " ".join(match.group("counter").casefold().split())
     subject = " ".join(match.group("subject").split())
-    source = re.fullmatch(
-        r"this (artifact|battle|creature|enchantment|land|permanent|planeswalker)",
-        subject,
-        re.IGNORECASE,
-    )
-    if source is not None:
+    source_permanent_type = source_self_permanent_type(subject)
+    if source_permanent_type is not None:
         return FixedCounterPlacementTemplate(
             count=count,
             counter_name=counter_name,
             subject=CounterPlacementSubject.SOURCE,
-            permanent_type=source.group(1).casefold(),
+            permanent_type=source_permanent_type,
         )
     if SourceReferenceSpec(card_name).matches(subject):
         return FixedCounterPlacementTemplate(
