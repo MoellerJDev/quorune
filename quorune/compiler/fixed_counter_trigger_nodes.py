@@ -11,6 +11,10 @@ from .ir_model import OracleNode, OracleResidual, SourceSpan, append_residual
 
 
 FIXED_COUNTER_EVENT_TRIGGER_MECHANIC = "fixed-counter-event-trigger"
+OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC = (
+    "optional-fixed-counter-event-trigger"
+)
+OPTIONAL_COUNTER_PLACEMENT_OPERATION = "offer_optional_counter_placement"
 
 _COUNTER_PLACEMENT_OPERATIONS = frozenset(
     {
@@ -484,20 +488,48 @@ def fixed_counter_event_trigger_node(
     binding = fixed_counter_trigger_binding(material_line)
     if binding is None:
         return None
-    template, effects, target_schema, body_mechanics = effect_template(
+    optional_match = re.fullmatch(
+        r"you may (?P<body>.+)",
         binding.body,
+        re.IGNORECASE,
+    )
+    body = (
+        optional_match.group("body")
+        if optional_match is not None
+        else binding.body
+    )
+    template, effects, target_schema, body_mechanics = effect_template(
+        body,
         card_name=card_name,
     )
-    if (
-        template is None
-        or not _COUNTER_PLACEMENT_OPERATIONS.intersection(
-            _nested_operations(effects)
-        )
-    ):
+    nested_counter_operations = _COUNTER_PLACEMENT_OPERATIONS.intersection(
+        _nested_operations(effects)
+    )
+    if template is None or not nested_counter_operations:
         return None
+    if optional_match is not None:
+        if (
+            len(effects) != 1
+            or effects[0].get("op") not in _COUNTER_PLACEMENT_OPERATIONS
+        ):
+            return None
+        effects = (
+            {
+                "op": OPTIONAL_COUNTER_PLACEMENT_OPERATION,
+                "player": "$controller",
+                "effect": effects[0],
+            },
+        )
+        trigger_mechanic = OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC
+        template_id = (
+            f"{binding.template_id.removesuffix('-v1')}-optional-v1"
+        )
+    else:
+        trigger_mechanic = FIXED_COUNTER_EVENT_TRIGGER_MECHANIC
+        template_id = binding.template_id
     mechanics = (
         "cr-603-handling-triggered-abilities",
-        FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
+        trigger_mechanic,
         *binding.event_mechanics,
         *body_mechanics,
     )
@@ -537,7 +569,7 @@ def fixed_counter_event_trigger_node(
         event_condition=binding.event_condition,
         lowerable=True,
         exact=not residual_ids,
-        template_id=binding.template_id,
+        template_id=template_id,
         effects=effects,
         target_schema=target_schema,
         mechanics=mechanics,
@@ -555,6 +587,8 @@ def fixed_counter_event_trigger_node(
 
 __all__ = [
     "FIXED_COUNTER_EVENT_TRIGGER_MECHANIC",
+    "OPTIONAL_COUNTER_PLACEMENT_OPERATION",
+    "OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC",
     "FixedCounterTriggerBinding",
     "FixedCounterTriggerEvent",
     "FixedCounterZoneController",

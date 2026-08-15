@@ -6335,6 +6335,62 @@
       "applicability_note": "Replay target selection, optional acceptance, and replacement-aware counter commitment to the same authoritative hash."
     },
     {
+      "capability_id": "counter.producer.optional_fixed_event_trigger",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_optional_counter_trigger_choice_composes_with_replacement_and_replay",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "608.2b", "608.2c", "609.1", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Decline without mutation, then accept the same fixed trigger and suspend before counter mutation while competing quantity replacements are ordered."
+    },
+    {
+      "capability_id": "counter.producer.optional_fixed_event_trigger",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_optional_counter_trigger_choice_composes_with_replacement_and_replay",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "608.2b", "608.2c", "609.1", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve the optional trigger in four-player state and route both its optional decision and affected-object replacement decision to the source controller."
+    },
+    {
+      "capability_id": "counter.producer.optional_fixed_event_trigger",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_optional_counter_event_trigger_dependencies_and_mutations_fail_closed",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "608.2b", "608.2c", "609.1", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Block trusted promotion when the optional producer, nested counter producer, quantity replacement, APNAP placement, or exact wrapper operation is mutated."
+    },
+    {
+      "capability_id": "counter.producer.optional_fixed_event_trigger",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_optional_counter_choice_rejects_malformed_nested_effect",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "608.2b", "608.2c", "609.1", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject an inactive or wrong chooser and reject malformed nested counter quantities through the shared typed semantic interpreter before issuing a choice."
+    },
+    {
+      "capability_id": "counter.producer.optional_fixed_event_trigger",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_optional_fixed_counter_event_triggers_compile_exactly",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "608.2b", "608.2c", "609.1", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile leading you-may counter bodies only on already represented normalized triggers and preserve the exact source span, target schema, event predicate, and nested fixed counter operation."
+    },
+    {
+      "capability_id": "counter.producer.optional_fixed_event_trigger",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_optional_counter_trigger_choice_composes_with_replacement_and_replay",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "608.2b", "608.2c", "609.1", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the put-or-decline choice only to the source controller without exposing the authoritative physical object identifier."
+    },
+    {
+      "capability_id": "counter.producer.optional_fixed_event_trigger",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_optional_counter_trigger_choice_composes_with_replacement_and_replay",
+      "official_rule_ids": ["115.1", "603.2", "603.3", "603.3b", "608.2b", "608.2c", "609.1", "122.1", "122.6", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the accepted optional continuation and every subsequent replacement-order choice to the identical authoritative state hash."
+    },
+    {
       "capability_id": "counter.producer.optional_self_entry",
       "evidence_class": "interaction",
       "test_id": "tests.test_unleash_rules.UnleashRuntimeTests.test_unleash_counter_uses_canonical_quantity_replacement_order",

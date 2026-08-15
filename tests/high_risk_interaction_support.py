@@ -345,6 +345,26 @@ _WITNESSES = {
         "{4}{G}{U}",
         loyalty="4",
     ),
+    "serras-hymn": _Witness(
+        "Serra's Hymn",
+        "Enchantment",
+        "At the beginning of your upkeep, you may put a verse counter on "
+        "this enchantment.\n"
+        "Sacrifice this enchantment: Prevent the next X damage that would "
+        "be dealt this turn to any number of targets, divided as you choose, "
+        "where X is the number of verse counters on this enchantment.",
+        "{W}",
+    ),
+    "vile-requiem": _Witness(
+        "Vile Requiem",
+        "Enchantment",
+        "At the beginning of your upkeep, you may put a verse counter on "
+        "this enchantment.\n"
+        "{1}{B}, Sacrifice this enchantment: Destroy up to X target nonblack "
+        "creatures, where X is the number of verse counters on this "
+        "enchantment. They can't be regenerated.",
+        "{2}{B}{B}",
+    ),
     "runesword": _Witness(
         "Runesword",
         "Artifact",
@@ -420,6 +440,9 @@ EFFECT_AND_REPLACEMENT_PAIRS = (
     _pair("capability.permanent.indestructible.ordinary", "residual.replacement.replacement-applicability"),
     _pair("capability.permanent.indestructible.ordinary", "residual.replacement.self-replacement-and-prevention-ordering"),
     _pair("capability.counter.producer.fixed_permanent_target_set_effect", "residual.replacement.damage-prevention"),
+    _pair("capability.counter.producer.fixed_effect", "residual.replacement.regeneration"),
+    _pair("capability.counter.producer.optional_fixed_event_trigger", "residual.replacement.damage-prevention"),
+    _pair("capability.counter.producer.optional_fixed_event_trigger", "residual.replacement.regeneration"),
 )
 
 ZONE_AND_CHOICE_PAIRS = (
@@ -534,6 +557,9 @@ _bind("cleansing-meditation", *EFFECT_AND_REPLACEMENT_PAIRS[21:23])
 _bind("legacy-weapon", *EFFECT_AND_REPLACEMENT_PAIRS[23:25])
 _bind("tekuthal", *EFFECT_AND_REPLACEMENT_PAIRS[25:27])
 _bind("oko-trickster", EFFECT_AND_REPLACEMENT_PAIRS[27])
+_bind("vile-requiem", EFFECT_AND_REPLACEMENT_PAIRS[28])
+_bind("serras-hymn", EFFECT_AND_REPLACEMENT_PAIRS[29])
+_bind("vile-requiem", EFFECT_AND_REPLACEMENT_PAIRS[30])
 _bind("dauthi-voidwalker", ZONE_AND_CHOICE_PAIRS[0])
 _bind("sphinxs-insight", ZONE_AND_CHOICE_PAIRS[1])
 _bind("electrolyze", ZONE_AND_CHOICE_PAIRS[2], ZONE_AND_CHOICE_PAIRS[4])

@@ -42,6 +42,25 @@
       "legalities": {"commander": "legal"}
     },
     {
+      "oracle_id": "12000000-0000-4000-8000-000000000018",
+      "name": "Optional Scheduled Counter Trigger Fixture",
+      "mana_cost": "{2}",
+      "cmc": 2.0,
+      "type_line": "Artifact",
+      "oracle_text": "At the beginning of your upkeep, you may put two charge counters on this artifact.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": [],
+      "keywords": [],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2026-08-15",
+      "legalities": {"commander": "legal"}
+    },
+    {
       "oracle_id": "12000000-0000-4000-8000-000000000003",
       "name": "Landfall Counter Trigger Fixture",
       "mana_cost": "{1}{G}",

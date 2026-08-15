@@ -1727,6 +1727,63 @@
       "assertion": "Innkeeper's Talent and Invasion of Moag retain self-replacement and prevention-ordering residuals while their independent fixed counter trigger emits one trusted executable CardProgram."
     },
     {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_optional_counter_trigger_choice_composes_with_replacement_and_replay",
+      "piece_ids": [
+        "capability.counter.placement.quantity_replacement",
+        "capability.counter.producer.optional_fixed_event_trigger"
+      ],
+      "capability_ids": [
+        "counter.placement.quantity_replacement",
+        "counter.producer.optional_fixed_event_trigger"
+      ],
+      "interaction_order": 2,
+      "assertion": "A controller may decline an optional fixed counter trigger without mutation or accept it and suspend before mutation while competing counter-quantity replacements are ordered and replayed exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.counter.producer.fixed_effect",
+        "residual.replacement.regeneration"
+      ],
+      "capability_ids": [
+        "counter.producer.fixed_effect"
+      ],
+      "interaction_order": 2,
+      "assertion": "Vile Requiem compiles its optional upkeep counter body through the fixed counter effect owner while its separate variable mass-destruction and regeneration prohibition remains material, so the complete CardProgram fails closed at runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.counter.producer.optional_fixed_event_trigger",
+        "residual.replacement.damage-prevention"
+      ],
+      "capability_ids": [
+        "counter.producer.optional_fixed_event_trigger"
+      ],
+      "interaction_order": 2,
+      "assertion": "Serra's Hymn compiles its optional upkeep counter trigger exactly while its separate variable divided damage-prevention activation remains material, so the complete CardProgram fails closed at runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.counter.producer.optional_fixed_event_trigger",
+        "residual.replacement.regeneration"
+      ],
+      "capability_ids": [
+        "counter.producer.optional_fixed_event_trigger"
+      ],
+      "interaction_order": 2,
+      "assertion": "Vile Requiem compiles its optional upkeep counter trigger exactly while its separate variable mass-destruction and regeneration prohibition remains material, so the complete CardProgram fails closed at runtime admission."
+    },
+    {
         "evidence_class": "interaction",
       "assurance_kind": "fail_closed_runtime_admission",
         "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
