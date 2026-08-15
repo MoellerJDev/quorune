@@ -512,6 +512,7 @@ class RulesSchedulerTests(unittest.TestCase):
                 "rules:ordinary-shroud-target-legality",
                 "rules:ordinary-echo-upkeep-trigger",
                 "rules:ordinary-fixed-threshold-crew",
+                "compiler:fixed-effect-clause-sequences",
             },
             {row["candidate_id"] for row in history},
         )
