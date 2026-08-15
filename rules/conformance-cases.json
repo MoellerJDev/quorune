@@ -80930,23 +80930,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.184",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_station_rules.StationCompilerTests.test_ordinary_station_compiles_source_spanned_activation"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/station.json"
+      ],
+      "notes": [
+        "Keyword heading; counter.producer.station owns the bounded ordinary activation while aggregate Station remains partial."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.184",
       "rule_text_sha256": "115ccf9610656d3b5afd25f3160d9b5201266fc01eb30943e15838542b36521a",
       "schema_version": 1,
@@ -80955,26 +80959,60 @@
         "end_line": 5365,
         "start_line": 5364
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "cost-creature phasing before resolution is excluded",
+        "type-changing interactions that remove creature power before resolution fail closed",
+        "CR 702.184c characteristic-substitution effects are not represented"
       ],
       "case_id": "cr-702.184a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.184"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_station_rules.StationRuntimeTests.test_station_taps_exact_creature_and_places_current_power",
+        "tests.test_station_rules.StationRuntimeTests.test_station_is_available_only_at_sorcery_timing",
+        "tests.test_station_rules.StationRuntimeTests.test_station_rejects_invalid_cost_objects_and_rolls_back",
+        "tests.test_station_rules.StationRuntimeTests.test_unresolved_station_power_fails_closed",
+        "tests.test_station_rules.StationRuntimeTests.test_station_uses_resolution_and_last_known_power",
+        "tests.test_station_rules.StationRuntimeTests.test_station_source_departure_skips_returned_object",
+        "tests.test_station_rules.StationRuntimeTests.test_station_quantity_replacement_suspends_and_replays"
+      ],
+      "implementation_components": [
+        "quorune.station.OrdinaryStationAbilitySpec",
+        "quorune.station.StationCostPlan",
+        "quorune.station.StationPowerReference",
+        "quorune.rules.activation.commit.commit_activation",
+        "quorune.zone_transitions.ZoneTransitionOwner",
+        "quorune.tap_state.set_permanent_tapped",
+        "quorune.semantic_runtime.station_handlers.StationCounterPlacementHandler",
+        "quorune.counter_placement.place_counters_on_refs"
+      ],
+      "notes": [
+        "The supported slice queries the same exact current characteristic boundary for offers, commitment, resolution, and departure LKI; negative values are clamped to zero and positive results use the canonical counter replacement transaction.",
+        "Aggregate CR 702.184a remains blocked rather than inheriting the narrower capability's trust."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.184a",
       "rule_text_sha256": "03ad551c06d04e70d9199211f57ec77564c5ec2b72f05217dbd91fe4bdf55f8b",
       "schema_version": 1,
@@ -80983,26 +81021,32 @@
         "end_line": 5367,
         "start_line": 5366
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "static_traceability",
       "blockers": [
-        "semantic_review_not_completed"
+        "CR 721 Station symbols and nonstandard-layout behavior remain unimplemented"
       ],
       "case_id": "cr-702.184b",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702.184"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_station_rules.StationCompilerTests.test_unsupported_station_families_remain_precise_residuals"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/station.json"
+      ],
+      "notes": [
+        "The ordinary activation is independent of Station-symbol behavior; this definition does not promote the CR 721 family."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.184b",
       "rule_text_sha256": "32da5fe29a78a2fea21776505f037d841147912b804ee8e94f16f1e0d44e7e17",
       "schema_version": 1,
@@ -81011,26 +81055,38 @@
         "end_line": 5369,
         "start_line": 5368
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Tapestry Warden and other static characteristic substitutions need a typed applicable-effect owner and resolution integration"
       ],
       "case_id": "cr-702.184c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.184"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_station_rules.StationCompilerTests.test_unsupported_station_families_remain_precise_residuals"
+      ],
+      "implementation_components": [
+        "quorune.station.station_resolution_power",
+        "mechanics/contracts/station.json"
+      ],
+      "notes": [
+        "The bounded capability explicitly excludes substituted Station characteristics; no runtime card-name or Oracle-text branch approximates this rule."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.184c",
       "rule_text_sha256": "fa1c97a6d8423565dfa485c8486c79f5f299bf98c0467f3394536c46c63c15de",
       "schema_version": 1,
@@ -81039,7 +81095,7 @@
         "end_line": 5372,
         "start_line": 5370
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

@@ -189,6 +189,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.activated.fixed-counter-keyword",
                 "ability.activated.cycling",
                 "ability.activated.crew",
+                "ability.activated.station",
                 "ability.enchant.linked_graveyard_creature",
                 "ability.static.enchant",
                 "ability.static.flash",

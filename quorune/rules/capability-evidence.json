@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "cc49088c8dca339b30b992237982a89d09ea14944210fa47ddde76c63b852b4d",
-  "declaration_source_fingerprint": "2786caee850ac308804dc8e4e663b5bfe1b5b05ab55bb18157df48b43ec68f55",
+  "registry_fingerprint": "52962014d23ca6be64375d5743b53448af34593a8de537e22be1d10019dc66c2",
+  "declaration_source_fingerprint": "7866fe2bed4081fb5d9563801e50715da177c38e0e711e1d10509230b98c78d2",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -17356,6 +17356,366 @@
       "applicability_note": "Replay successive choices across two simultaneous Saga counter events to the same counters, chapter batch, and authoritative state hash."
     },
     {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_current_effective_station_ability_query_hides_removed_activation",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Discover Station only through the shared current layer-6 activated-ability query and never reparse Oracle text after removal."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_quantity_replacement_suspends_and_replays",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose the resolution-derived Station quantity with competing effect-generated counter replacements before the canonical counter commit."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_uses_resolution_and_last_known_power",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use the tapped creature's current exact power at resolution, or the predeparture value pinned by the canonical zone-transition owner."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_quantity_replacement_suspends_and_replays",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve Station in four-player state while preserving affected-controller replacement ordering."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_station_rules.StationCompilerTests.test_station_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the typed Station compiler owner before the source-spanned activation can retain exact trust."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "negative",
+      "test_id": "tests.test_station_rules.StationCompilerTests.test_station_dependency_mutation_fails_closed",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Block Station or the canonical quantity-replacement dependency and prove the generated activation loses exact trust."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "negative",
+      "test_id": "tests.test_station_rules.StationCompilerTests.test_unsupported_station_families_remain_precise_residuals",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep modified Station grammar, CR 721 symbols, toughness substitution, and type-changing boundaries explicit rather than broadening the activation claim."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "negative",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_rejects_invalid_cost_objects_and_rolls_back",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject the source, opposing objects, duplicate encodings, and stale tap candidates before any activation mutation."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "negative",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_source_departure_skips_returned_object",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pin the Station result to the activating source incarnation so a returned new object receives no counters."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "negative",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_unresolved_station_power_fails_closed",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject unresolved power and the explicitly excluded type-loss boundary rather than guessing a Station quantity."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "positive",
+      "test_id": "tests.test_station_rules.StationCompilerTests.test_ordinary_station_compiles_source_spanned_activation",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one real ordinary Station line to a strict source-spanned activation, typed cost, resolution value, and counter intent."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "positive",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_taps_exact_creature_and_places_current_power",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Offer and commit the same one other untapped creature, allow a summoning-sick cost creature, and place its resolution-time power in charge counters."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_quantity_replacement_suspends_and_replays",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose the Station counter replacement choice only to the affected permanent's controller in four-player projection."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "replay",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_quantity_replacement_suspends_and_replays",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the selected Station cost, power-derived quantity, replacement sequence, and final counter state to the same authoritative hash."
+    },
+    {
+      "capability_id": "counter.producer.station",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_station_rules.StationRuntimeTests.test_station_lki_capture_rolls_back_before_zone_mutation",
+      "official_rule_ids": [
+        "107.1b",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "602.1",
+        "602.2",
+        "608.2h",
+        "614.16",
+        "616.1",
+        "702.184",
+        "702.184a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed Station LKI context and restore every pending stack context before the attempted zone move mutates state."
+    },
+    {
       "capability_id": "counter.producer.sunburst",
       "evidence_class": "interaction",
       "test_id": "tests.test_sunburst_rules.SunburstRuntimeTests.test_printed_type_boundary_ignores_entry_type_changes",
@@ -34388,5 +34748,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "d56eb113dd4afc14a3095507dcd57991161feeb2948c6e7693b554c9d8e175ce"
+  "fingerprint": "0704c1ed3e5adf01ae60aef0142683deef98d75c6e24eda2981170a6b6948a20"
 }

@@ -979,6 +979,33 @@
       "status": "trusted"
     },
     {
+      "id": "counter.producer.station",
+      "version": 1,
+      "official_rules": ["107.1b", "122.1", "122.1a", "122.6", "602.1", "602.2", "608.2h", "614.16", "616.1", "702.184", "702.184a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Activate one source-pinned ordinary printed Station ability at sorcery speed by tapping exactly one other untapped creature the activator controls, then put charge counters on the same source incarnation equal to that creature's exact current power or its pinned last-known power if it left the battlefield.",
+        "inputs": ["phased-in controlled battlefield source", "source-pinned ordinary Station descriptor", "one other untapped controlled creature", "current cycle-safe exact effective creature power", "current priority and source logical identity"],
+        "outputs": ["payable sorcery-speed activation offer with the same public cost candidates used at commit", "summoning-sick cost creatures remain eligible", "canonical tap-state cost commitment", "ordinary activated-ability stack object with typed creature identity", "current or predeparture exact power clamped at zero", "replacement-aware charge-counter placement on the activating source incarnation"],
+        "exclusions": ["Station symbol threshold and static ability behavior from CR 721", "Tapestry Warden and other toughness-substitution or result-modification effects", "cost-creature phasing before resolution", "type-changing interactions that remove creature power before resolution", "unresolved or nonintegral effective power", "granted, copied, removed, or text-changing Station outside the current typed activated-ability query", "alternative or additional Station costs", "counter prevention, movement, and other unrepresented counter-result families"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.station.OrdinaryStationAbilitySpec", "quorune.station.StationCostPlan", "quorune.station.StationPowerReference", "quorune.compiler.station_nodes.ordinary_station_keyword_node", "quorune.semantic_runtime.station_abilities.OrdinaryStationAbilityHandler", "quorune.compiled_activated_abilities.compiled_activated_abilities", "quorune.rules.activation.query.activated_abilities", "quorune.rules.activation.commit.commit_activation", "quorune.zone_transitions.ZoneTransitionOwner", "quorune.tap_state.set_permanent_tapped", "quorune.semantic_runtime.station_handlers.StationCounterPlacementHandler", "quorune.counter_placement.place_counters_on_refs"],
+      "positive_tests": ["test_ordinary_station_compiles_source_spanned_activation", "test_station_taps_exact_creature_and_places_current_power"],
+      "negative_tests": ["test_unsupported_station_families_remain_precise_residuals", "test_station_rejects_invalid_cost_objects_and_rolls_back", "test_unresolved_station_power_fails_closed", "test_station_source_departure_skips_returned_object"],
+      "interaction_tests": ["test_station_uses_resolution_and_last_known_power", "test_station_quantity_replacement_suspends_and_replays", "test_current_effective_station_ability_query_hides_removed_activation"],
+      "multiplayer_tests": ["test_station_quantity_replacement_suspends_and_replays"],
+      "privacy_tests": ["test_station_quantity_replacement_suspends_and_replays"],
+      "replay_tests": ["test_station_quantity_replacement_suspends_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "test_station_dependency_mutation_fails_closed blocks the canonical quantity-replacement owner and proves the source-spanned Station node cannot remain exact or runtime-discoverable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_station_compiler_mutant_is_killed removes the typed Station lowering and the exact source-spanned activation assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "counter.producer.cumulative_upkeep_fixed_mana",
       "version": 1,
       "official_rules": ["101.4", "118.12", "122.1", "122.6", "603.3", "614.16", "702.24", "702.24a", "702.24b"],

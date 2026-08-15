@@ -19,6 +19,7 @@
     "tests/fixtures/intrinsic-basic-land-mana-cards.json",
     "tests/fixtures/scryfall-exact-lists.json",
     "tests/fixtures/static-action-permission-cards.json",
+    "tests/fixtures/station-rules-cards.json",
     "tests/fixtures/typed-land-entry-cards.json"
   ],
   "dynamic_requirements": [],

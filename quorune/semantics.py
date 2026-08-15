@@ -123,6 +123,7 @@ VALID_EFFECT_OPERATIONS = {
     "scry",
     "sylvan_library_settle",
     "springheart_landfall",
+    "station",
     "bestow_prepare",
     "become_monarch",
     "shuffle_into_library",

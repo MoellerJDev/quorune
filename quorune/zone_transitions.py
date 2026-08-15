@@ -29,6 +29,7 @@ from .life_state import (
 )
 from .model import CardInstance, GameState, StackItem
 from .relative_power_target import pin_host_relative_power_source_departures
+from .station import pin_host_station_departures
 from .semantic_runtime import (
     PreparedZoneChange,
     log_applied_zone_replacements,
@@ -78,6 +79,32 @@ class ZoneTransitionOwner:
     def next_timestamp(self) -> int:
         self.state.timestamp_sequence += 1
         return self.state.timestamp_sequence
+
+    def pin_characteristic_departures(
+        self,
+        cards: Sequence[CardInstance],
+    ) -> None:
+        """Capture pending characteristic LKI as one rollback-safe update."""
+
+        contexts = tuple(
+            (item, copy.deepcopy(item.context))
+            for item in self.state.stack
+        )
+        try:
+            pin_host_relative_power_source_departures(
+                self.host,
+                cards,
+                error_type=StateInvariantError,
+            )
+            pin_host_station_departures(
+                self.host,
+                cards,
+                error_type=StateInvariantError,
+            )
+        except StateInvariantError:
+            for item, context in contexts:
+                item.context = context
+            raise
 
     def semantic_event_sources(self, *, zones: set[str] | None = None) -> list[CardInstance]:
         return semantic_event_sources(
@@ -154,7 +181,7 @@ class ZoneTransitionOwner:
         replacement_selections: Sequence[str | None | Mapping[str, Any]] = (),
         prepared_replacement: PreparedZoneChange | None = None,
         transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY,
-        relative_power_lki_prepared: bool = False,
+        characteristic_lki_prepared: bool = False,
     ) -> CardInstance:
         card = validate_zone_transition_request(
             self.state.cards,
@@ -182,12 +209,8 @@ class ZoneTransitionOwner:
         if isinstance(plan_or_card, CardInstance):
             return plan_or_card
         plan = plan_or_card
-        if plan.origin == "battlefield" and not relative_power_lki_prepared:
-            pin_host_relative_power_source_departures(
-                self.host,
-                (card,),
-                error_type=StateInvariantError,
-            )
+        if plan.origin == "battlefield" and not characteristic_lki_prepared:
+            self.pin_characteristic_departures((card,))
         departure = self._capture_departure(
             card,
             semantic_events=semantic_events,
@@ -764,10 +787,8 @@ class ZoneTransitionOwner:
             )
             for object_id, _destination in changes
         )
-        pin_host_relative_power_source_departures(
-            self.host,
-            tuple(snapshot[0] for snapshot in snapshots),
-            error_type=StateInvariantError,
+        self.pin_characteristic_departures(
+            tuple(snapshot[0] for snapshot in snapshots)
         )
         destination_timestamp = self.next_timestamp()
         for object_id, destination in changes:
@@ -779,7 +800,7 @@ class ZoneTransitionOwner:
                 log=log,
                 semantic_events=False,
                 prepared_replacement=prepared[object_id],
-                relative_power_lki_prepared=True,
+                characteristic_lki_prepared=True,
                 transition_kind=kinds.get(object_id, ZoneTransitionKind.ORDINARY),
             )
         trigger_batch: list[StackItem] = []

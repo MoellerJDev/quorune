@@ -298,6 +298,7 @@ from .token_replacements import (
     resolve_token_creation_replacements,
 )
 from .tap_state_handlers import TAP_STATE_HANDLERS
+from .station_handlers import STATION_HANDLERS, StationCounterPlacementHandler
 from .zone_object_keyword_handlers import (
     GrantZoneObjectKeywordHandler,
     ZONE_OBJECT_KEYWORD_HANDLERS,
@@ -341,6 +342,7 @@ def default_semantic_handler_registry() -> SemanticHandlerRegistry:
             *STACK_COUNTER_HANDLERS,
             *COUNTER_PLACEMENT_HANDLERS,
             *COUNTER_REMOVAL_HANDLERS,
+            *STATION_HANDLERS,
             *ZONE_OBJECT_KEYWORD_HANDLERS,
             *DOMAIN_EFFECT_HANDLERS,
         )

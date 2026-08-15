@@ -28,6 +28,7 @@ from .draw_replacements import default_draw_replacement_registry
 from .draw_reveals import default_draw_reveal_registry
 from .draw_restrictions import default_draw_restriction_registry
 from .crew_abilities import default_ordinary_crew_ability_registry
+from .station_abilities import default_ordinary_station_ability_registry
 from .cycling_abilities import default_ordinary_cycling_ability_registry
 from .counter_keyword_abilities import (
     default_fixed_counter_keyword_ability_registry,
@@ -68,6 +69,7 @@ def runtime_component_registries() -> tuple[Any, ...]:
         default_draw_restriction_registry(),
         default_life_replacement_registry(),
         default_ordinary_crew_ability_registry(),
+        default_ordinary_station_ability_registry(),
         default_ordinary_cycling_ability_registry(),
         default_fixed_counter_keyword_ability_registry(),
         default_color_set_mana_ability_registry(),

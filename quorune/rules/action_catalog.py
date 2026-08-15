@@ -5,6 +5,11 @@ from collections.abc import Mapping
 from typing import Any, Protocol
 
 from ..mana_undo import priority_actions_with_mana_undo
+from ..station import (
+    StationAbilityError,
+    station_candidates,
+    station_cost_choice,
+)
 from ..util import unique_preserving_order
 from .action_proposals import (
     ActionOffer,
@@ -184,6 +189,23 @@ def _ability_hint(
                 "legal_refs": [
                     candidate.ref
                     for candidate in host._crew_candidates(seat, card)
+                ],
+            }
+        ]
+    if station_cost_choice(ability) is not None:
+        try:
+            candidates = station_candidates(host, seat, card)
+        except StationAbilityError:
+            candidates = ()
+        hint["choose_cost"] = [
+            {
+                "k": "station",
+                "z": "battlefield",
+                "minimum": 1,
+                "maximum": 1,
+                "legal_refs": [
+                    candidate.ref
+                    for candidate in candidates
                 ],
             }
         ]
