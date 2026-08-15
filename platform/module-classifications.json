@@ -3478,6 +3478,18 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/read_ahead.py",
+      "layer": "domain",
+      "owning_subsystem": "keyword_abilities",
+      "allowed_dependency_layers": [
+        "domain"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/record.py",
       "layer": "application",
       "owning_subsystem": "game_record",
@@ -6576,5 +6588,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "b5c53353335ffde7565ca58dd412235e2c2418666d12305b7dea575a35febfa7"
+  "fingerprint": "7e24295591a325b6c8535caf772d4702507d2e733948709232b2a748481294fe"
 }

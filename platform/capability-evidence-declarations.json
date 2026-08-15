@@ -6858,7 +6858,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "interaction",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_competing_saga_entry_replacements_order_to_three_or_four",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Resolve two applicable counter-quantity replacements in either legal order around the Saga entry self-replacement."
     },
@@ -6866,15 +6866,23 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "interaction",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_destination_redirect_retargets_nested_saga_counter",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Retarget the nested lore-counter event when a later replacement changes the containing Saga zone-change destination."
     },
     {
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "interaction",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_quantity_replacement_uses_exact_chapter_gate",
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Double a chosen chapter III entry to six lore counters, suppress every entry-turn chapter under the exact-count gate, then execute the final-chapter state action."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "interaction",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_counter_uses_quantity_replacement_but_turn_action_does_not",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Apply effect-qualified quantity replacement to the self-replacement entry counter but not to the later rule-generated turn-based counter."
     },
@@ -6882,7 +6890,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "interaction",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_action_applies_unqualified_but_not_effect_only_replacement",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Apply an unqualified placing-player quantity replacement to the rule-generated lore action while excluding an effect-qualified Doubling Season replacement from the same event."
     },
@@ -6890,7 +6898,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "interaction",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_simultaneous_saga_turn_replacements_pin_event_ids_and_replay",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Preserve both simultaneous Saga event identities across successive replacement-order retries and commit the complete batch before chapter dispatch."
     },
@@ -6898,7 +6906,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_four_player_precombat_lore_only_advances_active_players_sagas",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Advance only the active player's qualifying Sagas at the four-player precombat boundary while leaving every nonactive Saga unchanged."
     },
@@ -6906,15 +6914,23 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_four_player_saga_entry_replacement_choices_follow_apnap",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Collect simultaneous affected-controller Saga entry replacement choices in four-player APNAP order without preparation mutation."
     },
     {
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "multiplayer",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_choice_is_private_and_replays_exactly",
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Scope the three-way Read Ahead replacement choice to the destination controller in a four-player game."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "multiplayer",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Suspend a four-player precombat Saga batch for its affected controller and resume the same simultaneous rule action before priority."
     },
@@ -6922,7 +6938,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "mutation",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_counter_producer_mutations_are_killed",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Kill removal of the Saga entry self-replacement and misclassification of the turn action as effect-generated through entry and Doubling Season boundary assertions."
     },
@@ -6930,15 +6946,23 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "negative",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_and_untrusted_chapters_fail_closed",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Keep Read Ahead material and reject runtime progression without trusted typed chapter programs before counter mutation."
     },
     {
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "negative",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_runtime_boundaries_fail_before_mutation",
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject missing chapter programs, copied objects, and malformed chapter descriptors before the proposed zone move mutates state."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "negative",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject an unknown turn-action frame field through strict replacement-continuation deserialization before any lore mutation."
     },
@@ -6946,7 +6970,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "negative",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_stale_saga_snapshot_rolls_back_without_partial_mutation",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject a changed controller, type, logical identity, or chapter declaration for any snapshotted Saga before mutating any member of the simultaneous batch."
     },
@@ -6954,7 +6978,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "positive",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_entry_and_precombat_lore_use_distinct_counter_paths",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Create the entry lore counter before the enter occurrence, then place the later turn-based lore counter and dispatch each crossed trusted chapter."
     },
@@ -6962,7 +6986,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "positive",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_multiple_sagas_commit_lore_before_any_chapter_dispatch",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Commit every active-player Saga lore increment simultaneously before discovering or placing any resulting chapter trigger."
     },
@@ -6970,15 +6994,31 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "positive",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_ordinary_saga_card_form_is_source_spanned_and_closed",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Lower the ordinary Saga card form to one source-spanned lore-progression capability and treat its exact rules reminder as nonmaterial provenance."
     },
     {
       "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "positive",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_compiles_one_exact_source_pinned_choice",
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile one source-spanned printed Read Ahead keyword into a final-chapter-bounded replacement choice and reject blocked counter dependencies."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_choice_is_private_and_replays_exactly",
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose the Read Ahead options only to the destination controller without leaking authoritative object identity."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
       "evidence_class": "privacy",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_replacement_choice_replays_exactly",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Project the resolving Saga entry replacement choice only to its affected controller in a four-player game."
     },
@@ -6986,7 +7026,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "privacy",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Project the precombat replacement choice only to the affected active player without exposing the authoritative turn-action frame, batch, or physical Saga identity."
     },
@@ -6994,15 +7034,23 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "replay",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_precombat_saga_progression_replays_exactly",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the automatic simultaneous precombat lore action and resulting chapter-trigger placement to the same authoritative hash."
     },
     {
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "replay",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_choice_is_private_and_replays_exactly",
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the private chapter III choice to the same lore counters, exact chapter trigger, and authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.saga_lore",
+      "evidence_class": "replay",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_replacement_choice_replays_exactly",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the selected Saga entry replacement order, lore result, and crossed chapter events to the same authoritative hash."
     },
@@ -7010,7 +7058,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "replay",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_entry_replacement_continuation_survives_process_restart",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reload the seat-scoped Saga entry replacement continuation before selection, commit its lore result once, and replay the restarted record exactly."
     },
@@ -7018,7 +7066,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "replay",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_saga_turn_replacement_choice_is_private_resumable_and_exact",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reload the immutable precombat turn-action continuation, apply the selected replacement order once, and replay to the identical authoritative hash."
     },
@@ -7026,7 +7074,7 @@
       "capability_id": "counter.producer.saga_lore",
       "evidence_class": "replay",
       "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_simultaneous_saga_turn_replacements_pin_event_ids_and_replay",
-      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "714.2b", "714.3", "714.3a", "714.3c"],
+      "official_rule_ids": ["101.4", "122.1", "122.6", "603.2", "603.3", "614.1c", "614.16", "616.1", "616.1f", "702.155", "702.155a", "702.155b", "702.155c", "714.2b", "714.2d", "714.3", "714.3a", "714.3b", "714.3c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay successive choices across two simultaneous Saga counter events to the same counters, chapter batch, and authoritative state hash."
     },
@@ -13472,6 +13520,14 @@
       "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Apply a represented graveyard-destination replacement to the Saga sacrifice while retaining its normalized sacrifice occurrence."
+    },
+    {
+      "capability_id": "state_based.saga_final_chapter",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_saga_counter_progression.SagaCounterProgressionTests.test_read_ahead_quantity_replacement_uses_exact_chapter_gate",
+      "official_rule_ids": ["101.4", "603.3", "701.17", "704.3", "704.5s", "714.2d", "714.2e", "714.4"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "After a doubled Read Ahead entry suppresses all entry chapters, sacrifice the completed Saga through the existing exact final-chapter lifecycle."
     },
     {
       "capability_id": "state_based.saga_final_chapter",

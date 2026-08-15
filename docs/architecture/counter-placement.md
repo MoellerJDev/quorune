@@ -292,13 +292,18 @@ selection journal. Commit allocates the exact reserved identities, creates the
 tokens, and applies the prepared counters; the former replacement-free token
 counter bypass has been removed.
 
-Ordinary non-Read-Ahead Saga lore uses two deliberately distinct typed paths.
-The card-form compiler emits `counter.producer.saga_lore` from the parsed Saga
-subtype and treats the exact CR reminder line as provenance rather than a
-runtime parser. The entry lore counter is a mandatory self-replacement inside
-the zone-change tree, so represented effect-qualified quantity replacements
-apply before the permanent enters and crossed trusted chapter events are
-discovered afterward. At the active player's precombat main boundary,
+Saga lore uses deliberately distinct entry and turn-progression paths. The
+card-form compiler emits ordinary `counter.producer.saga_lore` from the parsed
+Saga subtype and treats the exact CR reminder line as provenance rather than a
+runtime parser. Printed Read Ahead instead compiles one source-spanned keyword
+handler only when its printed chapter symbols are contiguous and matching
+trusted typed chapter programs exist at runtime. Its destination controller
+chooses a chapter through the private replacement journal; the chosen amount
+becomes a child counter event inside the same zone-change tree. Represented
+effect-qualified quantity replacements therefore apply before the permanent
+enters. Ordinary Sagas dispatch every crossed trusted chapter, while CR
+702.155a permits a Read Ahead entry-turn chapter only when the final lore count
+exactly equals that chapter number. At the active player's precombat main boundary,
 `saga_progression.py` snapshots every controlled Saga with trusted typed
 chapter declarations and prepares one simultaneous `counter.place` batch with
 `effect_generated=false`. Unqualified replacements that apply when that
@@ -312,8 +317,8 @@ other beginning-of-phase triggers. The separate `state_based.saga_final_chapter`
 capability snapshots the exact Saga incarnation, waits while one of its typed
 chapter abilities is pending, and then routes the ordinary final-chapter
 sacrifice through the simultaneous state-based zone-change transaction.
-Read Ahead, untrusted chapter programs, arbitrary lore-counter movement, and
-copied, gained, removed, or layer-modified chapter abilities remain
+Untrusted chapter programs, arbitrary lore-counter movement, and copied,
+gained, removed, or layer-modified Read Ahead or chapter abilities remain
 fail-closed.
 
 Effect-generated entry counters use the same nested replacement tree through
@@ -657,7 +662,9 @@ as a cost-free action.
 
 The following producers and wordings remain deliberately outside this slice:
 
-- Read Ahead and nonordinary Saga progression;
+- Saga progression with copied, granted, removed, or layer-modified Read Ahead
+  or chapter abilities, noncontiguous chapter declarations, and arbitrary lore
+  movement;
 - negative loyalty counter-removal costs and player-counter removal;
 - optional, variable, alternate, compound, multiple, noncreature, and
   non-counter casting costs outside the bounded fixed creature-counter family;

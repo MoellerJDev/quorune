@@ -349,10 +349,38 @@ def dispatch_saga_entry_chapters(
     host: SagaProgressionHost,
     card: Any,
     *,
+    read_ahead_chapter: int | None = None,
     trigger_batch: list[StackItem],
 ) -> None:
     """Dispatch chapters crossed by the completed as-enters event."""
 
+    if read_ahead_chapter is not None:
+        if type(read_ahead_chapter) is not int or read_ahead_chapter < 1:
+            raise SagaProgressionError(
+                "Read Ahead entry chapter must be a positive integer"
+            )
+        if not _is_current_saga(host, card):
+            return
+        represented = set(represented_chapter_numbers(host, card))
+        if not represented:
+            raise SagaProgressionError(
+                "Saga chapter dispatch requires trusted typed chapter programs"
+            )
+        current_lore = int(card.counters.get("lore", 0))
+        # CR 702.155a permits an entry-turn chapter only when the Saga has
+        # exactly that chapter's number after all counter replacements.
+        if current_lore in represented:
+            host._dispatch_semantic_event(
+                f"saga.chapter.{current_lore}",
+                {
+                    "card": card.ref,
+                    "controller": card.controller,
+                    "chapter": current_lore,
+                },
+                sources=(card,),
+                trigger_batch=trigger_batch,
+            )
+        return
     dispatch_saga_chapters(
         host,
         card,

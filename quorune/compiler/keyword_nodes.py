@@ -25,6 +25,11 @@ from ..unleash import (
     unleash_entry_handler_descriptor,
 )
 from ..riot import RIOT_MECHANIC, riot_entry_handler_descriptor
+from ..read_ahead import (
+    READ_AHEAD_CAPABILITIES,
+    READ_AHEAD_MECHANIC_ID,
+    read_ahead_entry_handler_descriptor,
+)
 from ..semantic_runtime.sunburst import SUNBURST_MECHANIC_ID, SunburstSpec
 from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from ..modular import MODULAR_MECHANIC_ID, ModularSpec
@@ -40,6 +45,7 @@ from .ability_keyword_fragments import lower_ability_keyword_fragments
 from .dependency_gate import (
     DependencyGate,
     explicit_capability_gate,
+    explicit_capabilities_gate,
     keyword_dependency_gate,
 )
 from .ir_model import (
@@ -1109,6 +1115,106 @@ def riot_keyword_node(
         handlers=(riot_entry_handler_descriptor(),) if ordinary else (),
         runtime_coverage=("linked_entry_counter_or_haste",) if ordinary else (),
         mechanics=(RIOT_MECHANIC,),
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            gate.closure.reachable if gate.closure is not None else ()
+        ),
+        capability_profile=(
+            gate.closure.profile if gate.closure is not None else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint if gate.closure is not None else None
+        ),
+    )
+
+
+def read_ahead_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    printed_subtypes: tuple[str, ...],
+    chapter_numbers: tuple[int, ...],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleNode:
+    """Lower ordinary printed Read Ahead with its final-chapter boundary."""
+
+    ordinary = material_line.strip().rstrip(".").casefold() == (
+        READ_AHEAD_MECHANIC_ID
+    )
+    printed_saga = "saga" in printed_subtypes
+    chapters_closed = bool(chapter_numbers)
+    gate = explicit_capabilities_gate(
+        READ_AHEAD_CAPABILITIES,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    grammar_blockers = tuple(
+        blocker
+        for condition, blocker in (
+            (ordinary, "mechanic:read-ahead-unsupported-wording"),
+            (printed_saga, "mechanic:read-ahead-requires-printed-saga"),
+            (
+                chapters_closed,
+                "mechanic:read-ahead-unrepresented-final-chapter",
+            ),
+        )
+        if not condition
+    )
+    blockers = (*grammar_blockers, *gate.blockers)
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind=(
+                    "keyword_grammar"
+                    if grammar_blockers
+                    else "dependency_contract"
+                ),
+                text=line,
+                span=span,
+                reason=(
+                    "Read Ahead requires ordinary wording on a printed Saga "
+                    "with contiguous chapter symbols"
+                    if grammar_blockers
+                    else "Read Ahead depends on a blocked typed capability"
+                ),
+                blockers=blockers,
+            ),
+        )
+        if blockers
+        else ()
+    )
+    grammar_closed = ordinary and printed_saga and chapters_closed
+    return OracleNode(
+        node_id=node_id,
+        kind="static_ability",
+        text=line,
+        span=span,
+        active_zone="all",
+        event="zone.change",
+        lowerable=grammar_closed,
+        exact=grammar_closed and not blockers,
+        template_id=(
+            "read-ahead-saga-entry-choice-v1"
+            if grammar_closed
+            else None
+        ),
+        handlers=(
+            (read_ahead_entry_handler_descriptor(chapter_numbers),)
+            if grammar_closed
+            else ()
+        ),
+        runtime_coverage=(
+            ("read_ahead_chapter_choice", "replacement_aware_lore_entry")
+            if grammar_closed
+            else ()
+        ),
+        mechanics=(READ_AHEAD_MECHANIC_ID,),
         residual_ids=residual_ids,
         capability_dependencies=gate.capabilities,
         capability_closure=(

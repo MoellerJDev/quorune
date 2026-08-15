@@ -154,6 +154,7 @@ class ZoneChangeOccurrence:
     tapped: bool = False
     cause: str = ""
     transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY
+    read_ahead_chapter: int | None = None
     schema_version: int = 1
 
     def __post_init__(self) -> None:
@@ -183,6 +184,13 @@ class ZoneChangeOccurrence:
         if not isinstance(self.transition_kind, ZoneTransitionKind):
             raise ZoneTriggerEventError(
                 "zone_occurrence.transition_kind must be a supported typed value"
+            )
+        if self.read_ahead_chapter is not None and (
+            type(self.read_ahead_chapter) is not int
+            or self.read_ahead_chapter < 1
+        ):
+            raise ZoneTriggerEventError(
+                "zone_occurrence.read_ahead_chapter must be positive or null"
             )
         if type(self.schema_version) is not int or self.schema_version != 1:
             raise ZoneTriggerEventError(
@@ -251,6 +259,8 @@ class ZoneChangeOccurrence:
         # counter path explicit and replay-stable.
         if self.transition_kind is not ZoneTransitionKind.ORDINARY:
             result["transition_kind"] = self.transition_kind.value
+        if self.read_ahead_chapter is not None:
+            result["read_ahead_chapter"] = self.read_ahead_chapter
         return result
 
     @property

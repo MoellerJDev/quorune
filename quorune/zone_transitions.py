@@ -617,6 +617,9 @@ class ZoneTransitionOwner:
                 ),
                 reason=reason,
                 transition_kind=transition_kind,
+                read_ahead_chapter=(
+                    plan.prepared_replacement.read_ahead_chapter
+                ),
             )
 
     def _log_prevented_token(
@@ -716,6 +719,7 @@ class ZoneTransitionOwner:
         destination: str | None,
         reason: str,
         transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY,
+        read_ahead_chapter: int | None = None,
         trigger_batch: list[StackItem] | None = None,
     ) -> tuple[ZoneChangeOccurrence, list[StackItem], bool]:
         occurrence = ZoneChangeOccurrence(
@@ -738,6 +742,7 @@ class ZoneTransitionOwner:
             tapped=card.tapped,
             cause=reason,
             transition_kind=transition_kind,
+            read_ahead_chapter=read_ahead_chapter,
         )
         owns_trigger_batch = trigger_batch is None
         event_triggers = trigger_batch if trigger_batch is not None else []
@@ -822,6 +827,9 @@ class ZoneTransitionOwner:
                 ),
                 reason=reason,
                 transition_kind=kinds.get(card.object_id, ZoneTransitionKind.ORDINARY),
+                read_ahead_chapter=(
+                    prepared[card.object_id].read_ahead_chapter
+                ),
                 trigger_batch=trigger_batch,
             )
         enqueue_trigger_batch(self.host, trigger_batch)

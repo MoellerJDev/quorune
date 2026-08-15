@@ -156,6 +156,14 @@ def compile_intrinsic_entry_counter_forms(
             or "saga" in subtypes
         ):
             continue
+        normalized_keywords = {
+            " ".join(str(value).casefold().split())
+            for value in characteristics.get("keywords") or ()
+        }
+        if "saga" in subtypes and "read ahead" in normalized_keywords:
+            # CR 714.3b is owned by the source-spanned Read Ahead keyword
+            # program because its amount depends on that Saga's final chapter.
+            continue
         try:
             counters = intrinsic_entry_counters(
                 characteristics,

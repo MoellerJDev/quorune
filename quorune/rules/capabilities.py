@@ -135,6 +135,7 @@ _PERSIST_MECHANIC = "persist"
 _UNDYING_MECHANIC = "undying"
 _UNLEASH_MECHANIC = "unleash"
 _RIOT_MECHANIC = "riot"
+_READ_AHEAD_MECHANIC = "read ahead"
 _BLOODTHIRST_MECHANIC = "bloodthirst"
 _SUNBURST_MECHANIC = "sunburst"
 _ECHO_MECHANIC = "echo"
@@ -167,6 +168,10 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
         "combat.block.self_counter_prohibition",
     ),
     _RIOT_MECHANIC: ("counter.producer.riot",),
+    _READ_AHEAD_MECHANIC: (
+        "counter.producer.saga_lore",
+        "state_based.saga_final_chapter",
+    ),
     _BLOODTHIRST_MECHANIC: ("counter.producer.bloodthirst",),
     _SUNBURST_MECHANIC: ("counter.producer.sunburst",),
     _ECHO_MECHANIC: ("trigger.keyword.echo.fixed_mana",),

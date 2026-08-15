@@ -71,6 +71,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/model.py",
         "quorune/object_predicate.py",
         "quorune/prevention_triggers.py",
+        "quorune/read_ahead.py",
         "quorune/replacement/immutable.py",
         "quorune/riot.py",
         "quorune/trigger_batches.py",
@@ -306,6 +307,7 @@ def _owner(relative: str, layer: str) -> str:
         return "aura_rules"
     if relative in {
         "quorune/bloodthirst.py",
+        "quorune/read_ahead.py",
         "quorune/riot.py",
         "quorune/unleash.py",
     }:

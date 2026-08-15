@@ -172,6 +172,7 @@ def dispatch_zone_change_occurrence(
         dispatch_saga_entry_chapters(
             host,
             card,
+            read_ahead_chapter=occurrence.read_ahead_chapter,
             trigger_batch=pending,
         )
     if owns_trigger_batch:

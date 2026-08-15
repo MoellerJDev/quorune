@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_read_ahead_saga_card_data",
+  "source": "Scryfall Oracle subset for Read Ahead Saga tests",
+  "cards": [
+    {
+      "oracle_id": "9b87b4cd-4fb9-4bb3-b4c0-de1fcc6f44a2",
+      "name": "Love Song of Night and Day",
+      "mana_cost": "{2}{W}",
+      "cmc": 3.0,
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "Read ahead (Choose a chapter and start with that many lore counters. Add one after your draw step. Skipped chapters don't trigger. Sacrifice after III.)\nI — You and target opponent each draw two cards.\nII — Create a 1/1 white Bird creature token with flying.\nIII — Put a +1/+1 counter on each of up to two target creatures.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": ["W"],
+      "color_identity": ["W"],
+      "keywords": ["Read Ahead"],
+      "produced_mana": [],
+      "layout": "saga",
+      "released_at": "2023-08-04",
+      "legalities": {"commander": "legal"}
+    }
+  ],
+  "rulings": []
+}
