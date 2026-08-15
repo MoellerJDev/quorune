@@ -1,8 +1,9 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "declarations": [
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_all_represented_restrictions_are_cumulative",
       "piece_ids": [
         "capability.combat.block.fear",
@@ -16,6 +17,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_all_represented_restrictions_are_cumulative",
       "piece_ids": [
         "capability.combat.block.horsemanship",
@@ -29,6 +31,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_all_represented_restrictions_are_cumulative",
       "piece_ids": [
         "capability.combat.block.intimidate",
@@ -42,6 +45,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_all_represented_restrictions_are_cumulative",
       "piece_ids": [
         "capability.combat.block.shadow",
@@ -55,6 +59,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_all_represented_restrictions_are_cumulative",
       "piece_ids": [
         "capability.combat.block.skulk",
@@ -68,6 +73,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_all_represented_restrictions_are_cumulative",
       "piece_ids": [
         "capability.combat.block.fear",
@@ -93,6 +99,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_block_keyword_resolution_uses_canonical_eot_continuous_effect",
       "piece_ids": ["capability.combat.trigger.bushido", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "mechanic.bushido", "mechanic.cr-611-continuous-effects"],
       "capability_ids": ["combat.trigger.bushido", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
@@ -101,6 +108,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_flanking_uses_source_snapshot_after_source_leaves",
       "piece_ids": ["capability.combat.trigger.flanking", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "mechanic.cr-611-continuous-effects", "mechanic.flanking"],
       "capability_ids": ["combat.trigger.flanking", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
@@ -109,6 +117,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_flanking_and_bushido_share_one_sealed_apnap_batch",
       "piece_ids": ["capability.combat.trigger.bushido", "capability.combat.trigger.flanking", "capability.trigger.placement.apnap", "mechanic.bushido", "mechanic.cr-603-handling-triggered-abilities", "mechanic.flanking"],
       "capability_ids": ["combat.trigger.bushido", "combat.trigger.flanking", "trigger.placement.apnap"],
@@ -117,6 +126,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_sick_mana_creature_requires_haste_or_as_though_permission",
       "piece_ids": ["capability.activation.tap_untap_cost.haste", "mechanic.haste"],
       "capability_ids": ["activation.tap_untap_cost.haste"],
@@ -125,6 +135,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_color_set_mana_respects_haste_cost_dependency",
       "piece_ids": ["capability.activation.tap_untap_cost.haste", "capability.mana.activated.color_set", "mechanic.haste"],
       "capability_ids": ["activation.tap_untap_cost.haste", "mana.activated.color_set"],
@@ -133,6 +144,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_actual_mox_offer_and_command_share_current_color_modes",
       "piece_ids": ["capability.mana.activated.color_set", "compiler.template.activated-mana-color-set-v1", "runtime.operation.ability.activated.mana.color-set"],
       "capability_ids": ["mana.activated.color_set"],
@@ -141,6 +153,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_live_generic_equipment_effect_moves_detaches_and_tracks_control",
       "piece_ids": ["capability.attachment.equip.fixed_mana", "capability.continuous.attached.fixed_characteristics"],
       "capability_ids": ["attachment.equip.fixed_mana", "continuous.attached.fixed_characteristics"],
@@ -149,6 +162,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_effective_defender_gain_and_loss_change_shared_legality",
       "piece_ids": ["capability.combat.attack.defender", "mechanic.defender"],
       "capability_ids": ["combat.attack.defender"],
@@ -157,6 +171,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_defender_is_not_offered_and_cannot_be_injected_as_an_attacker",
       "piece_ids": ["capability.combat.attack.defender", "capability.combat.attack.haste", "mechanic.defender", "mechanic.haste"],
       "capability_ids": ["combat.attack.defender", "combat.attack.haste"],
@@ -165,6 +180,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_haste_attack_permission_uses_current_effective_keywords",
       "piece_ids": ["capability.combat.attack.haste", "mechanic.haste"],
       "capability_ids": ["combat.attack.haste"],
@@ -173,6 +189,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_vigilance_tap_owner_uses_current_effective_keywords",
       "piece_ids": ["capability.combat.attack.vigilance", "mechanic.vigilance"],
       "capability_ids": ["combat.attack.vigilance"],
@@ -181,6 +198,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_current_flying_and_reach_share_offer_and_command_legality",
       "piece_ids": ["capability.combat.block.flying", "capability.combat.block.reach", "mechanic.flying", "mechanic.reach"],
       "capability_ids": ["combat.block.flying", "combat.block.reach"],
@@ -189,6 +207,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_double_strike_trample_recomputes_after_blocker_leaves",
       "piece_ids": ["capability.combat.damage.assignment.trample", "capability.combat.damage.participation.strike_steps", "mechanic.double-strike", "mechanic.trample"],
       "capability_ids": ["combat.damage.assignment.trample", "combat.damage.participation.strike_steps"],
@@ -197,6 +216,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_trample_assigns_lethal_over_indestructible_blocker",
       "piece_ids": ["capability.combat.damage.assignment.trample", "mechanic.indestructible", "mechanic.trample"],
       "capability_ids": ["combat.damage.assignment.trample"],
@@ -205,6 +225,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_permuted_combat_assignment_has_identical_replacement_replay",
       "piece_ids": ["capability.combat.damage.assignment.canonical", "capability.combat.damage.assignment.trample", "mechanic.trample"],
       "capability_ids": ["combat.damage.assignment.canonical", "combat.damage.assignment.trample"],
@@ -213,6 +234,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_first_strike_creates_the_initial_combat_damage_step",
       "piece_ids": ["capability.combat.damage.participation.strike_steps", "mechanic.first-strike"],
       "capability_ids": ["combat.damage.participation.strike_steps"],
@@ -221,6 +243,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_double_strike_creates_two_real_damage_steps_and_replays",
       "piece_ids": ["capability.combat.damage.participation.strike_steps", "mechanic.double-strike"],
       "capability_ids": ["combat.damage.participation.strike_steps"],
@@ -229,6 +252,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_lifelink_counts_only_damage_not_prevented_by_protection",
       "piece_ids": ["capability.combat.damage.assignment.trample", "capability.damage.result.player_life", "mechanic.cr-120-damage", "mechanic.lifelink", "mechanic.protection", "mechanic.trample"],
       "capability_ids": ["combat.damage.assignment.trample", "damage.result.player_life"],
@@ -237,6 +261,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_deathtouch_and_marked_damage_each_reduce_trample_lethal",
       "piece_ids": ["capability.combat.damage.assignment.deathtouch", "capability.combat.damage.assignment.trample", "mechanic.deathtouch", "mechanic.trample"],
       "capability_ids": ["combat.damage.assignment.deathtouch", "combat.damage.assignment.trample"],
@@ -245,6 +270,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_indestructible_consumes_deathtouch_at_the_first_sba_check",
       "piece_ids": ["capability.damage.result.deathtouch", "mechanic.deathtouch", "mechanic.indestructible"],
       "capability_ids": ["damage.result.deathtouch"],
@@ -253,6 +279,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_counter_aftermath_reuses_counter_replacement_pipeline",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.damage.prevention.persistent_amount"],
       "capability_ids": ["counter.placement.quantity_replacement", "damage.prevention.persistent_amount"],
@@ -261,6 +288,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_counter_replacements_apply_in_affected_players_chosen_order",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "mechanic.cr-122-counters"],
       "capability_ids": ["counter.placement.quantity_replacement"],
@@ -269,6 +297,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_sunburst_counter_uses_canonical_quantity_replacement",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.sunburst"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.sunburst"],
@@ -277,6 +306,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_only_damage_not_life_loss_or_prevented_damage_unlocks_attack",
       "piece_ids": ["capability.damage.amount.positive", "mechanic.cr-508-declare-attackers-step"],
       "capability_ids": ["damage.amount.positive"],
@@ -285,6 +315,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_infect_and_wither_use_minus_counters_only_on_creatures",
       "piece_ids": ["capability.damage.result.infect", "mechanic.cr-120-damage", "mechanic.infect"],
       "capability_ids": ["damage.result.infect"],
@@ -293,6 +324,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_wither_damage_still_records_deathtouch_result",
       "piece_ids": ["capability.damage.result.deathtouch", "capability.damage.result.wither", "mechanic.deathtouch", "mechanic.wither"],
       "capability_ids": ["damage.result.deathtouch", "damage.result.wither"],
@@ -301,6 +333,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_boon_reflection_doubles_lifelink_result",
       "piece_ids": ["capability.damage.result.lifelink", "mechanic.lifelink"],
       "capability_ids": ["damage.result.lifelink"],
@@ -309,6 +342,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_damage_to_battle_creature_applies_both_results",
       "piece_ids": ["capability.damage.result.multitype_permanent", "mechanic.cr-120-damage"],
       "capability_ids": ["damage.result.multitype_permanent"],
@@ -317,6 +351,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_source_pinned_keyword_witnesses_follow_damage_results",
       "piece_ids": ["capability.damage.result.toxic", "mechanic.toxic"],
       "capability_ids": ["damage.result.toxic"],
@@ -325,6 +360,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_wither_damage_still_records_deathtouch_result",
       "piece_ids": ["capability.damage.result.wither", "mechanic.wither"],
       "capability_ids": ["damage.result.wither"],
@@ -333,6 +369,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_flash_offer_and_cast_use_same_compiled_permission",
       "piece_ids": ["capability.timing.cast.printed_flash", "mechanic.flash"],
       "capability_ids": ["timing.cast.printed_flash"],
@@ -341,6 +378,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_self_dies_trigger_uses_last_known_controller",
       "piece_ids": ["capability.trigger.event.normalized_zone_change", "mechanic.cr-603-handling-triggered-abilities"],
       "capability_ids": ["trigger.event.normalized_zone_change"],
@@ -349,6 +387,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_damage_and_resulting_death_triggers_share_one_order_batch",
       "piece_ids": ["capability.trigger.placement.apnap", "mechanic.cr-120-damage", "mechanic.cr-603-handling-triggered-abilities"],
       "capability_ids": ["trigger.placement.apnap"],
@@ -357,6 +396,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_large_sequence_suspends_and_resumes_from_remaining_count",
       "piece_ids": ["capability.zone.draw.library_to_hand", "mechanic.cr-121-drawing-a-card"],
       "capability_ids": ["zone.draw.library_to_hand"],
@@ -365,6 +405,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_target_player_draw_validates_target_resolves_privately_and_replays",
       "piece_ids": ["capability.target.revalidate_resolution", "capability.zone.draw.library_to_hand"],
       "capability_ids": ["target.revalidate_resolution", "zone.draw.library_to_hand"],
@@ -373,6 +414,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_target_player_counter_choice_is_seat_scoped_and_replays_exactly",
       "piece_ids": ["capability.counter.producer.fixed_player_effect", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.producer.fixed_player_effect", "target.revalidate_resolution"],
@@ -381,6 +423,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_self_pump_and_basic_token_creation_lower_generically",
       "piece_ids": ["mechanic.cr-111-tokens", "mechanic.cr-122-counters", "mechanic.cr-611-continuous-effects"],
       "capability_ids": [],
@@ -389,6 +432,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_daretti_ruling_does_not_follow_a_reentered_card",
       "piece_ids": ["mechanic.cr-400-general", "mechanic.cr-603-handling-triggered-abilities"],
       "capability_ids": [],
@@ -397,6 +441,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_multiple_defenders_block_sequentially",
       "piece_ids": ["mechanic.cr-508-declare-attackers-step", "mechanic.cr-509-declare-blockers-step"],
       "capability_ids": [],
@@ -405,6 +450,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_attackers_tap_except_vigilance_then_active_player_gets_priority",
       "piece_ids": ["mechanic.cr-508-declare-attackers-step", "mechanic.vigilance"],
       "capability_ids": [],
@@ -413,6 +459,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_menace_requires_zero_or_two_blockers_and_projects_the_minimum",
       "piece_ids": ["capability.combat.block.menace", "mechanic.cr-509-declare-blockers-step", "mechanic.menace"],
       "capability_ids": ["combat.block.menace"],
@@ -421,6 +468,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_effective_menace_gain_and_loss_change_the_shared_restriction",
       "piece_ids": ["capability.combat.block.menace", "mechanic.menace"],
       "capability_ids": ["combat.block.menace"],
@@ -429,6 +477,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_menace_can_make_a_block_requirement_impossible",
       "piece_ids": ["capability.combat.block.menace", "mechanic.cr-509-declare-blockers-step", "mechanic.menace"],
       "capability_ids": ["combat.block.menace"],
@@ -437,6 +486,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_urborg_generated_swamp_activates_opposing_swampwalk",
       "piece_ids": ["capability.combat.block.landwalk.basic_type", "capability.continuous.basic_land_type.add_all_lands", "mechanic.landwalk"],
       "capability_ids": ["combat.block.landwalk.basic_type", "continuous.basic_land_type.add_all_lands"],
@@ -445,6 +495,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_intrinsic_basic_land_mana_uses_live_effective_land_types",
       "piece_ids": ["capability.continuous.basic_land_type.add_all_lands", "capability.mana.intrinsic.basic_land_type"],
       "capability_ids": ["continuous.basic_land_type.add_all_lands", "mana.intrinsic.basic_land_type"],
@@ -453,6 +504,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_murmuring_bosk_intrinsic_mana_executes_while_replacement_stays_residual",
       "piece_ids": ["capability.mana.intrinsic.basic_land_type", "residual.replacement.replacement-applicability", "residual.replacement.self-replacement-and-prevention-ordering"],
       "capability_ids": ["mana.intrinsic.basic_land_type"],
@@ -461,6 +513,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_landwalk_remains_cumulative_with_shadow_and_flying",
       "piece_ids": ["capability.combat.block.flying", "capability.combat.block.landwalk.basic_type", "capability.combat.block.reach", "mechanic.landwalk"],
       "capability_ids": ["combat.block.flying", "combat.block.landwalk.basic_type", "combat.block.reach"],
@@ -469,6 +522,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_landwalk_remains_cumulative_with_shadow_and_flying",
       "piece_ids": ["capability.combat.block.landwalk.basic_type", "mechanic.landwalk", "mechanic.shadow"],
       "capability_ids": ["combat.block.landwalk.basic_type"],
@@ -477,6 +531,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_unconditional_entry_tapped_is_engine_derived",
       "piece_ids": ["mechanic.cr-603-handling-triggered-abilities", "mechanic.cr-614-replacement-effects"],
       "capability_ids": [],
@@ -485,6 +540,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_second_step_uses_the_first_step_snapshot_and_current_double_strike",
       "piece_ids": ["mechanic.double-strike", "mechanic.first-strike"],
       "capability_ids": [],
@@ -493,6 +549,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_flying_attacker_requires_flying_or_reach_blocker",
       "piece_ids": ["mechanic.flying", "mechanic.reach"],
       "capability_ids": [],
@@ -501,6 +558,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_lifelink_counts_only_damage_not_prevented_by_protection",
       "piece_ids": ["mechanic.lifelink", "mechanic.protection"],
       "capability_ids": [],
@@ -509,6 +567,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_exalted_from_noncreature_source_resolves_on_lone_attacker",
       "piece_ids": ["capability.combat.trigger.exalted", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "mechanic.cr-611-continuous-effects", "mechanic.exalted"],
       "capability_ids": ["combat.trigger.exalted", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
@@ -517,6 +576,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_attack_keyword_resolution_uses_source_lki_and_identity_pinned_layer",
       "piece_ids": ["capability.combat.trigger.battle_cry", "capability.combat.trigger.melee", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "mechanic.battle-cry", "mechanic.cr-611-continuous-effects", "mechanic.melee"],
       "capability_ids": ["combat.trigger.battle_cry", "combat.trigger.melee", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
@@ -525,6 +585,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_attack_keywords_share_one_completed_declaration_batch",
       "piece_ids": ["capability.combat.trigger.battle_cry", "capability.combat.trigger.exalted", "capability.combat.trigger.melee", "capability.trigger.placement.apnap", "mechanic.battle-cry", "mechanic.cr-603-handling-triggered-abilities", "mechanic.exalted", "mechanic.melee"],
       "capability_ids": ["combat.trigger.battle_cry", "combat.trigger.exalted", "combat.trigger.melee", "trigger.placement.apnap"],
@@ -533,6 +594,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_current_effective_power_and_source_exclusion_share_one_cost_owner",
       "piece_ids": ["capability.activation.crew.fixed_power", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "mechanic.cr-611-continuous-effects", "mechanic.crew"],
       "capability_ids": ["activation.crew.fixed_power", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
@@ -541,6 +603,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_crew_retains_existing_card_types_and_subtypes",
       "piece_ids": ["capability.activation.crew.fixed_power", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "mechanic.cr-205-type-line", "mechanic.cr-611-continuous-effects", "mechanic.crew"],
       "capability_ids": ["activation.crew.fixed_power", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
@@ -549,6 +612,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_generic_cycling_discards_before_stack_draw_and_replays_exactly",
       "piece_ids": ["capability.activation.cycling.hand", "capability.trigger.event.normalized_zone_change", "capability.zone.draw.library_to_hand", "mechanic.cr-121-drawing-a-card", "mechanic.cycling"],
       "capability_ids": ["activation.cycling.hand", "trigger.event.normalized_zone_change", "zone.draw.library_to_hand"],
@@ -557,6 +621,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_compiled_tap_activation_is_multiplayer_public_and_replays",
       "piece_ids": ["capability.permanent.tap.effect", "capability.target.revalidate_resolution", "mechanic.tap-and-untap"],
       "capability_ids": ["permanent.tap.effect", "target.revalidate_resolution"],
@@ -565,6 +630,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_compiled_untap_activation_consumes_stun_and_replays",
       "piece_ids": ["capability.permanent.untap.effect", "capability.target.revalidate_resolution", "mechanic.tap-and-untap"],
       "capability_ids": ["permanent.untap.effect", "target.revalidate_resolution"],
@@ -573,6 +639,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_compiled_exile_is_multiplayer_public_and_replays",
       "piece_ids": ["capability.permanent.exile.effect", "capability.target.revalidate_resolution", "mechanic.cr-406-exile"],
       "capability_ids": ["permanent.exile.effect", "target.revalidate_resolution"],
@@ -581,6 +648,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_exile_destination_replacement_preserves_typed_result",
       "piece_ids": ["capability.permanent.exile.effect", "mechanic.cr-400-general", "mechanic.cr-614-replacement-effects"],
       "capability_ids": ["permanent.exile.effect"],
@@ -589,6 +657,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_compiled_return_is_multiplayer_private_and_replays",
       "piece_ids": ["capability.permanent.return.owner_hand", "capability.target.revalidate_resolution", "mechanic.cr-400-general"],
       "capability_ids": ["permanent.return.owner_hand", "target.revalidate_resolution"],
@@ -597,6 +666,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_destination_replacement_preserves_typed_result",
       "piece_ids": ["capability.permanent.return.owner_hand", "mechanic.cr-400-general", "mechanic.cr-614-replacement-effects"],
       "capability_ids": ["permanent.return.owner_hand"],
@@ -605,6 +675,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_counter_target_that_leaves_stack_invalidates_resolution",
       "piece_ids": ["capability.stack.counter.effect", "capability.target.revalidate_resolution", "mechanic.counter"],
       "capability_ids": ["stack.counter.effect", "target.revalidate_resolution"],
@@ -613,6 +684,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_intrinsic_uncounterable_spell_survives_typed_counter",
       "piece_ids": ["capability.stack.counter.effect", "capability.stack.counter.prohibition.intrinsic", "mechanic.counter"],
       "capability_ids": ["stack.counter.effect", "stack.counter.prohibition.intrinsic"],
@@ -621,6 +693,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_all_counter_removal_revalidates_target_and_replays_in_four_player_game",
       "piece_ids": ["capability.counter.removal.all_effect", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.removal.all_effect", "target.revalidate_resolution"],
@@ -629,6 +702,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_fixed_counter_removal_preserves_target_revalidation_and_siege_trigger",
       "piece_ids": ["capability.counter.removal.fixed_effect", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.removal.fixed_effect", "target.revalidate_resolution"],
@@ -637,6 +711,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_partial_target_revalidation_places_only_on_still_legal_targets",
       "piece_ids": ["capability.counter.producer.fixed_permanent_target_set_effect", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.producer.fixed_permanent_target_set_effect", "target.revalidate_resolution"],
@@ -645,6 +720,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_partial_target_revalidation_preserves_remaining_subject",
       "piece_ids": ["capability.counter.producer.fixed_permanent_group_effect", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.producer.fixed_permanent_group_effect", "target.revalidate_resolution"],
@@ -653,6 +729,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_four_player_group_replacement_is_seat_scoped_and_replays",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_permanent_group_effect"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_permanent_group_effect"],
@@ -661,6 +738,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_attachment_counter_replacement_is_seat_scoped_and_replays",
       "piece_ids": ["capability.attachment.reference.current_or_lki", "capability.counter.producer.fixed_attached_effect"],
       "capability_ids": ["attachment.reference.current_or_lki", "counter.producer.fixed_attached_effect"],
@@ -669,6 +747,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_attachment_counter_replacement_is_seat_scoped_and_replays",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_attached_effect"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_attached_effect"],
@@ -677,6 +756,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_support_partial_target_revalidation_and_quantity_replacement_replay",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.support"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.support"],
@@ -685,6 +765,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_support_partial_target_revalidation_and_quantity_replacement_replay",
       "piece_ids": ["capability.counter.producer.support", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.producer.support", "target.revalidate_resolution"],
@@ -693,6 +774,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_mentor_places_replacement_aware_counter_after_target_revalidation",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.mentor", "mechanic.mentor"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.mentor"],
@@ -701,6 +783,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_current_power_change_can_make_mentor_target_illegal",
       "piece_ids": ["capability.counter.producer.mentor", "capability.target.revalidate_resolution", "mechanic.mentor"],
       "capability_ids": ["counter.producer.mentor", "target.revalidate_resolution"],
@@ -709,6 +792,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_departure_pins_power_after_trigger_creation",
       "piece_ids": ["capability.counter.producer.mentor", "mechanic.cr-400-general", "mechanic.mentor"],
       "capability_ids": ["counter.producer.mentor"],
@@ -717,6 +801,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_dethrone_uses_complete_four_player_life_snapshot_and_quantity_replacement",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.dethrone", "mechanic.dethrone"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.dethrone"],
@@ -725,6 +810,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_attack_counter_source_identity_handles_departure_control_and_phasing",
       "piece_ids": ["capability.counter.producer.dethrone", "mechanic.cr-400-general", "mechanic.dethrone"],
       "capability_ids": ["counter.producer.dethrone"],
@@ -733,6 +819,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
       "piece_ids": ["capability.counter.producer.dethrone", "capability.trigger.placement.apnap", "mechanic.dethrone"],
       "capability_ids": ["counter.producer.dethrone", "trigger.placement.apnap"],
@@ -741,6 +828,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_training_uses_declaration_power_and_quantity_replacement",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.training", "mechanic.training"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.training"],
@@ -749,6 +837,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_training_uses_declaration_power_and_quantity_replacement",
       "piece_ids": ["capability.counter.producer.training", "mechanic.cr-208-power-toughness", "mechanic.training"],
       "capability_ids": ["counter.producer.training"],
@@ -757,6 +846,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_multiple_attack_counter_triggers_use_ordinary_ordering_and_hide_identity",
       "piece_ids": ["capability.counter.producer.training", "capability.trigger.placement.apnap", "mechanic.training"],
       "capability_ids": ["counter.producer.training", "trigger.placement.apnap"],
@@ -765,6 +855,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_modular_entry_and_departure_transfer_use_canonical_counter_paths",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.modular", "capability.trigger.event.normalized_zone_change", "mechanic.modular"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.modular", "trigger.event.normalized_zone_change"],
@@ -773,6 +864,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_modular_source_departure_control_and_target_revalidation",
       "piece_ids": ["capability.counter.producer.modular", "capability.target.permanent.characteristic_predicate", "capability.target.revalidate_resolution", "mechanic.modular"],
       "capability_ids": ["counter.producer.modular", "target.permanent.characteristic_predicate", "target.revalidate_resolution"],
@@ -781,6 +873,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_noncreature_modular_permanent_uses_permanent_graveyard_event",
       "piece_ids": ["capability.counter.producer.modular", "capability.trigger.event.normalized_zone_change", "mechanic.modular"],
       "capability_ids": ["counter.producer.modular", "trigger.event.normalized_zone_change"],
@@ -789,6 +882,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_four_player_modular_choice_is_controller_scoped_public_and_replays",
       "piece_ids": ["capability.counter.producer.modular", "capability.trigger.placement.apnap", "mechanic.modular"],
       "capability_ids": ["counter.producer.modular", "trigger.placement.apnap"],
@@ -797,6 +891,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_redirected_combat_damage_to_controller_still_triggers",
       "piece_ids": ["capability.counter.producer.renown", "mechanic.cr-120-damage", "mechanic.renown"],
       "capability_ids": ["counter.producer.renown"],
@@ -805,6 +900,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_counter_replacement_and_zero_result_still_create_renowned_designation",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.renown", "capability.permanent.designation.renowned", "mechanic.renown"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.renown", "permanent.designation.renowned"],
@@ -813,6 +909,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_intervening_condition_uses_same_logical_object_and_current_designation",
       "piece_ids": ["capability.counter.producer.renown", "capability.permanent.designation.renowned", "mechanic.cr-400-general", "mechanic.renown"],
       "capability_ids": ["counter.producer.renown", "permanent.designation.renowned"],
@@ -821,6 +918,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_target_set_suspends_for_quantity_replacement_and_replays",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_permanent_target_set_effect"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_permanent_target_set_effect"],
@@ -829,6 +927,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_ordinary_unleash_lowers_to_two_source_spanned_typed_programs",
       "piece_ids": ["capability.counter.producer.optional_self_entry", "mechanic.unleash"],
       "capability_ids": ["counter.producer.optional_self_entry"],
@@ -837,6 +936,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_ordinary_unleash_lowers_to_two_source_spanned_typed_programs",
       "piece_ids": ["capability.combat.block.self_counter_prohibition", "mechanic.unleash"],
       "capability_ids": ["combat.block.self_counter_prohibition"],
@@ -845,6 +945,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_unleash_counter_uses_canonical_quantity_replacement_order",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.optional_self_entry"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.optional_self_entry"],
@@ -853,6 +954,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_unleash_counter_uses_canonical_quantity_replacement_order",
       "piece_ids": ["capability.combat.block.self_counter_prohibition", "capability.counter.producer.optional_self_entry"],
       "capability_ids": ["combat.block.self_counter_prohibition", "counter.producer.optional_self_entry"],
@@ -861,6 +963,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_ordinary_riot_lowers_to_linked_source_spanned_programs",
       "piece_ids": ["capability.counter.producer.riot", "mechanic.riot"],
       "capability_ids": ["counter.producer.riot"],
@@ -869,6 +972,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.riot"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.riot"],
@@ -877,6 +981,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
       "piece_ids": ["capability.combat.attack.haste", "capability.counter.producer.riot"],
       "capability_ids": ["combat.attack.haste", "counter.producer.riot"],
@@ -885,6 +990,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_riot_counter_uses_quantity_replacement_and_haste_uses_existing_rules",
       "piece_ids": ["capability.activation.tap_untap_cost.haste", "capability.counter.producer.riot"],
       "capability_ids": ["activation.tap_untap_cost.haste", "counter.producer.riot"],
@@ -893,6 +999,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_token_and_counter_replacements_resume_sequentially_and_replay",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.intrinsic_entry", "capability.token.creation.additional_replacement"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.intrinsic_entry", "token.creation.additional_replacement"],
@@ -901,6 +1008,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_persist_returns_under_owner_with_replacement_aware_counter",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
@@ -909,6 +1017,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_zone_and_counter_replacements_complete_before_return_mutates",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
@@ -917,6 +1026,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_death_return_replacement_resume_replays_exactly",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
@@ -925,6 +1035,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_death_return_replacement_continuation_survives_process_restart",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
@@ -933,6 +1044,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_zone_and_counter_replacements_complete_before_return_mutates",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.undying"],
@@ -941,6 +1053,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_death_return_replacement_resume_replays_exactly",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.undying"],
@@ -949,6 +1062,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_death_return_replacement_continuation_survives_process_restart",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.undying"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.undying"],
@@ -957,6 +1071,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_saga_entry_counter_uses_quantity_replacement_but_turn_action_does_not",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
@@ -965,6 +1080,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_competing_saga_entry_replacements_order_to_three_or_four",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
@@ -973,6 +1089,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_four_player_saga_entry_replacement_choices_follow_apnap",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
@@ -981,6 +1098,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_saga_entry_replacement_choice_replays_exactly",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
@@ -989,6 +1107,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_saga_entry_replacement_continuation_survives_process_restart",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
@@ -997,6 +1116,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_zone_object_keyword_survives_cleanup_and_source_departure_but_not_target_reentry",
       "piece_ids": ["capability.continuous.resolution.fixed_keyword_zone_object", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_target", "mechanic.cr-122-counters", "mechanic.cr-611-continuous-effects"],
       "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_target"],
@@ -1005,6 +1125,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_zone_object_keyword_replacement_continuation_survives_restart",
       "piece_ids": ["capability.continuous.resolution.fixed_keyword_zone_object", "capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_target"],
       "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.placement.quantity_replacement", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_target"],
@@ -1013,6 +1134,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_zone_object_keyword_continuation_rejects_stale_target_identity",
       "piece_ids": ["capability.continuous.resolution.fixed_keyword_zone_object", "capability.counter.placement.quantity_replacement", "capability.resolution.effect_sequence.fixed_target", "capability.target.revalidate_resolution"],
       "capability_ids": ["continuous.resolution.fixed_keyword_zone_object", "counter.placement.quantity_replacement", "resolution.effect_sequence.fixed_target", "target.revalidate_resolution"],
@@ -1021,6 +1143,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_exhaust_mana_activation_is_explicit_nonreversible_and_replays",
       "piece_ids": ["capability.activation.exhaust.once_per_object", "capability.mana.activated.fixed_output", "mechanic.exhaust"],
       "capability_ids": ["activation.exhaust.once_per_object", "mana.activated.fixed_output"],
@@ -1029,6 +1152,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_exhaust_source_sequence_suspends_for_replacement_and_resumes_exactly",
       "piece_ids": ["capability.activation.exhaust.once_per_object", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_source", "mechanic.cr-122-counters", "mechanic.cr-611-continuous-effects", "mechanic.exhaust"],
       "capability_ids": ["activation.exhaust.once_per_object", "continuous.resolution.fixed_characteristics_until_end_of_turn", "counter.placement.quantity_replacement", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_source"],
@@ -1037,6 +1161,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_source_sequence_rejects_stale_source_identity_without_partial_mutation",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_effect", "capability.resolution.effect_sequence.fixed_source", "mechanic.cr-122-counters", "mechanic.cr-400-general"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_effect", "resolution.effect_sequence.fixed_source"],
@@ -1045,6 +1170,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_adapt_uses_canonical_counter_replacement_and_replays",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.keyword_action.adapt.fixed", "mechanic.adapt", "mechanic.cr-122-counters"],
       "capability_ids": ["counter.placement.quantity_replacement", "keyword_action.adapt.fixed"],
@@ -1053,6 +1179,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_amass_token_and_counter_replacements_suspend_in_rule_order_and_replay",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.keyword_action.amass.fixed", "capability.token.creation.additional_replacement", "mechanic.amass", "mechanic.cr-111-tokens", "mechanic.cr-122-counters"],
       "capability_ids": ["counter.placement.quantity_replacement", "keyword_action.amass.fixed", "token.creation.additional_replacement"],
@@ -1061,6 +1188,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_amass_existing_army_uses_counters_before_zone_object_subtype",
       "piece_ids": ["capability.keyword_action.amass.fixed", "mechanic.amass", "mechanic.cr-122-counters", "mechanic.cr-400-general", "mechanic.cr-611-continuous-effects"],
       "capability_ids": ["keyword_action.amass.fixed"],
@@ -1069,6 +1197,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_monstrous_replacement_resume_replays_exactly",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.keyword_action.monstrosity.fixed", "capability.permanent.designation.monstrous", "mechanic.cr-122-counters", "mechanic.monstrosity"],
       "capability_ids": ["counter.placement.quantity_replacement", "keyword_action.monstrosity.fixed", "permanent.designation.monstrous"],
@@ -1077,6 +1206,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_zone_change_clears_and_copy_does_not_inherit_monstrous",
       "piece_ids": ["capability.permanent.designation.monstrous", "mechanic.cr-400-general", "mechanic.monstrosity"],
       "capability_ids": ["permanent.designation.monstrous"],
@@ -1085,6 +1215,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_four_player_sequence_choice_is_seat_scoped_and_replays",
       "piece_ids": ["capability.counter.characteristic.keyword", "capability.counter.placement.quantity_replacement"],
       "capability_ids": ["counter.characteristic.keyword", "counter.placement.quantity_replacement"],
@@ -1093,6 +1224,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_flying_counter_feeds_offer_and_command_block_legality",
       "piece_ids": ["capability.combat.block.flying", "capability.counter.characteristic.keyword"],
       "capability_ids": ["combat.block.flying", "counter.characteristic.keyword"],
@@ -1101,6 +1233,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_vigilance_counter_feeds_four_player_attack_tap_owner",
       "piece_ids": ["capability.combat.attack.vigilance", "capability.counter.characteristic.keyword"],
       "capability_ids": ["combat.attack.vigilance", "counter.characteristic.keyword"],
@@ -1109,6 +1242,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_double_strike_counter_feeds_both_damage_steps",
       "piece_ids": ["capability.combat.damage.participation.strike_steps", "capability.counter.characteristic.keyword"],
       "capability_ids": ["combat.damage.participation.strike_steps", "counter.characteristic.keyword"],
@@ -1117,6 +1251,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_lifelink_counter_feeds_final_damage_result",
       "piece_ids": ["capability.counter.characteristic.keyword", "capability.damage.result.lifelink"],
       "capability_ids": ["counter.characteristic.keyword", "damage.result.lifelink"],
@@ -1125,6 +1260,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_deathtouch_counter_feeds_assignment_and_final_damage_result",
       "piece_ids": ["capability.combat.damage.assignment.deathtouch", "capability.counter.characteristic.keyword", "capability.damage.result.deathtouch"],
       "capability_ids": ["combat.damage.assignment.deathtouch", "counter.characteristic.keyword", "damage.result.deathtouch"],
@@ -1133,6 +1269,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_trample_counter_feeds_offer_and_command_spill_legality",
       "piece_ids": ["capability.combat.damage.assignment.trample", "capability.counter.characteristic.keyword"],
       "capability_ids": ["combat.damage.assignment.trample", "counter.characteristic.keyword"],
@@ -1141,6 +1278,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_menace_counter_feeds_offer_and_command_block_legality",
       "piece_ids": ["capability.combat.block.menace", "capability.counter.characteristic.keyword"],
       "capability_ids": ["combat.block.menace", "counter.characteristic.keyword"],
@@ -1149,6 +1287,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_hexproof_counter_feeds_offer_and_resolution_revalidation",
       "piece_ids": ["capability.counter.characteristic.keyword", "capability.target.protection.hexproof_permanent", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.characteristic.keyword", "target.protection.hexproof_permanent", "target.revalidate_resolution"],
@@ -1157,6 +1296,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_plain_hexproof_depends_on_current_controller",
       "piece_ids": ["capability.target.protection.hexproof_permanent", "mechanic.hexproof"],
       "capability_ids": ["target.protection.hexproof_permanent"],
@@ -1165,6 +1305,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_control_change_recomputes_offer_and_resolution_legality",
       "piece_ids": ["capability.target.protection.hexproof_permanent", "capability.target.revalidate_resolution", "mechanic.hexproof"],
       "capability_ids": ["target.protection.hexproof_permanent", "target.revalidate_resolution"],
@@ -1173,6 +1314,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_shroud_blocks_every_controller_and_multiple_instances_are_redundant",
       "piece_ids": ["capability.target.protection.shroud_permanent", "mechanic.shroud"],
       "capability_ids": ["target.protection.shroud_permanent"],
@@ -1181,6 +1323,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_shroud_gained_after_selection_is_illegal_at_resolution",
       "piece_ids": ["capability.target.protection.shroud_permanent", "capability.target.revalidate_resolution", "mechanic.shroud"],
       "capability_ids": ["target.protection.shroud_permanent", "target.revalidate_resolution"],
@@ -1189,6 +1332,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_attached_continuous_shroud_updates_advertised_target_legality",
       "piece_ids": ["capability.continuous.attached.fixed_characteristics", "capability.target.protection.shroud_permanent", "mechanic.shroud"],
       "capability_ids": ["continuous.attached.fixed_characteristics", "target.protection.shroud_permanent"],
@@ -1197,6 +1341,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_state_based_lethal_and_deathtouch_share_typed_destruction",
       "piece_ids": ["capability.permanent.destroy.state_based_damage", "capability.permanent.indestructible.ordinary", "mechanic.indestructible"],
       "capability_ids": ["permanent.destroy.state_based_damage", "permanent.indestructible.ordinary"],
@@ -1205,6 +1350,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_trample_assigns_lethal_over_indestructible_blocker",
       "piece_ids": ["capability.combat.damage.assignment.trample", "capability.permanent.indestructible.ordinary", "mechanic.indestructible", "mechanic.trample"],
       "capability_ids": ["combat.damage.assignment.trample", "permanent.indestructible.ordinary"],
@@ -1213,6 +1359,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_indestructible_consumes_deathtouch_at_the_first_sba_check",
       "piece_ids": ["capability.damage.result.deathtouch", "capability.permanent.indestructible.ordinary", "mechanic.deathtouch", "mechanic.indestructible"],
       "capability_ids": ["damage.result.deathtouch", "permanent.indestructible.ordinary"],
@@ -1221,6 +1368,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_indestructible_counter_feeds_canonical_destruction",
       "piece_ids": ["capability.counter.characteristic.keyword", "capability.permanent.indestructible.ordinary", "mechanic.indestructible"],
       "capability_ids": ["counter.characteristic.keyword", "permanent.indestructible.ordinary"],
@@ -1229,6 +1377,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_mass_destruction_apnap_shield_indestructible_and_replay",
       "piece_ids": ["capability.permanent.destroy.fixed_set", "capability.permanent.indestructible.ordinary", "mechanic.indestructible"],
       "capability_ids": ["permanent.destroy.fixed_set", "permanent.indestructible.ordinary"],
@@ -1237,6 +1386,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_prowess_source_identity_and_control_are_pinned",
       "piece_ids": ["capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "capability.trigger.keyword.prowess", "mechanic.cr-611-continuous-effects", "mechanic.prowess"],
       "capability_ids": ["continuous.resolution.fixed_characteristics_until_end_of_turn", "trigger.keyword.prowess"],
@@ -1245,6 +1395,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_prowess_and_opponent_cast_trigger_share_one_apnap_batch",
       "piece_ids": ["capability.trigger.event.normalized_spell_cast", "capability.trigger.keyword.prowess", "capability.trigger.placement.apnap", "mechanic.cr-603-handling-triggered-abilities", "mechanic.prowess"],
       "capability_ids": ["trigger.event.normalized_spell_cast", "trigger.keyword.prowess", "trigger.placement.apnap"],
@@ -1253,6 +1404,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_convoke_creature_cannot_also_activate_for_mana",
       "piece_ids": ["capability.casting.payment.convoke", "capability.mana.activated.fixed_output", "mechanic.convoke"],
       "capability_ids": ["casting.payment.convoke", "mana.activated.fixed_output"],
@@ -1261,6 +1413,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
       "piece_ids": ["capability.casting.additional_cost.fixed_counter_placement", "capability.counter.placement.quantity_replacement"],
       "capability_ids": ["casting.additional_cost.fixed_counter_placement", "counter.placement.quantity_replacement"],
@@ -1269,6 +1422,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_discard_replacement_suspends_before_mutation_and_replays",
       "piece_ids": ["capability.casting.additional_cost.zone_change.fixed_discard", "capability.zone.change.destination_replacement"],
       "capability_ids": ["casting.additional_cost.zone_change.fixed_discard", "zone.change.destination_replacement"],
@@ -1277,6 +1431,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_zone_replacement_suspends_cost_before_mutation_and_replays",
       "piece_ids": ["capability.casting.additional_cost.fixed_sacrifice", "capability.trigger.event.normalized_zone_change", "capability.zone.change.destination_replacement"],
       "capability_ids": ["casting.additional_cost.fixed_sacrifice", "trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
@@ -1285,6 +1440,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_control_change_and_zone_change_preserve_trigger_time_echo_facts",
       "piece_ids": ["capability.trigger.keyword.echo.fixed_mana", "mechanic.cr-400-general", "mechanic.echo"],
       "capability_ids": ["trigger.keyword.echo.fixed_mana"],
@@ -1293,6 +1449,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_multiple_echo_sources_share_apnap_trigger_placement",
       "piece_ids": ["capability.trigger.keyword.echo.fixed_mana", "capability.trigger.placement.apnap", "mechanic.cr-603-handling-triggered-abilities", "mechanic.echo"],
       "capability_ids": ["trigger.keyword.echo.fixed_mana", "trigger.placement.apnap"],
@@ -1301,6 +1458,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_any_target_damage_then_draw_revalidates_and_draws_privately",
       "piece_ids": ["capability.target.public.player_or_damageable_permanent", "capability.zone.draw.library_to_hand"],
       "capability_ids": ["target.public.player_or_damageable_permanent", "zone.draw.library_to_hand"],
@@ -1309,6 +1467,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_strictest_current_grant_combines_with_opposing_pair_removal",
       "piece_ids": ["capability.counter.removal.rule_generated", "capability.state_based.counter_maximum.fixed_self", "mechanic.cr-704-state-based-actions"],
       "capability_ids": ["counter.removal.rule_generated", "state_based.counter_maximum.fixed_self"],
@@ -1317,6 +1476,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_ambient_untapped_competes_with_intrinsic_tapped_entry",
       "piece_ids": ["capability.zone.entry.tapped_state", "mechanic.cr-614-replacement-effects", "mechanic.cr-616-interaction-of-replacement-and-or-prevention-effects"],
       "capability_ids": ["zone.entry.tapped_state"],
@@ -1325,6 +1485,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_competing_land_entry_choice_is_private_and_replayable",
       "piece_ids": ["capability.zone.entry.tapped_state", "mechanic.cr-403-battlefield", "mechanic.cr-616-interaction-of-replacement-and-or-prevention-effects"],
       "capability_ids": ["zone.entry.tapped_state"],
@@ -1333,6 +1494,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_glasswing_faces_compose_aura_attachment_with_tapped_entry",
       "piece_ids": ["capability.attachment.aura.simple_object", "capability.zone.entry.tapped_state"],
       "capability_ids": ["attachment.aura.simple_object", "zone.entry.tapped_state"],
@@ -1341,6 +1503,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_lotus_field_composes_tapped_entry_with_controller_relative_hexproof",
       "piece_ids": ["capability.target.protection.hexproof_permanent", "capability.zone.entry.tapped_state"],
       "capability_ids": ["target.protection.hexproof_permanent", "zone.entry.tapped_state"],
@@ -1349,6 +1512,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_fell_faces_compose_target_revalidation_with_tapped_entry",
       "piece_ids": ["capability.target.revalidate_resolution", "capability.zone.entry.tapped_state"],
       "capability_ids": ["target.revalidate_resolution", "zone.entry.tapped_state"],
@@ -1357,6 +1521,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
       "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
       "piece_ids": ["capability.zone.entry.tapped_state", "residual.target_or_choice.target-predicate"],
       "capability_ids": ["zone.entry.tapped_state"],
@@ -1365,6 +1530,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_aura_equipment_anthem_temporary_effect_and_draw_compose",
       "piece_ids": ["capability.attachment.aura.simple_object", "capability.attachment.equip.fixed_mana", "capability.continuous.attached.fixed_characteristics", "capability.continuous.power_toughness.fixed_anthem", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "capability.zone.draw.library_to_hand"],
       "capability_ids": ["attachment.aura.simple_object", "attachment.equip.fixed_mana", "continuous.attached.fixed_characteristics", "continuous.power_toughness.fixed_anthem", "continuous.resolution.fixed_characteristics_until_end_of_turn", "zone.draw.library_to_hand"],
@@ -1373,6 +1539,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
       "piece_ids": ["capability.continuous.attached.fixed_characteristics", "capability.continuous.power_toughness.fixed_anthem", "capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "residual.replacement.replacement-applicability", "residual.replacement.self-replacement-and-prevention-ordering"],
       "capability_ids": ["continuous.attached.fixed_characteristics", "continuous.power_toughness.fixed_anthem", "continuous.resolution.fixed_characteristics_until_end_of_turn"],
@@ -1381,6 +1548,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
       "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
       "piece_ids": ["capability.counter.characteristic.keyword", "capability.counter.placement.quantity_replacement", "capability.damage.amount.positive", "capability.damage.result.deathtouch", "capability.damage.result.infect", "capability.damage.result.lifelink", "residual.replacement.replacement-applicability", "residual.replacement.self-replacement-and-prevention-ordering"],
       "capability_ids": ["counter.characteristic.keyword", "counter.placement.quantity_replacement", "damage.amount.positive", "damage.result.deathtouch", "damage.result.infect", "damage.result.lifelink"],
@@ -1389,6 +1557,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_sphinx_draws_before_counter_replacement_and_replays",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.resolution.effect_sequence.fixed_counter_controller"],
       "capability_ids": ["counter.placement.quantity_replacement", "resolution.effect_sequence.fixed_counter_controller"],
@@ -1397,6 +1566,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_sphinx_draws_before_counter_replacement_and_replays",
       "piece_ids": ["capability.resolution.effect_sequence.fixed_counter_controller", "capability.zone.draw.library_to_hand"],
       "capability_ids": ["resolution.effect_sequence.fixed_counter_controller", "zone.draw.library_to_hand"],
@@ -1405,6 +1575,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_furnace_skullbomb_target_predicate_and_draw_compose",
       "piece_ids": ["capability.target.permanent.characteristic_predicate", "capability.zone.draw.library_to_hand"],
       "capability_ids": ["target.permanent.characteristic_predicate", "zone.draw.library_to_hand"],
@@ -1413,6 +1584,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_cast_counter_trigger_uses_normalized_event",
       "piece_ids": ["capability.counter.producer.fixed_event_trigger", "capability.trigger.event.normalized_spell_cast"],
       "capability_ids": ["counter.producer.fixed_event_trigger", "trigger.event.normalized_spell_cast"],
@@ -1421,6 +1593,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_land_entry_counter_trigger_uses_normalized_event",
       "piece_ids": ["capability.counter.producer.fixed_event_trigger", "capability.trigger.event.normalized_zone_change"],
       "capability_ids": ["counter.producer.fixed_event_trigger", "trigger.event.normalized_zone_change"],
@@ -1429,6 +1602,70 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_draw_and_second_draw_counter_triggers_share_one_batch",
+      "piece_ids": ["capability.counter.producer.fixed_event_trigger","capability.trigger.event.normalized_card_draw"],
+      "capability_ids": ["counter.producer.fixed_event_trigger","trigger.event.normalized_card_draw"],
+      "interaction_order": 2,
+      "assertion": "Ordinary draw and exact second-draw occurrences discover their compiled fixed counter consumers through one public normalized event batch."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_draw_counter_triggers_use_public_normalized_events",
+      "piece_ids": ["capability.trigger.event.normalized_card_draw","capability.zone.draw.library_to_hand"],
+      "capability_ids": ["trigger.event.normalized_card_draw","zone.draw.library_to_hand"],
+      "interaction_order": 2,
+      "assertion": "The canonical draw commit emits one public normalized occurrence without exposing the drawn object's hidden identity to the consuming trigger."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_life_gain_counter_trigger_uses_replacement_resolved_amount",
+      "piece_ids": ["capability.counter.producer.fixed_event_trigger","capability.trigger.event.normalized_life_gain"],
+      "capability_ids": ["counter.producer.fixed_event_trigger","trigger.event.normalized_life_gain"],
+      "interaction_order": 2,
+      "assertion": "A compiled fixed counter trigger consumes one public normalized life-gain occurrence carrying the final replacement-adjusted amount."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_life_gain_counter_trigger_covers_effect_intent_lifelink_and_aftermath",
+      "piece_ids": ["capability.life.change.effect","capability.trigger.event.normalized_life_gain"],
+      "capability_ids": ["life.change.effect","trigger.event.normalized_life_gain"],
+      "interaction_order": 2,
+      "assertion": "Immediate and semantic-choice life transactions emit the same normalized positive result only after their canonical typed commit."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_life_gain_counter_trigger_covers_effect_intent_lifelink_and_aftermath",
+      "piece_ids": ["capability.damage.result.lifelink","capability.trigger.event.normalized_life_gain"],
+      "capability_ids": ["damage.result.lifelink","trigger.event.normalized_life_gain"],
+      "interaction_order": 2,
+      "assertion": "A positive committed Lifelink damage result emits one normalized life-gain occurrence in the same damage-result trigger batch."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_life_gain_counter_trigger_covers_effect_intent_lifelink_and_aftermath",
+      "piece_ids": ["capability.damage.prevention.persistent_amount","capability.trigger.event.normalized_life_gain"],
+      "capability_ids": ["damage.prevention.persistent_amount","trigger.event.normalized_life_gain"],
+      "interaction_order": 2,
+      "assertion": "A positive life-gain prevention aftermath emits one normalized occurrence after the canonical damage result commits."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_semantic_life_intent_replacement_suspends_and_replays_exactly",
+      "piece_ids": ["capability.life.change.effect","capability.life.gain.replacement.static_multiplier"],
+      "capability_ids": ["life.change.effect","life.gain.replacement.static_multiplier"],
+      "interaction_order": 2,
+      "assertion": "A semantic-choice life intent suspends before mutation, applies two compiled gain multipliers, and replays the replacement-resolved life total exactly once."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_scheduled_counter_trigger_suspends_for_quantity_replacement",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_event_trigger"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_event_trigger"],
@@ -1437,6 +1674,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_multiple_scheduled_counter_triggers_use_one_apnap_batch",
       "piece_ids": ["capability.counter.producer.fixed_event_trigger", "capability.trigger.placement.apnap"],
       "capability_ids": ["counter.producer.fixed_event_trigger", "trigger.placement.apnap"],
@@ -1445,6 +1683,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
       "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
       "piece_ids": ["capability.counter.producer.fixed_event_trigger", "residual.replacement.damage-prevention"],
       "capability_ids": ["counter.producer.fixed_event_trigger"],
@@ -1453,6 +1692,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
       "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
       "piece_ids": ["capability.counter.producer.fixed_event_trigger", "residual.replacement.replacement-applicability"],
       "capability_ids": ["counter.producer.fixed_event_trigger"],
@@ -1461,6 +1701,7 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
       "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
       "piece_ids": ["capability.counter.producer.fixed_event_trigger", "residual.replacement.self-replacement-and-prevention-ordering"],
       "capability_ids": ["counter.producer.fixed_event_trigger"],
@@ -1469,7 +1710,8 @@
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.aura.simple_object",
             "residual.continuous_layer.affected-player-ordering"
@@ -1478,11 +1720,12 @@
             "attachment.aura.simple_object"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.continuous_layer.affected-player-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.aura.simple_object",
             "residual.continuous_layer.continuous-effect-layers-and-dependencies"
@@ -1491,11 +1734,12 @@
             "attachment.aura.simple_object"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.continuous_layer.continuous-effect-layers-and-dependencies; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.aura.simple_object",
             "residual.duration.until-end-of-turn"
@@ -1504,11 +1748,12 @@
             "attachment.aura.simple_object"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.duration.until-end-of-turn; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.aura.simple_object",
             "residual.static_clause.broader-evasion-and-group-constraints"
@@ -1517,11 +1762,12 @@
             "attachment.aura.simple_object"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.static_clause.broader-evasion-and-group-constraints; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.aura.simple_object",
             "residual.static_clause.conditional-declaration-predicates"
@@ -1530,11 +1776,12 @@
             "attachment.aura.simple_object"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.static_clause.conditional-declaration-predicates; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.aura.simple_object",
             "residual.static_clause.temporary-declaration-restrictions"
@@ -1543,11 +1790,12 @@
             "attachment.aura.simple_object"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.aura.simple_object and residual.static_clause.temporary-declaration-restrictions; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.equip.fixed_mana",
             "residual.continuous_layer.affected-player-ordering"
@@ -1556,11 +1804,12 @@
             "attachment.equip.fixed_mana"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.equip.fixed_mana and residual.continuous_layer.affected-player-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.equip.fixed_mana",
             "residual.continuous_layer.continuous-effect-layers-and-dependencies"
@@ -1569,11 +1818,12 @@
             "attachment.equip.fixed_mana"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.equip.fixed_mana and residual.continuous_layer.continuous-effect-layers-and-dependencies; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.attachment.equip.fixed_mana",
             "residual.duration.until-end-of-turn"
@@ -1582,11 +1832,12 @@
             "attachment.equip.fixed_mana"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.attachment.equip.fixed_mana and residual.duration.until-end-of-turn; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.continuous.resolution.fixed_characteristics_until_end_of_turn",
             "residual.replacement.damage-prevention"
@@ -1595,143 +1846,156 @@
             "continuous.resolution.fixed_characteristics_until_end_of_turn"
         ],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between capability.continuous.resolution.fixed_characteristics_until_end_of_turn and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.continuous_layer.affected-player-ordering",
             "residual.replacement.damage-prevention"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.affected-player-ordering and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.continuous_layer.affected-player-ordering",
             "residual.replacement.regeneration"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.affected-player-ordering and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.continuous_layer.affected-player-ordering",
             "residual.replacement.replacement-applicability"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.affected-player-ordering and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.continuous_layer.affected-player-ordering",
             "residual.replacement.self-replacement-and-prevention-ordering"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.affected-player-ordering and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.continuous_layer.continuous-effect-layers-and-dependencies",
             "residual.replacement.damage-prevention"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.continuous-effect-layers-and-dependencies and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.continuous_layer.continuous-effect-layers-and-dependencies",
             "residual.replacement.regeneration"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.continuous-effect-layers-and-dependencies and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.continuous_layer.continuous-effect-layers-and-dependencies",
             "residual.replacement.replacement-applicability"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.continuous-effect-layers-and-dependencies and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.continuous_layer.continuous-effect-layers-and-dependencies",
             "residual.replacement.self-replacement-and-prevention-ordering"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.continuous_layer.continuous-effect-layers-and-dependencies and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.duration.until-end-of-turn",
             "residual.replacement.damage-prevention"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.duration.until-end-of-turn and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.duration.until-end-of-turn",
             "residual.replacement.regeneration"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.duration.until-end-of-turn and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.duration.until-end-of-turn",
             "residual.replacement.replacement-applicability"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.duration.until-end-of-turn and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_exact_continuous_effects_compose_while_replacements_stay_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.duration.until-end-of-turn",
             "residual.replacement.self-replacement-and-prevention-ordering"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The continuous-effect behavior asserts the exact boundary between residual.duration.until-end-of-turn and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.counter.producer.cumulative_upkeep_fixed_mana",
             "residual.replacement.damage-prevention"
@@ -1740,11 +2004,12 @@
             "counter.producer.cumulative_upkeep_fixed_mana"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.cumulative_upkeep_fixed_mana and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.counter.producer.cumulative_upkeep_fixed_mana",
             "residual.replacement.replacement-applicability"
@@ -1753,11 +2018,12 @@
             "counter.producer.cumulative_upkeep_fixed_mana"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.cumulative_upkeep_fixed_mana and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.counter.producer.cumulative_upkeep_fixed_mana",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -1766,11 +2032,12 @@
             "counter.producer.cumulative_upkeep_fixed_mana"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.cumulative_upkeep_fixed_mana and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.counter.producer.fixed_effect",
             "residual.replacement.damage-prevention"
@@ -1779,11 +2046,12 @@
             "counter.producer.fixed_effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.fixed_effect and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.counter.producer.fixed_effect",
             "residual.replacement.replacement-applicability"
@@ -1792,11 +2060,12 @@
             "counter.producer.fixed_effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.fixed_effect and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.counter.producer.fixed_effect",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -1805,11 +2074,12 @@
             "counter.producer.fixed_effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.fixed_effect and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.counter.producer.modular",
             "residual.replacement.replacement-applicability"
@@ -1818,11 +2088,12 @@
             "counter.producer.modular"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.modular and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.counter.producer.modular",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -1831,11 +2102,12 @@
             "counter.producer.modular"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.counter.producer.modular and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.damage.result.multitype_permanent",
             "residual.replacement.replacement-applicability"
@@ -1844,11 +2116,12 @@
             "damage.result.multitype_permanent"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.damage.result.multitype_permanent and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.damage.result.multitype_permanent",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -1857,11 +2130,12 @@
             "damage.result.multitype_permanent"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.damage.result.multitype_permanent and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.damage.result.player_life",
             "residual.replacement.replacement-applicability"
@@ -1870,11 +2144,12 @@
             "damage.result.player_life"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.damage.result.player_life and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.damage.result.player_life",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -1883,11 +2158,12 @@
             "damage.result.player_life"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.damage.result.player_life and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.life.change.effect",
             "residual.replacement.replacement-applicability"
@@ -1896,11 +2172,12 @@
             "life.change.effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.life.change.effect and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.life.change.effect",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -1909,11 +2186,12 @@
             "life.change.effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.life.change.effect and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.life.gain.replacement.static_multiplier",
             "residual.replacement.replacement-applicability"
@@ -1922,11 +2200,12 @@
             "life.gain.replacement.static_multiplier"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.life.gain.replacement.static_multiplier and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.life.gain.replacement.static_multiplier",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -1935,11 +2214,12 @@
             "life.gain.replacement.static_multiplier"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.life.gain.replacement.static_multiplier and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.mana.activated.fixed_output",
             "residual.replacement.damage-prevention"
@@ -1948,11 +2228,12 @@
             "mana.activated.fixed_output"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.mana.activated.fixed_output and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.mana.activated.fixed_output",
             "residual.replacement.replacement-applicability"
@@ -1961,11 +2242,12 @@
             "mana.activated.fixed_output"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.mana.activated.fixed_output and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.mana.activated.fixed_output",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -1974,11 +2256,12 @@
             "mana.activated.fixed_output"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.mana.activated.fixed_output and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.destroy.effect",
             "residual.replacement.replacement-applicability"
@@ -1987,11 +2270,12 @@
             "permanent.destroy.effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.destroy.effect and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.destroy.effect",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -2000,11 +2284,12 @@
             "permanent.destroy.effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.destroy.effect and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.destroy.fixed_set",
             "residual.replacement.replacement-applicability"
@@ -2013,11 +2298,12 @@
             "permanent.destroy.fixed_set"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.destroy.fixed_set and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.destroy.fixed_set",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -2026,11 +2312,12 @@
             "permanent.destroy.fixed_set"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.destroy.fixed_set and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.exile.effect",
             "residual.replacement.replacement-applicability"
@@ -2039,11 +2326,12 @@
             "permanent.exile.effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.exile.effect and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.exile.effect",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -2052,11 +2340,12 @@
             "permanent.exile.effect"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.exile.effect and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.indestructible.ordinary",
             "residual.replacement.replacement-applicability"
@@ -2065,11 +2354,12 @@
             "permanent.indestructible.ordinary"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.indestructible.ordinary and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.indestructible.ordinary",
             "residual.replacement.self-replacement-and-prevention-ordering"
@@ -2078,11 +2368,12 @@
             "permanent.indestructible.ordinary"
         ],
         "interaction_order": 2,
-        "assertion": "The canonical mutation behavior asserts the exact boundary between capability.permanent.indestructible.ordinary and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.change.destination_replacement",
             "residual.target_or_choice.target-predicate"
@@ -2091,11 +2382,12 @@
             "zone.change.destination_replacement"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.change.destination_replacement and residual.target_or_choice.target-predicate; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.draw.library_to_hand",
             "residual.target_or_choice.conditional-effect"
@@ -2104,11 +2396,12 @@
             "zone.draw.library_to_hand"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.conditional-effect; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.draw.library_to_hand",
             "residual.target_or_choice.divided-damage-allocation"
@@ -2117,11 +2410,12 @@
             "zone.draw.library_to_hand"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.divided-damage-allocation; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.draw.library_to_hand",
             "residual.target_or_choice.multiple-damage-recipients"
@@ -2130,11 +2424,12 @@
             "zone.draw.library_to_hand"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.multiple-damage-recipients; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.draw.library_to_hand",
             "residual.target_or_choice.multiple-targets"
@@ -2143,11 +2438,12 @@
             "zone.draw.library_to_hand"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.multiple-targets; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.draw.library_to_hand",
             "residual.target_or_choice.target-predicate"
@@ -2156,11 +2452,12 @@
             "zone.draw.library_to_hand"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.draw.library_to_hand and residual.target_or_choice.target-predicate; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.entry.tapped_state",
             "residual.target_or_choice.conditional-effect"
@@ -2169,11 +2466,12 @@
             "zone.entry.tapped_state"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.entry.tapped_state and residual.target_or_choice.conditional-effect; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.entry.tapped_state",
             "residual.target_or_choice.multiple-targets"
@@ -2182,11 +2480,12 @@
             "zone.entry.tapped_state"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.entry.tapped_state and residual.target_or_choice.multiple-targets; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_agadeem_residual_spell_stays_fail_closed_while_land_entry_executes",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.zone.entry.tapped_state",
             "residual.target_or_choice.random-outcome"
@@ -2195,249 +2494,271 @@
             "zone.entry.tapped_state"
         ],
         "interaction_order": 2,
-        "assertion": "The trusted-only zone and choice behavior asserts the exact boundary between capability.zone.entry.tapped_state and residual.target_or_choice.random-outcome; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.activated_cost.complete-alternate-additional-cost-grammar",
             "residual.replacement.damage-prevention"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.complete-alternate-additional-cost-grammar and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.activated_cost.complete-alternate-additional-cost-grammar",
             "residual.replacement.regeneration"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.complete-alternate-additional-cost-grammar and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.activated_cost.complete-alternate-additional-cost-grammar",
             "residual.replacement.replacement-applicability"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.complete-alternate-additional-cost-grammar and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.activated_cost.complete-alternate-additional-cost-grammar",
             "residual.replacement.self-replacement-and-prevention-ordering"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.complete-alternate-additional-cost-grammar and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.activated_cost.restricted-payment-predicates",
             "residual.replacement.damage-prevention"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.restricted-payment-predicates and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.activated_cost.restricted-payment-predicates",
             "residual.replacement.regeneration"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.restricted-payment-predicates and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.activated_cost.restricted-payment-predicates",
             "residual.replacement.replacement-applicability"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.restricted-payment-predicates and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_unsupported_regeneration_grammar_remains_residual",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.activated_cost.restricted-payment-predicates",
             "residual.replacement.self-replacement-and-prevention-ordering"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The activation-cost fail-closed behavior asserts the exact boundary between residual.activated_cost.restricted-payment-predicates and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.event_binding.intervening-if-and-reflexive-trigger-grammar",
             "residual.replacement.damage-prevention"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.intervening-if-and-reflexive-trigger-grammar and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.event_binding.intervening-if-and-reflexive-trigger-grammar",
             "residual.replacement.regeneration"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.intervening-if-and-reflexive-trigger-grammar and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.event_binding.intervening-if-and-reflexive-trigger-grammar",
             "residual.replacement.replacement-applicability"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.intervening-if-and-reflexive-trigger-grammar and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.event_binding.intervening-if-and-reflexive-trigger-grammar",
             "residual.replacement.self-replacement-and-prevention-ordering"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.intervening-if-and-reflexive-trigger-grammar and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.event_binding.normalized-event-binding",
             "residual.replacement.damage-prevention"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.normalized-event-binding and residual.replacement.damage-prevention; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.event_binding.normalized-event-binding",
             "residual.replacement.regeneration"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.normalized-event-binding and residual.replacement.regeneration; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.event_binding.normalized-event-binding",
             "residual.replacement.replacement-applicability"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.normalized-event-binding and residual.replacement.replacement-applicability; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.event_binding.normalized-event-binding",
             "residual.replacement.self-replacement-and-prevention-ordering"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The trigger compiler behavior asserts the exact boundary between residual.event_binding.normalized-event-binding and residual.replacement.self-replacement-and-prevention-ordering; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_all_represented_restrictions_are_cumulative",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.replacement.replacement-applicability",
             "residual.static_clause.broader-evasion-and-group-constraints"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.replacement-applicability and residual.static_clause.broader-evasion-and-group-constraints; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_all_represented_restrictions_are_cumulative",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.replacement.replacement-applicability",
             "residual.static_clause.conditional-declaration-predicates"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.replacement-applicability and residual.static_clause.conditional-declaration-predicates; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_all_represented_restrictions_are_cumulative",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.replacement.replacement-applicability",
             "residual.static_clause.temporary-declaration-restrictions"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.replacement-applicability and residual.static_clause.temporary-declaration-restrictions; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_all_represented_restrictions_are_cumulative",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.replacement.self-replacement-and-prevention-ordering",
             "residual.static_clause.broader-evasion-and-group-constraints"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.self-replacement-and-prevention-ordering and residual.static_clause.broader-evasion-and-group-constraints; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_all_represented_restrictions_are_cumulative",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.replacement.self-replacement-and-prevention-ordering",
             "residual.static_clause.conditional-declaration-predicates"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.self-replacement-and-prevention-ordering and residual.static_clause.conditional-declaration-predicates; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     },
     {
         "evidence_class": "interaction",
-        "test_id": "test_all_represented_restrictions_are_cumulative",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "residual.replacement.self-replacement-and-prevention-ordering",
             "residual.static_clause.temporary-declaration-restrictions"
         ],
         "capability_ids": [],
         "interaction_order": 2,
-        "assertion": "The cumulative declaration behavior asserts the exact boundary between residual.replacement.self-replacement-and-prevention-ordering and residual.static_clause.temporary-declaration-restrictions; typed behavior remains available only where trusted and every unsupported sibling remains a material residual."
+        "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
     }
   ]
 }

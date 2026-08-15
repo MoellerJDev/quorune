@@ -11,6 +11,7 @@ from scripts.build_test_database import build_fixture_database
 from quorune.carddb import CardDatabase
 from quorune.deck import DeckLoader
 from quorune.model import CardInstance, StackItem
+from quorune.oracle_ir import register_generated_programs
 from quorune.projection import StateProjector
 from quorune.record import (
     authoritative_state_hash,
@@ -22,6 +23,7 @@ from quorune.semantic_choices.counter_coordination import (
 )
 from quorune.semantic_choices.model import SemanticChoiceError
 from quorune.semantics import SemanticProgram
+from quorune.rules.capabilities import load_default_capability_registry
 
 
 class SemanticCounterReplacementContinuationTests(unittest.TestCase):
@@ -38,6 +40,7 @@ class SemanticCounterReplacementContinuationTests(unittest.TestCase):
                 / "tests"
                 / "fixtures"
                 / "counter-replacement-cards.json",
+                ROOT / "tests" / "fixtures" / "damage-result-cards.json",
             ],
             database,
         )
@@ -130,6 +133,69 @@ class SemanticCounterReplacementContinuationTests(unittest.TestCase):
             note="",
         )
         self.assertEqual("semantic.choice", engine.state.pending_decision.kind)
+        return target, item
+
+    def begin_semantic_life_replacement(self, session):
+        engine = session.engine
+        target = self.add_permanent(
+            engine,
+            name="Island",
+            ref="life-replacement-island",
+        )
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (self.db.lookup("Boon Reflection"),),
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+        )
+        self.add_permanent(engine, name="Boon Reflection", ref="boon-one")
+        self.add_permanent(engine, name="Boon Reflection", ref="boon-two")
+        program = SemanticProgram(
+            key="test:semantic-life-replacement",
+            label="Choose an Island, then gain life",
+            effects=[
+                {
+                    "op": "choose_objects",
+                    "player": "A",
+                    "selector": {
+                        "zones": ["battlefield"],
+                        "categories": ["permanent"],
+                        "types_any": ["land"],
+                        "controller_relation": "you",
+                        "min": 1,
+                        "max": 1,
+                    },
+                    "then": [
+                        {
+                            "op": "life_if_selected_subtype",
+                            "subtype": "island",
+                            "amount": 2,
+                        }
+                    ],
+                }
+            ],
+            trust_level="provisional",
+        )
+        engine.semantics.put(program)
+        item = StackItem(
+            stack_id="semantic-life-replacement",
+            ref="S-semantic-life-replacement",
+            kind="triggered_ability",
+            controller="A",
+            label=program.label,
+            semantic_key=program.key,
+            source_object_id=target.object_id,
+            visibility=["A", "B"],
+        )
+        engine.state.stack.append(item)
+        engine._continue_resolution(
+            stack_ref=item.ref,
+            effects=[dict(value) for value in program.effects],
+            destination=None,
+            note="",
+        )
         return target, item
 
     def choose_counter(self, session):
@@ -298,6 +364,102 @@ class SemanticCounterReplacementContinuationTests(unittest.TestCase):
             if event.code == "semantic.objects.chosen"
         ]
         self.assertEqual(1, len(choice_events))
+
+    def test_semantic_life_intent_replacement_suspends_and_replays_exactly(
+        self,
+    ):
+        session = self.session(12261426)
+        engine = session.engine
+        target, item = self.begin_semantic_life_replacement(session)
+        before_life = engine.state.players["A"].life
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        result = session.act(
+            "pilot:A",
+            {
+                "action_id": "choose",
+                "objects": [target.ref],
+                "plan": "DEVELOP_BOARD",
+                "reason": "Choose the Island.",
+            },
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual(before_life, engine.state.players["A"].life)
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        continuation = engine.state.pending_decision.continuation
+        self.assertEqual("life_change", continuation["semantic_intent_kind"])
+        self.assertEqual(2, continuation["semantic_intent"]["amount"])
+
+        projector = StateProjector(self.db, engine.state)
+        projected = projector._decision("pilot:A")
+        self.assertIsNone(projector._decision("pilot:B"))
+        serialized = json.dumps(projected, sort_keys=True)
+        for forbidden in (
+            "semantic_choice_response",
+            "semantic_intent",
+            "replacement_batch",
+            "replacement_effects",
+        ):
+            self.assertNotIn(forbidden, serialized)
+        self.assertNotIn(target.object_id, serialized)
+
+        self.select_replacement(session)
+        self.assertEqual(before_life + 8, engine.state.players["A"].life)
+        self.assertFalse(
+            any(candidate.ref == item.ref for candidate in engine.state.stack)
+        )
+        choice_events = [
+            event
+            for event in engine.state.events
+            if event.code == "semantic.objects.chosen"
+        ]
+        self.assertEqual(1, len(choice_events))
+        expected_hash = authoritative_state_hash(engine.state)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "semantic-life-replacement-replay"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(2, replay["commands"])
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_tampered_semantic_life_intent_fails_closed_without_mutation(self):
+        session = self.session(12261427)
+        engine = session.engine
+        target, _item = self.begin_semantic_life_replacement(session)
+        before_life = engine.state.players["A"].life
+        result = session.act(
+            "pilot:A",
+            {
+                "action_id": "choose",
+                "objects": [target.ref],
+                "plan": "DEVELOP_BOARD",
+                "reason": "Choose the Island.",
+            },
+        )
+        self.assertTrue(result.ok, result.summary)
+        decision = engine.state.pending_decision
+        self.assertEqual("replacement.order", decision.kind)
+        decision.continuation["semantic_intent"]["amount"] = 3
+        projected = StateProjector(self.db, engine.state)._decision("pilot:A")
+        selected = projected["ctx"]["options"][0]["id"]
+        before = authoritative_state_hash(engine.state)
+        capability = engine.permissions.capability_for("pilot:A")
+
+        rejected = engine.try_submit(
+            token=capability.token,
+            principal="pilot:A",
+            action="choose",
+            payload={"replacement": selected},
+        )
+
+        self.assertFalse(rejected.ok)
+        self.assertIn("changed before replacement resume", rejected.summary)
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        self.assertEqual(before_life, engine.state.players["A"].life)
 
     def test_tampered_counter_intent_fails_closed_without_mutation(self):
         session = self.session(12261423)

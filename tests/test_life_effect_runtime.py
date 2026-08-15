@@ -33,6 +33,9 @@ class _Host:
         self.state = _State(seats)
         self.active_seats = list(seats)
         self.logs: list[tuple[tuple[object, ...], dict[str, object]]] = []
+        self.semantic_events: list[
+            tuple[str, dict[str, object], dict[str, object]]
+        ] = []
 
     def _log(self, *args, **kwargs) -> None:
         self.logs.append((args, kwargs))
@@ -46,6 +49,14 @@ class _Host:
 
     def _semantic_event_sources(self, *, zones=None) -> list[object]:
         return []
+
+    def _dispatch_semantic_event(
+        self,
+        event: str,
+        context: dict[str, object],
+        **kwargs,
+    ) -> None:
+        self.semantic_events.append((event, dict(context), dict(kwargs)))
 
     def semantic_program_is_current_trusted(self, program: object) -> bool:
         return False
@@ -79,6 +90,13 @@ class LifeEffectRuntimeTests(unittest.TestCase):
         )
         self.assertEqual(43, host.state.players["A"].life)
         self.assertEqual(35, host.state.players["B"].life)
+        self.assertEqual(
+            [("life.gained", {"player": "A", "amount": 3})],
+            [
+                (event, context)
+                for event, context, _kwargs in host.semantic_events
+            ],
+        )
 
     def test_table_wide_loss_and_drain_are_simultaneous_typed_batches(self):
         host = _Host()
@@ -94,6 +112,13 @@ class LifeEffectRuntimeTests(unittest.TestCase):
             self.apply(host, {"op": "drain_each_opponent", "amount": 1}),
         )
         self.assertEqual((41, 37, 37), self._life(host))
+        self.assertEqual(
+            [("life.gained", {"player": "A", "amount": 1})],
+            [
+                (event, context)
+                for event, context, _kwargs in host.semantic_events
+            ],
+        )
 
     def test_invalid_batch_member_rolls_back_every_life_change(self):
         host = _Host(("A", "B", "missing"))
@@ -147,6 +172,13 @@ class LifeEffectRuntimeTests(unittest.TestCase):
         self.assertEqual(2, details["gained_amount"])
         self.assertEqual({"B": 0, "C": -1, "A": 2}, details["deltas"])
         self.assertEqual(["A", "C"], list(kwargs["changed_players"]))
+        self.assertEqual(
+            [("life.gained", {"player": "A", "amount": 2})],
+            [
+                (event, context)
+                for event, context, _kwargs in host.semantic_events
+            ],
+        )
 
     def test_family_rejects_an_operation_it_does_not_own(self):
         host = _Host()

@@ -19,6 +19,13 @@ to-hand draws, prohibited and empty-library attempts, draw history/events, the
 represented Dredge mill-and-return result, and closed actions tied to the exact
 ordinarily drawn object.
 
+After an ordinary draw commits, `player_result_events.py` derives one immutable
+public occurrence with the drawer, controller-relative ordinal, and own-draw-
+step facts. It dispatches the ordinary draw, exact second draw, and represented
+draw-except-first-draw-step events in one trigger batch without exposing the
+drawn object's identity. A prevented draw, an empty-library attempt, or a
+replacement result that is not a draw emits no such occurrence.
+
 `drawing/coordinator.py` iteratively drains individual events and queued
 instructions, discovers trusted runtime instruction-count and individual
 replacements, recomputes permission before each individual event, issues a

@@ -5,10 +5,6 @@ import tempfile
 import unittest
 
 from common import keep_all, load_assets, make_session, pass_current
-from high_risk_interaction_support import (
-    EFFECT_AND_REPLACEMENT_PAIRS,
-    assert_high_risk_boundary_pairs,
-)
 from quorune.counter_placement import (
     CounterPlacementRequest,
     place_counters,
@@ -446,11 +442,6 @@ class KeywordCounterCompositionTests(unittest.TestCase):
     def test_keyword_damage_composes_with_exact_counter_replacement_and_residuals(
         self,
     ):
-        assert_high_risk_boundary_pairs(
-            self,
-            EFFECT_AND_REPLACEMENT_PAIRS,
-            database=self.db,
-        )
         session = self.session(122_001_015, step="combat_damage")
         engine = session.engine
         engine.state.phase_index = 7

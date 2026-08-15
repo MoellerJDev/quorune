@@ -975,6 +975,7 @@ def _decode_semantic_intent_continuation(
         or not isinstance(semantic_intent, Mapping)
         or intent_kind not in {
             "create_token",
+            "life_change",
             "place_counter_batch",
             "place_counters",
             "place_counters_on_set",

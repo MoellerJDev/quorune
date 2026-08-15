@@ -26,6 +26,7 @@ from quorune.reusable_pieces import (
     render_reusable_piece_matrix_markdown,
     validate_reusable_piece_artifacts,
 )
+from quorune.rule_conformance import discover_unittest_ids
 from quorune.rules.capabilities import (
     load_default_capability_registry,
 )
@@ -124,6 +125,10 @@ def _build(
         platform_status=load_json(PLATFORM_INPUT),
         policy=load_reusable_piece_policy(ROOT),
         interaction_evidence=load_json(INTERACTION_EVIDENCE_INPUT),
+        known_test_ids={
+            test_id.rsplit(".", 1)[-1]
+            for test_id in discover_unittest_ids(ROOT)
+        },
         baseline=baseline,
         ruling_counts=_ruling_counts(db_path),
     )

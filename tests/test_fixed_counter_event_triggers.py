@@ -8,11 +8,16 @@ import unittest
 from unittest.mock import patch
 
 from common import ROOT, keep_all, make_session
-from high_risk_interaction_support import (
-    TRIGGER_AND_REPLACEMENT_PAIRS,
-    assert_high_risk_boundary_pairs,
-)
 from quorune.carddb import CardDatabase
+from quorune.damage import damage_proposal, resolve_damage_batch
+from quorune.damage_modifier_state import (
+    DamageModifierDuration,
+    DamagePreventionShield,
+    DamageSubject,
+    GainLifePreventionAftermath,
+    PreventionMode,
+)
+from quorune.effect_runtime import dispatch_effect
 from quorune.compiler.fixed_counter_trigger_nodes import (
     FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
     FixedCounterTriggerBinding,
@@ -24,7 +29,16 @@ from quorune.compiler.target_effect_corpus_assurance import (
 )
 from quorune.deck import DeckLoader
 from quorune.model import CardInstance
-from quorune.oracle_ir import compile_oracle_card, generated_programs
+from quorune.oracle_ir import (
+    compile_oracle_card,
+    generated_programs,
+    register_generated_programs,
+)
+from quorune.player_result_events import (
+    CardDrawEvent,
+    LifeGainEvent,
+    PlayerResultEventError,
+)
 from quorune.projection import StateProjector
 from quorune.record import (
     authoritative_state_hash,
@@ -35,6 +49,7 @@ from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
 )
+from quorune.semantic_runtime import LifeChangeIntent
 from quorune.trigger_processing import collect_trigger_items, enqueue_trigger_batch
 from scripts.build_test_database import build_fixture_database
 
@@ -44,6 +59,9 @@ TEMPLATE_IDS = {
     "fixed-counter-step-trigger-v1",
     "fixed-counter-controlled-land-entry-trigger-v1",
     "fixed-counter-controller-spell-cast-trigger-v1",
+    "fixed-counter-controller-life-gain-trigger-v1",
+    "fixed-counter-controller-card-draw-trigger-v1",
+    "fixed-counter-controller-second-draw-trigger-v1",
 }
 
 
@@ -53,6 +71,7 @@ def focused_database(directory: str) -> CardDatabase:
         [
             ROOT / "tests" / "fixtures" / "scryfall-exact-lists.json",
             ROOT / "tests" / "fixtures" / "counter-replacement-cards.json",
+            ROOT / "tests" / "fixtures" / "damage-result-cards.json",
             ROOT
             / "tests"
             / "fixtures"
@@ -89,12 +108,49 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             capability_profile="commander_review",
         )
 
-    def test_closed_event_bindings_compile_exact_counter_effect_bodies(self):
-        assert_high_risk_boundary_pairs(
-            self,
-            TRIGGER_AND_REPLACEMENT_PAIRS,
-            database=self.db,
+    def test_normalized_player_result_events_are_strict_public_values(self):
+        draw = CardDrawEvent(
+            player="A",
+            draw_ordinal=2,
+            in_own_draw_step=False,
+            draw_step_ordinal=None,
         )
+        self.assertTrue(draw.is_second_draw)
+        self.assertFalse(draw.is_first_own_draw_step_draw)
+        self.assertEqual(
+            {
+                "player": "A",
+                "draw_ordinal": 2,
+                "in_own_draw_step": False,
+                "draw_step_ordinal": None,
+            },
+            dict(draw.semantic_context()),
+        )
+        self.assertNotIn("object", draw.semantic_context())
+        self.assertNotIn("card", draw.semantic_context())
+        with self.assertRaises(FrozenInstanceError):
+            draw.player = "B"
+        with self.assertRaises(PlayerResultEventError):
+            CardDrawEvent("A", 0, False, None)
+        with self.assertRaises(PlayerResultEventError):
+            CardDrawEvent("A", 1, True, None)
+
+        gain = LifeGainEvent(
+            event_id="life:test:1",
+            player="B",
+            amount=3,
+        )
+        self.assertEqual(
+            {"player": "B", "amount": 3},
+            dict(gain.semantic_context()),
+        )
+        self.assertNotIn("source", gain.semantic_context())
+        with self.assertRaises(FrozenInstanceError):
+            gain.amount = 4
+        with self.assertRaises(PlayerResultEventError):
+            LifeGainEvent("life:test:zero", "B", 0)
+
+    def test_closed_event_bindings_compile_exact_counter_effect_bodies(self):
         expected = (
             (
                 "At the beginning of your upkeep, put two charge counters on this artifact.",
@@ -155,6 +211,46 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                 "charge",
                 1,
                 ("trigger-event-normalized-spell-cast",),
+            ),
+            (
+                "Whenever you gain life, put a +1/+1 counter on this creature.",
+                "Creature — Cat Soldier",
+                FixedCounterTriggerEvent.CONTROLLER_LIFE_GAIN,
+                "controller_life_gain",
+                "fixed-counter-controller-life-gain-trigger-v1",
+                "+1/+1",
+                1,
+                ("trigger-event-normalized-life-gain",),
+            ),
+            (
+                "Whenever you gain life, put a +1/+1 counter on target creature you control. It gains indestructible until end of turn.",
+                "Creature — Spider Human Hero",
+                FixedCounterTriggerEvent.CONTROLLER_LIFE_GAIN,
+                "controller_life_gain",
+                "fixed-counter-controller-life-gain-trigger-v1",
+                "+1/+1",
+                1,
+                ("trigger-event-normalized-life-gain",),
+            ),
+            (
+                "Whenever you draw a card, put a +1/+1 counter on this creature.",
+                "Creature — Snake",
+                FixedCounterTriggerEvent.CONTROLLER_CARD_DRAW,
+                "controller_card_draw",
+                "fixed-counter-controller-card-draw-trigger-v1",
+                "+1/+1",
+                1,
+                ("trigger-event-normalized-card-draw",),
+            ),
+            (
+                "Whenever you draw your second card each turn, put a +1/+1 counter on this creature.",
+                "Creature — Faerie Rogue",
+                FixedCounterTriggerEvent.CONTROLLER_SECOND_DRAW,
+                "controller_second_draw",
+                "fixed-counter-controller-second-draw-trigger-v1",
+                "+1/+1",
+                1,
+                ("trigger-event-normalized-card-draw",),
             ),
         )
         for (
@@ -315,6 +411,10 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             "Whenever you cast or copy a noncreature spell, put a +1/+1 counter on this creature.",
             "Whenever an opponent casts a noncreature spell, put a +1/+1 counter on this creature.",
             "Whenever a land enters, put a +1/+1 counter on this creature.",
+            "Whenever an opponent gains life, put a +1/+1 counter on this creature.",
+            "Whenever an opponent draws a card, put a +1/+1 counter on this creature.",
+            "Whenever you draw your third card each turn, put a +1/+1 counter on this creature.",
+            "Whenever you gain life, you may put a +1/+1 counter on this creature.",
             "At the beginning of your upkeep, if you control a creature, put a charge counter on this artifact.",
             "At the beginning of your upkeep, you may put a charge counter on this artifact.",
             "At the beginning of your upkeep, put X charge counters on this artifact.",
@@ -356,6 +456,14 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             (
                 "Noncreature Cast Counter Trigger Fixture",
                 "trigger.event.normalized_spell_cast",
+            ),
+            (
+                "Ajani's Pridemate",
+                "trigger.event.normalized_life_gain",
+            ),
+            (
+                "Lorescale Coatl",
+                "trigger.event.normalized_card_draw",
             ),
         )
         for card_name, dependency_id in cases:
@@ -552,6 +660,380 @@ class FixedCounterEventTriggerRuntimeTests(unittest.TestCase):
             )
             self.assertTrue(result.ok, result.summary)
         self.fail("Fixed counter event-trigger replacement did not converge")
+
+    def assert_player_result_trigger(
+        self,
+        engine,
+        source: CardInstance,
+        *,
+        event: str,
+        amount: int | None = None,
+    ) -> None:
+        engine._stabilize()
+        self.assertTrue(engine.state.stack)
+        item = engine.state.stack[-1]
+        self.assertEqual(event, item.context["event"])
+        self.assertEqual(source.object_id, item.source_object_id)
+        if amount is not None:
+            self.assertEqual(amount, item.context["amount"])
+        self.resolve_top(engine)
+        self.assertEqual(1, source.counters.get("+1/+1"))
+
+    def test_draw_counter_triggers_use_public_normalized_events(self):
+        session = self.session(120007)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="A",
+            name="Lorescale Coatl",
+            ref="draw-counter-source",
+            zone="battlefield",
+        )
+        self.register_trigger(engine, source)
+        drawn = engine.state.cards[
+            engine.state.players["A"].zones["library"][-1]
+        ]
+
+        engine._begin_draw_sequence("A", 1, reason="public draw occurrence")
+        engine._stabilize()
+
+        item = engine.state.stack[-1]
+        self.assertEqual("card.drawn", item.context["event"])
+        self.assertEqual("A", item.context["player"])
+        self.assertEqual(1, item.context["draw_ordinal"])
+        serialized = json.dumps(item.context, sort_keys=True)
+        self.assertNotIn(drawn.ref, serialized)
+        self.assertNotIn(drawn.printed_name, serialized)
+        self.assertNotIn("object", item.context)
+        self.resolve_top(engine)
+        self.assertEqual(1, source.counters.get("+1/+1"))
+
+    def test_draw_and_second_draw_counter_triggers_share_one_batch(self):
+        session = self.session(120008, players=4)
+        engine = session.engine
+        draw_source = self.add_card(
+            engine,
+            seat="A",
+            name="Lorescale Coatl",
+            ref="each-draw-counter-source",
+            zone="battlefield",
+        )
+        second_source = self.add_card(
+            engine,
+            seat="A",
+            name="Faerie Vandal",
+            ref="second-draw-counter-source",
+            zone="battlefield",
+        )
+        self.register_trigger(engine, draw_source)
+        self.register_trigger(engine, second_source)
+        turn_key = str(engine.state.turn_sequence)
+        engine.state.players["A"].stats.setdefault(
+            "cards_drawn_by_turn", {}
+        )[turn_key] = 1
+
+        engine._begin_draw_sequence("A", 1, reason="second public draw")
+        engine._stabilize()
+
+        self.assertEqual("trigger.order", engine.state.pending_decision.kind)
+        self.assertEqual(1, len(engine.state.pending_trigger_batches))
+        batch = engine.state.pending_trigger_batches[0]
+        self.assertEqual(2, len(batch.items))
+        self.assertEqual(
+            {"card.drawn", "card.second_draw"},
+            {item.normalized_event_id for item in batch.items},
+        )
+        refs = [
+            item["id"]
+            for item in engine.state.pending_decision.payload_by_actor["A"][
+                "triggers"
+            ]
+        ]
+        ordered = session.act(
+            "pilot:A",
+            {"action_id": "order", "triggers": refs},
+        )
+        self.assertTrue(ordered.ok, ordered.summary)
+        self.assertEqual(
+            {draw_source.object_id, second_source.object_id},
+            {item.source_object_id for item in engine.state.stack[-2:]},
+        )
+        self.resolve_top(engine)
+        self.resolve_top(engine)
+        self.assertEqual(1, draw_source.counters.get("+1/+1"))
+        self.assertEqual(1, second_source.counters.get("+1/+1"))
+
+    def test_life_gain_counter_trigger_uses_replacement_resolved_amount(self):
+        session = self.session(120009)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="A",
+            name="Ajani's Pridemate",
+            ref="life-counter-source",
+            zone="battlefield",
+        )
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (self.db.lookup("Boon Reflection"),),
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+        )
+        self.add_card(
+            engine,
+            seat="A",
+            name="Boon Reflection",
+            ref="life-gain-doubler",
+            zone="battlefield",
+        )
+        self.register_trigger(engine, source)
+        before = engine.state.players["A"].life
+
+        dispatch_effect(
+            engine,
+            {"op": "life", "player": "A", "delta": 1},
+            actor="A",
+            operation="life",
+            reason="replacement-resolved gain",
+        )
+
+        self.assertEqual(before + 2, engine.state.players["A"].life)
+        self.assert_player_result_trigger(
+            engine,
+            source,
+            event="life.gained",
+            amount=2,
+        )
+
+    def test_life_gain_counter_trigger_covers_effect_intent_lifelink_and_aftermath(
+        self,
+    ):
+        producers = ("effect", "intent", "lifelink", "aftermath")
+        for index, producer in enumerate(producers):
+            with self.subTest(producer=producer):
+                session = self.session(120010 + index)
+                engine = session.engine
+                controller = "B" if producer == "aftermath" else "A"
+                source = self.add_card(
+                    engine,
+                    seat=controller,
+                    name="Ajani's Pridemate",
+                    ref=f"{producer}-life-counter-source",
+                    zone="battlefield",
+                )
+                self.register_trigger(engine, source)
+                if producer == "effect":
+                    dispatch_effect(
+                        engine,
+                        {"op": "life", "player": "A", "delta": 1},
+                        actor="A",
+                        operation="life",
+                        reason="immediate represented gain",
+                    )
+                    amount = 1
+                elif producer == "intent":
+                    engine.apply_life_change_intent(
+                        LifeChangeIntent(
+                            actor="A",
+                            player="A",
+                            amount=2,
+                            reason="semantic choice gain",
+                        )
+                    )
+                    amount = 2
+                elif producer == "lifelink":
+                    lifelink = self.add_card(
+                        engine,
+                        seat="A",
+                        name="Healer's Hawk",
+                        ref="lifelink-gain-source",
+                        zone="battlefield",
+                    )
+                    resolve_damage_batch(
+                        engine,
+                        (
+                            damage_proposal(
+                                engine,
+                                proposal_id="damage:player-result:lifelink",
+                                actor="A",
+                                source_ref=lifelink.ref,
+                                target="B",
+                                amount=1,
+                                combat=True,
+                                reason="represented Lifelink gain",
+                            ),
+                        ),
+                    )
+                    amount = 1
+                else:
+                    damage_source = self.add_card(
+                        engine,
+                        seat="A",
+                        name="Mishra, Eminent One",
+                        ref="aftermath-damage-source",
+                        zone="battlefield",
+                    )
+                    engine.state.players["B"].life = 30
+                    engine.state.damage_prevention_shields.append(
+                        DamagePreventionShield(
+                            shield_id="player-result-life-aftermath",
+                            source_id="fixture:player-result-life-aftermath",
+                            controller="B",
+                            subject=DamageSubject(
+                                ref="B", kind="player", controller="B"
+                            ),
+                            mode=PreventionMode.AMOUNT,
+                            remaining=2,
+                            duration=(
+                                DamageModifierDuration.UNTIL_END_OF_TURN
+                            ),
+                            created_turn_sequence=engine.state.turn_sequence,
+                            aftermath=(
+                                GainLifePreventionAftermath(
+                                    player="B", per_prevented=1
+                                ),
+                            ),
+                        )
+                    )
+                    resolve_damage_batch(
+                        engine,
+                        (
+                            damage_proposal(
+                                engine,
+                                proposal_id="damage:player-result:aftermath",
+                                actor="A",
+                                source_ref=damage_source.ref,
+                                target="B",
+                                amount=2,
+                                combat=False,
+                                reason="represented prevention aftermath",
+                            ),
+                        ),
+                    )
+                    amount = 2
+                self.assert_player_result_trigger(
+                    engine,
+                    source,
+                    event="life.gained",
+                    amount=amount,
+                )
+
+    def test_player_result_counter_replacement_is_private_and_replays_exactly(
+        self,
+    ):
+        session = self.session(120014, players=4)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="C",
+            name="Ajani's Pridemate",
+            ref="private-life-counter-source",
+            zone="battlefield",
+        )
+        self.add_card(
+            engine,
+            seat="C",
+            name="Doubling Season",
+            ref="private-life-doubling",
+            zone="battlefield",
+        )
+        self.add_card(
+            engine,
+            seat="C",
+            name="Doc Samson, Super Psychiatrist",
+            ref="private-life-addition",
+            zone="battlefield",
+        )
+        self.register_trigger(engine, source)
+        dispatch_effect(
+            engine,
+            {"op": "life", "player": "C", "delta": 1},
+            actor="C",
+            operation="life",
+            reason="private player-result counter replacement",
+        )
+        engine._stabilize()
+        self.resolve_top(engine)
+
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        projector = StateProjector(self.db, engine.state)
+        for seat in ("A", "B", "D"):
+            self.assertIsNone(projector._decision(f"pilot:{seat}"))
+        projected = projector._decision("pilot:C")
+        self.assertIsNotNone(projected)
+        self.assertNotIn(source.object_id, json.dumps(projected, sort_keys=True))
+
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        self.finish_replacements(session, "C")
+        self.assertIn(source.counters.get("+1/+1"), {3, 4})
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "player-result-counter-replay"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_player_result_event_dispatch_mutants_are_killed(self):
+        draw_session = self.session(120015)
+        draw_engine = draw_session.engine
+        draw_source = self.add_card(
+            draw_engine,
+            seat="A",
+            name="Lorescale Coatl",
+            ref="draw-dispatch-mutant-source",
+            zone="battlefield",
+        )
+        draw_program = self.register_trigger(draw_engine, draw_source)
+        with patch(
+            "quorune.drawing.transaction.dispatch_card_draw_event",
+            return_value=(),
+        ):
+            draw_engine._begin_draw_sequence(
+                "A", 1, reason="draw dispatch mutation"
+            )
+        draw_engine._stabilize()
+        self.assertFalse(
+            any(
+                item.semantic_key == draw_program.key
+                for item in draw_engine.state.stack
+            )
+        )
+
+        life_session = self.session(120016)
+        life_engine = life_session.engine
+        life_source = self.add_card(
+            life_engine,
+            seat="A",
+            name="Ajani's Pridemate",
+            ref="life-dispatch-mutant-source",
+            zone="battlefield",
+        )
+        life_program = self.register_trigger(life_engine, life_source)
+        before = life_engine.state.players["A"].life
+        with patch(
+            "quorune.effect_runtime.life_effects.dispatch_life_gain_records",
+            return_value=(),
+        ):
+            dispatch_effect(
+                life_engine,
+                {"op": "life", "player": "A", "delta": 1},
+                actor="A",
+                operation="life",
+                reason="life dispatch mutation",
+            )
+        life_engine._stabilize()
+        self.assertEqual(before + 1, life_engine.state.players["A"].life)
+        self.assertFalse(
+            any(
+                item.semantic_key == life_program.key
+                for item in life_engine.state.stack
+            )
+        )
 
     def test_cast_counter_trigger_uses_normalized_event(self):
         session = self.session(120001)

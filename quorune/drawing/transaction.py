@@ -5,6 +5,7 @@ from typing import Any, Protocol, Sequence
 
 from ..cast_timing import type_line_has_card_type
 from ..model import CardInstance, GameState
+from ..player_result_events import CardDrawEvent, dispatch_card_draw_event
 from .model import (
     DiscardDrawnCardUnlessType,
     DrawError,
@@ -168,24 +169,17 @@ def _record_draw(
         changed_objects=[object_id],
         changed_players=[resolution.player],
     )
-    if before_count < 2 <= before_count + 1:
-        host._dispatch_semantic_event(
-            "card.second_draw",
-            {"player": resolution.player, "objects": [card.ref]},
-        )
-    if not (in_own_draw_step and before_draw_step_count == 0):
-        host._dispatch_semantic_event(
-            "card.draw_except_first_draw_step",
-            {
-                "player": resolution.player,
-                "object": card.ref,
-                _REASON_FIELD: resolution.reason,
-                "in_own_draw_step": in_own_draw_step,
-                "draw_step_ordinal": (
-                    before_draw_step_count + 1 if in_own_draw_step else None
-                ),
-            },
-        )
+    dispatch_card_draw_event(
+        host,
+        CardDrawEvent(
+            player=resolution.player,
+            draw_ordinal=before_count + 1,
+            in_own_draw_step=in_own_draw_step,
+            draw_step_ordinal=(
+                before_draw_step_count + 1 if in_own_draw_step else None
+            ),
+        ),
+    )
 
 
 def _drawn_card_type_line(host: DrawCommitHost, card: CardInstance) -> str:

@@ -3,10 +3,17 @@ from __future__ import annotations
 from collections import defaultdict
 from itertools import combinations
 import re
-from typing import Any, Mapping, Protocol, Sequence
+from typing import Any, Iterable, Mapping, Protocol, Sequence
 
 
 _PIECE_ID = re.compile(r"^[a-z][a-z0-9._:-]*$")
+_ASSURANCE_KINDS = frozenset(
+    {
+        "fail_closed_runtime_admission",
+        "pair_derived",
+        "runtime_composition",
+    }
+)
 
 
 class InteractionPiece(Protocol):
@@ -20,7 +27,7 @@ def validate_interaction_evidence(value: Mapping[str, Any]) -> None:
         "declarations",
     }:
         raise ValueError("Interaction evidence has a closed top-level schema")
-    if value.get("schema_version") != 1:
+    if value.get("schema_version") != 2:
         raise ValueError("Unsupported interaction evidence schema")
     declarations = value.get("declarations")
     if not isinstance(declarations, list):
@@ -29,6 +36,7 @@ def validate_interaction_evidence(value: Mapping[str, Any]) -> None:
     for row in declarations:
         if not isinstance(row, Mapping) or set(row) != {
             "evidence_class",
+            "assurance_kind",
             "test_id",
             "piece_ids",
             "capability_ids",
@@ -40,6 +48,9 @@ def validate_interaction_evidence(value: Mapping[str, Any]) -> None:
             )
         if row["evidence_class"] != "interaction":
             raise ValueError("Interaction evidence class must be interaction")
+        assurance_kind = row["assurance_kind"]
+        if assurance_kind not in _ASSURANCE_KINDS:
+            raise ValueError("Interaction assurance kind is unsupported")
         test_id = row["test_id"]
         assertion = row["assertion"]
         if not isinstance(test_id, str) or not test_id:
@@ -61,6 +72,25 @@ def validate_interaction_evidence(value: Mapping[str, Any]) -> None:
             raise ValueError(
                 "Interaction evidence piece IDs must be sorted unique pairs "
                 "or tuples"
+            )
+        contains_residual = any(
+            piece_id.startswith("residual.") for piece_id in piece_ids
+        )
+        if len(piece_ids) == 2 and contains_residual != (
+            assurance_kind == "fail_closed_runtime_admission"
+        ):
+            raise ValueError(
+                "Residual interaction evidence must prove fail-closed "
+                "runtime admission; executable pairs must prove runtime "
+                "composition"
+            )
+        if len(piece_ids) == 2 and assurance_kind == "pair_derived":
+            raise ValueError(
+                "Exact interaction pairs must declare their assurance kind"
+            )
+        if len(piece_ids) > 2 and assurance_kind != "pair_derived":
+            raise ValueError(
+                "Higher-order legacy evidence must derive assurance per pair"
             )
         if (
             not isinstance(capability_ids, list)
@@ -97,6 +127,8 @@ def build_interactions(
     pieces: Mapping[str, InteractionPiece],
     policy: Mapping[str, Any],
     interaction_evidence: Mapping[str, Any],
+    *,
+    known_test_ids: Iterable[str],
 ) -> tuple[list[dict[str, Any]], dict[str, dict[str, int]]]:
     """Build corpus and declared ambient pair coverage.
 
@@ -108,9 +140,8 @@ def build_interactions(
 
     validate_interaction_evidence(interaction_evidence)
     evidence_by_pair: dict[tuple[str, str], set[str]] = defaultdict(set)
-    known_tests = {
-        test_id for piece in pieces.values() for test_id in piece.test_ids
-    }
+    assurance_by_pair: dict[tuple[str, str], set[str]] = defaultdict(set)
+    known_tests = set(known_test_ids)
     for declaration in interaction_evidence["declarations"]:
         piece_ids = tuple(declaration["piece_ids"])
         unknown = set(piece_ids) - set(pieces)
@@ -125,7 +156,19 @@ def build_interactions(
                 f"Interaction evidence references unknown test {test_id}"
             )
         for pair in combinations(piece_ids, 2):
-            evidence_by_pair[tuple(sorted(pair))].add(test_id)
+            canonical_pair = tuple(sorted(pair))
+            evidence_by_pair[canonical_pair].add(test_id)
+            assurance_kind = str(declaration["assurance_kind"])
+            if assurance_kind == "pair_derived":
+                assurance_kind = (
+                    "fail_closed_runtime_admission"
+                    if any(
+                        piece_id.startswith("residual.")
+                        for piece_id in canonical_pair
+                    )
+                    else "runtime_composition"
+                )
+            assurance_by_pair[canonical_pair].add(assurance_kind)
 
     ambient_high_risk_pairs = {
         tuple(str(piece_id) for piece_id in pair)
@@ -187,6 +230,7 @@ def build_interactions(
         left_piece = pieces[left]
         right_piece = pieces[right]
         evidence_tests = sorted(evidence_by_pair.get(pair, ()))
+        assurance_kinds = sorted(assurance_by_pair.get(pair, ()))
         covered = bool(evidence_tests)
         high_risk = pair in ambient_high_risk_pairs or (
             tuple(sorted((left_piece.class_id, right_piece.class_id)))
@@ -209,7 +253,8 @@ def build_interactions(
                 "high_risk": high_risk,
                 "applicability_bases": sorted(applicability_bases),
                 "evidence_test_ids": evidence_tests,
-                "evidence_basis": "explicit_interaction_declaration_v1",
+                "evidence_assurance_kinds": assurance_kinds,
+                "evidence_basis": "explicit_interaction_declaration_v2",
             }
         )
         for piece_id in pair:

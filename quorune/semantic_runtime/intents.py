@@ -546,6 +546,33 @@ class LifeChangeIntent:
     player: str
     amount: int
     reason: str
+    source_ref: str | None = None
+    replacement_selections: tuple[str | FrozenMap, ...] = ()
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.player, self.reason)
+        ):
+            raise ValueError(
+                "Life-change intents require actor, player, and reason"
+            )
+        if type(self.amount) is not int:
+            raise ValueError("Life-change intent amounts must be integers")
+        if self.source_ref is not None and (
+            type(self.source_ref) is not str or not self.source_ref
+        ):
+            raise ValueError(
+                "Life-change intent sources must be nonempty references"
+            )
+        object.__setattr__(
+            self,
+            "replacement_selections",
+            _freeze_replacement_selections(
+                tuple(self.replacement_selections),
+                family="Life change",
+            ),
+        )
 
 
 @dataclass(frozen=True, slots=True)

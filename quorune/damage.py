@@ -78,6 +78,10 @@ from .protection import (
     ProtectionVerdict,
     protection_verdict,
 )
+from .player_result_events import (
+    dispatch_lifelink_gain_events,
+    dispatch_prevention_life_gain_event,
+)
 from .trigger_processing import enqueue_trigger_batch
 
 
@@ -1424,19 +1428,13 @@ def _collect_damage_result_triggers(
     trigger_source_zones: Mapping[str, str],
     trigger_batch: list[Any],
 ) -> None:
-    for gain in result.lifelink_gains:
-        host._log(
-            gain.player,
-            "damage.lifelink",
-            f"{gain.player} gained {gain.amount} life from {gain.source}.",
-            {
-                "player": gain.player,
-                "source": gain.source,
-                "amount": gain.amount,
-            },
-            importance=1,
-            changed_players=[gain.player],
-        )
+    dispatch_lifelink_gain_events(
+        host,
+        result.lifelink_gains,
+        sources=trigger_sources,
+        source_zones=trigger_source_zones,
+        trigger_batch=trigger_batch,
+    )
 
     for prevention in result.prevention_events:
         occurrence = prevention.trigger_occurrence()
@@ -1524,6 +1522,13 @@ def _collect_damage_result_triggers(
                     and aftermath.subject in host.active_seats
                     else []
                 ),
+            )
+            dispatch_prevention_life_gain_event(
+                host,
+                aftermath,
+                sources=trigger_sources,
+                source_zones=trigger_source_zones,
+                trigger_batch=trigger_batch,
             )
             host._dispatch_semantic_event(
                 "damage.prevention.aftermath",

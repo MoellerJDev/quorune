@@ -41,12 +41,13 @@ from ..destruction_sets import (
     resolve_destruction_set,
 )
 from ..effect_runtime import dispatch_effect
-from ..life_state import (
-    LifeChange,
-    LifeStateError,
-    commit_life_changes,
-    plan_life_changes,
+from ..life_change import (
+    commit_life_change_batch,
+    LifeChangeError,
+    LifeChangeRequest,
+    prepare_life_change_batch,
 )
+from ..player_result_events import dispatch_life_gain_records
 from ..permanent_designations import (
     BecomeMonstrousRequest,
     BecomeRenownedRequest,
@@ -56,6 +57,7 @@ from ..permanent_designations import (
 )
 from ..rules.library_scry import ScryError, commit_scry_arrangement
 from ..replacement.immutable import thaw_value
+from ..replacement import ReplacementChoiceRequired, ReplacementEventBatch
 from ..semantic_runtime import (
     AddManaIntent,
     AddSubtypeIntent,
@@ -106,6 +108,9 @@ from ..zone_object_subtype_grants import (
 )
 from ..semantic_runtime.zone_replacements import (
     prepare_zone_change_replacement,
+)
+from ..semantic_runtime.life_replacements import (
+    collect_life_change_replacement_effects,
 )
 
 
@@ -564,25 +569,59 @@ class SemanticChoiceIntentHostMixin:
 
     def apply_life_change_intent(self, intent: LifeChangeIntent) -> int:
         try:
-            plan = plan_life_changes(
+            prepared = prepare_life_change_batch(
                 self,
-                (LifeChange(player=intent.player, amount=intent.amount),),
+                (
+                    LifeChangeRequest(
+                        event_id=(
+                            f"semantic.life:{self.state.revision}:"
+                            f"{self.state.event_sequence + 1}"
+                        ),
+                        player=intent.player,
+                        amount=intent.amount,
+                        source=intent.source_ref,
+                        source_controller=intent.actor,
+                        cause=intent.reason,
+                    ),
+                ),
+                effects=collect_life_change_replacement_effects(self),
+                selections=intent.replacement_selections,
+                require_all_selections=False,
+                batch_id=(
+                    f"replacement:semantic.life:{self.state.revision}:"
+                    f"{self.state.event_sequence + 1}"
+                ),
             )
-            commit_life_changes(self, plan)
-        except LifeStateError as exc:
+            if prepared.pending is not None:
+                raise ReplacementChoiceRequired(
+                    batch=ReplacementEventBatch(
+                        batch_id=prepared.batch_id,
+                        events=prepared.events,
+                        apnap_order=tuple(self.apnap_order()),
+                        journal=prepared.journal,
+                    ),
+                    effects=prepared.effects,
+                    pending=prepared.pending,
+                )
+            committed = commit_life_change_batch(self, prepared)
+        except LifeChangeError as exc:
             raise GameRuleError(str(exc)) from exc
+        record = committed.records[0]
         self._log(
             intent.actor,
             "effect.life",
-            f"{intent.player}'s life changed by {intent.amount}.",
+            f"{intent.player}'s life changed by {record.delta}.",
             {
                 "player": intent.player,
-                "delta": intent.amount,
+                "requested_delta": intent.amount,
+                "delta": record.delta,
                 "reason": intent.reason,
+                "source": intent.source_ref,
             },
             importance=1,
             changed_players=[intent.player],
         )
+        dispatch_life_gain_records(self, committed.records)
         return self.state.players[intent.player].life
 
     def pay_life_intent(self, intent: PayLifeIntent) -> int:
