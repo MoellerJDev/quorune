@@ -59,6 +59,10 @@ from .fixed_controller_effect_shapes import (
     fixed_controller_effect_sequence_node_capabilities,
     fixed_life_node_capabilities,
 )
+from .fixed_effect_clause_shapes import (
+    FIXED_EFFECT_CLAUSE_SEQUENCE_MECHANIC,
+    fixed_effect_clause_sequence_node_capabilities,
+)
 
 from ..util import stable_json
 
@@ -268,6 +272,9 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC: (
         "resolution.effect_sequence.fixed_counter_controller",
     ),
+    FIXED_EFFECT_CLAUSE_SEQUENCE_MECHANIC: (
+        "resolution.effect_sequence.fixed_clauses",
+    ),
 }
 _SHAPE_GATED_MECHANICS = frozenset(
     {
@@ -283,6 +290,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         _FIXED_SOURCE_SEQUENCE_MECHANIC,
         _FIXED_CONTROLLER_SEQUENCE_MECHANIC,
         _FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC,
+        FIXED_EFFECT_CLAUSE_SEQUENCE_MECHANIC,
         "adapt",
         "monstrosity",
         "bolster",
@@ -879,6 +887,7 @@ def _targeted_effect_capabilities(
         fixed_life_node_capabilities,
         fixed_controller_effect_sequence_node_capabilities,
         fixed_counter_controller_effect_sequence_node_capabilities,
+        fixed_effect_clause_sequence_node_capabilities,
         fixed_scry_node_capabilities,
         single_explore_node_capabilities,
         single_proliferate_node_capabilities,

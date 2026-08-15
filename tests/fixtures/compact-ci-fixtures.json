@@ -16,6 +16,7 @@
     "tests/fixtures/echo-rules-cards.json",
     "tests/fixtures/explore-cards.json",
     "tests/fixtures/fixed-counter-keyword-activations.json",
+    "tests/fixtures/fixed-effect-clause-sequence-cards.json",
     "tests/fixtures/fixed-token-creation-cards.json",
     "tests/fixtures/intrinsic-basic-land-mana-cards.json",
     "tests/fixtures/read-ahead-saga-cards.json",

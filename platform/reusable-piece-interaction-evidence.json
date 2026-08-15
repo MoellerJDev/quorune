@@ -2996,6 +2996,51 @@
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_event_trigger"],
       "interaction_order": 2,
       "assertion": "The matched single-subtype entry trigger resolves its fixed +1/+1 counter body through an actual applicable quantity replacement and commits the doubled result."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_life_follows_shielded_destruction_and_replays",
+      "piece_ids": ["capability.life.change.effect", "capability.resolution.effect_sequence.fixed_clauses"],
+      "capability_ids": ["life.change.effect", "resolution.effect_sequence.fixed_clauses"],
+      "interaction_order": 2,
+      "assertion": "Lich's Caress resolves its compiled targeted destruction before its mandatory life gain through one canonical sequence and exact replay."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_life_follows_shielded_destruction_and_replays",
+      "piece_ids": ["capability.permanent.destroy.effect", "capability.resolution.effect_sequence.fixed_clauses"],
+      "capability_ids": ["permanent.destroy.effect", "resolution.effect_sequence.fixed_clauses"],
+      "interaction_order": 2,
+      "assertion": "Lich's Caress executes the typed destruction owner inside the printed-order sequence and continues after a Shield counter replaces destruction."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_private_scry_follows_token_creation_in_four_players",
+      "piece_ids": ["capability.library.scry.fixed_controller", "capability.resolution.effect_sequence.fixed_clauses"],
+      "capability_ids": ["library.scry.fixed_controller", "resolution.effect_sequence.fixed_clauses"],
+      "interaction_order": 2,
+      "assertion": "Imperial Oath creates its fixed tokens before suspending the same sequence at the controller-private Scry choice and then replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_private_scry_follows_token_creation_in_four_players",
+      "piece_ids": ["capability.resolution.effect_sequence.fixed_clauses", "capability.token.creation.fixed_definition"],
+      "capability_ids": ["resolution.effect_sequence.fixed_clauses", "token.creation.fixed_definition"],
+      "interaction_order": 2,
+      "assertion": "Imperial Oath resolves its fixed token instruction before its private Scry continuation without exposing library identities to opponents."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_stale_target_fizzles_entire_sequence_without_life_change",
+      "piece_ids": ["capability.resolution.effect_sequence.fixed_clauses", "capability.target.revalidate_resolution"],
+      "capability_ids": ["resolution.effect_sequence.fixed_clauses", "target.revalidate_resolution"],
+      "interaction_order": 2,
+      "assertion": "A stale sole target fails CR 608.2b revalidation before either clause executes, so the later life instruction cannot partially resolve."
     }
   ]
 }

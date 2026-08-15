@@ -42,6 +42,9 @@ from .compiler.draw_templates import (
 from .compiler.fixed_controller_effect_sequences import (
     fixed_controller_effect_sequence_template,
 )
+from .compiler.fixed_effect_clause_sequences import (
+    fixed_effect_clause_sequence_template,
+)
 from .compiler.fixed_counter_trigger_nodes import (
     fixed_counter_event_trigger_node,
 )
@@ -402,7 +405,7 @@ def _effect_template(
     return None, (), None, ()
 
 
-def _reviewed_effect_template(
+def _reviewed_atomic_effect_template(
     text: str,
     *,
     card_name: str,
@@ -430,6 +433,38 @@ def _reviewed_effect_template(
         source_is_permanent=source_is_permanent,
         source_attachment_relation=source_attachment_relation,
     )
+
+
+def _reviewed_effect_template(
+    text: str,
+    *,
+    card_name: str,
+    source_is_permanent: bool | None = None,
+    source_attachment_relation: AttachmentReferenceKind | None = None,
+) -> tuple[
+    str | None,
+    tuple[Mapping[str, Any], ...],
+    Mapping[str, Any] | None,
+    tuple[str, ...],
+]:
+    atomic = _reviewed_atomic_effect_template(
+        text,
+        card_name=card_name,
+        source_is_permanent=source_is_permanent,
+        source_attachment_relation=source_attachment_relation,
+    )
+    if atomic[0] is not None:
+        return atomic
+    sequence = fixed_effect_clause_sequence_template(
+        text,
+        compile_clause=partial(
+            _reviewed_atomic_effect_template,
+            card_name=card_name,
+            source_is_permanent=source_is_permanent,
+            source_attachment_relation=source_attachment_relation,
+        ),
+    )
+    return sequence.compiled() if sequence is not None else atomic
 
 
 def _keyword_node_for_mechanics(

@@ -1566,6 +1566,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/fixed_effect_clause_sequences.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/fixed_keyword_entry_nodes.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -4274,6 +4289,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/fixed_effect_clause_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/graveyard_card_targets.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -6602,5 +6631,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "646f301fdbcb7125796e6cebcb60a300527f973cf6ec651d2d5a8821e3aca8df"
+  "fingerprint": "f4708be26614fd6243f4f4c70bd710191d0f1b3efd2a0a5c5c34a34d9fbea0f6"
 }

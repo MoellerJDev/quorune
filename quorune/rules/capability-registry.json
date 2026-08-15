@@ -3544,6 +3544,33 @@
       "status": "tested"
     },
     {
+      "id": "resolution.effect_sequence.fixed_clauses",
+      "version": 1,
+      "official_rules": ["608.2b", "608.2c", "608.2h", "609.3"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve exactly two mandatory period-separated effect clauses in printed order when each clause is already independently capability-closed and the pair shares at most one direct target contract.",
+        "inputs": ["one complete source-spanned effect body", "exactly two top-level sentences", "two independently typed single-effect clauses", "zero or one existing direct target schema", "the canonical semantic continuation"],
+        "outputs": ["one capability-closed CardProgram node", "the exact component capability set", "printed-order execution", "resolution-time target revalidation", "replacement-aware suspension and resume", "exact replay across component boundaries"],
+        "exclusions": ["optional, modal, conditional, reflexive, delayed, repeated, variable, linked-result, or more-than-two-sentence sequences", "multiple target schemas or a target introduced by more than one clause", "a component that emits zero or more than one semantic effect", "sentence boundaries inside quoted rules text or parenthetical reminder text", "cross-clause pronouns, this-way references, shared result quantities, and other linked identities", "any component without its own trusted compiler shape and runtime owner"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.fixed_effect_clause_sequences.FixedEffectClauseSequenceTemplate", "quorune.compiler.fixed_effect_clause_sequences.fixed_effect_clause_sequence_template", "quorune.rules.fixed_effect_clause_shapes.fixed_effect_clause_sequence_node_capabilities", "CommanderEngine._continue_resolution"],
+      "positive_tests": ["test_two_closed_sentences_compile_across_spell_trigger_and_activation", "test_actual_corpus_family_is_capability_closed", "test_life_follows_shielded_destruction_and_replays"],
+      "negative_tests": ["test_sequence_parser_and_shape_fail_closed", "test_stale_target_fizzles_entire_sequence_without_life_change"],
+      "interaction_tests": ["test_life_follows_shielded_destruction_and_replays", "test_private_scry_follows_token_creation_in_four_players"],
+      "multiplayer_tests": ["test_private_scry_follows_token_creation_in_four_players"],
+      "privacy_tests": ["test_private_scry_follows_token_creation_in_four_players"],
+      "replay_tests": ["test_life_follows_shielded_destruction_and_replays", "test_private_scry_follows_token_creation_in_four_players"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The sequence shape independently revalidates both singleton effects and returns their exact capability dependencies; an unknown component, a missing component owner, an extra target contract, or a malformed sequence marker prevents capability closure.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_sequence_compiler_mutation_is_killed removes the sequence production and proves an otherwise closed two-sentence ability returns to a material residual.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "resolution.effect_sequence.fixed_controller",
       "version": 1,
       "official_rules": ["119.1", "119.2", "119.3", "119.4", "121.1", "121.2", "401.4", "608.2c", "608.2h", "701.22", "701.22a", "701.22b"],

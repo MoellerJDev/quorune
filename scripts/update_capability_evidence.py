@@ -98,6 +98,11 @@ MUTATION_TESTS = {
         "FixedTokenCreationCompilerTests."
         "test_fixed_token_compiler_mutation_is_killed"
     ),
+    "resolution.effect_sequence.fixed_clauses": (
+        "tests.test_fixed_effect_clause_sequences."
+        "FixedEffectClauseSequenceCompilerTests."
+        "test_sequence_compiler_mutation_is_killed"
+    ),
     "combat.block.landwalk.basic_type": (
         "tests.test_capability_implementation_mutations."
         "CapabilityImplementationMutationTests."
@@ -352,6 +357,14 @@ EXTRA_EVIDENCE_TESTS["token.creation.fixed_definition"] = (
         "tests.test_fixed_token_creation_effects."
         "FixedTokenCreationRuntimeTests."
         "test_compiled_fixed_token_effect_suspends_for_replacement_order",
+    ),
+)
+EXTRA_EVIDENCE_TESTS["resolution.effect_sequence.fixed_clauses"] = (
+    (
+        "rollback",
+        "tests.test_fixed_effect_clause_sequences."
+        "FixedEffectClauseSequenceRuntimeTests."
+        "test_private_scry_follows_token_creation_in_four_players",
     ),
 )
 EXTRA_EVIDENCE_TESTS["casting.payment.convoke"] = (

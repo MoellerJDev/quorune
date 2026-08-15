@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "cb35e98fb00c45b20dabe050de9f8724616c7c20fc411903c334571104755481",
-  "declaration_source_fingerprint": "2d03fc74f0dd0bdbba2c9f41e380c0733d867e91d48533c051ed933d641100ff",
+  "registry_fingerprint": "a6bb3e6368ce84ad643d93e09825eb1e018da418954c4b67f36f4a6e8afa417c",
+  "declaration_source_fingerprint": "a9ccf1336386464af9c65e04875800cf7898a2cd46bba7f4158a73ddd8bde87f",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -28269,6 +28269,227 @@
       "applicability_note": "Replay the exact protected-object filtering and selected legal Aura attachment from a pinned continuation."
     },
     {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_life_follows_shielded_destruction_and_replays",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve Lich's Caress in printed order when a shield counter replaces destruction, then commit the independent fixed life gain exactly once."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_private_scry_follows_token_creation_in_four_players",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Create Imperial Oath's three typed Samurai tokens before suspending the same semantic continuation for its private Scry choice."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_private_scry_follows_token_creation_in_four_players",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the token-and-Scry sequence in a four-player game while issuing the continuation only to the spell controller."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceCompilerTests.test_sequence_compiler_mutation_is_killed",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the fixed sentence-sequence production and prove the exact ability returns to a material residual with a distinct CardProgram fingerprint."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceCompilerTests.test_sequence_parser_and_shape_fail_closed",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject optional, linked, three-sentence, multi-target, nonperiod, unknown-operation, missing-marker, wrong-target, and nonpositive component variants."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_stale_target_fizzles_entire_sequence_without_life_change",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate the sequence's only target before execution and fizzle every clause when the targeted incarnation is stale."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceCompilerTests.test_actual_corpus_family_is_capability_closed",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile real destruction-life, token-Scry, destruction-draw, and token-counter corpus programs through the same closed sequence capability."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceCompilerTests.test_two_closed_sentences_compile_across_spell_trigger_and_activation",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reuse one exact two-sentence lowering for spell, normalized trigger, and activated contexts while preserving the complete source span."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_life_follows_shielded_destruction_and_replays",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Execute a real compiled Lich's Caress CardProgram through canonical destruction, shield-counter replacement, life, stack, and replay owners."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_private_scry_follows_token_creation_in_four_players",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose Imperial Oath's looked-at library identities only to its controller after its public token instruction commits."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_life_follows_shielded_destruction_and_replays",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay shield replacement followed by independent life gain to the identical authoritative final hash."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_private_scry_follows_token_creation_in_four_players",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the public token result and private Scry response through the same resumable effect continuation."
+    },
+    {
+      "capability_id": "resolution.effect_sequence.fixed_clauses",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_private_scry_follows_token_creation_in_four_players",
+      "official_rule_ids": [
+        "608.2b",
+        "608.2c",
+        "608.2h",
+        "609.3"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject an incomplete Scry partition without changing the pending decision, duplicating tokens, or altering the authoritative state hash."
+    },
+    {
       "capability_id": "resolution.effect_sequence.fixed_controller",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_controller_effect_sequences.FixedControllerEffectSequenceRuntimeTests.test_invalid_remaining_effect_rolls_back_the_choice_command",
@@ -36163,5 +36384,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "4aaf8e1bacb0828c0d82bfb087fd0c976d89306cc04c274566023f02293905e5"
+  "fingerprint": "89e81500e82b7e1dab4da720aebe5fef541be1af9ead9d2d714ec89b9be2c1e6"
 }

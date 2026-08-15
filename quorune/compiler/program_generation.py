@@ -63,6 +63,9 @@ from ..rules.fixed_controller_effect_shapes import (
     fixed_controller_effect_sequence_node_capabilities,
     fixed_life_node_capabilities,
 )
+from ..rules.fixed_effect_clause_shapes import (
+    fixed_effect_clause_sequence_node_capabilities,
+)
 from ..rules.echo_capability_shapes import fixed_mana_echo_node_capabilities
 from ..semantics import SemanticProgram, SemanticRegistry
 from ..util import stable_json
@@ -475,6 +478,27 @@ def _is_closed_fixed_token_creation_program(
             effects=program.effects,
             target_schema=program.target_schema,
             mechanic_ids=set(program.coverage),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_effect_clause_sequence_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize two independently closed effects in printed order."""
+
+    if program.provenance.get("template_id") != (
+        "fixed-effect-clause-sequence-v1"
+    ):
+        return False
+    required = set(
+        fixed_effect_clause_sequence_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
         )
     )
     return bool(required) and required.issubset(
@@ -1029,6 +1053,7 @@ def _closed_effect_recognizers():
         _is_closed_fixed_life_program,
         _is_closed_fixed_scry_program,
         _is_closed_fixed_token_creation_program,
+        _is_closed_fixed_effect_clause_sequence_program,
         _is_closed_fixed_controller_effect_sequence_program,
         _is_closed_fixed_counter_controller_effect_sequence_program,
         _is_closed_single_explore_program,
