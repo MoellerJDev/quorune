@@ -59,6 +59,12 @@ class SemanticChoiceCoordinationMixin:
                     if card.attached_to in self.state.cards
                     else None
                 ),
+                entered_this_turn=(
+                    card.zone == "battlefield"
+                    and card.entered_battlefield_turn_sequence > 0
+                    and card.entered_battlefield_turn_sequence
+                    == self.state.turn_sequence
+                ),
             )
             if card.zone == "stack":
                 item = next(

@@ -59,6 +59,12 @@
     "test_counter_quantity_replacement_mutant_is_killed",
     "test_spell_trigger_and_activated_contexts_share_fixed_counter_lowering",
     "test_closed_subject_grammar_uses_typed_types_subtypes_and_relations",
+    "test_public_state_direct_targets_compile_typed_predicates",
+    "test_public_state_target_capability_dependency_fails_closed",
+    "test_public_state_targets_share_offer_command_and_resolution_revalidation",
+    "test_public_state_predicate_runtime_mutation_is_killed",
+    "test_four_player_target_predicate_privacy_rollback_and_replay",
+    "test_ruins_of_oran_rief_composes_tapped_entry_with_characteristic_target",
     "test_fixed_counter_template_property_is_deterministic_for_exact_counts",
     "test_unsupported_fixed_counter_variants_remain_material_residuals",
     "test_fixed_counter_shape_and_dependency_mutants_fail_closed",
@@ -69,6 +75,8 @@
     "test_fixed_counter_effect_suspends_for_quantity_replacement",
     "test_four_player_fixed_counter_replacement_choice_is_seat_scoped",
     "test_spell_trigger_and_activated_contexts_share_fixed_counter_set_lowering",
+    "test_public_state_counter_sets_are_typed_and_deterministic",
+    "test_public_state_counter_set_resolves_current_membership_once",
     "test_fixed_counter_set_resolves_canonical_apnap_batch",
     "test_fixed_counter_set_suspends_for_quantity_replacement",
     "test_target_player_counter_set_is_seat_scoped_and_replays_exactly",
@@ -76,6 +84,7 @@
     "test_inactive_target_player_counter_set_rolls_back_without_mutation",
     "test_fixed_counter_set_compiler_mutant_is_killed",
     "test_spell_trigger_and_activated_contexts_share_target_set_lowering",
+    "test_tapped_target_set_revalidates_public_state_before_placement",
     "test_runtime_canonicalizes_still_legal_targets_in_apnap_order",
     "test_partial_target_revalidation_places_only_on_still_legal_targets",
     "test_all_original_targets_illegal_is_countered_before_counter_mutation",
@@ -189,9 +198,9 @@
   ],
   "implementation": {
     "component": "closed fixed-counter single-target, same-kind multi-subject, normalized fixed counter zone-change trigger, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-    "version": "counter-placement-transaction-v18",
-    "capability_ids": ["activation.loyalty.positive_counter_cost", "continuous.resolution.fixed_keyword_zone_object", "counter.characteristic.keyword", "counter.producer.bolster", "counter.producer.cumulative_upkeep_fixed_mana", "counter.producer.fixed_effect", "counter.producer.fixed_event_trigger", "counter.producer.fixed_permanent_group_effect", "counter.producer.fixed_permanent_set_effect", "counter.producer.fixed_permanent_target_set_effect", "counter.producer.support", "counter.producer.intrinsic_entry", "counter.producer.saga_lore", "counter.producer.proliferate", "counter.placement.quantity_replacement", "keyword_action.amass.fixed", "resolution.effect_sequence.fixed_counter_controller", "resolution.effect_sequence.fixed_source", "resolution.effect_sequence.fixed_target", "state_based.saga_final_chapter"],
-    "supported_slice": "Mandatory fixed positive named counters on one source, one direct battlefield permanent target, one same-kind same-amount printed-order group of two or three source/direct-target permanent subjects, one represented fixed counter body triggered by a closed public permanent-entry or creature-death subject, one represented fixed target or current-source-zone-object counter-and-characteristic sequence with an until-end or closed zone-object keyword result, one represented fixed source or direct-target counter instruction sequenced with one fixed controller draw, life-change, or Scry instruction, one bounded up-to set of direct permanent targets, one fixed positive Bolster N instruction, one fixed positive Support N instruction, one fixed positive Amass subtype N instruction, or one closed mandatory public battlefield set through spell, trigger, and activated contexts; ordinary keyword counters in the effective layer-6 characteristic view with keyword gameplay capability-closed separately; one ordinary Proliferate instruction over eligible players and permanents; fixed integral all-placement/effect-only quantity replacements over represented permanent/player predicates; printed nonnegative integral Planeswalker loyalty or Battle defense on ordinary entry or represented prospective token creation; ordinary non-Read-Ahead Saga entry, represented simultaneous precombat lore progression, and exact-incarnation final-chapter state action; positive loyalty-symbol costs; and one fixed positive ordinary mana cumulative-upkeep instance."
+    "version": "counter-placement-transaction-v19",
+    "capability_ids": ["activation.loyalty.positive_counter_cost", "continuous.resolution.fixed_keyword_zone_object", "counter.characteristic.keyword", "counter.producer.bolster", "counter.producer.cumulative_upkeep_fixed_mana", "counter.producer.fixed_effect", "counter.producer.fixed_event_trigger", "counter.producer.fixed_permanent_group_effect", "counter.producer.fixed_permanent_set_effect", "counter.producer.fixed_permanent_target_set_effect", "counter.producer.support", "counter.producer.intrinsic_entry", "counter.producer.saga_lore", "counter.producer.proliferate", "counter.placement.quantity_replacement", "keyword_action.amass.fixed", "resolution.effect_sequence.fixed_counter_controller", "resolution.effect_sequence.fixed_source", "resolution.effect_sequence.fixed_target", "state_based.saga_final_chapter", "state_query.permanent.public_state_predicate"],
+    "supported_slice": "Mandatory fixed positive named counters on one source, one direct battlefield permanent target, one same-kind same-amount printed-order group of two or three source/direct-target permanent subjects, one represented fixed counter body triggered by a closed public permanent-entry or creature-death subject, one represented fixed target or current-source-zone-object counter-and-characteristic sequence with an until-end or closed zone-object keyword result, one represented fixed source or direct-target counter instruction sequenced with one fixed controller draw, life-change, or Scry instruction, one bounded up-to set of direct permanent targets, one fixed positive Bolster N instruction, one fixed positive Support N instruction, one fixed positive Amass subtype N instruction, or one closed mandatory public battlefield set through spell, trigger, and activated contexts; direct targets and affected sets may use the represented current tapped state, one named counter-presence predicate, or current-turn battlefield-entry history together with the closed characteristic qualifiers; ordinary keyword counters in the effective layer-6 characteristic view with keyword gameplay capability-closed separately; one ordinary Proliferate instruction over eligible players and permanents; fixed integral all-placement/effect-only quantity replacements over represented permanent/player predicates; printed nonnegative integral Planeswalker loyalty or Battle defense on ordinary entry or represented prospective token creation; ordinary non-Read-Ahead Saga entry, represented simultaneous precombat lore progression, and exact-incarnation final-chapter state action; positive loyalty-symbol costs; and one fixed positive ordinary mana cumulative-upkeep instance."
   },
   "known_blockers": [
     "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual; Amass X, zero, copied, granted, optional, repeated, conditional, modal, compound, and linked-result forms remain residual; variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions remain residual",

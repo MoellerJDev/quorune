@@ -6,6 +6,7 @@ from typing import Any, Iterable, Mapping
 from .object_predicate import (
     ObjectQueryError,
     ObjectQuerySpec,
+    permanent_state_predicate_matches,
     validate_chosen_damage_source_predicate,
 )
 from .replacement.immutable import FrozenMap
@@ -36,12 +37,17 @@ class ObjectQueryResult:
     logical_object_id: str = ""
     monstrous_value: int | None = None
     renowned: bool = False
+    entered_this_turn: bool = False
 
     def __post_init__(self) -> None:
         if not isinstance(self.counters, FrozenMap):
             object.__setattr__(self, "counters", FrozenMap(self.counters))
         if type(self.renowned) is not bool:
             raise ValueError("Object query renowned state must be a boolean")
+        if type(self.entered_this_turn) is not bool:
+            raise ValueError(
+                "Object query entered-this-turn state must be a boolean"
+            )
 
 
 def exact_numeric_characteristic(
@@ -91,6 +97,7 @@ def object_query_result(
     type_parts: tuple[Iterable[str], Iterable[str], Iterable[str]],
     known_to_actor: bool,
     attached_to_ref: str | None,
+    entered_this_turn: bool = False,
 ) -> ObjectQueryResult:
     types, subtypes, supertypes = type_parts
     return ObjectQueryResult(
@@ -127,6 +134,7 @@ def object_query_result(
         attached_to_ref=attached_to_ref,
         monstrous_value=card.monstrous_value,
         renowned=card.renowned,
+        entered_this_turn=entered_this_turn,
     )
 
 
@@ -135,6 +143,8 @@ def object_matches_query(
     spec: ObjectQuerySpec,
 ) -> bool:
     types = frozenset(row.types)
+    subtypes = frozenset(row.subtypes)
+    colors = frozenset(row.colors)
     return bool(
         (not spec.zones or row.zone in spec.zones)
         and (spec.owner is None or row.owner == spec.owner)
@@ -142,10 +152,13 @@ def object_matches_query(
         and set(spec.types_all).issubset(types)
         and (not spec.types_any or not types.isdisjoint(spec.types_any))
         and types.isdisjoint(spec.excluded_types)
-        and set(spec.subtypes_all).issubset(row.subtypes)
+        and set(spec.subtypes_all).issubset(subtypes)
+        and (not spec.subtypes_any or not subtypes.isdisjoint(spec.subtypes_any))
+        and subtypes.isdisjoint(spec.excluded_subtypes)
         and set(spec.supertypes_all).issubset(row.supertypes)
-        and set(spec.colors_all).issubset(row.colors)
-        and (not spec.colors_any or not set(spec.colors_any).isdisjoint(row.colors))
+        and set(spec.colors_all).issubset(colors)
+        and (not spec.colors_any or not set(spec.colors_any).isdisjoint(colors))
+        and (spec.colorless is None or (not colors) is spec.colorless)
         and set(spec.keywords_all).issubset(row.keywords)
         and (spec.token is None or row.token is spec.token)
         and (spec.tapped is None or row.tapped is spec.tapped)
@@ -155,6 +168,15 @@ def object_matches_query(
             or row.known_to_actor is spec.known_to_actor
         )
         and (spec.exclude_ref is None or row.ref != spec.exclude_ref)
+        and (
+            spec.state_predicate is None
+            or permanent_state_predicate_matches(
+                spec.state_predicate,
+                counters=row.counters,
+                entered_this_turn=row.entered_this_turn,
+                tapped=row.tapped,
+            )
+        )
     )
 
 

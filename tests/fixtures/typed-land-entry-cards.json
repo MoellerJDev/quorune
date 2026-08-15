@@ -209,6 +209,25 @@
       "legalities": {"commander": "legal", "duel": "legal"}
     },
     {
+      "oracle_id": "7140f396-1bfa-4b28-ba28-fa15eba74652",
+      "name": "Ruins of Oran-Rief",
+      "mana_cost": "",
+      "cmc": 0.0,
+      "type_line": "Land",
+      "oracle_text": "This land enters tapped.\n{T}: Add {C}. ({C} represents colorless mana.)\n{T}: Put a +1/+1 counter on target colorless creature that entered this turn.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": [],
+      "color_identity": [],
+      "keywords": [],
+      "produced_mana": ["C"],
+      "layout": "normal",
+      "released_at": "2023-08-04",
+      "legalities": {"commander": "legal", "duel": "legal"}
+    },
+    {
       "oracle_id": "053a69d8-2b5e-4f14-8b02-ca405891dc4a",
       "name": "Fell the Profane // Fell Mire",
       "mana_cost": "{2}{B}{B} // ",

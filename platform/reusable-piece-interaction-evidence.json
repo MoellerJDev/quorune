@@ -712,6 +712,69 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_four_player_target_predicate_privacy_rollback_and_replay",
+      "piece_ids": ["capability.counter.producer.fixed_effect", "capability.state_query.permanent.public_state_predicate"],
+      "capability_ids": ["counter.producer.fixed_effect", "state_query.permanent.public_state_predicate"],
+      "interaction_order": 2,
+      "assertion": "A named-counter-qualified direct target is advertised and accepted only from the shared current public-state predicate before the fixed counter result enters the canonical transaction and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_public_state_targets_share_offer_command_and_resolution_revalidation",
+      "piece_ids": ["capability.state_query.permanent.public_state_predicate", "capability.target.permanent.characteristic_predicate"],
+      "capability_ids": ["state_query.permanent.public_state_predicate", "target.permanent.characteristic_predicate"],
+      "interaction_order": 2,
+      "assertion": "Current-turn entry history composes with effective color and subtype characteristics in one direct-target verdict without caching either fact from compilation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_public_state_targets_share_offer_command_and_resolution_revalidation",
+      "piece_ids": ["capability.state_query.permanent.public_state_predicate", "capability.target.revalidate_resolution"],
+      "capability_ids": ["state_query.permanent.public_state_predicate", "target.revalidate_resolution"],
+      "interaction_order": 2,
+      "assertion": "The same current-turn entry predicate governs offer, submitted-command validation, and CR 608.2b revalidation, making the target illegal after the turn boundary changes."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_public_state_counter_set_resolves_current_membership_once",
+      "piece_ids": ["capability.counter.producer.fixed_permanent_set_effect", "capability.state_query.permanent.public_state_predicate"],
+      "capability_ids": ["counter.producer.fixed_permanent_set_effect", "state_query.permanent.public_state_predicate"],
+      "interaction_order": 2,
+      "assertion": "An affected-set counter producer snapshots current-turn entrants at resolution, including a qualifying permanent added after lowering, then commits the APNAP-canonical batch once."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_fixed_counter_set_suspends_for_quantity_replacement",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.state_query.permanent.public_state_predicate"],
+      "capability_ids": ["counter.placement.quantity_replacement", "state_query.permanent.public_state_predicate"],
+      "interaction_order": 2,
+      "assertion": "A current-turn-entry affected set is fixed before its counter batch suspends for competing quantity replacements, with no counter mutation before the ordering choice."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_tapped_target_set_revalidates_public_state_before_placement",
+      "piece_ids": ["capability.counter.producer.fixed_permanent_target_set_effect", "capability.state_query.permanent.public_state_predicate"],
+      "capability_ids": ["counter.producer.fixed_permanent_target_set_effect", "state_query.permanent.public_state_predicate"],
+      "interaction_order": 2,
+      "assertion": "A bounded target-set counter producer excludes untapped creatures, rejects a selected creature that becomes untapped, and places the counter when the same target remains tapped."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_tapped_target_set_revalidates_public_state_before_placement",
+      "piece_ids": ["capability.counter.characteristic.keyword", "capability.state_query.permanent.public_state_predicate"],
+      "capability_ids": ["counter.characteristic.keyword", "state_query.permanent.public_state_predicate"],
+      "interaction_order": 2,
+      "assertion": "The tapped-creature public-state predicate admits a still-tapped target before the fixed target-set producer places its represented stun counter through the keyword-counter boundary."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_partial_target_revalidation_places_only_on_still_legal_targets",
       "piece_ids": ["capability.counter.producer.fixed_permanent_target_set_effect", "capability.target.revalidate_resolution"],
       "capability_ids": ["counter.producer.fixed_permanent_target_set_effect", "target.revalidate_resolution"],
@@ -1527,6 +1590,15 @@
       "capability_ids": ["target.protection.hexproof_permanent", "zone.entry.tapped_state"],
       "interaction_order": 2,
       "assertion": "Lotus Field's typed entry program makes it enter tapped while current printed Hexproof excludes an opponent's target, permits its controller's target, and leaves nontarget checks unaffected."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_ruins_of_oran_rief_composes_tapped_entry_with_characteristic_target",
+      "piece_ids": ["capability.target.permanent.characteristic_predicate", "capability.zone.entry.tapped_state"],
+      "capability_ids": ["target.permanent.characteristic_predicate", "zone.entry.tapped_state"],
+      "interaction_order": 2,
+      "assertion": "Ruins of Oran-Rief enters tapped through its source-pinned replacement, cannot activate its tap-cost ability in that state, then after becoming untapped targets only a current-turn colorless creature and places the counter through the typed transaction."
     },
     {
       "evidence_class": "interaction",

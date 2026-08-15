@@ -22,6 +22,15 @@ current projected rows and the complete predicate. The narrow
 immutable `TargetProtectionSnapshot`; the pure
 `target_protection_verdict` owner evaluates it.
 
+Direct permanent schemas may also carry one typed public-state predicate.
+`PermanentStatePredicateSpec` is shared with affected-set queries and evaluates
+current tapped state, one named counter minimum, or positive current-turn
+battlefield-entry history. Target offers, submitted commands, and CR 608.2b
+revalidation all consume that same immutable descriptor. Effective type,
+subtype, and color qualifiers remain in the characteristic snapshot, so the
+represented non-Human, nonblack, and colorless creature forms respond to
+continuous characteristic changes without parsing Oracle text at runtime.
+
 ## Typed protection boundary
 
 The protection snapshot accepts already-derived current facts:

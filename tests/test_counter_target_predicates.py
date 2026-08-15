@@ -138,6 +138,92 @@ class CounterTargetPredicateCompilerTests(unittest.TestCase):
                     node.capability_dependencies,
                 )
 
+    def test_public_state_direct_targets_compile_typed_predicates(self):
+        cases = (
+            (
+                "Put two +1/+1 counters on target non-Human creature that entered this turn.",
+                {
+                    "types_any": ["creature"],
+                    "subtypes_none": ["human"],
+                    "state_predicate": {
+                        "entered_this_turn": True,
+                        "tapped": None,
+                        "counter_name": None,
+                        "minimum_counter_count": None,
+                    },
+                },
+            ),
+            (
+                "Put a +1/+1 counter on target colorless creature that entered this turn.",
+                {
+                    "types_any": ["creature"],
+                    "colorless": True,
+                    "state_predicate": {
+                        "entered_this_turn": True,
+                        "tapped": None,
+                        "counter_name": None,
+                        "minimum_counter_count": None,
+                    },
+                },
+            ),
+            (
+                "Put a +1/+1 counter on target creature with a +1/+1 counter on it.",
+                {
+                    "types_any": ["creature"],
+                    "state_predicate": {
+                        "entered_this_turn": False,
+                        "tapped": None,
+                        "counter_name": "+1/+1",
+                        "minimum_counter_count": 1,
+                    },
+                },
+            ),
+            (
+                "Put a stun counter on target tapped creature.",
+                {
+                    "types_any": ["creature"],
+                    "state_predicate": {
+                        "entered_this_turn": False,
+                        "tapped": True,
+                        "counter_name": None,
+                        "minimum_counter_count": None,
+                    },
+                },
+            ),
+            (
+                "Put a bounty counter on target nonblack creature.",
+                {
+                    "types_any": ["creature"],
+                    "colors_none": ["B"],
+                },
+            ),
+        )
+        for text, expected in cases:
+            with self.subTest(text=text):
+                template = fixed_counter_placement_effect_template(
+                    text,
+                    card_name="Fixture",
+                )
+                self.assertIsNotNone(template)
+                assert template is not None
+                self.assertTrue(expected.items() <= template.target_schema.items())
+                ir = self.compile(text)
+                self.assertEqual("exact", ir.status)
+                node = ir.faces[0].nodes[0]
+                if "state_predicate" in expected:
+                    self.assertIn(
+                        "state_query.permanent.public_state_predicate",
+                        node.capability_dependencies,
+                    )
+                if any(
+                    key in expected
+                    for key in ("subtypes_none", "colorless", "colors_none")
+                ):
+                    self.assertIn(
+                        "target.permanent.characteristic_predicate",
+                        node.capability_dependencies,
+                    )
+
     def test_unsupported_and_malformed_direct_target_predicates_fail_closed(self):
         unsupported = (
             "target modified creature",
@@ -149,10 +235,12 @@ class CounterTargetPredicateCompilerTests(unittest.TestCase):
             "target blocking creature",
             "target equipped creature",
             "target enchanted creature",
-            "target tapped creature",
             "target untapped creature",
             "target noncreature artifact",
             "target creature with flying and vigilance",
+            "target creature with a counter on it",
+            "target creature that entered last turn",
+            "target non-Elf creature",
         )
         for subject in unsupported:
             text = f"Put a +1/+1 counter on {subject}."
@@ -178,6 +266,15 @@ class CounterTargetPredicateCompilerTests(unittest.TestCase):
             {**template.target_schema, "types_any": ["dragon"]},
             {**template.target_schema, "keywords_all": ["flying"]},
             {**template.target_schema, "source_exclusion": "yes"},
+            {
+                **template.target_schema,
+                "state_predicate": {
+                    "entered_this_turn": True,
+                    "tapped": True,
+                    "counter_name": None,
+                    "minimum_counter_count": None,
+                },
+            },
         )
         for schema in malformed:
             with self.subTest(schema=schema):
@@ -204,6 +301,23 @@ class CounterTargetPredicateCompilerTests(unittest.TestCase):
             row
             for row in registry_value["capabilities"]
             if row["id"] == "target.permanent.characteristic_predicate"
+        )
+        capability["status"] = "blocked"
+        capability["blockers"] = ["focused dependency mutation"]
+        blocked = self.compile(text, registry=CapabilityRegistry(registry_value))
+        self.assertNotEqual("exact", blocked.status)
+        self.assertTrue(blocked.material_residuals)
+
+    def test_public_state_target_capability_dependency_fails_closed(self):
+        text = (
+            "Put a +1/+1 counter on target creature with a +1/+1 counter on it."
+        )
+        self.assertEqual("exact", self.compile(text).status)
+        registry_value = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+        capability = next(
+            row
+            for row in registry_value["capabilities"]
+            if row["id"] == "state_query.permanent.public_state_predicate"
         )
         capability["status"] = "blocked"
         capability["blockers"] = ["focused dependency mutation"]
@@ -429,23 +543,187 @@ class CounterTargetPredicateRuntimeTests(unittest.TestCase):
             engine._target_candidates("A", group, source_ref=source.ref),
         )
 
+    def test_public_state_targets_share_offer_command_and_resolution_revalidation(
+        self,
+    ):
+        session = self.session(11520503)
+        engine = session.engine
+        source = self.add_permanent(
+            engine,
+            seat="A",
+            name="Sol Ring",
+            ref="public-state-source",
+        )
+        current = self.add_permanent(
+            engine,
+            seat="A",
+            name="Island",
+            ref="entered-current-turn",
+        )
+        current.annotations["continuous_add_types"] = ["Creature"]
+        previous = self.add_permanent(
+            engine,
+            seat="A",
+            name="Island",
+            ref="entered-previous-turn",
+        )
+        previous.annotations["continuous_add_types"] = ["Creature"]
+        self.assertGreater(engine.state.turn_sequence, 0)
+        current.entered_battlefield_turn_sequence = engine.state.turn_sequence
+        previous.entered_battlefield_turn_sequence = max(
+            0, engine.state.turn_sequence - 1
+        )
+        human = self.add_permanent(
+            engine,
+            seat="A",
+            name="Mishra, Eminent One",
+            ref="human-entered-current-turn",
+        )
+        human.entered_battlefield_turn_sequence = engine.state.turn_sequence
+        template = self.template(
+            "Put a +1/+1 counter on target colorless creature that entered this turn."
+        )
+        schema = dict(template.target_schema)
+        group = TargetGroup.from_mapping(schema)
+        candidates = engine._target_candidates(
+            "A",
+            group,
+            source_ref=source.ref,
+        )
+        self.assertIn(current.ref, candidates)
+        self.assertNotIn(previous.ref, candidates)
+        self.assertNotIn(human.ref, candidates)
+        nonhuman = self.template(
+            "Put two +1/+1 counters on target non-Human creature that entered this turn."
+        )
+        nonhuman_candidates = engine._target_candidates(
+            "A",
+            TargetGroup.from_mapping(nonhuman.target_schema),
+            source_ref=source.ref,
+        )
+        self.assertIn(current.ref, nonhuman_candidates)
+        self.assertNotIn(human.ref, nonhuman_candidates)
+        nonblack = self.template(
+            "Put a bounty counter on target nonblack creature."
+        )
+        nonblack_candidates = engine._target_candidates(
+            "A",
+            TargetGroup.from_mapping(nonblack.target_schema),
+            source_ref=source.ref,
+        )
+        self.assertIn(current.ref, nonblack_candidates)
+        self.assertNotIn(human.ref, nonblack_candidates)
+        selected, grouped = engine._validate_semantic_targets(
+            "A",
+            None,
+            [current.ref],
+            source_ref=source.ref,
+            target_schema=schema,
+        )
+        program = SemanticProgram(
+            key="fixture:public-state-target-revalidation",
+            label="Public state target revalidation",
+            effects=[dict(template.effects[0])],
+            target_schema=schema,
+            trust_level="provisional",
+        )
+        engine.semantics.put(program)
+        item = StackItem(
+            stack_id="public-state-target-revalidation",
+            ref="S-public-state-target-revalidation",
+            kind="triggered_ability",
+            controller="A",
+            label=program.label,
+            semantic_key=program.key,
+            source_object_id=source.object_id,
+            targets=selected,
+            visibility=list(engine.seats),
+            context={
+                "target_groups": grouped,
+                "target_snapshots": {
+                    current.ref: engine._target_snapshot(current.ref)
+                },
+                "targets_revalidated": False,
+                "targets_chosen_at_creation": True,
+            },
+        )
+        engine.state.stack.append(item)
+        engine.state.turn_sequence += 1
+        self.assertFalse(engine._revalidate_resolution_targets(item))
+        self.assertNotIn(item, engine.state.stack)
+        self.assertEqual({}, current.counters)
+
+    def test_public_state_predicate_runtime_mutation_is_killed(self):
+        session = self.session(11520504)
+        engine = session.engine
+        current = self.add_permanent(
+            engine,
+            seat="A",
+            name="Scute Swarm",
+            ref="mutation-current-entry",
+        )
+        previous = self.add_permanent(
+            engine,
+            seat="A",
+            name="Scute Swarm",
+            ref="mutation-previous-entry",
+        )
+        current.entered_battlefield_turn_sequence = engine.state.turn_sequence
+        previous.entered_battlefield_turn_sequence = max(
+            0, engine.state.turn_sequence - 1
+        )
+        template = self.template(
+            "Put a +1/+1 counter on target creature that entered this turn."
+        )
+        group = TargetGroup.from_mapping(template.target_schema)
+
+        def exact() -> None:
+            self.assertEqual(
+                [current.ref],
+                [
+                    ref
+                    for ref in engine._target_candidates(
+                        "A",
+                        group,
+                        source_ref=None,
+                    )
+                    if ref in {current.ref, previous.ref}
+                ],
+            )
+
+        exact()
+        with patch(
+            "quorune.selection.targeting.permanent_state_predicate_matches",
+            return_value=True,
+        ):
+            with self.assertRaises(AssertionError):
+                exact()
+
     def test_four_player_target_predicate_privacy_rollback_and_replay(self):
         session = self.session(11520502)
         engine = session.engine
         legal = self.add_permanent(
             engine,
             seat="A",
-            name="Sol Ring",
-            ref="controlled-artifact-target",
+            name="Scute Swarm",
+            ref="controlled-counter-target",
         )
+        legal.counters["+1/+1"] = 1
         illegal = self.add_permanent(
             engine,
             seat="B",
-            name="Sol Ring",
-            ref="opposing-artifact-target",
+            name="Scute Swarm",
+            ref="opposing-counter-target",
+        )
+        illegal.counters["+1/+1"] = 1
+        missing_counter = self.add_permanent(
+            engine,
+            seat="A",
+            name="Scute Swarm",
+            ref="controlled-missing-counter-target",
         )
         template = self.template(
-            "Put a +1/+1 counter on target artifact or creature you control."
+            "Put a +1/+1 counter on target creature you control with a +1/+1 counter on it."
         )
         program = SemanticProgram(
             key="fixture:counter-target-predicate-replay",
@@ -480,6 +758,10 @@ class CounterTargetPredicateRuntimeTests(unittest.TestCase):
             illegal.ref,
             projected["ctx"]["target_schema"]["legal_refs"],
         )
+        self.assertNotIn(
+            missing_counter.ref,
+            projected["ctx"]["target_schema"]["legal_refs"],
+        )
         for seat in ("B", "C", "D"):
             self.assertIsNone(projector._decision(f"pilot:{seat}"))
         hidden = {
@@ -506,6 +788,7 @@ class CounterTargetPredicateRuntimeTests(unittest.TestCase):
         # discard pre-rollback object aliases before asserting later mutation.
         legal = engine.state.cards[legal.object_id]
         illegal = engine.state.cards[illegal.object_id]
+        missing_counter = engine.state.cards[missing_counter.object_id]
         accepted = session.act(
             "pilot:A",
             {"action_id": "choose", "targets": [legal.ref]},
@@ -515,7 +798,7 @@ class CounterTargetPredicateRuntimeTests(unittest.TestCase):
             passed = session.act(f"pilot:{seat}", {"action_id": "pass"})
             self.assertTrue(passed.ok, passed.summary)
         self.assertEqual(
-            1,
+            2,
             legal.counters.get("+1/+1", 0),
             {
                 "stack": [item.ref for item in engine.state.stack],
@@ -527,7 +810,8 @@ class CounterTargetPredicateRuntimeTests(unittest.TestCase):
                 "events": [event.code for event in engine.state.events[-8:]],
             },
         )
-        self.assertNotIn("+1/+1", illegal.counters)
+        self.assertEqual(1, illegal.counters["+1/+1"])
+        self.assertNotIn("+1/+1", missing_counter.counters)
         expected_hash = authoritative_state_hash(engine.state)
 
         with tempfile.TemporaryDirectory() as temporary:

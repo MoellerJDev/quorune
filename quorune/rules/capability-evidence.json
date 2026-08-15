@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "3ffd2a8121c62b2ca70fe3b0ed0bc087fa66db4592857d515bd7427bb3d784bc",
-  "declaration_source_fingerprint": "fc6dae55461c45cdb696388d271e45f17ea991eca533fac301cdb83504129b2f",
+  "registry_fingerprint": "61bcf7b0a6e9c4dc1264e0364c10ad93cdfc938958c16ab07d5b819d4b48d1b0",
+  "declaration_source_fingerprint": "f49a510fee79fbe5e0c7605723f950c2a7d4cf0870b4eb951c4b76e8ec1f69f3",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -29789,10 +29789,209 @@
       "applicability_note": "Resolve a pending chapter and replay the resulting typed Saga sacrifice to the same authoritative state hash."
     },
     {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_public_state_targets_share_offer_command_and_resolution_revalidation",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use the same current-turn entry predicate for target offers, submitted-command validation, and CR 608.2b resolution revalidation."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_placement_sets.FixedCounterPlacementSetRuntimeTests.test_public_state_counter_set_resolves_current_membership_once",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Snapshot the authoritative current public-state membership of a fixed counter affected set immediately before its APNAP-canonical batch."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_counter_placement_sets.FixedCounterPlacementSetRuntimeTests.test_target_player_counter_set_is_seat_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply the named-counter membership predicate only to the chosen player's permanents in a four-player resolution."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_public_state_predicate_runtime_mutation_is_killed",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill a runtime mutation that admits a previous-turn permanent by bypassing the shared public-state evaluator."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "negative",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_unsupported_and_malformed_direct_target_predicates_fail_closed",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject generic counter-presence, unrepresented turn history, contradictory state descriptors, and unsupported negative subtypes."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "positive",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_public_state_direct_targets_compile_typed_predicates",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower tapped, named-counter, and current-turn-entry direct target wording to one immutable state descriptor."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_placement_sets.FixedCounterPlacementSetCompilerTests.test_public_state_counter_sets_are_typed_and_deterministic",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower named-counter and current-turn-entry affected sets with closed color and subtype qualifiers to deterministic typed queries."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project only public named-counter-qualified legal refs to the acting seat without exposing another seat's decision or hidden identities."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "replay",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the accepted named-counter-qualified target and resulting fixed counter placement to the same authoritative hash."
+    },
+    {
       "capability_id": "target.permanent.characteristic_predicate",
       "evidence_class": "interaction",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_current_effective_characteristics_govern_offer_command_and_resolution",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -29814,8 +30013,33 @@
     {
       "capability_id": "target.permanent.characteristic_predicate",
       "evidence_class": "interaction",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_public_state_targets_share_offer_command_and_resolution_revalidation",
+      "official_rule_ids": [
+        "105.2",
+        "115.1",
+        "115.2",
+        "115.6",
+        "205.3",
+        "205.3g",
+        "205.3m",
+        "608.2b",
+        "613.1d",
+        "613.1f",
+        "702.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose non-Human, nonblack, and colorless creature characteristics with the shared current-turn entry predicate at offer, command, and resolution time."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "interaction",
       "test_id": "tests.test_fixed_counter_controller_effect_sequences.FixedCounterControllerEffectSequenceRuntimeTests.test_furnace_skullbomb_target_predicate_and_draw_compose",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -29836,9 +30060,34 @@
     },
     {
       "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_ruins_of_oran_rief_composes_tapped_entry_with_characteristic_target",
+      "official_rule_ids": [
+        "105.2",
+        "115.1",
+        "115.2",
+        "115.6",
+        "205.3",
+        "205.3g",
+        "205.3m",
+        "608.2b",
+        "613.1d",
+        "613.1f",
+        "702.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "After its typed tapped entry, let Ruins of Oran-Rief target and counter only a current-turn permanent whose current effective characteristics make it a colorless creature."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -29862,6 +30111,7 @@
       "evidence_class": "mutation",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_typed_target_parser_mutation_is_killed",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -29885,6 +30135,7 @@
       "evidence_class": "negative",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_unsupported_and_malformed_direct_target_predicates_fail_closed",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -29908,6 +30159,7 @@
       "evidence_class": "positive",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_closed_direct_target_grammar_compiles_typed_predicates",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -29931,6 +30183,7 @@
       "evidence_class": "positive",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_compound_target_sequence_harvests_enchantment_creature",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -29951,9 +30204,34 @@
     },
     {
       "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "positive",
+      "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_public_state_direct_targets_compile_typed_predicates",
+      "official_rule_ids": [
+        "105.2",
+        "115.1",
+        "115.2",
+        "115.6",
+        "205.3",
+        "205.3g",
+        "205.3m",
+        "608.2b",
+        "613.1d",
+        "613.1f",
+        "702.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower non-Human, nonblack, and colorless creature qualifiers together with one immutable public-state descriptor."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
       "evidence_class": "privacy",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -29977,6 +30255,7 @@
       "evidence_class": "replay",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
       "official_rule_ids": [
+        "105.2",
         "115.1",
         "115.2",
         "115.6",
@@ -34728,6 +35007,27 @@
     },
     {
       "capability_id": "zone.entry.tapped_state",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_ruins_of_oran_rief_composes_tapped_entry_with_characteristic_target",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply Ruins of Oran-Rief's typed tapped-entry replacement before its tap-cost targeted counter ability can be advertised and committed."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_bond_land_uses_current_four_player_opponent_count",
       "official_rule_ids": [
@@ -34916,5 +35216,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "f2465aa813458d1906845fba62536cc16c86e18e9a995af859d0b5307e7f3f8a"
+  "fingerprint": "197e0d2b3bbd670fc7959739642c887ef363915015d7f56727858e8e91b135f3"
 }

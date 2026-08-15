@@ -260,8 +260,9 @@ and replay reuse the existing counter transaction rather than a second
 mutation path.
 
 One optional bounded target-set owner accepts the closed “on up to N target”
-and “on each of up to N target” forms for represented permanent types and
-controller relations. Choosing zero targets is a complete legal activation or
+and “on each of up to N target” forms for represented permanent types,
+controller relations, and the typed tapped-creature state predicate. Choosing
+zero targets is a complete legal activation or
 cast choice, not a skipped instruction: non-target costs still commit, the
 stack object still resolves, and the resulting empty placement batch performs
 no mutation. Selected targets are revalidated independently before the shared
@@ -539,12 +540,15 @@ read-only identity resolver adds no state mutation or runtime Oracle parser.
 
 The affected-set family lowers one mandatory fixed quantity onto every member
 of one closed public battlefield set. Its predicates are serialized in an
-immutable `AffectedPermanentSetSpec`; resolution snapshots the entire set
-before the canonical simultaneous counter transaction begins. The bounded
+immutable `AffectedPermanentSetSpec`; represented sets may test one named
+counter, current-turn battlefield entry, a closed color qualifier, or a closed
+creature-subtype disjunction. Resolution derives entry history from the
+authoritative positive turn sequence and snapshots the entire set before the
+canonical simultaneous counter transaction begins. The bounded
 target-set family separately lowers “each of up to N target” instructions for
-direct permanent types, optional controller relations, and the represented
-noncreature-artifact predicate. The selected refs remain distinct and bounded,
-zero is legal for “up to,” and resolution follows CR 608.2b: still-legal
+direct permanent types, optional controller relations, the represented
+noncreature-artifact predicate, and tapped creatures. The selected refs remain
+distinct and bounded, zero is legal for “up to,” and resolution follows CR 608.2b: still-legal
 targets receive counters, while an originally nonempty selection with no legal
 targets does not resolve. Both families use typed semantic intents and exact
 replacement continuations rather than runtime Oracle interpretation.

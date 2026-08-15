@@ -4318,6 +4318,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/permanent_predicate_capability_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/single_object_zone_transition.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -6562,5 +6576,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "3ec27bb79ddfa19fffcd150323f1dc8af121c8f751baedf4d0264919b207e9ef"
+  "fingerprint": "b5c53353335ffde7565ca58dd412235e2c2418666d12305b7dea575a35febfa7"
 }

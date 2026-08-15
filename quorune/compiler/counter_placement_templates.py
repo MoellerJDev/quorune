@@ -15,7 +15,10 @@ from ..affected_permanents import (
     AffectedPermanentSetSpec,
     PermanentControllerRelation,
 )
-from ..object_predicate import ObjectQuerySpec
+from ..object_predicate import (
+    ObjectQuerySpec,
+    PermanentStatePredicateSpec,
+)
 from ..keyword_counters import keyword_counter_mechanic
 from ..rules.source_references import (
     SourceReferenceSpec,
@@ -143,7 +146,11 @@ class FixedCounterPlacementTemplate:
         subject = self.subject.value
         if self.target_spec is not None:
             version = (
-                2 if self.target_spec.uses_compound_characteristics else 1
+                3
+                if self.target_spec.uses_public_state
+                else 2
+                if self.target_spec.uses_compound_characteristics
+                else 1
             )
             return (
                 f"place-fixed-counter-{subject}-{self.target_spec.slug}-v{version}"
@@ -380,6 +387,7 @@ class FixedCounterPlacementTargetSetTemplate:
     permanent_type: str
     controller_relation: str = "any"
     exclude_creature: bool = False
+    state_predicate: PermanentStatePredicateSpec | None = None
 
     def __post_init__(self) -> None:
         if type(self.count) is not int or self.count <= 0:
@@ -400,6 +408,14 @@ class FixedCounterPlacementTargetSetTemplate:
             self.exclude_creature and self.permanent_type != "artifact"
         ):
             raise ValueError("Counter-target negative type predicate is unsupported")
+        if self.state_predicate is not None and (
+            not isinstance(self.state_predicate, PermanentStatePredicateSpec)
+            or self.state_predicate.tapped is not True
+            or self.state_predicate.entered_this_turn
+            or self.state_predicate.counter_name is not None
+            or self.permanent_type != "creature"
+        ):
+            raise ValueError("Counter-target public-state predicate is unsupported")
 
     @property
     def template_id(self) -> str:
@@ -409,9 +425,11 @@ class FixedCounterPlacementTargetSetTemplate:
             if self.controller_relation != "any"
             else ""
         )
+        state = "-tapped" if self.state_predicate is not None else ""
         return (
             f"place-fixed-counter-target-set-{self.maximum_targets}-"
-            f"{negative}{self.permanent_type}{relation}-v1"
+            f"{negative}{self.permanent_type}{relation}{state}-"
+            f"v{2 if self.state_predicate is not None else 1}"
         )
 
     @property
@@ -440,6 +458,8 @@ class FixedCounterPlacementTargetSetTemplate:
             schema["types_none"] = ["creature"]
         if self.controller_relation != "any":
             schema["controller_relation"] = self.controller_relation
+        if self.state_predicate is not None:
+            schema["state_predicate"] = self.state_predicate.to_dict()
         return schema
 
     @property
@@ -900,6 +920,7 @@ def fixed_counter_placement_target_set_effect_template(
     target = re.fullmatch(
         rf"(?:each of )?up to (?P<maximum>{_COUNT}) target "
         r"(?P<noncreature>noncreature )?"
+        r"(?P<tapped>tapped )?"
         r"(?P<kind>artifact|artifacts|battle|battles|creature|creatures|"
         r"enchantment|enchantments|land|lands|permanent|permanents|"
         r"planeswalker|planeswalkers)"
@@ -919,6 +940,9 @@ def fixed_counter_placement_target_set_effect_template(
     if exclude_creature and permanent_type != "artifact":
         return None
     relation = (target.group("relation") or "").casefold()
+    tapped = bool(target.group("tapped"))
+    if tapped and permanent_type != "creature":
+        return None
     return FixedCounterPlacementTargetSetTemplate(
         count=count,
         counter_name=match.group("counter"),
@@ -932,6 +956,9 @@ def fixed_counter_placement_target_set_effect_template(
             else "any"
         ),
         exclude_creature=exclude_creature,
+        state_predicate=(
+            PermanentStatePredicateSpec(tapped=True) if tapped else None
+        ),
     )
 
 
@@ -1000,7 +1027,13 @@ def fixed_counter_set_spec_is_closed(
     type_shape = tuple(query.types_all)
     if type_shape not in _FIXED_COUNTER_SET_TYPE_SHAPES:
         return False
-    if query.types_any or query.excluded_types or query.colors_all:
+    if (
+        query.types_any
+        or query.excluded_types
+        or query.excluded_subtypes
+        or query.colors_all
+        or query.colorless is not None
+    ):
         return False
     subtypes = tuple(query.subtypes_all)
     if len(subtypes) > 1:
@@ -1012,6 +1045,15 @@ def fixed_counter_set_spec_is_closed(
             if type_shape not in {(), ("creature",)}:
                 return False
         elif subtype not in {"equipment", "saga"} or type_shape:
+            return False
+    subtype_disjunction = tuple(query.subtypes_any)
+    if subtype_disjunction:
+        if subtypes or type_shape or not 2 <= len(subtype_disjunction) <= 8:
+            return False
+        if any(
+            canonical_creature_subtype(value) != value
+            for value in subtype_disjunction
+        ):
             return False
     if tuple(query.supertypes_all) not in {(), ("legendary",)}:
         return False
@@ -1039,6 +1081,20 @@ def fixed_counter_set_spec_is_closed(
         type_shape != ("creature",)
     ):
         return False
+    state = query.state_predicate
+    if state is not None:
+        if state.tapped is not None or sum(
+            (state.entered_this_turn, state.counter_name is not None)
+        ) != 1:
+            return False
+        if state.entered_this_turn and not (
+            type_shape == ("creature",) or subtype_disjunction
+        ):
+            return False
+        if state.counter_name is not None and not (
+            type_shape == ("creature",) or subtypes or subtype_disjunction
+        ):
+            return False
     qualifier_count = sum(
         (
             bool(query.supertypes_all),
@@ -1049,6 +1105,76 @@ def fixed_counter_set_spec_is_closed(
         )
     )
     return qualifier_count <= 1
+
+
+def _fixed_counter_set_state_clause(
+    phrase: str,
+) -> tuple[str, PermanentStatePredicateSpec | None] | None:
+    """Remove one closed public-state suffix from an affected-set phrase."""
+
+    counter_state = re.fullmatch(
+        rf"(?P<body>.+) with (?:a|an) (?P<counter>{_COUNTER_NAME}) "
+        r"counter on it",
+        phrase,
+        re.IGNORECASE,
+    )
+    if counter_state is not None:
+        try:
+            return (
+                counter_state.group("body"),
+                PermanentStatePredicateSpec(
+                    counter_name=counter_state.group("counter"),
+                    minimum_counter_count=1,
+                ),
+            )
+        except ValueError:
+            return None
+    for suffix in (
+        " that entered the battlefield this turn",
+        " that entered this turn",
+    ):
+        if phrase.endswith(suffix):
+            return (
+                phrase[: -len(suffix)],
+                PermanentStatePredicateSpec(entered_this_turn=True),
+            )
+    return phrase, None
+
+
+def _fixed_counter_set_subtype_predicates(
+    phrase: str,
+) -> dict[str, Any] | None:
+    """Return one closed creature-subtype predicate from an affected set."""
+
+    raw_subtypes = tuple(
+        value.strip()
+        for value in re.split(r",\s*(?:or\s+)?|\s+or\s+", phrase)
+        if value.strip()
+    )
+    if len(raw_subtypes) > 1:
+        subtypes = tuple(
+            canonical_creature_subtype(value) for value in raw_subtypes
+        )
+        if any(value is None for value in subtypes):
+            return None
+        return {"subtypes_any": subtypes}
+    creature_match = re.fullmatch(
+        r"(?P<subtype>[a-z][a-z' -]*?)(?P<creature> creature)?",
+        phrase,
+    )
+    if creature_match is None:
+        return None
+    subtype = canonical_creature_subtype(creature_match.group("subtype"))
+    if subtype is None:
+        return None
+    return {
+        "subtypes_all": (subtype,),
+        **(
+            {"types_all": ("creature",)}
+            if creature_match.group("creature")
+            else {}
+        ),
+    }
 
 
 def _fixed_counter_set_query(
@@ -1069,6 +1195,11 @@ def _fixed_counter_set_query(
     if keyword_match is not None:
         phrase = keyword_match.group("body")
         keyword = keyword_match.group("keyword")
+
+    state_clause = _fixed_counter_set_state_clause(phrase)
+    if state_clause is None:
+        return None
+    phrase, state_predicate = state_clause
 
     relation = PermanentControllerRelation.ANY
     target_controller: str | None = None
@@ -1128,7 +1259,10 @@ def _fixed_counter_set_query(
     exclude_source = phrase.startswith("other ")
     if exclude_source:
         phrase = phrase[6:]
-    kwargs: dict[str, Any] = {"zones": ("battlefield",)}
+    kwargs: dict[str, Any] = {
+        "zones": ("battlefield",),
+        "state_predicate": state_predicate,
+    }
 
     exact_types: dict[str, tuple[str, ...]] = {
         "permanent": (),
@@ -1167,20 +1301,10 @@ def _fixed_counter_set_query(
         elif phrase in _SET_NONCREATURE_SUBTYPES:
             kwargs["subtypes_all"] = (_SET_NONCREATURE_SUBTYPES[phrase],)
         else:
-            creature_match = re.fullmatch(
-                r"(?P<subtype>[a-z][a-z' -]*?)(?P<creature> creature)?",
-                phrase,
-            )
-            if creature_match is None:
+            subtype_predicates = _fixed_counter_set_subtype_predicates(phrase)
+            if subtype_predicates is None:
                 return None
-            subtype = canonical_creature_subtype(
-                creature_match.group("subtype")
-            )
-            if subtype is None:
-                return None
-            kwargs["subtypes_all"] = (subtype,)
-            if creature_match.group("creature"):
-                kwargs["types_all"] = ("creature",)
+            kwargs.update(subtype_predicates)
 
     if keyword is not None:
         if keyword not in FIXED_COUNTER_SET_KEYWORDS or kwargs.get("types_all") != (

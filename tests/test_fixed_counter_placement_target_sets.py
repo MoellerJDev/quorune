@@ -206,6 +206,21 @@ class FixedCounterPlacementTargetSetCompilerTests(unittest.TestCase):
                 1,
                 {"types_any": ["creature"]},
             ),
+            (
+                "Put a stun counter on up to one target tapped creature.",
+                "Sorcery",
+                "spell_ability",
+                1,
+                {
+                    "types_any": ["creature"],
+                    "state_predicate": {
+                        "entered_this_turn": False,
+                        "tapped": True,
+                        "counter_name": None,
+                        "minimum_counter_count": None,
+                    },
+                },
+            ),
         )
         for text, type_line, kind, maximum, predicates in contexts:
             with self.subTest(text=text):
@@ -238,6 +253,11 @@ class FixedCounterPlacementTargetSetCompilerTests(unittest.TestCase):
                     "target.revalidate_resolution",
                     node.capability_dependencies,
                 )
+                if "state_predicate" in predicates:
+                    self.assertIn(
+                        "state_query.permanent.public_state_predicate",
+                        node.capability_dependencies,
+                    )
                 if text.startswith("+1:"):
                     self.assertIn(
                         "activation.loyalty.positive_counter_cost",
@@ -324,6 +344,31 @@ class FixedCounterPlacementTargetSetCompilerTests(unittest.TestCase):
             )
             self.assertNotEqual("exact", ir.status)
             self.assertTrue(ir.material_residuals)
+
+        value = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+        dependency = next(
+            row
+            for row in value["capabilities"]
+            if row["id"] == "state_query.permanent.public_state_predicate"
+        )
+        dependency["status"] = "blocked"
+        dependency["blockers"] = ["test mutation"]
+        blocked = compile_oracle_card(
+            replace(
+                self.base,
+                name="Fixture",
+                oracle_text=(
+                    "Put a stun counter on up to one target tapped creature."
+                ),
+                type_line="Sorcery",
+                keywords=(),
+                faces=(),
+            ),
+            capability_registry=CapabilityRegistry(value),
+            capability_profile="commander_review",
+        )
+        self.assertNotEqual("exact", blocked.status)
+        self.assertTrue(blocked.material_residuals)
 
     def test_unsupported_target_set_variants_remain_material_residuals(self):
         texts = (
@@ -649,6 +694,83 @@ class FixedCounterPlacementTargetSetRuntimeTests(unittest.TestCase):
         self.assertTrue(
             any(event.code == "target.illegal" for event in engine.state.events)
         )
+
+    def test_tapped_target_set_revalidates_public_state_before_placement(self):
+        session = self.session(12290807)
+        engine = session.engine
+        tapped = self.add_permanent(
+            engine,
+            seat="B",
+            name="Scute Swarm",
+            ref="tapped-counter-target",
+        )
+        tapped.tapped = True
+        untapped = self.add_permanent(
+            engine,
+            seat="C",
+            name="Scute Swarm",
+            ref="untapped-counter-target",
+        )
+        template = fixed_counter_placement_target_set_effect_template(
+            "Put a stun counter on up to one target tapped creature."
+        )
+        self.assertIsNotNone(template)
+        assert template is not None
+        public = engine._public_target_schema(
+            "A",
+            template.target_schema,
+            source_ref=None,
+        )
+        self.assertIsNotNone(public)
+        assert public is not None
+        self.assertIn(tapped.ref, public["legal_refs"])
+        self.assertNotIn(untapped.ref, public["legal_refs"])
+        program = SemanticProgram(
+            key="fixture:tapped-counter-target-set",
+            label="Tapped counter target set",
+            effects=[dict(template.effects[0])],
+            target_schema=dict(template.target_schema),
+            trust_level="provisional",
+        )
+        engine.semantics.put(program)
+        item = self.stack_item(
+            engine,
+            program=program,
+            refs=[tapped.ref],
+        )
+        tapped.tapped = False
+
+        engine._begin_resolve_item(
+            item,
+            [dict(value) for value in program.effects],
+            None,
+        )
+
+        self.assertNotIn("stun", tapped.counters)
+        self.assertFalse(any(value.ref == item.ref for value in engine.state.stack))
+        self.assertTrue(
+            any(event.code == "target.illegal" for event in engine.state.events)
+        )
+        tapped.tapped = True
+        success_program = SemanticProgram(
+            key="fixture:tapped-counter-target-set-success",
+            label="Tapped counter target set success",
+            effects=[dict(template.effects[0])],
+            target_schema=dict(template.target_schema),
+            trust_level="provisional",
+        )
+        engine.semantics.put(success_program)
+        success = self.stack_item(
+            engine,
+            program=success_program,
+            refs=[tapped.ref],
+        )
+        engine._begin_resolve_item(
+            success,
+            [dict(value) for value in success_program.effects],
+            None,
+        )
+        self.assertEqual(1, tapped.counters["stun"])
 
     def test_all_original_targets_illegal_is_countered_before_counter_mutation(
         self,
