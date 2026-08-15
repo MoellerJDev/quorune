@@ -81,6 +81,13 @@ subtypes. The same owner preserves two or three printed fixed placements on
 one shared source or direct permanent target as one typed batch node; runtime
 code receives the typed node and never reparses Oracle text.
 
+The same compiler owner lowers optional bounded permanent target sets from
+both “up to N target” and “each of up to N target” wording. It emits one
+zero-to-N target schema and one typed simultaneous placement instruction;
+spell, triggered, and activated contexts share that production. Variable
+limits, subtype or combat-state predicates, and compound instructions remain
+source-spanned residuals.
+
 `compiler/fixed_counter_trigger_nodes.py` composes that already typed effect
 body with closed normalized-event bindings for represented beginnings of
 steps; a land entering under the source controller's control; a noncreature or

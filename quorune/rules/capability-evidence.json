@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "52962014d23ca6be64375d5743b53448af34593a8de537e22be1d10019dc66c2",
+  "registry_fingerprint": "f1f98ef3314ad03c70e07b6047e80e7d5ffb5e6d77eb8aeb2aed8f1505227290",
   "declaration_source_fingerprint": "7866fe2bed4081fb5d9563801e50715da177c38e0e711e1d10509230b98c78d2",
   "declarations": [
     {
@@ -34748,5 +34748,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "0704c1ed3e5adf01ae60aef0142683deef98d75c6e24eda2981170a6b6948a20"
+  "fingerprint": "78eb68be279bcda42b141afde62c0524b841fc3d0f11e1b001d49b44b1b47dde"
 }

@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "deda93bd7b5cd445ddbc7759fdd4898ddf61cc7ba55b8e148342fc6d5c3b734e"
+verified: "fa9f5938ba89bcdd609821697cf37b8b2a22d956b2c07aea6883fadaf13531a6"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,13 +17,13 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,430
+- Pieces: 1,432
 - Cards indexed: 31,623
 - Material abilities classified: 59,649
 - Unclassified material spans: 0
 - Mapped pinned rules: 831 / 3,300
-- Applicable piece pairs: 33,235
-- Covered piece pairs: 603
+- Applicable piece pairs: 33,299
+- Covered piece pairs: 605
 
 ## Ontology classes
 
@@ -33,7 +33,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `card_forms` — Card types and specialized forms | 4 |
 | `choices_continuations` — Modes, targets, choices, and continuations | 13 |
 | `combat` — Combat | 24 |
-| `compiler_cardprogram` — Compiler and CardProgram pieces | 451 |
+| `compiler_cardprogram` — Compiler and CardProgram pieces | 453 |
 | `continuous_effects` — Static abilities and continuous effects | 33 |
 | `costs_mana` — Costs and mana | 8 |
 | `events_mutations` — Typed events and mutations | 104 |
