@@ -334,6 +334,58 @@
       "resolution": "The regression now asserts exact status and zero material residuals. The path policy already selected compiler-cardprogram, so no missing impact edge existed; the incident remains recorded to prevent stale promotion assertions from being overlooked during focused compiler harvest review.",
       "run_id": 31872123798,
       "summary": "The typed activation-tail harvest correctly promoted Scryb Ranger from partial to exact, but an existing compiler regression still asserted the prior partial status."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "generated-validation"
+      ],
+      "head_sha": "76b64d32cd262f8da637895b7dfeb5696d589ab1",
+      "id": "ci-20260815-20",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_rules_scheduler.RulesSchedulerTests.test_every_serious_candidate_carries_auditable_reranking_context"
+      ],
+      "resolution": "The scheduler regression now includes the fixed-effect sequence candidate. Selector inputs already select generated validation, so the defect was a stale closed expectation rather than a missing impact edge.",
+      "run_id": 31907364987,
+      "summary": "The fixed effect-clause sequence harvest recorded a selector rerank, but the scheduler governance regression still enumerated only the prior reranked candidate IDs."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "state-actions-damage"
+      ],
+      "head_sha": "3927852922e984eac2ac9e1475124da3e16e0c75",
+      "id": "ci-20260815-21",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_fixed_effect_clause_sequences.FixedEffectClauseSequenceCompilerTests.test_two_closed_sentences_compile_across_spell_trigger_and_activation",
+        "test_fixed_mass_damage.FixedMassDamageCompilerTests.test_unsupported_mass_damage_wording_remains_residual"
+      ],
+      "resolution": "The composition suite now asserts the promoted operation sequence while the leaf suite retains only unsupported mass-damage forms. The path policy already selected the affected shard.",
+      "run_id": 31908172032,
+      "summary": "The composition compiler correctly promoted fixed mass damage followed by Scry, but the leaf compiler regression still asserted that the complete two-clause ability remained residual."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "compiler-cardprogram"
+      ],
+      "head_sha": "d21f50c7a961c23e223dfa1495f40d3a42139c13",
+      "id": "ci-20260815-22",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_fixed_effect_clause_sequences.FixedEffectClauseSequenceCompilerTests.test_two_closed_sentences_compile_across_spell_trigger_and_activation",
+        "test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_unsupported_graveyard_return_variants_remain_material_residuals",
+        "test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_unsupported_tap_state_variants_remain_material_residuals",
+        "test_targeted_return_to_hand_effect_clauses.TargetedReturnToHandCompilerTests.test_unsupported_return_variants_remain_material_residuals"
+      ],
+      "resolution": "The composition suite now enumerates all four promoted pre-existing two-clause forms, the leaf template suites still prove atomic-parser rejection, and the integrated leaf suites no longer misclassify supported compositions. AGENTS.md now requires a cross-leaf negative-suite audit whenever a composition layer broadens accepted syntax.",
+      "run_id": 31909012248,
+      "summary": "Three more leaf compiler regressions asserted integrated residual status for two-clause abilities that the new composition owner intentionally promotes; this repeated the preceding mass-damage promotion escape."
     }
   ],
   "known_flaky_tests": [],
@@ -341,7 +393,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-15T07:48:40Z",
+  "observed_at": "2026-08-15T21:39:22Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -386,7 +438,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "864edabb445ff557cb45ffdb955375a0ba719ef402450711854df8356794527c",
+  "source_fingerprint": "91dfd0d576f5cfbfa1db2a09c27537381714ee19a543fc1b8ff42869137b438f",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -397,11 +449,11 @@
       "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 6,
-      "source_correctness": 3
+      "source_correctness": 6
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 14,
-    "escape_count": 19,
+    "deterministic_escape_count": 17,
+    "escape_count": 22,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

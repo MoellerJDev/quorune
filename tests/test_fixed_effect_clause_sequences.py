@@ -118,6 +118,26 @@ class FixedEffectClauseSequenceCompilerTests(unittest.TestCase):
                 "spell_ability",
                 ("damage_fixed_set", "scry"),
             ),
+            (
+                sequence_record(
+                    "Return target card from your graveyard to your hand. "
+                    "Draw a card."
+                ),
+                "spell_ability",
+                ("return_graveyard_card_to_owner_hand", "draw"),
+            ),
+            (
+                sequence_record("Tap target creature. Scry 1."),
+                "spell_ability",
+                ("tap", "scry"),
+            ),
+            (
+                sequence_record(
+                    "Return target creature to its owner's hand. Draw a card."
+                ),
+                "spell_ability",
+                ("bounce", "draw"),
+            ),
         )
         for record, kind, operations in fixtures:
             with self.subTest(kind=kind):

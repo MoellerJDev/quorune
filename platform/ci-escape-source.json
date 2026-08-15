@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-15T07:48:40Z",
+  "observed_at": "2026-08-15T21:39:22Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -285,6 +285,52 @@
       ],
       "impact_edge_status": "not_applicable",
       "resolution": "The regression now asserts exact status and zero material residuals. The path policy already selected compiler-cardprogram, so no missing impact edge existed; the incident remains recorded to prevent stale promotion assertions from being overlooked during focused compiler harvest review."
+    },
+    {
+      "id": "ci-20260815-20",
+      "run_id": 31907364987,
+      "head_sha": "76b64d32cd262f8da637895b7dfeb5696d589ab1",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "The fixed effect-clause sequence harvest recorded a selector rerank, but the scheduler governance regression still enumerated only the prior reranked candidate IDs.",
+      "failed_surfaces": ["generated-validation"],
+      "regressions": [
+        "test_rules_scheduler.RulesSchedulerTests.test_every_serious_candidate_carries_auditable_reranking_context"
+      ],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The scheduler regression now includes the fixed-effect sequence candidate. Selector inputs already select generated validation, so the defect was a stale closed expectation rather than a missing impact edge."
+    },
+    {
+      "id": "ci-20260815-21",
+      "run_id": 31908172032,
+      "head_sha": "3927852922e984eac2ac9e1475124da3e16e0c75",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "The composition compiler correctly promoted fixed mass damage followed by Scry, but the leaf compiler regression still asserted that the complete two-clause ability remained residual.",
+      "failed_surfaces": ["state-actions-damage"],
+      "regressions": [
+        "test_fixed_effect_clause_sequences.FixedEffectClauseSequenceCompilerTests.test_two_closed_sentences_compile_across_spell_trigger_and_activation",
+        "test_fixed_mass_damage.FixedMassDamageCompilerTests.test_unsupported_mass_damage_wording_remains_residual"
+      ],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The composition suite now asserts the promoted operation sequence while the leaf suite retains only unsupported mass-damage forms. The path policy already selected the affected shard."
+    },
+    {
+      "id": "ci-20260815-22",
+      "run_id": 31909012248,
+      "head_sha": "d21f50c7a961c23e223dfa1495f40d3a42139c13",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "Three more leaf compiler regressions asserted integrated residual status for two-clause abilities that the new composition owner intentionally promotes; this repeated the preceding mass-damage promotion escape.",
+      "failed_surfaces": ["compiler-cardprogram"],
+      "regressions": [
+        "test_fixed_effect_clause_sequences.FixedEffectClauseSequenceCompilerTests.test_two_closed_sentences_compile_across_spell_trigger_and_activation",
+        "test_targeted_graveyard_return_effect_clauses.TargetedOwnGraveyardReturnCompilerTests.test_unsupported_graveyard_return_variants_remain_material_residuals",
+        "test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_unsupported_tap_state_variants_remain_material_residuals",
+        "test_targeted_return_to_hand_effect_clauses.TargetedReturnToHandCompilerTests.test_unsupported_return_variants_remain_material_residuals"
+      ],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The composition suite now enumerates all four promoted pre-existing two-clause forms, the leaf template suites still prove atomic-parser rejection, and the integrated leaf suites no longer misclassify supported compositions. AGENTS.md now requires a cross-leaf negative-suite audit whenever a composition layer broadens accepted syntax."
     }
   ],
   "recent_pull_requests": [

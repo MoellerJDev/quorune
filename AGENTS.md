@@ -322,6 +322,14 @@ machine-readable inventory; never pin a volatile queue, capability, contract,
 card, or residual total as an independent expected literal. Stable pinned-source
 totals are allowed only when the count itself is the contract being tested.
 
+When a compiler composition layer begins accepting complete syntax that leaf
+compilers intentionally reject in isolation, audit the affected leaf compiler
+negative suites before pushing. Preserve leaf parser rejection where it remains
+correct, remove stale integrated residual expectations, and add every promoted
+form to the composition owner's positive regression table. This cross-leaf
+audit is part of the focused compiler check; do not wait for separate CI shards
+to discover the promoted forms one at a time.
+
 Push the coherent exact head and let public pull-request CI run the broad
 Python, generated, package, platform and headless-browser checks. Use that CI
 window for independent Slot B work instead of repeating the same suite

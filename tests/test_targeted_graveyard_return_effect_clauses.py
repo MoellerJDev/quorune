@@ -205,7 +205,6 @@ class TargetedOwnGraveyardReturnCompilerTests(unittest.TestCase):
             "Return target card from a graveyard to its owner's hand.",
             "Return target card from an opponent's graveyard to your hand.",
             "Return target creature card from your graveyard to the battlefield.",
-            "Return target card from your graveyard to your hand. Draw a card.",
         ):
             with self.subTest(text=text):
                 ir = self.compile(text)
