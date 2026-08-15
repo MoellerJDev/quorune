@@ -48,6 +48,9 @@ from .node_capability_shapes import (
     targeted_return_to_hand_node_capabilities,
     targeted_tap_state_node_capabilities,
 )
+from .token_creation_capability_shapes import (
+    fixed_token_creation_node_capabilities,
+)
 from .optional_counter_capability_shapes import (
     optional_fixed_counter_event_trigger_node_capabilities,
 )
@@ -889,6 +892,7 @@ def _targeted_effect_capabilities(
         targeted_return_to_hand_node_capabilities,
         targeted_own_graveyard_return_node_capabilities,
         targeted_tap_state_node_capabilities,
+        fixed_token_creation_node_capabilities,
     ):
         dependencies.update(
             resolver(
@@ -1102,6 +1106,8 @@ def capability_covered_mechanics(
         }
     ):
         covered.add("cr-121-drawing-a-card")
+    if "token.creation.fixed_definition" in supplied:
+        covered.add("cr-111-tokens")
     if "attachment.aura.simple_object" in supplied:
         covered.add("enchant")
     if "protection.typed.debt" in supplied:

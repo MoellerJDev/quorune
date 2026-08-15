@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 import re
 from typing import Any, Mapping
+
+from .fixed_numbers import FIXED_COUNT_PATTERN, fixed_number
 
 
 _ADDITIONAL_DEFINITION = (
@@ -25,6 +28,66 @@ _TOKEN_TREASURE = "Treasure"
 _TOKEN_FOOD = "Food"
 _TOKEN_MAP = "Map"
 _TOKEN_THOPTER = "Thopter"
+
+_COLOR_SYMBOLS = {
+    "white": "W",
+    "blue": "U",
+    "black": "B",
+    "red": "R",
+    "green": "G",
+}
+_COLOR_ORDER = "WUBRG"
+_CREATURE_TOKEN_KEYWORDS = frozenset(
+    {
+        "deathtouch",
+        "defender",
+        "double strike",
+        "first strike",
+        "flying",
+        "haste",
+        "hexproof",
+        "indestructible",
+        "lifelink",
+        "menace",
+        "reach",
+        "trample",
+        "vigilance",
+    }
+)
+_FIXED_CREATURE_TOKEN = re.compile(
+    rf"^Create (?P<count>{FIXED_COUNT_PATTERN}) "
+    r"(?P<tapped>tapped )?"
+    r"(?P<power>\d+)/(?P<toughness>\d+) "
+    r"(?P<colors>white|blue|black|red|green|colorless)"
+    r"(?: and (?P<second_color>white|blue|black|red|green))? "
+    r"(?P<subtypes>[A-Za-z][A-Za-z' -]*?) "
+    r"(?P<artifact>artifact )?creature tokens?"
+    r"(?: with (?P<keywords>[A-Za-z ,'-]+))?\.?$",
+    re.IGNORECASE,
+)
+_FIXED_PREDEFINED_TOKEN = re.compile(
+    rf"^Create (?P<count>{FIXED_COUNT_PATTERN}) "
+    r"(?P<tapped>tapped )?"
+    r"(?P<name>Treasure|Food|Map) tokens?\.?$",
+    re.IGNORECASE,
+)
+
+
+@dataclass(frozen=True, slots=True)
+class FixedTokenCreationTemplate:
+    template_id: str
+    effect: Mapping[str, Any]
+    mechanics: tuple[str, ...]
+
+    def compiled(
+        self,
+    ) -> tuple[
+        str,
+        tuple[Mapping[str, Any], ...],
+        None,
+        tuple[str, ...],
+    ]:
+        return self.template_id, (self.effect,), None, self.mechanics
 
 _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
     "treasure token": {
@@ -61,6 +124,139 @@ _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
         "keywords": ["Flying"],
     },
 }
+
+_PREDEFINED_CREATION_DEFINITIONS: dict[str, Mapping[str, Any]] = {
+    key: {
+        **{
+            field: value
+            for field, value in definition.items()
+            if field not in {"ability_profile"}
+        },
+        **(
+            {
+                "activated_ability_profile": definition["ability_profile"],
+            }
+            if "ability_profile" in definition
+            else {}
+        ),
+    }
+    for key, definition in _TOKEN_DEFINITIONS.items()
+    if key in {"treasure token", "food token", "map token"}
+}
+
+
+def _fixed_keyword_list(value: str | None) -> tuple[str, ...] | None:
+    if value is None:
+        return ()
+    normalized = re.sub(r",?\s+and\s+", ",", value.casefold())
+    keywords = tuple(
+        part.strip() for part in normalized.split(",") if part.strip()
+    )
+    if (
+        not keywords
+        or len(keywords) != len(set(keywords))
+        or any(keyword not in _CREATURE_TOKEN_KEYWORDS for keyword in keywords)
+    ):
+        return None
+    return keywords
+
+
+def _fixed_colors(first: str, second: str | None) -> list[str] | None:
+    normalized = first.casefold()
+    if normalized == "colorless":
+        return [] if second is None else None
+    names = (normalized, *(() if second is None else (second.casefold(),)))
+    symbols = tuple(_COLOR_SYMBOLS[name] for name in names)
+    if len(symbols) != len(set(symbols)):
+        return None
+    return sorted(symbols, key=_COLOR_ORDER.index)
+
+
+def _positive_fixed_number(value: str) -> int | None:
+    amount = fixed_number(value)
+    return amount if amount > 0 else None
+
+
+def fixed_token_creation_effect_template(
+    text: str,
+) -> FixedTokenCreationTemplate | None:
+    """Lower one complete fixed token-definition instruction.
+
+    Dynamic quantities, copies, named or legendary tokens, ability text,
+    attached or attacking tokens, and compound instructions remain residual.
+    """
+
+    normalized = " ".join(text.split())
+    predefined = _FIXED_PREDEFINED_TOKEN.fullmatch(normalized)
+    if predefined is not None:
+        quantity = _positive_fixed_number(predefined.group("count"))
+        if quantity is None:
+            return None
+        name = predefined.group("name").casefold()
+        definition = _PREDEFINED_CREATION_DEFINITIONS.get(f"{name} token")
+        if definition is None:
+            return None
+        return FixedTokenCreationTemplate(
+            template_id=f"create-fixed-{name}-token-v1",
+            effect={
+                "op": "create_token",
+                "controller": "$controller",
+                "name": str(definition["name"]),
+                "quantity": quantity,
+                **(
+                    {"tapped": True}
+                    if predefined.group("tapped")
+                    else {}
+                ),
+                "characteristics": {
+                    field: value
+                    for field, value in definition.items()
+                    if field != "name"
+                },
+            },
+            mechanics=("cr-111-tokens",),
+        )
+
+    creature = _FIXED_CREATURE_TOKEN.fullmatch(normalized)
+    if creature is None:
+        return None
+    quantity = _positive_fixed_number(creature.group("count"))
+    if quantity is None:
+        return None
+    colors = _fixed_colors(
+        creature.group("colors"), creature.group("second_color")
+    )
+    keywords = _fixed_keyword_list(creature.group("keywords"))
+    if colors is None or keywords is None:
+        return None
+    subtypes = " ".join(creature.group("subtypes").split())
+    artifact = bool(creature.group("artifact"))
+    characteristics: dict[str, Any] = {
+        "type_line": (
+            "Token "
+            + ("Artifact " if artifact else "")
+            + f"Creature — {subtypes}"
+        ),
+        "colors": colors,
+        "power": creature.group("power"),
+        "toughness": creature.group("toughness"),
+    }
+    if keywords:
+        characteristics["keywords"] = [
+            keyword.title() for keyword in keywords
+        ]
+    return FixedTokenCreationTemplate(
+        template_id="create-fixed-creature-token-v2",
+        effect={
+            "op": "create_token",
+            "controller": "$controller",
+            "name": subtypes,
+            "quantity": quantity,
+            **({"tapped": True} if creature.group("tapped") else {}),
+            "characteristics": characteristics,
+        },
+        mechanics=("cr-111-tokens", *keywords),
+    )
 
 
 def static_additional_token_replacement_handler(
@@ -105,4 +301,8 @@ def static_additional_token_replacement_handler(
     )
 
 
-__all__ = ["static_additional_token_replacement_handler"]
+__all__ = [
+    "FixedTokenCreationTemplate",
+    "fixed_token_creation_effect_template",
+    "static_additional_token_replacement_handler",
+]

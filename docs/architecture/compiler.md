@@ -125,6 +125,19 @@ characteristic-defining or otherwise dynamic counts, and copy, face, text, or
 type-changing interactions remain residual until a cycle-safe zone-
 characteristic boundary owns them.
 
+`compiler/token_templates.py` owns fixed-definition token creation across
+spell, triggered, and activated effects. The closed production emits one
+positive fixed quantity, an optional tapped entry state, and either a
+represented Treasure, Food, or Map definition or a fixed creature definition
+with at most two colors and capability-backed keywords. The corresponding
+node capability shape validates every emitted field and adds the keyword or
+predefined-token ability dependencies before promotion. Resolution uses the
+existing `create_token` semantic operation and the replacement-aware
+`token_creation.py` transaction. Dynamic quantities, copies, named or
+legendary tokens, Roles, attached or attacking tokens, custom quoted
+abilities, unrepresented predefined tokens, and compound or conditional
+instructions remain source-spanned residuals.
+
 ## Invariants
 
 - Every lowered node retains its exact source provenance.

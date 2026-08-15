@@ -1117,6 +1117,42 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_fixed_token_effect_suspends_for_replacement_order",
+      "piece_ids": ["capability.token.creation.additional_replacement", "capability.token.creation.fixed_definition"],
+      "capability_ids": ["token.creation.additional_replacement", "token.creation.fixed_definition"],
+      "interaction_order": 2,
+      "assertion": "One compiled fixed Treasure instruction suspends for two competing additional-token replacements and commits the Treasure, Thopter, and Map definitions through one canonical creation transaction."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_damage_prevention_residual_is_not_admitted_beside_trusted_token_trigger",
+      "piece_ids": ["capability.token.creation.fixed_definition", "residual.replacement.damage-prevention"],
+      "capability_ids": ["token.creation.fixed_definition"],
+      "interaction_order": 2,
+      "assertion": "Knight-Captain of Eos keeps its fixed Soldier trigger trusted while its unresolved prevention activation remains provisional, unadvertised, rejected atomically, and unable to suppress the token result."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_replacement_residuals_are_not_admitted_beside_trusted_token_trigger",
+      "piece_ids": ["capability.token.creation.fixed_definition", "residual.replacement.replacement-applicability"],
+      "capability_ids": ["token.creation.fixed_definition"],
+      "interaction_order": 2,
+      "assertion": "Topography Tracker executes its trusted fixed Map trigger while the separate Explore replacement applicability span remains residual and contributes no runtime handler."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_replacement_residuals_are_not_admitted_beside_trusted_token_trigger",
+      "piece_ids": ["capability.token.creation.fixed_definition", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["token.creation.fixed_definition"],
+      "interaction_order": 2,
+      "assertion": "Topography Tracker executes its trusted fixed Map trigger while the separate self-replacement and prevention-ordering span remains residual and contributes no runtime handler."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_persist_returns_under_owner_with_replacement_aware_counter",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.persist"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.persist"],
