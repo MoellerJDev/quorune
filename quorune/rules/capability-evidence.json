@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "8279f0d6ea34c51fc69fef01f8b9ac8146063b91e1a25e9155ffffe6045c487c",
-  "declaration_source_fingerprint": "f3ab08f95690d0d9fdab14f69abcdb9571730b0aba0f75ba382bdd01d93a3ee6",
+  "registry_fingerprint": "260efc371e2242d695bea5043de1da85b1276aec8b9589aa169c9e7adbfcfb2d",
+  "declaration_source_fingerprint": "77628ec4170f20ba4698b53f4945f0d1f1189756224b291e29962f9e961e3819",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -22,6 +22,26 @@
         "commander_review"
       ],
       "applicability_note": "Compose a source-pinned keyword activation with competing counter-quantity replacements before committing its fixed result."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_timing_table_keeps_offers_and_commands_in_parity",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use one typed timing field for both advertisement and command acceptance across ordinary-priority Reinforce and the three sorcery-speed keyword families, including other turns, combat, end steps, and a nonempty stack."
     },
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -65,6 +85,46 @@
     },
     {
       "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordCompilerTests.test_reinforce_timing_changes_card_program_runtime_fingerprint",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile the prior Reinforce sorcery-timing mutant and prove its serialized runtime catalog cannot share the corrected CardProgram fingerprint while the effect-semantic hash and compiler epoch remain stable."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_reinforce_sorcery_speed_mutant_is_killed",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Restore the incorrect sorcery-speed flag and require the ordinary off-turn combat Reinforce offer to kill the mutant."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
       "evidence_class": "negative",
       "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordCompilerTests.test_scavenge_dynamic_power_and_type_changing_boundary_fail_closed",
       "official_rule_ids": [
@@ -105,6 +165,26 @@
     },
     {
       "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_reinforce_invalid_inputs_are_atomic",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject insufficient mana, a stale hand source after advertisement, and malformed typed descriptor input without mutating authoritative state."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
       "evidence_class": "positive",
       "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordCompilerTests.test_four_fixed_counter_keywords_compile_source_spanned_activations",
       "official_rule_ids": [
@@ -122,6 +202,26 @@
         "commander_review"
       ],
       "applicability_note": "Lower Level Up, Outlast, Reinforce, and fixed printed-power Scavenge to immutable source-spanned activation programs."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_compiled_reinforce_responds_and_replays_exactly",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Execute a real compiled Earthbrawn CardProgram from hand in response to an ordinary stack object on an opponent's combat turn, paying its canonical mana and discard costs before the counter result."
     },
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -162,6 +262,26 @@
         "commander_review"
       ],
       "applicability_note": "Keep a hand-zone Reinforce source and its replacement continuation private to the activating affected seat."
+    },
+    {
+      "capability_id": "activation.counter_keyword.fixed",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_counter_keyword_activations.FixedCounterKeywordRuntimeTests.test_compiled_reinforce_responds_and_replays_exactly",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "602.5",
+        "702.77a",
+        "702.87a",
+        "702.97a",
+        "702.107a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the compiled CardProgram fingerprint, off-turn response window, canonical source costs, underlying stack object, target, and counter result to the exact authoritative hash."
     },
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -35478,5 +35598,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "e7b25219ca57bc519da619d33f7825d786ad6da2deca9d0d6fd505ac6aeacc87"
+  "fingerprint": "a96512ec99095da6af750f4361de2d6fcde7cdbc502f099008efa1c83b499ff5"
 }
