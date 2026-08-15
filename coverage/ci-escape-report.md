@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "1e34f4e53d35dc31562ac0eaaec709d51b406d5d455987333a51fa8f2b243937"
+verified: "864edabb445ff557cb45ffdb955375a0ba719ef402450711854df8356794527c"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 18
-- Deterministic escapes: 13
+- Escapes: 19
+- Deterministic escapes: 14
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -44,6 +44,7 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260811-16` | [31472531758](https://github.com/NullPriority/quorune/actions/runs/31472531758) | `missing_affected_test` | `added` | The canonical compact-CI fixture manifest now includes one generated three-card Amass fixture, token lookup uses the exact Scryfall name, and the full Amass module passes against a freshly built compact database. |
 | `ci-20260811-17` | [31483829105](https://github.com/NullPriority/quorune/actions/runs/31483829105) | `missing_affected_test` | `added` | The immediate Echo correction added the two cards to the canonical fixture set. The compact dependency closure now structurally discovers card, Oracle-ID, helper, and deck requirements and blocks pull-request matrices before long shards when the canonical manifest is incomplete. |
 | `ci-20260813-18` | [31733942575](https://github.com/NullPriority/quorune/actions/runs/31733942575) | `missing_affected_test` | `added` | The declaration-focused witness now verifies the three exact registered families and their shared capability dependency, the global ratchet includes those families, and AGENTS.md requires that exact global inventory test in any authorized focused check for registration changes. |
+| `ci-20260815-19` | [31872123798](https://github.com/NullPriority/quorune/actions/runs/31872123798) | `source_correctness` | `not_applicable` | The regression now asserts exact status and zero material residuals. The path policy already selected compiler-cardprogram, so no missing impact edge existed; the incident remains recorded to prevent stale promotion assertions from being overlooked during focused compiler harvest review. |
 
 ## Measurement limitations
 

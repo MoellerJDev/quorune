@@ -318,6 +318,22 @@
       "resolution": "The declaration-focused witness now verifies the three exact registered families and their shared capability dependency, the global ratchet includes those families, and AGENTS.md requires that exact global inventory test in any authorized focused check for registration changes.",
       "run_id": 31733942575,
       "summary": "The combat declaration family registered three new static runtime components, but the focused local evidence omitted the global family-inventory ratchet; this recurred after the Bloodthirst registration escape."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "compiler-cardprogram"
+      ],
+      "head_sha": "728942056a4bfdfd8cdb198dbcd526caa40ee8f3",
+      "id": "ci-20260815-19",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_oracle_ir.OracleIRTests.test_mixed_keyword_line_preserves_runtime_and_capability_coverage"
+      ],
+      "resolution": "The regression now asserts exact status and zero material residuals. The path policy already selected compiler-cardprogram, so no missing impact edge existed; the incident remains recorded to prevent stale promotion assertions from being overlooked during focused compiler harvest review.",
+      "run_id": 31872123798,
+      "summary": "The typed activation-tail harvest correctly promoted Scryb Ranger from partial to exact, but an existing compiler regression still asserted the prior partial status."
     }
   ],
   "known_flaky_tests": [],
@@ -325,7 +341,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-13T19:18:44Z",
+  "observed_at": "2026-08-15T07:48:40Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -370,7 +386,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "1e34f4e53d35dc31562ac0eaaec709d51b406d5d455987333a51fa8f2b243937",
+  "source_fingerprint": "864edabb445ff557cb45ffdb955375a0ba719ef402450711854df8356794527c",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -381,11 +397,11 @@
       "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 6,
-      "source_correctness": 2
+      "source_correctness": 3
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 13,
-    "escape_count": 18,
+    "deterministic_escape_count": 14,
+    "escape_count": 19,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [
