@@ -423,6 +423,33 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_gonti_energy_trigger_uses_typed_player_counter_program",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.fixed_player_effect"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.fixed_player_effect"],
+      "interaction_order": 2,
+      "assertion": "Gonti's capability-closed player-counter result enters the canonical counter transaction and an actual player-applicable quantity replacement doubles the committed energy."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_gonti_energy_trigger_uses_typed_player_counter_program",
+      "piece_ids": ["capability.counter.producer.fixed_event_trigger", "capability.counter.producer.fixed_player_effect"],
+      "capability_ids": ["counter.producer.fixed_event_trigger", "counter.producer.fixed_player_effect"],
+      "interaction_order": 2,
+      "assertion": "One source-spanned fixed artifact-entry trigger resolves its typed player-counter body without a reviewed-overlay operation or direct energy mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_gonti_energy_trigger_uses_typed_player_counter_program",
+      "piece_ids": ["capability.counter.producer.fixed_player_effect", "capability.trigger.event.normalized_zone_change"],
+      "capability_ids": ["counter.producer.fixed_player_effect", "trigger.event.normalized_zone_change"],
+      "interaction_order": 2,
+      "assertion": "A committed artifact-entry occurrence matches the source-controller predicate before Gonti's typed player-counter body resolves."
+    },
+    {
+      "evidence_class": "interaction",
       "assurance_kind": "pair_derived",
       "test_id": "test_self_pump_and_basic_token_creation_lower_generically",
       "piece_ids": ["mechanic.cr-111-tokens", "mechanic.cr-122-counters", "mechanic.cr-611-continuous-effects"],

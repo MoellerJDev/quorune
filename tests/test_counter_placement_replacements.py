@@ -5,20 +5,25 @@ from pathlib import Path
 import random
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from common import ROOT, keep_all, make_session
 from property_budget import property_transitions
 from scripts.build_test_database import build_fixture_database
+import quorune.effect_runtime.damage_life_and_turns as energy_effect_module
 from quorune.carddb import CardDatabase
 from quorune.counter_placement import (
     commit_prepared_counter_placements,
     CounterPlacementError,
+    CounterPlacementResult,
     CounterPlacementRequest,
     place_counters,
     prepare_counter_placements,
 )
 from quorune.deck import DeckLoader
+from quorune.errors import GameRuleError
 from quorune.model import CardInstance, StackItem
+from quorune.oracle_ir import register_generated_programs
 from quorune.projection import StateProjector
 from quorune.record import (
     authoritative_state_hash,
@@ -26,6 +31,7 @@ from quorune.record import (
     replay_record,
 )
 from quorune.replacement_effects import ReplacementChoiceRequired
+from quorune.rules.capabilities import load_default_capability_registry
 from quorune.semantic_runtime import (
     CounterPlacementEventSpec,
     CounterQuantityReplacementHandler,
@@ -165,6 +171,17 @@ class CounterPlacementReplacementTests(unittest.TestCase):
         )
         return doubling, doc
 
+    def register_vorinclex_counter_replacement(self, engine) -> None:
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (self.db.lookup("Vorinclex, Monstrous Raider"),),
+            trust_level="provisional",
+            capability_registry=load_default_capability_registry(),
+            capability_profile=engine.state.config.review_profile,
+            promote_exact_runtime_handlers=True,
+        )
+
     def test_counter_quantity_component_rejects_malformed_and_nonmatching_events(
         self,
     ):
@@ -300,6 +317,173 @@ class CounterPlacementReplacementTests(unittest.TestCase):
                 "capability_dependencies"
             ][0],
         )
+
+    def test_legacy_energy_effect_uses_player_counter_placement_owner(self):
+        session = self.session(12261421)
+        engine = session.engine
+        vorinclex = self.add_permanent(
+            engine,
+            seat="A",
+            name="Vorinclex, Monstrous Raider",
+            ref="a-vorinclex-energy",
+        )
+        self.register_vorinclex_counter_replacement(engine)
+
+        result = engine.apply_effect(
+            {
+                "op": "energy",
+                "player": "A",
+                "delta": 2,
+                "source": "legacy-energy-source",
+            },
+            actor="A",
+        )
+
+        self.assertEqual(4, result)
+        self.assertEqual(4, engine.state.players["A"].energy)
+        counter_event = next(
+            event
+            for event in reversed(engine.state.events)
+            if event.code == "counter.add"
+        )
+        self.assertEqual("A", counter_event.details["player"])
+        self.assertEqual("energy", counter_event.details["counter"])
+        self.assertEqual(2, counter_event.details["requested"])
+        self.assertEqual(4, counter_event.details["placed"])
+        replacement_event = next(
+            event
+            for event in reversed(engine.state.events)
+            if event.code == "replacement.apply"
+        )
+        self.assertEqual(vorinclex.ref, replacement_event.details["source"])
+        self.assertFalse(
+            any(event.code == "effect.energy" for event in engine.state.events)
+        )
+
+        malformed = (
+            {"op": "energy", "player": "A", "delta": -1},
+            {"op": "energy", "player": "A", "delta": 0},
+            {"op": "energy", "player": "A", "delta": True},
+            {
+                "op": "energy",
+                "player": "A",
+                "delta": 1,
+                "_replacement_selections": {},
+            },
+        )
+        for effect in malformed:
+            with self.subTest(effect=effect):
+                before = authoritative_state_hash(engine.state)
+                with self.assertRaises(GameRuleError):
+                    engine.apply_effect(effect, actor="A")
+                self.assertEqual(before, authoritative_state_hash(engine.state))
+
+    def test_gonti_energy_trigger_uses_typed_player_counter_program(self):
+        session = self.session(12261422)
+        engine = session.engine
+        heart = self.add_permanent(
+            engine,
+            seat="A",
+            name="Gonti's Aether Heart",
+            ref="a-gonti-heart",
+        )
+        vorinclex = self.add_permanent(
+            engine,
+            seat="A",
+            name="Vorinclex, Monstrous Raider",
+            ref="a-vorinclex-gonti",
+        )
+        self.register_vorinclex_counter_replacement(engine)
+        program = next(
+            value
+            for value in engine.semantics.programs_for_oracle(
+                "69428825-3c40-486d-b051-14e97a598ce6"
+            )
+            if value.event == "artifact.enter"
+            and any(
+                effect.get("op") == "place_player_counters"
+                for effect in value.effects
+            )
+        )
+        self.assertEqual(
+            {
+                "op": "place_player_counters",
+                "subjects": "controller",
+                "counter": "energy",
+                "amount": 2,
+                "source": "$source",
+            },
+            program.effects[0],
+        )
+        self.assertEqual("trusted", program.trust_level)
+        self.assertTrue(program.capability_closure["trusted"])
+        self.assertTrue(
+            {
+                "counter.producer.fixed_event_trigger",
+                "counter.producer.fixed_player_effect",
+                "trigger.event.normalized_zone_change",
+                "trigger.placement.apnap",
+            }.issubset(program.capability_dependencies)
+        )
+        self.assertIn(
+            "counter.placement.quantity_replacement",
+            program.capability_closure["reachable"],
+        )
+
+        engine.create_token(
+            "A",
+            name="Gonti Trigger Artifact",
+            characteristics={"type_line": "Token Artifact"},
+        )
+        engine.state.priority_player = None
+        engine._prepare_stack_resolution()
+
+        self.assertEqual(4, engine.state.players["A"].energy)
+        counter_event = next(
+            event
+            for event in reversed(engine.state.events)
+            if event.code == "counter.add"
+        )
+        self.assertEqual(heart.ref, counter_event.details["source"])
+        replacement_event = next(
+            event
+            for event in reversed(engine.state.events)
+            if event.code == "replacement.apply"
+        )
+        self.assertEqual(vorinclex.ref, replacement_event.details["source"])
+
+    def test_legacy_energy_counter_owner_mutant_is_killed(self):
+        def assert_energy_commits() -> None:
+            session = self.session(12261423)
+            result = session.engine.apply_effect(
+                {"op": "energy", "player": "A", "delta": 2},
+                actor="A",
+            )
+            self.assertEqual(2, result)
+            self.assertEqual(2, session.engine.state.players["A"].energy)
+
+        assert_energy_commits()
+
+        def bypass_counter_owner(*_args, **_kwargs):
+            return (
+                CounterPlacementResult(
+                    subject_kind="player",
+                    subject_id="A",
+                    counter_name="energy",
+                    requested=2,
+                    placed=2,
+                    before=0,
+                    after=2,
+                ),
+            )
+
+        with patch.object(
+            energy_effect_module,
+            "place_counters",
+            bypass_counter_owner,
+        ):
+            with self.assertRaises(AssertionError):
+                assert_energy_commits()
 
     def test_counter_replacements_apply_in_affected_players_chosen_order(self):
         session = self.session(12261402)

@@ -583,9 +583,24 @@ each active opponent. Energy and ticket symbols lower to their canonical
 counter names; ordinary named poison, rad, energy, ticket, and experience
 counters use the same typed `PlacePlayerCountersIntent`. Simultaneous subjects
 are APNAP-canonical, direct targets are revalidated immediately before commit,
-and every write remains owned by `counter_state.py`. Variable quantities,
+and every write remains owned by `counter_state.py`. The capability now declares
+the counter-quantity replacement owner as a dependency rather than relying on
+the transaction implementation implicitly. Source-named “CARDNAME or another
+artifact” triggers normalize only against the exact compiling card name, so
+Gonti's Aether Heart now contributes a source-spanned capability-closed trigger
+instead of a reviewed semantic-pack trigger overlay. Variable quantities,
 linked subjects, multiple player-counter kinds, and player-counter quantity
 replacement or prevention wording remain residual and fail closed.
+
+The legacy `energy` effect operation remains accepted only for replay and saved
+registry compatibility. Positive exact amounts now enter the same player-counter
+transaction, receive applicable quantity replacements, and emit canonical
+counter events; nonpositive, boolean, inactive-seat, and malformed replacement
+inputs fail before mutation. The deterministic Mishra/Gonti shortcut remains an
+explicit aggregate simulation boundary: it still bypasses per-trigger
+replacement ordering and therefore does not supply trust evidence for affected
+replacement interactions. Migrating that shortcut requires a resumable
+per-iteration frame rather than treating `4 * repeat_count` as one placement.
 
 The bounded Proliferate family compiles an unmodified `Proliferate.` clause in
 spell, triggered, and activated contexts to CardProgram V2. The resolving

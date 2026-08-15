@@ -130,6 +130,91 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             capability_profile="commander_review",
         )
 
+    def test_source_named_artifact_entry_player_counter_trigger_compiles_exactly(
+        self,
+    ):
+        card_name = "Gonti's Aether Heart"
+        text = (
+            "Whenever Gonti's Aether Heart or another artifact you control "
+            "enters, you get {E}{E} (two energy counters)."
+        )
+        self.assertIsNone(fixed_counter_trigger_binding(text))
+        binding = fixed_counter_trigger_binding(text, card_name=card_name)
+        self.assertIsNotNone(binding)
+        assert binding is not None
+        self.assertEqual(FixedCounterTriggerEvent.ARTIFACT_ENTER, binding.event)
+        self.assertEqual(
+            "artifact:source_controller:including_source:any_object",
+            binding.variant,
+        )
+        self.assertEqual(
+            {
+                "field": "controller",
+                "op": "eq",
+                "value": "$source.controller",
+            },
+            binding.event_condition,
+        )
+        record = replace(
+            self.db.lookup("Scheduled Counter Trigger Fixture"),
+            name=card_name,
+            oracle_text=text,
+            type_line="Legendary Artifact",
+            keywords=(),
+            faces=(),
+        )
+
+        ir = compile_oracle_card(
+            record,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+        )
+        node = next(
+            value
+            for value in ir.faces[0].nodes
+            if value.template_id == "fixed-counter-artifact-entry-trigger-v1"
+        )
+
+        self.assertEqual("exact", ir.status)
+        self.assertEqual(
+            (
+                {
+                    "op": "place_player_counters",
+                    "subjects": "controller",
+                    "counter": "energy",
+                    "amount": 2,
+                    "source": "$source",
+                },
+            ),
+            node.effects,
+        )
+        self.assertTrue(
+            {
+                "counter.producer.fixed_event_trigger",
+                "counter.producer.fixed_player_effect",
+                "trigger.event.normalized_zone_change",
+                "trigger.placement.apnap",
+            }.issubset(node.capability_dependencies)
+        )
+        self.assertIn(
+            "counter.placement.quantity_replacement",
+            node.capability_closure,
+        )
+        program = next(
+            value
+            for value in generated_programs(
+                self.db,
+                record,
+                trust_level="trusted",
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+            )
+            if value.provenance.get("template_id")
+            == "fixed-counter-artifact-entry-trigger-v1"
+        )
+        self.assertEqual("trusted", program.trust_level)
+        self.assertTrue(program.capability_closure["trusted"])
+
     def test_optional_fixed_counter_event_triggers_compile_exactly(self):
         cases = (
             (
