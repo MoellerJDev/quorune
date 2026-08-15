@@ -8,7 +8,10 @@ import unittest
 from unittest.mock import patch
 
 from common import ROOT, keep_all, make_session
+from quorune.abilities import parse_activated_abilities
+from quorune.activation_usage import ActivationLimit
 from quorune.carddb import CardDatabase
+from quorune.compiler.activated_mana_nodes import _activated_effect_material
 from quorune.compiler.counter_placement_templates import (
     CounterPlacementSubject,
     FixedCounterPlacementTemplate,
@@ -18,7 +21,7 @@ from quorune.compiler.unlock_frontier import _clause_families
 from quorune.deck import DeckLoader
 from quorune.errors import GameRuleError
 from quorune.model import CardInstance, StackItem
-from quorune.oracle_ir import compile_oracle_card
+from quorune.oracle_ir import compile_oracle_card, register_generated_programs
 from quorune.projection import StateProjector
 from quorune.record import (
     authoritative_state_hash,
@@ -53,6 +56,10 @@ def focused_card_database(directory: str) -> CardDatabase:
         [
             ROOT / "tests" / "fixtures" / "scryfall-exact-lists.json",
             ROOT / "tests" / "fixtures" / "counter-replacement-cards.json",
+            ROOT
+            / "tests"
+            / "fixtures"
+            / "typed-counter-activation-tails.json",
         ],
         database,
     )
@@ -213,6 +220,184 @@ class FixedCounterPlacementCompilerTests(unittest.TestCase):
                         schema_fields.items()
                         <= dict(template.target_schema or {}).items()
                     )
+
+    def test_source_subtype_descriptors_share_physical_source_lowering(self):
+        expected = {
+            "Aura": "enchantment",
+            "Equipment": "artifact",
+            "Saga": "enchantment",
+            "Spacecraft": "artifact",
+            "Vehicle": "artifact",
+        }
+        for descriptor, card_type in expected.items():
+            with self.subTest(descriptor=descriptor):
+                template = fixed_counter_placement_effect_template(
+                    f"Put a charge counter on this {descriptor}.",
+                    card_name="Source Fixture",
+                )
+                self.assertIsNotNone(template)
+                assert template is not None
+                self.assertIs(CounterPlacementSubject.SOURCE, template.subject)
+                self.assertEqual(card_type, template.permanent_type)
+                self.assertIsNone(template.target_schema)
+                self.assertEqual("$source", template.effects[0]["card"])
+
+    def test_pinned_source_descriptors_lower_across_trigger_and_activation_contexts(
+        self,
+    ):
+        expected = {
+            "Archery Training": ("triggered_ability", True),
+            "Dreadmobile": ("activated_ability", False),
+            "Festering Wound": ("triggered_ability", True),
+            "Fylgja": ("activated_ability", True),
+            "Gavel of the Righteous": ("triggered_ability", True),
+            "Incendiary": ("triggered_ability", True),
+            "Mace of the Valiant": ("triggered_ability", True),
+            "Momentum": ("triggered_ability", True),
+            "Private Research": ("triggered_ability", True),
+            "Tourach's Gate": ("activated_ability", False),
+            "Traveling Plague": ("triggered_ability", True),
+            "War Balloon": ("activated_ability", True),
+        }
+        for name, (kind, exact) in expected.items():
+            with self.subTest(name=name):
+                record = self.db.lookup(name, fuzzy=False)
+                ir = compile_oracle_card(
+                    record,
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                nodes = tuple(
+                    node
+                    for face in ir.faces
+                    for node in face.nodes
+                    if node.kind == kind
+                    and node.template_id is not None
+                    and node.template_id.startswith(
+                        ("fixed-counter-", "place-fixed-counter-source-")
+                    )
+                )
+                self.assertEqual(1, len(nodes))
+                node = nodes[0]
+                self.assertIs(exact, node.exact)
+                serialized_effects = json.dumps(node.effects, sort_keys=True)
+                self.assertIn('"card": "$source"', serialized_effects)
+                self.assertEqual(
+                    node.text,
+                    record.oracle_text[node.span.start : node.span.end],
+                )
+
+    def test_typed_activation_restriction_tails_preserve_full_source_spans(self):
+        expected = {
+            "Foggy Swamp Vinebender": False,
+            "Invigorating Hot Spring": False,
+            "Licia, Sanguine Tribune": True,
+            "Tetzimoc, Primal Death": False,
+            "Urtet, Remnant of Memnarch": True,
+        }
+        for name, exact in expected.items():
+            with self.subTest(name=name):
+                record = self.db.lookup(name, fuzzy=False)
+                ir = compile_oracle_card(
+                    record,
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                node = next(
+                    node
+                    for face in ir.faces
+                    for node in face.nodes
+                    if node.kind == "activated_ability"
+                    and any(
+                        effect.get("op")
+                        in {"place_counters", "place_counters_on_set"}
+                        for effect in node.effects
+                    )
+                )
+                self.assertIs(exact, node.exact)
+                self.assertEqual(
+                    node.text,
+                    record.oracle_text[node.span.start : node.span.end],
+                )
+                face = next(
+                    face for face in ir.faces if node in face.nodes
+                )
+                self.assertFalse(
+                    any(
+                        residual.kind == "effect"
+                        and residual.span.line == node.span.line
+                        for residual in face.residuals
+                    )
+                )
+
+        licia = self.db.lookup("Licia, Sanguine Tribune", fuzzy=False)
+        ability = parse_activated_abilities(
+            card_name=licia.name,
+            oracle_text=licia.oracle_text,
+            keywords=licia.keywords,
+        )[0]
+        self.assertIs(ActivationLimit.ONCE_PER_TURN, ability.activation_limit)
+        self.assertEqual(
+            "Put three +1/+1 counters on Licia",
+            _activated_effect_material(ability),
+        )
+        detached = replace(ability, activation_conditions=())
+        self.assertEqual(
+            ability.effect_text,
+            _activated_effect_material(detached),
+        )
+
+    def test_closed_activation_restriction_vocabulary_lowers_exactly(self):
+        restrictions = (
+            "Activate only as a sorcery.",
+            "Activate only as a sorcery and only once each turn.",
+            "Activate only during your turn.",
+            "Activate only during your turn and only once each turn.",
+            "Activate only once each turn.",
+            "Activate only if it's not your turn.",
+            "Activate only if you created a token this turn.",
+            (
+                "Activate only if there are four or more card types among "
+                "cards in your graveyard."
+            ),
+            "Activate only if you control an artifact.",
+            "Activate only if you control three or more creatures.",
+        )
+        for restriction in restrictions:
+            with self.subTest(restriction=restriction):
+                text = (
+                    "{1}: Put a +1/+1 counter on this creature. "
+                    f"{restriction}"
+                )
+                ir = self.compile(text, type_line="Creature — Human")
+                node = ir.faces[0].nodes[0]
+                self.assertEqual("exact", ir.status)
+                self.assertTrue(node.exact)
+                self.assertEqual(text, node.text)
+                self.assertEqual(text, text[node.span.start : node.span.end])
+                self.assertEqual("place_counters", node.effects[0]["op"])
+
+    def test_unrepresented_activation_restriction_tails_remain_residual(self):
+        variants = (
+            "Activate only during your upkeep.",
+            "Activate only during any upkeep step.",
+            "Activate only once.",
+            "Activate only during the declare blockers step.",
+            "Activate only if this creature entered this turn.",
+            "Activate only as a sorcery and only if you've cast a spell this turn.",
+            "Activate only if an opponent lost life this turn and only once each turn.",
+        )
+        for restriction in variants:
+            with self.subTest(restriction=restriction):
+                text = (
+                    "{1}: Put a +1/+1 counter on this creature. "
+                    f"{restriction}"
+                )
+                ir = self.compile(text, type_line="Creature — Human")
+                node = ir.faces[0].nodes[0]
+                self.assertIsNone(node.template_id)
+                self.assertNotEqual("exact", ir.status)
+                self.assertTrue(ir.material_residuals)
 
     def test_fixed_counter_template_property_is_deterministic_for_exact_counts(
         self,
@@ -377,6 +562,7 @@ class FixedCounterPlacementRuntimeTests(unittest.TestCase):
             commander="Zimone and Dina",
             deck_name="Zimone",
         )
+        cls.capabilities = load_default_capability_registry()
 
     @classmethod
     def tearDownClass(cls):
@@ -426,6 +612,78 @@ class FixedCounterPlacementRuntimeTests(unittest.TestCase):
         engine.state.cards[card.object_id] = card
         engine.state.players[seat].zones["battlefield"].append(card.object_id)
         return card
+
+    def add_compiled_permanent(
+        self,
+        session,
+        *,
+        seat: str,
+        name: str,
+        ref: str,
+    ) -> CardInstance:
+        card = self.add_permanent(
+            session.engine,
+            seat=seat,
+            name=name,
+            ref=ref,
+        )
+        register_generated_programs(
+            self.db,
+            session.engine.semantics,
+            (self.db.lookup(name, fuzzy=False),),
+            trust_level="provisional",
+            capability_registry=self.capabilities,
+            capability_profile=session.state.config.review_profile,
+            promote_exact_runtime_handlers=True,
+            promote_exact_effect_programs=True,
+        )
+        return card
+
+    @staticmethod
+    def prepare_priority(session, *, seat: str = "A") -> None:
+        engine = session.engine
+        engine.state.active_player = seat
+        engine.state.started = True
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine.state.stack.clear()
+        engine.state.priority_passes = []
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        engine.permissions.invalidate_current()
+        engine._grant_priority(seat)
+        engine.pump()
+
+    @staticmethod
+    def pass_until(session, predicate, *, limit: int = 24) -> None:
+        for _ in range(limit):
+            if predicate():
+                return
+            principals = session.pending_principals()
+            if not principals:
+                raise AssertionError("Resolution stopped without a decision")
+            result = session.act(principals[0], {"action_id": "pass"})
+            if not result.ok:
+                raise AssertionError(result.summary)
+        raise AssertionError("Resolution did not reach the expected state")
+
+    def choose_replacements(self, session) -> None:
+        for _ in range(12):
+            decision = session.engine.state.pending_decision
+            if decision is None or decision.kind != "replacement.order":
+                return
+            packet = StateProjector(self.db, session.state)._decision("pilot:A")
+            self.assertIsNotNone(packet)
+            selected = packet["ctx"]["options"][0]["id"]
+            result = session.act(
+                "pilot:A",
+                {
+                    "action_id": "choose",
+                    "choices": {"replacement": selected},
+                },
+            )
+            self.assertTrue(result.ok, result.summary)
+        self.fail("Replacement sequence did not converge")
 
     def stage_replacement(
         self,
@@ -710,6 +968,112 @@ class FixedCounterPlacementRuntimeTests(unittest.TestCase):
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(5, replay["commands"])
         self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_vehicle_self_activation_uses_source_identity_and_replays_replacement(
+        self,
+    ):
+        session = self.session(12260806, players=4)
+        source = self.add_compiled_permanent(
+            session,
+            seat="A",
+            name="War Balloon",
+            ref="A-war-balloon",
+        )
+        self.stage_replacement(
+            session.engine,
+            name="Doubling Season",
+            ref="A-war-doubling",
+        )
+        self.stage_replacement(
+            session.engine,
+            name="Doc Samson, Super Psychiatrist",
+            ref="A-war-doc",
+        )
+        session.state.players["A"].mana_pool["C"] = 1
+        self.prepare_priority(session)
+        session.initial_checkpoint = checkpoint_envelope(session.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        action_id = f"activate:{source.ref}:ab2"
+        actions = {
+            action["id"]
+            for action in session.packet("pilot:A", full=True)["decision"][
+                "ctx"
+            ]["legal"]["actions"]
+        }
+        self.assertIn(action_id, actions)
+        result = session.act("pilot:A", {"action_id": action_id})
+        self.assertTrue(result.ok, result.summary)
+        self.pass_until(
+            session,
+            lambda: session.state.pending_decision is not None
+            and session.state.pending_decision.kind == "replacement.order",
+        )
+        projected = StateProjector(self.db, session.state)._decision("pilot:A")
+        self.assertIsNotNone(projected)
+        self.assertNotIn(source.object_id, json.dumps(projected, sort_keys=True))
+        for seat in ("B", "C", "D"):
+            self.assertIsNone(
+                StateProjector(self.db, session.state)._decision(f"pilot:{seat}")
+            )
+        self.choose_replacements(session)
+
+        self.assertGreater(source.counters["fire"], 1)
+        expected_hash = authoritative_state_hash(session.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "vehicle-self-counter-record"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_controller_turn_once_per_turn_counter_activation_is_authoritative(
+        self,
+    ):
+        session = self.session(12260807)
+        source = self.add_compiled_permanent(
+            session,
+            seat="A",
+            name="Licia, Sanguine Tribune",
+            ref="A-licia",
+        )
+        ability = next(
+            ability
+            for ability in session.engine._activated_abilities(source)
+            if ability.ability_id == "ab3"
+        )
+        session.state.active_player = "B"
+        self.assertEqual(
+            ("unavailable", "only_during_your_turn"),
+            session.engine._ability_availability("A", source, ability),
+        )
+
+        self.prepare_priority(session)
+        self.assertEqual(
+            ("payable", None),
+            session.engine._ability_availability("A", source, ability),
+        )
+        life_before_activation = session.state.players["A"].life
+        result = session.act(
+            "pilot:A",
+            {"action_id": f"activate:{source.ref}:{ability.ability_id}"},
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.pass_until(session, lambda: source.counters.get("+1/+1") == 3)
+        self.assertEqual(
+            life_before_activation - 5,
+            session.state.players["A"].life,
+        )
+        self.assertEqual(
+            ("unavailable", "already_activated_this_turn"),
+            session.engine._ability_availability("A", source, ability),
+        )
+        session.state.turn_sequence += 1
+        self.assertEqual(
+            ("payable", None),
+            session.engine._ability_availability("A", source, ability),
+        )
 
 if __name__ == "__main__":
     unittest.main()

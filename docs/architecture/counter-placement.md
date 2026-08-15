@@ -189,6 +189,18 @@ battlefield source result is pinned to the activating incarnation; Reinforce
 and Scavenge revalidate their creature target. Variable Reinforce and dynamic-
 power Scavenge remain outside trust.
 
+Ordinary fixed counter activations also reuse that operation when their whole
+effect body is already represented and any trailing activation restriction is
+exactly captured by typed discovery metadata. The compiler removes only closed
+controller-turn, sorcery-speed, once-per-turn, token-history, controlled-type,
+or graveyard-type tails after verifying the matching typed descriptor; upkeep,
+step, conditional-history, and mixed unrepresented tails remain material.
+Source-self Aura, Equipment, Saga, Spacecraft, and Vehicle wording lowers to the
+same physical `$source` identity as card-type or bounded name wording. These
+printed descriptors do not become runtime type predicates, so the counter
+transaction continues to validate object identity rather than reinterpreting
+current characteristics.
+
 Ordinary printed Station uses the same transaction for its charge-counter
 result. One typed activation owner advertises and commits exactly one other
 untapped controlled creature, pins that creature's physical and logical
