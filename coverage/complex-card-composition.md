@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "c648fbbc72fa998044040c8e594dab0d05fe2623b556dbdf416bac1452d43822"
+verified: "b6aa6017616cae02cf7afaab74218f8390ba0350aaa8450353bc8126b2509f47"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -24,6 +24,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Sheoldred // The True Scriptures | 192 | 22 | 7 | 7 | 11 | 4 | `blocked` |
 | Dion, Bahamut's Dominant // Bahamut, Warden of Light | 191 | 23 | 6 | 7 | 9 | 10 | `blocked` |
 | Elesh Norn // The Argent Etchings | 187 | 21 | 7 | 7 | 12 | 2 | `blocked` |
+| Invasion of Ulgrotha // Grandmother Ravi Sengir | 187 | 24 | 6 | 4 | 5 | 17 | `blocked` |
 | Conqueror's Galleon // Conqueror's Foothold | 186 | 24 | 6 | 7 | 6 | 14 | `blocked` |
 | Jin-Gitaxias // The Great Synthesis | 185 | 20 | 6 | 7 | 11 | 6 | `blocked` |
 | Cleric Class | 183 | 22 | 6 | 6 | 7 | 12 | `blocked` |
@@ -62,5 +63,4 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Stay Hidden, Stay Silent | 160 | 17 | 5 | 4 | 5 | 17 | `blocked` |
 | Faithbound Judge // Sinner's Judgment | 159 | 21 | 5 | 7 | 8 | 1 | `blocked` |
 | Invasion of Pyrulea // Gargantuan Slabhorn | 159 | 16 | 4 | 4 | 7 | 18 | `blocked` |
-| Devoted Grafkeeper // Departed Soulkeeper | 157 | 19 | 5 | 6 | 6 | 7 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |

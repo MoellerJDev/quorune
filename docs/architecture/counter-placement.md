@@ -193,15 +193,23 @@ Mandatory fixed counter effects on represented trigger families enter through
 the same `place_counters` operations. The compiler binds closed upkeep,
 end-step, and beginning-combat schedules; controlled-land entries; controller
 noncreature or instant-or-sorcery casts; controller life gains; controller card
-draws; and the controller's exact second draw to normalized event facts. Draw
-events expose only public player and ordinal facts. Positive life-gain events
-are emitted after the canonical replacement-capable effect or semantic-choice
-life transaction, Lifelink result, or prevention aftermath commits. The trigger
-subsystem performs ordinary APNAP placement and the effect body retains existing
-target and replacement semantics. This adds no counter write path and no runtime
-Oracle parser. Granted, copied, or removed instances remain outside trust until
-all static components share the layer-6 ability-presence query; cast
-classification also excludes type-changing stack interactions.
+draws; the controller's exact second draw; and one closed family of public
+artifact, creature, enchantment, or permanent entries and creature deaths to
+normalized event facts. The zone-change family accepts only typed controller,
+opponent, source-exclusion, and token predicates. Departure predicates consume
+the previous controller and logical object identity captured before mutation,
+so a represented source can observe its own or a simultaneous death without
+recovering last-known information from prose. Draw events expose only public
+player and ordinal facts. Positive life-gain events are emitted after the
+canonical replacement-capable effect or semantic-choice life transaction,
+Lifelink result, or prevention aftermath commits. The trigger subsystem performs
+ordinary APNAP placement and the effect body retains existing target and
+replacement semantics. This adds no counter write path and no runtime Oracle
+parser. Subtype- or characteristic-qualified, one-or-more aggregated,
+alternate-zone, and combined zone-change triggers remain residual. Granted,
+copied, or removed instances remain outside trust until all static components
+share the layer-6 ability-presence query; cast classification also excludes
+type-changing stack interactions.
 
 The same `place_counters` operation also owns one closed multi-subject family:
 two or three printed-order source/direct-target permanent subjects receive the

@@ -49,6 +49,16 @@ _CONTROLLER_SECOND_DRAW_TRIGGER = re.compile(
     r"^Whenever you draw your second card each turn, (?P<body>.+)$",
     re.IGNORECASE,
 )
+_ZONE_CHANGE_TRIGGER = re.compile(
+    r"^Whenever "
+    r"(?:this (?P<this_kind>artifact|creature|enchantment|permanent) or )?"
+    r"(?P<article>another|a|an) "
+    r"(?:(?P<token>nontoken|token) )?"
+    r"(?P<kind>artifact|creature|enchantment|permanent)"
+    r"(?: (?P<relation>you control|an opponent controls|you don't control))? "
+    r"(?P<transition>enters|dies), (?P<body>.+)$",
+    re.IGNORECASE,
+)
 
 
 class FixedCounterTriggerEvent(str, Enum):
@@ -60,6 +70,109 @@ class FixedCounterTriggerEvent(str, Enum):
     CONTROLLER_LIFE_GAIN = "life.gained"
     CONTROLLER_CARD_DRAW = "card.drawn"
     CONTROLLER_SECOND_DRAW = "card.second_draw"
+    PERMANENT_ENTER = "permanent.enter"
+    ARTIFACT_ENTER = "artifact.enter"
+    CREATURE_ENTER = "creature.enter"
+    ENCHANTMENT_ENTER = "enchantment.enter"
+    CREATURE_DIES = "creature.dies"
+
+
+class FixedCounterZoneController(str, Enum):
+    """Closed controller relations for public zone-change subjects."""
+
+    ANY = "any"
+    SOURCE = "source_controller"
+    OPPONENT = "opponent"
+
+
+@dataclass(frozen=True, slots=True)
+class FixedCounterZoneSubject:
+    """Immutable public subject predicate for one normalized zone event."""
+
+    permanent_type: str
+    controller: FixedCounterZoneController
+    exclude_source: bool = False
+    token: bool | None = None
+
+    def __post_init__(self) -> None:
+        if self.permanent_type not in {
+            "artifact",
+            "creature",
+            "enchantment",
+            "permanent",
+        }:
+            raise ValueError("Fixed counter zone subjects require a closed type")
+        if not isinstance(self.controller, FixedCounterZoneController):
+            raise ValueError(
+                "Fixed counter zone subjects require a closed controller relation"
+            )
+        if type(self.exclude_source) is not bool:
+            raise ValueError(
+                "Fixed counter zone subject exclusion must be a boolean"
+            )
+        if self.token is not None and type(self.token) is not bool:
+            raise ValueError(
+                "Fixed counter zone subject token state must be boolean or absent"
+            )
+
+    @property
+    def event_condition(self) -> Mapping[str, Any] | None:
+        conditions: list[Mapping[str, Any]] = []
+        if self.controller is FixedCounterZoneController.SOURCE:
+            conditions.append(
+                {
+                    "field": "controller",
+                    "op": "eq",
+                    "value": "$source.controller",
+                }
+            )
+        elif self.controller is FixedCounterZoneController.OPPONENT:
+            conditions.append(
+                {
+                    "field": "controller",
+                    "op": "ne",
+                    "value": "$source.controller",
+                }
+            )
+        if self.exclude_source:
+            conditions.append(
+                {
+                    "field": "card",
+                    "op": "ne",
+                    "value": "$source.ref",
+                }
+            )
+        if self.token is not None:
+            conditions.append(
+                {
+                    "field": "token",
+                    "op": "eq",
+                    "value": self.token,
+                }
+            )
+        if not conditions:
+            return {
+                "field": "token",
+                "op": "in",
+                "value": [False, True],
+            }
+        if len(conditions) == 1:
+            return conditions[0]
+        return {"all": conditions}
+
+    @property
+    def variant(self) -> str:
+        token = (
+            "token"
+            if self.token is True
+            else "nontoken"
+            if self.token is False
+            else "any_object"
+        )
+        source = "other" if self.exclude_source else "including_source"
+        return ":".join(
+            (self.permanent_type, self.controller.value, source, token)
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,6 +182,7 @@ class FixedCounterTriggerBinding:
     event: FixedCounterTriggerEvent
     variant: str
     body: str
+    zone_subject: FixedCounterZoneSubject | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.event, FixedCounterTriggerEvent):
@@ -77,6 +191,17 @@ class FixedCounterTriggerBinding:
             raise ValueError("Fixed counter trigger variants must be nonempty")
         if type(self.body) is not str or not self.body:
             raise ValueError("Fixed counter trigger bodies must be nonempty")
+        zone_events = {
+            FixedCounterTriggerEvent.PERMANENT_ENTER,
+            FixedCounterTriggerEvent.ARTIFACT_ENTER,
+            FixedCounterTriggerEvent.CREATURE_ENTER,
+            FixedCounterTriggerEvent.ENCHANTMENT_ENTER,
+            FixedCounterTriggerEvent.CREATURE_DIES,
+        }
+        if (self.event in zone_events) != (self.zone_subject is not None):
+            raise ValueError(
+                "Fixed counter zone-change events require exactly one typed subject"
+            )
 
     @property
     def template_id(self) -> str:
@@ -93,6 +218,16 @@ class FixedCounterTriggerBinding:
                 "fixed-counter-controller-card-draw-trigger-v1",
             FixedCounterTriggerEvent.CONTROLLER_SECOND_DRAW:
                 "fixed-counter-controller-second-draw-trigger-v1",
+            FixedCounterTriggerEvent.PERMANENT_ENTER:
+                "fixed-counter-permanent-entry-trigger-v1",
+            FixedCounterTriggerEvent.ARTIFACT_ENTER:
+                "fixed-counter-artifact-entry-trigger-v1",
+            FixedCounterTriggerEvent.CREATURE_ENTER:
+                "fixed-counter-creature-entry-trigger-v1",
+            FixedCounterTriggerEvent.ENCHANTMENT_ENTER:
+                "fixed-counter-enchantment-entry-trigger-v1",
+            FixedCounterTriggerEvent.CREATURE_DIES:
+                "fixed-counter-creature-death-trigger-v1",
         }[self.event]
 
     @property
@@ -116,10 +251,27 @@ class FixedCounterTriggerBinding:
             FixedCounterTriggerEvent.CONTROLLER_SECOND_DRAW: (
                 "trigger-event-normalized-card-draw",
             ),
+            FixedCounterTriggerEvent.PERMANENT_ENTER: (
+                "trigger-event-normalized-zone-change",
+            ),
+            FixedCounterTriggerEvent.ARTIFACT_ENTER: (
+                "trigger-event-normalized-zone-change",
+            ),
+            FixedCounterTriggerEvent.CREATURE_ENTER: (
+                "trigger-event-normalized-zone-change",
+            ),
+            FixedCounterTriggerEvent.ENCHANTMENT_ENTER: (
+                "trigger-event-normalized-zone-change",
+            ),
+            FixedCounterTriggerEvent.CREATURE_DIES: (
+                "trigger-event-normalized-zone-change",
+            ),
         }[self.event]
 
     @property
-    def event_condition(self) -> Mapping[str, Any]:
+    def event_condition(self) -> Mapping[str, Any] | None:
+        if self.zone_subject is not None:
+            return self.zone_subject.event_condition
         if self.event is FixedCounterTriggerEvent.CONTROLLED_LAND_ENTER:
             return {
                 "field": "controller",
@@ -184,6 +336,64 @@ class FixedCounterTriggerBinding:
         return {"all": conditions}
 
 
+def _zone_change_trigger_binding(
+    material_line: str,
+) -> FixedCounterTriggerBinding | None:
+    match = _ZONE_CHANGE_TRIGGER.fullmatch(material_line)
+    if match is None:
+        return None
+    article = match.group("article").casefold()
+    kind = match.group("kind").casefold()
+    expected_article = (
+        "an" if kind in {"artifact", "enchantment"} else "a"
+    )
+    if article not in {"another", expected_article}:
+        return None
+    this_kind = match.group("this_kind")
+    if this_kind is not None and (
+        article != "another" or this_kind.casefold() != kind
+    ):
+        return None
+    transition = match.group("transition").casefold()
+    if transition == "dies" and kind != "creature":
+        return None
+    relation = str(match.group("relation") or "").casefold()
+    controller = {
+        "": FixedCounterZoneController.ANY,
+        "you control": FixedCounterZoneController.SOURCE,
+        "an opponent controls": FixedCounterZoneController.OPPONENT,
+        "you don't control": FixedCounterZoneController.OPPONENT,
+    }[relation]
+    token_text = match.group("token")
+    token = (
+        None
+        if token_text is None
+        else token_text.casefold() == "token"
+    )
+    subject = FixedCounterZoneSubject(
+        permanent_type=kind,
+        controller=controller,
+        exclude_source=article == "another" and this_kind is None,
+        token=token,
+    )
+    event = (
+        FixedCounterTriggerEvent.CREATURE_DIES
+        if transition == "dies"
+        else {
+            "permanent": FixedCounterTriggerEvent.PERMANENT_ENTER,
+            "artifact": FixedCounterTriggerEvent.ARTIFACT_ENTER,
+            "creature": FixedCounterTriggerEvent.CREATURE_ENTER,
+            "enchantment": FixedCounterTriggerEvent.ENCHANTMENT_ENTER,
+        }[kind]
+    )
+    return FixedCounterTriggerBinding(
+        event=event,
+        variant=subject.variant,
+        body=match.group("body"),
+        zone_subject=subject,
+    )
+
+
 def fixed_counter_trigger_binding(
     material_line: str,
 ) -> FixedCounterTriggerBinding | None:
@@ -234,7 +444,7 @@ def fixed_counter_trigger_binding(
             variant="controller_second_draw",
             body=second_draw.group("body"),
         )
-    return None
+    return _zone_change_trigger_binding(material_line)
 
 
 def _nested_operations(value: Any) -> set[str]:
@@ -347,6 +557,8 @@ __all__ = [
     "FIXED_COUNTER_EVENT_TRIGGER_MECHANIC",
     "FixedCounterTriggerBinding",
     "FixedCounterTriggerEvent",
+    "FixedCounterZoneController",
+    "FixedCounterZoneSubject",
     "fixed_counter_event_trigger_node",
     "fixed_counter_trigger_binding",
 ]

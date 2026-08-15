@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "4c68d7ecbe950bbccf7c325fade362b002411d79e76fefdfcaf767ee327dd65e"
+verified: "6613c50929c8f7b1f857f829451bd415ee0483488d64a42e676d41f050f67ac6"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,12 +17,12 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,424
+- Pieces: 1,427
 - Cards indexed: 31,623
 - Material abilities classified: 59,649
 - Unclassified material spans: 0
 - Mapped pinned rules: 829 / 3,300
-- Applicable piece pairs: 32,971
+- Applicable piece pairs: 33,209
 - Covered piece pairs: 603
 
 ## Ontology classes
@@ -33,7 +33,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `card_forms` — Card types and specialized forms | 4 |
 | `choices_continuations` — Modes, targets, choices, and continuations | 13 |
 | `combat` — Combat | 24 |
-| `compiler_cardprogram` — Compiler and CardProgram pieces | 447 |
+| `compiler_cardprogram` — Compiler and CardProgram pieces | 450 |
 | `continuous_effects` — Static abilities and continuous effects | 33 |
 | `costs_mana` — Costs and mana | 8 |
 | `events_mutations` — Typed events and mutations | 103 |
@@ -67,7 +67,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 | Piece | Class | Residuals | Sole blockers | Expected cards | Runtime | Assurance |
 |---|---|---:|---:|---:|---|---|
-| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 9,055 | 3,638 | 3,638 | `absent` | `untested` |
+| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 9,055 | 3,644 | 3,644 | `absent` | `untested` |
 | `residual.effect_clause.unparsed-clause-grammar` | `one_shot_effects` | 2,959 | 253 | 253 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-611-continuous-effects` | `keyword_mechanics` | 480 | 207 | 207 | `absent` | `untested` |
 | `residual.activated_effect.unparsed-clause-grammar` | `one_shot_effects` | 2,195 | 180 | 180 | `absent` | `untested` |

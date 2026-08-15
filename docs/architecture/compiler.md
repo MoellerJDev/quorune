@@ -82,16 +82,23 @@ one shared source or direct permanent target as one typed batch node; runtime
 code receives the typed node and never reparses Oracle text.
 
 `compiler/fixed_counter_trigger_nodes.py` composes that already typed effect
-body with three closed normalized-event bindings: represented beginnings of
-steps, a land entering under the source controller's control, and a
-noncreature or instant-or-sorcery spell cast by the source controller. The
-binding emits only an immutable event predicate and ordinary triggered node;
-APNAP placement, target revalidation, replacement suspension, and counter
-mutation stay with their existing owners. Cast-or-copy, opponent or arbitrary
-casts, broader land-entry relations, intervening-if, optional, variable,
-linked, movement, removal, and unrepresented compound bodies remain material.
-Spell-cast type predicates explicitly exclude type-changing stack interactions
-until their characteristic boundary is trusted.
+body with closed normalized-event bindings for represented beginnings of
+steps; a land entering under the source controller's control; a noncreature or
+instant-or-sorcery spell cast by the source controller; controller life gains,
+card draws, and exact second draws; and public artifact, creature,
+enchantment, or permanent entries plus creature deaths. The public zone-change
+grammar lowers only closed controller, opponent, source-exclusion, and token
+predicates. It consumes the normalized owner's current entry facts or
+predeparture last-known facts and does not perform a characteristic query of
+its own. The binding emits only an immutable event predicate and ordinary
+triggered node; APNAP placement, target revalidation, replacement suspension,
+and counter mutation stay with their existing owners. Cast-or-copy, opponent
+or arbitrary casts, broader land-entry relations, subtype- or
+characteristic-qualified zone changes, one-or-more aggregation, combined
+events, intervening-if, optional, variable, linked, movement, removal, and
+unrepresented compound bodies remain material. Spell-cast type predicates
+explicitly exclude type-changing stack interactions until their
+characteristic boundary is trusted.
 
 `compiler/counter_keyword_activation_nodes.py` composes that counter owner
 with one source-pinned activation family for fixed ordinary-mana Level Up,
