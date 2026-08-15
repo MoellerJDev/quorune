@@ -93,24 +93,6 @@
       }
     },
     {
-      "key": "69428825-3c40-486d-b051-14e97a598ce6:trigger:artifact-enter",
-      "label": "Gonti's Aether Heart artifact-enter trigger",
-      "oracle_id": "69428825-3c40-486d-b051-14e97a598ce6",
-      "ability_id": "trigger:artifact-enter",
-      "active_zone": "battlefield",
-      "event": "artifact.enter",
-      "effects": [{"op": "energy", "player": "$controller", "delta": 2}],
-      "trust_level": "trusted",
-      "coverage": ["triggered_ability", "energy"],
-      "tests": ["test_gonti_heart_extra_turn_accounting"],
-      "provenance": {
-        "source_oracle_hash": "434bb9416b3dec6147424cf0543adee367220eaf07fad754a1636816ae5506ca",
-        "source_rulings_hash": "192873c84c49d6c4f6c40588f896f1277f83a95a892556b6cb65c338f9c0f2e3",
-        "authored_by": "vertical-slice",
-        "review_status": "reviewed"
-      }
-    },
-    {
       "key": "69428825-3c40-486d-b051-14e97a598ce6:ability:ab2",
       "label": "Gonti's Aether Heart extra turn",
       "oracle_id": "69428825-3c40-486d-b051-14e97a598ce6",

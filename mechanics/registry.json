@@ -34,8 +34,8 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "724fdfd3b738963861053c0457e7c2a0312ce3a4fd2fdb57e4d3b275395ea4c8",
-      "version": 16
+      "sha256": "80d7c5fa28b9db012df0370504f6d5e853fc3ab914094f66e501f1e15a757285",
+      "version": 17
     },
     {
       "mechanic_id": "cr-111-tokens",
@@ -6963,12 +6963,12 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "724fdfd3b738963861053c0457e7c2a0312ce3a4fd2fdb57e4d3b275395ea4c8",
-      "contract_version": 16,
+      "contract_sha256": "80d7c5fa28b9db012df0370504f6d5e853fc3ab914094f66e501f1e15a757285",
+      "contract_version": 17,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, normalized fixed counter zone-change trigger, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v19",
+      "implementation_component": "closed fixed-counter single-target, fixed player-counter, same-kind multi-subject, normalized fixed counter zone-change trigger, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
+      "implementation_version": "counter-placement-transaction-v20",
       "kind": "rules_section",
       "known_blockers": [
         "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual; Amass X, zero, copied, granted, optional, repeated, conditional, modal, compound, and linked-result forms remain residual; variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions remain residual",
@@ -6996,6 +6996,12 @@
         "test_counter_replacement_choice_replays_exactly",
         "test_counter_replacement_property_1000_deterministic_transitions",
         "test_counter_quantity_replacement_mutant_is_killed",
+        "test_spell_trigger_and_activated_contexts_share_fixed_player_counter_lowering",
+        "test_fixed_player_counter_shape_and_dependency_mutants_fail_closed",
+        "test_source_named_artifact_entry_player_counter_trigger_compiles_exactly",
+        "test_gonti_energy_trigger_uses_typed_player_counter_program",
+        "test_legacy_energy_effect_uses_player_counter_placement_owner",
+        "test_legacy_energy_counter_owner_mutant_is_killed",
         "test_spell_trigger_and_activated_contexts_share_fixed_counter_lowering",
         "test_closed_subject_grammar_uses_typed_types_subtypes_and_relations",
         "test_public_state_direct_targets_compile_typed_predicates",

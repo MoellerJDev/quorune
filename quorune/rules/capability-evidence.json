@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "61bcf7b0a6e9c4dc1264e0364c10ad93cdfc938958c16ab07d5b819d4b48d1b0",
-  "declaration_source_fingerprint": "f49a510fee79fbe5e0c7605723f950c2a7d4cf0870b4eb951c4b76e8ec1f69f3",
+  "registry_fingerprint": "b07c9eb3f14e28b42f21d3772ad63b250821bcfb563b2ccfabac356e02ebbc69",
+  "declaration_source_fingerprint": "fee5eb00bf3bb1c4190c93d039788a3162cb3bb99ad69a49f05e8a1a1d024007",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -10160,6 +10160,25 @@
     {
       "capability_id": "counter.placement.quantity_replacement",
       "evidence_class": "interaction",
+      "test_id": "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_gonti_energy_trigger_uses_typed_player_counter_program",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Double an effect-generated energy placement on a player after Gonti's source-named artifact-entry trigger compiles and resolves through the typed counter transaction."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "interaction",
       "test_id": "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_zone_replacement_counter_is_a_nested_precommit_event",
       "official_rule_ids": [
         "122.1",
@@ -12606,6 +12625,30 @@
     {
       "capability_id": "counter.producer.fixed_event_trigger",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_source_named_artifact_entry_player_counter_trigger_compiles_exactly",
+      "official_rule_ids": [
+        "115.1",
+        "603.2",
+        "603.3",
+        "603.3b",
+        "603.6",
+        "608.2b",
+        "608.2c",
+        "122.1",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Bind an exact printed source-name-or-another artifact event to the normalized artifact-entry stream and a typed player-counter body."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "interaction",
       "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_any_death_trigger_observes_opponents_and_its_own_lki",
       "official_rule_ids": [
         "115.1",
@@ -13010,6 +13053,30 @@
         "commander_review"
       ],
       "applicability_note": "Compile each closed schedule, fixed public permanent-entry or creature-death subject, controlled-land-entry, controller-cast, draw, and life-gain binding into one source-spanned exact counter-producing trigger with an immutable event predicate."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_source_named_artifact_entry_player_counter_trigger_compiles_exactly",
+      "official_rule_ids": [
+        "115.1",
+        "603.2",
+        "603.3",
+        "603.3b",
+        "603.6",
+        "608.2b",
+        "608.2c",
+        "122.1",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Normalize a card's exact printed source name in a source-or-another artifact trigger and emit one capability-closed source-spanned CardProgram."
     },
     {
       "capability_id": "counter.producer.fixed_event_trigger",
@@ -14514,6 +14581,26 @@
     {
       "capability_id": "counter.producer.fixed_player_effect",
       "evidence_class": "interaction",
+      "test_id": "tests.test_counter_placement_replacements.CounterPlacementReplacementTests.test_gonti_energy_trigger_uses_typed_player_counter_program",
+      "official_rule_ids": [
+        "101.4",
+        "107.14",
+        "107.17",
+        "115.1",
+        "122.1",
+        "608.2b",
+        "608.2c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve Gonti's capability-closed artifact-entry trigger through the typed player-counter intent and an actual player-applicable quantity replacement."
+    },
+    {
+      "capability_id": "counter.producer.fixed_player_effect",
+      "evidence_class": "interaction",
       "test_id": "tests.test_fixed_player_counter_placement_effects.FixedPlayerCounterPlacementRuntimeTests.test_player_counter_placement_triggers_poison_sba_and_replay",
       "official_rule_ids": [
         "101.4",
@@ -14574,6 +14661,26 @@
     {
       "capability_id": "counter.producer.fixed_player_effect",
       "evidence_class": "negative",
+      "test_id": "tests.test_fixed_player_counter_placement_effects.FixedPlayerCounterPlacementCompilerTests.test_fixed_player_counter_shape_and_dependency_mutants_fail_closed",
+      "official_rule_ids": [
+        "101.4",
+        "107.14",
+        "107.17",
+        "115.1",
+        "122.1",
+        "608.2b",
+        "608.2c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed typed shapes and retain a material residual whenever the player-counter producer or canonical quantity-replacement dependency is blocked."
+    },
+    {
+      "capability_id": "counter.producer.fixed_player_effect",
+      "evidence_class": "negative",
       "test_id": "tests.test_fixed_player_counter_placement_effects.FixedPlayerCounterPlacementCompilerTests.test_unsupported_fixed_player_counter_variants_remain_material_residuals",
       "official_rule_ids": [
         "101.4",
@@ -14630,6 +14737,26 @@
         "commander_review"
       ],
       "applicability_note": "Reject boolean, zero, empty, unknown, mismatched-target, and malformed replacement-selection fields before mutation."
+    },
+    {
+      "capability_id": "counter.producer.fixed_player_effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_source_named_artifact_entry_player_counter_trigger_compiles_exactly",
+      "official_rule_ids": [
+        "101.4",
+        "107.14",
+        "107.17",
+        "115.1",
+        "122.1",
+        "608.2b",
+        "608.2c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile the fixed energy body of a source-named artifact-entry trigger into the typed player-counter operation with trusted replacement closure."
     },
     {
       "capability_id": "counter.producer.fixed_player_effect",
@@ -35216,5 +35343,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "197e0d2b3bbd670fc7959739642c887ef363915015d7f56727858e8e91b135f3"
+  "fingerprint": "1d8249c3cdf6fa7da52d8716491794d9cf3c28cac1129e812d1ad2223daf2536"
 }

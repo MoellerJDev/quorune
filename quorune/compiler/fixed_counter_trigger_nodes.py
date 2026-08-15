@@ -342,8 +342,24 @@ class FixedCounterTriggerBinding:
 
 def _zone_change_trigger_binding(
     material_line: str,
+    *,
+    card_name: str | None = None,
 ) -> FixedCounterTriggerBinding | None:
-    match = _ZONE_CHANGE_TRIGGER.fullmatch(material_line)
+    normalized_line = material_line
+    if card_name:
+        named_source = re.match(
+            rf"^Whenever {re.escape(card_name)} or another "
+            r"(?P<kind>artifact|creature|enchantment|permanent)\b",
+            material_line,
+            re.IGNORECASE,
+        )
+        if named_source is not None:
+            kind = named_source.group("kind")
+            normalized_line = (
+                f"Whenever this {kind} or another {kind}"
+                + material_line[named_source.end() :]
+            )
+    match = _ZONE_CHANGE_TRIGGER.fullmatch(normalized_line)
     if match is None:
         return None
     article = match.group("article").casefold()
@@ -400,6 +416,8 @@ def _zone_change_trigger_binding(
 
 def fixed_counter_trigger_binding(
     material_line: str,
+    *,
+    card_name: str | None = None,
 ) -> FixedCounterTriggerBinding | None:
     scheduled = _SCHEDULED_TRIGGER.fullmatch(material_line)
     if scheduled is not None:
@@ -448,7 +466,10 @@ def fixed_counter_trigger_binding(
             variant="controller_second_draw",
             body=second_draw.group("body"),
         )
-    return _zone_change_trigger_binding(material_line)
+    return _zone_change_trigger_binding(
+        material_line,
+        card_name=card_name,
+    )
 
 
 def _nested_operations(value: Any) -> set[str]:
@@ -485,7 +506,10 @@ def fixed_counter_event_trigger_node(
 ) -> OracleNode | None:
     """Lower one exact fixed counter effect over a normalized event."""
 
-    binding = fixed_counter_trigger_binding(material_line)
+    binding = fixed_counter_trigger_binding(
+        material_line,
+        card_name=card_name,
+    )
     if binding is None:
         return None
     optional_match = re.fullmatch(

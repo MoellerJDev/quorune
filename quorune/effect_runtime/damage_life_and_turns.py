@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
+from ..counter_placement import (
+    CounterPlacementError,
+    CounterPlacementRequest,
+    place_counters,
+)
 from ..damage import (
     DamageError,
     damage_proposal,
@@ -218,10 +223,43 @@ def _apply_energy(
 ) -> Any:
     op = operation
     seat = str(effect.get("player") or actor)
-    delta = int(effect.get("delta", 0))
-    host.state.players[seat].energy += delta
-    host._log(actor, "effect.energy", f"{seat}'s energy changed by {delta}.", {"player": seat, "delta": delta}, importance=1, changed_players=[seat])
-    return host.state.players[seat].energy
+    delta = effect.get("delta", 0)
+    if type(delta) is not int or delta <= 0:
+        raise GameRuleError(
+            "Legacy energy effects require a positive exact counter amount"
+        )
+    if seat not in host.active_seats:
+        raise GameRuleError("Energy counter recipient is not active")
+    raw_selections = effect.get("_replacement_selections", ())
+    if raw_selections is None:
+        raw_selections = ()
+    if not isinstance(raw_selections, (list, tuple)):
+        raise GameRuleError(
+            "Energy counter replacement selections must be an array"
+        )
+    try:
+        results = place_counters(
+            host,
+            (
+                CounterPlacementRequest(
+                    subject_kind="player",
+                    subject_id=seat,
+                    counter_name="energy",
+                    amount=delta,
+                    placing_player=actor,
+                    source_ref=(
+                        str(effect["source"])
+                        if effect.get("source") is not None
+                        else None
+                    ),
+                ),
+            ),
+            selections=tuple(raw_selections),
+            reason=reason,
+        )
+    except CounterPlacementError as exc:
+        raise GameRuleError(str(exc)) from exc
+    return results[0].after
 
 
 

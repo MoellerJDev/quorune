@@ -293,28 +293,33 @@ class FixedPlayerCounterPlacementCompilerTests(unittest.TestCase):
                     )
                 )
 
-        value = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
-        capability = next(
-            row
-            for row in value["capabilities"]
-            if row["id"] == "counter.producer.fixed_player_effect"
-        )
-        capability["status"] = "blocked"
-        capability["blockers"] = ["test mutation"]
-        ir = compile_oracle_card(
-            replace(
-                self.base,
-                name="Fixture",
-                oracle_text="Each opponent gets a poison counter.",
-                type_line="Sorcery",
-                keywords=(),
-                faces=(),
-            ),
-            capability_registry=CapabilityRegistry(value),
-            capability_profile="commander_review",
-        )
-        self.assertNotEqual("exact", ir.status)
-        self.assertTrue(ir.material_residuals)
+        for blocked_id in (
+            "counter.producer.fixed_player_effect",
+            "counter.placement.quantity_replacement",
+        ):
+            with self.subTest(blocked_id=blocked_id):
+                value = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+                capability = next(
+                    row
+                    for row in value["capabilities"]
+                    if row["id"] == blocked_id
+                )
+                capability["status"] = "blocked"
+                capability["blockers"] = ["test mutation"]
+                ir = compile_oracle_card(
+                    replace(
+                        self.base,
+                        name="Fixture",
+                        oracle_text="Each opponent gets a poison counter.",
+                        type_line="Sorcery",
+                        keywords=(),
+                        faces=(),
+                    ),
+                    capability_registry=CapabilityRegistry(value),
+                    capability_profile="commander_review",
+                )
+                self.assertNotEqual("exact", ir.status)
+                self.assertTrue(ir.material_residuals)
 
     def test_fixed_player_counter_compiler_mutant_is_killed(self):
         def exact() -> None:
