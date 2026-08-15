@@ -149,6 +149,10 @@ class FixedCounterKeywordAbilitySpec:
     def has_zone_change_source_cost(self) -> bool:
         return self.mechanic in {"reinforce", "scavenge"}
 
+    @property
+    def sorcery_speed(self) -> bool:
+        return self.mechanic in {"level up", "outlast", "scavenge"}
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "ability_id": self.ability_id,
@@ -224,7 +228,7 @@ class FixedCounterKeywordAbilitySpec:
             tap_source=self.mechanic == "outlast",
             discard_source=self.mechanic == "reinforce",
             exile_source=self.mechanic == "scavenge",
-            sorcery_speed=True,
+            sorcery_speed=self.sorcery_speed,
             target_schema=_CREATURE_TARGET if self.targets_creature else None,
         )
 

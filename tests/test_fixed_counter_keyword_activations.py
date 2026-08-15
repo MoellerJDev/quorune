@@ -10,6 +10,7 @@ import unittest
 from unittest import mock
 
 from common import ROOT, keep_all, make_session
+from quorune.card_programs.adapters import compile_card_program
 from quorune.carddb import CardDatabase, CardRecord
 from quorune.compiler import (
     counter_keyword_activation_nodes as activation_nodes,
@@ -22,11 +23,15 @@ from quorune.counter_keyword_abilities import (
 )
 from quorune.deck import DeckLoader
 from quorune.errors import GameRuleError
-from quorune.model import CardInstance
+from quorune.model import CardInstance, StackItem
 from quorune.mana_payment_continuations import (
     issue_mana_payment_replacement_choice,
 )
-from quorune.oracle_ir import compile_oracle_card, register_generated_programs
+from quorune.oracle_ir import (
+    ORACLE_COMPILER_VERSION,
+    compile_oracle_card,
+    register_generated_programs,
+)
 from quorune.projection import StateProjector
 from quorune.record import (
     authoritative_state_hash,
@@ -42,9 +47,14 @@ from quorune.rules.capabilities import (
     CapabilityRegistry,
     load_default_capability_registry,
 )
+from quorune.semantic_runtime.activated_abilities import (
+    ACTIVATED_ABILITY_CATALOG_HANDLER_ID,
+)
+from quorune.semantic_runtime.context import SemanticNodeError
 from quorune.semantic_runtime.counter_keyword_abilities import (
     fixed_counter_keyword_specs_from_descriptors,
 )
+from quorune.semantics import SemanticRegistry
 from quorune.session import CommanderSession
 from scripts.build_test_database import build_fixture_database
 
@@ -91,7 +101,7 @@ class FixedCounterKeywordModelTests(unittest.TestCase):
         ability = spec.to_activated_ability()
         self.assertEqual(("hand",), ability.zones)
         self.assertTrue(ability.discard_source)
-        self.assertTrue(ability.sorcery_speed)
+        self.assertFalse(ability.sorcery_speed)
         self.assertEqual(2, spec.amount)
         self.assertEqual("+1/+1", spec.counter_name)
         self.assertEqual(
@@ -360,6 +370,47 @@ class FixedCounterKeywordCompilerTests(unittest.TestCase):
             with self.assertRaises(AssertionError):
                 assert_exact()
 
+    def test_reinforce_timing_changes_card_program_runtime_fingerprint(self):
+        record = self.db.lookup("Earthbrawn")
+
+        def compile_program():
+            return compile_card_program(
+                self.db,
+                record,
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+                trust_level="trusted",
+            )
+
+        def reinforce_catalog(program):
+            return next(
+                descriptor["ability"]
+                for ability in program.abilities
+                for descriptor in ability.handlers
+                if descriptor.get("handler_id")
+                == ACTIVATED_ABILITY_CATALOG_HANDLER_ID
+                and descriptor["ability"]["discard_source"]
+            )
+
+        current = compile_program()
+        with mock.patch.object(
+            FixedCounterKeywordAbilitySpec,
+            "sorcery_speed",
+            new_callable=mock.PropertyMock,
+            return_value=True,
+        ):
+            stale_timing = compile_program()
+
+        self.assertEqual(ORACLE_COMPILER_VERSION, current.compiler_version)
+        self.assertEqual(
+            ORACLE_COMPILER_VERSION,
+            stale_timing.compiler_version,
+        )
+        self.assertFalse(reinforce_catalog(current)["sorcery_speed"])
+        self.assertTrue(reinforce_catalog(stale_timing)["sorcery_speed"])
+        self.assertEqual(current.semantic_hash, stale_timing.semantic_hash)
+        self.assertNotEqual(current.fingerprint, stale_timing.fingerprint)
+
 
 class FixedCounterKeywordRuntimeTests(unittest.TestCase):
     @classmethod
@@ -445,21 +496,54 @@ class FixedCounterKeywordRuntimeTests(unittest.TestCase):
         return card
 
     @staticmethod
-    def prepare_priority(session, *, seat: str = "A", mana: int = 8):
+    def prepare_priority(
+        session,
+        *,
+        seat: str = "A",
+        mana: int = 8,
+        active_player: str | None = None,
+        phase: str = "precombat_main",
+        step: str = "main",
+        stack_items: tuple[StackItem, ...] = (),
+    ):
         engine = session.engine
         for symbol in ("B", "C", "G", "R", "U", "W"):
             engine.state.players[seat].mana_pool[symbol] = mana
-        engine.state.active_player = seat
+        engine.state.active_player = active_player or seat
         engine.state.started = True
-        engine.state.phase = "precombat_main"
-        engine.state.step = "main"
+        engine.state.phase = phase
+        engine.state.step = step
         engine.state.stack.clear()
+        engine.state.stack.extend(stack_items)
         engine.state.priority_passes = []
         engine.state.pending_decision = None
         engine.state.priority_player = None
         engine.permissions.invalidate_current()
         engine._grant_priority(seat)
         engine.pump()
+
+    @staticmethod
+    def action_ids(session, *, seat: str = "A") -> set[str]:
+        actions = session.packet(f"pilot:{seat}", full=True)["decision"][
+            "ctx"
+        ]["legal"]["actions"]
+        return {action["id"] for action in actions}
+
+    def install_compiled_card_program(self, session, record: CardRecord):
+        program = compile_card_program(
+            self.db,
+            record,
+            capability_registry=self.capabilities,
+            capability_profile=session.engine.state.config.review_profile,
+            trust_level="trusted",
+        )
+        registry = SemanticRegistry(include_builtin_packs=False)
+        for ability in program.abilities:
+            registry.put(ability)
+        registry._card_program_cache = {program.oracle_id: program}
+        session.engine.semantics = registry
+        session.engine._semantic_trust_cache.clear()
+        return program
 
     @staticmethod
     def pass_until(session, predicate, *, limit: int = 48):
@@ -501,6 +585,7 @@ class FixedCounterKeywordRuntimeTests(unittest.TestCase):
         name: str,
         source_zone: str,
         ref: str,
+        compiled_card_program: bool = False,
     ):
         source = self.add_card(
             session,
@@ -508,6 +593,7 @@ class FixedCounterKeywordRuntimeTests(unittest.TestCase):
             name=name,
             ref=ref,
             zone=source_zone,
+            register=not compiled_card_program,
         )
         target = (
             source
@@ -521,6 +607,11 @@ class FixedCounterKeywordRuntimeTests(unittest.TestCase):
                 register=False,
             )
         )
+        if compiled_card_program:
+            self.install_compiled_card_program(
+                session,
+                self.db.lookup(name),
+            )
         self.prepare_priority(session)
         ability = next(
             ability
@@ -534,6 +625,315 @@ class FixedCounterKeywordRuntimeTests(unittest.TestCase):
             )
         )
         return source, target, ability
+
+    @staticmethod
+    def ordinary_stack_item(*, visibility: list[str]) -> StackItem:
+        return StackItem(
+            stack_id="reinforce-response-stack",
+            ref="S-reinforce-response",
+            kind="spell",
+            controller="B",
+            label="ordinary stack response witness",
+            visibility=visibility,
+        )
+
+    def test_timing_table_keeps_offers_and_commands_in_parity(self):
+        cases = (
+            (
+                "reinforce-other-turn-combat",
+                "Earthbrawn",
+                "hand",
+                "B",
+                "combat",
+                "declare_attackers",
+                False,
+                True,
+            ),
+            (
+                "reinforce-other-turn-end-with-stack",
+                "Earthbrawn",
+                "hand",
+                "B",
+                "ending",
+                "end",
+                True,
+                True,
+            ),
+            (
+                "level-up-own-main",
+                "Beastbreaker of Bala Ged",
+                "battlefield",
+                "A",
+                "precombat_main",
+                "main",
+                False,
+                True,
+            ),
+            (
+                "level-up-other-turn-combat",
+                "Beastbreaker of Bala Ged",
+                "battlefield",
+                "B",
+                "combat",
+                "declare_attackers",
+                False,
+                False,
+            ),
+            (
+                "outlast-own-main",
+                "Abzan Battle Priest",
+                "battlefield",
+                "A",
+                "precombat_main",
+                "main",
+                False,
+                True,
+            ),
+            (
+                "outlast-own-end",
+                "Abzan Battle Priest",
+                "battlefield",
+                "A",
+                "ending",
+                "end",
+                False,
+                False,
+            ),
+            (
+                "scavenge-own-main",
+                "Deadbridge Goliath",
+                "graveyard",
+                "A",
+                "precombat_main",
+                "main",
+                False,
+                True,
+            ),
+            (
+                "scavenge-own-main-with-stack",
+                "Deadbridge Goliath",
+                "graveyard",
+                "A",
+                "precombat_main",
+                "main",
+                True,
+                False,
+            ),
+        )
+        for index, case in enumerate(cases):
+            (
+                label,
+                name,
+                zone,
+                active_player,
+                phase,
+                step,
+                with_stack,
+                expected,
+            ) = case
+            with self.subTest(label=label):
+                session = self.session(7028800 + index)
+                engine = session.engine
+                source, target, ability = self.stage_keyword(
+                    session,
+                    name=name,
+                    source_zone=zone,
+                    ref=f"A-timing-{index}",
+                )
+                stack_items = (
+                    (
+                        self.ordinary_stack_item(
+                            visibility=list(engine.seats),
+                        ),
+                    )
+                    if with_stack
+                    else ()
+                )
+                self.prepare_priority(
+                    session,
+                    active_player=active_player,
+                    phase=phase,
+                    step=step,
+                    stack_items=stack_items,
+                )
+                action_id = f"activate:{source.ref}:{ability.ability_id}"
+                availability = engine._ability_availability(
+                    "A",
+                    source,
+                    ability,
+                )
+                self.assertEqual(
+                    ("payable", None)
+                    if expected
+                    else ("unavailable", "sorcery_timing"),
+                    availability,
+                )
+                self.assertEqual(
+                    expected,
+                    action_id in self.action_ids(session),
+                )
+                before = authoritative_state_hash(engine.state)
+                response = {"action_id": action_id}
+                if ability.target_schema is not None:
+                    response["targets"] = [target.ref]
+                result = session.act("pilot:A", response)
+                self.assertEqual(expected, result.ok, result.summary)
+                if not expected:
+                    self.assertEqual(
+                        before,
+                        authoritative_state_hash(engine.state),
+                    )
+
+    def test_compiled_reinforce_responds_and_replays_exactly(self):
+        session = self.session(7028810)
+        engine = session.engine
+        source, target, ability = self.stage_keyword(
+            session,
+            name="Earthbrawn",
+            source_zone="hand",
+            ref="A-reinforce-card-program",
+            compiled_card_program=True,
+        )
+        program = engine.semantics.card_program_for_oracle(source.oracle_id)
+        self.assertIsNotNone(program)
+        assert program is not None
+        self.assertEqual(ORACLE_COMPILER_VERSION, program.compiler_version)
+        self.assertFalse(ability.sorcery_speed)
+        self.assertEqual(
+            program.fingerprint,
+            engine.semantics.card_program_fingerprints()[source.oracle_id],
+        )
+        underlying = self.ordinary_stack_item(visibility=list(engine.seats))
+        self.prepare_priority(
+            session,
+            active_player="B",
+            phase="combat",
+            step="declare_attackers",
+            stack_items=(underlying,),
+        )
+        action_id = f"activate:{source.ref}:{ability.ability_id}"
+        self.assertIn(action_id, self.action_ids(session))
+        mana_before = sum(engine.state.players["A"].mana_pool.values())
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        result = session.act(
+            "pilot:A",
+            {"action_id": action_id, "targets": [target.ref]},
+        )
+
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual("graveyard", source.zone)
+        self.assertEqual(
+            mana_before - 2,
+            sum(engine.state.players["A"].mana_pool.values()),
+        )
+        self.assertEqual(2, len(engine.state.stack))
+        self.assertEqual(0, target.counters.get("+1/+1", 0))
+        self.pass_until(
+            session,
+            lambda: target.counters.get("+1/+1", 0) == 1,
+        )
+        self.assertEqual(
+            [underlying.stack_id],
+            [item.stack_id for item in engine.state.stack],
+        )
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            game_dir = Path(temporary) / "reinforce-card-program-replay"
+            session.save(game_dir)
+            replay = replay_record(game_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_reinforce_invalid_inputs_are_atomic(self):
+        insufficient = self.session(7028811)
+        source, target, ability = self.stage_keyword(
+            insufficient,
+            name="Earthbrawn",
+            source_zone="hand",
+            ref="A-reinforce-unpayable",
+        )
+        self.prepare_priority(insufficient, mana=0)
+        action_id = f"activate:{source.ref}:{ability.ability_id}"
+        self.assertNotIn(action_id, self.action_ids(insufficient))
+        before = authoritative_state_hash(insufficient.state)
+        result = insufficient.act(
+            "pilot:A",
+            {"action_id": action_id, "targets": [target.ref]},
+        )
+        self.assertFalse(result.ok)
+        self.assertEqual(before, authoritative_state_hash(insufficient.state))
+        self.assertEqual("hand", source.zone)
+
+        stale = self.session(7028812)
+        stale_source, stale_target, stale_ability = self.stage_keyword(
+            stale,
+            name="Earthbrawn",
+            source_zone="hand",
+            ref="A-reinforce-stale",
+        )
+        stale_action = (
+            f"activate:{stale_source.ref}:{stale_ability.ability_id}"
+        )
+        self.assertIn(stale_action, self.action_ids(stale))
+        stale.engine.move_card(stale_source.object_id, "graveyard", log=False)
+        stale_before = authoritative_state_hash(stale.state)
+        result = stale.act(
+            "pilot:A",
+            {"action_id": stale_action, "targets": [stale_target.ref]},
+        )
+        self.assertFalse(result.ok)
+        self.assertEqual(stale_before, authoritative_state_hash(stale.state))
+
+        malformed_spec = compile_fixed_counter_keyword_ability(
+            material_line="Reinforce 1—{1}{G}",
+            oracle_line="Reinforce 1—{1}{G}",
+            line_index=0,
+            mechanic="reinforce",
+            printed_power=None,
+        )
+        assert malformed_spec is not None
+        malformed = fixed_counter_keyword_handler_descriptor(malformed_spec)
+        malformed["ability"]["unknown"] = True
+        malformed_before = authoritative_state_hash(stale.state)
+        with self.assertRaisesRegex(SemanticNodeError, "unknown"):
+            fixed_counter_keyword_specs_from_descriptors([malformed])
+        self.assertEqual(
+            malformed_before,
+            authoritative_state_hash(stale.state),
+        )
+
+    def test_reinforce_sorcery_speed_mutant_is_killed(self):
+        def assert_offered() -> None:
+            session = self.session(7028813)
+            source, _target, ability = self.stage_keyword(
+                session,
+                name="Earthbrawn",
+                source_zone="hand",
+                ref="A-reinforce-timing-mutant",
+            )
+            self.prepare_priority(
+                session,
+                active_player="B",
+                phase="combat",
+                step="declare_attackers",
+            )
+            self.assertIn(
+                f"activate:{source.ref}:{ability.ability_id}",
+                self.action_ids(session),
+            )
+
+        assert_offered()
+        with mock.patch.object(
+            FixedCounterKeywordAbilitySpec,
+            "sorcery_speed",
+            new_callable=mock.PropertyMock,
+            return_value=True,
+        ):
+            with self.assertRaises(AssertionError):
+                assert_offered()
 
     def test_each_fixed_counter_keyword_pays_cost_and_places_counters(self):
         cases = (
@@ -696,7 +1096,12 @@ class FixedCounterKeywordRuntimeTests(unittest.TestCase):
             copy_of=voidwalker.ref,
             reason="reinforce source-cost ordering witness",
         )
-        self.prepare_priority(session)
+        self.prepare_priority(
+            session,
+            active_player="B",
+            phase="ending",
+            step="end",
+        )
         session.initial_checkpoint = checkpoint_envelope(engine.state)
         session.commands.clear()
         session.decisions.clear()

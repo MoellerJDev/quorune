@@ -2,7 +2,7 @@
 title: "Oracle compiler architecture"
 status: "current"
 authoritative_source: "quorune/oracle_ir.py, quorune/compiler, and quorune/card_programs"
-verified: "2026-08-14"
+verified: "2026-08-15"
 audience: "compiler and rules contributors"
 maintenance: "hand-maintained"
 ---
@@ -115,8 +115,12 @@ characteristic boundary is trusted.
 with one source-pinned activation family for fixed ordinary-mana Level Up,
 Outlast, Reinforce, and Scavenge. Level Up and Outlast resolve the exact current
 source zone object; Reinforce and Scavenge use one revalidated creature target
-and the shared replacement-aware source-zone cost transaction. Scavenge lowers
-only a positive integral power printed on a single-face card. Star power,
+and the shared replacement-aware source-zone cost transaction. Reinforce uses
+ordinary priority timing; Level Up, Outlast, and Scavenge use sorcery timing.
+Action offers and submitted commands consume that same compiler-pinned timing
+field rather than applying mechanic-specific checks at either call site.
+Scavenge lowers only a positive integral power printed on a single-face card.
+Star power,
 characteristic-defining or otherwise dynamic counts, and copy, face, text, or
 type-changing interactions remain residual until a cycle-safe zone-
 characteristic boundary owns them.
