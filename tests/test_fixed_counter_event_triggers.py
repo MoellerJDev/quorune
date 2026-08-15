@@ -22,6 +22,8 @@ from quorune.compiler.fixed_counter_trigger_nodes import (
     FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
     FixedCounterTriggerBinding,
     FixedCounterTriggerEvent,
+    FixedCounterZoneController,
+    FixedCounterZoneSubject,
     fixed_counter_trigger_binding,
 )
 from quorune.compiler.target_effect_corpus_assurance import (
@@ -62,6 +64,11 @@ TEMPLATE_IDS = {
     "fixed-counter-controller-life-gain-trigger-v1",
     "fixed-counter-controller-card-draw-trigger-v1",
     "fixed-counter-controller-second-draw-trigger-v1",
+    "fixed-counter-permanent-entry-trigger-v1",
+    "fixed-counter-artifact-entry-trigger-v1",
+    "fixed-counter-creature-entry-trigger-v1",
+    "fixed-counter-enchantment-entry-trigger-v1",
+    "fixed-counter-creature-death-trigger-v1",
 }
 
 
@@ -252,6 +259,66 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                 1,
                 ("trigger-event-normalized-card-draw",),
             ),
+            (
+                "Whenever an artifact you control enters, put a charge counter on this artifact.",
+                "Artifact",
+                FixedCounterTriggerEvent.ARTIFACT_ENTER,
+                "artifact:source_controller:including_source:any_object",
+                "fixed-counter-artifact-entry-trigger-v1",
+                "charge",
+                1,
+                ("trigger-event-normalized-zone-change",),
+            ),
+            (
+                "Whenever another nontoken creature you control enters, put a +1/+1 counter on this creature.",
+                "Creature — Citizen",
+                FixedCounterTriggerEvent.CREATURE_ENTER,
+                "creature:source_controller:other:nontoken",
+                "fixed-counter-creature-entry-trigger-v1",
+                "+1/+1",
+                1,
+                ("trigger-event-normalized-zone-change",),
+            ),
+            (
+                "Whenever another enchantment you control enters, put a lore counter on this enchantment.",
+                "Enchantment",
+                FixedCounterTriggerEvent.ENCHANTMENT_ENTER,
+                "enchantment:source_controller:other:any_object",
+                "fixed-counter-enchantment-entry-trigger-v1",
+                "lore",
+                1,
+                ("trigger-event-normalized-zone-change",),
+            ),
+            (
+                "Whenever a permanent you don't control enters, put a charge counter on this artifact.",
+                "Artifact",
+                FixedCounterTriggerEvent.PERMANENT_ENTER,
+                "permanent:opponent:including_source:any_object",
+                "fixed-counter-permanent-entry-trigger-v1",
+                "charge",
+                1,
+                ("trigger-event-normalized-zone-change",),
+            ),
+            (
+                "Whenever this creature or another creature dies, put a +1/+1 counter on each Vampire you control.",
+                "Creature — Vampire",
+                FixedCounterTriggerEvent.CREATURE_DIES,
+                "creature:any:including_source:any_object",
+                "fixed-counter-creature-death-trigger-v1",
+                "+1/+1",
+                1,
+                ("trigger-event-normalized-zone-change",),
+            ),
+            (
+                "Whenever a creature an opponent controls dies, put a +1/+1 counter on this creature.",
+                "Creature — Vampire",
+                FixedCounterTriggerEvent.CREATURE_DIES,
+                "creature:opponent:including_source:any_object",
+                "fixed-counter-creature-death-trigger-v1",
+                "+1/+1",
+                1,
+                ("trigger-event-normalized-zone-change",),
+            ),
         )
         for (
             text,
@@ -306,10 +373,17 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                 )
                 self.assertTrue(
                     {
-                        "counter.producer.fixed_effect",
                         "counter.producer.fixed_event_trigger",
                         "trigger.placement.apnap",
                     }.issubset(node.capability_dependencies)
+                )
+                self.assertTrue(
+                    any(
+                        dependency.startswith("counter.producer.")
+                        and dependency
+                        != "counter.producer.fixed_event_trigger"
+                        for dependency in node.capability_dependencies
+                    )
                 )
                 programs = [
                     program
@@ -334,8 +408,79 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                 self.assertEqual(1, len(programs))
                 self.assertTrue(programs[0].capability_closure["trusted"])
 
+        artifact = fixed_counter_trigger_binding(
+            "Whenever an artifact you control enters, put a charge counter on this artifact."
+        )
+        self.assertIsNotNone(artifact)
+        assert artifact is not None
+        self.assertEqual(
+            {
+                "field": "controller",
+                "op": "eq",
+                "value": "$source.controller",
+            },
+            artifact.event_condition,
+        )
+        death = fixed_counter_trigger_binding(
+            "Whenever another nontoken creature you control dies, put a +1/+1 counter on this creature."
+        )
+        self.assertIsNotNone(death)
+        assert death is not None
+        self.assertEqual(
+            {
+                "all": [
+                    {
+                        "field": "controller",
+                        "op": "eq",
+                        "value": "$source.controller",
+                    },
+                    {
+                        "field": "card",
+                        "op": "ne",
+                        "value": "$source.ref",
+                    },
+                    {"field": "token", "op": "eq", "value": False},
+                ]
+            },
+            death.event_condition,
+        )
+        any_death = fixed_counter_trigger_binding(
+            "Whenever this creature or another creature dies, put a +1/+1 counter on this creature."
+        )
+        self.assertIsNotNone(any_death)
+        assert any_death is not None
+        self.assertEqual(
+            {
+                "field": "token",
+                "op": "in",
+                "value": [False, True],
+            },
+            any_death.event_condition,
+        )
+
         with self.assertRaises(ValueError):
             FixedCounterTriggerBinding("step.begin", "your upkeep", "body")
+        with self.assertRaises(ValueError):
+            FixedCounterZoneSubject(
+                "creature",
+                "source_controller",
+            )
+        with self.assertRaises(ValueError):
+            FixedCounterTriggerBinding(
+                FixedCounterTriggerEvent.CREATURE_DIES,
+                "creature:any:including_source:any_object",
+                "body",
+            )
+        with self.assertRaises(ValueError):
+            FixedCounterTriggerBinding(
+                FixedCounterTriggerEvent.STEP_BEGIN,
+                "your upkeep",
+                "body",
+                FixedCounterZoneSubject(
+                    "creature",
+                    FixedCounterZoneController.ANY,
+                ),
+            )
 
         residual_cases = (
             (
@@ -420,6 +565,14 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             "At the beginning of your upkeep, put X charge counters on this artifact.",
             "At the beginning of your upkeep, move a charge counter from this artifact onto target creature.",
             "At the beginning of your upkeep, remove a charge counter from this artifact.",
+            "Whenever another Zombie you control dies, put a +1/+1 counter on this creature.",
+            "Whenever one or more creatures die, put a +1/+1 counter on this creature.",
+            "Whenever another creature you control enters or dies, put a +1/+1 counter on this creature.",
+            "Whenever another creature you control leaves the battlefield, put a +1/+1 counter on this creature.",
+            "Whenever another creature you control dies, you may put a +1/+1 counter on this creature.",
+            "Whenever another creature with a counter on it dies, put a +1/+1 counter on this creature.",
+            "Whenever another artifact dies, put a charge counter on this artifact.",
+            "Whenever this artifact or another creature enters, put a charge counter on this artifact.",
         )
         for text in variants:
             with self.subTest(text=text):
@@ -451,6 +604,10 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             ),
             (
                 "Landfall Counter Trigger Fixture",
+                "trigger.event.normalized_zone_change",
+            ),
+            (
+                "Creature Death Counter Trigger Fixture",
                 "trigger.event.normalized_zone_change",
             ),
             (
@@ -562,6 +719,7 @@ class FixedCounterEventTriggerRuntimeTests(unittest.TestCase):
         ref: str,
         zone: str,
         controller: str | None = None,
+        is_token: bool = False,
     ) -> CardInstance:
         record = self.db.lookup(name)
         current_controller = controller or seat
@@ -574,6 +732,7 @@ class FixedCounterEventTriggerRuntimeTests(unittest.TestCase):
             owner=seat,
             controller=current_controller,
             zone=zone,
+            is_token=is_token,
             zone_timestamp=engine.state.event_sequence + 1,
             known_to=list(engine.seats) if public else [seat],
             revealed_to=list(engine.seats) if public else [],
@@ -1092,6 +1251,336 @@ class FixedCounterEventTriggerRuntimeTests(unittest.TestCase):
         self.assertEqual(land.ref, engine.state.stack[-1].context["card"])
         self.resolve_top(engine)
         self.assertEqual(1, source.counters.get("+1/+1"))
+
+    def test_zone_entry_counter_triggers_apply_typed_subject_relations(self):
+        session = self.session(120014)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="A",
+            name="Artifact Entry Counter Trigger Fixture",
+            ref="controlled-artifact-entry-source",
+            zone="battlefield",
+        )
+        program = self.register_trigger(engine, source)
+        opponent_artifact = self.add_card(
+            engine,
+            seat="B",
+            name="Sol Ring",
+            ref="opponent-entering-artifact",
+            zone="hand",
+        )
+        engine.move_card(
+            opponent_artifact.object_id,
+            "battlefield",
+            reason="opponent artifact entry",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertFalse(engine.state.stack)
+
+        controlled_artifact = self.add_card(
+            engine,
+            seat="A",
+            name="Sol Ring",
+            ref="controlled-entering-artifact",
+            zone="hand",
+        )
+        engine.move_card(
+            controlled_artifact.object_id,
+            "battlefield",
+            reason="controlled artifact entry",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertEqual(program.key, engine.state.stack[-1].semantic_key)
+        self.assertEqual(
+            controlled_artifact.ref,
+            engine.state.stack[-1].context["card"],
+        )
+        self.resolve_top(engine)
+        self.assertEqual(1, source.counters.get("charge"))
+
+        other_session = self.session(120015)
+        other_engine = other_session.engine
+        other_source = self.add_card(
+            other_engine,
+            seat="A",
+            name="Other Artifact Entry Counter Trigger Fixture",
+            ref="other-artifact-entry-source",
+            zone="hand",
+        )
+        other_program = self.register_trigger(other_engine, other_source)
+        other_engine.move_card(
+            other_source.object_id,
+            "battlefield",
+            reason="source artifact entry",
+            semantic_events=True,
+        )
+        other_engine._stabilize()
+        self.assertFalse(other_engine.state.stack)
+
+        unrelated = self.add_card(
+            other_engine,
+            seat="B",
+            name="Sol Ring",
+            ref="unrelated-entering-artifact",
+            zone="hand",
+        )
+        other_engine.move_card(
+            unrelated.object_id,
+            "battlefield",
+            reason="another artifact entry",
+            semantic_events=True,
+        )
+        other_engine._stabilize()
+        self.assertEqual(
+            other_program.key,
+            other_engine.state.stack[-1].semantic_key,
+        )
+        self.resolve_top(other_engine)
+        self.assertEqual(1, other_source.counters.get("charge"))
+
+    def test_creature_death_counter_trigger_uses_lki_subject_filters(self):
+        session = self.session(120016)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="A",
+            name="Creature Death Counter Trigger Fixture",
+            ref="death-counter-source",
+            zone="battlefield",
+        )
+        program = self.register_trigger(engine, source)
+
+        controlled_token = self.add_card(
+            engine,
+            seat="A",
+            name="Scute Swarm",
+            ref="controlled-death-token",
+            zone="battlefield",
+            is_token=True,
+        )
+        engine.move_card(
+            controlled_token.object_id,
+            "graveyard",
+            reason="controlled token death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertFalse(engine.state.stack)
+
+        opponent_creature = self.add_card(
+            engine,
+            seat="B",
+            name="Scute Swarm",
+            ref="opponent-death-creature",
+            zone="battlefield",
+        )
+        engine.move_card(
+            opponent_creature.object_id,
+            "graveyard",
+            reason="opponent creature death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertFalse(engine.state.stack)
+
+        controlled_creature = self.add_card(
+            engine,
+            seat="A",
+            name="Scute Swarm",
+            ref="controlled-death-creature",
+            zone="battlefield",
+        )
+        previous_identity = controlled_creature.logical_object_id
+        engine.move_card(
+            controlled_creature.object_id,
+            "graveyard",
+            reason="controlled creature death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        item = engine.state.stack[-1]
+        self.assertEqual(program.key, item.semantic_key)
+        self.assertEqual("creature.dies", item.context["event"])
+        self.assertEqual("A", item.context["previous_controller"])
+        self.assertEqual(previous_identity, item.context["card_object_identity"])
+        self.resolve_top(engine)
+        self.assertEqual(1, source.counters.get("+1/+1"))
+
+        engine.move_card(
+            source.object_id,
+            "graveyard",
+            reason="counter source death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertFalse(engine.state.stack)
+
+    def test_opponent_death_counter_trigger_uses_previous_controller(self):
+        session = self.session(120017, players=4)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="C",
+            name="Opponent Death Counter Trigger Fixture",
+            ref="opponent-death-counter-source",
+            zone="battlefield",
+        )
+        program = self.register_trigger(engine, source)
+        controlled = self.add_card(
+            engine,
+            seat="C",
+            name="Scute Swarm",
+            ref="same-controller-death-creature",
+            zone="battlefield",
+        )
+        engine.move_card(
+            controlled.object_id,
+            "graveyard",
+            reason="same-controller creature death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertFalse(engine.state.stack)
+
+        opponent = self.add_card(
+            engine,
+            seat="D",
+            name="Scute Swarm",
+            ref="different-controller-death-creature",
+            zone="battlefield",
+        )
+        engine.move_card(
+            opponent.object_id,
+            "graveyard",
+            reason="opponent creature death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertEqual(program.key, engine.state.stack[-1].semantic_key)
+        self.assertEqual(
+            "D",
+            engine.state.stack[-1].context["previous_controller"],
+        )
+        self.resolve_top(engine)
+        self.assertEqual(1, source.counters.get("+1/+1"))
+
+    def test_any_death_trigger_observes_opponents_and_its_own_lki(self):
+        session = self.session(120019, players=4)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="A",
+            name="Any Creature Death Counter Trigger Fixture",
+            ref="any-death-counter-source",
+            zone="battlefield",
+        )
+        program = self.register_trigger(engine, source)
+        opponent = self.add_card(
+            engine,
+            seat="D",
+            name="Scute Swarm",
+            ref="any-death-opponent-creature",
+            zone="battlefield",
+        )
+        engine.move_card(
+            opponent.object_id,
+            "graveyard",
+            reason="any-controller creature death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertEqual(program.key, engine.state.stack[-1].semantic_key)
+        self.assertEqual(
+            "D",
+            engine.state.stack[-1].context["previous_controller"],
+        )
+        self.resolve_top(engine)
+        self.assertEqual(1, source.counters.get("+1/+1"))
+
+        previous_identity = source.logical_object_id
+        engine.move_card(
+            source.object_id,
+            "graveyard",
+            reason="source creature death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertEqual(program.key, engine.state.stack[-1].semantic_key)
+        self.assertEqual(
+            previous_identity,
+            engine.state.stack[-1].context["card_object_identity"],
+        )
+        self.assertEqual(
+            "battlefield",
+            engine.state.stack[-1].context["source_zone"],
+        )
+
+    def test_death_counter_replacement_is_private_and_replays_exactly(self):
+        session = self.session(120018, players=4)
+        engine = session.engine
+        source = self.add_card(
+            engine,
+            seat="C",
+            name="Creature Death Counter Trigger Fixture",
+            ref="private-death-counter-source",
+            zone="battlefield",
+        )
+        self.add_card(
+            engine,
+            seat="C",
+            name="Doubling Season",
+            ref="private-death-doubling",
+            zone="battlefield",
+        )
+        self.add_card(
+            engine,
+            seat="C",
+            name="Doc Samson, Super Psychiatrist",
+            ref="private-death-addition",
+            zone="battlefield",
+        )
+        self.register_trigger(engine, source)
+        departed = self.add_card(
+            engine,
+            seat="C",
+            name="Scute Swarm",
+            ref="private-death-creature",
+            zone="battlefield",
+        )
+
+        engine.move_card(
+            departed.object_id,
+            "graveyard",
+            reason="private replacement death",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.resolve_top(engine)
+
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        projector = StateProjector(self.db, engine.state)
+        for seat in ("A", "B", "D"):
+            self.assertIsNone(projector._decision(f"pilot:{seat}"))
+        projected = projector._decision("pilot:C")
+        self.assertIsNotNone(projected)
+        self.assertNotIn(source.object_id, json.dumps(projected, sort_keys=True))
+
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        self.finish_replacements(session, "C")
+
+        self.assertIn(source.counters.get("+1/+1"), {3, 4})
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "death-counter-trigger-replay"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
 
     def test_scheduled_counter_trigger_suspends_for_quantity_replacement(self):
         session = self.session(120003)

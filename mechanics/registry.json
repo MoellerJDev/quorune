@@ -34,8 +34,8 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "14e0baa06d2896b476e9815a368cd16dc6938be2b4e5908ab200594657bf0aa5",
-      "version": 15
+      "sha256": "2d61f1169f1e27d3d4e7ab8979c60fc39a8263d8c7daaed52245b704a5443f46",
+      "version": 16
     },
     {
       "mechanic_id": "cr-111-tokens",
@@ -6927,12 +6927,12 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "14e0baa06d2896b476e9815a368cd16dc6938be2b4e5908ab200594657bf0aa5",
-      "contract_version": 15,
+      "contract_sha256": "2d61f1169f1e27d3d4e7ab8979c60fc39a8263d8c7daaed52245b704a5443f46",
+      "contract_version": 16,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v17",
+      "implementation_component": "closed fixed-counter single-target, same-kind multi-subject, normalized fixed counter zone-change trigger, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
+      "implementation_version": "counter-placement-transaction-v18",
       "kind": "rules_section",
       "known_blockers": [
         "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual; Amass X, zero, copied, granted, optional, repeated, conditional, modal, compound, and linked-result forms remain residual; variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions remain residual",
@@ -6940,7 +6940,8 @@
         "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Planeswalker or Battle token entry remains outside the prospective-token boundary",
         "Read Ahead and effective copied, gained, removed, or layer-modified Saga chapter abilities remain unsupported",
         "fractional, halving, dynamic-quantity, optional, Class-level-gated, movement, removal, prevention, and other enters-with-counter replacement families remain unsupported",
-        "counter type rules beyond existing power/toughness and loyalty consumers are incomplete"
+        "counter type rules beyond existing power/toughness and loyalty consumers are incomplete",
+        "subtype-qualified, characteristic-qualified, one-or-more aggregated, alternate-zone, combined-zone, granted, copied, and removed fixed counter zone-change triggers remain residual"
       ],
       "mechanic_id": "cr-122-counters",
       "official_name": "Counters",
@@ -7079,7 +7080,15 @@
         "test_sphinx_draws_before_counter_replacement_and_replays",
         "test_source_departure_skips_counter_but_preserves_draw",
         "test_stale_source_replacement_resume_rolls_back_choice",
-        "test_fixed_counter_controller_runtime_mutant_is_killed"
+        "test_fixed_counter_controller_runtime_mutant_is_killed",
+        "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "test_adjacent_event_and_effect_variants_remain_material",
+        "test_fixed_counter_event_trigger_dependencies_and_compiler_mutation_fail_closed",
+        "test_zone_entry_counter_triggers_apply_typed_subject_relations",
+        "test_creature_death_counter_trigger_uses_lki_subject_filters",
+        "test_opponent_death_counter_trigger_uses_previous_controller",
+        "test_any_death_trigger_observes_opponents_and_its_own_lki",
+        "test_death_counter_replacement_is_private_and_replays_exactly"
       ],
       "trust_level": "untrusted"
     },

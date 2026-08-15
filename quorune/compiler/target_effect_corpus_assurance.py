@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 
 
 ASSURANCE_SCHEMA_VERSION = 1
-ASSURANCE_ALGORITHM_VERSION = "fixed-target-corpus-assurance-v3"
+ASSURANCE_ALGORITHM_VERSION = "fixed-target-corpus-assurance-v4"
 STANDALONE_TEMPLATE_ID = (
     "fixed-target-characteristics-until-end-of-turn-v1"
 )
@@ -53,6 +53,11 @@ COMPOSING_TEMPLATE_IDS = frozenset(
         "fixed-counter-controller-life-gain-trigger-v1",
         "fixed-counter-controller-card-draw-trigger-v1",
         "fixed-counter-controller-second-draw-trigger-v1",
+        "fixed-counter-permanent-entry-trigger-v1",
+        "fixed-counter-artifact-entry-trigger-v1",
+        "fixed-counter-creature-entry-trigger-v1",
+        "fixed-counter-enchantment-entry-trigger-v1",
+        "fixed-counter-creature-death-trigger-v1",
     }
 )
 SUPPORTED_CONTEXTS = (
