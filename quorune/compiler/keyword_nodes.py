@@ -31,6 +31,7 @@ from ..modular import MODULAR_MECHANIC_ID, ModularSpec
 from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
 from .echo_nodes import fixed_mana_echo_node
 from .crew_nodes import ordinary_crew_keyword_node
+from .station_nodes import ordinary_station_keyword_node
 from .cycling_nodes import ordinary_cycling_keyword_node
 from .counter_keyword_activation_nodes import (
     fixed_counter_keyword_activation_node,
@@ -279,6 +280,7 @@ def closed_special_keyword_node(
         ordinary_convoke_keyword_node,
         ordinary_affinity_keyword_node,
         ordinary_crew_keyword_node,
+        ordinary_station_keyword_node,
         ordinary_cycling_keyword_node,
         fixed_mana_cumulative_upkeep_node,
         fixed_mana_echo_node,

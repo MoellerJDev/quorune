@@ -81,3 +81,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0064 — context-aware card-identity guard](0064-context-aware-card-identity-guard.md)
 - [ADR 0065 — typed self-regeneration](0065-typed-self-regeneration.md)
 - [ADR 0066 — metadata-only CI certification reuse](0066-metadata-only-ci-certification-reuse.md)
+- [ADR 0067 — typed ordinary Station activation](0067-typed-ordinary-station-activation.md)

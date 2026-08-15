@@ -733,6 +733,40 @@
         "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
         "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0034",
+      "adr": "docs/adr/0067-typed-ordinary-station-activation.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "4c2f46124b03e3c1b497af0b81a65b91be5c26f5d534f49be0e68f88fd97eb48",
+      "exact_allowance": "Only the schema-4 structural state-write identities, owner classifications, zero prohibited runtime Oracle-text and card-identity dispatch counts, engine methods, size ceilings, Oracle-ID literals, legacy helpers, module classifications, and the reviewed station operation serialized after typed ordinary Station activation.",
+      "rationale": "The selector-chosen family adds one closed Station semantic operation and one read-only rules activation owner while keeping CommanderEngine, direct GameState writes, oversized symbols, Oracle-ID literals, runtime Oracle prose, and card-identity dispatch flat. Its strict handler emits the existing counter-placement intent; canonical tap, zone-transition LKI, counter replacement, rollback, replay, and mutation owners retain authority.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact residual identities and counts in the rebound schema-4 baseline plus station, generic.station-counter-placement.v1, ordinary-station-activation-v1, and counter.producer.station described by ADR 0067; new runtime Oracle interpretation, card-identity dispatch, unowned mutation, engine-local writes, oversized symbols, arbitrary callbacks, Station-specific ability-presence checks, unsupported dynamic-characteristic cases, or additional unreviewed operations remain forbidden.",
+      "removal_condition": "Remove the exception when the registered universal-operation inventory no longer requires baseline review; retain the ordinary Station owner only while exact grammar, source and cost identity, timing, current and last-known power, replacement ordering, rollback, privacy, mutation, and replay evidence remain enforced.",
+      "target_milestone": "capability-closed broad compiler harvest through typed universal rules owners",
+      "replay_implications": "The compiler-pinned activation descriptor and stack context record the cost creature's physical and logical identity; exact replay derives the same current or predeparture power and follows the existing replacement-selection continuation without a historical prose parser.",
+      "privacy_implications": "Station candidates and the chosen creature are public battlefield objects; capability and action projection remain seat scoped, and no hidden-zone identity, raw capability payload, or opposing private data is added.",
+      "security_implications": "Only a capability-closed source-spanned CardProgram can expose the strict activation and operation; malformed descriptors, stale source or cost incarnations, invalid control or tap state, unresolved power, unsupported type change, and replacement-selection tampering fail before mutation.",
+      "tests": [
+        "tests.test_station_rules.StationModelTests.test_ordinary_station_descriptor_is_strict_and_round_trips",
+        "tests.test_station_rules.StationCompilerTests.test_ordinary_station_compiles_source_spanned_activation",
+        "tests.test_station_rules.StationCompilerTests.test_generated_station_program_is_capability_closed",
+        "tests.test_station_rules.StationCompilerTests.test_unsupported_station_families_remain_precise_residuals",
+        "tests.test_station_rules.StationCompilerTests.test_station_dependency_mutation_fails_closed",
+        "tests.test_station_rules.StationCompilerTests.test_station_compiler_mutant_is_killed",
+        "tests.test_station_rules.StationRuntimeTests.test_station_taps_exact_creature_and_places_current_power",
+        "tests.test_station_rules.StationRuntimeTests.test_station_is_available_only_at_sorcery_timing",
+        "tests.test_station_rules.StationRuntimeTests.test_station_rejects_invalid_cost_objects_and_rolls_back",
+        "tests.test_station_rules.StationRuntimeTests.test_unresolved_station_power_fails_closed",
+        "tests.test_station_rules.StationRuntimeTests.test_station_uses_resolution_and_last_known_power",
+        "tests.test_station_rules.StationRuntimeTests.test_station_source_departure_skips_returned_object",
+        "tests.test_station_rules.StationRuntimeTests.test_current_effective_station_ability_query_hides_removed_activation",
+        "tests.test_station_rules.StationRuntimeTests.test_station_lki_capture_rolls_back_before_zone_mutation",
+        "tests.test_station_rules.StationRuntimeTests.test_station_quantity_replacement_suspends_and_replays",
+        "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
+      ]
     }
   ]
 }

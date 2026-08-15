@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "ac98631289110971781ce492aabcdd8c3242dc2e",
+  "baseline_commit": "8ecf1db979fc2a861ae66c291a7ef8662bcb95f8",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -1677,9 +1677,9 @@
     "physical_lines": 7811
   },
   "exception_binding": {
-    "adr": "docs/adr/0065-typed-self-regeneration.md",
-    "allowance_fingerprint": "590b1c4333432526dcc91ef47b92c7a18974d0db497f2a9f7e58e2877f8c43e1",
-    "exception_id": "ARCH-EXC-0033"
+    "adr": "docs/adr/0067-typed-ordinary-station-activation.md",
+    "allowance_fingerprint": "4c2f46124b03e3c1b497af0b81a65b91be5c26f5d534f49be0e68f88fd97eb48",
+    "exception_id": "ARCH-EXC-0034"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -2028,6 +2028,7 @@
     "shuffle_graveyard_bottom_random",
     "shuffle_into_library",
     "springheart_landfall",
+    "station",
     "sylvan_library_settle",
     "tap",
     "transmute_artifact",

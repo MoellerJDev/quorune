@@ -8,7 +8,9 @@ from ..attachment_references import (
     AttachmentReferenceSpec,
     resolve_source_attachment,
 )
+from ..station import StationAbilityError, station_resolution_power
 
+from .context import SemanticNodeError
 from .explore import explore_source_controller
 
 
@@ -122,6 +124,11 @@ def resolve_semantic_value(
         return item.x_value or 0
     if value == "$turn_sequence":
         return host.state.turn_sequence
+    if value == "$station.power":
+        try:
+            return station_resolution_power(host, item)
+        except StationAbilityError as exc:
+            raise SemanticNodeError(str(exc)) from exc
     if value.startswith("$context."):
         return item.context.get(value.removeprefix("$context."))
     if value == "$targets":

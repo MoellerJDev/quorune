@@ -1,5 +1,5 @@
 {
-  "contract_count": 107,
+  "contract_count": 108,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -564,6 +564,12 @@
       "path": "mechanics/contracts/state-based-actions.json",
       "sha256": "b4cb21bdae1057deeb85e252ffb4b1dd5fb9f19fd38e4b56abace19c33bc6c9e",
       "version": 9
+    },
+    {
+      "mechanic_id": "station",
+      "path": "mechanics/contracts/station.json",
+      "sha256": "b3337db98d3c02eeda232c801e5e8ec12678f3cbc1302b33cd36cee7ef4daf0f",
+      "version": 1
     },
     {
       "mechanic_id": "sunburst",
@@ -4403,19 +4409,49 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/station.json",
+      "contract_sha256": "b3337db98d3c02eeda232c801e5e8ec12678f3cbc1302b33cd36cee7ef4daf0f",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "OrdinaryStationAbilitySpec, StationCostPlan, StationPowerReference, OrdinaryStationAbilityHandler, current activation query/commit, rollback-safe zone-transition LKI, tap-state owner, and canonical counter-placement owner",
+      "implementation_version": "typed-ordinary-station-activation-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Station symbol threshold and characteristic behavior from CR 721",
+        "Tapestry Warden and other CR 702.184c characteristic substitutions",
+        "cost-creature phasing before resolution",
+        "type-changing interactions that remove creature power before resolution",
+        "unresolved or nonintegral power",
+        "alternative or additional Station costs",
+        "counter prevention or movement",
+        "granted, copied, removed, and text-changing Station outside the current typed activated-ability query",
+        "aggregate Station coverage remains incomplete"
+      ],
       "mechanic_id": "station",
       "official_name": "Station",
       "rule_references": [
         "702.184"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_ordinary_station_descriptor_is_strict_and_round_trips",
+        "test_ordinary_station_compiles_source_spanned_activation",
+        "test_generated_station_program_is_capability_closed",
+        "test_unsupported_station_families_remain_precise_residuals",
+        "test_station_dependency_mutation_fails_closed",
+        "test_station_compiler_mutant_is_killed",
+        "test_station_taps_exact_creature_and_places_current_power",
+        "test_station_is_available_only_at_sorcery_timing",
+        "test_station_rejects_invalid_cost_objects_and_rolls_back",
+        "test_unresolved_station_power_fails_closed",
+        "test_station_uses_resolution_and_last_known_power",
+        "test_station_source_departure_skips_returned_object",
+        "test_current_effective_station_ability_query_hides_removed_activation",
+        "test_station_lki_capture_rolls_back_before_zone_mutation",
+        "test_station_quantity_replacement_suspends_and_replays"
+      ],
       "trust_level": "untrusted"
     },
     {

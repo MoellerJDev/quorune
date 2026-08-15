@@ -5,6 +5,11 @@ from typing import Any, Protocol
 from ...abilities import ActivatedAbility, reduced_requirements
 from ...crew import available_crew_power
 from ...haste import summoning_sickness_prohibits_tap_or_untap_cost
+from ...station import (
+    StationAbilityError,
+    station_candidates,
+    station_cost_choice,
+)
 from ...semantic_runtime.activation_restrictions import (
     nonmana_activation_prohibited_by_chosen_name,
 )
@@ -73,7 +78,17 @@ def activation_availability(
         return "unpayable", "insufficient_life"
     if ability.energy_payment and player.energy < ability.energy_payment:
         return "unpayable", "insufficient_energy"
-    if ability.choices and not host._ability_choice_payable(seat, card, ability):
+    station_choice = station_cost_choice(ability)
+    if station_choice is not None:
+        try:
+            candidates = station_candidates(host, seat, card)
+        except StationAbilityError:
+            return "unresolved", "unresolved_station_power"
+        if not candidates:
+            return "unpayable", "station_cost_object_unavailable"
+    elif ability.choices and not host._ability_choice_payable(
+        seat, card, ability
+    ):
         return "unpayable", "mandatory_cost_object_unavailable"
     crew_threshold = host._crew_threshold(ability)
     if crew_threshold is not None and available_crew_power(

@@ -31,6 +31,12 @@ from ...activation_usage import (
 )
 from ...model import StackItem, YieldPolicy
 from ...replacement.immutable import thaw_value
+from ...station import (
+    STATION_CONTEXT_KEY,
+    StationAbilityError,
+    pay_station_cost,
+    station_cost_choice,
+)
 from ...tap_state import set_permanent_tapped
 from ...trigger_processing import collect_ward_occurrences
 from ..action_proposals import ActivationProposal, thaw_json
@@ -280,17 +286,31 @@ def _pay_object_and_mana_costs(
     list[str],
     list[dict[str, Any]],
     dict[str, int],
-    Mapping[str, Any] | None,
+    tuple[str, Mapping[str, Any]] | None,
 ]:
     if host._crew_threshold(ability) is not None:
         paid_objects, crew_context = host._pay_crew_cost(
             proposal.seat, source, ability, response
         )
+        special_cost_context = ("crew", crew_context)
+    elif station_cost_choice(ability) is not None:
+        try:
+            paid_objects, station_context = pay_station_cost(
+                host,
+                seat=proposal.seat,
+                source=source,
+                response=response,
+            )
+        except StationAbilityError as exc:
+            raise ActivationProposalError(
+                str(exc), reason="station_cost_unpayable"
+            ) from exc
+        special_cost_context = (STATION_CONTEXT_KEY, station_context)
     else:
         paid_objects = host._pay_ability_choice_costs(
             proposal.seat, source, ability, response
         )
-        crew_context = None
+        special_cost_context = None
     requirements = dict(thaw_json(proposal.requirements))
     spent: dict[str, int] = {}
     activations: list[dict[str, Any]] = []
@@ -306,7 +326,7 @@ def _pay_object_and_mana_costs(
                 "artifact_ability" if "artifact" in source_types else "ability"
             ),
         )
-    return paid_objects, activations, spent, crew_context
+    return paid_objects, activations, spent, special_cost_context
 
 
 def _commit_source_cost(
@@ -376,7 +396,7 @@ def _activation_stack_item(
     response: Mapping[str, Any],
     paid_objects: Sequence[str],
     attachment_snapshot: SourceAttachmentSnapshot | None,
-    crew_context: Mapping[str, Any] | None,
+    special_cost_context: tuple[str, Mapping[str, Any]] | None,
 ) -> StackItem:
     details = dict(thaw_json(proposal.details))
     snapshots = [
@@ -430,9 +450,11 @@ def _activation_stack_item(
             "cost_object_snapshots": snapshots,
             **(
                 {
-                    "crew": thaw_value(crew_context)
+                    special_cost_context[0]: thaw_value(
+                        special_cost_context[1]
+                    )
                 }
-                if crew_context is not None
+                if special_cost_context is not None
                 else {}
             ),
             "cost_mana_value_plus_one": (
@@ -470,8 +492,10 @@ def commit_activation(
     if not ability.mana_ability:
         clear_mana_undo_stack(host.state.players[proposal.seat].stats)
     _commit_symbol_costs(host, proposal, source, ability)
-    paid_objects, activations, spent, crew_context = _pay_object_and_mana_costs(
-        host, proposal, source, ability, response
+    paid_objects, activations, spent, special_cost_context = (
+        _pay_object_and_mana_costs(
+            host, proposal, source, ability, response
+        )
     )
     _commit_resource_costs(host, proposal, source, ability, response)
     try:
@@ -513,7 +537,7 @@ def commit_activation(
         response,
         paid_objects,
         attachment_snapshot,
-        crew_context,
+        special_cost_context,
     )
     host.state.stack.append(item)
     collect_ward_occurrences(host, item)

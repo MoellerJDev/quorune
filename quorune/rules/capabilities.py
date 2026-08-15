@@ -12,6 +12,7 @@ from .counter_capability_shapes import (
     fixed_counter_placement_group_node_capabilities,
 )
 from .crew_capability_shapes import ordinary_crew_node_capabilities
+from .station_capability_shapes import ordinary_station_node_capabilities
 from .graveyard_card_targets import (
     targeted_own_graveyard_return_node_capabilities,
 )
@@ -124,6 +125,7 @@ _MODULAR_MECHANIC = "modular"
 _EXHAUST_MECHANIC = "exhaust"
 _CYCLING_MECHANIC = "cycling"
 _CREW_MECHANIC = "crew"
+_STATION_MECHANIC = "station"
 _EVOLVE_MECHANIC = "evolve"
 _PROWESS_MECHANIC = "prowess"
 _PERSIST_MECHANIC = "persist"
@@ -152,6 +154,7 @@ _FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC = (
 MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _CYCLING_MECHANIC: ("activation.cycling.hand",),
     _CREW_MECHANIC: ("activation.crew.fixed_power",),
+    _STATION_MECHANIC: ("counter.producer.station",),
     _EVOLVE_MECHANIC: ("counter.producer.evolve",),
     _PROWESS_MECHANIC: ("trigger.keyword.prowess",),
     _PERSIST_MECHANIC: ("counter.producer.persist",),
@@ -270,6 +273,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         "bolster",
         _ECHO_MECHANIC,
         _CREW_MECHANIC,
+        _STATION_MECHANIC,
     }
 )
 _CAPABILITY_ID = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$")
@@ -955,6 +959,14 @@ def capability_dependencies_for_node(
     )
     dependencies.update(
         ordinary_crew_node_capabilities(
+            effects=effects,
+            target_schema=target_schema,
+            mechanic_ids=mechanics,
+            cost_schema=cost_schema,
+        )
+    )
+    dependencies.update(
+        ordinary_station_node_capabilities(
             effects=effects,
             target_schema=target_schema,
             mechanic_ids=mechanics,

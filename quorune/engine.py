@@ -1131,7 +1131,7 @@ class CommanderEngine(
         replacement_selections: Sequence[str | None | Mapping[str, Any]] = (),
         prepared_replacement: PreparedZoneChange | None = None,
         transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY,
-        _relative_power_lki_prepared: bool = False,
+        _characteristic_lki_prepared: bool = False,
     ) -> CardInstance:
         """Compatibility facade for the canonical zone-transition owner."""
 
@@ -1155,7 +1155,7 @@ class CommanderEngine(
             replacement_selections=replacement_selections,
             prepared_replacement=prepared_replacement,
             transition_kind=transition_kind,
-            relative_power_lki_prepared=_relative_power_lki_prepared,
+            characteristic_lki_prepared=_characteristic_lki_prepared,
         )
 
     @staticmethod

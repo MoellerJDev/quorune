@@ -7,6 +7,7 @@ from typing import Any, Protocol
 from ...abilities import ActivatedAbility, choose_ability, reduced_requirements
 from ...haste import summoning_sickness_prohibits_tap_or_untap_cost
 from ...replacement.immutable import thaw_value
+from ...station import station_candidates, station_cost_choice
 from ..action_proposals import ActionOffer, ActivationProposal, freeze_json
 from .model import (
     ActivationProposalError,
@@ -388,6 +389,19 @@ def build_activation_offer(
                 "legal_refs": [
                     candidate.ref
                     for candidate in host._crew_candidates(seat, source)
+                ],
+            }
+        ]
+    if station_cost_choice(selected) is not None:
+        hint["choose_cost"] = [
+            {
+                "k": "station",
+                "z": "battlefield",
+                "minimum": 1,
+                "maximum": 1,
+                "legal_refs": [
+                    candidate.ref
+                    for candidate in station_candidates(host, seat, source)
                 ],
             }
         ]

@@ -189,6 +189,19 @@ battlefield source result is pinned to the activating incarnation; Reinforce
 and Scavenge revalidate their creature target. Variable Reinforce and dynamic-
 power Scavenge remain outside trust.
 
+Ordinary printed Station uses the same transaction for its charge-counter
+result. One typed activation owner advertises and commits exactly one other
+untapped controlled creature, pins that creature's physical and logical
+identity on the stack, and reads its exact current power only as the ability
+resolves. The zone-transition owner captures immediate predeparture power as
+rollback-safe last-known information; negative power produces zero counters,
+and a departed or returned Station source is not affected. Sorcery timing,
+summoning-sick cost creatures, quantity replacement, multiplayer choice
+privacy, and exact replay remain ordinary shared-owner behavior. CR 721 Station
+symbols, CR 702.184c characteristic substitution, cost-creature phasing, and
+type changes that remove creature power before resolution remain explicit
+fail-closed boundaries.
+
 Mandatory fixed counter effects on represented trigger families enter through
 the same `place_counters` operations. The compiler binds closed upkeep,
 end-step, and beginning-combat schedules; controlled-land entries; controller
@@ -645,6 +658,9 @@ choice, subtype-duration, privacy, rollback, and replay coverage in
 all-counter removal compiler, target, partial-result, strict result-shape,
 rollback, Siege, multiplayer replay, and mutation evidence is isolated in
 `test_fixed_counter_removal_effects.py`.
+Ordinary Station compiler, cost, timing, resolution-characteristic, departure
+LKI, source-incarnation, replacement, rollback, multiplayer privacy, replay,
+and mutation evidence is isolated in `test_station_rules.py`.
 Damage-result placement,
 removal, no-rediscovery, rollback, and focused owner-mutation evidence is in
 `test_damage_result_events.py`; the standalone exact-removal transaction is in
