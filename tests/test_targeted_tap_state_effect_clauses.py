@@ -195,7 +195,6 @@ class TargetedTapStateCompilerTests(unittest.TestCase):
             "Tap up to two target creatures.",
             "Tap or untap target creature.",
             "You may tap target creature.",
-            "Tap target creature. Scry 1.",
             "Tap target creature an opponent controls.",
             "Untap all creatures you control.",
             "Untap another target permanent.",

@@ -58,6 +58,16 @@ order. Each clause reuses its existing typed owner; the sequence adds only the
 immutable ordering and continuation boundary. Optional, modal, conditional,
 variable, linked, repeated, and larger instruction families remain residual.
 
+`compiler/fixed_effect_clause_sequences.py` owns the general closed
+two-sentence composition boundary. It accepts exactly two top-level,
+period-separated, mandatory clauses when each clause independently lowers to
+one effect through an existing reviewed atomic owner and the pair contains at
+most one direct target schema. The composed node preserves printed order and
+the exact union of both component capabilities across spell, triggered, and
+activated contexts. Optional, modal, conditional, linked-result, pronoun,
+variable, repeated, multi-target, quoted-boundary, parenthetical-boundary, and
+larger sequences remain source-spanned residuals.
+
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,
 then requires the source grammar, emitted effects, target relation, closed
