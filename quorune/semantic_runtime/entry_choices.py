@@ -8,7 +8,9 @@ from ..replacement_effects import (
     GrantAffectedObjectKeyword,
     ReplacementClass,
     ReplacementEffect,
+    SetField,
 )
+from ..read_ahead import READ_AHEAD_ENTRY_HANDLER_ID
 from ..riot import RIOT_ENTRY_HANDLER_ID
 from .component_registry import exact_fields
 from .context import SemanticNodeError
@@ -150,4 +152,155 @@ class RiotEntryChoiceHandler:
         )
 
 
-__all__ = ["RiotEntryChoiceHandler", "RiotEntryChoiceNode"]
+@dataclass(frozen=True, slots=True)
+class ReadAheadEntryChoiceNode:
+    chapter_numbers: tuple[int, ...]
+    counter_name: str
+    rule_id: str
+
+    def __post_init__(self) -> None:
+        chapters = tuple(self.chapter_numbers)
+        if (
+            not chapters
+            or any(type(value) is not int or value < 1 for value in chapters)
+            or chapters != tuple(range(1, chapters[-1] + 1))
+        ):
+            raise SemanticNodeError(
+                "Read Ahead requires contiguous positive chapter numbers"
+            )
+        if self.counter_name != "lore":
+            raise SemanticNodeError("Read Ahead requires lore counters")
+        if self.rule_id != "714.3b":
+            raise SemanticNodeError("Read Ahead rule identity changed")
+        object.__setattr__(self, "chapter_numbers", chapters)
+
+
+@dataclass(frozen=True, slots=True)
+class ReadAheadEntryChoiceHandler:
+    handler_id: str = READ_AHEAD_ENTRY_HANDLER_ID
+    schema_version: int = 1
+    family: str = "replacement.zone.read-ahead-entry-choice"
+    event: str = "zone.change"
+    rule_references: tuple[str, ...] = (
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.155",
+        "702.155a",
+        "702.155b",
+        "702.155c",
+        "714.2b",
+        "714.2d",
+        "714.3b",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "counter.producer.saga_lore",
+        "state_based.saga_final_chapter",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> ReadAheadEntryChoiceNode:
+        exact_fields(
+            descriptor,
+            {
+                "handler_id",
+                "schema_version",
+                "event",
+                "chapter_numbers",
+                "counter_name",
+                "rule_id",
+            },
+            field="Read Ahead entry choice",
+        )
+        if descriptor["handler_id"] != self.handler_id:
+            raise SemanticNodeError("Read Ahead entry handler identity changed")
+        if descriptor["schema_version"] != self.schema_version:
+            raise SemanticNodeError(
+                "Unsupported Read Ahead entry schema version"
+            )
+        if descriptor["event"] != self.event:
+            raise SemanticNodeError("Read Ahead must handle a zone change")
+        raw_chapters = descriptor["chapter_numbers"]
+        if not isinstance(raw_chapters, (list, tuple)):
+            raise SemanticNodeError(
+                "Read Ahead chapter numbers must be an array"
+            )
+        return ReadAheadEntryChoiceNode(
+            chapter_numbers=tuple(raw_chapters),
+            counter_name=descriptor["counter_name"],
+            rule_id=descriptor["rule_id"],
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: ZoneChangeReplacementContext,
+    ) -> tuple[ZoneDestinationIntent, ...]:
+        self.validate(descriptor)
+        return ()
+
+    def subject_replacement_effects(
+        self,
+        descriptor: Mapping[str, Any],
+        *,
+        subject: ZoneChangeSubjectSnapshot,
+        component_id: str,
+    ) -> tuple[ReplacementEffect, ...]:
+        node = self.validate(descriptor)
+        if subject.destination_controller is None:
+            raise SemanticNodeError(
+                "Read Ahead battlefield entry requires a controller"
+            )
+        if not subject.is_card_object:
+            raise SemanticNodeError(
+                "Read Ahead copied tokens are outside the represented boundary"
+            )
+        if "saga" not in subject.object_types:
+            raise SemanticNodeError("Read Ahead requires a Saga object")
+        if not component_id:
+            raise SemanticNodeError(
+                "Read Ahead requires stable component identity"
+            )
+        source_ref = f"rule:{node.rule_id}:{subject.object_ref}"
+        return tuple(
+            ReplacementEffect(
+                effect_id=(
+                    f"{self.handler_id}:{subject.object_ref}:"
+                    f"{component_id}:chapter:{chapter}"
+                ),
+                source_id=source_ref,
+                event_kind=self.event,
+                replacement_class=ReplacementClass.SELF_REPLACEMENT,
+                conditions={
+                    "destination": {"eq": "battlefield"},
+                    "object_ref": {"eq": subject.object_ref},
+                    "object_types": {"contains": "saga"},
+                    "read_ahead_chapter": {"eq": None},
+                },
+                operations=(
+                    SetField("read_ahead_chapter", chapter),
+                    CreateAffectedObjectCounter(
+                        counter_name=node.counter_name,
+                        amount=chapter,
+                        placing_player=subject.destination_controller,
+                        source_ref=source_ref,
+                        sequence=0,
+                    ),
+                ),
+                label=(
+                    f"{subject.object_ref}: read ahead to chapter {chapter}"
+                ),
+            )
+            for chapter in node.chapter_numbers
+        )
+
+
+__all__ = [
+    "ReadAheadEntryChoiceHandler",
+    "ReadAheadEntryChoiceNode",
+    "RiotEntryChoiceHandler",
+    "RiotEntryChoiceNode",
+]

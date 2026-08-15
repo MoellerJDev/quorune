@@ -141,6 +141,7 @@ def intrinsic_entry_counters(
     card_types: Sequence[str],
     card_subtypes: Sequence[str] = (),
     keywords: Sequence[str] = (),
+    read_ahead_supported: bool = False,
 ) -> tuple[IntrinsicEntryCounter, ...]:
     """Return closed rules-derived battlefield entry-counter instructions."""
 
@@ -182,6 +183,8 @@ def intrinsic_entry_counters(
         )
     if "saga" in subtypes:
         if "read ahead" in normalized_keywords:
+            if read_ahead_supported:
+                return tuple(counters)
             raise EntryCounterError(
                 "Read Ahead Saga entry requires its unrepresented chapter "
                 "number choice"

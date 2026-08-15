@@ -18,11 +18,13 @@ from quorune.counter_placement import (
 )
 from quorune.deck import DeckLoader
 from quorune.engine import TURN_STEPS
+from quorune.errors import GameRuleError
 from quorune.entry_counter_model import (
     EntryCounterError,
     intrinsic_entry_counters,
 )
 from quorune.model import CardInstance, StackItem
+from quorune.oracle_ir import generated_programs
 from quorune.projection import StateProjector
 from quorune.record import (
     authoritative_state_hash,
@@ -57,6 +59,9 @@ from quorune.saga_progression import (
 )
 from quorune.state_based_actions import evaluate_state_based_actions
 from quorune.semantic_runtime import prepare_zone_change_replacement_batch
+from quorune.semantic_runtime.entry_choices import (
+    ReadAheadEntryChoiceHandler,
+)
 from quorune.semantics import SemanticProgram
 from quorune.trigger_processing import enqueue_trigger_batch
 
@@ -75,6 +80,10 @@ class SagaCounterProgressionTests(unittest.TestCase):
                 / "tests"
                 / "fixtures"
                 / "counter-replacement-cards.json",
+                ROOT
+                / "tests"
+                / "fixtures"
+                / "read-ahead-saga-cards.json",
             ],
             database,
         )
@@ -183,6 +192,122 @@ class SagaCounterProgressionTests(unittest.TestCase):
         if zone in engine.state.players[seat].zones:
             engine.state.players[seat].zones[zone].append(card.object_id)
         return card
+
+    def add_read_ahead_card(
+        self,
+        engine,
+        *,
+        seat: str,
+        ref: str,
+        zone: str = "stack",
+        controller: str | None = None,
+        object_kind: str = "card",
+    ) -> CardInstance:
+        record = self.db.lookup("Love Song of Night and Day")
+        card = CardInstance(
+            object_id=f"fixture:{ref}",
+            ref=ref,
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner=seat,
+            controller=controller or seat,
+            zone=zone,
+            object_kind=object_kind,
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+        )
+        engine.state.cards[card.object_id] = card
+        if zone in engine.state.players[seat].zones:
+            engine.state.players[seat].zones[zone].append(card.object_id)
+        return card
+
+    def register_read_ahead(
+        self,
+        engine,
+        card: CardInstance,
+        *,
+        include_chapters: bool = True,
+    ) -> SemanticProgram:
+        record = self.db.by_oracle_id(card.oracle_id)
+        programs = [
+            program
+            for program in generated_programs(
+                self.db,
+                record,
+                trust_level="trusted",
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+            )
+            if program.provenance.get("template_id")
+            == "read-ahead-saga-entry-choice-v1"
+        ]
+        self.assertEqual(1, len(programs))
+        handler_program = programs[0]
+        engine.semantics.put(handler_program)
+        if include_chapters:
+            for chapter in (1, 2, 3):
+                engine.semantics.put(
+                    SemanticProgram(
+                        key=f"test:read-ahead:chapter:{chapter}",
+                        label=(
+                            "Love Song of Night and Day "
+                            f"chapter {chapter}"
+                        ),
+                        oracle_id=record.oracle_id,
+                        ability_id=f"trigger:front:chapter-{chapter}",
+                        active_zone="battlefield",
+                        event=f"saga.chapter.{chapter}",
+                        trust_level="trusted",
+                        provenance={
+                            **handler_program.provenance,
+                            "authored_by": "read-ahead-test-boundary",
+                            "review_status": "reviewed",
+                            "face_id": "front",
+                        },
+                        tests=[
+                            "test_read_ahead_choice_is_private_and_replays_exactly"
+                        ],
+                        coverage=["saga_chapter", "test_boundary"],
+                    )
+                )
+        return handler_program
+
+    @staticmethod
+    def begin_read_ahead_entry(session, card: CardInstance) -> None:
+        engine = session.engine
+        item = StackItem(
+            stack_id=f"stack:{card.ref}",
+            ref=f"S-{card.ref}",
+            kind="spell",
+            controller=card.controller,
+            label=card.printed_name,
+            card_object_id=card.object_id,
+            default_destination="battlefield",
+            visibility=list(engine.seats),
+        )
+        engine.state.stack.append(item)
+        engine._continue_resolution(
+            stack_ref=item.ref,
+            effects=[],
+            destination=None,
+            note="Read Ahead entry fixture",
+        )
+
+    @staticmethod
+    def replacement_options(session, seat: str):
+        decision = StateProjector(session.engine.card_db, session.state)._decision(
+            f"pilot:{seat}"
+        )
+        return decision, [
+            option["id"] for option in decision["ctx"]["options"]
+        ]
+
+    def choose_replacement(self, session, seat: str, selection: str) -> None:
+        result = session.act(
+            f"pilot:{seat}",
+            {"action_id": "choose", "choices": {"replacement": selection}},
+        )
+        self.assertTrue(result.ok, result.summary)
 
     def stage_competing_sources(self, engine, *, seat: str) -> None:
         prefix = seat.casefold()
@@ -306,9 +431,18 @@ class SagaCounterProgressionTests(unittest.TestCase):
         )
 
     def test_read_ahead_and_untrusted_chapters_fail_closed(self):
+        record = self.db.lookup("Love Song of Night and Day")
+        malformed = replace(
+            record,
+            oracle_text="\n".join(
+                line
+                for line in record.oracle_text.splitlines()
+                if not line.startswith("II ")
+            ),
+        )
         program = compile_card_program(
             self.db,
-            self.saga_record(read_ahead=True),
+            malformed,
             capability_registry=self.capabilities,
             capability_profile="commander_review",
             trust_level="provisional",
@@ -316,17 +450,14 @@ class SagaCounterProgressionTests(unittest.TestCase):
         residual = next(
             value
             for value in program.residuals
-            if value["kind"] == "card_form_rule"
+            if value["text"].startswith("Read ahead")
         )
         self.assertTrue(residual["material"])
-        self.assertEqual(
-            [
-                "counter.producer.saga_lore",
-                "state_based.saga_final_chapter",
-            ],
+        self.assertIn(
+            "mechanic:read-ahead-unrepresented-final-chapter",
             residual["blockers"],
         )
-        self.assertIn("Read Ahead", residual["reason"])
+        self.assertIn("contiguous chapter symbols", residual["reason"])
 
         session = self.session(7143001)
         engine = session.engine
@@ -350,6 +481,238 @@ class SagaCounterProgressionTests(unittest.TestCase):
                 card_types=("enchantment",),
                 card_subtypes=("saga",),
                 keywords=("Read Ahead",),
+            )
+
+    def test_read_ahead_compiles_one_exact_source_pinned_choice(self):
+        record = self.db.lookup("Love Song of Night and Day")
+        program = compile_card_program(
+            self.db,
+            record,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            trust_level="provisional",
+        )
+        ability = next(
+            value
+            for value in program.to_dict()["abilities"]
+            if value["runtime"]["provenance"].get("template_id")
+            == "read-ahead-saga-entry-choice-v1"
+        )
+        self.assertEqual(
+            [
+                "counter.producer.saga_lore",
+                "state_based.saga_final_chapter",
+            ],
+            ability["capability_dependencies"],
+        )
+        self.assertEqual(
+            [1, 2, 3],
+            ability["runtime"]["handlers"][0]["chapter_numbers"],
+        )
+        self.assertEqual(
+            {"line": 1, "start": 0, "end": len(record.oracle_text.splitlines()[0])},
+            ability["source_span"],
+        )
+        self.assertFalse(
+            any(
+                value["kind"] == "card_form_rule"
+                for value in program.residuals
+            )
+        )
+
+        raw = json.loads(
+            (ROOT / "quorune" / "rules" / "capability-registry.json")
+            .read_text(encoding="utf-8")
+        )
+        dependency = next(
+            value
+            for value in raw["capabilities"]
+            if value["id"] == "counter.placement.quantity_replacement"
+        )
+        dependency["status"] = "blocked"
+        dependency["blockers"] = ["test mutation"]
+        registry = CapabilityRegistry(raw)
+        registry.mark_evidence_verified("0" * 64)
+        blocked = compile_card_program(
+            self.db,
+            record,
+            capability_registry=registry,
+            capability_profile="commander_review",
+            trust_level="provisional",
+        )
+        read_ahead_residual = next(
+            value
+            for value in blocked.residuals
+            if value["text"].startswith("Read ahead")
+        )
+        self.assertTrue(
+            any(
+                "counter.placement.quantity_replacement" in blocker
+                for blocker in read_ahead_residual["blockers"]
+            )
+        )
+
+    def test_read_ahead_choice_is_private_and_replays_exactly(self):
+        session = self.session(7143030, players=4)
+        engine = session.engine
+        card = self.add_read_ahead_card(
+            engine,
+            seat="A",
+            controller="C",
+            ref="read-ahead-private",
+        )
+        self.register_read_ahead(engine, card)
+        self.begin_read_ahead_entry(session, card)
+
+        self.assertIsNone(
+            StateProjector(self.db, engine.state)._decision("pilot:A")
+        )
+        projected, options = self.replacement_options(session, "C")
+        self.assertIsNotNone(projected)
+        self.assertNotIn(card.object_id, json.dumps(projected, sort_keys=True))
+        self.assertTrue(
+            all(
+                session.packet(f"pilot:{seat}", full=True)["decision"]
+                is None
+                for seat in ("A", "B", "D")
+            )
+        )
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        self.choose_replacement(
+            session,
+            "C",
+            next(value for value in options if value.endswith(":chapter:3")),
+        )
+
+        self.assertEqual("battlefield", card.zone)
+        self.assertEqual("C", card.controller)
+        self.assertEqual(3, card.counters.get("lore"))
+        labels = [
+            item.label
+            for batch in engine.state.pending_trigger_batches
+            for item in batch.items
+        ] + [item.label for item in engine.state.stack]
+        self.assertEqual(
+            ["Love Song of Night and Day chapter 3"],
+            labels,
+        )
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "read-ahead-replay"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_read_ahead_quantity_replacement_uses_exact_chapter_gate(self):
+        session = self.session(7143031)
+        engine = session.engine
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Doubling Season",
+            ref="read-ahead-doubling",
+        )
+        card = self.add_read_ahead_card(
+            engine,
+            seat="A",
+            ref="read-ahead-doubled",
+        )
+        self.register_read_ahead(engine, card)
+        self.begin_read_ahead_entry(session, card)
+        _projected, options = self.replacement_options(session, "A")
+        self.choose_replacement(
+            session,
+            "A",
+            next(value for value in options if value.endswith(":chapter:3")),
+        )
+
+        self.assertEqual("graveyard", card.zone)
+        self.assertFalse(
+            any(
+                "chapter" in item.label.casefold()
+                for item in engine.state.stack
+            )
+        )
+        self.assertFalse(engine.state.pending_trigger_batches)
+        self.assertTrue(
+            any(
+                event.code == "replacement.apply"
+                and any(
+                    counter.get("name") == "lore"
+                    and counter.get("amount") == 6
+                    for counter in event.details.get("counters", [])
+                )
+                for event in engine.state.events
+            )
+        )
+        self.assertTrue(
+            any(
+                event.code == "state.saga_sacrificed"
+                for event in engine.state.events
+            )
+        )
+
+    def test_read_ahead_runtime_boundaries_fail_before_mutation(self):
+        session = self.session(7143032)
+        engine = session.engine
+        card = self.add_read_ahead_card(
+            engine,
+            seat="A",
+            ref="read-ahead-missing-chapters",
+            zone="exile",
+        )
+        self.register_read_ahead(engine, card, include_chapters=False)
+        before = authoritative_state_hash(engine.state)
+        with self.assertRaisesRegex(
+            GameRuleError, "matching trusted typed chapter programs"
+        ):
+            engine.move_card(
+                card.object_id,
+                "battlefield",
+                controller="A",
+                semantic_events=True,
+            )
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        self.assertEqual("exile", card.zone)
+
+        copied = self.add_read_ahead_card(
+            engine,
+            seat="A",
+            ref="read-ahead-copy",
+            zone="exile",
+            object_kind="card_copy",
+        )
+        self.register_read_ahead(engine, copied)
+        copied_before = authoritative_state_hash(engine.state)
+        with self.assertRaisesRegex(
+            GameRuleError, "Copied or granted Read Ahead"
+        ):
+            engine.move_card(
+                copied.object_id,
+                "battlefield",
+                controller="A",
+                semantic_events=True,
+            )
+        self.assertEqual(copied_before, authoritative_state_hash(engine.state))
+
+        descriptor = {
+            "handler_id": "replacement.entry.read-ahead.v1",
+            "schema_version": 1,
+            "event": "zone.change",
+            "chapter_numbers": [1, 3],
+            "counter_name": "lore",
+            "rule_id": "714.3b",
+        }
+        with self.assertRaisesRegex(
+            Exception, "contiguous positive chapter numbers"
+        ):
+            ReadAheadEntryChoiceHandler().validate(descriptor)
+        with self.assertRaisesRegex(Exception, "unknown fields"):
+            ReadAheadEntryChoiceHandler().validate(
+                {**descriptor, "chapter_numbers": [1, 2, 3], "extra": True}
             )
 
     def test_entry_and_precombat_lore_use_distinct_counter_paths(self):

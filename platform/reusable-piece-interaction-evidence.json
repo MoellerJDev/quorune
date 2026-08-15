@@ -1189,6 +1189,15 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_read_ahead_quantity_replacement_uses_exact_chapter_gate",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],
+      "interaction_order": 2,
+      "assertion": "Read Ahead creates its chosen lore-counter child inside the canonical quantity-replacement tree; a doubled result then suppresses every entry chapter under the exact-count gate and exposes the completed Saga to its final-chapter state action."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_competing_saga_entry_replacements_order_to_three_or_four",
       "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.saga_lore"],
       "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.saga_lore"],

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from functools import lru_cache
+import re
 from typing import Any, Mapping, Protocol, Sequence
 
 from ..card_program_faces import program_matches_face, selected_face_id
@@ -39,7 +40,8 @@ from .counter_replacements import (
 from .self_entry_counters import SelfEntryCounterHandler
 from .conditional_entry_counters import ConditionalSelfEntryCounterHandler
 from .sunburst import SunburstEntryCounterHandler
-from .entry_choices import RiotEntryChoiceHandler
+from .entry_choices import ReadAheadEntryChoiceHandler, RiotEntryChoiceHandler
+from ..read_ahead import READ_AHEAD_ENTRY_HANDLER_ID
 from .entry_state import ENTRY_STATE_HANDLER_ID, EntryStateReplacementHandler
 from .zone_replacement_model import (
     PreparedZoneChange,
@@ -349,6 +351,38 @@ class ZoneChangeReplacementRegistry(
             component_id=component_id,
         )
 
+    def subject_replacement_effects(
+        self,
+        descriptor: Mapping[str, Any],
+        *,
+        subject: ZoneChangeSubjectSnapshot,
+        component_id: str,
+    ) -> tuple[ReplacementEffect, ...]:
+        handler = self._handler(descriptor)
+        compiler = getattr(handler, "subject_replacement_effects", None)
+        if compiler is not None:
+            effects = tuple(
+                compiler(
+                    descriptor,
+                    subject=subject,
+                    component_id=component_id,
+                )
+            )
+            if any(
+                not isinstance(effect, ReplacementEffect)
+                for effect in effects
+            ):
+                raise SemanticNodeError(
+                    "Affected-object replacement compilation must be typed"
+                )
+            return effects
+        effect = self.subject_replacement_effect(
+            descriptor,
+            subject=subject,
+            component_id=component_id,
+        )
+        return () if effect is None else (effect,)
+
 
 @lru_cache(maxsize=1)
 def default_zone_change_replacement_registry(
@@ -357,6 +391,7 @@ def default_zone_change_replacement_registry(
         (
             ConditionalSelfEntryCounterHandler(),
             EntryStateReplacementHandler(),
+            ReadAheadEntryChoiceHandler(),
             RiotEntryChoiceHandler(),
             SelfEntryCounterHandler(),
             SunburstEntryCounterHandler(),
@@ -525,6 +560,79 @@ def typed_entry_life_payment_amount(
             "One selected face cannot authorize multiple entry life payments"
         )
     return amounts[0] if amounts else 0
+
+
+def _read_ahead_entry_is_supported(
+    host: ZoneReplacementHost,
+    record: Any | None,
+    card: Any,
+    *,
+    prospective_name: str,
+    characteristics: Mapping[str, Any],
+    subtypes: set[str],
+) -> bool:
+    keywords = {
+        " ".join(str(value).casefold().split())
+        for value in characteristics.get("keywords") or ()
+    }
+    if "read ahead" not in keywords:
+        return False
+    if "saga" not in subtypes:
+        raise SemanticNodeError("Read Ahead entry requires a Saga")
+    if record is None:
+        raise SemanticNodeError(
+            "Read Ahead entry requires a pinned card record"
+        )
+    if not card.is_card_object or card.annotations.get("copy_overrides"):
+        raise SemanticNodeError(
+            "Copied or granted Read Ahead is outside the represented boundary"
+        )
+
+    handler = ReadAheadEntryChoiceHandler()
+    nodes = []
+    for program in _zone_change_programs_for_record(
+        host,
+        record,
+        active_zone="all",
+    ):
+        if not program_matches_face(
+            record,
+            program,
+            card,
+            prospective_name=prospective_name or None,
+        ):
+            continue
+        for descriptor in program.handlers:
+            if descriptor.get("handler_id") == READ_AHEAD_ENTRY_HANDLER_ID:
+                nodes.append(handler.validate(descriptor))
+    if len(nodes) != 1:
+        raise SemanticNodeError(
+            "Read Ahead entry requires one trusted typed handler"
+        )
+
+    represented: set[int] = set()
+    for program in host.semantics.programs_for_oracle(record.oracle_id):
+        match = re.fullmatch(
+            r"saga\.chapter\.(?P<number>[1-9]\d*)",
+            str(program.event or ""),
+        )
+        if (
+            match is None
+            or not host.semantic_program_is_current_trusted(program)
+            or not program_matches_face(
+                record,
+                program,
+                card,
+                prospective_name=prospective_name or None,
+            )
+        ):
+            continue
+        represented.add(int(match.group("number")))
+    if tuple(sorted(represented)) != nodes[0].chapter_numbers:
+        raise SemanticNodeError(
+            "Read Ahead entry requires matching trusted typed chapter programs"
+        )
+    return True
 
 
 def _validated_zone_change_snapshot_inputs(
@@ -699,6 +807,14 @@ def _zone_change_snapshot_subjects(
                     )
             record = host.card_record(card)
             prospective_name = str(characteristics.get("name") or "")
+            read_ahead_supported = _read_ahead_entry_is_supported(
+                host,
+                record,
+                card,
+                prospective_name=prospective_name,
+                characteristics=characteristics,
+                subtypes=subtypes,
+            )
             subjects.append(
                 ZoneChangeSubjectSnapshot(
                     object_id=card.object_id,
@@ -740,6 +856,7 @@ def _zone_change_snapshot_subjects(
                         card_types=tuple(sorted(card_types)),
                         card_subtypes=tuple(sorted(subtypes)),
                         keywords=tuple(characteristics.get("keywords") or ()),
+                        read_ahead_supported=read_ahead_supported,
                     ),
                     effect_entry_counters=tuple(
                         effect_entry_counters.get(card.object_id, ())
@@ -861,13 +978,13 @@ def _zone_change_snapshot_effects(
             ):
                 continue
             for descriptor_index, descriptor in enumerate(program.handlers):
-                effect = registry.subject_replacement_effect(
-                    descriptor,
-                    subject=subject,
-                    component_id=f"{program.key}:{descriptor_index}",
+                self_entry_effects.extend(
+                    registry.subject_replacement_effects(
+                        descriptor,
+                        subject=subject,
+                        component_id=f"{program.key}:{descriptor_index}",
+                    )
                 )
-                if effect is not None:
-                    self_entry_effects.append(effect)
     return tuple(
         sorted(
             (
@@ -980,6 +1097,7 @@ def _snapshot_event(
             "owner": subject.owner,
             "tapped": subject.requested_tapped,
             "entry_life_payment": 0,
+            "read_ahead_chapter": None,
             "opponent_count": subject.opponent_count,
             "controller_basic_land_types": list(
                 subject.controller_basic_land_types
@@ -1031,6 +1149,7 @@ def _prepared_from_event(
         )
     entry_tapped = event.payload.get("tapped")
     entry_life_payment = event.payload.get("entry_life_payment")
+    read_ahead_chapter = event.payload.get("read_ahead_chapter")
     if type(entry_tapped) is not bool:
         raise ZoneReplacementError(
             "Prepared zone entry tapped state must be boolean"
@@ -1041,6 +1160,12 @@ def _prepared_from_event(
     ):
         raise ZoneReplacementError(
             "Prepared zone entry life payment must be nonnegative"
+        )
+    if read_ahead_chapter is not None and (
+        type(read_ahead_chapter) is not int or read_ahead_chapter < 1
+    ):
+        raise ZoneReplacementError(
+            "Prepared Read Ahead chapter must be a positive integer or null"
         )
     return PreparedZoneChange(
         object_id=subject.object_id,
@@ -1056,6 +1181,7 @@ def _prepared_from_event(
         requested_entry_pay_life=subject.entry_pay_life,
         entry_tapped=entry_tapped,
         entry_life_payment=entry_life_payment,
+        read_ahead_chapter=read_ahead_chapter,
         event=event,
         effects=effects,
         counter_events=tuple(counter_events),

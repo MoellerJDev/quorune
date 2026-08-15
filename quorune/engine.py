@@ -1192,7 +1192,7 @@ class CommanderEngine(
             str, Mapping[str, Any]
         ],
         reason: str,
-        transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY,
+        transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY, read_ahead_chapter: int | None = None,
         trigger_batch: list[StackItem] | None = None,
     ) -> None:
         """Game Record v3 compatibility facade for normalized zone events."""
@@ -1217,7 +1217,7 @@ class CommanderEngine(
                 ),
                 destination=destination,
                 reason=reason,
-                transition_kind=transition_kind,
+                transition_kind=transition_kind, read_ahead_chapter=read_ahead_chapter,
                 trigger_batch=trigger_batch,
             )
         )

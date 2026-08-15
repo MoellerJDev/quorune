@@ -60,6 +60,7 @@ from .compiler.keyword_nodes import (
     keyword_node_plans,
     modular_keyword_nodes,
     prowess_keyword_node,
+    read_ahead_keyword_node,
     riot_keyword_node,
     sunburst_keyword_node,
     unleash_keyword_nodes,
@@ -95,13 +96,14 @@ from .fixed_keyword_entry_counters import FIXED_KEYWORD_ENTRY_MECHANICS
 from .rules.capabilities import CapabilityRegistry
 from .rules.source_references import SourceReferenceSpec
 from .riot import RIOT_MECHANIC
+from .read_ahead import READ_AHEAD_MECHANIC_ID, saga_chapter_numbers
 from .semantics import SemanticProgram, SemanticRegistry
 from .unleash import UNLEASH_MECHANIC
 from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v89"
+ORACLE_COMPILER_VERSION = "oracle-ir-v90"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -185,6 +187,16 @@ def _material_source_lines(
         if _is_ordinary_saga_rules_reminder(type_line, line, material_line):
             continue
         yield line, material_line, span
+
+
+def _read_ahead_face_context(
+    type_line: str,
+    material_rows: Sequence[tuple[str, str, SourceSpan]],
+) -> tuple[tuple[str, ...], tuple[int, ...]]:
+    _types, subtypes, _supertypes = type_parts(type_line)
+    return tuple(sorted(subtypes)), saga_chapter_numbers(
+        material_line for _line, material_line, _span in material_rows
+    )
 
 
 def _face_type_context(
@@ -623,6 +635,8 @@ def _keyword_nodes(
     span: SourceSpan,
     keywords: Sequence[str],
     printed_card_types: tuple[str, ...],
+    printed_subtypes: tuple[str, ...],
+    saga_chapters: tuple[int, ...],
     printed_power: str | None,
     trusted_mechanics: frozenset[str],
     capability_registry: CapabilityRegistry | None,
@@ -689,6 +703,21 @@ def _keyword_nodes(
                     line=plan.line,
                     material_line=plan.material_line,
                     span=plan.span,
+                    capability_registry=capability_registry,
+                    capability_profile=capability_profile,
+                    residuals=residuals,
+                )
+            )
+            continue
+        if plan.mechanics == (READ_AHEAD_MECHANIC_ID,):
+            nodes.append(
+                read_ahead_keyword_node(
+                    node_id=plan.node_id,
+                    line=plan.line,
+                    material_line=plan.material_line,
+                    span=plan.span,
+                    printed_subtypes=printed_subtypes,
+                    chapter_numbers=saga_chapters,
                     capability_registry=capability_registry,
                     capability_profile=capability_profile,
                     residuals=residuals,
@@ -980,6 +1009,7 @@ def _compile_face(
         _trigger_node, effect_template=contextual_effect_template
     )
     material_rows = tuple(_material_source_lines(type_line, oracle_text))
+    printed_subtypes, saga_chapters = _read_ahead_face_context(type_line, material_rows)
     if spell:
         additional_cost_face = _typed_additional_cost_face(
             record, face_id, face_name, oracle_text, material_rows,
@@ -992,10 +1022,9 @@ def _compile_face(
         line, material_line, span = row
         node_id = f"{face_id}:n{index}"
         keyword_nodes = _keyword_nodes(
-            node_id=node_id, line=line,
-            material_line=material_line,
-            span=span,
+            node_id=node_id, line=line, material_line=material_line, span=span,
             keywords=keywords, printed_card_types=tuple(sorted(card_types)),
+            printed_subtypes=printed_subtypes, saga_chapters=saga_chapters,
             printed_power=None if record.faces else record.power,
             trusted_mechanics=trusted_mechanics,
             capability_registry=capability_registry,

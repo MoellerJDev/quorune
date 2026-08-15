@@ -300,6 +300,7 @@ class PreparedZoneChange:
     requested_entry_pay_life: bool | None = None
     entry_tapped: bool = False
     entry_life_payment: int = 0
+    read_ahead_chapter: int | None = None
     event: ReplaceableEvent | None = None
     effects: tuple[ReplacementEffect, ...] = ()
     counter_events: tuple[ReplaceableEvent, ...] = ()
@@ -357,6 +358,13 @@ class PreparedZoneChange:
         ):
             raise ZoneReplacementError(
                 "Prepared entry life payment must be nonnegative"
+            )
+        if self.read_ahead_chapter is not None and (
+            type(self.read_ahead_chapter) is not int
+            or self.read_ahead_chapter < 1
+        ):
+            raise ZoneReplacementError(
+                "Prepared Read Ahead chapter must be positive or null"
             )
         if not isinstance(self.event, ReplaceableEvent):
             raise ZoneReplacementError(
