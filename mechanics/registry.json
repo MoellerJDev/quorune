@@ -34,8 +34,8 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "80d7c5fa28b9db012df0370504f6d5e853fc3ab914094f66e501f1e15a757285",
-      "version": 17
+      "sha256": "1497c2508b95c38a58b5bfeb548655849d1ff5668aec53dc3b48020b5dfc0c49",
+      "version": 18
     },
     {
       "mechanic_id": "cr-111-tokens",
@@ -6963,12 +6963,12 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "80d7c5fa28b9db012df0370504f6d5e853fc3ab914094f66e501f1e15a757285",
-      "contract_version": 17,
+      "contract_sha256": "1497c2508b95c38a58b5bfeb548655849d1ff5668aec53dc3b48020b5dfc0c49",
+      "contract_version": 18,
       "coverage_status": "partial",
       "dependencies": [],
       "implementation_component": "closed fixed-counter single-target, fixed player-counter, same-kind multi-subject, normalized fixed counter zone-change trigger, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v20",
+      "implementation_version": "counter-placement-transaction-v21",
       "kind": "rules_section",
       "known_blockers": [
         "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual; Amass X, zero, copied, granted, optional, repeated, conditional, modal, compound, and linked-result forms remain residual; variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions remain residual",
@@ -6977,7 +6977,7 @@
         "Read Ahead and effective copied, gained, removed, or layer-modified Saga chapter abilities remain unsupported",
         "fractional, halving, dynamic-quantity, optional, Class-level-gated, movement, removal, prevention, and other enters-with-counter replacement families remain unsupported",
         "counter type rules beyond existing power/toughness and loyalty consumers are incomplete",
-        "subtype-qualified, characteristic-qualified, one-or-more aggregated, alternate-zone, combined-zone, granted, copied, and removed fixed counter zone-change triggers remain residual"
+        "multi-subtype, multiword-subtype, characteristic-qualified, one-or-more aggregated, alternate-zone, combined-zone, granted, copied, and removed fixed counter zone-change triggers remain residual"
       ],
       "mechanic_id": "cr-122-counters",
       "official_name": "Counters",
@@ -7133,6 +7133,9 @@
         "test_stale_source_replacement_resume_rolls_back_choice",
         "test_fixed_counter_controller_runtime_mutant_is_killed",
         "test_closed_event_bindings_compile_exact_counter_effect_bodies",
+        "test_single_subtype_entry_counter_triggers_compile_exactly",
+        "test_subtype_entry_counter_trigger_dependencies_fail_closed",
+        "test_subtype_entry_trigger_filters_and_uses_replacement_owner",
         "test_adjacent_event_and_effect_variants_remain_material",
         "test_fixed_counter_event_trigger_dependencies_and_compiler_mutation_fail_closed",
         "test_zone_entry_counter_triggers_apply_typed_subject_relations",

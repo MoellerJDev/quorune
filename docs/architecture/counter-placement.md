@@ -221,20 +221,23 @@ noncreature or instant-or-sorcery casts; controller life gains; controller card
 draws; the controller's exact second draw; and one closed family of public
 artifact, creature, enchantment, or permanent entries and creature deaths to
 normalized event facts. The zone-change family accepts only typed controller,
-opponent, source-exclusion, and token predicates. Departure predicates consume
-the previous controller and logical object identity captured before mutation,
-so a represented source can observe its own or a simultaneous death without
+opponent, source-exclusion, token, and one exact public one-word subtype
+predicate. A source-or-another subtype form matches the source identity directly
+and every other permanent through the immutable subtype tuple carried by the
+normalized entry occurrence. Departure predicates consume the previous
+controller and logical object identity captured before mutation, so a
+represented source can observe its own or a simultaneous death without
 recovering last-known information from prose. Draw events expose only public
 player and ordinal facts. Positive life-gain events are emitted after the
 canonical replacement-capable effect or semantic-choice life transaction,
 Lifelink result, or prevention aftermath commits. The trigger subsystem performs
 ordinary APNAP placement and the effect body retains existing target and
 replacement semantics. This adds no counter write path and no runtime Oracle
-parser. Subtype- or characteristic-qualified, one-or-more aggregated,
-alternate-zone, and combined zone-change triggers remain residual. Granted,
-copied, or removed instances remain outside trust until all static components
-share the layer-6 ability-presence query; cast classification also excludes
-type-changing stack interactions.
+parser. Multi-subtype, multiword-subtype, characteristic-qualified, one-or-more
+aggregated, alternate-zone, and combined zone-change triggers remain residual.
+Granted, copied, or removed instances remain outside trust until all static
+components share the layer-6 ability-presence query; cast classification also
+excludes type-changing stack interactions.
 
 Those same closed event and effect-body families accept an exact leading “you
 may” as a separate optional capability. Resolution issues one controller-owned

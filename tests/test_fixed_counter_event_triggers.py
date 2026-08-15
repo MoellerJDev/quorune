@@ -78,6 +78,7 @@ TEMPLATE_IDS = {
     "fixed-counter-artifact-entry-trigger-v1",
     "fixed-counter-creature-entry-trigger-v1",
     "fixed-counter-enchantment-entry-trigger-v1",
+    "fixed-counter-subtype-entry-trigger-v1",
     "fixed-counter-creature-death-trigger-v1",
 }
 OPTIONAL_TEMPLATE_IDS = {
@@ -214,6 +215,200 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
         )
         self.assertEqual("trusted", program.trust_level)
         self.assertTrue(program.capability_closure["trusted"])
+
+    def test_single_subtype_entry_counter_triggers_compile_exactly(self):
+        cases = (
+            (
+                "Whenever another Human you control enters, put a +1/+1 "
+                "counter on this creature.",
+                None,
+                "permanent:source_controller:other:any_object:subtype-human",
+                {
+                    "all": [
+                        {
+                            "field": "controller",
+                            "op": "eq",
+                            "value": "$source.controller",
+                        },
+                        {
+                            "field": "subtypes",
+                            "op": "contains_any",
+                            "value": ["human"],
+                        },
+                        {
+                            "field": "card",
+                            "op": "ne",
+                            "value": "$source.ref",
+                        },
+                    ]
+                },
+                "fixed-counter-subtype-entry-trigger-v1",
+            ),
+            (
+                "Whenever this creature or another Ally you control enters, "
+                "you may put a +1/+1 counter on this creature.",
+                None,
+                "permanent:source_controller:including_source:any_object:subtype-ally",
+                {
+                    "all": [
+                        {
+                            "field": "controller",
+                            "op": "eq",
+                            "value": "$source.controller",
+                        },
+                        {
+                            "any": [
+                                {
+                                    "field": "card",
+                                    "op": "eq",
+                                    "value": "$source.ref",
+                                },
+                                {
+                                    "field": "subtypes",
+                                    "op": "contains_any",
+                                    "value": ["ally"],
+                                },
+                            ]
+                        },
+                    ]
+                },
+                "fixed-counter-subtype-entry-trigger-optional-v1",
+            ),
+            (
+                "Whenever Compiler Fixture or another Elf enters, put a "
+                "+1/+1 counter on this creature.",
+                "Compiler Fixture",
+                "permanent:any:including_source:any_object:subtype-elf",
+                {
+                    "any": [
+                        {
+                            "field": "card",
+                            "op": "eq",
+                            "value": "$source.ref",
+                        },
+                        {
+                            "field": "subtypes",
+                            "op": "contains_any",
+                            "value": ["elf"],
+                        },
+                    ]
+                },
+                "fixed-counter-subtype-entry-trigger-v1",
+            ),
+        )
+        for text, card_name, variant, condition, template_id in cases:
+            with self.subTest(text=text):
+                binding = fixed_counter_trigger_binding(
+                    text,
+                    card_name=card_name,
+                )
+                self.assertIsNotNone(binding)
+                assert binding is not None
+                self.assertEqual(
+                    FixedCounterTriggerEvent.PERMANENT_ENTER,
+                    binding.event,
+                )
+                self.assertEqual(variant, binding.variant)
+                self.assertEqual(condition, binding.event_condition)
+                self.assertEqual(
+                    template_id.replace("-optional-v1", "-v1"),
+                    binding.template_id,
+                )
+
+                ir = self.compile(text, type_line="Creature — Soldier")
+                self.assertEqual("exact", ir.status)
+                node = next(
+                    value
+                    for value in ir.faces[0].nodes
+                    if value.template_id == template_id
+                )
+                self.assertEqual("permanent.enter", node.event)
+                self.assertEqual(condition, node.event_condition)
+                self.assertIn(
+                    "trigger.event.normalized_zone_change",
+                    node.capability_dependencies,
+                )
+                self.assertIn(
+                    "counter.placement.quantity_replacement",
+                    node.capability_closure,
+                )
+
+        with self.assertRaises(ValueError):
+            FixedCounterZoneSubject(
+                "permanent",
+                FixedCounterZoneController.ANY,
+                subtype="Time Lord",
+            )
+        with self.assertRaises(ValueError):
+            FixedCounterZoneSubject(
+                "permanent",
+                FixedCounterZoneController.ANY,
+                include_source=True,
+            )
+        with self.assertRaises(ValueError):
+            FixedCounterZoneSubject(
+                "permanent",
+                FixedCounterZoneController.ANY,
+                exclude_source=True,
+                subtype="Human",
+                include_source=True,
+            )
+
+    def test_subtype_entry_counter_trigger_dependencies_fail_closed(self):
+        text = (
+            "Whenever another Human you control enters, put a +1/+1 "
+            "counter on this creature."
+        )
+        for dependency_id in (
+            "counter.producer.fixed_event_trigger",
+            "counter.placement.quantity_replacement",
+            "trigger.event.normalized_zone_change",
+            "trigger.placement.apnap",
+        ):
+            with self.subTest(dependency=dependency_id):
+                registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+                dependency = next(
+                    row
+                    for row in registry["capabilities"]
+                    if row["id"] == dependency_id
+                )
+                dependency["status"] = "blocked"
+                dependency["blockers"] = ["focused subtype dependency mutation"]
+                ir = compile_oracle_card(
+                    replace(
+                        self.db.lookup("Scheduled Counter Trigger Fixture"),
+                        name="Subtype Dependency Fixture",
+                        oracle_text=text,
+                        type_line="Creature — Soldier",
+                        keywords=(),
+                        faces=(),
+                    ),
+                    capability_registry=CapabilityRegistry(registry),
+                    capability_profile="commander_review",
+                )
+                node = next(
+                    value
+                    for value in ir.faces[0].nodes
+                    if value.template_id
+                    == "fixed-counter-subtype-entry-trigger-v1"
+                )
+                self.assertFalse(node.exact)
+                self.assertTrue(node.residual_ids)
+                self.assertNotEqual("exact", ir.status)
+
+        with patch(
+            "quorune.compiler.fixed_counter_trigger_nodes._SUBTYPE_ENTRY_TRIGGER"
+        ) as grammar:
+            grammar.fullmatch.return_value = None
+            mutated = self.compile(text, type_line="Creature — Soldier")
+        self.assertFalse(
+            any(
+                node.template_id
+                == "fixed-counter-subtype-entry-trigger-v1"
+                for node in mutated.faces[0].nodes
+            )
+        )
+        self.assertNotEqual("exact", mutated.status)
 
     def test_optional_fixed_counter_event_triggers_compile_exactly(self):
         cases = (
@@ -782,6 +977,10 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
             "Whenever another Zombie you control dies, you may put a +1/+1 counter on this creature.",
             "Whenever another artifact dies, put a charge counter on this artifact.",
             "Whenever this artifact or another creature enters, put a charge counter on this artifact.",
+            "Whenever another Human or Zombie you control enters, put a +1/+1 counter on this creature.",
+            "Whenever another legendary Human you control enters, put a +1/+1 counter on this creature.",
+            "Whenever another Human you control dies, put a +1/+1 counter on this creature.",
+            "Whenever another human you control enters, put a +1/+1 counter on this creature.",
         )
         for text in variants:
             with self.subTest(text=text):
@@ -1600,6 +1799,105 @@ class FixedCounterEventTriggerRuntimeTests(unittest.TestCase):
         )
         self.resolve_top(other_engine)
         self.assertEqual(1, other_source.counters.get("charge"))
+
+    def test_subtype_entry_trigger_filters_and_uses_replacement_owner(self):
+        session = self.session(120028)
+        engine = session.engine
+        record = self.db.lookup("Champion of the Parish")
+        program = next(
+            value
+            for value in generated_programs(
+                self.db,
+                record,
+                trust_level="trusted",
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+            )
+            if value.provenance.get("template_id")
+            == "fixed-counter-subtype-entry-trigger-v1"
+        )
+        engine.semantics.put(program)
+        source = self.add_card(
+            engine,
+            seat="A",
+            name="Champion of the Parish",
+            ref="subtype-entry-source",
+            zone="battlefield",
+        )
+        vorinclex = self.add_card(
+            engine,
+            seat="A",
+            name="Vorinclex, Monstrous Raider",
+            ref="subtype-entry-vorinclex",
+            zone="battlefield",
+        )
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (self.db.lookup("Vorinclex, Monstrous Raider"),),
+            trust_level="provisional",
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+        )
+
+        opponent_human = self.add_card(
+            engine,
+            seat="B",
+            name="Mishra, Eminent One",
+            ref="opponent-entering-human",
+            zone="hand",
+        )
+        engine.move_card(
+            opponent_human.object_id,
+            "battlefield",
+            reason="opponent Human subtype near miss",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertFalse(engine.state.stack)
+
+        controlled_nonhuman = self.add_card(
+            engine,
+            seat="A",
+            name="Sol Ring",
+            ref="controlled-entering-nonhuman",
+            zone="hand",
+        )
+        engine.move_card(
+            controlled_nonhuman.object_id,
+            "battlefield",
+            reason="controlled subtype near miss",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertFalse(engine.state.stack)
+
+        controlled_human = self.add_card(
+            engine,
+            seat="A",
+            name="Mishra, Eminent One",
+            ref="controlled-entering-human",
+            zone="hand",
+        )
+        engine.move_card(
+            controlled_human.object_id,
+            "battlefield",
+            reason="controlled Human subtype match",
+            semantic_events=True,
+        )
+        engine._stabilize()
+        self.assertEqual(program.key, engine.state.stack[-1].semantic_key)
+        self.assertIn("human", engine.state.stack[-1].context["subtypes"])
+        self.resolve_top(engine)
+
+        self.assertEqual(2, source.counters.get("+1/+1"))
+        replacement_event = next(
+            event
+            for event in reversed(engine.state.events)
+            if event.code == "replacement.apply"
+        )
+        self.assertEqual(vorinclex.ref, replacement_event.details["source"])
 
     def test_creature_death_counter_trigger_uses_lki_subject_filters(self):
         session = self.session(120016)

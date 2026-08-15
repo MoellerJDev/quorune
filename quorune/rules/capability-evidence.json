@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "b07c9eb3f14e28b42f21d3772ad63b250821bcfb563b2ccfabac356e02ebbc69",
-  "declaration_source_fingerprint": "fee5eb00bf3bb1c4190c93d039788a3162cb3bb99ad69a49f05e8a1a1d024007",
+  "registry_fingerprint": "8279f0d6ea34c51fc69fef01f8b9ac8146063b91e1a25e9155ffffe6045c487c",
+  "declaration_source_fingerprint": "f3ab08f95690d0d9fdab14f69abcdb9571730b0aba0f75ba382bdd01d93a3ee6",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -10217,6 +10217,25 @@
     {
       "capability_id": "counter.placement.quantity_replacement",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_subtype_entry_trigger_filters_and_uses_replacement_owner",
+      "official_rule_ids": [
+        "122.1",
+        "122.6",
+        "614.1",
+        "614.16",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Route the matched Human-entry trigger's fixed +1/+1 counter result through an actual applicable quantity replacement and commit the doubled amount."
+    },
+    {
+      "capability_id": "counter.placement.quantity_replacement",
+      "evidence_class": "interaction",
       "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_keyword_damage_composes_with_exact_counter_replacement_and_residuals",
       "official_rule_ids": [
         "122.1",
@@ -12841,6 +12860,30 @@
     {
       "capability_id": "counter.producer.fixed_event_trigger",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_subtype_entry_trigger_filters_and_uses_replacement_owner",
+      "official_rule_ids": [
+        "115.1",
+        "603.2",
+        "603.3",
+        "603.3b",
+        "603.6",
+        "608.2b",
+        "608.2c",
+        "122.1",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Match only a controlled Human permanent's committed subtype facts, reject opponent and non-Human entries, and resolve the fixed counter result through its replacement owner."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "interaction",
       "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_zone_entry_counter_triggers_apply_typed_subject_relations",
       "official_rule_ids": [
         "115.1",
@@ -13032,6 +13075,30 @@
     },
     {
       "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_subtype_entry_counter_trigger_dependencies_fail_closed",
+      "official_rule_ids": [
+        "115.1",
+        "603.2",
+        "603.3",
+        "603.3b",
+        "603.6",
+        "608.2b",
+        "608.2c",
+        "122.1",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the single-subtype entry span material when normalized zone events, APNAP placement, quantity replacement, or the subtype grammar is unavailable."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
       "evidence_class": "positive",
       "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_closed_event_bindings_compile_exact_counter_effect_bodies",
       "official_rule_ids": [
@@ -13053,6 +13120,30 @@
         "commander_review"
       ],
       "applicability_note": "Compile each closed schedule, fixed public permanent-entry or creature-death subject, controlled-land-entry, controller-cast, draw, and life-gain binding into one source-spanned exact counter-producing trigger with an immutable event predicate."
+    },
+    {
+      "capability_id": "counter.producer.fixed_event_trigger",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_single_subtype_entry_counter_triggers_compile_exactly",
+      "official_rule_ids": [
+        "115.1",
+        "603.2",
+        "603.3",
+        "603.3b",
+        "603.6",
+        "608.2b",
+        "608.2c",
+        "122.1",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile mandatory, optional, and exact source-name-or-another single-subtype entry wording into immutable source-spanned event predicates."
     },
     {
       "capability_id": "counter.producer.fixed_event_trigger",
@@ -16100,6 +16191,30 @@
         "commander_review"
       ],
       "applicability_note": "Compile leading you-may counter bodies only on already represented normalized triggers and preserve the exact source span, target schema, event predicate, and nested fixed counter operation."
+    },
+    {
+      "capability_id": "counter.producer.optional_fixed_event_trigger",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerCompilerTests.test_single_subtype_entry_counter_triggers_compile_exactly",
+      "official_rule_ids": [
+        "115.1",
+        "603.2",
+        "603.3",
+        "603.3b",
+        "608.2b",
+        "608.2c",
+        "609.1",
+        "122.1",
+        "122.6",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Wrap one exact source-or-another Ally entry predicate around the existing typed put-or-decline counter operation without widening optional effect grammar."
     },
     {
       "capability_id": "counter.producer.optional_fixed_event_trigger",
@@ -32202,6 +32317,26 @@
     {
       "capability_id": "trigger.event.normalized_zone_change",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_subtype_entry_trigger_filters_and_uses_replacement_owner",
+      "official_rule_ids": [
+        "603.2",
+        "603.6",
+        "603.6a",
+        "603.6c",
+        "603.10",
+        "603.10a",
+        "603.10e"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Carry the entering permanent's immutable public subtype tuple into trigger matching so controller and Human predicates are decided without runtime prose access."
+    },
+    {
+      "capability_id": "trigger.event.normalized_zone_change",
+      "evidence_class": "interaction",
       "test_id": "tests.test_oracle_ir.OracleIRTests.test_self_dies_trigger_uses_last_known_controller",
       "official_rule_ids": [
         "603.2",
@@ -35343,5 +35478,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "1d8249c3cdf6fa7da52d8716491794d9cf3c28cac1129e812d1ad2223daf2536"
+  "fingerprint": "e7b25219ca57bc519da619d33f7825d786ad6da2deca9d0d6fd505ac6aeacc87"
 }
