@@ -296,7 +296,6 @@ class FixedMassDamageCompilerTests(unittest.TestCase):
             "each Dragon creature",
             "each attacking creature",
             "each creature and you gain 2 life",
-            "each creature. Scry 1",
             "each creature equal to the number of Mountains you control",
             "each of up to two target creatures",
         )

@@ -110,6 +110,14 @@ class FixedEffectClauseSequenceCompilerTests(unittest.TestCase):
                 "activated_ability",
                 ("destroy", "draw"),
             ),
+            (
+                sequence_record(
+                    "Fixed Clause Sequence deals 2 damage to each creature. "
+                    "Scry 1."
+                ),
+                "spell_ability",
+                ("damage_fixed_set", "scry"),
+            ),
         )
         for record, kind, operations in fixtures:
             with self.subTest(kind=kind):
