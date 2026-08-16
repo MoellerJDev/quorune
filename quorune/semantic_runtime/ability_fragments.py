@@ -8,6 +8,7 @@ from ..ability_fragments import (
     AbilityFragmentError,
     CombatKeywordTriggerKind,
     CombatKeywordTriggerSpec,
+    ColorlessCharacteristicDefinitionSpec,
     ConditionalKeywordSpec,
     CounterMaximumSpec,
     DeclarationCostTemplate,
@@ -58,6 +59,9 @@ CONDITIONAL_KEYWORD_FRAGMENT_HANDLER_ID = (
 )
 DYNAMIC_POWER_TOUGHNESS_FRAGMENT_HANDLER_ID = (
     "ability.static.dynamic-power-toughness.v1"
+)
+COLORLESS_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID = (
+    "ability.static.colorless-characteristic-definition.v1"
 )
 DECLARATION_COST_FRAGMENT_HANDLER_ID = (
     "ability.static.declaration-cost.v1"
@@ -823,6 +827,43 @@ class DynamicPowerToughnessAbilityFragmentHandler:
         return (self.validate(descriptor),)
 
 
+@dataclass(frozen=True, slots=True)
+class ColorlessCharacteristicDefinitionAbilityFragmentHandler:
+    handler_id: str = (
+        COLORLESS_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID
+    )
+    schema_version: int = 1
+    family: str = "ability.static.colorless_characteristic_definition"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = (
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "continuous.characteristics.devoid",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> ColorlessCharacteristicDefinitionSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=ColorlessCharacteristicDefinitionSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
 class AbilityFragmentRegistry(
     RuntimeComponentRegistry[object, StaticAbilityFragment]
 ):
@@ -840,6 +881,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             DeclarationRequirementAbilityFragmentHandler(),
             DeclarationRestrictionAbilityFragmentHandler(),
             ConditionalKeywordAbilityFragmentHandler(),
+            ColorlessCharacteristicDefinitionAbilityFragmentHandler(),
             DethroneAbilityFragmentHandler(),
             DynamicPowerToughnessAbilityFragmentHandler(),
             EnchantAbilityFragmentHandler(),
@@ -881,6 +923,7 @@ __all__ = [
     "BATTLE_CRY_FRAGMENT_HANDLER_ID",
     "COUNTER_MAXIMUM_FRAGMENT_HANDLER_ID",
     "CONDITIONAL_KEYWORD_FRAGMENT_HANDLER_ID",
+    "COLORLESS_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID",
     "DECLARATION_COST_FRAGMENT_HANDLER_ID",
     "DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID",
     "DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID",
@@ -906,6 +949,7 @@ __all__ = [
     "DeclarationRequirementAbilityFragmentHandler",
     "DeclarationRestrictionAbilityFragmentHandler",
     "ConditionalKeywordAbilityFragmentHandler",
+    "ColorlessCharacteristicDefinitionAbilityFragmentHandler",
     "ExaltedAbilityFragmentHandler",
     "FlankingAbilityFragmentHandler",
     "LinkedGraveyardEnchantFragmentHandler",

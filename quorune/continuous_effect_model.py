@@ -69,6 +69,7 @@ _OPERATION_LAYERS = {
     "set_colors": Layer.COLOR,
     "add_colors": Layer.COLOR,
     "remove_colors": Layer.COLOR,
+    "remove_all_colors": Layer.COLOR,
     "add_ability": Layer.ABILITY,
     "remove_ability": Layer.ABILITY,
     "remove_all_abilities": Layer.ABILITY,
@@ -276,7 +277,11 @@ def _validate_operation_value(op: str, value: Any, field: str | None) -> None:
             ability_fragment_from_dict(value)
         except (TypeError, ValueError) as exc:
             raise ContinuousEffectError(str(exc)) from exc
-    elif op in {"remove_all_abilities", "switch_power_toughness"}:
+    elif op in {
+        "remove_all_abilities",
+        "remove_all_colors",
+        "switch_power_toughness",
+    }:
         if field is not None or value is not None:
             raise ContinuousEffectError(f"{op} accepts no value or field")
     elif op in {"set_power_toughness", "modify_power_toughness"}:

@@ -18,6 +18,7 @@ from .counter_maximums import (
 )
 from .characteristic_fragments import (
     CharacteristicFragmentError,
+    ColorlessCharacteristicDefinitionSpec,
     ConditionalKeywordSpec,
     DynamicPowerToughnessSpec,
 )
@@ -608,6 +609,7 @@ StaticAbilityFragment: TypeAlias = (
     | CounterMaximumSpec
     | TriggerMultiplierSpec
     | WardSpec
+    | ColorlessCharacteristicDefinitionSpec
     | ConditionalKeywordSpec
     | DynamicPowerToughnessSpec
     | DeclarationCostTemplate
@@ -643,6 +645,8 @@ def ability_fragment_to_dict(
         kind = "trigger_multiplier"
     elif isinstance(fragment, WardSpec):
         kind = "ward"
+    elif isinstance(fragment, ColorlessCharacteristicDefinitionSpec):
+        kind = "colorless_characteristic_definition"
     elif isinstance(fragment, ConditionalKeywordSpec):
         kind = "conditional_keyword"
     elif isinstance(fragment, DynamicPowerToughnessSpec):
@@ -701,6 +705,13 @@ def ability_fragment_from_dict(
         return TriggerMultiplierSpec.from_dict(value["value"])
     if value["kind"] == "ward":
         return WardSpec.from_dict(value["value"])
+    if value["kind"] == "colorless_characteristic_definition":
+        try:
+            return ColorlessCharacteristicDefinitionSpec.from_dict(
+                value["value"]
+            )
+        except CharacteristicFragmentError as exc:
+            raise AbilityFragmentError(str(exc)) from exc
     if value["kind"] == "conditional_keyword":
         try:
             return ConditionalKeywordSpec.from_dict(value["value"])
@@ -751,6 +762,7 @@ def canonical_ability_fragments(
                 CounterMaximumSpec,
                 TriggerMultiplierSpec,
                 WardSpec,
+                ColorlessCharacteristicDefinitionSpec,
                 ConditionalKeywordSpec,
                 DynamicPowerToughnessSpec,
                 DeclarationCostTemplate,
@@ -955,6 +967,7 @@ __all__ = [
     "CombatKeywordTriggerSpec",
     "CounterMaximumSpec",
     "ConditionalKeywordSpec",
+    "ColorlessCharacteristicDefinitionSpec",
     "CURRENT_ABILITY_FRAGMENT_COVERAGE",
     "DamageKeywordTriggerKind",
     "DamageKeywordTriggerSpec",

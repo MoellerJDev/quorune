@@ -1,5 +1,5 @@
 {
-  "contract_count": 108,
+  "contract_count": 109,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -191,6 +191,12 @@
       "mechanic_id": "dethrone",
       "path": "mechanics/contracts/dethrone.json",
       "sha256": "7cd758dc96f1414607ebf37b6d92512e948bb12e64ad34437d5f8af05cef824b",
+      "version": 1
+    },
+    {
+      "mechanic_id": "devoid",
+      "path": "mechanics/contracts/devoid.json",
+      "sha256": "246714f0264007867494ed2ae2ac8d527fb8ee2fce01a1d6a9cbe89f736059f7",
       "version": 1
     },
     {
@@ -1616,19 +1622,41 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/devoid.json",
+      "contract_sha256": "246714f0264007867494ed2ae2ac8d527fb8ee2fce01a1d6a9cbe89f736059f7",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.compiler.keyword_nodes, quorune.semantic_runtime.ability_fragments, quorune.characteristic_evaluation, and quorune.continuous_effects",
+      "implementation_version": "typed-devoid-characteristics-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Oracle-equivalent nonkeyword wording",
+        "untyped granted Devoid",
+        "text-changing interactions",
+        "face-down producers until their layer-1 characteristic owner is trusted",
+        "aggregate copy, face, and continuous-effect dependencies remain incomplete"
+      ],
       "mechanic_id": "devoid",
       "official_name": "Devoid",
       "rule_references": [
         "702.114"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_ordinary_devoid_compiles_to_all_zone_characteristic_definition",
+        "test_nonordinary_devoid_wording_remains_source_spanned_residual",
+        "test_devoid_dependency_and_compiler_mutations_fail_closed",
+        "test_devoid_descriptor_and_prose_only_objects_fail_closed_without_mutation",
+        "test_devoid_is_colorless_in_every_zone_and_preserves_color_identity",
+        "test_devoid_and_compiled_aura_attachment_compose",
+        "test_devoid_executes_while_replacement_siblings_fail_closed",
+        "test_devoid_orders_before_layer_five_color_addition_and_after_copy_values",
+        "test_devoid_feeds_current_colorless_and_colored_predicates",
+        "test_devoid_runtime_mutation_is_killed",
+        "test_devoid_projection_and_replay_are_identity_safe"
+      ],
       "trust_level": "untrusted"
     },
     {

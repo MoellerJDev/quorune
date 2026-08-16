@@ -73093,23 +73093,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.114",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_devoid_characteristics.DevoidCompilerTests.test_ordinary_devoid_compiles_to_all_zone_characteristic_definition"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/devoid.json"
+      ],
+      "notes": [
+        "Keyword heading; the bounded ordinary printed family is owned by continuous.characteristics.devoid while nonkeyword and untyped granted forms remain outside trust."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.114",
       "rule_text_sha256": "3ff3711bf67b6cc6231347b6c8c2ce876c5f973fa9e46d12e66f484bb66c79d8",
       "schema_version": 1,
@@ -73118,26 +73122,58 @@
         "end_line": 4835,
         "start_line": 4834
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Oracle-equivalent nonkeyword and untyped granted Devoid are not compiled",
+        "text-changing and face-down producers remain outside trust until their characteristic owners are complete",
+        "aggregate continuous-effect dependency discovery remains incomplete"
       ],
       "case_id": "cr-702.114a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.114"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_devoid_characteristics.DevoidCompilerTests.test_ordinary_devoid_compiles_to_all_zone_characteristic_definition",
+        "tests.test_devoid_characteristics.DevoidCompilerTests.test_devoid_descriptor_and_prose_only_objects_fail_closed_without_mutation",
+        "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_is_colorless_in_every_zone_and_preserves_color_identity",
+        "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_and_compiled_aura_attachment_compose",
+        "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_executes_while_replacement_siblings_fail_closed",
+        "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_orders_before_layer_five_color_addition_and_after_copy_values",
+        "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_feeds_current_colorless_and_colored_predicates",
+        "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_projection_and_replay_are_identity_safe"
+      ],
+      "implementation_components": [
+        "quorune.compiler.keyword_nodes.closed_special_keyword_node",
+        "quorune.semantic_runtime.ability_fragments.ColorlessCharacteristicDefinitionAbilityFragmentHandler",
+        "quorune.characteristic_evaluation.evaluate_card_characteristics",
+        "quorune.continuous_effects.evaluate_continuous_effects"
+      ],
+      "notes": [
+        "The ordinary printed keyword emits one copied typed fragment. Characteristic evaluation applies its colorless CDA in every zone after layer-1 copy values and before later non-CDA layer-5 color effects; color identity remains the card database's separate format characteristic."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.114a",
       "rule_text_sha256": "eb8e7d6f88d44453cd7c9f732a61e25273b51d45a776d273a2f075ae460d0725",
       "schema_version": 1,
@@ -73146,7 +73182,7 @@
         "end_line": 4837,
         "start_line": 4836
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

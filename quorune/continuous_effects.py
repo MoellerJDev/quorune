@@ -385,6 +385,9 @@ def _apply_operation(
         else:
             state.colors.difference_update(values)
         return
+    if op == "remove_all_colors":
+        state.colors.clear()
+        return
     if _apply_ability_operation(state, operation):
         return
     if op == "set_power_toughness":

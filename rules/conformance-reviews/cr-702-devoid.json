@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.114 — Devoid",
+  "cases": [
+    {
+      "rule_id": "702.114",
+      "rule_text_sha256": "3ff3711bf67b6cc6231347b6c8c2ce876c5f973fa9e46d12e66f484bb66c79d8",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/devoid.json"],
+      "executable_test_ids": ["tests.test_devoid_characteristics.DevoidCompilerTests.test_ordinary_devoid_compiles_to_all_zone_characteristic_definition"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded ordinary printed family is owned by continuous.characteristics.devoid while nonkeyword and untyped granted forms remain outside trust."]
+    },
+    {
+      "rule_id": "702.114a",
+      "rule_text_sha256": "eb8e7d6f88d44453cd7c9f732a61e25273b51d45a776d273a2f075ae460d0725",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.keyword_nodes.closed_special_keyword_node", "quorune.semantic_runtime.ability_fragments.ColorlessCharacteristicDefinitionAbilityFragmentHandler", "quorune.characteristic_evaluation.evaluate_card_characteristics", "quorune.continuous_effects.evaluate_continuous_effects"],
+      "executable_test_ids": ["tests.test_devoid_characteristics.DevoidCompilerTests.test_ordinary_devoid_compiles_to_all_zone_characteristic_definition", "tests.test_devoid_characteristics.DevoidCompilerTests.test_devoid_descriptor_and_prose_only_objects_fail_closed_without_mutation", "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_is_colorless_in_every_zone_and_preserves_color_identity", "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_and_compiled_aura_attachment_compose", "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_executes_while_replacement_siblings_fail_closed", "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_orders_before_layer_five_color_addition_and_after_copy_values", "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_feeds_current_colorless_and_colored_predicates", "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_projection_and_replay_are_identity_safe"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["Oracle-equivalent nonkeyword and untyped granted Devoid are not compiled", "text-changing and face-down producers remain outside trust until their characteristic owners are complete", "aggregate continuous-effect dependency discovery remains incomplete"],
+      "notes": ["The ordinary printed keyword emits one copied typed fragment. Characteristic evaluation applies its colorless CDA in every zone after layer-1 copy values and before later non-CDA layer-5 color effects; color identity remains the card database's separate format characteristic."]
+    }
+  ]
+}

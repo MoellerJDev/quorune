@@ -1011,6 +1011,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/ability_keyword_fragment_model.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/ability_keyword_fragments.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -1417,6 +1432,21 @@
     },
     {
       "file": "quorune/compiler/destruction_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/compiler/devoid_characteristics.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
       "allowed_dependency_layers": [
@@ -6631,5 +6661,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "f4708be26614fd6243f4f4c70bd710191d0f1b3efd2a0a5c5c34a34d9fbea0f6"
+  "fingerprint": "5abbae1a73b6fef72392319b2ace0c87a7a7efdcdbc7560df48fe32db4f48633"
 }

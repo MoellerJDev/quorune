@@ -2,7 +2,7 @@
 title: "CardProgram runtime components"
 status: "current"
 authoritative_source: "quorune/semantic_runtime component registries and schemas/card-program-v2.schema.json"
-verified: "2026-08-13"
+verified: "2026-08-15"
 audience: "rules, compiler, runtime, replay, and extension contributors"
 maintenance: "hand-maintained"
 ---
@@ -98,6 +98,16 @@ evaluate them from public battlefield or owner-graveyard state. Copies retain
 the typed fragments and reevaluate against current state; phased-out sources
 do not participate. Unsupported wording remains residual, and display Oracle
 text never selects these behaviors.
+
+`ability.static.colorless-characteristic-definition.v1` is the separate
+all-zone Devoid boundary. The selected face supplies one closed copied fragment;
+after layer-1 copy values, the characteristic evaluator removes every color in
+layer 5 as a CDA. Later layer-5 additions may add color, and layer-6 ability
+removal cannot undo the already applied color result. A keyword string or
+matching display prose without the typed fragment is inert. Untyped grants,
+text changes, face-down producers, and dynamic characteristic counts remain
+outside trust rather than introducing a family-specific layer-6 applicability
+path.
 
 `participation.untap-step.static.v1` lowers closed source, attached-object,
 global, and other-player static wording into immutable CR 502 participation

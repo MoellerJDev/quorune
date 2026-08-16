@@ -48,6 +48,10 @@ from .dependency_gate import (
     explicit_capabilities_gate,
     keyword_dependency_gate,
 )
+from .devoid_characteristics import (
+    DEVOID_FRAGMENT_HANDLER_ID,
+    DEVOID_MECHANIC_ID,
+)
 from .ir_model import (
     OracleNode,
     OracleResidual,
@@ -73,6 +77,7 @@ _SUNBURST_MECHANIC = SUNBURST_MECHANIC_ID
 _RENOWN_MECHANIC = RENOWN_MECHANIC_ID
 _MODULAR_MECHANIC = MODULAR_MECHANIC_ID
 _ECHO_MECHANIC = ECHO_MECHANIC_ID
+_DEVOID_MECHANIC = DEVOID_MECHANIC_ID
 _TOXIC_MECHANIC = "toxic"
 _GROUPED_SPLIT_MECHANICS = (
     _AFFINITY_MECHANIC,
@@ -110,6 +115,7 @@ _INSTANCE_PART_MECHANICS = (
     _ECHO_MECHANIC,
     _TOXIC_MECHANIC,
     _CONVOKE_MECHANIC,
+    _DEVOID_MECHANIC,
     *tuple(sorted(FIXED_KEYWORD_ENTRY_MECHANICS)),
 )
 _SPLIT_MECHANICS = frozenset(
@@ -160,6 +166,7 @@ def keyword_node_plans(
         for mechanic in mechanics
         if mechanic
         in {
+            _DEVOID_MECHANIC,
             _PERSIST_MECHANIC,
             _RIOT_MECHANIC,
             _UNDYING_MECHANIC,
@@ -276,6 +283,91 @@ def closed_special_keyword_node(
     )
     if counter_activation is not None:
         return counter_activation
+    if mechanics == (_DEVOID_MECHANIC,):
+        ordinary = (
+            material_line.strip().rstrip(".").casefold()
+            == _DEVOID_MECHANIC
+        )
+        gate = explicit_capability_gate(
+            "continuous.characteristics.devoid",
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+        )
+        blockers = (
+            gate.blockers
+            if ordinary
+            else ("mechanic:devoid-unsupported-wording",)
+        )
+        residual_ids = (
+            (
+                append_residual(
+                    residuals,
+                    kind=(
+                        "dependency_contract" if ordinary else "keyword_grammar"
+                    ),
+                    text=line,
+                    span=span,
+                    reason=(
+                        "Devoid depends on a blocked typed layer-5 capability"
+                        if ordinary
+                        else "Devoid wording is outside the ordinary keyword grammar"
+                    ),
+                    blockers=blockers,
+                ),
+            )
+            if blockers
+            else ()
+        )
+        lowering = lower_ability_keyword_fragments(
+            material_line,
+            mechanics,
+        )
+        if ordinary and not lowering.handlers:
+            residual_ids += (
+                append_residual(
+                    residuals,
+                    kind="dependency_contract",
+                    text=line,
+                    span=span,
+                    reason=(
+                        "Devoid lowering did not produce its required typed "
+                        "characteristic descriptor"
+                    ),
+                    blockers=(DEVOID_FRAGMENT_HANDLER_ID,),
+                ),
+            )
+        closure = gate.closure
+        return OracleNode(
+            node_id=node_id,
+            kind="static_ability",
+            text=line,
+            span=span,
+            active_zone="all",
+            event="continuous",
+            lowerable=ordinary,
+            exact=ordinary and not residual_ids,
+            template_id=(
+                "devoid-colorless-characteristic-definition-v1"
+                if ordinary
+                else None
+            ),
+            handlers=lowering.handlers if ordinary else (),
+            runtime_coverage=("layer_5_colorless_characteristic",)
+            if ordinary
+            else (),
+            mechanics=mechanics,
+            residual_ids=residual_ids,
+            capability_dependencies=gate.capabilities,
+            capability_closure=(
+                closure.reachable if closure is not None else ()
+            ),
+            capability_profile=(
+                closure.profile if closure is not None else None
+            ),
+            capability_fingerprint=(
+                closure.fingerprint if closure is not None else None
+            ),
+        )
     renown = renown_keyword_node(
         **values,
         trusted_mechanics=trusted_mechanics,
