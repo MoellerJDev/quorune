@@ -5,6 +5,7 @@ from typing import Any, Callable, Mapping
 
 from ..errors import GameRuleError
 from . import (
+    declaration_effects,
     damage_modifiers,
     damage_life_and_turns,
     life_effects,
@@ -41,6 +42,11 @@ FAMILIES = (
         damage_modifiers.apply_effect,
     ),
     EffectFamily(
+        "declaration-effects.v1",
+        declaration_effects.OPERATIONS,
+        declaration_effects.apply_effect,
+    ),
+    EffectFamily(
         "damage-life-and-turns.v1",
         damage_life_and_turns.OPERATIONS,
         damage_life_and_turns.apply_effect,
@@ -63,6 +69,7 @@ _FAMILY_MODULES = (
     state_and_permissions,
     zones_and_attachments,
     damage_modifiers,
+    declaration_effects,
     damage_life_and_turns,
     life_effects,
     objects_stack_and_tokens,

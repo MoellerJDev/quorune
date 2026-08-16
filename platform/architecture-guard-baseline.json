@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "27c462371288829398be25929e74c1614f94a66a",
+  "baseline_commit": "f4859b02d9e5aef2bea0cdf1cee3916897d7ab53",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -1677,9 +1677,9 @@
     "physical_lines": 7811
   },
   "exception_binding": {
-    "adr": "docs/adr/0068-typed-fixed-life-cumulative-upkeep.md",
-    "allowance_fingerprint": "46738adba8163c46a8075e41445b3367b73d38243ebf009b4892d5d3da6928b0",
-    "exception_id": "ARCH-EXC-0035"
+    "adr": "docs/adr/0069-typed-temporary-declaration-restrictions.md",
+    "allowance_fingerprint": "17d6e46018089dcaf612b3b7212f2124d6b605ea3bf17c4a00355dcc159f7f9a",
+    "exception_id": "ARCH-EXC-0036"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1978,6 +1978,7 @@
     "grant_ability_fragment",
     "grant_ability_marker",
     "grant_cast_permission",
+    "grant_declaration_restriction_until_end_of_turn",
     "grant_keyword_until_end_of_turn",
     "grant_play_without_mana_cost",
     "grant_uncounterable_hexproof_from_colors_until_end",

@@ -40,6 +40,9 @@ from .ir_model import (
     SourceSpan,
 )
 from .regeneration_templates import self_regeneration_effect_template
+from .temporary_declaration_templates import (
+    activated_temporary_declaration_restriction_effect_template,
+)
 
 
 def fixed_activated_mana_node(
@@ -295,6 +298,7 @@ def _activated_effect_dependency_gate(
             "destroy_all",
             "exile_permanent",
             "explore",
+            "grant_declaration_restriction_until_end_of_turn",
             "offer_draw",
             "proliferate",
             "regenerate",
@@ -645,7 +649,16 @@ def activated_oracle_node(
     activated_damage = activated_source_damage_effect_template(
         effect_material
     )
-    if regeneration is not None:
+    declaration_restriction = (
+        activated_temporary_declaration_restriction_effect_template(
+            effect_material
+        )
+    )
+    if declaration_restriction is not None:
+        template, effects, target_schema, mechanics = (
+            declaration_restriction.compiled()
+        )
+    elif regeneration is not None:
         template, effects, target_schema, mechanics = regeneration.compiled()
     elif activated_damage is not None:
         template, effects, target_schema, mechanics = activated_damage.compiled()

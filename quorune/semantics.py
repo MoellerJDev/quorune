@@ -151,6 +151,7 @@ VALID_EFFECT_OPERATIONS = {
     "grant_uncounterable_hexproof_from_colors_until_end",
     "goad",
     "grant_cast_permission",
+    "grant_declaration_restriction_until_end_of_turn",
     "grant_play_without_mana_cost",
     "put_artifact_from_hand",
     "control_next_turn",

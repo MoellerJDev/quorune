@@ -31,6 +31,7 @@ from .node_capability_shapes import (
     fixed_target_effect_sequence_node_capabilities,
     fixed_source_effect_sequence_node_capabilities,
     fixed_target_characteristics_node_capabilities,
+    temporary_declaration_restriction_node_capabilities,
     fixed_player_counter_placement_node_capabilities,
     fixed_damage_node_capabilities,
     mass_destruction_node_capabilities,
@@ -881,6 +882,7 @@ def _targeted_effect_capabilities(
         fixed_player_counter_placement_node_capabilities,
         optional_fixed_counter_event_trigger_node_capabilities,
         fixed_target_characteristics_node_capabilities,
+        temporary_declaration_restriction_node_capabilities,
         fixed_target_effect_sequence_node_capabilities,
         fixed_source_effect_sequence_node_capabilities,
         fixed_damage_node_capabilities,
@@ -1140,6 +1142,13 @@ def capability_covered_mechanics(
         }
     ):
         covered.add("cr-611-continuous-effects")
+    if "combat.declaration.typed_components" in supplied:
+        covered.update(
+            {
+                "cr-508-declare-attackers-step",
+                "cr-509-declare-blockers-step",
+            }
+        )
     if "damage.prevention.triggered_results" in supplied:
         covered.add("cr-615-prevention-effects")
     if "counter.placement.quantity_replacement" in supplied:
