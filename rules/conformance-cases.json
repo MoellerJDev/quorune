@@ -62489,13 +62489,14 @@
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_fixed_mana_cumulative_upkeep_is_source_spanned_and_capability_closed"
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_fixed_mana_cumulative_upkeep_is_source_spanned_and_capability_closed",
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_fixed_life_cumulative_upkeep_is_source_spanned_and_capability_closed"
       ],
       "implementation_components": [
         "quorune.rules.capabilities.CapabilityRegistry"
       ],
       "notes": [
-        "Keyword heading; counter.producer.cumulative_upkeep_fixed_mana owns only the bounded fixed positive ordinary mana family."
+        "Keyword heading; the fixed-mana and fixed-life capabilities own only their bounded fixed positive printed-cost families."
       ],
       "required_scenarios": [],
       "reviewed": true,
@@ -62512,8 +62513,8 @@
     {
       "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "alternative, snow, hybrid, Phyrexian, zero, variable, and nonmana cumulative-upkeep costs remain outside the compiler grammar",
-        "cost modification and restricted-mana interactions are limited to the separately represented canonical mana-payment owner",
+        "alternative, snow, hybrid, Phyrexian, zero, variable, compound, and other nonmana cumulative-upkeep costs remain outside the compiler grammar",
+        "cost modification and restricted-mana interactions are limited to the separately represented canonical payment owners",
         "gained or copied cumulative-upkeep abilities are not propagated by this family"
       ],
       "case_id": "cr-702.24a",
@@ -62535,13 +62536,20 @@
         "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_intervening_source_identity_and_control_change_are_respected",
         "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_quantity_replacement_changes_age_counter_and_payment_together",
         "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_quantity_replacement_resume_replays_exactly",
-        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_unsupported_cumulative_upkeep_costs_remain_material_residuals"
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_payment_uses_replaced_age_count",
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_replacement_choice_is_private_and_replays",
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_unpayable_decline_and_stale_payment_fail_closed",
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_unsupported_cumulative_upkeep_costs_remain_material_residuals",
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_fixed_life_descriptor_and_adjacent_costs_fail_closed"
       ],
       "implementation_components": [
         "quorune.cumulative_upkeep.FixedManaCumulativeUpkeepSpec",
+        "quorune.cumulative_upkeep.FixedLifeCumulativeUpkeepSpec",
         "quorune.compiler.cumulative_upkeep_nodes.fixed_mana_cumulative_upkeep_node",
+        "quorune.compiler.cumulative_upkeep_nodes.fixed_life_cumulative_upkeep_node",
         "quorune.semantic_choices.payments.OptionalPaymentHandler",
-        "quorune.semantic_choices.preparation_coordination.continue_semantic_preparation"
+        "quorune.semantic_choices.preparation_coordination.continue_semantic_preparation",
+        "quorune.life_state.pay_life_cost"
       ],
       "notes": [
         "The source's pinned logical identity is rechecked for the intervening battlefield condition; a departed or returned new object makes the ability do nothing.",
@@ -62584,10 +62592,12 @@
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [
-        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_unsupported_cumulative_upkeep_costs_remain_material_residuals"
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_unsupported_cumulative_upkeep_costs_remain_material_residuals",
+        "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_fixed_life_descriptor_and_adjacent_costs_fail_closed"
       ],
       "implementation_components": [
-        "quorune.compiler.cumulative_upkeep_nodes.fixed_mana_cumulative_upkeep_node"
+        "quorune.compiler.cumulative_upkeep_nodes.fixed_mana_cumulative_upkeep_node",
+        "quorune.compiler.cumulative_upkeep_nodes.fixed_life_cumulative_upkeep_node"
       ],
       "notes": [
         "The compiler fails closed instead of collapsing multiple printed instances or charging one combined pre-replacement estimate."

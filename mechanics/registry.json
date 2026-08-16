@@ -34,7 +34,7 @@
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "1497c2508b95c38a58b5bfeb548655849d1ff5668aec53dc3b48020b5dfc0c49",
+      "sha256": "b4dcdfda4baab4cd8c89078c6f8bb761d7bd8125ebcacffc1a5e538309d2224b",
       "version": 18
     },
     {
@@ -640,7 +640,7 @@
     {
       "mechanic_id": "cr-503-upkeep-step",
       "path": "mechanics/contracts/upkeep-step.json",
-      "sha256": "f261cb4bb7062d3d0bb1211e0c4c1e8a52aef73fe4f116c8aa79f3af72c52579",
+      "sha256": "8ee524cede0986e83186d0378c630b17ba0af8fb29e190cabe85c4ea3f27e919",
       "version": 2
     },
     {
@@ -6991,16 +6991,16 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "1497c2508b95c38a58b5bfeb548655849d1ff5668aec53dc3b48020b5dfc0c49",
+      "contract_sha256": "b4dcdfda4baab4cd8c89078c6f8bb761d7bd8125ebcacffc1a5e538309d2224b",
       "contract_version": 18,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "closed fixed-counter single-target, fixed player-counter, same-kind multi-subject, normalized fixed counter zone-change trigger, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
-      "implementation_version": "counter-placement-transaction-v21",
+      "implementation_component": "closed fixed-counter single-target, fixed player-counter, same-kind multi-subject, normalized fixed counter zone-change trigger, fixed target or source counter-and-characteristic sequence, fixed counter-and-controller sequence, bounded target-set, Bolster, Support, Amass, affected-set, Proliferate, card-form entry, Saga progression, loyalty-cost, counter-quantity replacement, and fixed-mana/fixed-life cumulative-upkeep compilers/coordinators; strict semantic, cost, and replacement continuations; keyword-counter characteristic projection; counter_placement and counter_state mutation owners; semantic_runtime counter and zone replacements; and represented producers",
+      "implementation_version": "counter-placement-transaction-v22",
       "kind": "rules_section",
       "known_blockers": [
         "Bolster X, zero, negative, copied, granted, optional, repeated, conditional, modal, and compound Bolster instructions remain residual; Support X, zero, copied, granted, optional, repeated, conditional, modal, and compound Support instructions remain residual; Amass X, zero, copied, granted, optional, repeated, conditional, modal, compound, and linked-result forms remain residual; variable, distributed, different-kind, different-amount, more-than-three-subject, dynamically linked, subtype-qualified, combat-qualified, modal, conditional, and compound multi-subject or general target-set instructions remain residual",
-        "alternative, snow, hybrid, Phyrexian, zero, variable, nonmana, multiple-instance, copied, and granted cumulative upkeep remain residual; combined or modified loyalty costs and other rule-action counter producers are not yet migrated to the shared transaction",
+        "alternative, snow, hybrid, Phyrexian, zero, variable, compound, other nonmana, multiple-instance, copied, and granted cumulative upkeep remain residual; combined or modified loyalty costs and other rule-action counter producers are not yet migrated to the shared transaction",
         "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Planeswalker or Battle token entry remains outside the prospective-token boundary",
         "Read Ahead and effective copied, gained, removed, or layer-modified Saga chapter abilities remain unsupported",
         "fractional, halving, dynamic-quantity, optional, Class-level-gated, movement, removal, prevention, and other enters-with-counter replacement families remain unsupported",
@@ -7084,6 +7084,10 @@
         "test_unsupported_intrinsic_card_forms_are_material_residuals",
         "test_intrinsic_counter_model_rejects_malformed_values",
         "test_fixed_mana_cumulative_upkeep_is_source_spanned_and_capability_closed",
+        "test_fixed_life_cumulative_upkeep_is_source_spanned_and_capability_closed",
+        "test_fixed_life_payment_uses_replaced_age_count",
+        "test_fixed_life_replacement_choice_is_private_and_replays",
+        "test_fixed_life_unpayable_decline_and_stale_payment_fail_closed",
         "test_quantity_replacement_changes_age_counter_and_payment_together",
         "test_intervening_source_identity_and_control_change_are_respected",
         "test_four_player_replacement_choice_and_payment_are_seat_scoped",
@@ -8172,12 +8176,12 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/upkeep-step.json",
-      "contract_sha256": "f261cb4bb7062d3d0bb1211e0c4c1e8a52aef73fe4f116c8aa79f3af72c52579",
+      "contract_sha256": "8ee524cede0986e83186d0378c630b17ba0af8fb29e190cabe85c4ea3f27e919",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "CommanderEngine untap/upkeep entry, represented untap-event dispatch, shared semantic/delayed trigger batching, staged fixed-mana cumulative-upkeep resolution, state stabilization, priority, and exact replay",
-      "implementation_version": "upkeep-step-v2",
+      "implementation_component": "CommanderEngine untap/upkeep entry, represented untap-event dispatch, shared semantic/delayed trigger batching, staged fixed-mana and fixed-life cumulative-upkeep resolution, state stabilization, priority, and exact replay",
+      "implementation_version": "upkeep-step-v3",
       "kind": "rules_section",
       "known_blockers": [
         "phasing, day/night transition, and every other CR 502 turn-based action are not fully implemented or exposed as normalized trigger events",
@@ -8185,7 +8189,7 @@
         "the complete CR 603.3b two-part trigger-on-trigger ordering process remains incomplete",
         "additional upkeep creation and scheduling are not implemented",
         "the after-first-upkeep spell timing restriction in CR 503.2 is not represented by the timing-permission grammar",
-        "alternative, snow, hybrid, variable, nonmana, copied, granted, and multiple-instance cumulative-upkeep families remain unsupported",
+        "alternative, snow, hybrid, variable, compound, other nonmana, copied, granted, and multiple-instance cumulative-upkeep families remain unsupported",
         "the complete untap replacement, state-based-action, trigger, multiplayer, and replay interaction matrix remains incomplete"
       ],
       "mechanic_id": "cr-503-upkeep-step",
@@ -8201,6 +8205,8 @@
         "test_state_actions_precede_waiting_trigger_placement_and_priority",
         "test_mystic_remora_cumulative_upkeep_and_opponent_spell_tax",
         "test_quantity_replacement_changes_age_counter_and_payment_together",
+        "test_fixed_life_payment_uses_replaced_age_count",
+        "test_fixed_life_replacement_choice_is_private_and_replays",
         "test_intervening_source_identity_and_control_change_are_respected",
         "test_four_player_replacement_choice_and_payment_are_seat_scoped",
         "test_quantity_replacement_resume_replays_exactly",

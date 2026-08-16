@@ -60,6 +60,7 @@ VALID_EFFECT_OPERATIONS = {
     "counter_stack_target",
     "counter_unless_pay",
     "cumulative_upkeep",
+    "cumulative_upkeep_life",
     "death_return_with_counter",
     "create_token",
     "create_token_if_no_controlled_subtype",

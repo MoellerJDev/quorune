@@ -41,7 +41,7 @@
       "active player",
       "permanents with represented untap or beginning-of-upkeep abilities",
       "represented delayed beginning-of-upkeep triggers",
-      "sources with one fixed positive ordinary mana cumulative-upkeep instance"
+      "sources with one fixed positive ordinary-mana or fixed positive life cumulative-upkeep instance"
     ],
     "events": [
       "untap step begins",
@@ -70,7 +70,7 @@
     ],
     "costs": [
       "represented upkeep-trigger costs are paid only when their abilities resolve",
-      "fixed-mana cumulative-upkeep payment is multiplied by the actual age-counter count after replacement effects"
+      "fixed-mana or fixed-life cumulative-upkeep payment is multiplied by the actual age-counter count after replacement effects"
     ],
     "timing": [
       "the upkeep step performs no turn-based action",
@@ -125,13 +125,17 @@
     "late source or delayed-trigger creation",
     "unsupported additional upkeep steps",
     "unsupported after-upkeep casting restriction",
-    "fixed positive ordinary mana cumulative upkeep with replacement-aware age counters",
-    "unsupported alternative, snow, hybrid, variable, nonmana, copied, granted, and multiple-instance cumulative upkeep"
+    "fixed positive ordinary-mana or fixed positive life cumulative upkeep with replacement-aware age counters",
+    "unsupported alternative, snow, hybrid, variable, compound, other nonmana, copied, granted, and multiple-instance cumulative upkeep"
   ],
   "witness_cards": [
     {
       "name": "Mystic Remora",
       "oracle_id": "8a52f3c0-2552-4425-b2e3-5496eb2232a7"
+    },
+    {
+      "name": "Dystopia",
+      "oracle_id": "d0e6203b-cef2-470f-8c79-7b139290e2d5"
     },
     {
       "name": "Pact of Negation",
@@ -154,15 +158,17 @@
     "test_state_actions_precede_waiting_trigger_placement_and_priority",
     "test_mystic_remora_cumulative_upkeep_and_opponent_spell_tax",
     "test_quantity_replacement_changes_age_counter_and_payment_together",
+    "test_fixed_life_payment_uses_replaced_age_count",
+    "test_fixed_life_replacement_choice_is_private_and_replays",
     "test_intervening_source_identity_and_control_change_are_respected",
     "test_four_player_replacement_choice_and_payment_are_seat_scoped",
     "test_quantity_replacement_resume_replays_exactly",
     "test_pact_of_negation_delayed_payment_and_loss"
   ],
   "implementation": {
-    "component": "CommanderEngine untap/upkeep entry, represented untap-event dispatch, shared semantic/delayed trigger batching, staged fixed-mana cumulative-upkeep resolution, state stabilization, priority, and exact replay",
-    "version": "upkeep-step-v2",
-    "capability_ids": ["counter.producer.cumulative_upkeep_fixed_mana"]
+    "component": "CommanderEngine untap/upkeep entry, represented untap-event dispatch, shared semantic/delayed trigger batching, staged fixed-mana and fixed-life cumulative-upkeep resolution, state stabilization, priority, and exact replay",
+    "version": "upkeep-step-v3",
+    "capability_ids": ["counter.producer.cumulative_upkeep_fixed_life", "counter.producer.cumulative_upkeep_fixed_mana"]
   },
   "known_blockers": [
     "phasing, day/night transition, and every other CR 502 turn-based action are not fully implemented or exposed as normalized trigger events",
@@ -170,7 +176,7 @@
     "the complete CR 603.3b two-part trigger-on-trigger ordering process remains incomplete",
     "additional upkeep creation and scheduling are not implemented",
     "the after-first-upkeep spell timing restriction in CR 503.2 is not represented by the timing-permission grammar",
-    "alternative, snow, hybrid, variable, nonmana, copied, granted, and multiple-instance cumulative-upkeep families remain unsupported",
+    "alternative, snow, hybrid, variable, compound, other nonmana, copied, granted, and multiple-instance cumulative-upkeep families remain unsupported",
     "the complete untap replacement, state-based-action, trigger, multiplayer, and replay interaction matrix remains incomplete"
   ],
   "review_status": "draft"

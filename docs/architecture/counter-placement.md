@@ -632,19 +632,21 @@ when the source leaves the battlefield. Simultaneous multi-permanent Explore,
 repeated Explore, Explore replacement effects, and broader granted/copy
 propagation remain explicit residuals.
 
-One printed fixed positive ordinary mana cumulative-upkeep instance now uses a
-two-stage semantic continuation. The first stage places its age counter through
-the same replacement-aware transaction and can suspend for affected-object
-ordering. Only after that commit does the second stage read the permanent's
-actual age-counter count, calculate the payment, and issue the controller's
-payment-or-sacrifice choice. This prevents quantity replacement from changing
-the counter result without changing the cost. Resolution rechecks the pinned
-source incarnation for the keyword's intervening battlefield condition. A
-departed or returned new object makes the ability do nothing; a control change
-leaves the original trigger controller responsible for the payment and permits
-sacrifice only while that player still controls the permanent. Alternative,
-snow, hybrid, Phyrexian, zero, variable, nonmana, copied, granted, and
-multiple-instance forms remain precise residuals.
+One printed fixed positive ordinary-mana or fixed positive life
+cumulative-upkeep instance uses a two-stage semantic continuation. The first
+stage places its age counter through the same replacement-aware transaction and
+can suspend for affected-object ordering. Only after that commit does the
+second stage read the permanent's actual age-counter count, calculate the
+payment, and issue the controller's payment-or-sacrifice choice. Mana payments
+use the canonical mana owner; life payments use the canonical nonreplaceable
+life-cost owner. This prevents quantity replacement from changing the counter
+result without changing the cost. Resolution rechecks the pinned source
+incarnation for the keyword's intervening battlefield condition. A departed or
+returned new object makes the ability do nothing; a control change leaves the
+original trigger controller responsible for the payment and permits sacrifice
+only while that player still controls the permanent. Alternative, snow,
+hybrid, Phyrexian, zero, variable, compound, other nonmana, copied, granted,
+and multiple-instance forms remain precise residuals.
 
 The compiler also owns one bounded mandatory casting-cost family: “As an
 additional cost to cast this spell, put [fixed number] [counter kind]
@@ -668,7 +670,8 @@ The following producers and wordings remain deliberately outside this slice:
 - negative loyalty counter-removal costs and player-counter removal;
 - optional, variable, alternate, compound, multiple, noncreature, and
   non-counter casting costs outside the bounded fixed creature-counter family;
-- cumulative-upkeep forms outside the fixed positive ordinary mana family;
+- cumulative-upkeep forms outside the fixed positive ordinary-mana and fixed
+  positive life families;
 - Support X or zero and conditional, optional, repeated, copied, granted,
   modal, or compound Support instructions, plus variable, distributed, dynamic,
   subtype-qualified, combat-qualified, modal, conditional, compound, and

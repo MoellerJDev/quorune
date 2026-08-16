@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "8ecf1db979fc2a861ae66c291a7ef8662bcb95f8",
+  "baseline_commit": "27c462371288829398be25929e74c1614f94a66a",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -1677,9 +1677,9 @@
     "physical_lines": 7811
   },
   "exception_binding": {
-    "adr": "docs/adr/0067-typed-ordinary-station-activation.md",
-    "allowance_fingerprint": "4c2f46124b03e3c1b497af0b81a65b91be5c26f5d534f49be0e68f88fd97eb48",
-    "exception_id": "ARCH-EXC-0034"
+    "adr": "docs/adr/0068-typed-fixed-life-cumulative-upkeep.md",
+    "allowance_fingerprint": "46738adba8163c46a8075e41445b3367b73d38243ebf009b4892d5d3da6928b0",
+    "exception_id": "ARCH-EXC-0035"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1823,7 +1823,7 @@
     },
     {
       "file": "quorune/oracle_ir.py",
-      "logical_lines": 200,
+      "logical_lines": 157,
       "symbol": "_effect_template"
     },
     {
@@ -1938,6 +1938,7 @@
     "create_token_if_no_controlled_subtype",
     "create_treasure",
     "cumulative_upkeep",
+    "cumulative_upkeep_life",
     "damage",
     "damage_each_opponent",
     "damage_fixed_set",

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 104,
+  "registry_version": 105,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -1056,6 +1056,33 @@
       "dependency_fail_closed_rationale": "The explicit compiler gate retains a material dependency residual whenever canonical counter quantity replacement is not trusted for the active profile.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_dependency_and_compiler_mutations_fail_closed removes the fixed-mana cumulative-upkeep node and proves the previously exact source-spanned trigger becomes a material residual.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "counter.producer.cumulative_upkeep_fixed_life",
+      "version": 1,
+      "official_rules": ["101.4", "118.4", "118.12", "119.4", "122.1", "122.6", "603.3", "614.16", "702.24", "702.24a", "702.24b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one ordinary fixed-life cumulative-upkeep instance by placing its age counter through the canonical replacement-aware transaction before calculating the optional life payment from the actual committed age-counter count.",
+        "inputs": ["one printed cumulative-upkeep instance", "fixed positive life cost per age counter", "current source identity and controller", "actual post-replacement age-counter count", "current trigger-controller life total"],
+        "outputs": ["source-spanned upkeep trigger", "identity-pinned intervening-condition recheck", "replacement-aware age-counter placement", "payment-or-sacrifice choice priced from committed state", "typed nonreplaceable life-payment or zone-move intent", "seat-scoped choice projection", "exact continuation replay"],
+        "exclusions": ["mana, alternative, snow, hybrid, Phyrexian, variable, compound, or non-life costs", "multiple instances on one object", "gained or copied cumulative-upkeep abilities", "life-cost modification or prevention", "counter movement, removal, or unrepresented quantity replacements"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.cumulative_upkeep.FixedLifeCumulativeUpkeepSpec", "quorune.compiler.cumulative_upkeep_nodes.fixed_life_cumulative_upkeep_node", "quorune.rules.node_capability_shapes.fixed_life_cumulative_upkeep_node_capabilities", "quorune.semantic_choices.payments.OptionalPaymentHandler", "quorune.semantic_choices.preparation_coordination.continue_semantic_preparation", "quorune.semantic_runtime.intents.PlaceCountersIntent", "quorune.semantic_runtime.intents.PayLifeIntent", "quorune.semantic_runtime.intents.ZoneMoveIntent", "quorune.life_state.pay_life_cost"],
+      "positive_tests": ["test_fixed_life_cumulative_upkeep_is_source_spanned_and_capability_closed", "test_fixed_life_payment_uses_replaced_age_count"],
+      "negative_tests": ["test_fixed_life_descriptor_and_adjacent_costs_fail_closed", "test_fixed_life_unpayable_decline_and_stale_payment_fail_closed"],
+      "interaction_tests": ["test_fixed_life_payment_uses_replaced_age_count", "test_fixed_life_replacement_choice_is_private_and_replays"],
+      "multiplayer_tests": ["test_fixed_life_replacement_choice_is_private_and_replays"],
+      "privacy_tests": ["test_fixed_life_replacement_choice_is_private_and_replays"],
+      "replay_tests": ["test_fixed_life_replacement_choice_is_private_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The explicit compiler gate retains a material dependency residual whenever canonical counter quantity replacement is not trusted for the active profile.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler mutation removes the fixed-life cumulative-upkeep node, while the runtime evidence requires a typed PayLifeIntent priced from the committed replacement-aware age-counter result.",
       "blockers": [],
       "status": "trusted"
     },

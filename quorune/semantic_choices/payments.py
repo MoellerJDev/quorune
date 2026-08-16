@@ -7,6 +7,7 @@ from ..replacement.immutable import FrozenMap
 from ..semantic_runtime.intents import (
     CounterStackIntent,
     EliminatePlayersIntent,
+    PayLifeIntent,
     PayManaCostIntent,
     PlaceCountersIntent,
     ZoneMoveIntent,
@@ -24,6 +25,7 @@ from .model import (
 
 
 _MANA_KEYS = ("GENERIC", "W", "U", "B", "R", "G", "C")
+_CUMULATIVE_MODES = frozenset({"cumulative", "cumulative_life"})
 
 
 def _requirements(value: Mapping[str, Any]) -> dict[str, int]:
@@ -59,6 +61,12 @@ def _strict_fixed_mana_requirements(
             f"{label} fixed mana cost must be positive"
         )
     return result
+
+
+def _strict_positive_amount(value: Any, *, label: str) -> int:
+    if type(value) is not int or value <= 0:
+        raise SemanticChoiceError(f"{label} must be a positive integer")
+    return value
 
 
 def _current_pay_or_sacrifice_source(
@@ -116,7 +124,7 @@ def _pay_or_sacrifice_details(
             f"The {mode.replace('_', '-')} source condition changed during its choice"
         )
     details: dict[str, Any] = {"source": source_ref}
-    if mode == "cumulative":
+    if mode in _CUMULATIVE_MODES:
         details["age_counters"] = source.counters.get("age", 0)
     return details
 
@@ -145,7 +153,7 @@ def _declined_pay_or_sacrifice(
                 destination="graveyard",
                 reason=(
                     "cumulative upkeep not paid"
-                    if mode == "cumulative"
+                    if mode in _CUMULATIVE_MODES
                     else "Echo not paid"
                 ),
                 controlled_only=True,
@@ -241,11 +249,128 @@ class OptionalPaymentHandler:
             age,
         )
 
+    def _prepare_cumulative_life(
+        self,
+        effect: Mapping[str, Any],
+        context: SemanticChoiceContext,
+    ) -> SemanticChoicePreparation:
+        allowed = {"op", "player", "source", "life_per_counter", "stage"}
+        unknown = sorted(set(effect) - allowed)
+        required = {"op", "player", "source", "life_per_counter"}
+        missing = sorted(required - set(effect))
+        if missing or unknown:
+            details = []
+            if missing:
+                details.append("missing " + ", ".join(missing))
+            if unknown:
+                details.append("unknown " + ", ".join(unknown))
+            raise SemanticChoiceError(
+                "Malformed fixed-life cumulative upkeep effect: "
+                + "; ".join(details)
+            )
+        if effect.get("op") != self.operation:
+            raise SemanticChoiceError(
+                "Fixed-life cumulative upkeep operation is malformed"
+            )
+        if effect.get("player") != context.actor:
+            raise SemanticChoiceError(
+                "Fixed-life cumulative upkeep player is malformed"
+            )
+        stage = effect.get("stage")
+        if stage not in {None, "pay"}:
+            raise SemanticChoiceError(
+                "Unknown fixed-life cumulative upkeep stage"
+            )
+        per_counter = _strict_positive_amount(
+            effect.get("life_per_counter"),
+            label="Cumulative upkeep life per age counter",
+        )
+        source_ref = str(effect.get("source") or "")
+        source = _current_pay_or_sacrifice_source(
+            context.query,
+            source_ref,
+            context.source_logical_object_id,
+        )
+        if source is None:
+            return SemanticChoicePreparation(
+                request=None,
+                continuation_effect=FrozenMap(effect),
+                auto_continue=AutoContinue(
+                    reason=(
+                        "fixed-life cumulative-upkeep intervening condition "
+                        "is false"
+                    )
+                ),
+            )
+        if stage is None:
+            pay_effect = FrozenMap({**dict(effect), "stage": "pay"})
+            return SemanticChoicePreparation(
+                request=None,
+                continuation_effect=FrozenMap(effect),
+                preparation_intents=(
+                    PlaceCountersIntent(
+                        actor=source.controller,
+                        object_refs=(source_ref,),
+                        counter_name="age",
+                        amount=1,
+                        reason=context.stack_label,
+                        source_ref=context.source_ref,
+                    ),
+                ),
+                auto_continue=AutoContinue(
+                    reason="age counter placement committed",
+                    prepend_effects=(pay_effect,),
+                ),
+            )
+        age = source.counters.get("age", 0)
+        if type(age) is not int or age < 0:
+            raise SemanticChoiceError(
+                "Cumulative upkeep age counters are malformed"
+            )
+        life_cost = per_counter * age
+        payable = context.query.player_life(context.actor) >= life_cost
+        continuation_effect = FrozenMap(
+            {
+                **dict(effect),
+                "_choice_actor": context.actor,
+                "_life_payment": life_cost,
+                "_source_ref": source.ref,
+                "_source_logical_object_id": (
+                    context.source_logical_object_id
+                ),
+                "_stack_label": context.stack_label,
+            }
+        )
+        return SemanticChoicePreparation(
+            request=SemanticChoiceRequest(
+                prompt=(
+                    f"Pay {life_cost} life for cumulative upkeep or sacrifice "
+                    f"{source.printed_name}."
+                ),
+                choice=ScalarChoice(
+                    field_name="pay",
+                    legal_values=(True, False) if payable else (False,),
+                ),
+                public_context=FrozenMap(
+                    {
+                        "stack": context.stack_ref,
+                        "operation": self.operation,
+                        "life_cost": life_cost,
+                        "age_counters": age,
+                        "payable": payable,
+                    }
+                ),
+            ),
+            continuation_effect=continuation_effect,
+        )
+
     def prepare(
         self,
         effect: Mapping[str, Any],
         context: SemanticChoiceContext,
     ) -> SemanticChoicePreparation:
+        if self.mode == "cumulative_life":
+            return self._prepare_cumulative_life(effect, context)
         if self.mode == "cumulative":
             allowed = {"op", "player", "source", "cost_per_counter", "stage"}
             unknown = sorted(set(effect) - allowed)
@@ -270,9 +395,7 @@ class OptionalPaymentHandler:
             )
             source_ref = str(effect.get("source") or "")
             source = _current_pay_or_sacrifice_source(
-                context.query,
-                source_ref,
-                context.source_logical_object_id,
+                context.query, source_ref, context.source_logical_object_id
             )
             if source is None:
                 return SemanticChoicePreparation(
@@ -391,6 +514,48 @@ class OptionalPaymentHandler:
             preparation_intents=(),
         )
 
+    def _complete_cumulative_life(
+        self,
+        effect: Mapping[str, Any],
+        response: Mapping[str, Any],
+        query: SemanticChoiceQuery,
+        actor: str,
+    ) -> SemanticChoiceCompletion:
+        life_payment = effect.get("_life_payment")
+        if type(life_payment) is not int or life_payment < 0:
+            raise SemanticChoiceError(
+                "Cumulative upkeep life payment is malformed"
+            )
+        pay = _payment_choice(response)
+        if pay and query.player_life(actor) < life_payment:
+            raise SemanticChoiceError(
+                "The cumulative upkeep life payment is no longer payable"
+            )
+        if pay:
+            source_ref = str(effect.get("_source_ref") or "")
+            _pay_or_sacrifice_details(
+                self.mode,
+                effect,
+                query,
+                source_ref,
+            )
+            return SemanticChoiceCompletion(
+                intents=(
+                    PayLifeIntent(
+                        actor=actor,
+                        player=actor,
+                        amount=life_payment,
+                        reason=str(effect["_stack_label"]),
+                    ),
+                )
+            )
+        return _declined_pay_or_sacrifice(
+            self.mode,
+            effect,
+            actor,
+            query,
+        )
+
     def complete(
         self,
         continuation: SemanticChoiceContinuation,
@@ -399,6 +564,10 @@ class OptionalPaymentHandler:
     ) -> SemanticChoiceCompletion:
         effect = continuation.effect
         actor = str(effect["_choice_actor"])
+        if self.mode == "cumulative_life":
+            return self._complete_cumulative_life(
+                effect, response, query, actor
+            )
         requirements = _completion_requirements(self.mode, effect)
         pay = _payment_choice(response)
         if pay and not query.cost_is_affordable(actor, requirements):
@@ -466,7 +635,7 @@ class OptionalPaymentHandler:
                     ),
                 )
             )
-        if self.mode in {"cumulative", "echo"}:
+        if self.mode in {*_CUMULATIVE_MODES, "echo"}:
             return _declined_pay_or_sacrifice(
                 self.mode,
                 effect,
@@ -530,6 +699,58 @@ PAYMENT_CHOICE_HANDLERS = (
         default_cost=FrozenMap({"GENERIC": 1}),
         capability_dependencies=(
             "counter.producer.cumulative_upkeep_fixed_mana",
+        ),
+        continuation_fields=(
+            "player",
+            "cost_per_counter",
+            "source",
+            "stage",
+            "_choice_actor",
+            "_requirements",
+            "_source_ref",
+            "_source_logical_object_id",
+            "_stack_label",
+        ),
+        projected_fields=(
+            "prompt",
+            "cost",
+            "age_counters",
+            "payable",
+            "legal_actions.choice_schema.legal_values",
+        ),
+    ),
+    OptionalPaymentHandler(
+        operation="cumulative_upkeep_life",
+        handler_id="choice.payment.cumulative-upkeep-life.v1",
+        mode="cumulative_life",
+        prompt="Pay fixed-life cumulative upkeep or sacrifice the permanent.",
+        default_cost=FrozenMap(),
+        capability_dependencies=(
+            "counter.producer.cumulative_upkeep_fixed_life",
+        ),
+        rule_references=("CR 118.4", "CR 118.12", "CR 702.24"),
+        private_data=("actor current life total",),
+        continuation_fields=(
+            "player",
+            "life_per_counter",
+            "source",
+            "stage",
+            "_choice_actor",
+            "_life_payment",
+            "_source_ref",
+            "_source_logical_object_id",
+            "_stack_label",
+        ),
+        projected_fields=(
+            "prompt",
+            "life_cost",
+            "age_counters",
+            "payable",
+            "legal_actions.choice_schema.legal_values",
+        ),
+        mutation_path=("PayLifeIntent", "typed decline intent"),
+        test_modules=(
+            "tests.test_cumulative_upkeep_counter_placement",
         ),
     ),
     OptionalPaymentHandler(

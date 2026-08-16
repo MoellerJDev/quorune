@@ -3149,6 +3149,42 @@
       "capability_ids": ["continuous.characteristics.devoid"],
       "interaction_order": 2,
       "assertion": "Void Shatter's independent typed Devoid definition executes without admitting its unsupported self-replacement and replacement-ordering boundary."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_fixed_life_payment_uses_replaced_age_count",
+      "piece_ids": ["capability.counter.placement.quantity_replacement", "capability.counter.producer.cumulative_upkeep_fixed_life"],
+      "capability_ids": ["counter.placement.quantity_replacement", "counter.producer.cumulative_upkeep_fixed_life"],
+      "interaction_order": 2,
+      "assertion": "A compiled fixed-life cumulative-upkeep trigger places its age counter through quantity replacement and prices the canonical life payment from the committed replacement result."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.damage-prevention"],
+      "capability_ids": ["counter.producer.cumulative_upkeep_fixed_life"],
+      "interaction_order": 2,
+      "assertion": "The dedicated pair subtest compiles a fixed-life cumulative-upkeep ability beside unresolved damage-prevention prose and proves the complete CardProgram remains unavailable at strict runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.replacement-applicability"],
+      "capability_ids": ["counter.producer.cumulative_upkeep_fixed_life"],
+      "interaction_order": 2,
+      "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves replacement applicability cannot be inferred for the unresolved sibling."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["counter.producer.cumulative_upkeep_fixed_life"],
+      "interaction_order": 2,
+      "assertion": "The dedicated pair subtest keeps unsupported self-replacement and prevention ordering outside trust while preserving the independently typed fixed-life upkeep ability."
     }
   ]
 }

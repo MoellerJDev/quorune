@@ -56,7 +56,13 @@ def keyword_mechanics(
         if lower in _KNOWN_BARE_KEYWORDS or lower in known:
             mechanics.append(lower)
             continue
-        match = _KEYWORD_WITH_VALUE.fullmatch(part)
+        keyword_part = re.sub(
+            r"^(Cumulative upkeep)[—–]\s*",
+            r"\1 ",
+            part,
+            flags=re.IGNORECASE,
+        )
+        match = _KEYWORD_WITH_VALUE.fullmatch(keyword_part)
         if match and match.group("name").casefold() in known:
             mechanics.append(match.group("name").casefold())
             continue

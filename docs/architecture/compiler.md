@@ -68,6 +68,13 @@ activated contexts. Optional, modal, conditional, linked-result, pronoun,
 variable, repeated, multi-target, quoted-boundary, parenthetical-boundary, and
 larger sequences remain source-spanned residuals.
 
+`compiler/cumulative_upkeep_nodes.py` owns the closed printed
+cumulative-upkeep grammar. It lowers one fixed positive ordinary-mana cost or
+one em-dash-delimited fixed positive life cost to a source-spanned upkeep
+trigger. Both forms place the age counter before calculating the optional
+payment and require the shared replacement-aware counter owner; unsupported
+costs and additional cumulative-upkeep instances remain material residuals.
+
 `compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
 It accepts only live battlefield sets representable by `ObjectQuerySpec`: a
 source-controller relation over closed type, pinned creature-subtype, color,
