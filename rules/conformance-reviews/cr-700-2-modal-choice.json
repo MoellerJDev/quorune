@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 700.2 — Fixed Choose one modal spells",
+  "cases": [
+    {
+      "rule_id": "700.2",
+      "rule_text_sha256": "5782a855b79d47bd401c54c3de8b14c18723cb85bf95a0da62184883afb4d8a5",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.modal_templates.FixedChooseOneModalSpellTemplate", "quorune.rules.capabilities.CapabilityRegistry"],
+      "executable_test_ids": ["tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_actual_fixed_choose_one_corpus_is_capability_closed"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["choice.modal.fixed_one owns only complete ordinary two- or three-mode Choose one instant and sorcery faces whose every branch already has an independent typed effect owner."]
+    },
+    {
+      "rule_id": "700.2a",
+      "rule_text_sha256": "02eb0f261db68a9436e2d2e3ba61f519ebdf355975b5c8661e0d7ae54fa03286",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.modal_templates.fixed_choose_one_modal_spell_template", "quorune.targets.available_modes", "quorune.targets.target_plan", "quorune.targets.mode_effects", "CommanderEngine._cast", "CommanderEngine._continue_resolution"],
+      "executable_test_ids": ["tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_unsupported_modal_grammars_remain_material_residuals", "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays", "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_modal_target_revalidation_fizzles_without_running_other_mode"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "blockers": ["choose two, choose one or more, choose one or both, repeatable modes, and conditional mode-count instructions are not lowered", "modal activated and triggered abilities, Spree, Escalate, Entwine, nested modes, and copied-mode alterations remain outside this bounded compiler owner"],
+      "notes": ["The bounded fixed Choose one path advertises only feasible modes, validates the selected mode and its targets atomically, records the choice on the stack item, revalidates only the chosen target plan, and resolves only the selected branch; every unsupported modal family stays material residual."]
+    }
+  ]
+}

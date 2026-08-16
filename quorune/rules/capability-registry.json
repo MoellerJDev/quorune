@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 106,
+  "registry_version": 107,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -4944,6 +4944,33 @@
       "dependency_fail_closed_rationale": "",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_damage_result_replacement_component_mutants_are_killed replaces the fixed multiplier with identity, while test_tampered_semantic_life_intent_fails_closed_without_mutation changes the resumable input; the result and rollback assertions reject both survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "choice.modal.fixed_one",
+      "version": 1,
+      "official_rules": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and announce exactly one mode from an ordinary two- or three-mode Choose one instant or sorcery, then resolve only that mode through its existing typed effect owners.",
+        "inputs": ["one complete instant or sorcery face", "an exact Choose one header", "two or three ordered bullet modes", "one selected stable mode ID", "independently capability-closed effects and targets for every mode"],
+        "outputs": ["one authoritative modal spell program", "mode-specific legal target projection", "announcement-time mode and target commitment", "resolution of only the selected mode", "exact child capability closure"],
+        "exclusions": ["choose two, choose one or more, choose one or both, repeatable modes, entwine, spree, escalate, conditional mode counts, nonspell abilities, nonbullet text, nested modes, unsupported or empty modes", "a mode with more than one independent target schema", "any mode lacking an existing trusted compiler and runtime owner"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.modal_templates.FixedChooseOneModalSpellTemplate", "quorune.compiler.modal_templates.fixed_choose_one_modal_spell_template", "quorune.rules.modal_capability_shapes.fixed_choose_one_modal_branches", "quorune.rules.capabilities.capability_dependencies_for_node", "quorune.targets.available_modes", "quorune.targets.target_plan", "quorune.targets.mode_effects", "CommanderEngine._cast", "CommanderEngine._continue_resolution"],
+      "positive_tests": ["test_actual_fixed_choose_one_corpus_is_capability_closed"],
+      "negative_tests": ["test_modal_parser_and_capability_shape_fail_closed", "test_unsupported_modal_grammars_remain_material_residuals"],
+      "interaction_tests": ["test_compiled_modal_choice_resolves_only_selected_mode_and_replays"],
+      "multiplayer_tests": ["test_compiled_modal_choice_resolves_only_selected_mode_and_replays"],
+      "privacy_tests": ["test_compiled_modal_choice_resolves_only_selected_mode_and_replays"],
+      "replay_tests": ["test_compiled_modal_choice_resolves_only_selected_mode_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The modal shape reconstructs every branch with its own exact mechanics, effects, and target schema; any malformed branch, missing child capability owner, or uncovered child mechanic rejects the entire modal node.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_modal_compiler_mutation_is_killed removes modal production and proves the real card returns to material residuals instead of retaining exact trust.",
       "blockers": [],
       "status": "trusted"
     },

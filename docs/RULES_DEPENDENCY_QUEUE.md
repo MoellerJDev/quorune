@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "e2246d679fdd88d2db0602e81a1ad5cf1f440606494acdf577bb79cf12e20ac2"
+verified: "ec0226c7d81e545c1a1985faf4dccfcdcf9a9c0daf3b7ef082c794ac154a94e4"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,16 +11,16 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `68faafaf7f32e4a3248a7e17979fcb50e6298951fb819c715e05eb76564563f0`
+Source fingerprint: `df2ff889dc79f9939fd659b32bc38abfba48e20cadedd7fca5b39ab6022572ef`
 
 ## Current top-level state
 
 - Pinned rules: `3300`
-- Queued rules: `2912`
+- Queued rules: `2911`
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `frontier:effect_clause:destroy-target`
+- Selected cross-program work: `frontier:effect_clause:unparsed-choose-one`
 - Selected work class: `compiler_harvest`
 
 ## Cross-program work selection
@@ -31,7 +31,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `frontier:effect_clause:destroy-target` | `compiler_harvest` | 4 | 111 | 0 | 0 |
+| 1 | selected | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 273 | 0 | 0 |
 | 2 | deferred | `frontier:effect_clause:exile` | `compiler_harvest` | 17 | 100 | 0 | 0 |
 | 3 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 26 | 123 | 0 | 0 |
 | 4 | deferred | `frontier:keyword_dependency:morph` | `card_family` | 37 | 141 | 0 | 0 |
