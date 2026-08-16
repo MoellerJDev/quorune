@@ -79,6 +79,7 @@ class DirectPermanentTargetSpec:
 
     types_any: tuple[str, ...] = ()
     types_all: tuple[str, ...] = ()
+    types_none: tuple[str, ...] = ()
     subtypes_any: tuple[str, ...] = ()
     subtypes_none: tuple[str, ...] = ()
     keywords_all: tuple[str, ...] = ()
@@ -93,6 +94,7 @@ class DirectPermanentTargetSpec:
         for field_name in (
             "types_any",
             "types_all",
+            "types_none",
             "subtypes_any",
             "subtypes_none",
             "keywords_all",
@@ -107,9 +109,19 @@ class DirectPermanentTargetSpec:
             "colors_none",
             _canonical_colors(self.colors_none, field="colors_none"),
         )
-        if self.types_any and self.types_all:
+        if (
+            sum(
+                bool(value)
+                for value in (
+                    self.types_any,
+                    self.types_all,
+                    self.types_none,
+                )
+            )
+            > 1
+        ):
             raise ValueError(
-                "Direct permanent targets cannot mix any/all type predicates"
+                "Direct permanent targets require one type predicate"
             )
         if self.types_any and (
             len(self.types_any) > 4
@@ -120,12 +132,35 @@ class DirectPermanentTargetSpec:
             )
         if self.types_all not in _DIRECT_TYPE_ALL_SHAPES and self.types_all:
             raise ValueError("Direct permanent target type conjunction is unsupported")
+        if self.types_none and self.types_none != ("land",):
+            raise ValueError(
+                "Direct permanent excluded types require the closed nonland predicate"
+            )
+        if self.types_none and any(
+            (
+                self.subtypes_any,
+                self.subtypes_none,
+                self.keywords_all,
+                self.colors_none,
+                self.colorless is not None,
+                self.state_predicate is not None,
+                self.commander is not None,
+            )
+        ):
+            raise ValueError(
+                "Direct permanent nonland targets cannot mix predicates"
+            )
         if self.types_all == ("creature",) and not self.keywords_all:
             raise ValueError(
                 "Direct permanent creature conjunction requires a keyword predicate"
             )
         if self.subtypes_any:
-            if self.types_any or self.types_all or len(self.subtypes_any) > 8:
+            if (
+                self.types_any
+                or self.types_all
+                or self.types_none
+                or len(self.subtypes_any) > 8
+            ):
                 raise ValueError(
                     "Direct permanent subtype targets require one closed disjunction"
                 )
@@ -214,6 +249,8 @@ class DirectPermanentTargetSpec:
             predicate = "-or-".join(self.types_any)
         elif self.types_all:
             predicate = "-".join(self.types_all)
+        elif self.types_none:
+            predicate = "nonland-permanent"
         elif self.subtypes_any:
             predicate = "-or-".join(self.subtypes_any)
         else:
@@ -258,6 +295,7 @@ class DirectPermanentTargetSpec:
 
         return bool(
             self.types_all
+            or self.types_none
             or self.keywords_all
             or len(self.types_any) > 1
             or len(self.subtypes_any) > 1
@@ -279,6 +317,7 @@ class DirectPermanentTargetSpec:
         for field_name in (
             "types_any",
             "types_all",
+            "types_none",
             "subtypes_any",
             "subtypes_none",
             "keywords_all",
@@ -315,6 +354,7 @@ class DirectPermanentTargetSpec:
             "count",
             "types_any",
             "types_all",
+            "types_none",
             "subtypes_any",
             "subtypes_none",
             "keywords_all",
@@ -349,6 +389,7 @@ class DirectPermanentTargetSpec:
         spec = cls(
             types_any=tuple(schema.get("types_any", ())),
             types_all=tuple(schema.get("types_all", ())),
+            types_none=tuple(schema.get("types_none", ())),
             subtypes_any=tuple(schema.get("subtypes_any", ())),
             subtypes_none=tuple(schema.get("subtypes_none", ())),
             keywords_all=tuple(schema.get("keywords_all", ())),

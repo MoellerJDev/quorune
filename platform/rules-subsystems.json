@@ -399,6 +399,11 @@
         "candidate_id": "compiler:typed-direct-target-destruction",
         "selected_over": "rules:counter-producer-replacement-closure",
         "reason": "The selected counter-producer closure remained an unknown-gain queue item after Reinforce, while the generated frontier measured the coherent destroy-target effect family at 21 exact Commander cards, 130 exact abilities, and 130 removable material residuals. The selector now admits and ranks harvests that cross the established 50-card, 100-ability, or 100-residual threshold, allowing this family to reuse the shared typed direct-permanent target owner without a destruction-specific predicate vocabulary."
+      },
+      {
+        "candidate_id": "compiler:typed-direct-target-exile",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "The generated rank-one choose-one header family has zero sole blockers and all 273 occurrences still require sibling grammar. The rank-two exile frontier is actionable but decomposes into distinct battlefield-target, graveyard, mass, cost, library, and linked-result owners; a pinned-corpus probe selected its existing-owner direct-target slice at 18 exact abilities across 17 cards, including seven complete Commander cards. This slice reuses DirectPermanentTargetSpec and leaves combat-state, numeric-characteristic, mixed type/subtype, hidden-zone, mass, cost, and linked exile grammar residual."
       }
     ]
   },

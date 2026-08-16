@@ -3464,20 +3464,20 @@
     },
     {
       "id": "permanent.exile.effect",
-      "version": 1,
+      "version": 2,
       "official_rules": ["400.2", "400.7", "406.1", "406.2", "608.2c", "701.13", "701.13a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
         "summary": "Compile and execute one mandatory direct-target instruction that moves a phased-in battlefield permanent toward exile through target revalidation and a typed precommit transaction owned by the canonical replacement-aware zone-change path.",
-        "inputs": ["closed typed direct-target clause", "revalidated phased-in battlefield permanent", "physical and logical object identity", "current owner and controller", "represented destination-replacement selections"],
+        "inputs": ["closed shared direct-permanent target descriptor", "revalidated phased-in battlefield permanent", "current represented effective target characteristics and public state when required", "physical and logical object identity", "current owner and controller", "represented destination-replacement selections"],
         "outputs": ["requested exile zone event", "new logical object identity", "replacement-aware final destination", "owner-indexed public exile presentation", "public typed result journal"],
-        "exclusions": ["exile from hand, library, graveyard, command, or stack", "mass, multi-target, optional, modal, conditional, qualified, linked-result, cost, or temporary-exile clauses", "face-down exile, linked exile piles, return permissions, and cast-from-exile permissions", "complete type-changing, copy, token, commander-replacement, and dependency interactions beyond the represented zone-change owner; cards representing those interactions remain material residuals and fail match trust closed"]
+        "exclusions": ["exile from hand, library, graveyard, command, or stack", "mass, multi-target, optional, modal, conditional, combat-state, mana-value, numeric-characteristic, mixed type/subtype, linked-result, cost, or temporary-exile clauses", "face-down exile, linked exile piles, return permissions, and cast-from-exile permissions", "unrepresented copy, token, commander-replacement, and dependency interactions beyond the shared direct-target and zone-change owners; cards representing those interactions remain material residuals and fail match trust closed"]
       },
       "dependencies": ["target.revalidate_resolution"],
-      "implementation_components": ["quorune.compiler.exile_templates.TargetedExileEffectTemplate", "quorune.rules.node_capability_shapes.targeted_exile_node_capabilities", "quorune.semantic_runtime.permanent_exile_handlers.ExilePermanentHandler", "quorune.rules.single_object_zone_transition.prepare_single_object_zone_transition", "quorune.rules.single_object_zone_transition.validate_single_object_zone_transition_plan", "quorune.rules.single_object_zone_transition.commit_prevalidated_single_object_zone_transition", "quorune.permanent_exile.prepare_permanent_exile", "quorune.permanent_exile.commit_permanent_exile"],
-      "positive_tests": ["test_spell_trigger_and_activated_contexts_share_targeted_exile_lowering", "test_control_changed_permanent_exiles_to_owner_public_zone", "test_exile_destination_replacement_preserves_typed_result"],
+      "implementation_components": ["quorune.compiler.direct_target.DirectPermanentTargetSpec", "quorune.compiler.exile_templates.TargetedExileEffectTemplate", "quorune.rules.node_capability_shapes.targeted_exile_node_capabilities", "quorune.semantic_runtime.permanent_exile_handlers.ExilePermanentHandler", "quorune.rules.single_object_zone_transition.prepare_single_object_zone_transition", "quorune.rules.single_object_zone_transition.validate_single_object_zone_transition_plan", "quorune.rules.single_object_zone_transition.commit_prevalidated_single_object_zone_transition", "quorune.permanent_exile.prepare_permanent_exile", "quorune.permanent_exile.commit_permanent_exile"],
+      "positive_tests": ["test_spell_trigger_and_activated_contexts_share_targeted_exile_lowering", "test_pinned_direct_target_exile_family_harvests_seven_cards", "test_control_changed_permanent_exiles_to_owner_public_zone", "test_exile_destination_replacement_preserves_typed_result"],
       "negative_tests": ["test_unsupported_exile_variants_remain_material_residuals", "test_targeted_exile_shape_mutants_fail_closed", "test_exile_phased_and_stale_permanents_fail_before_mutation"],
-      "interaction_tests": ["test_exile_destination_replacement_preserves_typed_result", "test_indestructible_and_shield_do_not_prevent_exile"],
+      "interaction_tests": ["test_compiled_tapped_exile_filters_and_revalidates_target", "test_exile_destination_replacement_preserves_typed_result", "test_indestructible_and_shield_do_not_prevent_exile"],
       "multiplayer_tests": ["test_compiled_exile_is_multiplayer_public_and_replays"],
       "privacy_tests": ["test_compiled_exile_is_multiplayer_public_and_replays"],
       "replay_tests": ["test_compiled_exile_is_multiplayer_public_and_replays"],
@@ -4227,7 +4227,7 @@
         "summary": "Compile one closed direct-permanent target predicate and enforce its current effective types, subtypes, colors, keywords, controller relation, and source exclusion identically at offer, command-validation, and resolution time.",
         "inputs": ["one public battlefield permanent", "canonical effective card types, subtypes, and colors", "canonical effective keyword set", "acting controller", "stable source identity", "one immutable typed direct-target descriptor"],
         "outputs": ["deterministic public legal-target set", "submitted-command verdict", "resolution-time CR 608.2b revalidation", "exact replay"],
-        "exclusions": ["hidden-zone targets", "arbitrary Oracle-text predicates", "modified, combat-state, attachment-state, token, name, mana-value, or owner predicates", "colors outside the represented nonblack and colorless creature forms", "negative subtypes outside the represented non-Human creature form", "keywords other than the represented Flying predicate", "noncreature subtypes other than Vehicle", "target-changing effects"]
+        "exclusions": ["hidden-zone targets", "arbitrary Oracle-text predicates", "modified, combat-state, attachment-state, token, name, mana-value, or owner predicates", "colors outside the represented nonblack and colorless creature forms", "negative types outside the represented nonland permanent form", "negative subtypes outside the represented non-Human creature form", "keywords other than the represented Flying predicate", "noncreature subtypes other than Vehicle", "target-changing effects"]
       },
       "dependencies": ["target.revalidate_resolution"],
       "implementation_components": ["quorune.compiler.direct_target.DirectPermanentTargetSpec", "quorune.compiler.direct_target.direct_permanent_target_spec", "quorune.targets.TargetGroup", "quorune.target_characteristics.TargetCharacteristicSnapshot", "quorune.engine.CommanderEngine._target_row_matches"],

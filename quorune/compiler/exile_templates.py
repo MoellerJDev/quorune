@@ -2,48 +2,31 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from enum import Enum
 from typing import Any, Mapping
 
 from .direct_target import (
+    DirectPermanentTargetSpec,
     compiled_direct_target,
+    direct_permanent_target_spec,
     direct_target_effect,
-    permanent_target_schema,
 )
 
 _EXILE_MECHANIC = "exile"
-
-
-class ExileTarget(str, Enum):
-    ARTIFACT = "artifact"
-    CREATURE = "creature"
-    ENCHANTMENT = "enchantment"
-    LAND = "land"
-    NONLAND_PERMANENT = "nonland permanent"
-    PERMANENT = "permanent"
-    ARTIFACT_OR_ENCHANTMENT = "artifact or enchantment"
-    CREATURE_OR_PLANESWALKER = "creature or planeswalker"
-
-    @property
-    def card_types(self) -> tuple[str, ...]:
-        if self is ExileTarget.NONLAND_PERMANENT:
-            return ()
-        return tuple(self.value.split(" or "))
 
 
 @dataclass(frozen=True, slots=True)
 class TargetedExileEffectTemplate:
     """Closed lowering for one mandatory direct battlefield exile."""
 
-    target: ExileTarget
+    target_spec: DirectPermanentTargetSpec
 
     def __post_init__(self) -> None:
-        if not isinstance(self.target, ExileTarget):
-            raise ValueError("Exile target domain is unsupported")
+        if not isinstance(self.target_spec, DirectPermanentTargetSpec):
+            raise ValueError("Exile target predicate is unsupported")
 
     @property
     def template_id(self) -> str:
-        return "exile-target-" + self.target.value.replace(" ", "-") + "-v2"
+        return f"exile-target-{self.target_spec.slug}-v2"
 
     @property
     def effects(self) -> tuple[Mapping[str, Any], ...]:
@@ -51,19 +34,7 @@ class TargetedExileEffectTemplate:
 
     @property
     def target_schema(self) -> Mapping[str, Any]:
-        return permanent_target_schema(
-            types_none=(
-                ("land",)
-                if self.target is ExileTarget.NONLAND_PERMANENT
-                else ()
-            ),
-            types_any=(
-                self.target.card_types
-                if self.target
-                not in {ExileTarget.NONLAND_PERMANENT, ExileTarget.PERMANENT}
-                else ()
-            ),
-        )
+        return self.target_spec.to_target_schema()
 
     @property
     def mechanics(self) -> tuple[str, ...]:
@@ -89,21 +60,24 @@ def targeted_exile_effect_template(
     text: str,
 ) -> TargetedExileEffectTemplate | None:
     match = re.fullmatch(
-        r"exile target (?P<target>artifact|creature|enchantment|land|"
-        r"nonland permanent|permanent|artifact or enchantment|"
-        r"creature or planeswalker)\.?",
+        r"exile (?P<subject>(?:another )?target .+?)\.?",
         text.strip(),
         re.IGNORECASE,
     )
     if match is None:
         return None
-    return TargetedExileEffectTemplate(
-        ExileTarget(match.group("target").casefold())
+    subject = match.group("subject")
+    target_spec = direct_permanent_target_spec(subject)
+    if target_spec is None and subject.casefold() == "target nonland permanent":
+        target_spec = DirectPermanentTargetSpec(types_none=("land",))
+    return (
+        TargetedExileEffectTemplate(target_spec)
+        if target_spec is not None
+        else None
     )
 
 
 __all__ = [
-    "ExileTarget",
     "TargetedExileEffectTemplate",
     "targeted_exile_effect_template",
 ]

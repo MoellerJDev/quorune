@@ -73,12 +73,18 @@ class PermanentExileRuleTests(unittest.TestCase):
         cls.db.close()
         cls.temporary.cleanup()
 
-    def session(self, seed: int, *, players: int = 4, scour: bool = False):
+    def session(
+        self,
+        seed: int,
+        *,
+        players: int = 4,
+        exile_card: str | None = None,
+    ):
         mishra = copy.deepcopy(self.mishra)
-        if scour:
+        if exile_card is not None:
             next(
                 entry for entry in mishra.entries if entry.board == "mainboard"
-            ).name = "Scour from Existence"
+            ).name = exile_card
         session = make_session(
             self.db,
             mishra,
@@ -379,7 +385,10 @@ class PermanentExileRuleTests(unittest.TestCase):
         self.assertEqual("battlefield", phased.zone)
 
     def test_compiled_exile_is_multiplayer_public_and_replays(self):
-        session = self.session(7011006, scour=True)
+        session = self.session(
+            7011006,
+            exile_card="Scour from Existence",
+        )
         engine = session.engine
         source = next(
             card
@@ -464,6 +473,83 @@ class PermanentExileRuleTests(unittest.TestCase):
         serialized_d = json.dumps(projected_d, sort_keys=True)
         self.assertTrue(all(ref not in serialized_d for ref in private_refs))
         self.assert_replays(session, "targeted-permanent-exile-record")
+
+    def test_compiled_tapped_exile_filters_and_revalidates_target(self):
+        session = self.session(7011008, exile_card="Expel")
+        engine = session.engine
+        source = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "A" and card.printed_name == "Expel"
+        )
+        tapped_target = self.put_on_battlefield(
+            engine,
+            self.permanent(engine, "B"),
+        )
+        tapped_target.tapped = True
+        untapped_target = self.put_on_battlefield(
+            engine,
+            self.permanent(engine, "C"),
+        )
+        engine.move_card(source.object_id, "hand", log=False)
+        engine.state.players["A"].mana_pool.update({"C": 2, "W": 1})
+        engine.state.priority_player = "A"
+        hints = engine._priority_action_hints("A")
+        action = next(
+            row for row in hints["actions"] if row.get("card") == source.ref
+        )
+        legal_refs = action["target_schema"]["legal_refs"]
+        self.assertIn(tapped_target.ref, legal_refs)
+        self.assertNotIn(untapped_target.ref, legal_refs)
+        engine._issue_priority("A", hints)
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        before = authoritative_state_hash(engine.state)
+        rejected = session.act(
+            "pilot:A",
+            {
+                "action_id": action["id"],
+                "targets": [untapped_target.ref],
+                "pay": "manual",
+                "payment": {"C": 2, "W": 1},
+            },
+        )
+        self.assertFalse(rejected.ok)
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+
+        accepted = session.act(
+            "pilot:A",
+            {
+                "action_id": action["id"],
+                "targets": [tapped_target.ref],
+                "pay": "manual",
+                "payment": {"C": 2, "W": 1},
+            },
+        )
+        self.assertTrue(accepted.ok, accepted.summary)
+        exile_events = sum(
+            event.code == "permanent.exile" for event in engine.state.events
+        )
+        engine.state.cards[tapped_target.object_id].tapped = False
+        self.pass_stack(session)
+
+        self.assertEqual(
+            "battlefield",
+            engine.state.cards[tapped_target.object_id].zone,
+        )
+        self.assertEqual(
+            "graveyard",
+            engine.state.cards[source.object_id].zone,
+        )
+        self.assertEqual(
+            exile_events,
+            sum(
+                event.code == "permanent.exile"
+                for event in engine.state.events
+            ),
+        )
 
     def test_permanent_exile_transaction_mutant_is_killed(self):
         session = self.session(7011007)

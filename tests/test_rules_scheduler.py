@@ -31,14 +31,40 @@ def _json(relative: str):
     return json.loads((ROOT / relative).read_text(encoding="utf-8"))
 
 
+def _reviewed_frontier_comparisons(inputs):
+    frontier = inputs["card_unlock_frontier"]["family_candidates"]
+    family_ids = {"effect_clause:destroy-target"}
+    family_ids.update(
+        selected_over.removeprefix("frontier:")
+        for row in _json("platform/rules-subsystems.json")[
+            "work_selection"
+        ]["reviewed_rerank_history"]
+        if (selected_over := str(row["selected_over"])).startswith(
+            "frontier:"
+        )
+    )
+    comparisons = []
+    for row in frontier:
+        family_id = str(row["family_id"])
+        if family_id not in family_ids:
+            continue
+        comparison = deepcopy(row)
+        if family_id != "effect_clause:destroy-target":
+            comparison["prerequisites"] = [
+                *comparison.get("prerequisites", []),
+                "fixture:reviewed-rerank-context",
+            ]
+        comparisons.append(comparison)
+    if {row["family_id"] for row in comparisons} != family_ids:
+        raise AssertionError(
+            "Synthetic scheduler inputs must preserve reviewed frontier "
+            "comparisons"
+        )
+    return comparisons
+
+
 def _with_dependency_ready_compiler_harvest(inputs):
     updated = deepcopy(inputs)
-    frontier = updated["card_unlock_frontier"]["family_candidates"]
-    reviewed_comparison = next(
-        row
-        for row in frontier
-        if row["family_id"] == "effect_clause:destroy-target"
-    )
     updated["card_unlock_frontier"]["family_candidates"] = [
         {
             "family_id": "effect_clause:fixture-harvest",
@@ -55,19 +81,13 @@ def _with_dependency_ready_compiler_harvest(inputs):
             "expected_material_residual_gain": 60,
             "interaction_risk": "medium",
         },
-        reviewed_comparison,
+        *_reviewed_frontier_comparisons(updated),
     ]
     return updated
 
 
 def _with_large_ability_compiler_harvest(inputs):
     updated = deepcopy(inputs)
-    frontier = updated["card_unlock_frontier"]["family_candidates"]
-    reviewed_comparison = next(
-        row
-        for row in frontier
-        if row["family_id"] == "effect_clause:destroy-target"
-    )
     updated["card_unlock_frontier"]["family_candidates"] = [
         {
             "family_id": "effect_clause:large-ability-fixture",
@@ -84,7 +104,7 @@ def _with_large_ability_compiler_harvest(inputs):
             "expected_material_residual_gain": 130,
             "interaction_risk": "high",
         },
-        reviewed_comparison,
+        *_reviewed_frontier_comparisons(updated),
     ]
     return updated
 
