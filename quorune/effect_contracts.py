@@ -127,6 +127,14 @@ EFFECT_FAMILY_CONTRACTS = (
         ),
     ),
     EffectFamilyContract(
+        family_id="declaration-effects.v1",
+        semantic_family="effect.declaration",
+        rule_references=("508.1c", "509.1b", "611.2c"),
+        operations=frozenset(
+            {"grant_declaration_restriction_until_end_of_turn"}
+        ),
+    ),
+    EffectFamilyContract(
         family_id="objects-stack-and-tokens.v1",
         semantic_family="effect.object-stack-token",
         rule_references=("111.2", "707.2", "701.5"),

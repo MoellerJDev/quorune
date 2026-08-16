@@ -1,0 +1,447 @@
+from __future__ import annotations
+
+import copy
+from dataclasses import replace
+from pathlib import Path
+import tempfile
+import unittest
+
+from common import DB_PATH, keep_all, load_assets, make_session
+from quorune.ability_fragments import declaration_restriction_specs
+from quorune.carddb import CardDatabase
+from quorune.compiler.temporary_declaration_templates import (
+    ActivatedTemporaryDeclarationRestrictionTemplate,
+    activated_temporary_declaration_restriction_effect_template,
+)
+from quorune.continuous_effect_model import ContinuousOperation, Layer
+from quorune.continuous_effect_state import (
+    create_resolution_continuous_effect,
+    expire_end_of_turn_continuous_effects,
+    ResolutionEffectSource,
+)
+from quorune.errors import GameRuleError
+from quorune.model import CombatState
+from quorune.oracle_ir import compile_oracle_card
+from quorune.record import (
+    authoritative_state_hash,
+    checkpoint_envelope,
+    replay_record,
+)
+from quorune.rules.capabilities import load_default_capability_registry
+
+
+class ActivatedTemporaryDeclarationRestrictionTemplateTests(unittest.TestCase):
+    def test_closed_activated_temporary_declaration_restrictions_compile(self):
+        cases = {
+            "Target creature can't attack this turn.": "cant_attack",
+            "Target creature can't block this turn.": "cant_block",
+            "Target creature can't attack or block this turn.": (
+                "cant_attack_or_block"
+            ),
+            "Target creature can't be blocked this turn.": "unblockable",
+        }
+        for text, restriction in cases.items():
+            with self.subTest(text=text):
+                template = (
+                    activated_temporary_declaration_restriction_effect_template(
+                        text
+                    )
+                )
+                self.assertIsNotNone(template)
+                self.assertEqual(restriction, template.restriction)
+                self.assertEqual(
+                    (
+                        {
+                            "op": (
+                                "grant_declaration_restriction_until_end_of_turn"
+                            ),
+                            "card": "$target.0",
+                            "restriction": restriction,
+                        },
+                    ),
+                    template.effects,
+                )
+                self.assertEqual(
+                    {
+                        "zones": ["battlefield"],
+                        "categories": ["permanent"],
+                        "types_any": ["creature"],
+                        "count": 1,
+                    },
+                    template.target_schema,
+                )
+
+    def test_open_temporary_declaration_restriction_grammar_stays_residual(self):
+        for text in (
+            "Target creature can't block this creature this turn.",
+            "Target creature can't be blocked except by Walls this turn.",
+            "Target creature can't block this turn and you gain 1 life.",
+            "Up to one target creature can't block this turn.",
+            "Another target creature can't block this turn.",
+            "Target creature can't block next turn.",
+            "Target creature can block this turn.",
+        ):
+            with self.subTest(text=text):
+                self.assertIsNone(
+                    activated_temporary_declaration_restriction_effect_template(
+                        text
+                    )
+                )
+        with self.assertRaisesRegex(ValueError, "Unsupported"):
+            ActivatedTemporaryDeclarationRestrictionTemplate("arbitrary")
+
+
+class ActivatedTemporaryDeclarationRestrictionCompilerTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.db = CardDatabase(DB_PATH)
+        cls.base = cls.db.lookup("Thundersong Trumpeter")
+        cls.capabilities = load_default_capability_registry()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.db.close()
+
+    def compile(self, oracle_text: str, *, type_line: str = "Creature — Human"):
+        record = replace(
+            self.base,
+            name="Fixture",
+            oracle_text=oracle_text,
+            type_line=type_line,
+            keywords=(),
+        )
+        return compile_oracle_card(
+            record,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+        )
+
+    def test_activated_only_lowering_uses_precise_shared_capabilities(self):
+        cases = {
+            "{T}: Target creature can't attack this turn.": "cant-attack",
+            "{1}{R}: Target creature can't block this turn.": "cant-block",
+            "{T}: Target creature can't attack or block this turn.": (
+                "cant-attack-or-block"
+            ),
+            "{2}{U}: Target creature can't be blocked this turn.": "unblockable",
+        }
+        for oracle_text, template_suffix in cases.items():
+            with self.subTest(oracle_text=oracle_text):
+                ir = self.compile(oracle_text)
+                node = ir.faces[0].nodes[0]
+                self.assertEqual("exact", ir.status)
+                self.assertTrue(node.exact)
+                self.assertEqual(
+                    f"activated-target-{template_suffix}-eot-v1",
+                    node.template_id,
+                )
+                self.assertEqual(
+                    {
+                        "combat.declaration.typed_components",
+                        (
+                            "continuous.resolution."
+                            "fixed_characteristics_until_end_of_turn"
+                        ),
+                        "target.revalidate_resolution",
+                    },
+                    set(node.capability_dependencies),
+                )
+
+    def test_nonactivated_and_open_forms_do_not_enter_the_closed_family(self):
+        for oracle_text, type_line in (
+            ("Target creature can't block this turn.", "Instant"),
+            (
+                "Whenever this creature attacks, target creature can't block "
+                "this turn.",
+                "Creature — Human",
+            ),
+            (
+                "{R}: Target creature can't block this creature this turn.",
+                "Creature — Human",
+            ),
+            (
+                "{R}: Target creature can't be blocked this turn except by "
+                "artifact creatures.",
+                "Creature — Human",
+            ),
+        ):
+            with self.subTest(oracle_text=oracle_text):
+                ir = self.compile(oracle_text, type_line=type_line)
+                self.assertNotEqual("exact", ir.status)
+                self.assertTrue(
+                    all(
+                        node.template_id is None
+                        or not node.template_id.startswith("activated-target-")
+                        for node in ir.faces[0].nodes
+                    )
+                )
+
+    def test_selected_exact_cards_promote_without_absorbing_exclusions(self):
+        for name in (
+            "Hall Monitor",
+            "Martyred Rusalka",
+            "Thundersong Trumpeter",
+            "Amphin Pathmage",
+        ):
+            with self.subTest(name=name):
+                ir = compile_oracle_card(
+                    self.db.lookup(name),
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                self.assertEqual("exact", ir.status)
+        for name in (
+            "Duct Crawler",
+            "Firefright Mage",
+            "Joven's Tools",
+            "Tower of Coireall",
+        ):
+            with self.subTest(name=name):
+                ir = compile_oracle_card(
+                    self.db.lookup(name),
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                self.assertNotEqual("exact", ir.status)
+
+
+class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.db, cls.mishra, cls.zimone = load_assets()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.db.close()
+
+    def session_with_card(self, card_name: str, *, seed: int):
+        deck = copy.deepcopy(self.mishra)
+        replaceable = next(
+            entry for entry in deck.entries if entry.board == "mainboard"
+        )
+        replaceable.name = card_name
+        session = make_session(
+            self.db,
+            deck,
+            self.zimone,
+            players=2,
+            seed=seed,
+            auto_pass_empty=False,
+        )
+        keep_all(session)
+        engine = session.engine
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        engine.state.priority_passes = []
+        session.commands.clear()
+        session.decisions.clear()
+        return session
+
+    @staticmethod
+    def creature(engine, seat: str, name: str):
+        ref = engine.create_token(
+            seat,
+            name=name,
+            characteristics={
+                "type_line": "Token Creature — Test",
+                "oracle_text": "",
+                "ability_fragments": [],
+                "power": "2",
+                "toughness": "2",
+            },
+            temporary_keywords=("Haste",),
+        )[0]
+        return engine._resolve_object(seat, ref, zones={"battlefield"})
+
+    @staticmethod
+    def pass_stack(session):
+        while session.state.stack:
+            principals = session.pending_principals()
+            if not principals:
+                raise AssertionError("Stack resolution stopped without priority")
+            result = session.act(principals[0], {"action_id": "pass"})
+            if not result.ok:
+                raise AssertionError(
+                    f"{result.summary}: "
+                    f"{session.packet(principals[0], full=True).get('decision')}"
+                )
+
+    def assert_replays(self, session):
+        expected_hash = authoritative_state_hash(session.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "temporary-declaration-record"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_temporary_restrictions_use_effective_layer_six_abilities_and_replay(
+        self,
+    ):
+        session = self.session_with_card(
+            "Thundersong Trumpeter",
+            seed=50811501,
+        )
+        engine = session.engine
+        source = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "A" and card.printed_name == "Thundersong Trumpeter"
+        )
+        target = self.creature(engine, "B", "Restricted Blocker")
+        attacker = self.creature(engine, "A", "Attacker")
+        engine.move_card(
+            source.object_id,
+            "battlefield",
+            controller="A",
+            tapped=False,
+            log=False,
+        )
+        engine.state.players["A"].turns_begun = 1
+        source.acquired_control_turn_count = 0
+        engine._grant_priority("A")
+        engine.pump()
+        packet = session.packet("pilot:A", full=True)
+        action = next(
+            row
+            for row in packet["decision"]["ctx"]["legal"]["actions"]
+            if row["id"] == f"activate:{source.ref}:ab1"
+        )
+        self.assertIn(target.ref, action["target_schema"]["legal_refs"])
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        result = session.act(
+            "pilot:A",
+            {"action_id": action["id"], "targets": [target.ref]},
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.pass_stack(session)
+
+        restrictions = declaration_restriction_specs(
+            engine._effective_ability_fragments(target)
+        )
+        self.assertEqual(
+            ["intrinsic-attack-block-prohibition-v1"],
+            [value.template_id for value in restrictions],
+        )
+        self.assertEqual(
+            (
+                False,
+                "declaration_restriction:intrinsic-attack-block-prohibition-v1",
+            ),
+            engine._can_block(attacker, target),
+        )
+        self.assert_replays(session)
+
+        removed = create_resolution_continuous_effect(
+            engine,
+            source=ResolutionEffectSource(stack_ref="test:remove-all-abilities"),
+            targets=(target,),
+            layer=Layer.ABILITY,
+            sublayer="6",
+            operations=(ContinuousOperation("remove_all_abilities"),),
+        )
+        self.assertIsNotNone(removed)
+        self.assertEqual((), engine._effective_ability_fragments(target))
+        self.assertEqual((True, None), engine._can_block(attacker, target))
+
+    def test_all_four_restrictions_change_declaration_behavior_and_expire(self):
+        session = self.session_with_card("Thundersong Trumpeter", seed=50811502)
+        engine = session.engine
+        cant_attack = self.creature(engine, "A", "Cannot Attack")
+        cant_block = self.creature(engine, "B", "Cannot Block")
+        both = self.creature(engine, "A", "Cannot Attack Or Block")
+        unblockable = self.creature(engine, "A", "Unblockable")
+        free_attacker = self.creature(engine, "A", "Free Attacker")
+        free_blocker = self.creature(engine, "B", "Free Blocker")
+        for card, restriction in (
+            (cant_attack, "cant_attack"),
+            (cant_block, "cant_block"),
+            (both, "cant_attack_or_block"),
+            (unblockable, "unblockable"),
+        ):
+            engine.apply_effect(
+                {
+                    "op": "grant_declaration_restriction_until_end_of_turn",
+                    "card": card.ref,
+                    "restriction": restriction,
+                },
+                actor="A",
+            )
+
+        engine.state.active_player = "A"
+        engine.state.phase_index = 5
+        engine.state.phase = "combat"
+        engine.state.step = "declare_attackers"
+        engine.state.combat = CombatState()
+        engine.state.pending_decision = None
+        engine._issue_attackers()
+        domains = engine.state.pending_decision.payload_by_actor["A"][
+            "declaration_constraints"
+        ]["domains"]
+        self.assertNotIn(cant_attack.ref, domains)
+        self.assertNotIn(both.ref, domains)
+        self.assertIn(unblockable.ref, domains)
+        self.assertIn(free_attacker.ref, domains)
+        self.assertEqual(
+            (
+                False,
+                "declaration_restriction:intrinsic-block-prohibition-v1",
+            ),
+            engine._can_block(free_attacker, cant_block),
+        )
+        self.assertEqual(
+            (
+                False,
+                (
+                    "declaration_restriction:"
+                    "intrinsic-attack-block-prohibition-v1"
+                ),
+            ),
+            engine._can_block(free_attacker, both),
+        )
+        self.assertEqual(
+            (
+                False,
+                "declaration_restriction:intrinsic-unblockable-v1",
+            ),
+            engine._can_block(unblockable, free_blocker),
+        )
+
+        self.assertEqual(4, expire_end_of_turn_continuous_effects(engine.state))
+        engine.state.pending_decision = None
+        engine._issue_attackers()
+        expired_domains = engine.state.pending_decision.payload_by_actor["A"][
+            "declaration_constraints"
+        ]["domains"]
+        self.assertIn(cant_attack.ref, expired_domains)
+        self.assertIn(both.ref, expired_domains)
+        self.assertEqual((True, None), engine._can_block(free_attacker, cant_block))
+        self.assertEqual((True, None), engine._can_block(free_attacker, both))
+        self.assertEqual((True, None), engine._can_block(unblockable, free_blocker))
+
+    def test_malformed_temporary_restriction_rolls_back_without_effect(self):
+        session = self.session_with_card("Thundersong Trumpeter", seed=50811503)
+        engine = session.engine
+        target = self.creature(engine, "B", "Unchanged Target")
+        before = authoritative_state_hash(engine.state)
+
+        with self.assertRaisesRegex(GameRuleError, "Unsupported"):
+            engine.apply_effect(
+                {
+                    "op": "grant_declaration_restriction_until_end_of_turn",
+                    "card": target.ref,
+                    "restriction": "arbitrary",
+                },
+                actor="A",
+            )
+
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        self.assertEqual((), engine._effective_ability_fragments(target))
+
+
+if __name__ == "__main__":
+    unittest.main()

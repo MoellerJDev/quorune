@@ -213,7 +213,8 @@
       "test_goad_rules",
       "test_haste_rules",
       "test_landwalk",
-      "test_menace_rules"
+      "test_menace_rules",
+      "test_temporary_declaration_restriction_effects"
     ],
     "deterministic-game-regressions": [
       "test_codex_arena",

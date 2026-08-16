@@ -33,6 +33,10 @@ from ..compiler.fixed_source_effect_sequences import (
     SOURCE_ZONE_OBJECT,
 )
 from ..keyword_counters import keyword_counter_mechanic
+from .temporary_declaration_restrictions import (
+    TEMPORARY_DECLARATION_RESTRICTION_KINDS,
+    temporary_declaration_restriction,
+)
 from ..zone_object_keyword_model import ZONE_OBJECT_KEYWORDS
 from .amass_capability_shapes import fixed_amass_node_capabilities
 from .cumulative_upkeep_capability_shapes import (
@@ -1202,6 +1206,49 @@ def fixed_target_characteristics_node_capabilities(
     )
 
 
+def temporary_declaration_restriction_node_capabilities(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanic_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Return ownership for one closed target declaration restriction."""
+
+    if len(effects) != 1:
+        return ()
+    effect = effects[0]
+    kind = effect.get("restriction")
+    if (
+        set(effect) != {"op", "card", "restriction"}
+        or effect.get("op")
+        != "grant_declaration_restriction_until_end_of_turn"
+        or effect.get("card") != "$target.0"
+        or kind not in TEMPORARY_DECLARATION_RESTRICTION_KINDS
+    ):
+        return ()
+    schema = dict(target_schema or {})
+    if schema != {
+        "zones": ["battlefield"],
+        "categories": ["permanent"],
+        "types_any": ["creature"],
+        "count": 1,
+    }:
+        return ()
+    required_mechanics = {
+        "cr-115-targets",
+        "cr-611-continuous-effects",
+        *temporary_declaration_restriction(str(kind)).mechanics,
+    }
+    mechanics = {str(value).casefold() for value in mechanic_ids}
+    if not required_mechanics.issubset(mechanics):
+        return ()
+    return (
+        "combat.declaration.typed_components",
+        "continuous.resolution.fixed_characteristics_until_end_of_turn",
+        "target.revalidate_resolution",
+    )
+
+
 def fixed_counter_placement_set_node_capabilities(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -1479,6 +1526,7 @@ __all__ = [
     "fixed_target_effect_sequence_node_capabilities",
     "fixed_source_effect_sequence_node_capabilities",
     "fixed_target_characteristics_node_capabilities",
+    "temporary_declaration_restriction_node_capabilities",
     "fixed_counter_placement_set_node_capabilities",
     "fixed_counter_placement_target_set_node_capabilities",
     "fixed_player_counter_placement_node_capabilities",
