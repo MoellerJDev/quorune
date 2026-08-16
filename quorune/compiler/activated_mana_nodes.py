@@ -32,6 +32,7 @@ from .dependency_gate import (
     dependency_gate,
     explicit_capabilities_gate,
 )
+from .damage_templates import activated_source_damage_effect_template
 from .ir_model import (
     append_residual,
     OracleNode,
@@ -641,8 +642,13 @@ def activated_oracle_node(
         return color_set_mana
     effect_material = _activated_effect_material(ability)
     regeneration = self_regeneration_effect_template(effect_material)
+    activated_damage = activated_source_damage_effect_template(
+        effect_material
+    )
     if regeneration is not None:
         template, effects, target_schema, mechanics = regeneration.compiled()
+    elif activated_damage is not None:
+        template, effects, target_schema, mechanics = activated_damage.compiled()
     else:
         template, effects, target_schema, mechanics = effect_template(
             effect_material,

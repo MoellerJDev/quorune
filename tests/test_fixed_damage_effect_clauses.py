@@ -12,6 +12,7 @@ from quorune.carddb import CardDatabase
 from quorune.compiler.damage_templates import (
     FixedDamageEffectTemplate,
     FixedDamageRecipient,
+    activated_source_damage_effect_template,
     fixed_damage_effect_template,
 )
 from quorune.compiler import damage_templates
@@ -95,6 +96,33 @@ class FixedDamageEffectTemplateTests(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertIsNone(
                     fixed_damage_effect_template(text, card_name="Fixture")
+                )
+
+    def test_activated_source_pronoun_has_one_closed_contextual_parser(self):
+        template = activated_source_damage_effect_template(
+            "It deals 2 damage to any target."
+        )
+
+        self.assertIsNotNone(template)
+        self.assertEqual(FixedDamageRecipient.ANY_TARGET, template.recipient)
+        self.assertEqual("damage-any-target-v1", template.template_id)
+        self.assertIsNone(
+            fixed_damage_effect_template(
+                "It deals 2 damage to any target.",
+                card_name="Fixture",
+            )
+        )
+        for text in (
+            "It deals 0 damage to any target.",
+            "It deals X damage to any target.",
+            "It deals 2 damage divided as you choose among two targets.",
+            "It deals 2 damage to itself.",
+            "It deals 2 damage to target player or battle.",
+            "It deals 2 damage to any target and you gain 2 life.",
+        ):
+            with self.subTest(text=text):
+                self.assertIsNone(
+                    activated_source_damage_effect_template(text)
                 )
 
     def test_recipient_and_positive_amount_mutants_are_killed(self):
@@ -346,6 +374,57 @@ class FixedDamageEffectCompilerTests(unittest.TestCase):
                     },
                 )
 
+    def test_activated_source_pronoun_reuses_damage_lowering_only_after_colon(self):
+        ir = self.compile(
+            "Sacrifice this creature: It deals 1 damage to any target.",
+            type_line="Creature — Goblin",
+        )
+        node = ir.faces[0].nodes[0]
+
+        self.assertEqual("exact", ir.status)
+        self.assertEqual("activated_ability", node.kind)
+        self.assertEqual("damage-any-target-v1", node.template_id)
+        self.assertTrue(node.cost["sacrifice_source"])
+        self.assertEqual(
+            (
+                {
+                    "op": "damage",
+                    "source": "$source",
+                    "target": "$target.0",
+                    "amount": 1,
+                },
+            ),
+            node.effects,
+        )
+        for text, type_line in (
+            ("It deals 1 damage to any target.", "Instant"),
+            (
+                "When this creature enters, it deals 1 damage to any target.",
+                "Creature — Goblin",
+            ),
+        ):
+            with self.subTest(text=text):
+                unsupported = self.compile(text, type_line=type_line)
+                self.assertNotEqual("exact", unsupported.status)
+                self.assertIsNone(unsupported.faces[0].nodes[0].template_id)
+
+    def test_activated_source_pronoun_rejects_open_damage_grammar(self):
+        for effect in (
+            "It deals X damage to any target.",
+            "It deals 2 damage divided as you choose among two targets.",
+            "It deals 2 damage to itself.",
+            "It deals 2 damage to target player or battle.",
+            "It deals 2 damage to any target and you gain 2 life.",
+        ):
+            with self.subTest(effect=effect):
+                ir = self.compile(
+                    f"Sacrifice this creature: {effect}",
+                    type_line="Creature — Goblin",
+                )
+                self.assertNotEqual("exact", ir.status)
+                self.assertIsNone(ir.faces[0].nodes[0].template_id)
+                self.assertTrue(ir.material_residuals)
+
     def test_unsupported_damage_variants_remain_material_residuals(self):
         for text in (
             "Fixture deals 0 damage to target creature.",
@@ -412,7 +491,11 @@ class FixedDamageEffectCompilerTests(unittest.TestCase):
         result = register_generated_programs(
             self.db,
             registry,
-            (self.db.lookup("Flame Slash"), self.db.lookup("Blood Cultist")),
+            (
+                self.db.lookup("Flame Slash"),
+                self.db.lookup("Blood Cultist"),
+                self.db.lookup("Mogg Fanatic"),
+            ),
             capability_registry=self.capabilities,
             capability_profile="commander_review",
             promote_exact_effect_programs=True,
@@ -423,7 +506,7 @@ class FixedDamageEffectCompilerTests(unittest.TestCase):
             if program.effects
         ]
         self.assertEqual(
-            2,
+            3,
             result["exact_fixed_damage_programs_promoted"],
         )
         self.assertEqual(
@@ -948,6 +1031,136 @@ class FixedDamageEffectRuntimeTests(unittest.TestCase):
         self.pass_stack(session)
 
         self.assertEqual(1, target.marked_damage)
+        self.assert_replays(session)
+
+    def test_activated_source_pronoun_survives_sacrifice_and_replays(self):
+        session = self.session_with_card(
+            "Mogg Fanatic",
+            players=2,
+            seed=12011505,
+        )
+        engine = session.engine
+        source = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "A" and card.printed_name == "Mogg Fanatic"
+        )
+        target = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "B"
+            and (
+                record := engine.card_record(card)
+            ) is not None
+            and "creature" in record.type_line.casefold()
+        )
+        engine.move_card(
+            source.object_id,
+            "battlefield",
+            controller="A",
+            tapped=False,
+            log=False,
+        )
+        engine.move_card(
+            target.object_id,
+            "battlefield",
+            controller="B",
+            tapped=False,
+            log=False,
+        )
+        target.counters["+1/+1"] = 10
+        engine.state.players["A"].turns_begun = 1
+        source.acquired_control_turn_count = 0
+        engine._grant_priority("A")
+        engine.pump()
+        packet = session.packet("pilot:A", full=True)
+        action = next(
+            row
+            for row in packet["decision"]["ctx"]["legal"]["actions"]
+            if row["id"] == f"activate:{source.ref}:ab1"
+        )
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        self.assertIn(target.ref, action["target_schema"]["legal_refs"])
+        before_rejection = authoritative_state_hash(engine.state)
+        rejected = session.act(
+            "pilot:A",
+            {"action_id": action["id"], "targets": ["missing-target"]},
+        )
+        self.assertFalse(rejected.ok)
+        self.assertEqual("battlefield", source.zone)
+        self.assertFalse(engine.state.stack)
+        self.assertEqual(before_rejection, authoritative_state_hash(engine.state))
+        source = engine.state.cards[source.object_id]
+        target = engine.state.cards[target.object_id]
+
+        result = session.act(
+            "pilot:A",
+            {"action_id": action["id"], "targets": [target.ref]},
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual("graveyard", source.zone)
+        self.assertTrue(engine.state.stack)
+        self.assertEqual(
+            source.object_id,
+            engine.state.stack[-1].source_object_id,
+        )
+
+        self.pass_stack(session)
+
+        self.assertEqual(1, target.marked_damage)
+        self.assert_replays(session)
+
+    def test_sacrificed_source_target_fizzles_after_revalidation(self):
+        session = self.session_with_card(
+            "Mogg Fanatic",
+            players=2,
+            seed=12011506,
+        )
+        engine = session.engine
+        source = next(
+            card
+            for card in engine.state.cards.values()
+            if card.owner == "A" and card.printed_name == "Mogg Fanatic"
+        )
+        engine.move_card(
+            source.object_id,
+            "battlefield",
+            controller="A",
+            tapped=False,
+            log=False,
+        )
+        engine.state.players["A"].turns_begun = 1
+        source.acquired_control_turn_count = 0
+        engine._grant_priority("A")
+        engine.pump()
+        packet = session.packet("pilot:A", full=True)
+        action = next(
+            row
+            for row in packet["decision"]["ctx"]["legal"]["actions"]
+            if row["id"] == f"activate:{source.ref}:ab1"
+        )
+        source_ref = source.ref
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        self.assertIn(source_ref, action["target_schema"]["legal_refs"])
+        result = session.act(
+            "pilot:A",
+            {"action_id": action["id"], "targets": [source_ref]},
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual("graveyard", source.zone)
+
+        self.pass_stack(session)
+
+        self.assertFalse(engine.state.stack)
+        self.assertFalse(
+            any(event.code == "effect.damage" for event in engine.state.events)
+        )
         self.assert_replays(session)
 
     def test_opponent_or_planeswalker_relation_is_multiplayer_exact(self):
