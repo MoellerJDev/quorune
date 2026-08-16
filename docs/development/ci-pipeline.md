@@ -206,14 +206,16 @@ an unassigned discovered test module makes PR planning fail before any matrix
 job can run. It next runs
 `scripts/build_test_database.py validate-ci-dependencies`, so a compact-database
 card, Oracle ID, deck, fixture, or shard-closure omission fails before the push.
-It accepts an exact ordinary receipt before inferring that the mere presence of
-`data/scryfall-current.sqlite3` requires another corpus write. Ordinary
-finalization already runs database-backed freshness checks; compiler or corpus
-drift therefore still makes that receipt stale. If no ordinary receipt matches,
-the hook uses the worktree database when present. An explicit `MTG_CARD_DB`
-selection always requires a receipt bound to that database. The fallback runs
-generated write mode and rejects the push when outputs need a commit. It never
-amends a commit.
+It accepts the exact existing receipt before inferring another database. A
+database-bound receipt verifies the database path and fingerprint recorded by
+the successful finalization, so a secondary worktree can reuse the canonical
+worktree's pinned database without repeating the corpus. An ordinary receipt
+still proves every database-backed freshness check; compiler or corpus drift
+therefore makes either receipt stale. If no receipt matches, the hook uses the
+worktree database when present. An explicit `MTG_CARD_DB` selection always
+requires a receipt bound to that exact database. The fallback runs generated
+write mode and rejects the push when outputs need a commit. It never amends a
+commit.
 Pull-request CI remains check-only and authoritative.
 
 Keep generated-governance tests tied to identities from the canonical manifest

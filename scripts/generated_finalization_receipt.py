@@ -309,9 +309,12 @@ def verify_finalization_receipt(
             "generated-finalization receipt must contain a JSON object"
         )
     observed = GeneratedFinalizationReceipt.from_dict(value)
+    verification_database = database
+    if verification_database is None and observed.database_path is not None:
+        verification_database = Path(observed.database_path)
     expected = build_finalization_receipt(
         specs,
-        database=database,
+        database=verification_database,
         root=root,
     )
     for field in expected.to_dict():

@@ -326,6 +326,7 @@ def main() -> int:
                 database=database,
                 root=ROOT,
             )
+            result["database"] = receipt.database_path
             result["receipt"] = {
                 "path": str(receipt_path),
                 "source_tree_fingerprint": (
