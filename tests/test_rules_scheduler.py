@@ -584,6 +584,19 @@ class RulesSchedulerTests(unittest.TestCase):
                 inputs=self.work_inputs,
             )
 
+        policy = deepcopy(self.catalog["work_selection"])
+        policy["reviewed_rerank_history"][0]["selected_over"] = (
+            "frontier:missing-completed-candidate"
+        )
+        with self.assertRaisesRegex(
+            WorkSelectionError, "selected_over must reference a current candidate"
+        ):
+            build_work_selection(
+                selected_batch=self.queue["selected_batch"],
+                policy=policy,
+                inputs=self.work_inputs,
+            )
+
         with self.assertRaisesRegex(
             RulesSchedulerError, "work-selection inputs"
         ):

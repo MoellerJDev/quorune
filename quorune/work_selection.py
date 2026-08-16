@@ -734,6 +734,18 @@ def build_work_selection(
     ids = [str(row["candidate_id"]) for row in candidates]
     if len(ids) != len(set(ids)):
         raise WorkSelectionError("Work-selection candidate ids must be unique")
+    candidate_ids = set(ids)
+    for row in validated["reviewed_rerank_history"]:
+        selected_over = str(row["selected_over"])
+        if selected_over not in candidate_ids:
+            raise WorkSelectionError(
+                "Reviewed rerank history selected_over must reference a "
+                f"current candidate: {selected_over}"
+            )
+        if str(row["candidate_id"]) == selected_over:
+            raise WorkSelectionError(
+                "Reviewed rerank history cannot select a candidate over itself"
+            )
     priorities = {
         candidate_class: index
         for index, candidate_class in enumerate(validated["priority_classes"])

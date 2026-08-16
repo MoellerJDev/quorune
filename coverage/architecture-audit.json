@@ -10719,7 +10719,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 158774,
+      "logical_lines": 158786,
       "methods": {
         "dunder": 439,
         "private": 766,
@@ -11078,6 +11078,13 @@
           "physical_lines": 846
         },
         {
+          "file": "quorune/work_selection.py",
+          "functions_and_methods": 16,
+          "language": "python",
+          "logical_lines": 788,
+          "physical_lines": 828
+        },
+        {
           "file": "quorune/replacement/operations.py",
           "functions_and_methods": 44,
           "language": "python",
@@ -11090,13 +11097,6 @@
           "language": "python",
           "logical_lines": 776,
           "physical_lines": 848
-        },
-        {
-          "file": "quorune/work_selection.py",
-          "functions_and_methods": 16,
-          "language": "python",
-          "logical_lines": 776,
-          "physical_lines": 816
         },
         {
           "file": "quorune/counter_placement.py",
@@ -14444,7 +14444,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 174063,
+      "physical_lines": 174075,
       "python_file_count": 466,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -25234,7 +25234,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "602d901a402b47ba6430f78a7e5636739c5ea7fff80a0e3b60ca000700be24ac",
+      "fingerprint": "1cba862c683d383737af46b2b528a74ab7fea859b770a98b26732c268462e6c2",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
