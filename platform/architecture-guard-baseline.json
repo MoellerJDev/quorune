@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "f4859b02d9e5aef2bea0cdf1cee3916897d7ab53",
+  "baseline_commit": "70ec79c8ec688873f6e4485ad710ea1f788dd8fa",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -1677,9 +1677,9 @@
     "physical_lines": 7811
   },
   "exception_binding": {
-    "adr": "docs/adr/0069-typed-temporary-declaration-restrictions.md",
-    "allowance_fingerprint": "17d6e46018089dcaf612b3b7212f2124d6b605ea3bf17c4a00355dcc159f7f9a",
-    "exception_id": "ARCH-EXC-0036"
+    "adr": "docs/adr/0070-typed-fixed-token-definition-batches.md",
+    "allowance_fingerprint": "26b1acf3778e178e3c21b67e8b80d50ece5ac59c216e8d4c531203bcafd950aa",
+    "exception_id": "ARCH-EXC-0037"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1933,6 +1933,7 @@
     "create_emblem",
     "create_modified_token_copy",
     "create_token",
+    "create_token_batch",
     "create_token_copy_if_controlled_count",
     "create_token_if_distinct_controlled_names",
     "create_token_if_no_controlled_subtype",

@@ -815,6 +815,84 @@ def _record_and_dispatch_token_creation(
     enqueue_trigger_batch(host, trigger_batch)
 
 
+def _create_token_specs(
+    host: TokenCreationHost,
+    controller: str,
+    *,
+    token_specs: Sequence[Mapping[str, Any]],
+    created_types: set[str],
+    created_subtypes: set[str],
+    replacement_sources: Sequence[Any],
+    base_name: str,
+    base_quantity: int,
+    reason: str,
+    replacement_selections: Sequence[
+        str | None | Mapping[str, Any]
+    ],
+) -> list[str]:
+    replacement_effects = _token_replacement_effects(
+        host,
+        controller,
+        created_types,
+        created_subtypes,
+        replacement_sources,
+    )
+    resolved = _resolved_token_specs(
+        host,
+        controller,
+        quantity=base_quantity,
+        token_specs=token_specs,
+        created_types=created_types,
+        created_subtypes=created_subtypes,
+        replacement_effects=replacement_effects,
+        replacement_selections=replacement_selections,
+    )
+    resolved_specs = _preflight_aura_token_specs(
+        host,
+        controller,
+        resolved.specs,
+    )
+    creation_timestamp = (
+        host.state.timestamp_sequence + 1 if resolved_specs else 0
+    )
+    plans = _prepare_token_objects(
+        host,
+        controller,
+        resolved_specs,
+        creation_timestamp=creation_timestamp,
+    )
+    try:
+        prepared_counters = prepare_counter_placement_specs(
+            host,
+            _token_entry_counter_specs(host, controller, plans),
+            selections=resolved.remaining_selections,
+            batch_id=(
+                f"replacement:token.entry-counter:{host.state.revision}:"
+                f"{host.state.event_sequence + 1}"
+            ),
+        )
+    except CounterPlacementError as exc:
+        raise TokenCreationError(str(exc)) from exc
+    created, applied_components = _commit_token_specs(
+        host,
+        controller,
+        plans,
+        creation_timestamp=creation_timestamp,
+        prepared_counters=prepared_counters,
+    )
+    _record_and_dispatch_token_creation(
+        host,
+        controller,
+        created,
+        name=base_name,
+        base_quantity=base_quantity,
+        replacement_components=applied_components,
+        replacement_journal=resolved.journal,
+        reason=reason,
+    )
+    return [host.state.cards[object_id].ref for object_id in created]
+
+
 def create_tokens(
     host: TokenCreationHost,
     controller: str,
@@ -851,17 +929,9 @@ def create_tokens(
         copy_of=copy_of,
         characteristics=characteristics,
     )
-    replacement_effects = _token_replacement_effects(
+    return _create_token_specs(
         host,
         controller,
-        created_types,
-        created_subtypes,
-        sources,
-    )
-    resolved = _resolved_token_specs(
-        host,
-        controller,
-        quantity=quantity,
         token_specs=(
             {
                 "name": name,
@@ -879,50 +949,112 @@ def create_tokens(
         ),
         created_types=created_types,
         created_subtypes=created_subtypes,
-        replacement_effects=replacement_effects,
+        replacement_sources=sources,
+        base_name=name,
+        base_quantity=quantity,
+        reason=reason,
         replacement_selections=replacement_selections,
     )
-    token_specs = _preflight_aura_token_specs(
-        host,
-        controller,
-        resolved.specs,
-    )
-    creation_timestamp = (
-        host.state.timestamp_sequence + 1 if token_specs else 0
-    )
-    plans = _prepare_token_objects(
-        host,
-        controller,
-        token_specs,
-        creation_timestamp=creation_timestamp,
-    )
-    try:
-        prepared_counters = prepare_counter_placement_specs(
-            host,
-            _token_entry_counter_specs(host, controller, plans),
-            selections=resolved.remaining_selections,
-            batch_id=(
-                f"replacement:token.entry-counter:{host.state.revision}:"
-                f"{host.state.event_sequence + 1}"
-            ),
+
+
+def create_token_batch(
+    host: TokenCreationHost,
+    controller: str,
+    *,
+    tokens: Sequence[Mapping[str, Any]],
+    reason: str = "token effect",
+    replacement_selections: Sequence[
+        str | None | Mapping[str, Any]
+    ] = (),
+) -> list[str]:
+    """Create two or three fixed token definitions as one event."""
+
+    host._require_seat(controller, in_game=True)
+    if not isinstance(tokens, (list, tuple)) or not 2 <= len(tokens) <= 3:
+        raise TokenCreationError(
+            "Fixed token batches require two or three definitions"
         )
-    except CounterPlacementError as exc:
-        raise TokenCreationError(str(exc)) from exc
-    created, applied_components = _commit_token_specs(
+    normalized_specs: list[dict[str, Any]] = []
+    created_types: set[str] = set()
+    created_subtypes: set[str] = set()
+    replacement_sources: dict[str, Any] = {}
+    base_quantity = 0
+    for index, supplied in enumerate(tokens):
+        if not isinstance(supplied, Mapping):
+            raise TokenCreationError(
+                f"Token batch definition {index} must be an object"
+            )
+        allowed = {"name", "quantity", "characteristics", "tapped"}
+        unknown = sorted(set(supplied) - allowed)
+        if unknown:
+            raise TokenCreationError(
+                "Token batch definition has unknown fields: "
+                + ", ".join(unknown)
+            )
+        name = supplied.get("name")
+        quantity = supplied.get("quantity")
+        characteristics = supplied.get("characteristics")
+        tapped = supplied.get("tapped", False)
+        if type(name) is not str or not name.strip():
+            raise TokenCreationError(
+                "Token batch definition requires a nonempty name"
+            )
+        if type(quantity) is not int or quantity < 1:
+            raise TokenCreationError(
+                "Token batch definition quantity must be positive"
+            )
+        if not isinstance(characteristics, Mapping):
+            raise TokenCreationError(
+                "Token batch definition requires characteristics"
+            )
+        if type(tapped) is not bool:
+            raise TokenCreationError(
+                "Token batch tapped state must be boolean"
+            )
+        try:
+            normalized_characteristics = standard_token_characteristics(
+                characteristics
+            )
+        except ValueError as exc:
+            raise TokenCreationError(str(exc)) from exc
+        types, subtypes, sources = _creation_subject(
+            host,
+            controller,
+            name=name.strip(),
+            quantity=quantity,
+            copy_of=None,
+            characteristics=normalized_characteristics,
+        )
+        created_types.update(types)
+        created_subtypes.update(subtypes)
+        replacement_sources.update(
+            {source.object_id: source for source in sources}
+        )
+        base_quantity += quantity
+        normalized_specs.append(
+            {
+                "name": name.strip(),
+                "quantity": quantity,
+                "tapped": tapped,
+                _ATTACKING_FIELD: None,
+                "battle_protector": None,
+                "copy_of": None,
+                "characteristics": copy.deepcopy(
+                    normalized_characteristics
+                ),
+                "temporary_keywords": [],
+                "aura_target_ref": None,
+            }
+        )
+    return _create_token_specs(
         host,
         controller,
-        plans,
-        creation_timestamp=creation_timestamp,
-        prepared_counters=prepared_counters,
-    )
-    _record_and_dispatch_token_creation(
-        host,
-        controller,
-        created,
-        name=name,
-        base_quantity=quantity,
-        replacement_components=applied_components,
-        replacement_journal=resolved.journal,
+        token_specs=tuple(normalized_specs),
+        created_types=created_types,
+        created_subtypes=created_subtypes,
+        replacement_sources=tuple(replacement_sources.values()),
+        base_name="fixed token batch",
+        base_quantity=base_quantity,
         reason=reason,
+        replacement_selections=replacement_selections,
     )
-    return [host.state.cards[object_id].ref for object_id in created]

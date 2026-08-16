@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "f9b5a8696e529e06647c64630861aee895634b3df876e11fcf6cbe264f7e31f7"
+verified: "027b8dc0fda1d34246191ba8e7ab978465e35fe59a165e008cb9cd74a2f8d58b"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `c62d0ad7846a05b0e664f4652a2c4514d5b58ce684b9659b7e67750c1e29ccc5`
+Source fingerprint: `d72b14f7de5382211b2e13435afec5ea09b7d1555073aa10cc3164975549cb8a`
 
 ## Current top-level state
 
@@ -20,7 +20,7 @@ Source fingerprint: `c62d0ad7846a05b0e664f4652a2c4514d5b58ce684b9659b7e67750c1e2
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `frontier:effect_clause:create-token`
+- Selected cross-program work: `frontier:effect_clause:destroy-target`
 - Selected work class: `compiler_harvest`
 
 ## Cross-program work selection
@@ -31,7 +31,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `frontier:effect_clause:create-token` | `compiler_harvest` | 15 | 101 | 0 | 0 |
+| 1 | selected | `frontier:effect_clause:destroy-target` | `compiler_harvest` | 4 | 111 | 0 | 0 |
 | 2 | deferred | `frontier:effect_clause:exile` | `compiler_harvest` | 17 | 100 | 0 | 0 |
 | 3 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 26 | 123 | 0 | 0 |
 | 4 | deferred | `frontier:keyword_dependency:morph` | `card_family` | 37 | 141 | 0 | 0 |

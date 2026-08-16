@@ -12,8 +12,10 @@ from common import keep_all, load_assets, make_session
 from quorune.carddb import CardRecord
 from quorune.compiled_activated_abilities import compiled_activated_abilities
 from quorune.compiler.token_templates import (
+    FIXED_TOKEN_DEFINITION_BATCH_MECHANIC,
     fixed_token_creation_effect_template,
 )
+from quorune.errors import GameRuleError
 from quorune.model import StackItem
 from quorune.oracle_ir import (
     compile_oracle_card,
@@ -251,6 +253,180 @@ class FixedTokenCreationCompilerTests(unittest.TestCase):
         self.assertEqual("unresolved", ir.status)
         self.assertEqual("spell_effect", ir.material_residuals[0].kind)
 
+    def test_fixed_token_batches_and_clues_promote_the_bounded_real_cards(self):
+        exact_names = (
+            "Mascot Exhibition",
+            "Forbidden Friendship",
+            "Bestial Menace",
+            "Sokka's Sword Training",
+            "Cunning Maneuver",
+            "Forecasting Fortune Teller",
+            "Knowledge Seeker",
+        )
+        for name in exact_names:
+            with self.subTest(name=name):
+                record = self.db.lookup(name)
+                ir = compile_oracle_card(
+                    record,
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                self.assertEqual("exact", ir.status)
+                self.assertFalse(ir.material_residuals)
+                programs = generated_programs(
+                    self.db,
+                    record,
+                    trust_level="trusted",
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                self.assertTrue(programs)
+                self.assertEqual(
+                    {"trusted"},
+                    {program.trust_level for program in programs},
+                )
+
+        partial = {
+            "Devouring Sugarmaw // Have for Dinner": "trigger",
+            "True Ancestry": "spell_effect",
+        }
+        for name, residual_kind in partial.items():
+            with self.subTest(name=name):
+                ir = compile_oracle_card(
+                    self.db.lookup(name),
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                self.assertEqual("partial", ir.status)
+                self.assertIn(
+                    residual_kind,
+                    {residual.kind for residual in ir.material_residuals},
+                )
+                token_nodes = [
+                    node
+                    for face in ir.faces
+                    for node in face.nodes
+                    if "token.creation.fixed_definition"
+                    in node.capability_dependencies
+                ]
+                self.assertEqual(1, len(token_nodes))
+
+    def test_fixed_token_batch_and_clue_shapes_are_exact_and_fail_closed(self):
+        batch = fixed_token_creation_effect_template(
+            "Create a 1/1 red Dinosaur creature token with haste and a "
+            "1/1 white Human Soldier creature token."
+        )
+        self.assertIsNotNone(batch)
+        self.assertEqual(
+            "create-fixed-token-definition-batch-v1", batch.template_id
+        )
+        self.assertEqual("create_token_batch", batch.effect["op"])
+        self.assertEqual(2, len(batch.effect["tokens"]))
+        self.assertIn(FIXED_TOKEN_DEFINITION_BATCH_MECHANIC, batch.mechanics)
+        self.assertEqual(
+            {
+                "activation.tap_untap_cost.haste",
+                "combat.attack.haste",
+                "token.creation.fixed_definition",
+            },
+            set(
+                capability_dependencies_for_node(
+                    effects=(batch.effect,),
+                    target_schema=None,
+                    mechanic_ids=batch.mechanics,
+                )
+            ),
+        )
+
+        clue = fixed_token_creation_effect_template("Create a Clue token.")
+        self.assertIsNotNone(clue)
+        self.assertEqual(
+            {
+                "token.creation.fixed_definition",
+                "zone.draw.library_to_hand",
+            },
+            set(
+                capability_dependencies_for_node(
+                    effects=(clue.effect,),
+                    target_schema=None,
+                    mechanic_ids=clue.mechanics,
+                )
+            ),
+        )
+
+        malformed = (
+            {**batch.effect, "tokens": batch.effect["tokens"][:1]},
+            {**batch.effect, "tokens": [*batch.effect["tokens"], {}, {}]},
+            {**batch.effect, "tokens": tuple(batch.effect["tokens"])},
+            {
+                **batch.effect,
+                "tokens": [
+                    {**batch.effect["tokens"][0], "quantity": 0},
+                    batch.effect["tokens"][1],
+                ],
+            },
+            {**batch.effect, "unknown": True},
+        )
+        for effect in malformed:
+            with self.subTest(effect=effect):
+                self.assertNotIn(
+                    "token.creation.fixed_definition",
+                    capability_dependencies_for_node(
+                        effects=(effect,),
+                        target_schema=None,
+                        mechanic_ids=batch.mechanics,
+                    ),
+                )
+        self.assertNotIn(
+            "token.creation.fixed_definition",
+            capability_dependencies_for_node(
+                effects=(batch.effect,),
+                target_schema=None,
+                mechanic_ids=tuple(
+                    mechanic
+                    for mechanic in batch.mechanics
+                    if mechanic != FIXED_TOKEN_DEFINITION_BATCH_MECHANIC
+                ),
+            ),
+        )
+
+        unsupported = (
+            "Create X 1/1 green Saproling creature tokens and a Food token.",
+            "Create a token that's a copy of target creature and a Food token.",
+            "Create a Wicked Role token attached to target creature and a "
+            "Treasure token.",
+            "Create a 1/1 black Rat creature token with \"This token can't "
+            "block.\" and a Food token.",
+            "Create a 1/1 white Soldier creature token, a 1/1 blue Bird "
+            "creature token with flying, a 1/1 black Rat creature token, "
+            "and a 1/1 red Goblin creature token.",
+        )
+        for text in unsupported:
+            with self.subTest(text=text):
+                self.assertIsNone(fixed_token_creation_effect_template(text))
+
+    def test_fixed_token_batch_compiler_mutation_is_killed(self):
+        record = self.db.lookup("Mascot Exhibition")
+        self.assertEqual(
+            "exact",
+            compile_oracle_card(
+                record,
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+            ).status,
+        )
+        with patch(
+            "quorune.oracle_ir.fixed_token_creation_effect_template",
+            return_value=None,
+        ):
+            mutated = compile_oracle_card(
+                record,
+                capability_registry=self.capabilities,
+                capability_profile="commander_review",
+            )
+        self.assertEqual("unresolved", mutated.status)
+        self.assertTrue(mutated.material_residuals)
+
 
 class FixedTokenCreationRuntimeTests(unittest.TestCase):
     @classmethod
@@ -382,6 +558,21 @@ class FixedTokenCreationRuntimeTests(unittest.TestCase):
         )
         return program
 
+    @staticmethod
+    def _pass_until(session, predicate, *, limit: int = 24):
+        for _ in range(limit):
+            if predicate():
+                return
+            principals = session.pending_principals()
+            if not principals:
+                raise AssertionError("Resolution stopped without a decision")
+            result = session.act(
+                principals[0], {"action_id": "pass"}
+            )
+            if not result.ok:
+                raise AssertionError(result.summary)
+        raise AssertionError("Resolution did not reach the expected state")
+
     def test_compiled_fixed_token_effect_uses_canonical_creation_owner(self):
         session = self.session(470101)
         engine = session.engine
@@ -427,6 +618,193 @@ class FixedTokenCreationRuntimeTests(unittest.TestCase):
         self.assertEqual(1, len(data["activated_abilities"]))
         self.assertEqual("", data["oracle_text"])
         self.assertIn("You gain 3 life", data["display_oracle_text"])
+
+    def test_compiled_fixed_token_batch_is_one_simultaneous_transaction(self):
+        session = self.session(470130)
+        engine = session.engine
+        before = set(engine.state.cards)
+        self._resolve_compiled_program(
+            engine,
+            "Create a 1/1 red Dinosaur creature token with haste and a "
+            "1/1 white Human Soldier creature token.",
+            470130,
+        )
+        created = [
+            card
+            for object_id, card in engine.state.cards.items()
+            if object_id not in before
+        ]
+        self.assertEqual(
+            {"Dinosaur", "Human Soldier"},
+            {card.printed_name for card in created},
+        )
+        self.assertEqual(1, len({card.zone_timestamp for card in created}))
+        dinosaur = next(
+            card for card in created if card.printed_name == "Dinosaur"
+        )
+        soldier = next(
+            card for card in created if card.printed_name == "Human Soldier"
+        )
+        self.assertEqual(
+            ["Haste"], engine._effective_card_data(dinosaur)["keywords"]
+        )
+        self.assertEqual(
+            [], engine._effective_card_data(soldier)["keywords"]
+        )
+        event = next(
+            event
+            for event in reversed(engine.state.events)
+            if event.code == "token.create"
+        )
+        self.assertEqual(2, event.details["base_quantity"])
+        self.assertEqual(0, event.details["replacement_count"])
+        self.assertEqual(
+            {card.ref for card in created}, set(event.details["objects"])
+        )
+
+    def test_fixed_token_batch_replacement_order_is_private_and_shared(self):
+        session = self.session(470131, players=4)
+        engine = session.engine
+        self._install_replacement_sources(
+            engine, ("Stridehangar Automaton", "Worldwalker Helm")
+        )
+        item, program = self._stack_compiled_program(
+            engine,
+            "Create a 1/1 white Human creature token and a Food token.",
+            470131,
+        )
+        engine._continue_resolution(
+            stack_ref=item.ref,
+            effects=[dict(effect) for effect in program.effects],
+            destination=program.destination,
+            note=program.notes,
+        )
+
+        decision = engine.state.pending_decision
+        self.assertEqual("replacement.order", decision.kind)
+        self.assertEqual(["A"], decision.actors)
+        projector = StateProjector(self.db, engine.state)
+        projected = projector._decision("pilot:A")
+        for seat in ("B", "C", "D"):
+            self.assertIsNone(projector._decision(f"pilot:{seat}"))
+        before = authoritative_state_hash(engine.state)
+        rejected = engine.try_submit(
+            token=engine.permissions.capability_for("pilot:A").token,
+            principal="pilot:A",
+            action="choose",
+            payload={"replacement": "unknown-replacement"},
+        )
+        self.assertFalse(rejected.ok)
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+
+        result = engine.submit(
+            token=engine.permissions.capability_for("pilot:A").token,
+            principal="pilot:A",
+            action="choose",
+            payload={
+                "replacement": projected["ctx"]["options"][0]["id"]
+            },
+        )
+        self.assertTrue(result.ok, result.summary)
+        tokens = [
+            card
+            for card in engine.state.cards.values()
+            if card.is_token and card.zone == "battlefield"
+        ]
+        self.assertEqual(
+            {"Food", "Human", "Map", "Thopter"},
+            {card.printed_name for card in tokens},
+        )
+        self.assertEqual(1, len({card.zone_timestamp for card in tokens}))
+        event = next(
+            event
+            for event in reversed(engine.state.events)
+            if event.code == "token.create"
+        )
+        self.assertEqual(2, event.details["base_quantity"])
+        self.assertEqual(2, event.details["replacement_count"])
+
+    def test_fixed_token_batch_malformed_effect_rolls_back_atomically(self):
+        session = self.session(470132)
+        engine = session.engine
+        template = fixed_token_creation_effect_template(
+            "Create a 1/1 red Dinosaur creature token with haste and a "
+            "1/1 white Human Soldier creature token."
+        )
+        self.assertIsNotNone(template)
+        malformed = copy.deepcopy(template.effect)
+        malformed["tokens"][1]["characteristics"][
+            "activated_ability_profile"
+        ] = "unsupported-profile"
+        before = authoritative_state_hash(engine.state)
+        with self.assertRaises(GameRuleError):
+            engine.apply_effect(malformed, actor="A")
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+
+    def test_compiled_clue_activation_draws_privately_and_replays_exactly(self):
+        session = self.session(470133)
+        engine = session.engine
+        self._resolve_compiled_program(
+            engine, "Create a Clue token.", 470133
+        )
+        clue = next(
+            card
+            for card in engine.state.cards.values()
+            if card.is_token and card.printed_name == "Clue"
+        )
+        abilities = compiled_activated_abilities(engine, clue)
+        self.assertEqual(1, len(abilities))
+        ability = abilities[0]
+        self.assertEqual("builtin:draw:1", ability.builtin_semantic_key)
+        self.assertTrue(ability.sacrifice_source)
+        self.assertFalse(ability.tap_source)
+
+        engine.state.players["A"].mana_pool["C"] = 2
+        engine.state.active_player = "A"
+        engine.state.started = True
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine._grant_priority("A")
+        engine.pump()
+        action_id = f"activate:{clue.ref}:{ability.ability_id}"
+        packet = session.packet("pilot:A", full=True)
+        offered = {
+            action["id"]
+            for action in packet["decision"]["ctx"]["legal"]["actions"]
+        }
+        self.assertIn(action_id, offered)
+        top = engine.state.players["A"].zones["library"][-1]
+        top_ref = engine.state.cards[top].ref
+        hand_before = len(engine.state.players["A"].zones["hand"])
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        result = session.act("pilot:A", {"action_id": action_id})
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual("outside", clue.zone)
+        self.assertEqual(0, engine.state.players["A"].mana_pool["C"])
+        self._pass_until(session, lambda: not engine.state.stack)
+        self.assertEqual(
+            hand_before + 1, len(engine.state.players["A"].zones["hand"])
+        )
+        self.assertIn(top, engine.state.players["A"].zones["hand"])
+        self.assertNotIn(
+            "hand",
+            session.packet("pilot:B", full=True)["state"]["players"]["A"],
+        )
+        self.assertNotIn(
+            top_ref,
+            json.dumps(session.packet("pilot:B", full=True)),
+        )
+
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "clue-token-record"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
 
     def _install_replacement_sources(self, engine, names):
         for name in names:

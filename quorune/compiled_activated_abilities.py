@@ -30,12 +30,16 @@ def _face_id(record: Any, card: Any) -> str:
     return "front"
 
 
-def _custom_activated_abilities(card: Any) -> tuple[ActivatedAbility, ...]:
+def _custom_activated_abilities(
+    card: Any,
+) -> tuple[ActivatedAbility, ...] | None:
     characteristics = dict(
         card.annotations.get("object_characteristics")
         or card.annotations.get("token_characteristics")
         or {}
     )
+    if "activated_abilities" not in characteristics:
+        return None
     raw = characteristics.get("activated_abilities", ())
     if not isinstance(raw, (list, tuple)) or any(
         not isinstance(value, Mapping) for value in raw
@@ -52,9 +56,12 @@ def compiled_activated_abilities(
 ) -> tuple[ActivatedAbility, ...]:
     """Return the current face's source-pinned activation catalog."""
 
+    custom = _custom_activated_abilities(card)
+    if custom is not None:
+        return custom
     record = host.card_record(card)
     if record is None:
-        return _custom_activated_abilities(card)
+        return ()
     expected_face = _face_id(record, card)
     face_ids = tuple(
         str(face.get("name") or "front") for face in getattr(record, "faces", ())

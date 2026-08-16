@@ -25,6 +25,7 @@ from ..errors import GameRuleError
 from ..effect_contracts import effect_family_contract
 from ..util import unique_preserving_order
 from ..trigger_processing import schedule_delayed_trigger
+from ..token_creation import TokenCreationError, create_token_batch
 
 
 OPERATIONS = effect_family_contract("objects-stack-and-tokens.v1").operations
@@ -123,6 +124,29 @@ def _apply_create_token(
             effect.get("_replacement_selections") or ()
         ),
     )
+
+
+def _apply_create_token_batch(
+    host: Any,
+    effect: Mapping[str, Any],
+    *,
+    actor: str,
+    operation: str,
+    reason: str,
+) -> Any:
+    op = operation
+    try:
+        return create_token_batch(
+            host,
+            str(effect.get("controller") or actor),
+            tokens=effect.get("tokens"),
+            reason=reason,
+            replacement_selections=tuple(
+                effect.get("_replacement_selections") or ()
+            ),
+        )
+    except TokenCreationError as exc:
+        raise GameRuleError(str(exc)) from exc
 
 
 
@@ -985,6 +1009,7 @@ HANDLERS = {
     'counter': _apply_counter,
     'counter_all_subtype': _apply_counter_all_subtype,
     'create_token': _apply_create_token,
+    'create_token_batch': _apply_create_token_batch,
     'create_token_if_no_controlled_subtype': _apply_create_token_if_no_controlled_subtype,
     'delayed_trigger': _apply_delayed_trigger,
     'grant_cast_permission': _apply_grant_cast_permission,

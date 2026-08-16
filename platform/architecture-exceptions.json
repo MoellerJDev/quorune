@@ -820,6 +820,32 @@
         "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
         "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0037",
+      "adr": "docs/adr/0070-typed-fixed-token-definition-batches.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "26b1acf3778e178e3c21b67e8b80d50ece5ac59c216e8d4c531203bcafd950aa",
+      "exact_allowance": "Only the schema-4 structural state-write identities, owner classifications, zero prohibited runtime Oracle-text and card-identity dispatch counts, engine methods, size ceilings, Oracle-ID literals, legacy helpers, module classifications, and the reviewed create_token_batch operation serialized after typed fixed token-definition batch and Clue compilation.",
+      "rationale": "The selector-chosen family adds one closed simultaneous token-creation operation and extends the existing token, standard-ability, and activation owners while keeping CommanderEngine, direct GameState writes, oversized symbols, Oracle-ID literals, runtime Oracle prose, and card-identity dispatch flat. The strict handler validates all definitions before submitting one aggregate event to the canonical replacement, timestamp, entry-counter, commit, trigger, draw, rollback, privacy, and replay owners.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact residual identities and counts in the rebound schema-4 baseline plus create_token_batch, create-fixed-token-definition-batch-v1, token.creation.fixed_definition v2, zone.draw.library_to_hand v7, the Clue standard-token profile, and explicit typed object-catalog precedence described by ADR 0070; new runtime Oracle interpretation, card-identity dispatch, unowned mutation, engine-local writes, oversized symbols, arbitrary callbacks, family-specific ability-presence checks, dynamic quantities, copies, Roles, Incubate, restricted-mana tokens, ambiguous batches, or additional unreviewed operations remain forbidden.",
+      "removal_condition": "Remove the exception when the registered universal-operation inventory no longer requires baseline review; retain the batch and Clue owners only while exact grammar, strict per-definition closure, one replacement event, shared timestamp, atomic rollback, typed activation, private draw, mutation, and replay evidence remain enforced.",
+      "target_milestone": "capability-closed broad compiler harvest through typed universal rules owners",
+      "replay_implications": "CardPrograms record ordered fixed token definitions and typed standard-token profiles; Game Record v3 snapshots the resulting token catalogs and follows the same aggregate replacement selections, shared timestamp, activation cost, and private draw without consulting Oracle prose.",
+      "privacy_implications": "Created token definitions and battlefield objects are public; competing replacement order and action authority remain affected-seat scoped, and the Clue draw exposes the drawn identity only to its controller through the canonical projection owner.",
+      "security_implications": "Only a capability-closed source-spanned CardProgram can emit the strict operation; ambiguous grammar, unknown fields, invalid quantities or characteristics, unsupported profiles, tampered replacement selections, stale activation authority, and malformed replay inputs fail before mutation.",
+      "tests": [
+        "tests.test_fixed_token_creation_effects.FixedTokenCreationCompilerTests.test_fixed_token_batches_and_clues_promote_the_bounded_real_cards",
+        "tests.test_fixed_token_creation_effects.FixedTokenCreationCompilerTests.test_fixed_token_batch_and_clue_shapes_are_exact_and_fail_closed",
+        "tests.test_fixed_token_creation_effects.FixedTokenCreationCompilerTests.test_fixed_token_batch_compiler_mutation_is_killed",
+        "tests.test_fixed_token_creation_effects.FixedTokenCreationRuntimeTests.test_compiled_fixed_token_batch_is_one_simultaneous_transaction",
+        "tests.test_fixed_token_creation_effects.FixedTokenCreationRuntimeTests.test_fixed_token_batch_replacement_order_is_private_and_shared",
+        "tests.test_fixed_token_creation_effects.FixedTokenCreationRuntimeTests.test_fixed_token_batch_malformed_effect_rolls_back_atomically",
+        "tests.test_fixed_token_creation_effects.FixedTokenCreationRuntimeTests.test_compiled_clue_activation_draws_privately_and_replays_exactly",
+        "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
+      ]
     }
   ]
 }

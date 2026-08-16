@@ -1120,7 +1120,9 @@ def capability_covered_mechanics(
     ):
         covered.add("cr-121-drawing-a-card")
     if "token.creation.fixed_definition" in supplied:
-        covered.add("cr-111-tokens")
+        covered.update(
+            {"cr-111-tokens", "fixed-token-definition-batch"}
+        )
     if "attachment.aura.simple_object" in supplied:
         covered.add("enchant")
     if "protection.typed.debt" in supplied:
