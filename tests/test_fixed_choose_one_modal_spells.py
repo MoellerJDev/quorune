@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import copy
-from dataclasses import replace
 from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from common import ROOT, keep_all, make_session
-from quorune.carddb import CardDatabase
+from quorune.carddb import CardDatabase, CardRecord
 from quorune.compiler.modal_templates import (
     FIXED_CHOOSE_ONE_MODAL_CAPABILITY,
     FIXED_CHOOSE_ONE_MODAL_MECHANIC,
@@ -91,25 +90,30 @@ def focused_card_database(directory: str) -> CardDatabase:
 class FixedChooseOneModalCompilerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.temporary = tempfile.TemporaryDirectory()
-        cls.db = focused_card_database(cls.temporary.name)
-        cls.base = cls.db.lookup("Abrade")
         cls.capabilities = load_default_capability_registry()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.db.close()
-        cls.temporary.cleanup()
 
     def compile(self, name: str, oracle_text: str, *, type_line: str = "Instant"):
         return compile_oracle_card(
-            replace(
-                self.base,
+            CardRecord(
+                oracle_id="00000000-0000-4000-8000-000000000700",
                 name=name,
+                mana_cost="{1}{R}",
+                mana_value=2.0,
                 oracle_text=oracle_text,
                 type_line=type_line,
+                power=None,
+                toughness=None,
+                loyalty=None,
+                defense=None,
+                colors=("R",),
+                color_identity=("R",),
                 keywords=(),
+                produced_mana=(),
+                layout="normal",
+                released_at="2026-01-01",
+                legalities={"commander": "legal"},
                 faces=(),
+                raw={},
             ),
             capability_registry=self.capabilities,
             capability_profile="commander_review",
@@ -225,6 +229,7 @@ class FixedChooseOneModalCompilerTests(unittest.TestCase):
         value["modes"]["mode_2"]["open_grammar"] = True
         malformed.append((value, mechanics))
         malformed.append((schema, (*mechanics, "unrepresented-mechanic")))
+        malformed.append((schema, (*mechanics, mechanics[-1])))
 
         for target_schema, mechanic_ids in malformed:
             with self.subTest(target_schema=target_schema):

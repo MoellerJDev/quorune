@@ -927,7 +927,7 @@ def _fixed_modal_capability_dependencies(
     *,
     effects: Sequence[Mapping[str, Any]],
     target_schema: Mapping[str, Any] | None,
-    mechanics: set[str],
+    mechanics: Iterable[str],
 ) -> tuple[str, ...]:
     branches = fixed_choose_one_modal_branches(
         effects=effects,
@@ -1002,14 +1002,15 @@ def capability_dependencies_for_node(
     declarations are reviewed.
     """
 
-    mechanics = {str(value).casefold() for value in mechanic_ids}
+    mechanic_values = tuple(str(value).casefold() for value in mechanic_ids)
+    mechanics = set(mechanic_values)
     operations = {str(effect.get("op") or "") for effect in effects}
 
     if FIXED_CHOOSE_ONE_MODAL_MECHANIC in mechanics:
         return _fixed_modal_capability_dependencies(
             effects=effects,
             target_schema=target_schema,
-            mechanics=mechanics,
+            mechanics=mechanic_values,
         )
 
     all_operations = _nested_effect_operations(effects)

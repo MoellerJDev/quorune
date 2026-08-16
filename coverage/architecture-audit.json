@@ -10729,7 +10729,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 159206,
+      "logical_lines": 159207,
       "methods": {
         "dunder": 440,
         "private": 766,
@@ -10874,8 +10874,8 @@
           "file": "quorune/rules/capabilities.py",
           "functions_and_methods": 29,
           "language": "python",
-          "logical_lines": 1184,
-          "physical_lines": 1259
+          "logical_lines": 1185,
+          "physical_lines": 1260
         },
         {
           "file": "quorune/damage_modifier_state.py",
@@ -14468,7 +14468,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 174542,
+      "physical_lines": 174543,
       "python_file_count": 468,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -25280,7 +25280,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "768e51771822af6c1ccac4628a8c9cbcc525bb324d7b9ca6421f2fc28c0b1ad1",
+      "fingerprint": "6f536c34bd9d916263af23524e11f79790f372152abed3a26aa027a7bd69f38e",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
