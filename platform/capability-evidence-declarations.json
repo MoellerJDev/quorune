@@ -11744,6 +11744,22 @@
     },
     {
       "capability_id": "permanent.destroy.effect",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_targeted_destruction_effect_clauses.TargetedDestructionRuntimeTests.test_compiled_union_destruction_offer_command_resolution_and_replay",
+      "official_rule_ids": ["122.1c", "701.8", "701.8a", "701.8b", "701.8c", "702.12b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile, advertise, validate, resolve, and replay an artifact-or-land destruction spell through one shared typed characteristic predicate and the canonical destruction owner."
+    },
+    {
+      "capability_id": "permanent.destroy.effect",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_targeted_destruction_effect_clauses.TargetedDestructionRuntimeTests.test_compiled_union_destruction_respects_indestructible",
+      "official_rule_ids": ["122.1c", "701.8", "701.8a", "701.8b", "701.8c", "702.12b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Route compiled artifact-or-land destruction into the canonical current-characteristic Indestructible prohibition and replay the preserved permanent exactly."
+    },
+    {
+      "capability_id": "permanent.destroy.effect",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_destruction_rules.DestructionRuleTests.test_effect_destruction_uses_typed_owner_and_replays",
       "official_rule_ids": ["122.1c", "701.8", "701.8a", "701.8b", "701.8c", "702.12b"],
@@ -11757,6 +11773,14 @@
       "official_rule_ids": ["122.1c", "701.8", "701.8a", "701.8b", "701.8c", "702.12b"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Kill mutations that bypass Indestructible, consume no shield, or incorrectly apply shields to state-based destruction."
+    },
+    {
+      "capability_id": "permanent.destroy.effect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_targeted_destruction_effect_clauses.TargetedDestructionCompilerTests.test_targeted_destruction_parser_mutation_is_killed",
+      "official_rule_ids": ["122.1c", "701.8", "701.8a", "701.8b", "701.8c", "702.12b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the shared direct-permanent target parser from targeted destruction lowering."
     },
     {
       "capability_id": "permanent.destroy.effect",
@@ -12085,6 +12109,14 @@
       "official_rule_ids": ["701.8b", "702.12", "702.12a", "702.12b", "702.12c", "704.5g", "704.5h"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Consume a canonically placed Indestructible keyword counter through the shared effective-keyword query, then destroy normally after canonical removal."
+    },
+    {
+      "capability_id": "permanent.indestructible.ordinary",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_targeted_destruction_effect_clauses.TargetedDestructionRuntimeTests.test_compiled_union_destruction_respects_indestructible",
+      "official_rule_ids": ["701.8b", "702.12", "702.12a", "702.12b", "702.12c", "704.5g", "704.5h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Consume represented current Indestructible when a compiled artifact-or-land destruction spell reaches the canonical destruction transaction."
     },
     {
       "capability_id": "permanent.indestructible.ordinary",
@@ -14056,6 +14088,14 @@
       "official_rule_ids": ["105.2", "115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Offer, validate, and resolve only the acting player's artifact-or-creature target while rejecting the same type combination under another player's control."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_targeted_destruction_effect_clauses.TargetedDestructionRuntimeTests.test_compiled_union_destruction_offer_command_resolution_and_replay",
+      "official_rule_ids": ["105.2", "115.1", "115.2", "115.6", "205.3", "205.3g", "205.3m", "608.2b", "613.1d", "613.1f", "702.9"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use one artifact-or-land characteristic disjunction for offered legal references and submitted-command rejection before resolving compiled destruction."
     },
     {
       "capability_id": "target.permanent.characteristic_predicate",

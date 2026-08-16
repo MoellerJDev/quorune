@@ -21,32 +21,21 @@ CompiledDirectTarget = tuple[
 ]
 
 
-_DIRECT_TYPE_ANY_SHAPES = frozenset(
-    {
-        ("artifact",),
-        ("battle",),
-        ("creature",),
-        ("enchantment",),
-        ("land",),
-        ("planeswalker",),
-        ("artifact", "creature"),
-    }
-)
-_DIRECT_TYPE_ALL_SHAPES = frozenset(
-    {("creature",), ("creature", "enchantment")}
-)
-DIRECT_NONCREATURE_SUBTYPES = frozenset({"vehicle"})
-DIRECT_PERMANENT_TYPES = frozenset(
+_DIRECT_TYPE_ANY_VALUES = frozenset(
     {
         "artifact",
         "battle",
         "creature",
         "enchantment",
         "land",
-        "permanent",
         "planeswalker",
     }
 )
+_DIRECT_TYPE_ALL_SHAPES = frozenset(
+    {("creature",), ("creature", "enchantment")}
+)
+DIRECT_NONCREATURE_SUBTYPES = frozenset({"vehicle"})
+DIRECT_PERMANENT_TYPES = _DIRECT_TYPE_ANY_VALUES | {"permanent"}
 _DIRECT_KEYWORDS = frozenset({"flying"})
 _DIRECT_COLORS = frozenset({"W", "U", "B", "R", "G"})
 
@@ -122,8 +111,13 @@ class DirectPermanentTargetSpec:
             raise ValueError(
                 "Direct permanent targets cannot mix any/all type predicates"
             )
-        if self.types_any not in _DIRECT_TYPE_ANY_SHAPES and self.types_any:
-            raise ValueError("Direct permanent target type disjunction is unsupported")
+        if self.types_any and (
+            len(self.types_any) > 4
+            or not set(self.types_any).issubset(_DIRECT_TYPE_ANY_VALUES)
+        ):
+            raise ValueError(
+                "Direct permanent target type disjunction is unsupported"
+            )
         if self.types_all not in _DIRECT_TYPE_ALL_SHAPES and self.types_all:
             raise ValueError("Direct permanent target type conjunction is unsupported")
         if self.types_all == ("creature",) and not self.keywords_all:
@@ -144,14 +138,18 @@ class DirectPermanentTargetSpec:
                         f"Direct permanent target subtype {subtype!r} is unsupported"
                     )
         if self.subtypes_none:
-            if self.types_any != ("creature",) or len(self.subtypes_none) != 1:
+            if (
+                self.types_any != ("creature",)
+                or len(self.subtypes_none) > 4
+            ):
                 raise ValueError(
-                    "Direct permanent excluded subtypes require one creature predicate"
+                    "Direct permanent excluded subtypes require one closed creature predicate"
                 )
-            if self.subtypes_none != ("human",):
-                raise ValueError(
-                    "Direct permanent excluded subtype must be Human"
-                )
+            for subtype in self.subtypes_none:
+                if canonical_creature_subtype(subtype) != subtype:
+                    raise ValueError(
+                        f"Direct permanent excluded subtype {subtype!r} is unsupported"
+                    )
         if self.keywords_all:
             if (
                 self.types_all != ("creature",)
@@ -442,15 +440,30 @@ def direct_permanent_target_spec(
     elif phrase == "colorless creature":
         kwargs["types_any"] = ("creature",)
         kwargs["colorless"] = True
-    elif re.fullmatch(r"non-[a-z][a-z' -]* creature", phrase):
-        raw_subtype = phrase[len("non-") : -len(" creature")]
-        subtype = canonical_creature_subtype(raw_subtype)
-        if subtype is None:
+    elif phrase.endswith(" creature") and all(
+        value.startswith("non-")
+        for value in re.split(
+            r",\s*(?:or\s+)?|\s+or\s+",
+            phrase[: -len(" creature")],
+        )
+    ):
+        raw_subtypes = tuple(
+            value[len("non-") :].strip()
+            for value in re.split(
+                r",\s*(?:or\s+)?|\s+or\s+",
+                phrase[: -len(" creature")],
+            )
+            if value.strip()
+        )
+        subtypes = tuple(
+            canonical_creature_subtype(value) for value in raw_subtypes
+        )
+        if not subtypes or any(value is None for value in subtypes):
             return None
         kwargs["types_any"] = ("creature",)
-        kwargs["subtypes_none"] = (subtype,)
-    elif phrase == "artifact or creature":
-        kwargs["types_any"] = ("artifact", "creature")
+        kwargs["subtypes_none"] = tuple(
+            value for value in subtypes if value is not None
+        )
     elif phrase == "enchantment creature":
         kwargs["types_all"] = ("enchantment", "creature")
     elif phrase == "creature with flying":
@@ -460,17 +473,39 @@ def direct_permanent_target_spec(
         if phrase != "permanent":
             kwargs["types_any"] = (phrase,)
     else:
-        if phrase.endswith(" creature"):
-            phrase = phrase[: -len(" creature")]
-        raw_subtypes = tuple(
+        raw_type_terms = tuple(
             value.strip()
             for value in re.split(r",\s*(?:or\s+)?|\s+or\s+", phrase)
             if value.strip()
         )
-        if not raw_subtypes:
+        if len(raw_type_terms) > 1 and set(raw_type_terms).issubset(
+            _DIRECT_TYPE_ANY_VALUES
+        ):
+            kwargs["types_any"] = raw_type_terms
+            try:
+                return DirectPermanentTargetSpec(**kwargs)
+            except ValueError:
+                return None
+        explicit_creature = phrase.endswith(" creature")
+        if explicit_creature:
+            phrase = phrase[: -len(" creature")]
+        raw_terms = tuple(
+            value.strip()
+            for value in re.split(r",\s*(?:or\s+)?|\s+or\s+", phrase)
+            if value.strip()
+        )
+        if not raw_terms:
             return None
+        if not explicit_creature and set(raw_terms).issubset(
+            _DIRECT_TYPE_ANY_VALUES
+        ):
+            kwargs["types_any"] = raw_terms
+            try:
+                return DirectPermanentTargetSpec(**kwargs)
+            except ValueError:
+                return None
         subtypes: list[str] = []
-        for value in raw_subtypes:
+        for value in raw_terms:
             subtype = canonical_creature_subtype(value)
             if subtype is None and value not in DIRECT_NONCREATURE_SUBTYPES:
                 return None

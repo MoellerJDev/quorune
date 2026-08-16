@@ -343,6 +343,18 @@ _WITNESSES = {
         "{4}{W}{W}",
         loyalty="4",
     ),
+    "gideon-jura": _Witness(
+        "Gideon Jura",
+        "Legendary Planeswalker — Gideon",
+        "+2: During target opponent's next turn, creatures that player "
+        "controls attack Gideon Jura if able.\n"
+        "−2: Destroy target tapped creature.\n"
+        "0: Until end of turn, Gideon Jura becomes a 6/6 Human Soldier "
+        "creature that's still a planeswalker. Prevent all damage that "
+        "would be dealt to him this turn.",
+        "{3}{W}{W}",
+        loyalty="6",
+    ),
     "oko-trickster": _Witness(
         "Oko, the Trickster",
         "Legendary Planeswalker — Oko",
@@ -408,6 +420,12 @@ def _pair(left: str, right: str) -> Pair:
     return tuple(sorted((left, right)))  # type: ignore[return-value]
 
 
+DESTROY_DAMAGE_PREVENTION_PAIR = _pair(
+    "capability.permanent.destroy.effect",
+    "residual.replacement.damage-prevention",
+)
+
+
 ATTACHMENT_AND_CONTINUOUS_PAIRS = (
     _pair("capability.attachment.aura.simple_object", "residual.continuous_layer.affected-player-ordering"),
     _pair("capability.attachment.aura.simple_object", "residual.continuous_layer.continuous-effect-layers-and-dependencies"),
@@ -456,6 +474,7 @@ EFFECT_AND_REPLACEMENT_PAIRS = (
     _pair("capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.damage-prevention"),
     _pair("capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.replacement-applicability"),
     _pair("capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.self-replacement-and-prevention-ordering"),
+    DESTROY_DAMAGE_PREVENTION_PAIR,
 )
 
 ZONE_AND_CHOICE_PAIRS = (
@@ -577,6 +596,7 @@ _bind(
     "fixed-life-upkeep-prevention",
     *EFFECT_AND_REPLACEMENT_PAIRS[31:34],
 )
+_bind("gideon-jura", DESTROY_DAMAGE_PREVENTION_PAIR)
 _bind("dauthi-voidwalker", ZONE_AND_CHOICE_PAIRS[0])
 _bind("sphinxs-insight", ZONE_AND_CHOICE_PAIRS[1])
 _bind("electrolyze", ZONE_AND_CHOICE_PAIRS[2], ZONE_AND_CHOICE_PAIRS[4])
@@ -775,6 +795,7 @@ __all__ = [
     "CONTINUOUS_AND_REPLACEMENT_PAIRS",
     "COST_AND_REPLACEMENT_PAIRS",
     "DECLARATION_AND_REPLACEMENT_PAIRS",
+    "DESTROY_DAMAGE_PREVENTION_PAIR",
     "EFFECT_AND_REPLACEMENT_PAIRS",
     "TRIGGER_AND_REPLACEMENT_PAIRS",
     "ZONE_AND_CHOICE_PAIRS",

@@ -13,7 +13,7 @@ PUBLIC_PERMANENT_STATE_CAPABILITY = (
 )
 
 
-def fixed_counter_target_schema_is_closed(
+def direct_permanent_target_schema_is_closed(
     target_schema: Mapping[str, Any] | None,
     *,
     allow_commander: bool = False,
@@ -28,6 +28,10 @@ def fixed_counter_target_schema_is_closed(
     except (TypeError, ValueError):
         return False
     return True
+
+
+# Compatibility for counter-family callers that predate the shared name.
+fixed_counter_target_schema_is_closed = direct_permanent_target_schema_is_closed
 
 
 def direct_target_predicate_capabilities(
@@ -92,6 +96,7 @@ def fixed_counter_target_set_state_capabilities(
 
 __all__ = [
     "direct_target_predicate_capabilities",
+    "direct_permanent_target_schema_is_closed",
     "fixed_counter_target_schema_is_closed",
     "fixed_counter_target_set_state_capabilities",
     "public_state_query_capabilities",

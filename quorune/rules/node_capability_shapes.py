@@ -40,6 +40,7 @@ from .cumulative_upkeep_capability_shapes import (
     fixed_mana_cumulative_upkeep_node_capabilities,
 )
 from .permanent_predicate_capability_shapes import (
+    direct_permanent_target_schema_is_closed,
     direct_target_predicate_capabilities,
     fixed_counter_target_schema_is_closed,
     fixed_counter_target_set_state_capabilities,
@@ -217,23 +218,6 @@ _TARGETED_TAP_STATE_SCHEMAS: tuple[Mapping[str, Any], ...] = tuple(
         "count": 1,
     }
     for kind in ("artifact", "creature", "land", "permanent")
-)
-_TARGETED_DESTRUCTION_SCHEMAS: tuple[Mapping[str, Any], ...] = tuple(
-    {
-        "zones": ["battlefield"],
-        "categories": ["permanent"],
-        **({"types_any": list(kinds)} if kinds else {}),
-        "count": 1,
-    }
-    for kinds in (
-        ("artifact",),
-        ("creature",),
-        ("enchantment",),
-        ("land",),
-        (),
-        ("artifact", "enchantment"),
-        ("creature", "planeswalker"),
-    )
 )
 _TARGETED_RETURN_TO_HAND_SCHEMAS: tuple[Mapping[str, Any], ...] = (
     *tuple(
@@ -704,7 +688,7 @@ def targeted_destruction_node_capabilities(
     if (
         not {"destroy", "cr-115-targets"}.issubset(mechanics)
         or len(effects) != 1
-        or dict(target_schema or {}) not in _TARGETED_DESTRUCTION_SCHEMAS
+        or not direct_permanent_target_schema_is_closed(target_schema)
     ):
         return ()
     effect = effects[0]
@@ -714,8 +698,10 @@ def targeted_destruction_node_capabilities(
         or effect.get("card") != "$target.0"
     ):
         return ()
+    assert target_schema is not None
     return (
         "permanent.destroy.effect",
+        *direct_target_predicate_capabilities(target_schema),
         "target.revalidate_resolution",
     )
 

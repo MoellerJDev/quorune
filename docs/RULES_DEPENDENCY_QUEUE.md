@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "729525458eb70fe8a24aa5ad97a08040d17491617b6427dc45ac5c577069ab77"
+verified: "4d6585ede42f8bb2a5d7e9354101b2ff6963688374a7b3d40cb00c4914aacf91"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `7e2be5b3d42da8e060ff2675c5246971af746a75380872eadab9a7097a976f09`
+Source fingerprint: `fed431c2f3922edf8876cd198fc5fda837cf51ce4cff690c951d91a2716683cc`
 
 ## Current top-level state
 
@@ -20,8 +20,8 @@ Source fingerprint: `7e2be5b3d42da8e060ff2675c5246971af746a75380872eadab9a7097a9
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `rules:counter-producer-replacement-closure`
-- Selected work class: `rules_foundation`
+- Selected cross-program work: `frontier:effect_clause:create-token`
+- Selected work class: `compiler_harvest`
 
 ## Cross-program work selection
 
@@ -31,15 +31,19 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 2 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
-| 3 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
-| 4 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
-| 5 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
-| 6 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 7 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 240 | 381 | 0 | 0 |
+| 1 | selected | `frontier:effect_clause:create-token` | `compiler_harvest` | 15 | 101 | 0 | 0 |
+| 2 | deferred | `frontier:effect_clause:exile` | `compiler_harvest` | 17 | 100 | 0 | 0 |
+| 3 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 26 | 123 | 0 | 0 |
+| 4 | deferred | `frontier:keyword_dependency:morph` | `card_family` | 36 | 141 | 0 | 0 |
+| 5 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 6 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
+| 7 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
+| 8 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
+| 9 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
+| 10 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
+| 11 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 240 | 381 | 0 | 0 |
 
-Selected reason: The rules queue remains dependency-ready, but correctness, runtime-text, owner, and assurance gates may rank ahead of its unknown card gain.
+Selected reason: Meets a post-stabilization card, exact-ability, or material-residual harvest threshold but remains behind higher-priority correctness gates.
 
 ## Top blockers
 

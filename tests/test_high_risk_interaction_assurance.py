@@ -5,6 +5,7 @@ import unittest
 from common import DB_PATH
 from high_risk_interaction_support import (
     ALL_HIGH_RISK_BOUNDARY_PAIRS,
+    DESTROY_DAMAGE_PREVENTION_PAIR,
     assert_high_risk_boundary_pairs,
 )
 from quorune.carddb import CardDatabase
@@ -22,10 +23,19 @@ class HighRiskInteractionAssuranceTests(unittest.TestCase):
     def test_all_declared_residual_pairs_fail_closed_at_runtime_boundary(
         self,
     ) -> None:
-        self.assertEqual(87, len(ALL_HIGH_RISK_BOUNDARY_PAIRS))
+        self.assertEqual(88, len(ALL_HIGH_RISK_BOUNDARY_PAIRS))
         assert_high_risk_boundary_pairs(
             self,
             ALL_HIGH_RISK_BOUNDARY_PAIRS,
+            database=self.db,
+        )
+
+    def test_compiled_destruction_with_unresolved_damage_prevention_fails_closed(
+        self,
+    ) -> None:
+        assert_high_risk_boundary_pairs(
+            self,
+            (DESTROY_DAMAGE_PREVENTION_PAIR,),
             database=self.db,
         )
 

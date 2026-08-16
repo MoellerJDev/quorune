@@ -2480,6 +2480,20 @@
     {
         "evidence_class": "interaction",
       "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_compiled_destruction_with_unresolved_damage_prevention_fails_closed",
+        "piece_ids": [
+            "capability.permanent.destroy.effect",
+            "residual.replacement.damage-prevention"
+        ],
+        "capability_ids": [
+            "permanent.destroy.effect"
+        ],
+        "interaction_order": 2,
+        "assertion": "Gideon Jura compiles its typed tapped-creature destruction ability beside unresolved damage-prevention prose, and the complete CardProgram remains unavailable at strict runtime admission."
+    },
+    {
+        "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
         "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
         "piece_ids": [
             "capability.permanent.destroy.effect",
@@ -3014,6 +3028,24 @@
       "capability_ids": ["permanent.destroy.effect", "resolution.effect_sequence.fixed_clauses"],
       "interaction_order": 2,
       "assertion": "Lich's Caress executes the typed destruction owner inside the printed-order sequence and continues after a Shield counter replaces destruction."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_union_destruction_offer_command_resolution_and_replay",
+      "piece_ids": ["capability.permanent.destroy.effect", "capability.target.permanent.characteristic_predicate"],
+      "capability_ids": ["permanent.destroy.effect", "target.permanent.characteristic_predicate"],
+      "interaction_order": 2,
+      "assertion": "Compiled artifact-or-land destruction uses one typed characteristic predicate for offer and command legality, executes the selected destruction through the canonical owner, and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_union_destruction_respects_indestructible",
+      "piece_ids": ["capability.permanent.destroy.effect", "capability.permanent.indestructible.ordinary"],
+      "capability_ids": ["permanent.destroy.effect", "permanent.indestructible.ordinary"],
+      "interaction_order": 2,
+      "assertion": "Compiled artifact-or-land destruction reaches the canonical destruction transaction, which consumes the target's represented current Indestructible ability and preserves the permanent with an exact replay."
     },
     {
       "evidence_class": "interaction",

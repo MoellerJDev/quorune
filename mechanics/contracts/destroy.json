@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 2,
+  "contract_version": 3,
   "mechanic_id": "destroy",
   "official_name": "Destroy",
   "effective_date": "2026-06-19",
@@ -61,7 +61,8 @@
       "lethal-damage and deathtouch destruction execute during stabilization"
     ],
     "targets": [
-      "the bounded compiler accepts one artifact, creature, enchantment, land, permanent, artifact or enchantment, or creature or planeswalker target",
+      "the bounded compiler accepts one canonical disjunction of up to four artifact, battle, creature, enchantment, land, or planeswalker types through the shared direct-permanent target owner",
+      "the same owner accepts represented controller, source-exclusion, color, public-state, and up-to-four negative creature-subtype qualifiers",
       "resolution-time target legality is revalidated before preparation"
     ],
     "choices": [
@@ -116,6 +117,14 @@
       "oracle_id": "938b4e2c-88d9-4637-bc00-e228920c9a78"
     },
     {
+      "name": "Demolish",
+      "oracle_id": "08c6d2fd-d9ae-4f95-bb9d-7e16b1039814"
+    },
+    {
+      "name": "Victim of Night",
+      "oracle_id": "d92b9f63-17b6-4ed2-b6ae-083a8161863e"
+    },
+    {
       "name": "Darksteel Citadel",
       "oracle_id": "8dc067bf-f78f-4ac4-b6e7-b305c42cf0bc"
     }
@@ -134,11 +143,14 @@
     "test_destruction_disposition_mutants_are_killed",
     "test_spell_trigger_and_activated_contexts_share_targeted_destruction_lowering",
     "test_unsupported_destruction_variants_remain_material_residuals",
-    "test_targeted_destruction_shape_mutants_fail_closed"
+    "test_targeted_destruction_shape_mutants_fail_closed",
+    "test_targeted_destruction_parser_mutation_is_killed",
+    "test_compiled_union_destruction_offer_command_resolution_and_replay",
+    "test_compiled_union_destruction_respects_indestructible"
   ],
   "implementation": {
     "component": "typed direct-target compiler, strict destruction semantic handler, canonical destruction transaction, counter owner, and zone-transition owner",
-    "version": "destruction-v2"
+    "version": "destruction-v3"
   },
   "known_blockers": [
     "effects that say a permanent cannot be regenerated are not represented",

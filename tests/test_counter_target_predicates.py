@@ -85,6 +85,10 @@ class CounterTargetPredicateCompilerTests(unittest.TestCase):
                 },
             ),
             (
+                "Put a +1/+1 counter on target artifact, enchantment, or land.",
+                {"types_any": ["artifact", "enchantment", "land"]},
+            ),
+            (
                 "Put a +1/+1 counter on target enchantment creature.",
                 {"types_all": ["creature", "enchantment"]},
             ),
@@ -151,6 +155,13 @@ class CounterTargetPredicateCompilerTests(unittest.TestCase):
                         "counter_name": None,
                         "minimum_counter_count": None,
                     },
+                },
+            ),
+            (
+                "Put a +1/+1 counter on target non-Elf creature.",
+                {
+                    "types_any": ["creature"],
+                    "subtypes_none": ["elf"],
                 },
             ),
             (
@@ -240,7 +251,7 @@ class CounterTargetPredicateCompilerTests(unittest.TestCase):
             "target creature with flying and vigilance",
             "target creature with a counter on it",
             "target creature that entered last turn",
-            "target non-Elf creature",
+            "target artifact or Vehicle",
         )
         for subject in unsupported:
             text = f"Put a +1/+1 counter on {subject}."

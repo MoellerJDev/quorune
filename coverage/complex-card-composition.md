@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "27c5eea5d11c5c75df9183a3c779fb0411d3a91957c07cf3aed5f1af90a8e915"
+verified: "c79ddb5a373259719fd2eeef93d47234e54be41d0551f25181ef795fa797763a"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -30,10 +30,10 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Conqueror's Galleon // Conqueror's Foothold | 186 | 24 | 6 | 7 | 6 | 14 | `blocked` |
 | Jin-Gitaxias // The Great Synthesis | 185 | 20 | 6 | 7 | 11 | 6 | `blocked` |
 | Cleric Class | 183 | 22 | 6 | 6 | 7 | 12 | `blocked` |
+| Grist, Voracious Larva // Grist, the Plague Swarm | 183 | 25 | 5 | 5 | 10 | 14 | `blocked` |
 | Ojer Axonil, Deepest Might // Temple of Power | 183 | 23 | 7 | 6 | 9 | 6 | `blocked` |
 | Flamewar, Brash Veteran // Flamewar, Streetwise Operative | 181 | 21 | 6 | 6 | 9 | 15 | `blocked` |
 | Urabrask // The Great Work | 181 | 20 | 6 | 7 | 11 | 4 | `blocked` |
-| Grist, Voracious Larva // Grist, the Plague Swarm | 180 | 24 | 5 | 5 | 10 | 14 | `blocked` |
 | Nicol Bolas, the Ravager // Nicol Bolas, the Arisen | 179 | 26 | 6 | 7 | 7 | 11 | `blocked` |
 | Invasion of Zendikar // Awakened Skyclave | 178 | 20 | 5 | 5 | 6 | 18 | `blocked` |
 | Blaster, Combat DJ // Blaster, Morale Booster | 176 | 19 | 5 | 6 | 11 | 16 | `blocked` |
@@ -56,11 +56,11 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Dr. Madison Li | 165 | 22 | 7 | 4 | 6 | 10 | `blocked` |
 | Starscream, Power Hungry // Starscream, Seeker Leader | 165 | 17 | 4 | 8 | 4 | 19 | `blocked` |
 | Titania, Gaea Incarnate | 165 | 23 | 6 | 4 | 6 | 11 | `blocked` |
+| Heliod, Sun-Crowned | 162 | 23 | 4 | 4 | 4 | 20 | `blocked` |
 | Invasion of Vryn // Overloaded Mage-Ring | 162 | 12 | 5 | 3 | 8 | 24 | `blocked` |
 | Path of Mettle // Metzali, Tower of Triumph | 162 | 19 | 5 | 6 | 6 | 10 | `blocked` |
 | Aethersphere Harvester | 161 | 16 | 5 | 4 | 6 | 22 | `blocked` |
 | Invasion of Gobakhan // Lightshield Array | 161 | 13 | 5 | 4 | 9 | 19 | `blocked` |
 | Stay Hidden, Stay Silent | 160 | 17 | 5 | 4 | 5 | 17 | `blocked` |
 | Faithbound Judge // Sinner's Judgment | 159 | 21 | 5 | 7 | 8 | 1 | `blocked` |
-| Invasion of Pyrulea // Gargantuan Slabhorn | 159 | 16 | 4 | 4 | 7 | 18 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |

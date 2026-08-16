@@ -63,7 +63,9 @@
     },
     {
       "id": "compact-ci-card-dependencies",
-      "depends_on": [],
+      "depends_on": [
+        "rules-derived"
+      ],
       "outputs": [
         "coverage/compact-ci-card-dependencies.json",
         "coverage/compact-ci-card-dependencies.md"

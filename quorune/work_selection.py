@@ -95,12 +95,33 @@ def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
         coverage.get("minimum_complete_card_gain"),
         "minimum_complete_card_gain",
     )
+    minimum_ability_gain = _nonnegative_int(
+        coverage.get("minimum_exact_ability_gain"),
+        "minimum_exact_ability_gain",
+    )
+    minimum_residual_reduction = _nonnegative_int(
+        coverage.get("minimum_material_residual_reduction"),
+        "minimum_material_residual_reduction",
+    )
     candidate_limit = _nonnegative_int(
         coverage.get("candidate_limit"), "candidate_limit"
     )
-    if minimum_gain < 50 or candidate_limit < 1:
+    rank_order = [str(value) for value in coverage.get("rank_order", [])]
+    expected_rank_fields = {
+        "expected_exact_ability_gain",
+        "expected_complete_card_gain",
+        "expected_material_residual_reduction",
+    }
+    if (
+        minimum_gain < 50
+        or minimum_ability_gain < 100
+        or minimum_residual_reduction < 100
+        or candidate_limit < 1
+        or len(rank_order) != len(set(rank_order))
+        or set(rank_order) != expected_rank_fields
+    ):
         raise WorkSelectionError(
-            "Coverage work must require at least 50 complete cards and one candidate"
+            "Coverage work must declare the card, ability, residual, ranking, and candidate thresholds"
         )
     excluded_efforts = {
         str(value) for value in coverage.get("excluded_efforts", []) if value
@@ -131,7 +152,10 @@ def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
         "priority_classes": priority_classes,
         "starting_uncovered_high_risk_pairs": starting_uncovered,
         "minimum_complete_card_gain": minimum_gain,
+        "minimum_exact_ability_gain": minimum_ability_gain,
+        "minimum_material_residual_reduction": minimum_residual_reduction,
         "candidate_limit": candidate_limit,
+        "coverage_rank_order": rank_order,
         "excluded_efforts": excluded_efforts,
         "reviewed_rerank_history": history,
     }
@@ -598,7 +622,16 @@ def _frontier_candidates(
     candidates = []
     for row in frontier.get("family_candidates", []):
         complete_gain = int(row.get("expected_exact_card_gain") or 0)
-        if complete_gain < int(policy["minimum_complete_card_gain"]):
+        ability_gain = int(row.get("expected_exact_ability_gain") or 0)
+        residual_reduction = int(
+            row.get("expected_material_residual_gain") or 0
+        )
+        if (
+            complete_gain < int(policy["minimum_complete_card_gain"])
+            and ability_gain < int(policy["minimum_exact_ability_gain"])
+            and residual_reduction
+            < int(policy["minimum_material_residual_reduction"])
+        ):
             continue
         if str(row.get("estimated_effort") or "") in policy["excluded_efforts"]:
             continue
@@ -639,11 +672,11 @@ def _frontier_candidates(
                     row.get("two_additional_blocker_cards") or 0
                 ),
                 expected_exact_ability_gain=int(
-                    row.get("expected_exact_ability_gain") or 0
+                    ability_gain
                 ),
                 expected_complete_card_gain=complete_gain,
                 expected_material_residual_reduction=int(
-                    row.get("expected_material_residual_gain") or 0
+                    residual_reduction
                 ),
                 interaction_debt_introduced={
                     _STATUS_FIELD: "unmeasured",
@@ -653,8 +686,8 @@ def _frontier_candidates(
                 reranking_reason=(
                     "Blocked prerequisites keep this high-yield frontier behind ready work."
                     if prerequisites
-                    else "Meets the post-stabilization 50-card threshold but remains behind "
-                    "higher-priority correctness and architecture gates."
+                    else "Meets a post-stabilization card, exact-ability, or material-residual "
+                    "harvest threshold but remains behind higher-priority correctness gates."
                 ),
                 eligible=not prerequisites,
             )
@@ -710,7 +743,10 @@ def build_work_selection(
             not bool(row["eligible"]),
             priorities[str(row["candidate_class"])],
             -int(row["priority_within_class"]),
-            -int(row["expected_complete_card_gain"] or 0),
+            *(
+                -int(row[field] or 0)
+                for field in validated["coverage_rank_order"]
+            ),
             str(row["candidate_id"]),
         )
     )
@@ -750,6 +786,13 @@ def build_work_selection(
             "minimum_complete_card_gain": validated[
                 "minimum_complete_card_gain"
             ],
+            "minimum_exact_ability_gain": validated[
+                "minimum_exact_ability_gain"
+            ],
+            "minimum_material_residual_reduction": validated[
+                "minimum_material_residual_reduction"
+            ],
+            "coverage_rank_order": validated["coverage_rank_order"],
             "coverage_candidate_limit": validated["candidate_limit"],
             "excluded_efforts": sorted(validated["excluded_efforts"]),
         },

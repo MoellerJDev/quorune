@@ -184,6 +184,10 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         )
         self.assertLess(
             ordered.index("rules-derived"),
+            ordered.index("compact-ci-card-dependencies"),
+        )
+        self.assertLess(
+            ordered.index("rules-derived"),
             ordered.index("platform-status"),
         )
         self.assertLess(
