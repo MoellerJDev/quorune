@@ -1616,72 +1616,72 @@
           "classification": "compiler_binding",
           "file": "quorune/compiler/program_generation.py",
           "flow_id": "card-identity-flow:bb6c235e650a6a84d250",
-          "line": 1406,
+          "line": 1412,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 1406,
+          "source_line": 1412,
           "symbol": "register_generated_programs"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/program_generation.py",
           "flow_id": "card-identity-flow:46fe221950447b70c665",
-          "line": 1408,
+          "line": 1414,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 1408,
+          "source_line": 1414,
           "symbol": "register_generated_programs"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/program_generation.py",
           "flow_id": "card-identity-flow:aa4298afb2b017b682d4",
-          "line": 1417,
+          "line": 1423,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 1417,
+          "source_line": 1423,
           "symbol": "register_generated_programs"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/program_generation.py",
           "flow_id": "card-identity-flow:a796f8669390e5c5b8a7",
-          "line": 1465,
+          "line": 1471,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 1465,
+          "source_line": 1471,
           "symbol": "register_generated_programs"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/program_generation.py",
           "flow_id": "card-identity-flow:d30ac7f81792b4c65366",
-          "line": 1473,
+          "line": 1479,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 1473,
+          "source_line": 1479,
           "symbol": "register_generated_programs"
         },
         {
           "classification": "compiler_binding",
           "file": "quorune/compiler/program_generation.py",
           "flow_id": "card-identity-flow:8222ba341ea2268e6fa6",
-          "line": 1484,
+          "line": 1490,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 1484,
+          "source_line": 1490,
           "symbol": "register_generated_programs"
         },
         {
@@ -10707,10 +10707,10 @@
           "visibility": "private"
         },
         {
-          "end_line": 1534,
+          "end_line": 1540,
           "file": "quorune/compiler/program_generation.py",
           "kind": "function",
-          "line": 1381,
+          "line": 1387,
           "logical_lines": 150,
           "name": "register_generated_programs",
           "physical_lines": 154,
@@ -10729,7 +10729,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 159207,
+      "logical_lines": 159213,
       "methods": {
         "dunder": 440,
         "private": 766,
@@ -10839,8 +10839,8 @@
           "file": "quorune/compiler/program_generation.py",
           "functions_and_methods": 55,
           "language": "python",
-          "logical_lines": 1353,
-          "physical_lines": 1534
+          "logical_lines": 1359,
+          "physical_lines": 1540
         },
         {
           "file": "quorune/damage_results.py",
@@ -14468,7 +14468,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 174543,
+      "physical_lines": 174549,
       "python_file_count": 468,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -25127,7 +25127,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:1187",
+            "quorune/compiler/program_generation.py:1193",
             "quorune/oracle_ir.py:1421"
           ]
         },
@@ -25183,7 +25183,7 @@
           ],
           "generated_programs": [
             "quorune/card_programs/adapters.py:9",
-            "quorune/compiler/program_generation.py:1187",
+            "quorune/compiler/program_generation.py:1193",
             "quorune/oracle_ir.py:1421"
           ]
         },
@@ -25230,7 +25230,7 @@
             "quorune/engine.py:33"
           ],
           "register_generated_programs": [
-            "quorune/compiler/program_generation.py:1381",
+            "quorune/compiler/program_generation.py:1387",
             "quorune/oracle_ir.py:1444",
             "quorune/preflight.py:17",
             "quorune/session.py:14"
@@ -25280,7 +25280,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "6f536c34bd9d916263af23524e11f79790f372152abed3a26aa027a7bd69f38e",
+      "fingerprint": "31d79be743024093c7646089717835e80e73870d73fa4fe7aee328d101ff75de",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {

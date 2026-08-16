@@ -1117,7 +1117,13 @@ def _is_closed_fixed_choose_one_modal_program(
         )
         if not isinstance(branch_mechanics, (list, tuple)):
             return False
-        mechanics.extend(branch_mechanics)
+        if len(branch_mechanics) != len(set(branch_mechanics)):
+            return False
+        mechanics.extend(
+            mechanic
+            for mechanic in branch_mechanics
+            if mechanic not in mechanics
+        )
     required = set(
         capability_dependencies_for_node(
             effects=program.effects,

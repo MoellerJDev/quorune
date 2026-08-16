@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from common import ROOT, keep_all, make_session
+from common import ROOT, keep_all, make_session, pass_current
 from quorune.carddb import CardDatabase, CardRecord
 from quorune.compiler.modal_templates import (
     FIXED_CHOOSE_ONE_MODAL_CAPABILITY,
@@ -347,9 +347,7 @@ class FixedChooseOneModalRuntimeTests(unittest.TestCase):
             principals = session.pending_principals()
             if not principals:
                 raise AssertionError("Stack resolution stopped without priority")
-            result = session.act(principals[0], {"action_id": "pass"})
-            if not result.ok:
-                raise AssertionError(result.summary)
+            pass_current(session)
 
     def assert_replays(self, session, label: str):
         expected_hash = authoritative_state_hash(session.state)
