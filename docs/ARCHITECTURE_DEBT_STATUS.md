@@ -2,7 +2,7 @@
 title: "Architecture debt status"
 status: "generated"
 authoritative_source: "coverage/architecture-audit.json"
-verified: "2869f39781ed1a2729df23be9a5a729db48481a6cc64627ca746578fb50bbfab"
+verified: "5ade2b60f83c460759f6639a91229edebdece28db5f90d84a323f1408550754b"
 audience: "maintainers and rules contributors"
 maintenance: "generated"
 generated_source: "coverage/architecture-audit.json"
@@ -11,11 +11,11 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_architecture_audi
 
 # Architecture debt status
 
-Source fingerprint: `2869f39781ed1a2729df23be9a5a729db48481a6cc64627ca746578fb50bbfab`
+Source fingerprint: `5ade2b60f83c460759f6639a91229edebdece28db5f90d84a323f1408550754b`
 
 ## Current top-level state
 
-- Production logical lines: `158007`
+- Production logical lines: `158038`
 - Engine logical lines: `7286`
 - Direct GameState-write heuristic: `83`
 - Registered typed semantic handlers: `101`

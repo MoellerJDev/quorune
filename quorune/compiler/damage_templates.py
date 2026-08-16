@@ -424,6 +424,41 @@ def _fixed_mass_damage_spec(
     return None
 
 
+def _fixed_damage_instruction_template(
+    *,
+    amount: int,
+    recipient_text: str,
+    source_kind: str | None,
+) -> FixedDamageEffectTemplate | FixedMassDamageEffectTemplate | None:
+    """Build one fixed-damage instruction from already-bounded grammar."""
+
+    recipient_text = recipient_text.casefold()
+    fixed_set = _fixed_mass_damage_spec(recipient_text)
+    if fixed_set is not None:
+        spec, target_opponent = fixed_set
+        return FixedMassDamageEffectTemplate(
+            amount=amount,
+            spec=spec,
+            source_kind=source_kind,
+            target_opponent=target_opponent,
+        )
+    recipient = next(
+        (
+            value
+            for phrase, value in _FIXED_DAMAGE_RECIPIENTS
+            if recipient_text == phrase
+        ),
+        None,
+    )
+    if recipient is None:
+        return None
+    return FixedDamageEffectTemplate(
+        amount=amount,
+        recipient=recipient,
+        source_kind=source_kind,
+    )
+
+
 def fixed_damage_effect_template(
     text: str,
     *,
@@ -448,38 +483,34 @@ def fixed_damage_effect_template(
         source.group("source")
     ):
         return None
-    recipient_text = source.group("recipient").casefold()
-    fixed_set = _fixed_mass_damage_spec(recipient_text)
-    if fixed_set is not None:
-        spec, target_opponent = fixed_set
-        return FixedMassDamageEffectTemplate(
-            amount=int(source.group("amount")),
-            spec=spec,
-            source_kind=(
-                source_kind.group("kind").casefold()
-                if source_kind is not None
-                else "named"
-            ),
-            target_opponent=target_opponent,
-        )
-    recipient = next(
-        (
-            value
-            for phrase, value in _FIXED_DAMAGE_RECIPIENTS
-            if recipient_text == phrase
-        ),
-        None,
-    )
-    if recipient is None:
-        return None
-    return FixedDamageEffectTemplate(
+    return _fixed_damage_instruction_template(
         amount=int(source.group("amount")),
-        recipient=recipient,
+        recipient_text=source.group("recipient"),
         source_kind=(
             source_kind.group("kind").casefold()
             if source_kind is not None
             else "named"
         ),
+    )
+
+
+def activated_source_damage_effect_template(
+    text: str,
+) -> FixedDamageEffectTemplate | FixedMassDamageEffectTemplate | None:
+    """Recognize ``It deals`` only after an activated source is established."""
+
+    source = re.fullmatch(
+        r"it deals (?P<amount>[1-9][0-9]*) damage to "
+        r"(?P<recipient>.+?)\.?",
+        text.strip(),
+        re.IGNORECASE,
+    )
+    if source is None:
+        return None
+    return _fixed_damage_instruction_template(
+        amount=int(source.group("amount")),
+        recipient_text=source.group("recipient"),
+        source_kind=None,
     )
 
 

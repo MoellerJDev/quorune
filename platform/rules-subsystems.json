@@ -404,6 +404,11 @@
         "candidate_id": "compiler:activated-single-object-tap-state",
         "selected_over": "frontier:effect_clause:create-token",
         "reason": "The post-destruction selector ranked a coarse 598-row create-token bucket, but measurement split it across compound or conditional text, dynamic quantities, quoted abilities, copies, controller changes, and distinct token definitions; only four rows shared one closed standalone instruction and they completed two cards. Exile had 636 similarly heterogeneous rows with seven closed whole clauses, additional costs split 123 rows across eight payment families, and Morph remained blocked by face-down characteristic and copy boundaries. The 318-row activated tap-state frontier instead exposed one dependency-ready single-object family with 55 exact abilities and 35 sole-blocker cards: shared direct-permanent predicates, exact source incarnations, current-or-LKI enchanted objects, and one typed optional tap-or-untap choice. Aggregate and multi-object instructions remain residual."
+      },
+      {
+        "candidate_id": "compiler:activated-source-pronoun-damage",
+        "selected_over": "frontier:effect_clause:create-token",
+        "reason": "After the tap-state harvest, the generated selector still ranked the same coarse create-token bucket whose reviewed measurement split across compound or conditional text, dynamic quantities, quoted abilities, copies, controller changes, and distinct token definitions. A fresh pinned-frontier probe instead found one closed activated-source damage grammar within 428 residual abilities: 69 whole `It deals` instructions on 69 cards map exactly to six existing fixed-damage templates, and 26 cards have no other known blocker. The rerank reuses typed activation costs, source identity, damage execution, target revalidation, and replay while limiting the pronoun to an established colon-form activated context. Dynamic, divided, random, self-recipient, battle-recipient, multi-target, rider, and unsupported affected-set instructions remain residual."
       }
     ]
   },

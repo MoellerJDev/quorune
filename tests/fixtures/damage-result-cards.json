@@ -308,6 +308,25 @@
       "legalities": {"commander": "legal", "duel": "legal"}
     },
     {
+      "oracle_id": "7efd5d62-6da2-428a-98e3-5b842f668656",
+      "name": "Mogg Fanatic",
+      "mana_cost": "{R}",
+      "cmc": 1.0,
+      "type_line": "Creature — Goblin",
+      "oracle_text": "Sacrifice this creature: It deals 1 damage to any target.",
+      "power": "1",
+      "toughness": "1",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["R"],
+      "color_identity": ["R"],
+      "keywords": [],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "1997-10-14",
+      "legalities": {"commander": "legal", "duel": "legal"}
+    },
+    {
       "oracle_id": "b3b58231-d532-423b-91d0-78d9c0f66f0f",
       "name": "Burning Fields",
       "mana_cost": "{4}{R}",
