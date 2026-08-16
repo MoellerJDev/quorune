@@ -3217,6 +3217,78 @@
       "capability_ids": ["counter.producer.cumulative_upkeep_fixed_life"],
       "interaction_order": 2,
       "assertion": "The dedicated pair subtest keeps unsupported self-replacement and prevention ordering outside trust while preserving the independently typed fixed-life upkeep ability."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_attached_tap_trigger_and_static_characteristics_compose_and_replay",
+      "piece_ids": ["capability.attachment.reference.current_or_lki", "capability.continuous.attached.fixed_characteristics"],
+      "capability_ids": ["attachment.reference.current_or_lki", "continuous.attached.fixed_characteristics"],
+      "interaction_order": 2,
+      "assertion": "Colossification pins its enchanted creature for the compiled enter trigger, taps that object, and independently applies the attached +20/+20 continuous effect through exact replay."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_tap_state_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.attachment.reference.current_or_lki", "residual.continuous_layer.affected-player-ordering"],
+      "capability_ids": ["attachment.reference.current_or_lki"],
+      "interaction_order": 2,
+      "assertion": "Bewitching Leechcraft compiles its exact enchanted-object tap trigger while the affected-player continuous replacement boundary keeps the complete CardProgram unavailable at strict runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_tap_state_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.attachment.reference.current_or_lki", "residual.continuous_layer.continuous-effect-layers-and-dependencies"],
+      "capability_ids": ["attachment.reference.current_or_lki"],
+      "interaction_order": 2,
+      "assertion": "Tangle Kelp compiles its exact enchanted-object tap trigger while its unsupported attack-history untap restriction keeps strict runtime admission closed."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_tap_state_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.attachment.reference.current_or_lki", "residual.duration.until-end-of-turn"],
+      "capability_ids": ["attachment.reference.current_or_lki"],
+      "interaction_order": 2,
+      "assertion": "Pemmin's Aura compiles its exact enchanted-object untap ability while unsupported until-end-of-turn sibling abilities keep the complete CardProgram unavailable at strict runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_tap_state_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.permanent.tap.effect", "residual.replacement.replacement-applicability"],
+      "capability_ids": ["permanent.tap.effect"],
+      "interaction_order": 2,
+      "assertion": "Bewitching Leechcraft compiles its exact tap effect but does not admit the unresolved replacement-applicability sibling into authoritative runtime."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_tap_state_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.permanent.tap.effect", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["permanent.tap.effect"],
+      "interaction_order": 2,
+      "assertion": "Bewitching Leechcraft compiles its exact tap effect while unsupported self-replacement and prevention ordering keeps strict runtime admission closed."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_tap_state_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.permanent.untap.effect", "residual.replacement.replacement-applicability"],
+      "capability_ids": ["permanent.untap.effect"],
+      "interaction_order": 2,
+      "assertion": "Sleep-Cursed Faerie compiles its exact self-untap effect but its unresolved stun replacement applicability prevents strict runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_tap_state_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.permanent.untap.effect", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["permanent.untap.effect"],
+      "interaction_order": 2,
+      "assertion": "Sleep-Cursed Faerie compiles its exact self-untap effect while unresolved self-replacement and prevention ordering keeps the complete CardProgram fail-closed."
     }
   ]
 }

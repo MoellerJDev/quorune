@@ -399,6 +399,11 @@
         "candidate_id": "compiler:typed-direct-target-destruction",
         "selected_over": "rules:counter-producer-replacement-closure",
         "reason": "The selected counter-producer closure remained an unknown-gain queue item after Reinforce, while the generated frontier measured the coherent destroy-target effect family at 21 exact Commander cards, 130 exact abilities, and 130 removable material residuals. The selector now admits and ranks harvests that cross the established 50-card, 100-ability, or 100-residual threshold, allowing this family to reuse the shared typed direct-permanent target owner without a destruction-specific predicate vocabulary."
+      },
+      {
+        "candidate_id": "compiler:activated-single-object-tap-state",
+        "selected_over": "frontier:effect_clause:create-token",
+        "reason": "The post-destruction selector ranked a coarse 598-row create-token bucket, but measurement split it across compound or conditional text, dynamic quantities, quoted abilities, copies, controller changes, and distinct token definitions; only four rows shared one closed standalone instruction and they completed two cards. Exile had 636 similarly heterogeneous rows with seven closed whole clauses, additional costs split 123 rows across eight payment families, and Morph remained blocked by face-down characteristic and copy boundaries. The 318-row activated tap-state frontier instead exposed one dependency-ready single-object family with 55 exact abilities and 35 sole-blocker cards: shared direct-permanent predicates, exact source incarnations, current-or-LKI enchanted objects, and one typed optional tap-or-untap choice. Aggregate and multi-object instructions remain residual."
       }
     ]
   },

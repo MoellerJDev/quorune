@@ -34,7 +34,7 @@ _DIRECT_TYPE_ANY_VALUES = frozenset(
 _DIRECT_TYPE_ALL_SHAPES = frozenset(
     {("creature",), ("creature", "enchantment")}
 )
-DIRECT_NONCREATURE_SUBTYPES = frozenset({"vehicle"})
+DIRECT_NONCREATURE_SUBTYPES = frozenset({"forest", "gate", "vehicle"})
 DIRECT_PERMANENT_TYPES = _DIRECT_TYPE_ANY_VALUES | {"permanent"}
 _DIRECT_KEYWORDS = frozenset({"flying"})
 _DIRECT_COLORS = frozenset({"W", "U", "B", "R", "G"})

@@ -139,6 +139,8 @@ class FixedTargetEffectSequenceCompilerTests(unittest.TestCase):
                 "creature",
                 "creature-enchantment",
                 "creature-with-flying",
+                "forest",
+                "gate",
                 "vehicle",
             },
             set(contract["target_predicates"]),

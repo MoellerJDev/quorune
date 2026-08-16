@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "bbcc88d3780ff5bd87bfe2a19c62e8404dee4aeaa1e5d802c24a4640844449c7"
+verified: "9fd2733b8ffb69bf2ff6fa1be0942246450155927f27be6ac4d0df74090aa701"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `3686cadf80275b8fb0396f4a5cf64dc314b663900615393d9897afb5d5d7c9c4`
+Source fingerprint: `11f8b7ecfc606d3c1f5c6840ef8d6f51e2d72d491e155c78587898e8e0ac1473`
 
 ## Current top-level state
 
@@ -34,7 +34,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 1 | selected | `frontier:effect_clause:create-token` | `compiler_harvest` | 15 | 101 | 0 | 0 |
 | 2 | deferred | `frontier:effect_clause:exile` | `compiler_harvest` | 17 | 100 | 0 | 0 |
 | 3 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 26 | 123 | 0 | 0 |
-| 4 | deferred | `frontier:keyword_dependency:morph` | `card_family` | 36 | 141 | 0 | 0 |
+| 4 | deferred | `frontier:keyword_dependency:morph` | `card_family` | 37 | 141 | 0 | 0 |
 | 5 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
 | 6 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
 | 7 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |

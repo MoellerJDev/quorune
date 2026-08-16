@@ -106,7 +106,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v94"
+ORACLE_COMPILER_VERSION = "oracle-ir-v95"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -249,7 +249,7 @@ def _effect_template(
     text: str,
     *,
     card_name: str,
-    source_is_permanent: bool | None = None, source_attachment_relation: AttachmentReferenceKind | None = None,
+    source_is_permanent: bool | None = None, source_card_types: Sequence[str] = (), source_attachment_relation: AttachmentReferenceKind | None = None,
 ) -> tuple[
     str | None,
     tuple[Mapping[str, Any], ...],
@@ -309,7 +309,7 @@ def _effect_template(
             },
             ("mill", "cr-115-targets"),
         )
-    tap_state = targeted_tap_state_effect_template(normalized)
+    tap_state = targeted_tap_state_effect_template(normalized, source_is_permanent=source_is_permanent, source_card_types=source_card_types, source_attachment_relation=source_attachment_relation)
     if tap_state is not None:
         return tap_state.compiled()
     explore = single_explore_effect_template(normalized)
@@ -410,6 +410,7 @@ def _reviewed_atomic_effect_template(
     *,
     card_name: str,
     source_is_permanent: bool | None = None,
+    source_card_types: Sequence[str] = (),
     source_attachment_relation: AttachmentReferenceKind | None = None,
 ) -> tuple[
     str | None,
@@ -431,6 +432,7 @@ def _reviewed_atomic_effect_template(
         text,
         card_name=card_name,
         source_is_permanent=source_is_permanent,
+        source_card_types=source_card_types,
         source_attachment_relation=source_attachment_relation,
     )
 
@@ -440,6 +442,7 @@ def _reviewed_effect_template(
     *,
     card_name: str,
     source_is_permanent: bool | None = None,
+    source_card_types: Sequence[str] = (),
     source_attachment_relation: AttachmentReferenceKind | None = None,
 ) -> tuple[
     str | None,
@@ -451,6 +454,7 @@ def _reviewed_effect_template(
         text,
         card_name=card_name,
         source_is_permanent=source_is_permanent,
+        source_card_types=source_card_types,
         source_attachment_relation=source_attachment_relation,
     )
     if atomic[0] is not None:
@@ -461,6 +465,7 @@ def _reviewed_effect_template(
             _reviewed_atomic_effect_template,
             card_name=card_name,
             source_is_permanent=source_is_permanent,
+            source_card_types=source_card_types,
             source_attachment_relation=source_attachment_relation,
         ),
     )
@@ -995,7 +1000,7 @@ def _compile_face(
     ) = _face_type_context(type_line)
     contextual_effect_template = partial(
         _reviewed_effect_template, source_is_permanent=support_source_is_permanent,
-        source_attachment_relation=source_attachment_relation,
+        source_card_types=tuple(sorted(card_types)), source_attachment_relation=source_attachment_relation,
     )
     contextual_trigger_node = partial(
         _trigger_node, effect_template=contextual_effect_template

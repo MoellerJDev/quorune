@@ -103,6 +103,51 @@ _WITNESSES = {
         "{2}{W}",
         ("Cumulative upkeep",),
     ),
+    "bewitching-leechcraft": _Witness(
+        "Bewitching Leechcraft",
+        "Enchantment — Aura",
+        "Enchant creature\n"
+        "When this Aura enters, tap enchanted creature.\n"
+        "Enchanted creature has \"If this creature would untap during your "
+        "untap step, remove a +1/+1 counter from it instead. If you do, "
+        "untap it.\" (Otherwise, it doesn't untap.)",
+        "{2}{U}",
+        ("Enchant",),
+    ),
+    "tangle-kelp": _Witness(
+        "Tangle Kelp",
+        "Enchantment — Aura",
+        "Enchant creature\n"
+        "When this Aura enters, tap enchanted creature.\n"
+        "Enchanted creature doesn't untap during its controller's untap "
+        "step if it attacked during its controller's last turn.",
+        "{U}",
+        ("Enchant",),
+    ),
+    "pemmins-aura": _Witness(
+        "Pemmin's Aura",
+        "Enchantment — Aura",
+        "Enchant creature\n"
+        "{U}: Untap enchanted creature.\n"
+        "{U}: Enchanted creature gains flying until end of turn.\n"
+        "{U}: Enchanted creature gains shroud until end of turn. (It can't "
+        "be the target of spells or abilities.)\n"
+        "{1}: Enchanted creature gets +1/-1 or -1/+1 until end of turn.",
+        "{1}{U}{U}",
+        ("Enchant",),
+    ),
+    "sleep-cursed-faerie": _Witness(
+        "Sleep-Cursed Faerie",
+        "Creature — Faerie Wizard",
+        "Flying, ward {2}\n"
+        "This creature enters tapped with three stun counters on it. (If it "
+        "would become untapped, remove a stun counter from it instead.)\n"
+        "{1}{U}: Untap this creature.",
+        "{U}",
+        ("Flying", "Ward"),
+        "2",
+        "1",
+    ),
     "spike-weaver": _Witness(
         "Spike Weaver",
         "Creature — Spike",
@@ -425,6 +470,37 @@ DESTROY_DAMAGE_PREVENTION_PAIR = _pair(
     "residual.replacement.damage-prevention",
 )
 
+TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS = (
+    _pair(
+        "capability.attachment.reference.current_or_lki",
+        "residual.continuous_layer.affected-player-ordering",
+    ),
+    _pair(
+        "capability.attachment.reference.current_or_lki",
+        "residual.continuous_layer.continuous-effect-layers-and-dependencies",
+    ),
+    _pair(
+        "capability.attachment.reference.current_or_lki",
+        "residual.duration.until-end-of-turn",
+    ),
+    _pair(
+        "capability.permanent.tap.effect",
+        "residual.replacement.replacement-applicability",
+    ),
+    _pair(
+        "capability.permanent.tap.effect",
+        "residual.replacement.self-replacement-and-prevention-ordering",
+    ),
+    _pair(
+        "capability.permanent.untap.effect",
+        "residual.replacement.replacement-applicability",
+    ),
+    _pair(
+        "capability.permanent.untap.effect",
+        "residual.replacement.self-replacement-and-prevention-ordering",
+    ),
+)
+
 
 ATTACHMENT_AND_CONTINUOUS_PAIRS = (
     _pair("capability.attachment.aura.simple_object", "residual.continuous_layer.affected-player-ordering"),
@@ -555,6 +631,7 @@ ALL_HIGH_RISK_BOUNDARY_PAIRS = tuple(
             *CONTINUOUS_AND_REPLACEMENT_PAIRS,
             *TRIGGER_AND_REPLACEMENT_PAIRS,
             *DECLARATION_AND_REPLACEMENT_PAIRS,
+            *TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS,
         }
     )
 )
@@ -631,6 +708,14 @@ _bind("ovinomancer", TRIGGER_AND_REPLACEMENT_PAIRS[1], TRIGGER_AND_REPLACEMENT_P
 _bind("kindred-discovery", *TRIGGER_AND_REPLACEMENT_PAIRS[2:4])
 _bind("kindred-discovery", *TRIGGER_AND_REPLACEMENT_PAIRS[6:8])
 _bind("teferis-moat", *DECLARATION_AND_REPLACEMENT_PAIRS)
+_bind(
+    "bewitching-leechcraft",
+    TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS[0],
+    *TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS[3:5],
+)
+_bind("tangle-kelp", TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS[1])
+_bind("pemmins-aura", TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS[2])
+_bind("sleep-cursed-faerie", *TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS[5:])
 
 if set(_PAIR_WITNESS) != set(ALL_HIGH_RISK_BOUNDARY_PAIRS):
     raise AssertionError("high-risk witness map is incomplete")
@@ -797,6 +882,7 @@ __all__ = [
     "DECLARATION_AND_REPLACEMENT_PAIRS",
     "DESTROY_DAMAGE_PREVENTION_PAIR",
     "EFFECT_AND_REPLACEMENT_PAIRS",
+    "TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS",
     "TRIGGER_AND_REPLACEMENT_PAIRS",
     "ZONE_AND_CHOICE_PAIRS",
     "assert_high_risk_boundary_pairs",
