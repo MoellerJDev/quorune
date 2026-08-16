@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-"""Closed typed descriptors for ordinary fixed-mana cumulative upkeep."""
+"""Closed typed descriptors for represented cumulative-upkeep costs."""
 
 from dataclasses import dataclass
 import re
@@ -17,10 +17,18 @@ _ORDINARY_CUMULATIVE_UPKEEP = re.compile(
     rf"^Cumulative upkeep\s+(?P<cost>{_ORDINARY_COST})\.?$",
     re.IGNORECASE,
 )
+_FIXED_LIFE_COST = re.compile(
+    r"^Pay (?P<amount>[1-9]\d*) life$",
+    re.IGNORECASE,
+)
+_FIXED_LIFE_CUMULATIVE_UPKEEP = re.compile(
+    r"^Cumulative upkeep[—–]\s*(?P<cost>Pay [1-9]\d* life)\.?$",
+    re.IGNORECASE,
+)
 
 
 class CumulativeUpkeepError(ValueError):
-    """A fixed-mana cumulative-upkeep descriptor is malformed."""
+    """A represented cumulative-upkeep descriptor is malformed."""
 
 
 def _require_exact_fields(
@@ -108,6 +116,75 @@ class FixedManaCumulativeUpkeepSpec:
         }
 
 
+@dataclass(frozen=True, slots=True)
+class FixedLifeCumulativeUpkeepSpec:
+    """One positive fixed life payment for each committed age counter."""
+
+    cost_text: str
+    life_per_counter: int
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.cost_text, str):
+            raise CumulativeUpkeepError(
+                "Cumulative upkeep life cost must be text"
+            )
+        match = _FIXED_LIFE_COST.fullmatch(self.cost_text)
+        if match is None:
+            raise CumulativeUpkeepError(
+                "Cumulative upkeep life cost must be one fixed positive amount"
+            )
+        if (
+            type(self.life_per_counter) is not int
+            or self.life_per_counter <= 0
+            or int(match.group("amount")) != self.life_per_counter
+        ):
+            raise CumulativeUpkeepError(
+                "Cumulative upkeep life amount does not match the printed cost"
+            )
+        object.__setattr__(
+            self,
+            "cost_text",
+            f"Pay {self.life_per_counter} life",
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "cost_text": self.cost_text,
+            "life_per_counter": self.life_per_counter,
+        }
+
+    @classmethod
+    def from_dict(
+        cls, value: Mapping[str, Any]
+    ) -> "FixedLifeCumulativeUpkeepSpec":
+        _require_exact_fields(
+            value,
+            {"cost_text", "life_per_counter"},
+            label="fixed-life cumulative upkeep",
+        )
+        cost_text = value["cost_text"]
+        life_per_counter = value["life_per_counter"]
+        if (
+            not isinstance(cost_text, str)
+            or type(life_per_counter) is not int
+        ):
+            raise CumulativeUpkeepError(
+                "Cumulative upkeep life descriptor fields have invalid types"
+            )
+        return cls(
+            cost_text=cost_text,
+            life_per_counter=life_per_counter,
+        )
+
+    def effect_descriptor(self) -> dict[str, Any]:
+        return {
+            "op": "cumulative_upkeep_life",
+            "player": "$controller",
+            "source": "$source",
+            "life_per_counter": self.life_per_counter,
+        }
+
+
 def compile_fixed_mana_cumulative_upkeep(
     material_line: str,
 ) -> FixedManaCumulativeUpkeepSpec | None:
@@ -126,9 +203,30 @@ def compile_fixed_mana_cumulative_upkeep(
     )
 
 
+def compile_fixed_life_cumulative_upkeep(
+    material_line: str,
+) -> FixedLifeCumulativeUpkeepSpec | None:
+    """Compile exactly one fixed positive life cumulative-upkeep line."""
+
+    match = _FIXED_LIFE_CUMULATIVE_UPKEEP.fullmatch(material_line.strip())
+    if match is None:
+        return None
+    cost_text = match.group("cost")
+    cost_match = _FIXED_LIFE_COST.fullmatch(cost_text)
+    if cost_match is None:
+        return None
+    amount = int(cost_match.group("amount"))
+    return FixedLifeCumulativeUpkeepSpec(
+        cost_text=f"Pay {amount} life",
+        life_per_counter=amount,
+    )
+
+
 __all__ = [
     "CUMULATIVE_UPKEEP_MECHANIC_ID",
     "CumulativeUpkeepError",
+    "FixedLifeCumulativeUpkeepSpec",
     "FixedManaCumulativeUpkeepSpec",
+    "compile_fixed_life_cumulative_upkeep",
     "compile_fixed_mana_cumulative_upkeep",
 ]

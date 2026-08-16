@@ -93,6 +93,16 @@ _WITNESSES = {
         "{2}{W}",
         ("Cumulative upkeep",),
     ),
+    "fixed-life-upkeep-prevention": _Witness(
+        "Fixed-Life Upkeep Prevention Fixture",
+        "Enchantment",
+        "Cumulative upkeep—Pay 2 life.\n"
+        "As this enchantment enters, choose a color.\n"
+        "{1}: The next time a source of your choice of the chosen color would "
+        "deal damage to you this turn, prevent that damage.",
+        "{2}{W}",
+        ("Cumulative upkeep",),
+    ),
     "spike-weaver": _Witness(
         "Spike Weaver",
         "Creature — Spike",
@@ -443,6 +453,9 @@ EFFECT_AND_REPLACEMENT_PAIRS = (
     _pair("capability.counter.producer.fixed_effect", "residual.replacement.regeneration"),
     _pair("capability.counter.producer.optional_fixed_event_trigger", "residual.replacement.damage-prevention"),
     _pair("capability.counter.producer.optional_fixed_event_trigger", "residual.replacement.regeneration"),
+    _pair("capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.damage-prevention"),
+    _pair("capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.replacement-applicability"),
+    _pair("capability.counter.producer.cumulative_upkeep_fixed_life", "residual.replacement.self-replacement-and-prevention-ordering"),
 )
 
 ZONE_AND_CHOICE_PAIRS = (
@@ -560,6 +573,10 @@ _bind("oko-trickster", EFFECT_AND_REPLACEMENT_PAIRS[27])
 _bind("vile-requiem", EFFECT_AND_REPLACEMENT_PAIRS[28])
 _bind("serras-hymn", EFFECT_AND_REPLACEMENT_PAIRS[29])
 _bind("vile-requiem", EFFECT_AND_REPLACEMENT_PAIRS[30])
+_bind(
+    "fixed-life-upkeep-prevention",
+    *EFFECT_AND_REPLACEMENT_PAIRS[31:34],
+)
 _bind("dauthi-voidwalker", ZONE_AND_CHOICE_PAIRS[0])
 _bind("sphinxs-insight", ZONE_AND_CHOICE_PAIRS[1])
 _bind("electrolyze", ZONE_AND_CHOICE_PAIRS[2], ZONE_AND_CHOICE_PAIRS[4])

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "4579835be658b0a999c9532600a73edd20cb0356f73c0c81e8dbb3c135a727fe",
-  "declaration_source_fingerprint": "59b1d82974f047fde91ed64620adf855c5d2d830999d8a448cd13953c0fe7af9",
+  "registry_fingerprint": "0df0b31d866088362293c6938eec1a56930435339f40fb3b229d4f811af25f2e",
+  "declaration_source_fingerprint": "29d70f5a4a5825e551c46ff0fc8a422e086cba6429e6deefc0ea1e9fb82283ca",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -11461,6 +11461,246 @@
         "commander_review"
       ],
       "applicability_note": "Replay the least-toughness choice and suspended quantity-replacement ordering to the same authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_payment_uses_replaced_age_count",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile the printed upkeep trigger, commit its age counter through quantity replacement, and price the life payment from the resulting counter count."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_replacement_choice_is_private_and_replays",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resume competing age-counter replacement ordering before issuing the life-payment choice, then replay both choices to the same state."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_replacement_choice_is_private_and_replays",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve replacement ordering and the resulting upkeep payment under four-player seat and APNAP state."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_fixed_life_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the fixed-life compiler production and require its counter-replacement dependency to remain trusted."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "negative",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_fixed_life_descriptor_and_adjacent_costs_fail_closed",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep zero, variable, compound, opponent-gain, and malformed fixed-life costs outside the closed grammar."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "negative",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_unpayable_decline_and_stale_payment_fail_closed",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject unaffordable life payment and changed source identity without paying life or sacrificing another incarnation."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "positive",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepCompilerTests.test_fixed_life_cumulative_upkeep_is_source_spanned_and_capability_closed",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one em-dash-delimited fixed positive life upkeep cost to an exact source-spanned trigger with explicit capability closure."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "positive",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_payment_uses_replaced_age_count",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Discover and resolve the compiled trigger, then pay the replacement-adjusted amount through the canonical life-cost owner."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_replacement_choice_is_private_and_replays",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project replacement and payment choices only to their chooser without exposing authoritative object identity to other seats."
+    },
+    {
+      "capability_id": "counter.producer.cumulative_upkeep_fixed_life",
+      "evidence_class": "replay",
+      "test_id": "tests.test_cumulative_upkeep_counter_placement.CumulativeUpkeepRuntimeTests.test_fixed_life_replacement_choice_is_private_and_replays",
+      "official_rule_ids": [
+        "101.4",
+        "118.4",
+        "118.12",
+        "119.4",
+        "122.1",
+        "122.6",
+        "603.3",
+        "614.16",
+        "702.24",
+        "702.24a",
+        "702.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay replacement selection and the resulting fixed-life payment to the identical final authoritative hash."
     },
     {
       "capability_id": "counter.producer.cumulative_upkeep_fixed_mana",
@@ -36780,5 +37020,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "335e395405d7dd9ea4c18826940b11ba9abb647f10b11b0b14338d1d548e971a"
+  "fingerprint": "f148b6b9fee7e2c5edb7f12145dc8cf089dd045abba40390532d887e0b8f4367"
 }

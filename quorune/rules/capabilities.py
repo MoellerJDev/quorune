@@ -1180,7 +1180,12 @@ def capability_covered_mechanics(
         }
     ):
         covered.add("cr-601-casting-spells")
-    if "counter.producer.cumulative_upkeep_fixed_mana" in supplied:
+    if supplied.intersection(
+        {
+            "counter.producer.cumulative_upkeep_fixed_life",
+            "counter.producer.cumulative_upkeep_fixed_mana",
+        }
+    ):
         covered.update({"cr-122-counters", "cumulative upkeep"})
     if "trigger.keyword.echo.fixed_mana" in supplied:
         covered.add(_ECHO_MECHANIC)

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_exact-list_card_data",
+  "source": "Synthetic fixed-life cumulative-upkeep fixture for offline compiler/runtime tests",
+  "cards": [
+    {
+      "oracle_id": "00000000-0000-4000-8000-000070224001",
+      "name": "Fixed-Life Upkeep Fixture",
+      "mana_cost": "{2}{B}",
+      "cmc": 3.0,
+      "type_line": "Enchantment",
+      "oracle_text": "Cumulative upkeep—Pay 2 life. (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "colors": ["B"],
+      "color_identity": ["B"],
+      "keywords": ["Cumulative upkeep"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2026-01-01",
+      "legalities": {"commander": "legal"}
+    }
+  ],
+  "rulings": []
+}

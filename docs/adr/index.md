@@ -82,3 +82,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0065 — typed self-regeneration](0065-typed-self-regeneration.md)
 - [ADR 0066 — metadata-only CI certification reuse](0066-metadata-only-ci-certification-reuse.md)
 - [ADR 0067 — typed ordinary Station activation](0067-typed-ordinary-station-activation.md)
+- [ADR 0068 — typed fixed-life cumulative upkeep](0068-typed-fixed-life-cumulative-upkeep.md)

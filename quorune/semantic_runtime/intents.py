@@ -582,6 +582,19 @@ class PayLifeIntent:
     amount: int
     reason: str
 
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.player, self.reason)
+        ):
+            raise ValueError(
+                "Life-payment intents require actor, player, and reason"
+            )
+        if type(self.amount) is not int or self.amount < 0:
+            raise ValueError(
+                "Life-payment intent amounts must be nonnegative integers"
+            )
+
 
 @dataclass(frozen=True, slots=True)
 class RevealLibraryCardsIntent:

@@ -33,7 +33,10 @@ from ..read_ahead import (
 from ..semantic_runtime.sunburst import SUNBURST_MECHANIC_ID, SunburstSpec
 from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from ..modular import MODULAR_MECHANIC_ID, ModularSpec
-from .cumulative_upkeep_nodes import fixed_mana_cumulative_upkeep_node
+from .cumulative_upkeep_nodes import (
+    fixed_life_cumulative_upkeep_node,
+    fixed_mana_cumulative_upkeep_node,
+)
 from .echo_nodes import fixed_mana_echo_node
 from .crew_nodes import ordinary_crew_keyword_node
 from .station_nodes import ordinary_station_keyword_node
@@ -381,6 +384,7 @@ def closed_special_keyword_node(
         ordinary_station_keyword_node,
         ordinary_cycling_keyword_node,
         fixed_mana_cumulative_upkeep_node,
+        fixed_life_cumulative_upkeep_node,
         fixed_mana_echo_node,
     ):
         node = lower(**values)

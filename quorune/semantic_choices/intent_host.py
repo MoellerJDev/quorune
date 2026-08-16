@@ -47,6 +47,7 @@ from ..life_change import (
     LifeChangeRequest,
     prepare_life_change_batch,
 )
+from ..life_state import LifeStateError, pay_life_cost
 from ..player_result_events import dispatch_life_gain_records
 from ..permanent_designations import (
     BecomeMonstrousRequest,
@@ -625,12 +626,14 @@ class SemanticChoiceIntentHostMixin:
         return self.state.players[intent.player].life
 
     def pay_life_intent(self, intent: PayLifeIntent) -> int:
-        if intent.amount < 0:
-            raise GameRuleError("Life payments cannot be negative")
-        player = self.state.players[intent.player]
-        if player.life < intent.amount:
-            raise GameRuleError("The life payment is no longer payable")
-        player.life -= intent.amount
+        try:
+            transition = pay_life_cost(
+                self,
+                intent.player,
+                intent.amount,
+            )
+        except LifeStateError as exc:
+            raise GameRuleError(str(exc)) from exc
         self._log(
             intent.actor,
             "life.pay",
@@ -643,7 +646,7 @@ class SemanticChoiceIntentHostMixin:
             importance=1,
             changed_players=[intent.player],
         )
-        return player.life
+        return transition.after
 
     def reveal_library_cards_intent(
         self,
