@@ -1,23 +1,26 @@
 from __future__ import annotations
 
-"""Typed resolution-created combat declaration restrictions."""
+"""Typed resolution-created combat declaration rules."""
 
+from dataclasses import dataclass
 from typing import Any, Literal, Protocol
 
-from ..ability_fragments import ability_fragment_to_dict
+from ..ability_fragments import (
+    StaticAbilityFragment,
+    declaration_restriction_specs,
+)
 from ..continuous_effect_model import (
-    ContinuousEffect,
     ContinuousEffectDuration,
     ContinuousEffectError,
-    ContinuousOperation,
-    Layer,
 )
 from ..continuous_effect_state import (
+    active_resolution_declaration_rule_effects,
     ContinuousEffectStateError,
     ResolutionEffectSource,
-    create_resolution_continuous_effect,
+    create_resolution_declaration_rule_effect,
 )
 from ..declaration_fragments import DeclarationRestrictionTemplate
+from ..declaration_rule_effects import ResolutionDeclarationRuleEffect
 
 
 TemporaryDeclarationRestrictionKind = Literal[
@@ -47,6 +50,22 @@ class TemporaryDeclarationRestrictionHost(Protocol):
     def _next_ref(self, prefix: str) -> str: ...
 
     def _next_zone_timestamp(self) -> int: ...
+
+    def _effective_ability_fragments(
+        self,
+        card: Any,
+        *,
+        error_type: type[Exception] | None = None,
+    ) -> tuple[StaticAbilityFragment, ...]: ...
+
+
+@dataclass(frozen=True, slots=True)
+class CurrentDeclarationRestriction:
+    """One restriction with the battlefield object that anchors its scope."""
+
+    participant_id: str
+    source: Any
+    template: DeclarationRestrictionTemplate
 
 
 def temporary_declaration_restriction(
@@ -89,8 +108,8 @@ def commit_temporary_declaration_restriction(
     card: Any,
     source: ResolutionEffectSource,
     kind: TemporaryDeclarationRestrictionKind | str,
-) -> ContinuousEffect:
-    """Grant one locked layer-6 declaration fragment until cleanup."""
+) -> ResolutionDeclarationRuleEffect:
+    """Create one locked declaration rule that lasts until cleanup."""
 
     if getattr(card, "zone", None) != "battlefield" or bool(
         getattr(card, "phased_out", False)
@@ -104,18 +123,11 @@ def commit_temporary_declaration_restriction(
         )
     restriction = temporary_declaration_restriction(kind)
     try:
-        effect = create_resolution_continuous_effect(
+        effect = create_resolution_declaration_rule_effect(
             host,
             source=source,
             targets=(card,),
-            layer=Layer.ABILITY,
-            sublayer="6",
-            operations=(
-                ContinuousOperation(
-                    "add_ability_fragment",
-                    ability_fragment_to_dict(restriction),
-                ),
-            ),
+            restriction=restriction,
             duration=ContinuousEffectDuration.UNTIL_END_OF_TURN,
         )
     except (ContinuousEffectError, ContinuousEffectStateError) as exc:
@@ -127,10 +139,58 @@ def commit_temporary_declaration_restriction(
     return effect
 
 
+def current_declaration_restrictions(
+    host: TemporaryDeclarationRestrictionHost,
+    *,
+    error_type: type[Exception] | None = None,
+) -> tuple[CurrentDeclarationRestriction, ...]:
+    """Compose live static restrictions with resolution-created rules."""
+
+    result: list[CurrentDeclarationRestriction] = []
+    for source in sorted(
+        host.state.cards.values(), key=lambda value: value.ref
+    ):
+        if source.zone != "battlefield" or source.phased_out:
+            continue
+        for index, template in enumerate(
+            declaration_restriction_specs(
+                host._effective_ability_fragments(
+                    source,
+                    error_type=error_type,
+                )
+            )
+        ):
+            result.append(
+                CurrentDeclarationRestriction(
+                    participant_id=f"{source.ref}:{index}",
+                    source=source,
+                    template=template,
+                )
+            )
+        resolved = sorted(
+            active_resolution_declaration_rule_effects(
+                host.state,
+                source,
+            ),
+            key=lambda effect: (effect.timestamp, effect.effect_id),
+        )
+        for index, effect in enumerate(resolved):
+            result.append(
+                CurrentDeclarationRestriction(
+                    participant_id=f"{source.ref}:resolved:{index}",
+                    source=source,
+                    template=effect.restriction,
+                )
+            )
+    return tuple(result)
+
+
 __all__ = [
     "TEMPORARY_DECLARATION_RESTRICTION_KINDS",
+    "CurrentDeclarationRestriction",
     "TemporaryDeclarationRestrictionError",
     "TemporaryDeclarationRestrictionKind",
     "commit_temporary_declaration_restriction",
+    "current_declaration_restrictions",
     "temporary_declaration_restriction",
 ]

@@ -21,7 +21,6 @@ from .ability_fragments import (
     counter_maximum_values,
     declaration_cost_specs,
     declaration_requirement_specs,
-    declaration_restriction_specs,
 )
 from .attachments import (
     detach_object,
@@ -110,6 +109,9 @@ from .declaration_restrictions import (
     DeclarationRestrictionTemplate,
     DeclarationSharedSubtypeCondition,
     DeclarationTurnHistoryCondition,
+)
+from .rules.temporary_declaration_restrictions import (
+    current_declaration_restrictions,
 )
 from .damage import (
     combat_damage_proposals,
@@ -4709,17 +4711,12 @@ class CommanderEngine(
         if "battle" in blocker_types:
             return False, "blocker_is_battle"
         by_ref = {card.ref: card for card in self.state.cards.values()}
-        for source in sorted(
-            self.state.cards.values(), key=lambda value: value.ref
+        for participant in current_declaration_restrictions(
+            self,
+            error_type=GameRuleError,
         ):
-            if source.zone != "battlefield" or source.phased_out:
-                continue
-            for template in declaration_restriction_specs(
-                self._effective_ability_fragments(
-                    source,
-                    error_type=GameRuleError,
-                )
-            ):
+            source = participant.source
+            for template in (participant.template,):
                 if (
                     "block" not in template.declarations
                     or template.mode != "prohibit"
@@ -5387,19 +5384,13 @@ class CommanderEngine(
         }
         constraints: list[DeclarationRestriction] = []
         by_ref = {card.ref: card for card in self.state.cards.values()}
-        for source in sorted(
-            self.state.cards.values(), key=lambda value: value.ref
+        for participant in current_declaration_restrictions(
+            self,
+            error_type=GameRuleError,
         ):
-            if source.zone != "battlefield" or source.phased_out:
-                continue
-            for template_index, template in enumerate(
-                declaration_restriction_specs(
-                    self._effective_ability_fragments(
-                        source,
-                        error_type=GameRuleError,
-                    )
-                )
-            ):
+            source = participant.source
+            participant_id = participant.participant_id
+            for template in (participant.template,):
                 if kind not in template.declarations:
                     continue
                 if not self._restriction_is_relevant(
@@ -5413,8 +5404,7 @@ class CommanderEngine(
                     constraints.append(
                         DeclarationRestriction(
                             restriction_id=(
-                                f"{kind}:restriction:{source.ref}:"
-                                f"{template_index}:maximum"
+                                f"{kind}:restriction:{participant_id}:maximum"
                             ),
                             kind="maximum_total_selections",
                             count=template.count,
@@ -5459,8 +5449,7 @@ class CommanderEngine(
                     constraints.append(
                         DeclarationRestriction(
                             restriction_id=(
-                                f"{kind}:restriction:{source.ref}:"
-                                f"{template_index}:option-uses"
+                                f"{kind}:restriction:{participant_id}:option-uses"
                             ),
                             kind=template.mode,
                             option=constrained_option,
@@ -5482,8 +5471,8 @@ class CommanderEngine(
                         constraints.append(
                             DeclarationRestriction(
                                 restriction_id=(
-                                    f"{kind}:restriction:{source.ref}:"
-                                    f"{template_index}:{variable}:minimum"
+                                    f"{kind}:restriction:{participant_id}:"
+                                    f"{variable}:minimum"
                                 ),
                                 kind="minimum_total_selections",
                                 count=template.count,
@@ -5510,8 +5499,8 @@ class CommanderEngine(
                         constraints.append(
                             DeclarationRestriction(
                                 restriction_id=(
-                                    f"{kind}:restriction:{source.ref}:"
-                                    f"{template_index}:{variable}:matching"
+                                    f"{kind}:restriction:{participant_id}:"
+                                    f"{variable}:matching"
                                 ),
                                 kind="minimum_variable_selections",
                                 count=template.count,

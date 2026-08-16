@@ -6,11 +6,16 @@ verified: "2026-08-16"
 audience: "rules, compiler, combat, replay, and architecture contributors"
 maintenance: "hand-maintained"
 adr_id: "0069"
-decision_status: "accepted"
+decision_status: "superseded"
 date: "2026-08-16"
 ---
 
 # ADR 0069: typed temporary declaration restrictions
+
+> Superseded by
+> [ADR 0072](0072-resolution-created-declaration-rules.md), which preserves the
+> compiler family and duration journal while correcting the resolved result
+> from a layer-6 added ability to an independent declaration rule.
 
 ## Context
 

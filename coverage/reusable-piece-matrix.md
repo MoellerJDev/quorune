@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "0985d21d789b3ce91e998caf45c86199d871e09c4573acf3ae3e6be797f441c8"
+verified: "8825fce07acc5e00eb509f1b162b0651829793ab3d1fc9e39565fffdd7b3e7ec"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,12 +17,12 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,597
+- Pieces: 1,598
 - Cards indexed: 31,623
 - Material abilities classified: 59,571
 - Unclassified material spans: 0
-- Mapped pinned rules: 849 / 3,300
-- Applicable piece pairs: 37,858
+- Mapped pinned rules: 850 / 3,300
+- Applicable piece pairs: 37,922
 - Covered piece pairs: 657
 
 ## Ontology classes
@@ -34,7 +34,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `choices_continuations` — Modes, targets, choices, and continuations | 13 |
 | `combat` — Combat | 24 |
 | `compiler_cardprogram` — Compiler and CardProgram pieces | 599 |
-| `continuous_effects` — Static abilities and continuous effects | 35 |
+| `continuous_effects` — Static abilities and continuous effects | 36 |
 | `costs_mana` — Costs and mana | 8 |
 | `events_mutations` — Typed events and mutations | 108 |
 | `keyword_mechanics` — Keyword actions and keyword abilities | 554 |
@@ -54,7 +54,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 |---|---|---:|---:|
 | `action_legality_casting_activation_costs_mana` | `inventoried` | 65 | 6 |
 | `combat` | `compositional` | 24 | 0 |
-| `derived_characteristics_static_layers` | `inventoried` | 35 | 7 |
+| `derived_characteristics_static_layers` | `inventoried` | 36 | 7 |
 | `generic_triggers_stack_placement` | `inventoried` | 2 | 2 |
 | `multiplayer_player_leaving_commander` | `represented` | 2 | 0 |
 | `objects_identity_zones_faces_copies` | `compositional` | 31 | 0 |

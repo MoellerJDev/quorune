@@ -86,3 +86,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0069 — typed temporary declaration restrictions](0069-typed-temporary-declaration-restrictions.md)
 - [ADR 0070 — typed fixed token-definition batches](0070-typed-fixed-token-definition-batches.md)
 - [ADR 0071 — typed fixed Choose one modal spells](0071-typed-fixed-choose-one-modal-spells.md)
+- [ADR 0072 — resolution-created declaration rules](0072-resolution-created-declaration-rules.md)

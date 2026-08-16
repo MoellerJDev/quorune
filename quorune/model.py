@@ -10,7 +10,10 @@ from .damage_modifier_state import (
     DamagePreventionShield,
     DamageRedirectionEffect,
 )
-from .continuous_effect_model import ContinuousEffect
+from .declaration_rule_effects import (
+    ContinuousJournalEffect,
+    continuous_journal_effect_from_dict,
+)
 from .trigger_batches import PendingTriggerBatch, TriggerBatchError
 from .util import normalize_mana_bundle, stable_json
 
@@ -733,9 +736,9 @@ class GameState:
     damage_redirections: list[DamageRedirectionEffect] = field(
         default_factory=list
     )
-    # Additive Game Record v3 CR 611 journal. ``None`` preserves historical
-    # checkpoints whose temporary characteristic effects used annotations.
-    continuous_effects: list[ContinuousEffect] | None = field(
+    # Additive Game Record v3 duration journal. ``None`` preserves historical
+    # checkpoints whose temporary continuous effects used annotations.
+    continuous_effects: list[ContinuousJournalEffect] | None = field(
         default_factory=list
     )
     # Authoritative CR 608.2i look-back facts. ``None`` is reserved for legacy
@@ -947,10 +950,10 @@ class GameState:
     @staticmethod
     def _continuous_effects_from_dict(
         data: Any,
-    ) -> list[ContinuousEffect]:
+    ) -> list[ContinuousJournalEffect]:
         if not isinstance(data, list):
             raise ValueError("continuous_effects must be an array")
-        return [ContinuousEffect.from_dict(effect) for effect in data]
+        return [continuous_journal_effect_from_dict(effect) for effect in data]
 
     def save(self, path: str | Path) -> None:
         path = Path(path)

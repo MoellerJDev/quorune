@@ -61,6 +61,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/damage_modifier_state.py",
         "quorune/death_return.py",
         "quorune/declaration_fragments.py",
+        "quorune/declaration_rule_effects.py",
         "quorune/continuous_effect_model.py",
         "quorune/enchant_spec.py",
         "quorune/entry_counter_model.py",
@@ -367,6 +368,7 @@ def _owner(relative: str, layer: str) -> str:
     if relative == "quorune/tap_state.py":
         return "tap_state_effects"
     if relative in {
+        "quorune/declaration_rule_effects.py",
         "quorune/dynamic_characteristics.py",
         "quorune/zone_object_keyword_model.py",
         "quorune/zone_object_keyword_grants.py",
@@ -603,6 +605,7 @@ def build_classifications() -> dict[str, Any]:
                             "damage_transaction.py",
                             "damage_results.py",
                             "death_return.py",
+                            "declaration_rule_effects.py",
                             "delayed_triggers.py",
                             "drawing/",
                             "dynamic_characteristics.py",

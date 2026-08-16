@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import copy
 from dataclasses import replace
+import json
 from pathlib import Path
 import tempfile
 import unittest
 
 from common import DB_PATH, keep_all, load_assets, make_session
-from quorune.ability_fragments import declaration_restriction_specs
+from quorune.ability_fragments import ability_fragment_to_dict
 from quorune.carddb import CardDatabase
 from quorune.compiler.temporary_declaration_templates import (
     ActivatedTemporaryDeclarationRestrictionTemplate,
@@ -19,8 +20,12 @@ from quorune.continuous_effect_state import (
     expire_end_of_turn_continuous_effects,
     ResolutionEffectSource,
 )
+from quorune.declaration_rule_effects import (
+    ResolutionDeclarationRuleEffect,
+)
+from quorune.engine import TURN_STEPS
 from quorune.errors import GameRuleError
-from quorune.model import CombatState
+from quorune.model import CombatState, GameState
 from quorune.oracle_ir import compile_oracle_card
 from quorune.record import (
     authoritative_state_hash,
@@ -28,6 +33,10 @@ from quorune.record import (
     replay_record,
 )
 from quorune.rules.capabilities import load_default_capability_registry
+from quorune.rules.temporary_declaration_restrictions import (
+    commit_temporary_declaration_restriction,
+    temporary_declaration_restriction,
+)
 
 
 class ActivatedTemporaryDeclarationRestrictionTemplateTests(unittest.TestCase):
@@ -140,7 +149,7 @@ class ActivatedTemporaryDeclarationRestrictionCompilerTests(unittest.TestCase):
                         "combat.declaration.typed_components",
                         (
                             "continuous.resolution."
-                            "fixed_characteristics_until_end_of_turn"
+                            "declaration_rules_until_end_of_turn"
                         ),
                         "target.revalidate_resolution",
                     },
@@ -214,7 +223,13 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.db.close()
 
-    def session_with_card(self, card_name: str, *, seed: int):
+    def session_with_card(
+        self,
+        card_name: str,
+        *,
+        seed: int,
+        players: int = 2,
+    ):
         deck = copy.deepcopy(self.mishra)
         replaceable = next(
             entry for entry in deck.entries if entry.board == "mainboard"
@@ -224,7 +239,7 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
             self.db,
             deck,
             self.zimone,
-            players=2,
+            players=players,
             seed=seed,
             auto_pass_empty=False,
         )
@@ -239,14 +254,31 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
         return session
 
     @staticmethod
-    def creature(engine, seat: str, name: str):
+    def creature(
+        engine,
+        seat: str,
+        name: str,
+        *,
+        static_restriction: str | None = None,
+    ):
+        fragments = (
+            [
+                ability_fragment_to_dict(
+                    temporary_declaration_restriction(
+                        static_restriction
+                    )
+                )
+            ]
+            if static_restriction is not None
+            else []
+        )
         ref = engine.create_token(
             seat,
             name=name,
             characteristics={
                 "type_line": "Token Creature — Test",
                 "oracle_text": "",
-                "ability_fragments": [],
+                "ability_fragments": fragments,
                 "power": "2",
                 "toughness": "2",
             },
@@ -267,30 +299,15 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
                     f"{session.packet(principals[0], full=True).get('decision')}"
                 )
 
-    def assert_replays(self, session):
-        expected_hash = authoritative_state_hash(session.state)
-        with tempfile.TemporaryDirectory() as temporary:
-            record_dir = Path(temporary) / "temporary-declaration-record"
-            session.save(record_dir)
-            replay = replay_record(record_dir, self.db, verify=True)
-        self.assertTrue(replay["ok"], replay)
-        self.assertEqual(expected_hash, replay["final_state_hash"])
-
-    def test_temporary_restrictions_use_effective_layer_six_abilities_and_replay(
-        self,
-    ):
-        session = self.session_with_card(
-            "Thundersong Trumpeter",
-            seed=50811501,
-        )
+    @staticmethod
+    def prepare_trumpeter_activation(session, target):
         engine = session.engine
         source = next(
             card
             for card in engine.state.cards.values()
-            if card.owner == "A" and card.printed_name == "Thundersong Trumpeter"
+            if card.owner == "A"
+            and card.printed_name == "Thundersong Trumpeter"
         )
-        target = self.creature(engine, "B", "Restricted Blocker")
-        attacker = self.creature(engine, "A", "Attacker")
         engine.move_card(
             source.object_id,
             "battlefield",
@@ -308,7 +325,39 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
             for row in packet["decision"]["ctx"]["legal"]["actions"]
             if row["id"] == f"activate:{source.ref}:ab1"
         )
-        self.assertIn(target.ref, action["target_schema"]["legal_refs"])
+        if target.ref not in action["target_schema"]["legal_refs"]:
+            raise AssertionError("Prepared restriction target is not legal")
+        return source, action
+
+    def assert_replays(self, session):
+        expected_hash = authoritative_state_hash(session.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "temporary-declaration-record"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_resolved_rule_survives_ability_removal_while_static_rule_does_not(
+        self,
+    ):
+        session = self.session_with_card(
+            "Thundersong Trumpeter",
+            seed=50811501,
+        )
+        engine = session.engine
+        target = self.creature(engine, "B", "Restricted Blocker")
+        static_target = self.creature(
+            engine,
+            "B",
+            "Static Restricted Blocker",
+            static_restriction="cant_block",
+        )
+        attacker = self.creature(engine, "A", "Attacker")
+        _source, action = self.prepare_trumpeter_activation(
+            session,
+            target,
+        )
         session.initial_checkpoint = checkpoint_envelope(engine.state)
         session.commands.clear()
         session.decisions.clear()
@@ -320,13 +369,13 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
         self.assertTrue(result.ok, result.summary)
         self.pass_stack(session)
 
-        restrictions = declaration_restriction_specs(
-            engine._effective_ability_fragments(target)
-        )
-        self.assertEqual(
-            ["intrinsic-attack-block-prohibition-v1"],
-            [value.template_id for value in restrictions],
-        )
+        self.assertEqual((), engine._effective_ability_fragments(target))
+        declaration_effects = [
+            effect
+            for effect in engine.state.continuous_effects
+            if isinstance(effect, ResolutionDeclarationRuleEffect)
+        ]
+        self.assertEqual(1, len(declaration_effects))
         self.assertEqual(
             (
                 False,
@@ -334,19 +383,40 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
             ),
             engine._can_block(attacker, target),
         )
+        self.assertEqual(
+            (
+                False,
+                "declaration_restriction:intrinsic-block-prohibition-v1",
+            ),
+            engine._can_block(attacker, static_target),
+        )
+        restored = GameState.from_dict(engine.state.to_dict())
+        self.assertEqual(
+            declaration_effects[0],
+            next(
+                effect
+                for effect in restored.continuous_effects
+                if isinstance(effect, ResolutionDeclarationRuleEffect)
+            ),
+        )
         self.assert_replays(session)
 
         removed = create_resolution_continuous_effect(
             engine,
             source=ResolutionEffectSource(stack_ref="test:remove-all-abilities"),
-            targets=(target,),
+            targets=(target, static_target),
             layer=Layer.ABILITY,
             sublayer="6",
             operations=(ContinuousOperation("remove_all_abilities"),),
         )
         self.assertIsNotNone(removed)
         self.assertEqual((), engine._effective_ability_fragments(target))
-        self.assertEqual((True, None), engine._can_block(attacker, target))
+        self.assertEqual((), engine._effective_ability_fragments(static_target))
+        self.assertFalse(engine._can_block(attacker, target)[0])
+        self.assertEqual(
+            (True, None),
+            engine._can_block(attacker, static_target),
+        )
 
     def test_all_four_restrictions_change_declaration_behavior_and_expire(self):
         session = self.session_with_card("Thundersong Trumpeter", seed=50811502)
@@ -423,6 +493,171 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
         self.assertEqual((True, None), engine._can_block(free_attacker, both))
         self.assertEqual((True, None), engine._can_block(unblockable, free_blocker))
 
+    def test_source_departure_preserves_rule_but_target_reentry_does_not(self):
+        session = self.session_with_card(
+            "Thundersong Trumpeter",
+            seed=50811504,
+        )
+        engine = session.engine
+        source = self.creature(engine, "A", "Resolving Source")
+        target = self.creature(engine, "B", "Identity Locked Blocker")
+        attacker = self.creature(engine, "A", "Attacker")
+        commit_temporary_declaration_restriction(
+            engine,
+            card=target,
+            source=ResolutionEffectSource(
+                stack_ref="STACK:source-departure",
+                object_id=source.object_id,
+                logical_object_id=source.logical_object_id,
+                card_ref=source.ref,
+            ),
+            kind="cant_block",
+        )
+        effect = next(
+            value
+            for value in engine.state.continuous_effects
+            if isinstance(value, ResolutionDeclarationRuleEffect)
+        )
+        self.assertEqual(source.object_id, effect.source_id)
+
+        engine.move_card(source.object_id, "graveyard", log=False)
+        self.assertFalse(engine._can_block(attacker, target)[0])
+
+        logical_object_id = target.logical_object_id
+        engine.move_card(target.object_id, "graveyard", log=False)
+        engine.move_card(
+            target.object_id,
+            "battlefield",
+            controller="B",
+            tapped=False,
+            log=False,
+        )
+        self.assertNotEqual(logical_object_id, target.logical_object_id)
+        self.assertEqual((True, None), engine._can_block(attacker, target))
+
+    def test_illegal_target_at_resolution_commits_no_declaration_rule(self):
+        session = self.session_with_card(
+            "Thundersong Trumpeter",
+            seed=50811505,
+        )
+        engine = session.engine
+        target = self.creature(engine, "B", "Departing Target")
+        _source, action = self.prepare_trumpeter_activation(
+            session,
+            target,
+        )
+        result = session.act(
+            "pilot:A",
+            {"action_id": action["id"], "targets": [target.ref]},
+        )
+        self.assertTrue(result.ok, result.summary)
+        engine.move_card(target.object_id, "graveyard", log=False)
+
+        self.pass_stack(session)
+
+        self.assertFalse(
+            any(
+                isinstance(effect, ResolutionDeclarationRuleEffect)
+                for effect in engine.state.continuous_effects
+            )
+        )
+
+    def test_cleanup_expiration_is_exactly_replayable(self):
+        session = self.session_with_card(
+            "Thundersong Trumpeter",
+            seed=50811506,
+        )
+        engine = session.engine
+        target = self.creature(engine, "B", "Expiring Blocker")
+        attacker = self.creature(engine, "A", "Attacker")
+        engine.apply_effect(
+            {
+                "op": "grant_declaration_restriction_until_end_of_turn",
+                "card": target.ref,
+                "restriction": "cant_block",
+            },
+            actor="A",
+        )
+        self.assertFalse(engine._can_block(attacker, target)[0])
+
+        engine.state.phase_index = TURN_STEPS.index(
+            ("ending", "end_step")
+        )
+        engine._enter_step()
+        engine.pump()
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        for _ in range(2):
+            principals = session.pending_principals()
+            self.assertTrue(principals)
+            result = session.act(
+                principals[0],
+                {"action_id": "pass"},
+            )
+            self.assertTrue(result.ok, result.summary)
+
+        self.assertFalse(
+            any(
+                isinstance(effect, ResolutionDeclarationRuleEffect)
+                for effect in engine.state.continuous_effects
+            )
+        )
+        self.assertEqual((True, None), engine._can_block(attacker, target))
+        self.assert_replays(session)
+
+    def test_four_player_projection_exposes_only_public_declaration_facts(self):
+        session = self.session_with_card(
+            "Thundersong Trumpeter",
+            seed=50811507,
+            players=4,
+        )
+        engine = session.engine
+        target = self.creature(engine, "A", "Restricted Attacker")
+        free_attacker = self.creature(engine, "A", "Free Attacker")
+        engine.apply_effect(
+            {
+                "op": "grant_declaration_restriction_until_end_of_turn",
+                "card": target.ref,
+                "restriction": "cant_attack",
+            },
+            actor="A",
+        )
+        effect = next(
+            value
+            for value in engine.state.continuous_effects
+            if isinstance(value, ResolutionDeclarationRuleEffect)
+        )
+        engine.state.active_player = "A"
+        engine.state.phase_index = 5
+        engine.state.phase = "combat"
+        engine.state.step = "declare_attackers"
+        engine.state.combat = CombatState()
+        engine.state.pending_decision = None
+        engine._issue_attackers()
+
+        active_packet = session.packet("pilot:A", full=True)
+        domains = active_packet["decision"]["ctx"][
+            "declaration_constraints"
+        ]["domains"]
+        self.assertNotIn(target.ref, domains)
+        self.assertIn(free_attacker.ref, domains)
+        internal_identities = {
+            effect.effect_id,
+            effect.source_id,
+            target.object_id,
+            target.logical_object_id,
+        }
+        for seat in ("A", "B", "C", "D"):
+            rendered = json.dumps(
+                session.packet(f"pilot:{seat}", full=True),
+                sort_keys=True,
+            )
+            for identity in internal_identities:
+                with self.subTest(seat=seat, identity=identity):
+                    self.assertNotIn(identity, rendered)
+            self.assertNotIn("continuous_effects", rendered)
+
     def test_malformed_temporary_restriction_rolls_back_without_effect(self):
         session = self.session_with_card("Thundersong Trumpeter", seed=50811503)
         engine = session.engine
@@ -441,6 +676,22 @@ class TemporaryDeclarationRestrictionRuntimeTests(unittest.TestCase):
 
         self.assertEqual(before, authoritative_state_hash(engine.state))
         self.assertEqual((), engine._effective_ability_fragments(target))
+
+        engine.move_card(target.object_id, "graveyard", log=False)
+        before_stale = authoritative_state_hash(engine.state)
+        with self.assertRaises(GameRuleError):
+            engine.apply_effect(
+                {
+                    "op": "grant_declaration_restriction_until_end_of_turn",
+                    "card": target.ref,
+                    "restriction": "cant_block",
+                },
+                actor="A",
+            )
+        self.assertEqual(
+            before_stale,
+            authoritative_state_hash(engine.state),
+        )
 
 
 if __name__ == "__main__":
