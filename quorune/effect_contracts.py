@@ -151,6 +151,7 @@ EFFECT_FAMILY_CONTRACTS = (
                 "counter",
                 "counter_all_subtype",
                 "create_token",
+                "create_token_batch",
                 "create_token_if_no_controlled_subtype",
                 "delayed_trigger",
                 "grant_cast_permission",

@@ -38,6 +38,23 @@ def builtin_activation_resolution(
             int(amount_text),
             reason="activated ability",
         )
+    if semantic_key and semantic_key.startswith("builtin:draw:"):
+        amount_text = semantic_key.rsplit(":", 1)[1]
+        if not amount_text.isdigit() or int(amount_text) < 1:
+            return None
+        return BuiltinActivationResolution(
+            effects=(
+                FrozenMap(
+                    {
+                        "op": "draw",
+                        "player": controller,
+                        "count": int(amount_text),
+                        "private": True,
+                    }
+                ),
+            ),
+            note="Built-in draw ability resolved",
+        )
     if semantic_key in _EXPLORE_KEYS:
         return BuiltinActivationResolution(
             effects=(

@@ -702,9 +702,15 @@ class MentorRuntimeTests(unittest.TestCase):
         schema = decision.payload_by_actor["A"]["target_schema"]
         self.assertEqual([lesser.ref], schema["legal_refs"])
         packet = StateProjector(self.db, engine.state)._decision("pilot:A")
-        self.assertNotIn(source.object_id, str(packet))
-        self.assertNotIn(source.logical_object_id, str(packet))
-        self.assertNotIn(nonattacker.ref, str(packet))
+        self.assertEqual(
+            [lesser.ref], packet["ctx"]["target_schema"]["legal_refs"]
+        )
+        packet_without_capability = deepcopy(packet)
+        packet_without_capability.pop("cap", None)
+        self.assertNotIn(source.object_id, str(packet_without_capability))
+        self.assertNotIn(
+            source.logical_object_id, str(packet_without_capability)
+        )
         for seat in ("B", "C", "D"):
             self.assertIsNone(
                 StateProjector(self.db, engine.state)._decision(

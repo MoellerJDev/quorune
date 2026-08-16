@@ -3289,6 +3289,15 @@
       "capability_ids": ["permanent.untap.effect"],
       "interaction_order": 2,
       "assertion": "Sleep-Cursed Faerie compiles its exact self-untap effect while unresolved self-replacement and prevention ordering keeps the complete CardProgram fail-closed."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_clue_activation_draws_privately_and_replays_exactly",
+      "piece_ids": ["capability.token.creation.fixed_definition", "capability.zone.draw.library_to_hand"],
+      "capability_ids": ["token.creation.fixed_definition", "zone.draw.library_to_hand"],
+      "interaction_order": 2,
+      "assertion": "A compiler-owned fixed Clue definition creates a token whose typed activation pays mana, sacrifices through the canonical source-zone transaction, draws privately through the shared draw owner, and replays exactly."
     }
   ]
 }

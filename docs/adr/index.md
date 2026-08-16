@@ -84,3 +84,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0067 — typed ordinary Station activation](0067-typed-ordinary-station-activation.md)
 - [ADR 0068 — typed fixed-life cumulative upkeep](0068-typed-fixed-life-cumulative-upkeep.md)
 - [ADR 0069 — typed temporary declaration restrictions](0069-typed-temporary-declaration-restrictions.md)
+- [ADR 0070 — typed fixed token-definition batches](0070-typed-fixed-token-definition-batches.md)

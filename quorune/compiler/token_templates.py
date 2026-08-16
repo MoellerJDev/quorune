@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from itertools import combinations
+import json
 import re
 from typing import Any, Mapping
 
@@ -27,7 +29,10 @@ _CONTROLLED_FRAME = re.compile(
 _TOKEN_TREASURE = "Treasure"
 _TOKEN_FOOD = "Food"
 _TOKEN_MAP = "Map"
+_TOKEN_CLUE = "Clue"
 _TOKEN_THOPTER = "Thopter"
+
+FIXED_TOKEN_DEFINITION_BATCH_MECHANIC = "fixed-token-definition-batch"
 
 _COLOR_SYMBOLS = {
     "white": "W",
@@ -68,7 +73,7 @@ _FIXED_CREATURE_TOKEN = re.compile(
 _FIXED_PREDEFINED_TOKEN = re.compile(
     rf"^Create (?P<count>{FIXED_COUNT_PATTERN}) "
     r"(?P<tapped>tapped )?"
-    r"(?P<name>Treasure|Food|Map) tokens?\.?$",
+    r"(?P<name>Treasure|Food|Map|Clue) tokens?\.?$",
     re.IGNORECASE,
 )
 
@@ -115,6 +120,14 @@ _TOKEN_DEFINITIONS: dict[str, Mapping[str, Any]] = {
         ),
         "ability_profile": "one_tap_sac_explore_controlled_creature_v1",
     },
+    "clue token": {
+        "name": _TOKEN_CLUE,
+        "type_line": "Token Artifact — Clue",
+        "display_text": (
+            "{2}, Sacrifice this token: Draw a card."
+        ),
+        "ability_profile": "two_sac_draw_card_v1",
+    },
     "1/1 colorless thopter artifact creature token with flying": {
         "name": _TOKEN_THOPTER,
         "type_line": "Token Artifact Creature — Thopter",
@@ -141,7 +154,7 @@ _PREDEFINED_CREATION_DEFINITIONS: dict[str, Mapping[str, Any]] = {
         ),
     }
     for key, definition in _TOKEN_DEFINITIONS.items()
-    if key in {"treasure token", "food token", "map token"}
+    if key in {"treasure token", "food token", "map token", "clue token"}
 }
 
 
@@ -177,7 +190,7 @@ def _positive_fixed_number(value: str) -> int | None:
     return amount if amount > 0 else None
 
 
-def fixed_token_creation_effect_template(
+def _single_fixed_token_creation_effect_template(
     text: str,
 ) -> FixedTokenCreationTemplate | None:
     """Lower one complete fixed token-definition instruction.
@@ -259,6 +272,118 @@ def fixed_token_creation_effect_template(
     )
 
 
+def _batch_boundaries(text: str) -> tuple[tuple[int, int], ...]:
+    return tuple(
+        (match.start(), match.end())
+        for match in re.finditer(
+            r",\s+and\s+|,\s+|\s+and\s+",
+            text,
+            re.IGNORECASE,
+        )
+    )
+
+
+def _batch_parts(
+    text: str,
+    boundaries: tuple[tuple[int, int], ...],
+) -> tuple[str, ...]:
+    parts: list[str] = []
+    start = 0
+    for left, right in boundaries:
+        parts.append(text[start:left])
+        start = right
+    parts.append(text[start:])
+    return tuple(part.strip() for part in parts)
+
+
+def _batch_effect_key(
+    templates: tuple[FixedTokenCreationTemplate, ...],
+) -> str:
+    return json.dumps(
+        [template.effect for template in templates],
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
+
+def _fixed_token_batch_creation_effect_template(
+    text: str,
+) -> FixedTokenCreationTemplate | None:
+    normalized = " ".join(text.split()).rstrip(".")
+    if not normalized.startswith("Create "):
+        return None
+    boundaries = _batch_boundaries(normalized)
+    candidates: dict[
+        str, tuple[FixedTokenCreationTemplate, ...]
+    ] = {}
+    for split_count in (1, 2):
+        for selected in combinations(boundaries, split_count):
+            if any(
+                selected[index][1] > selected[index + 1][0]
+                for index in range(len(selected) - 1)
+            ):
+                continue
+            parts = _batch_parts(normalized, selected)
+            templates: list[FixedTokenCreationTemplate] = []
+            for index, part in enumerate(parts):
+                candidate = (part if index == 0 else f"Create {part}") + "."
+                template = _single_fixed_token_creation_effect_template(
+                    candidate
+                )
+                if template is None:
+                    break
+                templates.append(template)
+            else:
+                compiled = tuple(templates)
+                candidates[_batch_effect_key(compiled)] = compiled
+    if len(candidates) != 1:
+        return None
+    templates = next(iter(candidates.values()))
+    return FixedTokenCreationTemplate(
+        template_id="create-fixed-token-definition-batch-v1",
+        effect={
+            "op": "create_token_batch",
+            "controller": "$controller",
+            "tokens": [
+                {
+                    field: value
+                    for field, value in template.effect.items()
+                    if field not in {"op", "controller"}
+                }
+                for template in templates
+            ],
+        },
+        mechanics=tuple(
+            dict.fromkeys(
+                (
+                    FIXED_TOKEN_DEFINITION_BATCH_MECHANIC,
+                    *(
+                        mechanic
+                        for template in templates
+                        for mechanic in template.mechanics
+                    ),
+                )
+            )
+        ),
+    )
+
+
+def fixed_token_creation_effect_template(
+    text: str,
+) -> FixedTokenCreationTemplate | None:
+    """Lower one closed fixed token-definition instruction.
+
+    A single fixed definition or an unambiguous two- or three-definition
+    simultaneous batch is accepted. Dynamic quantities, copies, named or
+    legendary tokens, open ability text, attachments, attacking tokens, and
+    compound non-token instructions remain residual.
+    """
+
+    return _single_fixed_token_creation_effect_template(
+        text
+    ) or _fixed_token_batch_creation_effect_template(text)
+
+
 def static_additional_token_replacement_handler(
     text: str,
 ) -> tuple[str, Mapping[str, Any], str] | None:
@@ -302,6 +427,7 @@ def static_additional_token_replacement_handler(
 
 
 __all__ = [
+    "FIXED_TOKEN_DEFINITION_BATCH_MECHANIC",
     "FixedTokenCreationTemplate",
     "fixed_token_creation_effect_template",
     "static_additional_token_replacement_handler",

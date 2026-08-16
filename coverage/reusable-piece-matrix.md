@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "4a4deafcc00312d58bd5c0cebdc807f5f9055278f8bbbf95956d65caabe995f5"
+verified: "669284094b01c2487db4c9b518d724d71ac4049ad1c05f88611507a403035999"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,13 +17,13 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,557
+- Pieces: 1,561
 - Cards indexed: 31,623
 - Material abilities classified: 59,649
 - Unclassified material spans: 0
 - Mapped pinned rules: 845 / 3,300
-- Applicable piece pairs: 37,293
-- Covered piece pairs: 656
+- Applicable piece pairs: 37,384
+- Covered piece pairs: 657
 
 ## Ontology classes
 
@@ -33,14 +33,14 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `card_forms` — Card types and specialized forms | 4 |
 | `choices_continuations` — Modes, targets, choices, and continuations | 13 |
 | `combat` — Combat | 24 |
-| `compiler_cardprogram` — Compiler and CardProgram pieces | 563 |
+| `compiler_cardprogram` — Compiler and CardProgram pieces | 565 |
 | `continuous_effects` — Static abilities and continuous effects | 35 |
 | `costs_mana` — Costs and mana | 8 |
 | `events_mutations` — Typed events and mutations | 108 |
-| `keyword_mechanics` — Keyword actions and keyword abilities | 552 |
+| `keyword_mechanics` — Keyword actions and keyword abilities | 553 |
 | `multiplayer_commander` — Multiplayer, Commander, and profile pieces | 1 |
 | `object_identity` — Object identity and lifetime | 27 |
-| `one_shot_effects` — One-shot semantic effects | 141 |
+| `one_shot_effects` — One-shot semantic effects | 142 |
 | `players_format` — Players, relationships, and format state | 1 |
 | `proposals` — Casting and activation proposals | 17 |
 | `quantities` — Quantity and value expressions | 1 |
@@ -61,13 +61,13 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `replacement_prevention` | `inventoried` | 20 | 4 |
 | `state_turn_loops_stabilization` | `inventoried` | 0 | 0 |
 | `targets_modes_searches_references_choices` | `inventoried` | 15 | 10 |
-| `typed_transactions_events_mutations` | `inventoried` | 249 | 73 |
+| `typed_transactions_events_mutations` | `inventoried` | 250 | 73 |
 
 ## Highest current blocker leverage
 
 | Piece | Class | Residuals | Sole blockers | Expected cards | Runtime | Assurance |
 |---|---|---:|---:|---:|---|---|
-| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 8,908 | 3,705 | 3,705 | `absent` | `untested` |
+| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 8,908 | 3,707 | 3,707 | `absent` | `untested` |
 | `residual.effect_clause.unparsed-clause-grammar` | `one_shot_effects` | 2,955 | 294 | 294 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-611-continuous-effects` | `keyword_mechanics` | 515 | 241 | 241 | `absent` | `untested` |
 | `residual.activated_effect.unparsed-clause-grammar` | `one_shot_effects` | 2,114 | 165 | 165 | `absent` | `untested` |
@@ -84,9 +84,8 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `residual.keyword_dependency.bestow` | `keyword_mechanics` | 42 | 17 | 17 | `absent` | `untested` |
 | `residual.effect_clause.return` | `one_shot_effects` | 643 | 16 | 16 | `absent` | `untested` |
 | `residual.effect_clause.draw` | `one_shot_effects` | 499 | 16 | 16 | `absent` | `untested` |
-| `residual.activated_effect.create-token` | `one_shot_effects` | 331 | 16 | 16 | `absent` | `untested` |
+| `residual.activated_effect.create-token` | `one_shot_effects` | 330 | 16 | 16 | `absent` | `untested` |
 | `residual.mechanic_dependency.affinity-unsupported-wording` | `keyword_mechanics` | 36 | 16 | 16 | `absent` | `untested` |
-| `residual.effect_clause.create-token` | `one_shot_effects` | 597 | 15 | 15 | `absent` | `untested` |
 | `residual.activated_effect.exile` | `one_shot_effects` | 386 | 15 | 15 | `absent` | `untested` |
 | `residual.activated_effect.put-onto-battlefield` | `one_shot_effects` | 288 | 14 | 14 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-400-general` | `keyword_mechanics` | 26 | 14 | 14 | `absent` | `untested` |
@@ -95,6 +94,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `residual.effect_clause.sacrifice` | `one_shot_effects` | 114 | 11 | 11 | `absent` | `untested` |
 | `residual.keyword_dependency.evoke` | `keyword_mechanics` | 30 | 11 | 11 | `absent` | `untested` |
 | `residual.keyword_dependency.improvise` | `keyword_mechanics` | 23 | 11 | 11 | `absent` | `untested` |
+| `residual.effect_clause.create-token` | `one_shot_effects` | 589 | 10 | 10 | `absent` | `untested` |
 | `residual.keyword_dependency.delve` | `keyword_mechanics` | 28 | 10 | 10 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-725-the-monarch` | `keyword_mechanics` | 38 | 9 | 9 | `absent` | `untested` |
 

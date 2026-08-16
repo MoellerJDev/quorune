@@ -63,6 +63,7 @@ VALID_EFFECT_OPERATIONS = {
     "cumulative_upkeep_life",
     "death_return_with_counter",
     "create_token",
+    "create_token_batch",
     "create_token_if_no_controlled_subtype",
     "create_treasure",
     "create_modified_token_copy",

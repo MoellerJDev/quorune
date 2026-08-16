@@ -14,6 +14,7 @@ from .util import normalize_mana_bundle
 class StandardTokenAbilityProfile(str, Enum):
     TAP_SAC_ANY_COLOR_MANA = "tap_sac_any_color_mana_v1"
     TWO_TAP_SAC_GAIN_THREE_LIFE = "two_tap_sac_gain_three_life_v1"
+    TWO_SAC_DRAW_CARD = "two_sac_draw_card_v1"
     ONE_TAP_SAC_EXPLORE_CONTROLLED_CREATURE = (
         "one_tap_sac_explore_controlled_creature_v1"
     )
@@ -55,6 +56,20 @@ def _gain_three_life() -> ActivatedAbility:
     )
 
 
+def _draw_card() -> ActivatedAbility:
+    return ActivatedAbility(
+        ability_id="ab1",
+        line_index=0,
+        oracle_line="{2}, Sacrifice this token: Draw a card.",
+        cost_text="{2}, Sacrifice this token",
+        effect_text="Draw a card.",
+        zones=("battlefield",),
+        mana={"GENERIC": 2},
+        sacrifice_source=True,
+        builtin_semantic_key="builtin:draw:1",
+    )
+
+
 def _explore_controlled_creature() -> ActivatedAbility:
     return ActivatedAbility(
         ability_id="ab1",
@@ -91,6 +106,9 @@ _STANDARD_TOKEN_ABILITIES = {
     ),
     StandardTokenAbilityProfile.TWO_TAP_SAC_GAIN_THREE_LIFE: (
         _gain_three_life(),
+    ),
+    StandardTokenAbilityProfile.TWO_SAC_DRAW_CARD: (
+        _draw_card(),
     ),
     StandardTokenAbilityProfile.ONE_TAP_SAC_EXPLORE_CONTROLLED_CREATURE: (
         _explore_controlled_creature(),

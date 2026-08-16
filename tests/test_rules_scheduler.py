@@ -33,6 +33,12 @@ def _json(relative: str):
 
 def _with_dependency_ready_compiler_harvest(inputs):
     updated = deepcopy(inputs)
+    frontier = updated["card_unlock_frontier"]["family_candidates"]
+    reviewed_comparison = next(
+        row
+        for row in frontier
+        if row["family_id"] == "effect_clause:destroy-target"
+    )
     updated["card_unlock_frontier"]["family_candidates"] = [
         {
             "family_id": "effect_clause:fixture-harvest",
@@ -48,13 +54,20 @@ def _with_dependency_ready_compiler_harvest(inputs):
             "expected_exact_ability_gain": 60,
             "expected_material_residual_gain": 60,
             "interaction_risk": "medium",
-        }
+        },
+        reviewed_comparison,
     ]
     return updated
 
 
 def _with_large_ability_compiler_harvest(inputs):
     updated = deepcopy(inputs)
+    frontier = updated["card_unlock_frontier"]["family_candidates"]
+    reviewed_comparison = next(
+        row
+        for row in frontier
+        if row["family_id"] == "effect_clause:destroy-target"
+    )
     updated["card_unlock_frontier"]["family_candidates"] = [
         {
             "family_id": "effect_clause:large-ability-fixture",
@@ -70,7 +83,8 @@ def _with_large_ability_compiler_harvest(inputs):
             "expected_exact_ability_gain": 130,
             "expected_material_residual_gain": 130,
             "interaction_risk": "high",
-        }
+        },
+        reviewed_comparison,
     ]
     return updated
 
@@ -577,6 +591,19 @@ class RulesSchedulerTests(unittest.TestCase):
         policy["priority_classes"].append(policy["priority_classes"][0])
         with self.assertRaisesRegex(
             WorkSelectionError, "priority classes"
+        ):
+            build_work_selection(
+                selected_batch=self.queue["selected_batch"],
+                policy=policy,
+                inputs=self.work_inputs,
+            )
+
+        policy = deepcopy(self.catalog["work_selection"])
+        policy["reviewed_rerank_history"][0]["selected_over"] = (
+            "frontier:missing-completed-candidate"
+        )
+        with self.assertRaisesRegex(
+            WorkSelectionError, "selected_over must reference a current candidate"
         ):
             build_work_selection(
                 selected_batch=self.queue["selected_batch"],
