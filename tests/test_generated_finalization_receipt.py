@@ -83,6 +83,12 @@ class GeneratedFinalizationReceiptTests(unittest.TestCase):
                 root=root,
             )
             self.assertEqual(written, observed)
+            _path, inferred = verify_finalization_receipt(
+                (spec,),
+                database=None,
+                root=root,
+            )
+            self.assertEqual(written, inferred)
 
             malformed = written.to_dict()
             malformed["unexpected"] = True
@@ -128,6 +134,13 @@ class GeneratedFinalizationReceiptTests(unittest.TestCase):
             ):
                 verify_finalization_receipt(
                     (spec,), database=database, root=root
+                )
+            with self.assertRaisesRegex(
+                GeneratedFinalizationReceiptError,
+                "database_fingerprint",
+            ):
+                verify_finalization_receipt(
+                    (spec,), database=None, root=root
                 )
             wal.unlink()
 

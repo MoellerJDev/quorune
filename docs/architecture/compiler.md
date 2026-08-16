@@ -117,14 +117,19 @@ reports and contains hashes and public identities rather than Oracle prose.
 `compiler/counter_placement_templates.py` separately owns the closed
 fixed counter-placement grammar. Direct targets lower once to
 `DirectPermanentTargetSpec`, whose deterministic runtime schema supports the
-represented type conjunctions and disjunctions, pinned creature-subtype
-disjunctions, reviewed Vehicle subtype, Flying predicate, controller relation,
-source exclusion, closed negative subtype and color forms, and one shared
-typed public-state predicate for tapped state, named-counter presence, or
-current-turn battlefield entry. Arbitrary adjectives are never inferred as
-creature subtypes. The same owner preserves two or three printed fixed placements on
-one shared source or direct permanent target as one typed batch node; runtime
-code receives the typed node and never reparses Oracle text.
+represented type conjunctions and canonical disjunctions of up to four
+permanent card types, pinned creature-subtype disjunctions, reviewed Vehicle
+subtype, Flying predicate, controller relation, source exclusion, closed
+negative subtype and color forms, and one shared typed public-state predicate
+for tapped state, named-counter presence, or current-turn battlefield entry.
+Arbitrary adjectives are never inferred as creature subtypes. Targeted
+destruction delegates its whole-clause subject to this same owner, so spells,
+triggers, and activations share the exact typed target grammar without a
+destruction-specific predicate vocabulary. Mixed type/subtype disjunctions and
+unrepresented qualifiers remain residual. The counter owner preserves two or
+three printed fixed placements on one shared source or direct permanent target
+as one typed batch node; runtime code receives the typed node and never
+reparses Oracle text.
 
 The same compiler owner lowers optional bounded permanent target sets from
 both “up to N target” and “each of up to N target” wording. It emits one

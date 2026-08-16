@@ -53,6 +53,28 @@ def _with_dependency_ready_compiler_harvest(inputs):
     return updated
 
 
+def _with_large_ability_compiler_harvest(inputs):
+    updated = deepcopy(inputs)
+    updated["card_unlock_frontier"]["family_candidates"] = [
+        {
+            "family_id": "effect_clause:large-ability-fixture",
+            "base_family": "effect_clause:large-ability-fixture",
+            "expected_exact_card_gain": 21,
+            "estimated_effort": "large",
+            "prerequisites": [],
+            "runtime_compiler_readiness": "missing_lowering",
+            "affected_cards": 521,
+            "sole_blocker_cards": 21,
+            "one_additional_blocker_cards": 109,
+            "two_additional_blocker_cards": 86,
+            "expected_exact_ability_gain": 130,
+            "expected_material_residual_gain": 130,
+            "interaction_risk": "high",
+        }
+    ]
+    return updated
+
+
 class RulesSchedulerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -435,6 +457,35 @@ class RulesSchedulerTests(unittest.TestCase):
                 f"frontier:{row['family_id']}"
                 for row in inputs["card_unlock_frontier"]["family_candidates"]
             },
+        )
+
+    def test_large_exact_ability_harvest_can_rerank_unknown_gain_rules_work(self):
+        inputs = _with_large_ability_compiler_harvest(self.work_inputs)
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=inputs,
+        )
+        selected = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"] == work["selected_candidate_id"]
+        )
+
+        self.assertEqual(
+            "frontier:effect_clause:large-ability-fixture",
+            selected["candidate_id"],
+        )
+        self.assertEqual("compiler_harvest", selected["candidate_class"])
+        self.assertEqual(21, selected["expected_complete_card_gain"])
+        self.assertEqual(130, selected["expected_exact_ability_gain"])
+        self.assertEqual(
+            [
+                "expected_exact_ability_gain",
+                "expected_material_residual_reduction",
+                "expected_complete_card_gain",
+            ],
+            work["selection_policy"]["coverage_rank_order"],
         )
 
     def test_runtime_text_candidates_are_split_by_declared_subsystem(self):

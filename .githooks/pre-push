@@ -35,12 +35,12 @@ if [ -n "${MTG_CARD_DB:-}" ]; then
     # identity and therefore requires a receipt bound to that exact database.
     run_finalizer --db "$MTG_CARD_DB"
 else
-    # Ordinary finalization runs every freshness check, including checks of
-    # database-backed outputs, while skipping an unnecessary corpus rewrite.
-    # Accept its exact receipt before inferring that a local database should
-    # force another multi-minute write.
+    # Accept the exact worktree receipt before inferring another database. A
+    # database-bound receipt verifies its recorded database identity, so a
+    # secondary worktree does not repeat a multi-minute finalization merely
+    # because the database lives in the canonical worktree.
     if "$PYTHON" "$ROOT/scripts/finalize_generated.py" --verify-receipt; then
-        echo "Quorune pre-push: ordinary generated-finalization receipt is current."
+        echo "Quorune pre-push: existing generated-finalization receipt is current."
     elif [ -f "$ROOT/data/scryfall-current.sqlite3" ]; then
         run_finalizer --db "$ROOT/data/scryfall-current.sqlite3"
     else

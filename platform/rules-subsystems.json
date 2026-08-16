@@ -352,7 +352,14 @@
     },
     "coverage_family": {
       "minimum_complete_card_gain": 50,
+      "minimum_exact_ability_gain": 100,
+      "minimum_material_residual_reduction": 100,
       "candidate_limit": 5,
+      "rank_order": [
+        "expected_exact_ability_gain",
+        "expected_material_residual_reduction",
+        "expected_complete_card_gain"
+      ],
       "excluded_efforts": [
         "very_large"
       ]
@@ -387,6 +394,11 @@
         "candidate_id": "compiler:devoid-layer-five-characteristics",
         "selected_over": "rules:counter-producer-replacement-closure",
         "reason": "The selected counter-producer closure still had no measured card, ability, or residual gain, while a pinned-corpus rerank measured one closed Devoid characteristic-definition family at 132 exact Commander abilities and six complete cards. Its copied typed fragment uses the existing layer-5 evaluator and all-zone characteristic boundary while leaving dynamic counts, text changes, and untrusted face-down producers outside trust."
+      },
+      {
+        "candidate_id": "compiler:typed-direct-target-destruction",
+        "selected_over": "rules:counter-producer-replacement-closure",
+        "reason": "The selected counter-producer closure remained an unknown-gain queue item after Reinforce, while the generated frontier measured the coherent destroy-target effect family at 21 exact Commander cards, 130 exact abilities, and 130 removable material residuals. The selector now admits and ranks harvests that cross the established 50-card, 100-ability, or 100-residual threshold, allowing this family to reuse the shared typed direct-permanent target owner without a destruction-specific predicate vocabulary."
       }
     ]
   },

@@ -184,8 +184,8 @@
     {
       "mechanic_id": "destroy",
       "path": "mechanics/contracts/destroy.json",
-      "sha256": "87150806ac5a99851e55a5e41d0a1d02b2c02bff757045dbb5b72bc0e72346f6",
-      "version": 2
+      "sha256": "c3b1e8a5bd0cc7db5d20ac2376b69a56412166615597c34b6ed623528a49878d",
+      "version": 3
     },
     {
       "mechanic_id": "dethrone",
@@ -5478,14 +5478,14 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/destroy.json",
-      "contract_sha256": "87150806ac5a99851e55a5e41d0a1d02b2c02bff757045dbb5b72bc0e72346f6",
-      "contract_version": 2,
+      "contract_sha256": "c3b1e8a5bd0cc7db5d20ac2376b69a56412166615597c34b6ed623528a49878d",
+      "contract_version": 3,
       "coverage_status": "tested",
       "dependencies": [
         "701"
       ],
       "implementation_component": "typed direct-target compiler, strict destruction semantic handler, canonical destruction transaction, counter owner, and zone-transition owner",
-      "implementation_version": "destruction-v2",
+      "implementation_version": "destruction-v3",
       "kind": "keyword_action",
       "known_blockers": [
         "effects that say a permanent cannot be regenerated are not represented",
@@ -5512,7 +5512,10 @@
         "test_destruction_disposition_mutants_are_killed",
         "test_spell_trigger_and_activated_contexts_share_targeted_destruction_lowering",
         "test_unsupported_destruction_variants_remain_material_residuals",
-        "test_targeted_destruction_shape_mutants_fail_closed"
+        "test_targeted_destruction_shape_mutants_fail_closed",
+        "test_targeted_destruction_parser_mutation_is_killed",
+        "test_compiled_union_destruction_offer_command_resolution_and_replay",
+        "test_compiled_union_destruction_respects_indestructible"
       ],
       "trust_level": "untrusted"
     },

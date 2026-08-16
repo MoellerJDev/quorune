@@ -2,7 +2,7 @@
 title: "Target legality and protection"
 status: "current"
 authoritative_source: "quorune/targets.py, quorune/target_predicates.py, quorune/target_protection.py, quorune/target_protection_engine_adapter.py, and CommanderEngine._target_row_matches"
-verified: "2026-08-11"
+verified: "2026-08-16"
 audience: "rules, compiler, replay, and architecture contributors"
 maintenance: "hand-maintained"
 ---
@@ -28,8 +28,11 @@ current tapped state, one named counter minimum, or positive current-turn
 battlefield-entry history. Target offers, submitted commands, and CR 608.2b
 revalidation all consume that same immutable descriptor. Effective type,
 subtype, and color qualifiers remain in the characteristic snapshot, so the
-represented non-Human, nonblack, and colorless creature forms respond to
-continuous characteristic changes without parsing Oracle text at runtime.
+represented type disjunctions, negative creature subtypes, nonblack, and
+colorless creature forms respond to continuous characteristic changes without
+parsing Oracle text at runtime. The compiler's `DirectPermanentTargetSpec`
+owner supplies this one schema vocabulary to both fixed counter placement and
+targeted destruction; neither effect family adds a private legality predicate.
 
 ## Typed protection boundary
 

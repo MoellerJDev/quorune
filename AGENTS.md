@@ -235,10 +235,13 @@ until a pass changes nothing, then runs every freshness check, documentation
 validation, and diff hygiene. Database-backed corpus writers use `--db <path>`
 or `MTG_CARD_DB`; omitting the database does not refresh those reports. The
 tracked pre-push hook first accepts a current ordinary receipt because that
-finalization already checks database-backed freshness. If it is stale, the hook
-uses `data/scryfall-current.sqlite3` when present and otherwise prints the
-required database guidance. An explicit `MTG_CARD_DB` requires a database-bound
-receipt. Manual performance baselines are never rewritten implicitly.
+finalization already checks database-backed freshness. It also accepts a current
+database-bound receipt by verifying the database path and fingerprint recorded
+by that finalization, including when the database lives in the canonical
+worktree. If the receipt is stale, the hook uses
+`data/scryfall-current.sqlite3` when present and otherwise prints the required
+database guidance. An explicit `MTG_CARD_DB` requires a receipt bound to that
+exact database. Manual performance baselines are never rewritten implicitly.
 
 Inspect every changed generated output, stage it with the source that caused
 it, and make the final commit only after the command succeeds. Do not defer this
