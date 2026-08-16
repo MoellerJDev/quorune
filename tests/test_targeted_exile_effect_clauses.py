@@ -7,8 +7,8 @@ import unittest
 
 from common import ROOT
 from quorune.carddb import CardDatabase
+from quorune.compiler.direct_target import DirectPermanentTargetSpec
 from quorune.compiler.exile_templates import (
-    ExileTarget,
     TargetedExileEffectTemplate,
     targeted_exile_effect_template,
 )
@@ -38,7 +38,9 @@ def focused_card_database(directory: str) -> CardDatabase:
 
 class TargetedExileTemplateTests(unittest.TestCase):
     def test_targeted_exile_template_is_immutable_and_copy_isolated(self):
-        template = TargetedExileEffectTemplate(ExileTarget.CREATURE)
+        template = TargetedExileEffectTemplate(
+            DirectPermanentTargetSpec(types_any=("creature",))
+        )
 
         self.assertEqual("exile-target-creature-v2", template.template_id)
         self.assertEqual(
@@ -54,27 +56,63 @@ class TargetedExileTemplateTests(unittest.TestCase):
         self.assertEqual(
             ["land"],
             TargetedExileEffectTemplate(
-                ExileTarget.NONLAND_PERMANENT
+                DirectPermanentTargetSpec(types_none=("land",))
             ).target_schema["types_none"],
         )
         with self.assertRaisesRegex(ValueError, "target"):
-            TargetedExileEffectTemplate("creature")  # type: ignore[arg-type]
+            TargetedExileEffectTemplate(  # type: ignore[arg-type]
+                "creature"
+            )
 
     def test_exile_whole_clause_parser_accepts_only_closed_direct_targets(self):
-        for target in ExileTarget:
-            with self.subTest(target=target):
-                template = targeted_exile_effect_template(
-                    f"Exile target {target.value}."
-                )
+        cases = (
+            (
+                "Exile target artifact, creature, or enchantment.",
+                {"types_any": ["artifact", "creature", "enchantment"]},
+            ),
+            (
+                "Exile target tapped creature.",
+                {
+                    "types_any": ["creature"],
+                    "state_predicate": {
+                        "entered_this_turn": False,
+                        "tapped": True,
+                        "counter_name": None,
+                        "minimum_counter_count": None,
+                    },
+                },
+            ),
+            (
+                "Exile target Spirit.",
+                {"subtypes_any": ["spirit"]},
+            ),
+            (
+                "Exile another target creature.",
+                {"types_any": ["creature"], "source_exclusion": True},
+            ),
+            (
+                "Exile target creature you don't control.",
+                {
+                    "types_any": ["creature"],
+                    "controller_relation": "opponent",
+                },
+            ),
+            (
+                "Exile target nonland permanent.",
+                {"types_none": ["land"]},
+            ),
+        )
+        for text, expected in cases:
+            with self.subTest(text=text):
+                template = targeted_exile_effect_template(text)
                 self.assertIsNotNone(template)
                 assert template is not None
-                self.assertEqual(target, template.target)
+                self.assertTrue(expected.items() <= template.target_schema.items())
         for text in (
             "Exile up to one target creature.",
             "You may exile target creature.",
-            "Exile another target creature.",
-            "Exile target tapped creature.",
-            "Exile target creature you don't control.",
+            "Exile target attacking creature.",
+            "Exile target creature or Spacecraft.",
             "Exile target creature card from a graveyard.",
             "Exile all creatures.",
             "Exile target creature, then return it to the battlefield.",
@@ -115,25 +153,34 @@ class TargetedExileCompilerTests(unittest.TestCase):
     ):
         contexts = (
             (
-                "Exile target creature.",
+                "Exile target artifact, creature, or enchantment.",
                 "Instant",
                 "spell_ability",
-                "exile-target-creature-v2",
+                "exile-target-artifact-or-creature-or-enchantment-v2",
+                {"target.permanent.characteristic_predicate"},
             ),
             (
-                "When this creature enters, exile target artifact.",
+                "When this creature enters, exile target tapped creature.",
                 "Creature — Test",
                 "triggered_ability",
-                "exile-target-artifact-v2",
+                "exile-target-creature-tapped-v2",
+                {"state_query.permanent.public_state_predicate"},
             ),
             (
                 "{3}, {T}: Exile target nonland permanent.",
                 "Creature — Test",
                 "activated_ability",
                 "exile-target-nonland-permanent-v2",
+                {"target.permanent.characteristic_predicate"},
             ),
         )
-        for text, type_line, kind, template_id in contexts:
+        for (
+            text,
+            type_line,
+            kind,
+            template_id,
+            predicate_capabilities,
+        ) in contexts:
             with self.subTest(kind=kind, text=text):
                 ir = self.compile(text, type_line=type_line)
                 node = ir.faces[0].nodes[0]
@@ -144,6 +191,7 @@ class TargetedExileCompilerTests(unittest.TestCase):
                 self.assertEqual(
                     {
                         "permanent.exile.effect",
+                        *predicate_capabilities,
                         "target.revalidate_resolution",
                     },
                     set(node.capability_dependencies)
@@ -158,8 +206,8 @@ class TargetedExileCompilerTests(unittest.TestCase):
         for text in (
             "Exile up to one target creature.",
             "You may exile target creature.",
-            "Exile another target creature.",
-            "Exile target tapped creature.",
+            "Exile target attacking creature.",
+            "Exile target creature or Spacecraft.",
             "Exile target creature card from a graveyard.",
             "Exile all creatures.",
             "Exile target creature, then return it to the battlefield.",
@@ -171,10 +219,13 @@ class TargetedExileCompilerTests(unittest.TestCase):
 
     def test_targeted_exile_shape_mutants_fail_closed(self):
         template = TargetedExileEffectTemplate(
-            ExileTarget.NONLAND_PERMANENT
+            DirectPermanentTargetSpec(
+                types_any=("artifact", "creature", "enchantment")
+            )
         )
         expected = {
             "permanent.exile.effect",
+            "target.permanent.characteristic_predicate",
             "target.revalidate_resolution",
         }
         self.assertEqual(
@@ -211,7 +262,11 @@ class TargetedExileCompilerTests(unittest.TestCase):
         malformed_schemas = (
             {**template.target_schema, "zones": ["graveyard"]},
             {**template.target_schema, "count": 2},
-            {**template.target_schema, "types_none": ["creature"]},
+            {**template.target_schema, "types_any": ["noncreature"]},
+            {
+                **template.target_schema,
+                "subtypes_any": ["vehicle"],
+            },
             {**template.target_schema, "controller": "opponent"},
         )
         for schema in malformed_schemas:
@@ -230,6 +285,33 @@ class TargetedExileCompilerTests(unittest.TestCase):
                 mechanic_ids=("cr-115-targets",),
             )
         )
+
+    def test_pinned_direct_target_exile_family_harvests_seven_cards(self):
+        expected = {
+            "Angelic Edict",
+            "Angelic Purge",
+            "Blessed Light",
+            "Excoriate",
+            "Expel",
+            "Iona's Judgment",
+            "Undead Slayer",
+        }
+        for card_name in sorted(expected):
+            with self.subTest(card=card_name):
+                ir = compile_oracle_card(
+                    self.db.lookup(card_name),
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                self.assertEqual("exact", ir.status)
+                self.assertTrue(
+                    any(
+                        "permanent.exile.effect"
+                        in node.capability_dependencies
+                        for face in ir.faces
+                        for node in face.nodes
+                    )
+                )
 
     def test_generated_targeted_exile_program_is_capability_closed(self):
         registry = SemanticRegistry(include_builtin_packs=False)

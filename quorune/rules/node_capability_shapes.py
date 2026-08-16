@@ -240,9 +240,6 @@ _TARGETED_RETURN_TO_HAND_SCHEMAS: tuple[Mapping[str, Any], ...] = (
         "count": 1,
     },
 )
-_TARGETED_EXILE_SCHEMAS: tuple[Mapping[str, Any], ...] = tuple(
-    dict(schema) for schema in _TARGETED_RETURN_TO_HAND_SCHEMAS
-)
 _COUNTER_STACK_BASE = {
     "zones": ["stack"],
     "categories": ["spell"],
@@ -785,7 +782,7 @@ def targeted_exile_node_capabilities(
     if (
         not {_EXILE_MECHANIC, "cr-115-targets"}.issubset(mechanics)
         or len(effects) != 1
-        or dict(target_schema or {}) not in _TARGETED_EXILE_SCHEMAS
+        or not direct_permanent_target_schema_is_closed(target_schema)
     ):
         return ()
     effect = effects[0]
@@ -795,8 +792,10 @@ def targeted_exile_node_capabilities(
         or effect.get("card") != "$target.0"
     ):
         return ()
+    assert target_schema is not None
     return (
         "permanent.exile.effect",
+        *direct_target_predicate_capabilities(target_schema),
         "target.revalidate_resolution",
     )
 

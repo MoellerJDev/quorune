@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "23d58823bc8e0443abbeca3a3b83f90f58ccfd5e555d2e5dafaaaedfd706b436",
-  "declaration_source_fingerprint": "37302bfa1356bbb5a0fdcb0fa8efd61e214133aace74f3ac19c8c9b57b0fb570",
+  "registry_fingerprint": "b9c2cd3280af15436f31179469d331991d3a3870499603f028c77559574185ed",
+  "declaration_source_fingerprint": "c7f4aec6351f425a34a36872d72f13b4ac3c051d344eade3e6743368660b0fed",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -27872,6 +27872,26 @@
     {
       "capability_id": "permanent.exile.effect",
       "evidence_class": "interaction",
+      "test_id": "tests.test_permanent_exile_rules.PermanentExileRuleTests.test_compiled_tapped_exile_filters_and_revalidates_target",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "406.1",
+        "406.2",
+        "608.2c",
+        "701.13",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Filter a shared tapped-creature target at offer and command time, then counter the exile spell when current public state no longer matches at resolution."
+    },
+    {
+      "capability_id": "permanent.exile.effect",
+      "evidence_class": "interaction",
       "test_id": "tests.test_permanent_exile_rules.PermanentExileRuleTests.test_exile_destination_replacement_preserves_typed_result",
       "official_rule_ids": [
         "400.2",
@@ -28028,6 +28048,26 @@
         "commander_review"
       ],
       "applicability_note": "Move a permanent controlled by another seat into its physical owner's public exile zone and create a new logical object."
+    },
+    {
+      "capability_id": "permanent.exile.effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_targeted_exile_effect_clauses.TargetedExileCompilerTests.test_pinned_direct_target_exile_family_harvests_seven_cards",
+      "official_rule_ids": [
+        "400.2",
+        "400.7",
+        "406.1",
+        "406.2",
+        "608.2c",
+        "701.13",
+        "701.13a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Promote the seven pinned Commander cards unlocked by compound-type, subtype-disjunction, and tapped-state battlefield exile predicates."
     },
     {
       "capability_id": "permanent.exile.effect",
@@ -32153,6 +32193,28 @@
         "commander_review"
       ],
       "applicability_note": "Snapshot the authoritative current public-state membership of a fixed counter affected set immediately before its APNAP-canonical batch."
+    },
+    {
+      "capability_id": "state_query.permanent.public_state_predicate",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_permanent_exile_rules.PermanentExileRuleTests.test_compiled_tapped_exile_filters_and_revalidates_target",
+      "official_rule_ids": [
+        "110.5",
+        "115.1",
+        "115.2",
+        "115.6",
+        "122.1",
+        "122.1a",
+        "122.6",
+        "608.2b",
+        "608.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use one shared tapped-state predicate for exile target offers, submitted-command validation, and resolution revalidation."
     },
     {
       "capability_id": "state_query.permanent.public_state_predicate",
@@ -37802,5 +37864,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "170717fb0d0878ee524040cc2ee2cf6462dd768be5aea1de92c9ce98ce58bb80"
+  "fingerprint": "ee523ceb614853a1d94c5de4d779f24e9cbbcbba0679e18544ac2f7d5e474fd2"
 }

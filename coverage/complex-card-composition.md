@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "3184b475f6733e74111459e2ffa1038d796443ab201bf0bfccc40f91ee64d173"
+verified: "dd071ece77f90672c24d7ebc359df5bed8baec602c5d8cdf4b142c3399e8ff29"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -13,7 +13,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 
 | Card | Score | Pieces | Systems | Abilities | Blockers | Rulings | Status |
 |---|---:|---:|---:|---:|---:|---:|---|
-| Valki, God of Lies // Tibalt, Cosmic Impostor | 222 | 21 | 6 | 6 | 14 | 22 | `blocked` |
+| Valki, God of Lies // Tibalt, Cosmic Impostor | 240 | 27 | 6 | 6 | 14 | 22 | `blocked` |
 | Invasion of New Phyrexia // Teferi Akosa of Zhalfir | 204 | 19 | 6 | 5 | 14 | 18 | `blocked` |
 | Terra, Magical Adept // Esper Terra | 203 | 21 | 7 | 6 | 10 | 14 | `blocked` |
 | Joshua, Phoenix's Dominant // Phoenix, Warden of Fire | 201 | 23 | 7 | 6 | 10 | 10 | `blocked` |
@@ -61,6 +61,6 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Path of Mettle // Metzali, Tower of Triumph | 162 | 19 | 5 | 6 | 6 | 10 | `blocked` |
 | Aethersphere Harvester | 161 | 16 | 5 | 4 | 6 | 22 | `blocked` |
 | Invasion of Gobakhan // Lightshield Array | 161 | 13 | 5 | 4 | 9 | 19 | `blocked` |
+| Urza, Planeswalker | 161 | 22 | 4 | 6 | 10 | 11 | `blocked` |
 | Faithbound Judge // Sinner's Judgment | 159 | 21 | 5 | 7 | 8 | 1 | `blocked` |
-| Invasion of Pyrulea // Gargantuan Slabhorn | 159 | 16 | 4 | 4 | 7 | 18 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |
