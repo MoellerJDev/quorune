@@ -41,7 +41,17 @@ _FIXED_QUERY_ABILITY_GRANT_HANDLER_ID = (
 _FIXED_QUERY_KEYWORD_GRANT_HANDLER_ID = (
     "continuous.ability.fixed-query-keyword-grant.v1"
 )
-_SUPPORTED_QUERY_KEYWORDS = frozenset({"Haste", "Hexproof"})
+_SUPPORTED_QUERY_KEYWORDS = frozenset(
+    {
+        "Double Strike",
+        "First Strike",
+        "Flying",
+        "Haste",
+        "Hexproof",
+        "Trample",
+        "Vigilance",
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,6 +85,7 @@ class FixedQueryAbilityGrantNode:
 
 @dataclass(frozen=True, slots=True)
 class FixedQueryKeywordGrantNode:
+    target_controller: str
     predicate: ObjectQuerySpec
     exclude_source: bool
     abilities: tuple[str, ...]
@@ -706,9 +717,12 @@ class FixedQueryKeywordGrantHandler:
             {"target_controller", "predicate", "exclude_source"},
             field="runtime handler condition",
         )
-        if condition["target_controller"] != "source_controller":
+        if condition["target_controller"] not in {
+            "any",
+            "source_controller",
+        }:
             raise SemanticNodeError(
-                "fixed query keyword grants require source-controller targets"
+                "fixed query keyword grants require a closed controller relation"
             )
         if type(condition["exclude_source"]) is not bool:
             raise SemanticNodeError(
@@ -752,7 +766,18 @@ class FixedQueryKeywordGrantHandler:
             raise SemanticNodeError(
                 "fixed query keyword grants require unique supported keywords"
             )
+        if "Hexproof" in abilities and (
+            abilities != ("Hexproof",)
+            or condition["target_controller"] != "source_controller"
+            or condition["exclude_source"]
+            or predicate.types_all != ("artifact",)
+            or predicate.subtypes_all
+        ):
+            raise SemanticNodeError(
+                "fixed query Hexproof grants remain limited to controlled artifacts"
+            )
         return FixedQueryKeywordGrantNode(
+            target_controller=condition["target_controller"],
             predicate=predicate,
             exclude_source=condition["exclude_source"],
             abilities=abilities,
@@ -767,7 +792,11 @@ class FixedQueryKeywordGrantHandler:
         predicate = replace(
             node.predicate,
             zones=("battlefield",),
-            controller=context.source_controller,
+            controller=(
+                context.source_controller
+                if node.target_controller == "source_controller"
+                else None
+            ),
             exclude_ref=(context.source_ref if node.exclude_source else None),
         )
         return (

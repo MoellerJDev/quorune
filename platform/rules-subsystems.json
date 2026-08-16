@@ -377,6 +377,11 @@
         "candidate_id": "compiler:fixed-effect-clause-sequences",
         "selected_over": "rules:counter-producer-replacement-closure",
         "reason": "The selected counter-producer closure had no measured card, ability, or residual gain, while a pinned-corpus probe found a coherent cross-effect sequence family above the 100-ability harvest threshold and outside the narrow fixed-counter queue; the landed census gained 92 exact Commander cards and removed 116 material residuals through existing typed effect owners."
+      },
+      {
+        "candidate_id": "compiler:fixed-query-combat-keyword-grants",
+        "selected_over": "rules:counter-producer-replacement-closure",
+        "reason": "The selected counter-producer closure still had no measured card, ability, or residual gain, while a pinned-corpus rerank measured a coherent fixed-query layer-6 family at 53 exact Commander cards and 69 exact abilities through existing Haste, Vigilance, Flying, strike-step, and Trample owners. The bounded grammar excludes multicolored and dynamic predicates rather than widening ObjectQuerySpec or characteristic-cycle scope."
       }
     ]
   },

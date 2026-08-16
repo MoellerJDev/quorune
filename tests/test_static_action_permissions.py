@@ -158,7 +158,6 @@ class StaticActionPermissionCompilerTests(unittest.TestCase):
             "You may play lands from graveyards.",
             "You may activate abilities of creatures your opponents control "
             "as though those creatures had haste.",
-            "Creatures you control have haste.",
         )
         for index, text in enumerate(unsupported, 1):
             with self.subTest(text=text):

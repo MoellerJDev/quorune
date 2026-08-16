@@ -3532,10 +3532,42 @@
     {
       "capability_id": "continuous.ability.fixed_query_keyword_grant",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantRuntimeTests.test_aura_attachment_and_query_grant_execute_from_one_exact_card",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Attach Emblem of the Warmind through the ordinary Aura owner, consume its independently compiled Haste grant, and remove the grant when the attached source leaves."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantRuntimeTests.test_compiled_grants_feed_haste_vigilance_flying_strike_and_trample_owners",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Feed effective keywords from seven actual compiled CardPrograms into Haste attack and activation, Vigilance tapping, Flying blocking, both strike steps, and Trample assignment."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantRuntimeTests.test_exact_grant_executes_while_replacement_siblings_fail_closed",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Execute Pulmonic Sliver's exact global Flying grant while its independent replacement applicability and self-replacement ordering spans remain residual and strict runtime admission stays closed."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "interaction",
       "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicRuntimeTests.test_four_player_keyword_grants_are_controller_scoped_and_phase_with_source",
       "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Grant Hexproof only to controlled artifacts and Haste only to controlled creature tokens, then remove both when their independent sources phase out."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantRuntimeTests.test_live_queries_track_global_control_subtype_phase_and_zone_changes",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Distinguish global and source-controller live sets across four players while control, subtype, phasing, and source-zone membership change."
     },
     {
       "capability_id": "continuous.ability.fixed_query_keyword_grant",
@@ -3548,10 +3580,42 @@
     {
       "capability_id": "continuous.ability.fixed_query_keyword_grant",
       "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantCompilerTests.test_descriptor_semantics_change_card_program_fingerprint",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill a global-to-controller query-scope mutant by requiring the changed runtime descriptor to change the enclosing CardProgram fingerprint."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "mutation",
       "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_characteristic_lowering_mutants_are_killed",
       "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Kill removal of the exact compiler-to-component lowering before keyword behavior can retain trust."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantCompilerTests.test_descriptors_fail_closed_and_rejection_has_no_state_effect",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed fields, controller overrides, duplicates, unsupported keywords, and fabricated global Hexproof before any authoritative state can change."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantCompilerTests.test_level_gated_class_keyword_grant_remains_residual",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep a Class level's otherwise matching keyword sentence residual until Class-level applicability has a typed runtime owner."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantCompilerTests.test_open_or_unsupported_queries_remain_material_residuals",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep opponent-relative, combat-state, counter-qualified, multicolored, temporary, unsupported-keyword, and widened-Hexproof sentences material and residual."
     },
     {
       "capability_id": "continuous.ability.fixed_query_keyword_grant",
@@ -3572,10 +3636,34 @@
     {
       "capability_id": "continuous.ability.fixed_query_keyword_grant",
       "evidence_class": "positive",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantCompilerTests.test_closed_query_grammar_compiles_exact_with_consumer_capabilities",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile every bounded controller, global, type, subtype, color, token, multi-keyword, and preserved artifact-Hexproof query shape with exact per-keyword consumer capabilities."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "positive",
       "test_id": "tests.test_typed_dynamic_characteristics.TypedDynamicCharacteristicCompilerTests.test_closed_characteristic_families_compile_exact_and_near_misses_remain_residual",
       "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Compile exact controller-wide Artifact Hexproof and creature-token Haste sentences into source-spanned query descriptors while adjacent keyword and predicate forms remain residual."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantRuntimeTests.test_projection_and_replay_preserve_grants_without_private_identities",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project public effective keywords to an opponent without exposing physical object identities or internal continuous-effect state."
+    },
+    {
+      "capability_id": "continuous.ability.fixed_query_keyword_grant",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_query_keyword_grants.FixedQueryKeywordGrantRuntimeTests.test_projection_and_replay_preserve_grants_without_private_identities",
+      "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay a command exactly from a checkpoint containing the actual compiled fixed-query sources and their live effective grants."
     },
     {
       "capability_id": "continuous.ability.fixed_query_keyword_grant",

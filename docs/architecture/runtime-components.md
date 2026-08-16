@@ -81,8 +81,17 @@ fails closed rather than falling back to current Oracle text.
 
 Typed continuous-characteristic descriptors own the represented live-state
 families. `continuous.ability.fixed-query-keyword-grant.v1` lowers closed
-controller-scoped artifact Hexproof and creature-token Haste grants into
-immutable layer-6 effects. The `ability.static.conditional-keyword.v1` and
+source-controller or global battlefield queries for Haste, Trample,
+Vigilance, First Strike, Double Strike, and Flying into immutable layer-6
+effects, while retaining only the prior controlled-artifact Hexproof form.
+Each compiled node also declares the exact combat or targeting capability that
+consumes the granted keyword. Opponent-relative, combat-state, counter,
+multicolored, conditional, temporary, and other-keyword predicates remain
+residual. Level-gated Class abilities remain residual until their
+applicability has a typed owner. Ability-removal interactions remain explicitly
+outside trust until static components share one ability-presence/applicability
+query. The
+`ability.static.conditional-keyword.v1` and
 `ability.static.dynamic-power-toughness.v1` fragment handlers preserve closed
 self conditions and count-derived modifiers on the effective ability set, then
 evaluate them from public battlefield or owner-graveyard state. Copies retain

@@ -68,6 +68,21 @@ activated contexts. Optional, modal, conditional, linked-result, pronoun,
 variable, repeated, multi-target, quoted-boundary, parenthetical-boundary, and
 larger sequences remain source-spanned residuals.
 
+`compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
+It accepts only live battlefield sets representable by `ObjectQuerySpec`: a
+source-controller relation over closed type, pinned creature-subtype, color,
+supertype, or token predicates, or an unqualified global type/subtype set. The
+selected keyword set is Haste, Trample, Vigilance, First Strike, Double Strike,
+and Flying; the prior controlled-artifact Hexproof sentence remains a narrow
+compatibility form. Every emitted node declares both the layer-6 grant
+capability and each keyword's existing combat or targeting consumer
+capability. Opponent-relative, attacking or blocking, modified,
+counter-qualified, multicolored, dynamic, conditional, temporary, chosen, and
+other-keyword forms remain source-spanned residuals. Matching Class lines also
+remain residual until level applicability has a typed owner. The grammar
+performs no dynamic characteristic counts and does not claim ability-removal
+composition.
+
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,
 then requires the source grammar, emitted effects, target relation, closed

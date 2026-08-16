@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "91dfd0d576f5cfbfa1db2a09c27537381714ee19a543fc1b8ff42869137b438f"
+verified: "46a4b22d29adb70d976339ec799d8a7c93fd21f8f2da64389e71f0309c7c74e2"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 22
-- Deterministic escapes: 17
+- Escapes: 23
+- Deterministic escapes: 18
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -48,6 +48,7 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260815-20` | [31907364987](https://github.com/NullPriority/quorune/actions/runs/31907364987) | `source_correctness` | `not_applicable` | The scheduler regression now includes the fixed-effect sequence candidate. Selector inputs already select generated validation, so the defect was a stale closed expectation rather than a missing impact edge. |
 | `ci-20260815-21` | [31908172032](https://github.com/NullPriority/quorune/actions/runs/31908172032) | `source_correctness` | `not_applicable` | The composition suite now asserts the promoted operation sequence while the leaf suite retains only unsupported mass-damage forms. The path policy already selected the affected shard. |
 | `ci-20260815-22` | [31909012248](https://github.com/NullPriority/quorune/actions/runs/31909012248) | `source_correctness` | `not_applicable` | The composition suite now enumerates all four promoted pre-existing two-clause forms, the leaf template suites still prove atomic-parser rejection, and the integrated leaf suites no longer misclassify supported compositions. AGENTS.md now requires a cross-leaf negative-suite audit whenever a composition layer broadens accepted syntax. |
+| `ci-20260816-23` | [31917201086](https://github.com/NullPriority/quorune/actions/runs/31917201086) | `source_correctness` | `not_applicable` | The duplicated history allowlist was replaced with structural assertions against the canonical catalog and live selected-candidate set, so future reviewed reranks require one source entry instead of a synchronized test literal. The obsolete Haste grant was removed from the action-permission residual table because the fixed-query composition suite already asserts that exact promoted form. The existing AGENTS.md cross-leaf audit rule mechanically covers future grammar promotions, and the path policy already selected both affected shards. |
 
 ## Measurement limitations
 
