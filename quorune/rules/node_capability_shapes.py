@@ -46,6 +46,7 @@ from .permanent_predicate_capability_shapes import (
     fixed_counter_target_set_state_capabilities,
     public_state_query_capabilities,
 )
+from .tap_state_capability_shapes import targeted_tap_state_node_capabilities
 from ..affected_permanents import (
     AffectedPermanentSetError,
     AffectedPermanentSetSpec,
@@ -210,15 +211,6 @@ _DRAW_TARGET_SCHEMAS: tuple[Mapping[str, Any], ...] = (
     },
 )
 
-_TARGETED_TAP_STATE_SCHEMAS: tuple[Mapping[str, Any], ...] = tuple(
-    {
-        "zones": ["battlefield"],
-        "categories": ["permanent"],
-        **({"types_any": [kind]} if kind != "permanent" else {}),
-        "count": 1,
-    }
-    for kind in ("artifact", "creature", "land", "permanent")
-)
 _TARGETED_RETURN_TO_HAND_SCHEMAS: tuple[Mapping[str, Any], ...] = (
     *tuple(
         {
@@ -642,38 +634,6 @@ def fixed_bolster_node_capabilities(
     ):
         return ()
     return ("counter.producer.bolster",)
-
-
-def targeted_tap_state_node_capabilities(
-    *,
-    effects: Sequence[Mapping[str, Any]],
-    target_schema: Mapping[str, Any] | None,
-    mechanic_ids: Iterable[str],
-) -> tuple[str, ...]:
-    """Return capabilities only for the direct targeted tap-state grammar."""
-
-    mechanics = {str(value).casefold() for value in mechanic_ids}
-    if (
-        not {"tap-and-untap", "cr-115-targets"}.issubset(mechanics)
-        or len(effects) != 1
-        or dict(target_schema or {}) not in _TARGETED_TAP_STATE_SCHEMAS
-    ):
-        return ()
-    effect = effects[0]
-    if (
-        set(effect) != {"op", "card"}
-        or effect.get("op") not in {"tap", "untap"}
-        or effect.get("card") != "$target.0"
-    ):
-        return ()
-    return (
-        (
-            "permanent.tap.effect"
-            if effect["op"] == "tap"
-            else "permanent.untap.effect"
-        ),
-        "target.revalidate_resolution",
-    )
 
 
 def targeted_destruction_node_capabilities(

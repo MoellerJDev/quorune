@@ -586,8 +586,8 @@
     {
       "mechanic_id": "tap-and-untap",
       "path": "mechanics/contracts/tap-and-untap.json",
-      "sha256": "f478576f19936540d2e87425d5126c42c32838c52a03ba44119f92cab87d32e4",
-      "version": 3
+      "sha256": "5f10568c8320597bc8673d5d9c8d5cb3c7058cf74cfcf10f51525d61a348e658",
+      "version": 4
     },
     {
       "mechanic_id": "toxic",
@@ -6346,17 +6346,17 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/tap-and-untap.json",
-      "contract_sha256": "f478576f19936540d2e87425d5126c42c32838c52a03ba44119f92cab87d32e4",
-      "contract_version": 3,
+      "contract_sha256": "5f10568c8320597bc8673d5d9c8d5cb3c7058cf74cfcf10f51525d61a348e658",
+      "contract_version": 4,
       "coverage_status": "tested",
       "dependencies": [
         "701"
       ],
-      "implementation_component": "typed direct-target compiler, tap and untap semantic handlers, tap_state.untap_permanent, and the canonical exact counter-removal transaction",
-      "implementation_version": "tap-state-effects-v3",
+      "implementation_component": "typed single-object compiler, shared direct-permanent predicate owner, source-incarnation and current-or-LKI attachment references, scalar option continuation, tap and untap semantic handlers, tap_state.untap_permanent, and the canonical exact counter-removal transaction",
+      "implementation_version": "tap-state-effects-v4",
       "kind": "keyword_action",
       "known_blockers": [
-        "optional, modal, aggregate, quantified, relational, qualified, and compound tap-state clauses remain precise compiler residuals",
+        "aggregate, multi-target, modal, quantified, linked, and compound tap-state clauses remain precise compiler residuals",
         "continuous effects that prohibit tapping or untapping are not represented generically; cards carrying those effects remain material residuals and fail match trust closed",
         "replacement discovery and affected-player ordering beyond the represented stun-counter replacement are incomplete",
         "complete layer dependencies and dynamically granted types are not capability-closed",
@@ -6380,11 +6380,16 @@
         "test_stun_replacement_rejects_malformed_public_state",
         "test_stale_identity_rolls_back_the_whole_removal_batch",
         "test_semantic_tap_state_mutants_are_killed",
-        "test_spell_trigger_and_activated_contexts_share_targeted_tap_state_lowering",
+        "test_single_object_tap_state_forms_compile_through_typed_owners",
         "test_unsupported_tap_state_variants_remain_material_residuals",
-        "test_targeted_tap_state_shape_mutants_fail_closed",
+        "test_single_object_tap_state_shape_mutants_fail_closed",
+        "test_tap_state_compiler_and_dependency_mutants_are_killed",
         "test_compiled_tap_activation_is_multiplayer_public_and_replays",
-        "test_compiled_untap_activation_consumes_stun_and_replays"
+        "test_compiled_untap_activation_consumes_stun_and_replays",
+        "test_shared_direct_predicate_targets_land_subtypes_and_replays",
+        "test_source_self_activation_is_incarnation_pinned_and_replays",
+        "test_enchanted_creature_uses_pinned_attachment_and_replays",
+        "test_optional_tap_state_choice_is_seat_scoped_atomic_and_replays"
       ],
       "trust_level": "untrusted"
     },

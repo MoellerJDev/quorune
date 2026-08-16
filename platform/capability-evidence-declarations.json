@@ -12430,7 +12430,7 @@
     {
       "capability_id": "permanent.tap.effect",
       "evidence_class": "negative",
-      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_targeted_tap_state_shape_mutants_fail_closed",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_single_object_tap_state_shape_mutants_fail_closed",
       "official_rule_ids": [
         "701.26",
         "701.26a"
@@ -12455,7 +12455,7 @@
         "commander_duel",
         "commander_review"
       ],
-      "applicability_note": "Keep optional, modal, aggregate, qualified, quantified, and compound tap wording outside the direct-target capability."
+      "applicability_note": "Keep aggregate, multi-target, modal, quantified, linked, unsupported optional, and compound tap wording outside the closed single-object capability."
     },
     {
       "capability_id": "permanent.tap.effect",
@@ -12490,7 +12490,7 @@
     {
       "capability_id": "permanent.tap.effect",
       "evidence_class": "positive",
-      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_spell_trigger_and_activated_contexts_share_targeted_tap_state_lowering",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_single_object_tap_state_forms_compile_through_typed_owners",
       "official_rule_ids": [
         "701.26",
         "701.26a"
@@ -12576,6 +12576,142 @@
         "commander_review"
       ],
       "applicability_note": "Execute an already-authorized instruction to tap one resolved battlefield permanent through the canonical tap-state path, producing a public change only when it was untapped."
+    },
+    {
+      "capability_id": "permanent.tap_state.optional_choice",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateRuntimeTests.test_optional_tap_state_choice_is_seat_scoped_atomic_and_replays",
+      "official_rule_ids": [
+        "608.2d",
+        "701.26",
+        "701.26a",
+        "701.26b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Choose untap for a stunned permanent through the controller-scoped continuation and consume the represented replacement without a false untap transition."
+    },
+    {
+      "capability_id": "permanent.tap_state.optional_choice",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateRuntimeTests.test_optional_tap_state_choice_is_seat_scoped_atomic_and_replays",
+      "official_rule_ids": [
+        "608.2d",
+        "701.26",
+        "701.26a",
+        "701.26b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the exact optional tap-state activation in a four-seat priority sequence while retaining one authoritative chooser."
+    },
+    {
+      "capability_id": "permanent.tap_state.optional_choice",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_tap_state_compiler_and_dependency_mutants_are_killed",
+      "official_rule_ids": [
+        "608.2d",
+        "701.26",
+        "701.26a",
+        "701.26b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of the typed optional compiler production and block trust when either canonical tap-state dependency is unavailable."
+    },
+    {
+      "capability_id": "permanent.tap_state.optional_choice",
+      "evidence_class": "negative",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_single_object_tap_state_shape_mutants_fail_closed",
+      "official_rule_ids": [
+        "608.2d",
+        "701.26",
+        "701.26a",
+        "701.26b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject altered chooser identity, missing decline, changed option vocabulary, and malformed nested effects before capability promotion."
+    },
+    {
+      "capability_id": "permanent.tap_state.optional_choice",
+      "evidence_class": "positive",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_single_object_tap_state_forms_compile_through_typed_owners",
+      "official_rule_ids": [
+        "608.2d",
+        "701.26",
+        "701.26a",
+        "701.26b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower the complete 'you may tap or untap' instruction to one target plus exact tap, untap, and decline continuations."
+    },
+    {
+      "capability_id": "permanent.tap_state.optional_choice",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateRuntimeTests.test_optional_tap_state_choice_is_seat_scoped_atomic_and_replays",
+      "official_rule_ids": [
+        "608.2d",
+        "701.26",
+        "701.26a",
+        "701.26b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the three legal option values only to the resolving ability's controller while observers receive waiting state."
+    },
+    {
+      "capability_id": "permanent.tap_state.optional_choice",
+      "evidence_class": "replay",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateRuntimeTests.test_optional_tap_state_choice_is_seat_scoped_atomic_and_replays",
+      "official_rule_ids": [
+        "608.2d",
+        "701.26",
+        "701.26a",
+        "701.26b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay target selection, the seat-scoped untap choice, the stun replacement, and a later decline to the identical authoritative hash."
+    },
+    {
+      "capability_id": "permanent.tap_state.optional_choice",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateRuntimeTests.test_optional_tap_state_choice_is_seat_scoped_atomic_and_replays",
+      "official_rule_ids": [
+        "608.2d",
+        "701.26",
+        "701.26a",
+        "701.26b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a nonauthoritative option value without changing the continuation, permanent, counter, or authoritative state hash."
     },
     {
       "capability_id": "permanent.untap.all_creatures",
@@ -12788,7 +12924,7 @@
     {
       "capability_id": "permanent.untap.effect",
       "evidence_class": "negative",
-      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_targeted_tap_state_shape_mutants_fail_closed",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_single_object_tap_state_shape_mutants_fail_closed",
       "official_rule_ids": [
         "122.1d",
         "701.26",
@@ -12815,7 +12951,7 @@
         "commander_duel",
         "commander_review"
       ],
-      "applicability_note": "Keep optional, modal, aggregate, qualified, quantified, and compound untap wording outside the direct-target capability."
+      "applicability_note": "Keep aggregate, multi-target, modal, quantified, linked, unsupported optional, and compound untap wording outside the closed single-object capability."
     },
     {
       "capability_id": "permanent.untap.effect",
@@ -12852,7 +12988,7 @@
     {
       "capability_id": "permanent.untap.effect",
       "evidence_class": "positive",
-      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_spell_trigger_and_activated_contexts_share_targeted_tap_state_lowering",
+      "test_id": "tests.test_targeted_tap_state_effect_clauses.TargetedTapStateCompilerTests.test_single_object_tap_state_forms_compile_through_typed_owners",
       "official_rule_ids": [
         "122.1d",
         "701.26",

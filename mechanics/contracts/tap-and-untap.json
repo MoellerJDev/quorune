@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 3,
+  "contract_version": 4,
   "mechanic_id": "tap-and-untap",
   "official_name": "Tap and Untap",
   "effective_date": "2026-06-19",
@@ -61,10 +61,13 @@
       "typed tap-state effects execute during ordinary stack resolution or another authoritative semantic transition"
     ],
     "targets": [
-      "the typed direct-target compiler accepts exactly one artifact, creature, land, or permanent on the battlefield",
+      "the shared typed direct-target compiler accepts exactly one closed permanent predicate, including represented type disjunctions, controller relations, source exclusion, creature subtypes, and the Forest, Gate, and Vehicle noncreature subtypes",
       "target legality is revalidated on resolution before the canonical tap-state effect executes"
     ],
-    "choices": [],
+    "choices": [
+      "the exact 'you may tap or untap' form offers tap, untap, and decline only to the resolving ability's controller",
+      "an invalid option rolls back without changing the continuation or permanent"
+    ],
     "hidden_information": [
       "tapped state, stun counters, and the affected battlefield references are public"
     ],
@@ -90,7 +93,9 @@
       "a reference that no longer identifies a battlefield permanent fails before mutation"
     ],
     "source_leaves": [
-      "a resolving one-shot tap-state instruction does not require its source to remain on the battlefield unless its target rules say otherwise"
+      "a direct-target one-shot instruction does not require its source to remain on the battlefield",
+      "a 'this permanent' instruction is pinned to the source's exact battlefield incarnation and does not affect a returned incarnation",
+      "an enchanted-object instruction uses the source's current attachment or its immutable last-known attachment after source departure"
     ]
   },
   "variants": [
@@ -106,7 +111,11 @@
     "exact command replay",
     "malformed stun-counter state rejection before mutation",
     "stale exact counter-removal rollback",
-    "closed direct-target tap and untap clauses shared by spell, trigger, and activated contexts"
+    "closed direct-target tap and untap clauses shared by spell, trigger, and activated contexts",
+    "shared qualified and subtype direct-permanent target predicates",
+    "exact source-incarnation tap-state effects",
+    "current-or-last-known enchanted-creature tap-state effects",
+    "controller-scoped optional tap-or-untap choice with decline"
   ],
   "witness_cards": [
     {
@@ -128,6 +137,22 @@
     {
       "name": "Voltaic Key",
       "oracle_id": "09aeea91-b1dc-443f-a509-4758f052c0a7"
+    },
+    {
+      "name": "Arbor Elf",
+      "oracle_id": "4567a528-75f0-4ea6-b927-3a500caf76ac"
+    },
+    {
+      "name": "Grim Monolith",
+      "oracle_id": "229d6627-1292-4ae1-8849-b0f956fa6540"
+    },
+    {
+      "name": "Freed from the Real",
+      "oracle_id": "03d32ace-dd99-48c6-bcae-9b915d041aef"
+    },
+    {
+      "name": "Niblis of the Breath",
+      "oracle_id": "10391bcb-0932-49a0-8d47-e06e3c10dd68"
     }
   ],
   "rulings": [],
@@ -144,18 +169,23 @@
     "test_stun_replacement_rejects_malformed_public_state",
     "test_stale_identity_rolls_back_the_whole_removal_batch",
     "test_semantic_tap_state_mutants_are_killed",
-    "test_spell_trigger_and_activated_contexts_share_targeted_tap_state_lowering",
+    "test_single_object_tap_state_forms_compile_through_typed_owners",
     "test_unsupported_tap_state_variants_remain_material_residuals",
-    "test_targeted_tap_state_shape_mutants_fail_closed",
+    "test_single_object_tap_state_shape_mutants_fail_closed",
+    "test_tap_state_compiler_and_dependency_mutants_are_killed",
     "test_compiled_tap_activation_is_multiplayer_public_and_replays",
-    "test_compiled_untap_activation_consumes_stun_and_replays"
+    "test_compiled_untap_activation_consumes_stun_and_replays",
+    "test_shared_direct_predicate_targets_land_subtypes_and_replays",
+    "test_source_self_activation_is_incarnation_pinned_and_replays",
+    "test_enchanted_creature_uses_pinned_attachment_and_replays",
+    "test_optional_tap_state_choice_is_seat_scoped_atomic_and_replays"
   ],
   "implementation": {
-    "component": "typed direct-target compiler, tap and untap semantic handlers, tap_state.untap_permanent, and the canonical exact counter-removal transaction",
-    "version": "tap-state-effects-v3"
+    "component": "typed single-object compiler, shared direct-permanent predicate owner, source-incarnation and current-or-LKI attachment references, scalar option continuation, tap and untap semantic handlers, tap_state.untap_permanent, and the canonical exact counter-removal transaction",
+    "version": "tap-state-effects-v4"
   },
   "known_blockers": [
-    "optional, modal, aggregate, quantified, relational, qualified, and compound tap-state clauses remain precise compiler residuals",
+    "aggregate, multi-target, modal, quantified, linked, and compound tap-state clauses remain precise compiler residuals",
     "continuous effects that prohibit tapping or untapping are not represented generically; cards carrying those effects remain material residuals and fail match trust closed",
     "replacement discovery and affected-player ordering beyond the represented stun-counter replacement are incomplete",
     "complete layer dependencies and dynamically granted types are not capability-closed",

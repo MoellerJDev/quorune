@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 
 
 ASSURANCE_SCHEMA_VERSION = 1
-ASSURANCE_ALGORITHM_VERSION = "fixed-target-corpus-assurance-v4"
+ASSURANCE_ALGORITHM_VERSION = "fixed-target-corpus-assurance-v5"
 STANDALONE_TEMPLATE_ID = (
     "fixed-target-characteristics-until-end-of-turn-v1"
 )
@@ -242,13 +242,6 @@ def accepted_target_effect_contracts() -> tuple[
             "bird-or-cat",
         ),
         (
-            "reviewed-noncreature-subtype",
-            "target Vehicle",
-            DirectPermanentTargetSpec(
-                subtypes_any=tuple(DIRECT_NONCREATURE_SUBTYPES)
-            ).characteristic_slug,
-        ),
-        (
             "source-exclusion",
             "another target creature",
             "creature",
@@ -267,6 +260,27 @@ def accepted_target_effect_contracts() -> tuple[
                 controller_relation="any",
                 target_predicate=target_predicate,
                 source_exclusion=source_exclusion,
+                clause_count=2,
+                operation_order="counter_first",
+            )
+        )
+    for subtype in sorted(DIRECT_NONCREATURE_SUBTYPES):
+        contracts.append(
+            AcceptedTargetEffectContract(
+                category=(
+                    "sequence_predicate:reviewed-noncreature-subtype:"
+                    f"{subtype}"
+                ),
+                body=(
+                    f"Put a +1/+1 counter on target {subtype.title()}. "
+                    "It gains trample until end of turn."
+                ),
+                template_id=SEQUENCE_TEMPLATE_ID,
+                controller_relation="any",
+                target_predicate=DirectPermanentTargetSpec(
+                    subtypes_any=(subtype,)
+                ).characteristic_slug,
+                source_exclusion=False,
                 clause_count=2,
                 operation_order="counter_first",
             )

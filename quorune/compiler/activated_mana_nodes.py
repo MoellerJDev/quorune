@@ -284,6 +284,7 @@ def _activated_effect_dependency_gate(
             "bounce",
             "counter_stack_target",
             "create_token",
+            "choose_option",
             "damage",
             "damage_each_opponent",
             "draw",
