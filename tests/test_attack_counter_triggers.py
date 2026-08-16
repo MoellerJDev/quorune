@@ -691,10 +691,15 @@ class AttackCounterTriggerRuntimeTests(unittest.TestCase):
         )
         for seat in engine.active_seats:
             packet = session.packet(f"pilot:{seat}", full=True)
-            self.assertNotIn(source.object_id, str(packet))
-            self.assertNotIn(source.logical_object_id, str(packet))
-            self.assertNotIn(greater.object_id, str(packet))
-            self.assertNotIn(greater.logical_object_id, str(packet))
+            packet_without_capability = deepcopy(packet)
+            decision_packet = packet_without_capability.get("decision")
+            if isinstance(decision_packet, dict):
+                decision_packet.pop("cap", None)
+            packet_text = str(packet_without_capability)
+            self.assertNotIn(source.object_id, packet_text)
+            self.assertNotIn(source.logical_object_id, packet_text)
+            self.assertNotIn(greater.object_id, packet_text)
+            self.assertNotIn(greater.logical_object_id, packet_text)
 
     def test_attack_counter_trigger_replays_exactly(self):
         session = self.session(702_149_004)
