@@ -1,0 +1,27 @@
+{
+  "cards": [
+    {
+      "cmc": 5.0,
+      "color_identity": ["R"],
+      "colors": ["R"],
+      "defense": null,
+      "keywords": [],
+      "layout": "normal",
+      "legalities": {"commander": "legal"},
+      "loyalty": null,
+      "mana_cost": "{4}{R}",
+      "name": "Ready to Rumble",
+      "oracle_id": "04dd9395-847b-46f7-a669-9b0df89d01ff",
+      "oracle_text": "Choose one —\n• Ready to Rumble deals 5 damage to target creature or planeswalker.\n• Destroy target artifact.",
+      "power": null,
+      "produced_mana": [],
+      "released_at": "2022-04-29",
+      "toughness": null,
+      "type_line": "Sorcery"
+    }
+  ],
+  "fixture_kind": "focused_fixed_choose_one_modal_cards",
+  "rulings": [],
+  "schema_version": 1,
+  "source": "Pinned Scryfall witness for focused compiler/runtime tests"
+}

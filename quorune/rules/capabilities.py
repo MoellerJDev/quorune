@@ -64,6 +64,11 @@ from .fixed_effect_clause_shapes import (
     FIXED_EFFECT_CLAUSE_SEQUENCE_MECHANIC,
     fixed_effect_clause_sequence_node_capabilities,
 )
+from .modal_capability_shapes import fixed_choose_one_modal_branches
+from ..compiler.modal_templates import (
+    FIXED_CHOOSE_ONE_MODAL_CAPABILITY,
+    FIXED_CHOOSE_ONE_MODAL_MECHANIC,
+)
 
 from ..util import stable_json
 
@@ -294,6 +299,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         _FIXED_CONTROLLER_SEQUENCE_MECHANIC,
         _FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC,
         FIXED_EFFECT_CLAUSE_SEQUENCE_MECHANIC,
+        FIXED_CHOOSE_ONE_MODAL_MECHANIC,
         "adapt",
         "monstrosity",
         "bolster",
@@ -917,6 +923,71 @@ def _targeted_effect_capabilities(
     return dependencies
 
 
+def _fixed_modal_capability_dependencies(
+    *,
+    effects: Sequence[Mapping[str, Any]],
+    target_schema: Mapping[str, Any] | None,
+    mechanics: Iterable[str],
+) -> tuple[str, ...]:
+    branches = fixed_choose_one_modal_branches(
+        effects=effects,
+        target_schema=target_schema,
+        mechanic_ids=mechanics,
+    )
+    if branches is None:
+        return ()
+    dependencies = {FIXED_CHOOSE_ONE_MODAL_CAPABILITY}
+    for branch in branches:
+        branch_dependencies = capability_dependencies_for_node(
+            effects=branch.effects,
+            target_schema=branch.target_schema,
+            mechanic_ids=branch.mechanics,
+        )
+        if not branch_dependencies or (
+            set(branch.mechanics)
+            - set(capability_covered_mechanics(branch_dependencies))
+        ):
+            return ()
+        dependencies.update(branch_dependencies)
+    return tuple(sorted(dependencies))
+
+
+def _nested_effect_operations(value: Any) -> set[str]:
+    found: set[str] = set()
+    if isinstance(value, Mapping):
+        operation = value.get("op")
+        if isinstance(operation, str) and operation:
+            found.add(operation)
+        for child in value.values():
+            found.update(_nested_effect_operations(child))
+    elif isinstance(value, (list, tuple)):
+        for child in value:
+            found.update(_nested_effect_operations(child))
+    return found
+
+
+def _contains_aftermath_kind(value: Any, kind: str) -> bool:
+    if isinstance(value, Mapping):
+        if value.get("kind") == kind:
+            return True
+        return any(
+            _contains_aftermath_kind(child, kind) for child in value.values()
+        )
+    if isinstance(value, (list, tuple)):
+        return any(_contains_aftermath_kind(child, kind) for child in value)
+    return False
+
+
+def _contains_nested_key(value: Any, key: str) -> bool:
+    if isinstance(value, Mapping):
+        return key in value or any(
+            _contains_nested_key(child, key) for child in value.values()
+        )
+    if isinstance(value, (list, tuple)):
+        return any(_contains_nested_key(child, key) for child in value)
+    return False
+
+
 def capability_dependencies_for_node(
     *,
     effects: Sequence[Mapping[str, Any]],
@@ -931,46 +1002,18 @@ def capability_dependencies_for_node(
     declarations are reviewed.
     """
 
-    mechanics = {str(value).casefold() for value in mechanic_ids}
+    mechanic_values = tuple(str(value).casefold() for value in mechanic_ids)
+    mechanics = set(mechanic_values)
     operations = {str(effect.get("op") or "") for effect in effects}
 
-    def nested_operations(value: Any) -> set[str]:
-        found: set[str] = set()
-        if isinstance(value, Mapping):
-            operation = value.get("op")
-            if isinstance(operation, str) and operation:
-                found.add(operation)
-            for child in value.values():
-                found.update(nested_operations(child))
-        elif isinstance(value, (list, tuple)):
-            for child in value:
-                found.update(nested_operations(child))
-        return found
+    if FIXED_CHOOSE_ONE_MODAL_MECHANIC in mechanics:
+        return _fixed_modal_capability_dependencies(
+            effects=effects,
+            target_schema=target_schema,
+            mechanics=mechanic_values,
+        )
 
-    all_operations = nested_operations(effects)
-
-    def contains_aftermath_kind(value: Any, kind: str) -> bool:
-        if isinstance(value, Mapping):
-            if value.get("kind") == kind:
-                return True
-            return any(
-                contains_aftermath_kind(child, kind)
-                for child in value.values()
-            )
-        if isinstance(value, (list, tuple)):
-            return any(
-                contains_aftermath_kind(child, kind) for child in value
-            )
-        return False
-
-    def contains_key(value: Any, key: str) -> bool:
-        if isinstance(value, Mapping):
-            return key in value or any(
-                contains_key(child, key) for child in value.values()
-            )
-        if isinstance(value, (list, tuple)):
-            return any(contains_key(child, key) for child in value)
-        return False
+    all_operations = _nested_effect_operations(effects)
     dependencies: set[str] = set()
     dependencies.update(
         fixed_counter_additional_cost_node_capabilities(
@@ -1056,22 +1099,22 @@ def capability_dependencies_for_node(
                 )
         if "cr-122-counters" in mechanics:
             dependencies.add("counter.placement.quantity_replacement")
-        if contains_aftermath_kind(effects, "deal_damage"):
+        if _contains_aftermath_kind(effects, "deal_damage"):
             dependencies.add("damage.prevention.aftermath.damage")
-    prevention_triggered = contains_key(effects, "triggered_ability") or (
+    prevention_triggered = _contains_nested_key(effects, "triggered_ability") or (
         "cr-615-prevention-effects" in mechanics
         and "cr-603-handling-triggered-abilities" in mechanics
         and bool(all_operations.intersection({"counter", "damage", "draw"}))
     )
     if prevention_triggered:
         dependencies.add("damage.prevention.triggered_results")
-        if contains_aftermath_kind(effects, "draw_cards") or "draw" in all_operations:
+        if _contains_aftermath_kind(effects, "draw_cards") or "draw" in all_operations:
             dependencies.add("zone.draw.library_to_hand")
-        if contains_aftermath_kind(effects, "deal_damage") or "damage" in all_operations:
+        if _contains_aftermath_kind(effects, "deal_damage") or "damage" in all_operations:
             dependencies.update(
                 {"damage.amount.positive", "damage.result.player_life"}
             )
-        if contains_aftermath_kind(effects, "place_counters") or "counter" in all_operations:
+        if _contains_aftermath_kind(effects, "place_counters") or "counter" in all_operations:
             dependencies.add("counter.placement.quantity_replacement")
     return tuple(sorted(dependencies))
 
@@ -1123,6 +1166,8 @@ def capability_covered_mechanics(
         covered.update(
             {"cr-111-tokens", "fixed-token-definition-batch"}
         )
+    if FIXED_CHOOSE_ONE_MODAL_CAPABILITY in supplied:
+        covered.add(FIXED_CHOOSE_ONE_MODAL_MECHANIC)
     if "attachment.aura.simple_object" in supplied:
         covered.add("enchant")
     if "protection.typed.debt" in supplied:

@@ -431,7 +431,13 @@ def target_plan(
                 raise ValueError(f"Unknown target mode {mode!r}")
             groups = definition.get("groups")
             if groups is None:
-                groups = [definition]
+                groups = [
+                    {
+                        key: value
+                        for key, value in definition.items()
+                        if key not in {"effects", "mechanics"}
+                    }
+                ]
             raw_groups.extend(dict(group) for group in groups)
     else:
         groups = schema.get("groups")

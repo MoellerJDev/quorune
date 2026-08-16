@@ -1786,6 +1786,78 @@
       "applicability_note": "Replay the accepted typed graveyard cast through the ordinary command journal to the same final state."
     },
     {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose fixed modal announcement with distinct typed damage and destruction branches, commit the selected mode and its target, and resolve only that branch."
+    },
+    {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Advertise and resolve mode-specific targets in a four-seat game without changing target ownership or controller relations."
+    },
+    {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_modal_compiler_mutation_is_killed",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove fixed modal compiler production and prove a formerly exact real spell returns to material residuals."
+    },
+    {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_modal_parser_and_capability_shape_fail_closed",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject changed mode counts, missing or renamed modes, empty effects or mechanics, unknown branch fields, and mechanics not represented by an exact child branch."
+    },
+    {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_unsupported_modal_grammars_remain_material_residuals",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep choose-two, choose-one-or-more, choose-one-or-both, Spree, extra-line, and partially unsupported modal text outside exact trust."
+    },
+    {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_actual_fixed_choose_one_corpus_is_capability_closed",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile real two- and three-mode instant and sorcery faces, including named modes and mixed targeted, target-free, and fixed-sequence branches, only when every branch is independently capability closed."
+    },
+    {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the pre-announcement modal casting action and its legal mode-target schemas only to the player with priority, without leaking the action into other seat decisions."
+    },
+    {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Save and exactly replay the selected fixed mode, mode-specific target, payment, and typed destruction result."
+    },
+    {
+      "capability_id": "choice.modal.fixed_one",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays",
+      "official_rule_ids": ["601.2b", "601.2c", "700.2", "700.2a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a target valid only for an unselected sibling mode without changing the authoritative state hash."
+    },
+    {
       "capability_id": "combat.attack.defender",
       "evidence_class": "interaction",
       "test_id": "tests.test_combat_keyword_rules.CombatKeywordRuleTests.test_effective_defender_gain_and_loss_change_shared_legality",

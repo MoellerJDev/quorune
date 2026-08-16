@@ -248,6 +248,7 @@
       "test_exact_keyword_families",
       "test_explore_compiler",
       "test_fabricate_compiler",
+      "test_fixed_choose_one_modal_spells",
       "test_fixed_controller_effect_sequences",
       "test_fixed_counter_controller_effect_sequences",
       "test_fixed_damage_effect_clauses",

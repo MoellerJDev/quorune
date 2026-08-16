@@ -52,6 +52,7 @@ from .compiler.fixed_keyword_entry_nodes import fixed_keyword_entry_nodes
 from .compiler.explore_templates import single_explore_effect_template
 from .compiler.keyword_templates import keyword_mechanics
 from .compiler.life_templates import fixed_life_effect_template
+from .compiler.modal_templates import fixed_choose_one_modal_spell_template
 from .compiler.keyword_nodes import (
     bloodthirst_keyword_node,
     closed_special_keyword_node,
@@ -106,7 +107,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v98"
+ORACLE_COMPILER_VERSION = "oracle-ir-v99"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -977,6 +978,110 @@ def _activated_or_fixed_counter_trigger_node(
     )
 
 
+def _typed_whole_spell_face(
+    record: CardRecord,
+    *,
+    face_id: str,
+    face_name: str,
+    oracle_text: str,
+    material_rows: Sequence[tuple[str, str, SourceSpan]],
+    effect_template: Any,
+    trusted_mechanics: frozenset[str],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleFaceIR | None:
+    additional_cost_face = _typed_additional_cost_face(
+        record,
+        face_id,
+        face_name,
+        oracle_text,
+        material_rows,
+        effect_template,
+        trusted_mechanics,
+        capability_registry,
+        capability_profile,
+        residuals,
+    )
+    if additional_cost_face is not None:
+        return additional_cost_face
+    modal_template = fixed_choose_one_modal_spell_template(
+        material_rows,
+        compile_effect=lambda body: effect_template(
+            body,
+            card_name=face_name or record.name,
+        ),
+    )
+    if modal_template is None:
+        return None
+    template, effects, target_schema, mechanics = modal_template.compiled()
+    dependency_gate = _dependency_gate(
+        mechanics=mechanics,
+        effects=effects,
+        target_schema=target_schema,
+        trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    span = SourceSpan(
+        material_rows[0][2].start,
+        material_rows[-1][2].end,
+        material_rows[0][2].line,
+    )
+    residual_ids = (
+        (
+            _residual(
+                residuals,
+                kind="dependency_contract",
+                text=oracle_text,
+                span=span,
+                reason="fixed modal spell depends on untrusted rules dependencies",
+                blockers=dependency_gate.blockers,
+            ),
+        )
+        if dependency_gate.blockers
+        else ()
+    )
+    node = OracleNode(
+        node_id=f"{face_id}:n1",
+        kind="spell_ability",
+        text=oracle_text,
+        span=span,
+        active_zone="stack",
+        event="resolve",
+        lowerable=True,
+        exact=not residual_ids,
+        template_id=template,
+        effects=effects,
+        target_schema=target_schema,
+        mechanics=mechanics,
+        residual_ids=residual_ids,
+        capability_dependencies=dependency_gate.capabilities,
+        capability_closure=(
+            dependency_gate.closure.reachable
+            if dependency_gate.closure is not None
+            else ()
+        ),
+        capability_profile=(
+            dependency_gate.closure.profile
+            if dependency_gate.closure is not None
+            else None
+        ),
+        capability_fingerprint=(
+            dependency_gate.closure.fingerprint
+            if dependency_gate.closure is not None
+            else None
+        ),
+    )
+    return OracleFaceIR(
+        face_id=face_id,
+        face_name=face_name,
+        oracle_text=oracle_text,
+        nodes=(node,),
+        residuals=tuple(residuals),
+    )
+
+
 def _compile_face(
     record: CardRecord,
     *,
@@ -1003,18 +1108,18 @@ def _compile_face(
         source_card_types=tuple(sorted(card_types)), source_attachment_relation=source_attachment_relation,
     )
     contextual_trigger_node = partial(
-        _trigger_node, effect_template=contextual_effect_template
-    )
+        _trigger_node, effect_template=contextual_effect_template)
     material_rows = tuple(_material_source_lines(type_line, oracle_text))
     printed_subtypes, saga_chapters = _read_ahead_face_context(type_line, material_rows)
     if spell:
-        additional_cost_face = _typed_additional_cost_face(
-            record, face_id, face_name, oracle_text, material_rows,
-            contextual_effect_template, trusted_mechanics, capability_registry,
-            capability_profile, residuals,
+        typed_face = _typed_whole_spell_face(
+            record, face_id=face_id, face_name=face_name, oracle_text=oracle_text,
+            material_rows=material_rows, effect_template=contextual_effect_template,
+            trusted_mechanics=trusted_mechanics, capability_registry=capability_registry,
+            capability_profile=capability_profile, residuals=residuals,
         )
-        if additional_cost_face is not None:
-            return additional_cost_face
+        if typed_face is not None:
+            return typed_face
     for index, row in enumerate(material_rows, 1):
         line, material_line, span = row
         node_id = f"{face_id}:n{index}"

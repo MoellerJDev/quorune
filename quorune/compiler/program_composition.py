@@ -213,10 +213,24 @@ def _validated_group_identity(
         not is_independently_exact(node) for node in nodes
     ):
         return None
+    def has_effect_payload(node: Any) -> bool:
+        if node.effects:
+            return True
+        schema = node.target_schema
+        modes = schema.get("modes") if isinstance(schema, Mapping) else None
+        return bool(
+            isinstance(modes, Mapping)
+            and all(
+                isinstance(definition, Mapping)
+                and bool(definition.get("effects"))
+                for definition in modes.values()
+            )
+        )
+
     if any(
         not node.lowerable
         or (
-            not node.effects
+            not has_effect_payload(node)
             and not is_static_declaration(node)
             and not node.handlers
         )

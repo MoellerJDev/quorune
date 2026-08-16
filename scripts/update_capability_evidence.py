@@ -38,6 +38,11 @@ LEGACY_EVIDENCE_FIELDS = {
     "replay": "replay_tests",
 }
 MUTATION_TESTS = {
+    "choice.modal.fixed_one": (
+        "tests.test_fixed_choose_one_modal_spells."
+        "FixedChooseOneModalCompilerTests."
+        "test_modal_compiler_mutation_is_killed"
+    ),
     "counter.producer.bloodthirst": (
         "tests.test_bloodthirst_rules."
         "BloodthirstRuntimeTests."

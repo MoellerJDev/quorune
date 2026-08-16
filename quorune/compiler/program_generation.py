@@ -18,7 +18,9 @@ from ..unleash import UNLEASH_MECHANIC
 from ..rules.capabilities import (
     CapabilityRegistry,
     capability_covered_mechanics,
+    capability_dependencies_for_node,
 )
+from .modal_templates import FIXED_CHOOSE_ONE_MODAL_MECHANIC
 from ..rules.counter_capability_shapes import (
     fixed_counter_placement_group_node_capabilities,
 )
@@ -1089,8 +1091,54 @@ def _is_closed_targeted_own_graveyard_return_program(
     )
 
 
+def _is_closed_fixed_choose_one_modal_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize one strict modal program and every typed branch owner."""
+
+    if not str(program.provenance.get("template_id") or "").startswith(
+        "fixed-choose-one-modal-"
+    ):
+        return False
+    target_schema = program.target_schema
+    definitions = (
+        target_schema.get("modes")
+        if isinstance(target_schema, Mapping)
+        else None
+    )
+    if not isinstance(definitions, Mapping):
+        return False
+    mechanics: list[Any] = [FIXED_CHOOSE_ONE_MODAL_MECHANIC]
+    for definition in definitions.values():
+        branch_mechanics = (
+            definition.get("mechanics")
+            if isinstance(definition, Mapping)
+            else None
+        )
+        if not isinstance(branch_mechanics, (list, tuple)):
+            return False
+        if len(branch_mechanics) != len(set(branch_mechanics)):
+            return False
+        mechanics.extend(
+            mechanic
+            for mechanic in branch_mechanics
+            if mechanic not in mechanics
+        )
+    required = set(
+        capability_dependencies_for_node(
+            effects=program.effects,
+            target_schema=target_schema,
+            mechanic_ids=mechanics,
+        )
+    )
+    return bool(required) and required == set(
+        program.capability_dependencies
+    )
+
+
 def _closed_effect_recognizers():
     return (
+        _is_closed_fixed_choose_one_modal_program,
         _is_closed_fixed_damage_program,
         _is_closed_fixed_draw_program,
         _is_closed_fixed_life_program,

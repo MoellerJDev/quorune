@@ -14,18 +14,18 @@ maintenance: "generated"
 - Total case records: 3300
 - Executable semantic passes: 234
 - Executable semantic failures: 0
-- Blocked: 432
+- Blocked: 433
 - Skipped: 0
-- Unreviewed: 2480
-- Definition-only: 154
-- Inventory-only: 2480
+- Unreviewed: 2478
+- Definition-only: 155
+- Inventory-only: 2478
 - Current snapshot complete: false
 
 Status detail:
 
-- `blocked`: 432
-- `definition_only`: 154
+- `blocked`: 433
+- `definition_only`: 155
 - `passing`: 234
-- `unreviewed`: 2480
+- `unreviewed`: 2478
 
 Inventory-only records prove source linkage and case existence; they do not prove that the engine implements the rule.

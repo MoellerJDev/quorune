@@ -35386,7 +35386,9 @@
       "effective_date": "2026-06-19",
       "executable_test_ids": [
         "tests.test_preflight_v080.NormalizedZoneEventTests.test_hybrid_cast_cost_exposes_only_payable_variants",
-        "tests.test_interactions_v070.InteractionKernelTests.test_tear_asunder_and_vandalblast_cost_options_change_targets"
+        "tests.test_interactions_v070.InteractionKernelTests.test_tear_asunder_and_vandalblast_cost_options_change_targets",
+        "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_unsupported_modal_grammars_remain_material_residuals",
+        "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays"
       ],
       "implementation_components": [
         "CommanderEngine._cast",
@@ -35394,7 +35396,7 @@
         "CommanderEngine._validate_semantic_targets"
       ],
       "notes": [
-        "Supported cost options are server-derived and payable, but they are a strict subset of CR 601.2b."
+        "Supported cost options and ordinary fixed Choose one mode selections are server-derived and validated atomically, but they remain a strict subset of CR 601.2b."
       ],
       "required_scenarios": [
         "positive",
@@ -35426,7 +35428,9 @@
       "covered_scenarios": [
         "positive",
         "negative",
-        "hidden_information"
+        "multiplayer",
+        "hidden_information",
+        "replay"
       ],
       "dependency_rule_ids": [
         "601.2"
@@ -35434,7 +35438,9 @@
       "effective_date": "2026-06-19",
       "executable_test_ids": [
         "tests.test_targeting_v070.ExactTargetingTests.test_modes_reb_and_pyroblast_use_actual_target_rules",
-        "tests.test_targeting_v070.ExactTargetingTests.test_hidden_zones_are_rejected_by_target_schema"
+        "tests.test_targeting_v070.ExactTargetingTests.test_hidden_zones_are_rejected_by_target_schema",
+        "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays",
+        "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_modal_target_revalidation_fizzles_without_running_other_mode"
       ],
       "implementation_components": [
         "CommanderEngine._validate_semantic_targets",
@@ -35442,7 +35448,7 @@
         "StackItem.context"
       ],
       "notes": [
-        "Compiled target schemas validate represented targets and snapshot identities, while unresolved mandatory targeting semantics fail closed."
+        "Compiled target schemas validate represented targets and snapshot identities. Fixed Choose one spells bind only the selected mode's target plan and revalidate it on resolution, while unresolved mandatory targeting semantics fail closed."
       ],
       "required_scenarios": [
         "positive",
@@ -48551,23 +48557,28 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-700.2",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "700"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_actual_fixed_choose_one_corpus_is_capability_closed"
+      ],
+      "implementation_components": [
+        "quorune.compiler.modal_templates.FixedChooseOneModalSpellTemplate",
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "choice.modal.fixed_one owns only complete ordinary two- or three-mode Choose one instant and sorcery faces whose every branch already has an independent typed effect owner."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "700.2",
       "rule_text_sha256": "5782a855b79d47bd401c54c3de8b14c18723cb85bf95a0da62184883afb4d8a5",
       "schema_version": 1,
@@ -48576,26 +48587,52 @@
         "end_line": 3204,
         "start_line": 3203
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "choose two, choose one or more, choose one or both, repeatable modes, and conditional mode-count instructions are not lowered",
+        "modal activated and triggered abilities, Spree, Escalate, Entwine, nested modes, and copied-mode alterations remain outside this bounded compiler owner"
       ],
       "case_id": "cr-700.2a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "700.2"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_unsupported_modal_grammars_remain_material_residuals",
+        "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays",
+        "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_modal_target_revalidation_fizzles_without_running_other_mode"
+      ],
+      "implementation_components": [
+        "quorune.compiler.modal_templates.fixed_choose_one_modal_spell_template",
+        "quorune.targets.available_modes",
+        "quorune.targets.target_plan",
+        "quorune.targets.mode_effects",
+        "CommanderEngine._cast",
+        "CommanderEngine._continue_resolution"
+      ],
+      "notes": [
+        "The bounded fixed Choose one path advertises only feasible modes, validates the selected mode and its targets atomically, records the choice on the stack item, revalidates only the chosen target plan, and resolves only the selected branch; every unsupported modal family stays material residual."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "700.2a",
       "rule_text_sha256": "02eb0f261db68a9436e2d2e3ba61f519ebdf355975b5c8661e0d7ae54fa03286",
       "schema_version": 1,
@@ -48604,7 +48641,7 @@
         "end_line": 3206,
         "start_line": 3205
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

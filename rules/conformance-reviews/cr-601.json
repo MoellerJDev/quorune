@@ -82,11 +82,11 @@
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
       "implementation_components": ["CommanderEngine._cast", "CommanderEngine._cast_cost_options", "CommanderEngine._validate_semantic_targets"],
-      "executable_test_ids": ["tests.test_preflight_v080.NormalizedZoneEventTests.test_hybrid_cast_cost_exposes_only_payable_variants", "tests.test_interactions_v070.InteractionKernelTests.test_tear_asunder_and_vandalblast_cost_options_change_targets"],
+      "executable_test_ids": ["tests.test_preflight_v080.NormalizedZoneEventTests.test_hybrid_cast_cost_exposes_only_payable_variants", "tests.test_interactions_v070.InteractionKernelTests.test_tear_asunder_and_vandalblast_cost_options_change_targets", "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalCompilerTests.test_unsupported_modal_grammars_remain_material_residuals", "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays"],
       "required_scenarios": ["positive", "negative", "interaction", "hidden_information", "replay"],
       "covered_scenarios": ["positive", "negative", "interaction"],
       "blockers": ["complete mode, splice, alternative/additional cost, X, hybrid, Phyrexian, and variable-choice grammar is absent", "the order and dependency of these choices is represented only by selected compiled cost schemas"],
-      "notes": ["Supported cost options are server-derived and payable, but they are a strict subset of CR 601.2b."]
+      "notes": ["Supported cost options and ordinary fixed Choose one mode selections are server-derived and validated atomically, but they remain a strict subset of CR 601.2b."]
     },
     {
       "rule_id": "601.2c",
@@ -96,11 +96,11 @@
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
       "implementation_components": ["CommanderEngine._validate_semantic_targets", "SemanticProgram", "StackItem.context"],
-      "executable_test_ids": ["tests.test_targeting_v070.ExactTargetingTests.test_modes_reb_and_pyroblast_use_actual_target_rules", "tests.test_targeting_v070.ExactTargetingTests.test_hidden_zones_are_rejected_by_target_schema"],
+      "executable_test_ids": ["tests.test_targeting_v070.ExactTargetingTests.test_modes_reb_and_pyroblast_use_actual_target_rules", "tests.test_targeting_v070.ExactTargetingTests.test_hidden_zones_are_rejected_by_target_schema", "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays", "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_modal_target_revalidation_fizzles_without_running_other_mode"],
       "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "hidden_information", "replay"],
-      "covered_scenarios": ["positive", "negative", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "multiplayer", "hidden_information", "replay"],
       "blockers": ["conditional target counts, must-target effects, target-trigger timing, all distinct-target constraints, and variable counts are incomplete", "target choices by players other than the caster are not represented"],
-      "notes": ["Compiled target schemas validate represented targets and snapshot identities, while unresolved mandatory targeting semantics fail closed."]
+      "notes": ["Compiled target schemas validate represented targets and snapshot identities. Fixed Choose one spells bind only the selected mode's target plan and revalidate it on resolution, while unresolved mandatory targeting semantics fail closed."]
     },
     {
       "rule_id": "601.2d",

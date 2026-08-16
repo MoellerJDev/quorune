@@ -85,3 +85,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0068 — typed fixed-life cumulative upkeep](0068-typed-fixed-life-cumulative-upkeep.md)
 - [ADR 0069 — typed temporary declaration restrictions](0069-typed-temporary-declaration-restrictions.md)
 - [ADR 0070 — typed fixed token-definition batches](0070-typed-fixed-token-definition-batches.md)
+- [ADR 0071 — typed fixed Choose one modal spells](0071-typed-fixed-choose-one-modal-spells.md)
