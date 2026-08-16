@@ -83,6 +83,17 @@ remain residual until level applicability has a typed owner. The grammar
 performs no dynamic characteristic counts and does not claim ability-removal
 composition.
 
+`compiler/devoid_characteristics.py` owns the ordinary printed Devoid
+production. One
+exact keyword instance lowers to an all-zone
+`ability.static.colorless-characteristic-definition.v1` fragment. Copy values
+carry that fragment at layer 1; the characteristic evaluator then removes all
+colors as a characteristic-defining effect in layer 5 before later non-CDA
+color effects. Commander color identity remains a separate database-derived
+format characteristic. Nonordinary wording, untyped granted Devoid,
+text-changing producers, and face-down producers remain residual or outside
+trust; the production performs no dynamic characteristic count.
+
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,
 then requires the source grammar, emitted effects, target relation, closed

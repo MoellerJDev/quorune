@@ -146,6 +146,7 @@ _READ_AHEAD_MECHANIC = "read ahead"
 _BLOODTHIRST_MECHANIC = "bloodthirst"
 _SUNBURST_MECHANIC = "sunburst"
 _ECHO_MECHANIC = "echo"
+_DEVOID_MECHANIC = "devoid"
 _BASIC_LANDWALK_MECHANICS = (
     "plainswalk",
     "islandwalk",
@@ -163,6 +164,7 @@ _FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC = (
     "fixed-counter-controller-effect-sequence"
 )
 MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
+    _DEVOID_MECHANIC: ("continuous.characteristics.devoid",),
     _CYCLING_MECHANIC: ("activation.cycling.hand",),
     _CREW_MECHANIC: ("activation.crew.fixed_power",),
     _STATION_MECHANIC: ("counter.producer.station",),

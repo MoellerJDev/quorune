@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "1722fd9fb1084a85220e496721d7b975718e4d3c0bbdf4b9e932c71ab449c46d"
+verified: "9d2c00f12bd530c2b4f4ace6819c73ef0c74ffd8c5339c98f10471521338e5dd"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,12 +11,12 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `61f118f623a317f073309ca8778fee3d2e42d9c1105465f45a7d3bd7eb452ec7`
+Source fingerprint: `f1ee7325a76d70249a2cba235af5194c4f46a4f146fdbdd6b71ae51310045a2f`
 
 ## Current top-level state
 
 - Pinned rules: `3300`
-- Queued rules: `2913`
+- Queued rules: `2912`
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
@@ -37,7 +37,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 4 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
 | 5 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
 | 6 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 7 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 237 | 381 | 0 | 0 |
+| 7 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 240 | 381 | 0 | 0 |
 
 Selected reason: The rules queue remains dependency-ready, but correctness, runtime-text, owner, and assurance gates may rank ahead of its unknown card gain.
 

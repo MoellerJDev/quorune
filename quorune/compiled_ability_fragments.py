@@ -54,12 +54,14 @@ def compiled_static_ability_fragments(
     *,
     face_name: str | None = None,
 ) -> tuple[StaticAbilityFragment, ...]:
-    """Return trusted, face-pinned executable layer-6 ability fragments.
+    """Return trusted, face-pinned executable static ability fragments.
 
     Oracle grammar is compiled before game execution. Runtime consumers only
     lower exact handler descriptors already pinned into SemanticPrograms.
-    A fragment-owning program may observe an event other than ``continuous``;
-    the fragment still describes an ability present on the battlefield.
+    Battlefield programs provide the current layer-6 ability snapshot, while
+    all-zone programs provide characteristic-defining fragments such as
+    Devoid. A fragment-owning program may observe an event other than
+    ``continuous``; the fragment still describes a typed static ability.
     """
 
     record = host.card_record(card)
@@ -81,6 +83,16 @@ def compiled_static_ability_fragments(
             for program in host.semantics.programs_for_oracle(
                 record.oracle_id,
                 active_zone="battlefield",
+            )
+            if program.handlers
+        }
+    )
+    programs_by_key.update(
+        {
+            program.key: program
+            for program in host.semantics.programs_for_oracle(
+                record.oracle_id,
+                active_zone="all",
             )
             if program.handlers
         }

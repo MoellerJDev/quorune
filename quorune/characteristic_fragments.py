@@ -23,6 +23,32 @@ class PowerToughnessCalculation(str, Enum):
 
 
 @dataclass(frozen=True, slots=True)
+class ColorlessCharacteristicDefinitionSpec:
+    """One closed all-zone layer-5 colorless definition."""
+
+    schema_version: int = 1
+
+    def __post_init__(self) -> None:
+        if type(self.schema_version) is not int or self.schema_version != 1:
+            raise CharacteristicFragmentError(
+                "Unsupported colorless characteristic-definition schema version"
+            )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"schema_version": self.schema_version}
+
+    @classmethod
+    def from_dict(
+        cls, value: Mapping[str, Any]
+    ) -> "ColorlessCharacteristicDefinitionSpec":
+        if not isinstance(value, Mapping) or set(value) != {"schema_version"}:
+            raise CharacteristicFragmentError(
+                "Colorless characteristic definitions have a closed schema"
+            )
+        return cls(schema_version=value["schema_version"])
+
+
+@dataclass(frozen=True, slots=True)
 class ConditionalKeywordSpec:
     """One closed keyword condition evaluated from public match state."""
 
@@ -165,6 +191,7 @@ class DynamicPowerToughnessSpec:
 __all__ = [
     "CharacteristicCountKind",
     "CharacteristicFragmentError",
+    "ColorlessCharacteristicDefinitionSpec",
     "ConditionalKeywordSpec",
     "DynamicPowerToughnessSpec",
     "PowerToughnessCalculation",

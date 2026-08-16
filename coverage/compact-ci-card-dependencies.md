@@ -2,7 +2,7 @@
 title: "Compact CI card dependencies"
 status: "generated"
 authoritative_source: "tests/fixtures/compact-ci-fixtures.json and platform/test-shards.json"
-verified: "88e2ad87c95f0eae6bdc3f0e264cb0b0e963747b9e0cfc1578ee3d882febd30b"
+verified: "14608892b7acb4c0f19bab516d757cbfa0e4250adb93f331b3a73ef5cdf5a181"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -17,11 +17,11 @@ Overall closure: **closed**.
 
 | Measure | Value |
 | --- | ---: |
-| Fixture files | 23 |
-| Cards | 269 |
+| Fixture files | 24 |
+| Cards | 272 |
 | Rulings | 494 |
-| Modules inspected | 278 |
-| Static requirements | 718 |
+| Modules inspected | 279 |
+| Static requirements | 720 |
 | Declared dynamic requirements | 7 |
 | Unresolved dynamic sites | 0 |
 | Missing cards | 0 |
@@ -36,7 +36,7 @@ Overall closure: **closed**.
 | combat-declarations | 20 | closed |
 | compiler-cardprogram | 40 | closed |
 | core-domain | 14 | closed |
-| counter-continuous-effects | 24 | closed |
+| counter-continuous-effects | 25 | closed |
 | deterministic-game-regressions | 5 | closed |
 | events-replacement-zone | 33 | closed |
 | generated-validation | 29 | closed |

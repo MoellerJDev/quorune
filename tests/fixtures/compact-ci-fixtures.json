@@ -12,6 +12,7 @@
     "tests/fixtures/composition-assurance-cards.json",
     "tests/fixtures/counter-replacement-cards.json",
     "tests/fixtures/damage-result-cards.json",
+    "tests/fixtures/devoid-characteristics-cards.json",
     "tests/fixtures/draw-rules-cards.json",
     "tests/fixtures/echo-rules-cards.json",
     "tests/fixtures/explore-cards.json",

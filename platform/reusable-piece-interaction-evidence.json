@@ -3122,6 +3122,33 @@
       "capability_ids": ["continuous.ability.fixed_query_keyword_grant"],
       "interaction_order": 2,
       "assertion": "Pulmonic Sliver executes its exact global Flying grant without admitting its unsupported self-replacement and prevention-ordering boundary."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_devoid_and_compiled_aura_attachment_compose",
+      "piece_ids": ["capability.attachment.aura.simple_object", "capability.continuous.characteristics.devoid"],
+      "capability_ids": ["attachment.aura.simple_object", "continuous.characteristics.devoid"],
+      "interaction_order": 2,
+      "assertion": "Visions of Brutality remains colorless in hand and on the battlefield while the independently compiled simple Aura owner validates and commits its creature attachment."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_devoid_executes_while_replacement_siblings_fail_closed",
+      "piece_ids": ["capability.continuous.characteristics.devoid", "residual.replacement.replacement-applicability"],
+      "capability_ids": ["continuous.characteristics.devoid"],
+      "interaction_order": 2,
+      "assertion": "Void Shatter's independent typed Devoid definition executes while strict CardProgram admission rejects its unsupported replacement-applicability sibling before authoritative mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_devoid_executes_while_replacement_siblings_fail_closed",
+      "piece_ids": ["capability.continuous.characteristics.devoid", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["continuous.characteristics.devoid"],
+      "interaction_order": 2,
+      "assertion": "Void Shatter's independent typed Devoid definition executes without admitting its unsupported self-replacement and replacement-ordering boundary."
     }
   ]
 }

@@ -40,7 +40,7 @@ class AbilityFragmentHostMixin:
         *,
         error_type: type[Exception] | None = None,
     ) -> tuple[StaticAbilityFragment, ...]:
-        """Return one canonical current layer-6 ability snapshot."""
+        """Return one canonical current static-ability snapshot."""
 
         try:
             return canonical_ability_fragments(

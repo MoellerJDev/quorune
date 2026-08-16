@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import re
 from typing import Any, Mapping
 
@@ -18,14 +17,8 @@ from ..aura import parse_simple_enchant_line
 from ..cast_timing import CastTimingPermission, PRINTED_FLASH_MECHANIC
 from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from ..trigger_participation import WardSpec
-
-
-@dataclass(frozen=True, slots=True)
-class AbilityKeywordFragmentLowering:
-    handlers: tuple[Mapping[str, Any], ...] = ()
-    residual_kind: str | None = None
-    residual_reason: str | None = None
-    residual_blockers: tuple[str, ...] = ()
+from .ability_keyword_fragment_model import AbilityKeywordFragmentLowering
+from .devoid_characteristics import lower_devoid_characteristic_fragment
 
 
 def _lower_fixed_generic_ward(
@@ -113,6 +106,10 @@ def lower_ability_keyword_fragments(
                 },
             )
         )
+
+    devoid = lower_devoid_characteristic_fragment(material_line, mechanics)
+    if devoid is not None:
+        return devoid
 
     if mechanics == ("enchant",):
         enchant_spec = parse_simple_enchant_line(material_line)

@@ -21,6 +21,9 @@ from .ability_fragments import (
     canonical_ability_fragments,
 )
 from .abilities import ActivatedAbility
+from .characteristic_fragments import (
+    ColorlessCharacteristicDefinitionSpec,
+)
 
 
 _CARD_TYPES = {
@@ -213,16 +216,45 @@ def _copy_effect(
     )
 
 
-def _legacy_annotation_effects(
+def _has_colorless_characteristic_definition(
+    base: Mapping[str, Any],
+    overrides: Mapping[str, Any],
+) -> bool:
+    fragments = overrides.get(
+        "ability_fragments",
+        base.get("ability_fragments", ()),
+    )
+    return any(
+        isinstance(fragment, ColorlessCharacteristicDefinitionSpec)
+        for fragment in canonical_ability_fragments(fragments)
+    )
+
+
+def _object_continuous_effects(
     card: CardInstance,
     overrides: Mapping[str, Any],
     added_types: Sequence[str],
     added_subtypes: Sequence[str],
+    *,
+    has_colorless_definition: bool,
 ) -> list[ContinuousEffect]:
     effects: list[ContinuousEffect] = []
     copy_effect = _copy_effect(card, overrides)
     if copy_effect is not None:
         effects.append(copy_effect)
+    if has_colorless_definition:
+        effects.append(
+            ContinuousEffect(
+                effect_id=f"{card.object_id}:colorless-definition",
+                source_id=card.object_id,
+                layer=Layer.COLOR,
+                sublayer="5",
+                timestamp=0,
+                operations=(ContinuousOperation("remove_all_colors"),),
+                characteristic_defining=True,
+                duration=ContinuousEffectDuration.ZONE_OBJECT,
+            )
+        )
     type_operations: list[ContinuousOperation] = []
     if card.annotations.get("bestowed") and card.attached_to:
         type_operations.extend(
@@ -414,6 +446,10 @@ def evaluate_card_characteristics(
 
     result = copy.deepcopy(dict(base))
     overrides, added_types, added_subtypes = _annotation_terms(card)
+    has_colorless_definition = _has_colorless_characteristic_definition(
+        result,
+        overrides,
+    )
     layered = bool(
         overrides
         or added_types
@@ -422,6 +458,7 @@ def evaluate_card_characteristics(
         or keyword_counter_abilities(card.counters)
         or card.annotations.get("granted_ability_fragments")
         or card.annotations.get("bestowed")
+        or has_colorless_definition
         or runtime_effects
     )
     if not layered:
@@ -448,8 +485,12 @@ def evaluate_card_characteristics(
         return result
 
     state = _base_characteristic_state(card, result)
-    effects = _legacy_annotation_effects(
-        card, overrides, added_types, added_subtypes
+    effects = _object_continuous_effects(
+        card,
+        overrides,
+        added_types,
+        added_subtypes,
+        has_colorless_definition=has_colorless_definition,
     )
     effects.extend(runtime_effects)
     evaluated = evaluate_continuous_effects(

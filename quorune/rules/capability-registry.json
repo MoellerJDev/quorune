@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 103,
+  "registry_version": 104,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -2190,6 +2190,33 @@
       "dependency_fail_closed_rationale": "The fragment consumes only public battlefield and owner-visible graveyard card types through the current characteristic query and has no capability dependency.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "The focused compiler and runtime mutation test removes the typed count or calculation and the exact current power/toughness assertions reject the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "continuous.characteristics.devoid",
+      "version": 1,
+      "official_rules": ["604.3", "613.1e", "702.114", "702.114a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile one ordinary printed Devoid instance into a copied typed characteristic-definition fragment that removes all colors in layer 5 in every zone.",
+        "inputs": ["one source-spanned ordinary printed Devoid keyword", "current copied keyword and typed ability-fragment characteristics", "current all-zone object characteristics"],
+        "outputs": ["one all-zone colorless characteristic definition", "CDA-first layer-5 ordering", "current colorless object-query results without changing color identity"],
+        "exclusions": ["Oracle-equivalent nonkeyword wording", "granted Devoid without typed ability propagation", "text-changing interactions", "face-down characteristics until their layer-1 owner is trusted", "dynamic characteristic counts"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.keyword_nodes.closed_special_keyword_node", "quorune.semantic_runtime.ability_fragments.ColorlessCharacteristicDefinitionAbilityFragmentHandler", "quorune.characteristic_evaluation.evaluate_card_characteristics", "quorune.continuous_effects.evaluate_continuous_effects"],
+      "positive_tests": ["test_ordinary_devoid_compiles_to_all_zone_characteristic_definition", "test_devoid_is_colorless_in_every_zone_and_preserves_color_identity"],
+      "negative_tests": ["test_devoid_descriptor_and_prose_only_objects_fail_closed_without_mutation", "test_nonordinary_devoid_wording_remains_source_spanned_residual"],
+      "interaction_tests": ["test_devoid_and_compiled_aura_attachment_compose", "test_devoid_executes_while_replacement_siblings_fail_closed", "test_devoid_orders_before_layer_five_color_addition_and_after_copy_values", "test_devoid_feeds_current_colorless_and_colored_predicates"],
+      "multiplayer_tests": ["test_devoid_is_colorless_in_every_zone_and_preserves_color_identity"],
+      "privacy_tests": ["test_devoid_projection_and_replay_are_identity_safe"],
+      "replay_tests": ["test_devoid_projection_and_replay_are_identity_safe"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded definition uses the shared all-zone characteristic and continuous-layer substrates directly and has no capability dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and layer-5 mutations remove the typed fragment or color removal, and exact CardProgram plus current color assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

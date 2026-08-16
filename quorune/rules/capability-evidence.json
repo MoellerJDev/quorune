@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "f256e5656751184e4ae0a762cfde44760f71329656055cb456a7a561fb506a9a",
-  "declaration_source_fingerprint": "c80ee24b66c2383afaf949be9f4587b6e9842507cd4f85cc9dfeb5ab1e15b990",
+  "registry_fingerprint": "4579835be658b0a999c9532600a73edd20cb0356f73c0c81e8dbb3c135a727fe",
+  "declaration_source_fingerprint": "59b1d82974f047fde91ed64620adf855c5d2d830999d8a448cd13953c0fe7af9",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -9548,6 +9548,193 @@
         "commander_review"
       ],
       "applicability_note": "Pin typed characteristic fragments and their runtime registry in the initial checkpoint before exact command replay."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_and_compiled_aura_attachment_compose",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose the all-zone Devoid definition with the independently compiled simple Aura attachment owner on Visions of Brutality."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_executes_while_replacement_siblings_fail_closed",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Execute Void Shatter's independent typed Devoid definition while strict runtime admission rejects its unsupported replacement-applicability and ordering siblings before mutation."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_feeds_current_colorless_and_colored_predicates",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed the committed all-zone layer-5 result into the shared current object query for colorless and colored predicates."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_orders_before_layer_five_color_addition_and_after_copy_values",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply copied Devoid after layer-1 values, before later layer-5 color addition, and preserve its result after layer-6 ability removal."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_is_colorless_in_every_zone_and_preserves_color_identity",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Evaluate the object-local characteristic definition in a four-player Commander session without consulting player-private state."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_runtime_mutation_is_killed",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill replacement of the color-removal operation by requiring the synthetic colored input to become colorless."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "negative",
+      "test_id": "tests.test_devoid_characteristics.DevoidCompilerTests.test_devoid_descriptor_and_prose_only_objects_fail_closed_without_mutation",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed descriptors before mutation and refuse to select colorless behavior from matching runtime prose without the typed fragment."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "positive",
+      "test_id": "tests.test_devoid_characteristics.DevoidCompilerTests.test_ordinary_devoid_compiles_to_all_zone_characteristic_definition",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one ordinary source-spanned Devoid keyword into a capability-closed all-zone typed characteristic definition."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "positive",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_is_colorless_in_every_zone_and_preserves_color_identity",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove every color from the current object in all represented zones while leaving Commander color identity unchanged."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_projection_and_replay_are_identity_safe",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the public Devoid object without physical object IDs or internal typed fragments."
+    },
+    {
+      "capability_id": "continuous.characteristics.devoid",
+      "evidence_class": "replay",
+      "test_id": "tests.test_devoid_characteristics.DevoidRuntimeTests.test_devoid_projection_and_replay_are_identity_safe",
+      "official_rule_ids": [
+        "604.3",
+        "613.1e",
+        "702.114",
+        "702.114a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pin the all-zone typed fragment and its runtime registry into the checkpoint before exact command replay."
     },
     {
       "capability_id": "continuous.characteristics.dynamic_power_toughness",
@@ -36593,5 +36780,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "8d781557313c164a830c60f8681863cdebec6b1aa6f71796c16b93e4d634e7f2"
+  "fingerprint": "335e395405d7dd9ea4c18826940b11ba9abb647f10b11b0b14338d1d548e971a"
 }

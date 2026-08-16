@@ -382,6 +382,11 @@
         "candidate_id": "compiler:fixed-query-combat-keyword-grants",
         "selected_over": "rules:counter-producer-replacement-closure",
         "reason": "The selected counter-producer closure still had no measured card, ability, or residual gain, while a pinned-corpus rerank measured a coherent fixed-query layer-6 family at 53 exact Commander cards and 69 exact abilities through existing Haste, Vigilance, Flying, strike-step, and Trample owners. The bounded grammar excludes multicolored and dynamic predicates rather than widening ObjectQuerySpec or characteristic-cycle scope."
+      },
+      {
+        "candidate_id": "compiler:devoid-layer-five-characteristics",
+        "selected_over": "rules:counter-producer-replacement-closure",
+        "reason": "The selected counter-producer closure still had no measured card, ability, or residual gain, while a pinned-corpus rerank measured one closed Devoid characteristic-definition family at 132 exact Commander abilities and six complete cards. Its copied typed fragment uses the existing layer-5 evaluator and all-zone characteristic boundary while leaving dynamic counts, text changes, and untrusted face-down producers outside trust."
       }
     ]
   },
