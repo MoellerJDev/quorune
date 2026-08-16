@@ -155,9 +155,11 @@ class TypedDynamicCharacteristicCompilerTests(unittest.TestCase):
                 self.assertEqual((), program.residuals)
 
         unsupported = (
-            "Artifacts you control have flying.",
-            "Artifact tokens you control have hexproof.",
-            "Creature tokens you control have vigilance.",
+            "Creatures your opponents control have haste.",
+            "Attacking creatures you control have flying.",
+            "Multicolored creatures you control have vigilance.",
+            "Creatures you control have menace.",
+            "Other permanents you control have hexproof.",
             "This creature has haste as long as you have 10 or less life.",
             "This creature gets +1/+1 for each enchantment you control.",
             "This creature gets +2/+2 if there are three land cards in your graveyard.",
@@ -197,13 +199,13 @@ class TypedDynamicCharacteristicCompilerTests(unittest.TestCase):
             {**keyword, "schema_version": True},
             {
                 **keyword,
-                "modifier": {"add_abilities": ["Flying"]},
+                "modifier": {"add_abilities": ["Menace"]},
             },
             {
                 **keyword,
                 "condition": {
                     **keyword["condition"],
-                    "target_controller": "any",
+                    "target_controller": "source_opponents",
                 },
             },
         )

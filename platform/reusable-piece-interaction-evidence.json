@@ -3041,6 +3041,87 @@
       "capability_ids": ["resolution.effect_sequence.fixed_clauses", "target.revalidate_resolution"],
       "interaction_order": 2,
       "assertion": "A stale sole target fails CR 608.2b revalidation before either clause executes, so the later life instruction cannot partially resolve."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_grants_feed_haste_vigilance_flying_strike_and_trample_owners",
+      "piece_ids": ["capability.activation.tap_untap_cost.haste", "capability.continuous.ability.fixed_query_keyword_grant"],
+      "capability_ids": ["activation.tap_untap_cost.haste", "continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "A compiled global Haste grant supplies the current effective keyword consumed by the ordinary tap-or-untap activation-cost restriction owner."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_grants_feed_haste_vigilance_flying_strike_and_trample_owners",
+      "piece_ids": ["capability.combat.attack.haste", "capability.continuous.ability.fixed_query_keyword_grant"],
+      "capability_ids": ["combat.attack.haste", "continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "A compiled global Haste grant supplies the current effective keyword consumed by the ordinary attack-eligibility owner."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_grants_feed_haste_vigilance_flying_strike_and_trample_owners",
+      "piece_ids": ["capability.combat.attack.vigilance", "capability.continuous.ability.fixed_query_keyword_grant"],
+      "capability_ids": ["combat.attack.vigilance", "continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "A compiled controller-scoped Vigilance grant supplies the current effective keyword consumed by the declare-attackers tap owner."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_grants_feed_haste_vigilance_flying_strike_and_trample_owners",
+      "piece_ids": ["capability.combat.block.flying", "capability.continuous.ability.fixed_query_keyword_grant"],
+      "capability_ids": ["combat.block.flying", "continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "A compiled controller-scoped Flying grant supplies the current effective keyword consumed by the ordinary aerial block-legality owner."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_grants_feed_haste_vigilance_flying_strike_and_trample_owners",
+      "piece_ids": ["capability.combat.damage.participation.strike_steps", "capability.continuous.ability.fixed_query_keyword_grant"],
+      "capability_ids": ["combat.damage.participation.strike_steps", "continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "Compiled First Strike and Double Strike grants supply the current effective keywords consumed by both combat-damage participation steps."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_compiled_grants_feed_haste_vigilance_flying_strike_and_trample_owners",
+      "piece_ids": ["capability.combat.damage.assignment.trample", "capability.continuous.ability.fixed_query_keyword_grant"],
+      "capability_ids": ["combat.damage.assignment.trample", "continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "A compiled controller-scoped Trample grant supplies the current effective keyword consumed by canonical lethal-and-spill damage assignment."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_aura_attachment_and_query_grant_execute_from_one_exact_card",
+      "piece_ids": ["capability.attachment.aura.simple_object", "capability.continuous.ability.fixed_query_keyword_grant"],
+      "capability_ids": ["attachment.aura.simple_object", "continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "Emblem of the Warmind is attached by the ordinary Aura owner while its independently compiled controller-scoped Haste grant feeds attack eligibility and expires when the attached source leaves."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_exact_grant_executes_while_replacement_siblings_fail_closed",
+      "piece_ids": ["capability.continuous.ability.fixed_query_keyword_grant", "residual.replacement.replacement-applicability"],
+      "capability_ids": ["continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "Pulmonic Sliver executes its exact global Flying grant while its independent optional graveyard replacement remains material and strict CardProgram admission stays closed."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_exact_grant_executes_while_replacement_siblings_fail_closed",
+      "piece_ids": ["capability.continuous.ability.fixed_query_keyword_grant", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["continuous.ability.fixed_query_keyword_grant"],
+      "interaction_order": 2,
+      "assertion": "Pulmonic Sliver executes its exact global Flying grant without admitting its unsupported self-replacement and prevention-ordering boundary."
     }
   ]
 }

@@ -1,0 +1,873 @@
+from __future__ import annotations
+
+import copy
+import json
+from pathlib import Path
+import tempfile
+import unittest
+from unittest import mock
+
+from common import keep_all, load_assets, make_session
+from quorune.aerial_blocking import aerial_block_verdict
+from quorune.attachments import attach_objects
+from quorune.card_programs import compile_card_program
+from quorune.carddb import CardRecord
+from quorune.combat import (
+    assigns_in_damage_step,
+    first_strike_step_required,
+    ordinary_second_step_combatants,
+)
+from quorune.combat_damage_assignment import (
+    build_combat_damage_assignment_proposal,
+    CombatDamageParticipant,
+)
+from quorune.combat_damage_snapshot import (
+    CombatAttackRelationship,
+    CombatBlockRelationship,
+    CombatDamageRecipient,
+    CombatDamageSnapshot,
+)
+from quorune.compiler.continuous_templates import (
+    fixed_query_keyword_grant_handler,
+)
+from quorune.haste import (
+    is_summoning_sick,
+    summoning_sickness_prohibits_attack,
+    summoning_sickness_prohibits_tap_or_untap_cost,
+)
+from quorune.model import CardInstance
+from quorune.oracle_ir import register_generated_programs
+from quorune.record import checkpoint_envelope, replay_record
+from quorune.rules.capabilities import load_default_capability_registry
+from quorune.semantic_runtime import (
+    default_continuous_effect_component_registry,
+    SemanticNodeError,
+)
+from quorune.tap_state import tap_declared_attackers
+
+
+HANDLER_ID = "continuous.ability.fixed-query-keyword-grant.v1"
+TEMPLATE_ID = "continuous-fixed-query-keyword-grant-v2"
+BASE_CAPABILITY = "continuous.ability.fixed_query_keyword_grant"
+SOURCE_NAMES = (
+    "Aggressive Mammoth",
+    "Cloudshredder Sliver",
+    "Knighthood",
+    "Levitation",
+    "Mass Hysteria",
+    "Rage Reflection",
+    "Serra's Blessing",
+)
+
+
+class _NoRulingsDatabase:
+    @staticmethod
+    def rulings(record):
+        del record
+        return ()
+
+
+def _permanent(
+    text: str,
+    *,
+    suffix: int,
+    name: str,
+    type_line: str = "Enchantment",
+) -> CardRecord:
+    return CardRecord(
+        oracle_id=f"00000000-0000-4000-8000-{suffix:012d}",
+        name=name,
+        mana_cost="{1}",
+        mana_value=1.0,
+        type_line=type_line,
+        oracle_text=text,
+        power=None,
+        toughness=None,
+        loyalty=None,
+        defense=None,
+        colors=(),
+        color_identity=(),
+        keywords=(),
+        produced_mana=(),
+        layout="normal",
+        released_at="2026-01-01",
+        legalities={"commander": "legal"},
+        faces=(),
+        raw={},
+    )
+
+
+class FixedQueryKeywordGrantCompilerTests(unittest.TestCase):
+    def setUp(self):
+        self.capabilities = load_default_capability_registry()
+
+    def compile(self, record: CardRecord, *, trust_level: str = "trusted"):
+        return compile_card_program(
+            _NoRulingsDatabase(),
+            record,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            trust_level=trust_level,
+        )
+
+    @staticmethod
+    def keyword_ability(program):
+        return next(
+            ability
+            for ability in program.abilities
+            if any(
+                descriptor.get("handler_id") == HANDLER_ID
+                for descriptor in ability.handlers
+            )
+        )
+
+    def test_closed_query_grammar_compiles_exact_with_consumer_capabilities(self):
+        cases = (
+            (
+                "Creatures you control have haste.",
+                "source_controller",
+                False,
+                {"types_all": ["creature"]},
+                ["Haste"],
+                {
+                    "activation.tap_untap_cost.haste",
+                    "combat.attack.haste",
+                },
+            ),
+            (
+                "Other creatures you control have trample.",
+                "source_controller",
+                True,
+                {"types_all": ["creature"]},
+                ["Trample"],
+                {"combat.damage.assignment.trample"},
+            ),
+            (
+                "White creatures you control have vigilance.",
+                "source_controller",
+                False,
+                {"types_all": ["creature"], "colors_all": ["W"]},
+                ["Vigilance"],
+                {"combat.attack.vigilance"},
+            ),
+            (
+                "Artifact creatures you control have flying.",
+                "source_controller",
+                False,
+                {"types_all": ["artifact", "creature"]},
+                ["Flying"],
+                {"combat.block.flying"},
+            ),
+            (
+                "Golem creatures you control have first strike.",
+                "source_controller",
+                False,
+                {
+                    "types_all": ["creature"],
+                    "subtypes_all": ["golem"],
+                },
+                ["First Strike"],
+                {"combat.damage.participation.strike_steps"},
+            ),
+            (
+                "Vehicles you control have flying.",
+                "source_controller",
+                False,
+                {
+                    "types_all": ["artifact"],
+                    "subtypes_all": ["vehicle"],
+                },
+                ["Flying"],
+                {"combat.block.flying"},
+            ),
+            (
+                "Creature tokens you control have haste.",
+                "source_controller",
+                False,
+                {"types_all": ["creature"], "token": True},
+                ["Haste"],
+                {
+                    "activation.tap_untap_cost.haste",
+                    "combat.attack.haste",
+                },
+            ),
+            (
+                "All creatures have haste.",
+                "any",
+                False,
+                {"types_all": ["creature"]},
+                ["Haste"],
+                {
+                    "activation.tap_untap_cost.haste",
+                    "combat.attack.haste",
+                },
+            ),
+            (
+                "All Sliver creatures have flying.",
+                "any",
+                False,
+                {
+                    "types_all": ["creature"],
+                    "subtypes_all": ["sliver"],
+                },
+                ["Flying"],
+                {"combat.block.flying"},
+            ),
+            (
+                "All Slivers have trample.",
+                "any",
+                False,
+                {
+                    "types_all": ["creature"],
+                    "subtypes_all": ["sliver"],
+                },
+                ["Trample"],
+                {"combat.damage.assignment.trample"},
+            ),
+            (
+                "Creatures you control have double strike and flying.",
+                "source_controller",
+                False,
+                {"types_all": ["creature"]},
+                ["Double Strike", "Flying"],
+                {
+                    "combat.block.flying",
+                    "combat.damage.participation.strike_steps",
+                },
+            ),
+            (
+                "Artifacts you control have hexproof.",
+                "source_controller",
+                False,
+                {"types_all": ["artifact"]},
+                ["Hexproof"],
+                {"target.protection.hexproof_permanent"},
+            ),
+        )
+        for index, (
+            text,
+            relation,
+            exclude_source,
+            expected_predicate,
+            abilities,
+            consumer_capabilities,
+        ) in enumerate(cases):
+            with self.subTest(text=text):
+                program = self.compile(
+                    _permanent(
+                        text,
+                        suffix=119_000_000 + index,
+                        name=f"Keyword Grant Fixture {index}",
+                    )
+                )
+                ability = self.keyword_ability(program)
+                descriptor = next(
+                    value
+                    for value in ability.handlers
+                    if value.get("handler_id") == HANDLER_ID
+                )
+                self.assertEqual((), program.residuals)
+                self.assertEqual(TEMPLATE_ID, ability.provenance["template_id"])
+                self.assertEqual("battlefield", ability.active_zone)
+                self.assertEqual(1, ability.provenance["source_span"]["line"])
+                self.assertEqual(
+                    relation, descriptor["condition"]["target_controller"]
+                )
+                self.assertEqual(
+                    exclude_source, descriptor["condition"]["exclude_source"]
+                )
+                for field, value in expected_predicate.items():
+                    self.assertEqual(
+                        value, descriptor["condition"]["predicate"][field]
+                    )
+                self.assertEqual(abilities, descriptor["modifier"]["add_abilities"])
+                self.assertGreaterEqual(
+                    set(ability.capability_dependencies),
+                    {BASE_CAPABILITY, *consumer_capabilities},
+                )
+
+    def test_open_or_unsupported_queries_remain_material_residuals(self):
+        unsupported = (
+            "Creatures your opponents control have haste.",
+            "Attacking creatures you control have flying.",
+            "Multicolored creatures you control have vigilance.",
+            "Each creature with a +1/+1 counter on it has trample.",
+            "Creatures you control have menace.",
+            "Creatures you control have reach.",
+            "Artifact permanents you control have flying.",
+            "Other permanents you control have hexproof.",
+            "All creatures have hexproof.",
+            "Creatures you control have haste until end of turn.",
+        )
+        for index, text in enumerate(unsupported):
+            with self.subTest(text=text):
+                program = self.compile(
+                    _permanent(
+                        text,
+                        suffix=119_001_000 + index,
+                        name=f"Residual Keyword Grant {index}",
+                    ),
+                    trust_level="provisional",
+                )
+                self.assertTrue(program.residuals)
+                self.assertFalse(
+                    any(
+                        descriptor.get("handler_id") == HANDLER_ID
+                        for ability in program.abilities
+                        for descriptor in ability.handlers
+                    )
+                )
+
+    def test_level_gated_class_keyword_grant_remains_residual(self):
+        program = self.compile(
+            _permanent(
+                "Creatures you control have haste.",
+                suffix=119_001_100,
+                name="Level-Gated Keyword Grant",
+                type_line="Enchantment — Class",
+            ),
+            trust_level="provisional",
+        )
+        self.assertTrue(program.residuals)
+        self.assertFalse(
+            any(
+                descriptor.get("handler_id") == HANDLER_ID
+                for ability in program.abilities
+                for descriptor in ability.handlers
+            )
+        )
+
+    def test_descriptors_fail_closed_and_rejection_has_no_state_effect(self):
+        global_haste = fixed_query_keyword_grant_handler(
+            "All creatures have haste."
+        )[1]
+        artifact_hexproof = fixed_query_keyword_grant_handler(
+            "Artifacts you control have hexproof."
+        )[1]
+        registry = default_continuous_effect_component_registry()
+        registry.validate(global_haste)
+        registry.validate(artifact_hexproof)
+
+        malformed = []
+        for path, value in (
+            (("unknown",), True),
+            (("schema_version",), True),
+            (("condition", "target_controller"), "source_opponents"),
+            (("condition", "exclude_source"), 1),
+            (("condition", "predicate", "controller"), "A"),
+            (("modifier", "add_abilities"), []),
+            (("modifier", "add_abilities"), ["Haste", "Haste"]),
+            (("modifier", "add_abilities"), ["Menace"]),
+        ):
+            candidate = copy.deepcopy(global_haste)
+            target = candidate
+            for key in path[:-1]:
+                target = target[key]
+            target[path[-1]] = value
+            malformed.append(candidate)
+        fabricated_global_hexproof = copy.deepcopy(global_haste)
+        fabricated_global_hexproof["modifier"]["add_abilities"] = ["Hexproof"]
+        malformed.append(fabricated_global_hexproof)
+
+        session = make_session(*load_assets(), players=2, seed=119_002_001)
+        try:
+            keep_all(session)
+            before = session.state.to_dict()
+            for descriptor in malformed:
+                with self.subTest(descriptor=descriptor):
+                    with self.assertRaises(SemanticNodeError):
+                        registry.validate(descriptor)
+                    self.assertEqual(before, session.state.to_dict())
+        finally:
+            session.card_db.close()
+
+    def test_descriptor_semantics_change_card_program_fingerprint(self):
+        record = _permanent(
+            "All creatures have haste.",
+            suffix=119_003_001,
+            name="Fingerprint Keyword Grant",
+        )
+        expected = self.compile(record)
+        original = fixed_query_keyword_grant_handler
+
+        def scoped_mutant(text: str):
+            compiled = original(text)
+            if compiled is None:
+                return None
+            template_id, descriptor, capabilities = compiled
+            changed = copy.deepcopy(descriptor)
+            changed["condition"]["target_controller"] = "source_controller"
+            return template_id, changed, capabilities
+
+        with mock.patch(
+            "quorune.compiler.runtime_templates.fixed_query_keyword_grant_handler",
+            side_effect=scoped_mutant,
+        ):
+            mutated = self.compile(record)
+        self.assertNotEqual(expected.fingerprint, mutated.fingerprint)
+
+
+class FixedQueryKeywordGrantRuntimeTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.db, cls.mishra, cls.zimone = load_assets()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.db.close()
+
+    def session(self, seed: int):
+        session = make_session(
+            self.db,
+            self.mishra,
+            self.zimone,
+            players=4,
+            seed=seed,
+            auto_pass_empty=False,
+        )
+        keep_all(session)
+        session.engine.permissions.invalidate_current()
+        return session
+
+    def add_sources(self, engine) -> dict[str, CardInstance]:
+        records = tuple(self.db.lookup(name) for name in SOURCE_NAMES)
+        self.assertTrue(all(record is not None for record in records))
+        for record in records:
+            program = compile_card_program(
+                self.db,
+                record,
+                capability_registry=load_default_capability_registry(),
+                capability_profile="commander_review",
+                trust_level="provisional",
+            )
+            self.assertEqual((), program.residuals, record.name)
+        registration = register_generated_programs(
+            self.db,
+            engine.semantics,
+            records,
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+        )
+        self.assertEqual(len(records), registration["runtime_handlers_promoted"])
+
+        sources: dict[str, CardInstance] = {}
+        for index, record in enumerate(records):
+            ref = f"KEYWORD-SOURCE-{index + 1}"
+            card = CardInstance(
+                object_id=f"fixed-query-keyword-grant:{index + 1}",
+                ref=ref,
+                oracle_id=record.oracle_id,
+                printed_name=record.name,
+                owner="A",
+                controller="A",
+                zone="battlefield",
+                zone_timestamp=engine._next_zone_timestamp(),
+                known_to=list(engine.seats),
+                revealed_to=list(engine.seats),
+            )
+            engine.state.cards[card.object_id] = card
+            engine.state.players["A"].zones["battlefield"].append(card.object_id)
+            sources[record.name] = card
+        return sources
+
+    def add_registered_card(
+        self,
+        engine,
+        *,
+        name: str,
+        ref: str,
+        seat: str = "A",
+    ) -> tuple[CardInstance, object, dict[str, object]]:
+        record = self.db.lookup(name)
+        self.assertIsNotNone(record, name)
+        program = compile_card_program(
+            self.db,
+            record,
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+            trust_level="provisional",
+        )
+        registration = register_generated_programs(
+            self.db,
+            engine.semantics,
+            (record,),
+            capability_registry=load_default_capability_registry(),
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+        )
+        card = CardInstance(
+            object_id=f"fixed-query-keyword-grant:{ref}",
+            ref=ref,
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner=seat,
+            controller=seat,
+            zone="battlefield",
+            zone_timestamp=engine._next_zone_timestamp(),
+            known_to=list(engine.seats),
+            revealed_to=list(engine.seats),
+        )
+        engine.state.cards[card.object_id] = card
+        engine.state.players[seat].zones["battlefield"].append(card.object_id)
+        return card, program, registration
+
+    @staticmethod
+    def creature(
+        engine,
+        controller: str,
+        name: str,
+        *,
+        subtype: str = "Test",
+        power: str = "5",
+        toughness: str = "5",
+    ) -> CardInstance:
+        ref = engine.create_token(
+            controller,
+            name=name,
+            characteristics={
+                "type_line": f"Token Creature — {subtype}",
+                "power": power,
+                "toughness": toughness,
+                "keywords": [],
+            },
+            reason="fixed-query keyword-grant assurance",
+        )[0]
+        card = engine._resolve_object(controller, ref, zones={"battlefield"})
+        card.acquired_control_turn_count = engine.state.players[
+            controller
+        ].turns_begun
+        return card
+
+    def test_compiled_grants_feed_haste_vigilance_flying_strike_and_trample_owners(
+        self,
+    ):
+        session = self.session(119_100_001)
+        engine = session.engine
+        self.add_sources(engine)
+        attacker = self.creature(engine, "A", "Keyword Attacker")
+        blocker = self.creature(
+            engine,
+            "B",
+            "Keyword Blocker",
+            power="2",
+            toughness="3",
+        )
+
+        attacker_keywords = engine._combat_keywords(attacker)
+        blocker_keywords = engine._combat_keywords(blocker)
+        self.assertGreaterEqual(
+            attacker_keywords,
+            {
+                "double strike",
+                "first strike",
+                "flying",
+                "haste",
+                "trample",
+                "vigilance",
+            },
+        )
+        self.assertEqual({"haste"}, blocker_keywords)
+
+        self.assertTrue(is_summoning_sick(engine, attacker))
+        self.assertFalse(summoning_sickness_prohibits_attack(engine, attacker))
+        self.assertFalse(
+            summoning_sickness_prohibits_tap_or_untap_cost(engine, attacker)
+        )
+        self.assertEqual([], tap_declared_attackers(engine, (attacker,)))
+        self.assertFalse(attacker.tapped)
+        self.assertFalse(
+            aerial_block_verdict(attacker_keywords, blocker_keywords).allowed
+        )
+
+        combatants = {
+            attacker.object_id: attacker_keywords,
+            blocker.object_id: blocker_keywords,
+        }
+        self.assertTrue(first_strike_step_required(combatants))
+        ordinary = ordinary_second_step_combatants(combatants)
+        self.assertNotIn(attacker.object_id, ordinary)
+        for step_index in (0, 1):
+            self.assertTrue(
+                assigns_in_damage_step(
+                    object_id=attacker.object_id,
+                    current_keywords=attacker_keywords,
+                    step_index=step_index,
+                    first_strike_step=True,
+                    ordinary_second_step=ordinary,
+                )
+            )
+
+        proposal = build_combat_damage_assignment_proposal(
+            seat="A",
+            snapshot=CombatDamageSnapshot(
+                damage_step_id="fixed-query-keyword-grant:damage:1",
+                damage_step_index=0,
+                first_strike_step=True,
+                active_player="A",
+                participants=(
+                    CombatDamageParticipant(
+                        object_id=attacker.object_id,
+                        reference=attacker.ref,
+                        controller="A",
+                        power=5,
+                        toughness=5,
+                        marked_damage=0,
+                        keywords=attacker_keywords,
+                        assigns_damage=True,
+                        logical_object_id=attacker.logical_object_id,
+                    ),
+                    CombatDamageParticipant(
+                        object_id=blocker.object_id,
+                        reference=blocker.ref,
+                        controller="B",
+                        power=2,
+                        toughness=3,
+                        marked_damage=0,
+                        keywords=blocker_keywords,
+                        assigns_damage=True,
+                        logical_object_id=blocker.logical_object_id,
+                    ),
+                ),
+                attacks=(
+                    CombatAttackRelationship(
+                        attacker.object_id,
+                        CombatDamageRecipient(
+                            reference="B",
+                            logical_object_id="player:B",
+                            controller="B",
+                            kind="player",
+                            legal=True,
+                        ),
+                    ),
+                ),
+                blocks=(
+                    CombatBlockRelationship(
+                        attacker.object_id,
+                        blocker.object_id,
+                    ),
+                ),
+                was_blocked=frozenset({attacker.object_id}),
+            ),
+        )
+        self.assertEqual(1, len(proposal.trample_sources))
+        self.assertEqual(
+            ((blocker.ref, 3), ("B", 2)),
+            tuple(
+                (assignment.target, assignment.amount)
+                for assignment in proposal.validate(
+                    (
+                        {
+                            "source": attacker.ref,
+                            "target": blocker.ref,
+                            "amount": 3,
+                        },
+                        {
+                            "source": attacker.ref,
+                            "target": "B",
+                            "amount": 2,
+                        },
+                    )
+                )
+            ),
+        )
+
+    def test_live_queries_track_global_control_subtype_phase_and_zone_changes(self):
+        session = self.session(119_100_002)
+        engine = session.engine
+        sources = self.add_sources(engine)
+        own = self.creature(engine, "A", "Own Creature")
+        opposing = self.creature(engine, "B", "Opposing Creature")
+        own_sliver = self.creature(
+            engine, "A", "Own Sliver", subtype="Sliver"
+        )
+        changed = self.creature(engine, "A", "Changed Subtype")
+        changed.annotations["continuous_add_subtypes"] = ["Sliver"]
+
+        self.assertIn("haste", engine._combat_keywords(opposing))
+        self.assertGreaterEqual(
+            engine._combat_keywords(own_sliver), {"flying", "haste"}
+        )
+        self.assertGreaterEqual(
+            engine._combat_keywords(changed), {"flying", "haste"}
+        )
+
+        mass_hysteria = sources["Mass Hysteria"]
+        mass_hysteria.phased_out = True
+        self.assertNotIn("haste", engine._combat_keywords(own))
+        self.assertNotIn("haste", engine._combat_keywords(opposing))
+        self.assertIn("haste", engine._combat_keywords(own_sliver))
+        mass_hysteria.phased_out = False
+
+        levitation = sources["Levitation"]
+        engine.change_control(
+            levitation.object_id,
+            "B",
+            reason="fixed-query live controller relation",
+        )
+        self.assertNotIn("flying", engine._combat_keywords(own))
+        self.assertIn("flying", engine._combat_keywords(opposing))
+        self.assertIn("flying", engine._combat_keywords(own_sliver))
+
+        cloudshredder = sources["Cloudshredder Sliver"]
+        engine.move_card(
+            cloudshredder.object_id,
+            "graveyard",
+            reason="fixed-query source-presence assurance",
+        )
+        self.assertNotIn("flying", engine._combat_keywords(own_sliver))
+        self.assertNotIn("flying", engine._combat_keywords(changed))
+
+    def test_aura_attachment_and_query_grant_execute_from_one_exact_card(self):
+        session = self.session(119_100_004)
+        engine = session.engine
+        enchanted = self.creature(engine, "A", "Enchanted Creature")
+        witness = self.creature(engine, "A", "Aura Grant Witness")
+        opponent = self.creature(engine, "B", "Aura Opponent Witness")
+        emblem, program, registration = self.add_registered_card(
+            engine,
+            name="Emblem of the Warmind",
+            ref="EMBLEM-OF-THE-WARMIND",
+        )
+        self.assertEqual((), program.residuals)
+        self.assertEqual(2, registration["runtime_handlers_promoted"])
+
+        attach_objects(
+            engine.state.cards,
+            emblem,
+            enchanted,
+            source_timestamp=engine._next_zone_timestamp(),
+        )
+        self.assertEqual(enchanted.object_id, emblem.attached_to)
+        self.assertIn("haste", engine._combat_keywords(witness))
+        self.assertNotIn("haste", engine._combat_keywords(opponent))
+        self.assertFalse(summoning_sickness_prohibits_attack(engine, witness))
+
+        engine.move_card(
+            emblem.object_id,
+            "graveyard",
+            reason="aura and keyword-grant composition assurance",
+        )
+        self.assertNotIn("haste", engine._combat_keywords(witness))
+        self.assertTrue(summoning_sickness_prohibits_attack(engine, witness))
+
+    def test_exact_grant_executes_while_replacement_siblings_fail_closed(self):
+        session = self.session(119_100_005)
+        engine = session.engine
+        pulmonic, program, registration = self.add_registered_card(
+            engine,
+            name="Pulmonic Sliver",
+            ref="PULMONIC-SLIVER",
+        )
+        blockers = {
+            blocker
+            for residual in program.residuals
+            for blocker in residual["blockers"]
+        }
+        self.assertGreaterEqual(
+            blockers,
+            {
+                "replacement applicability",
+                "self-replacement and prevention ordering",
+            },
+        )
+        self.assertFalse(program.trust_closure["strict_capability_ready"])
+        self.assertEqual(1, registration["runtime_handlers_promoted"])
+
+        runtime_programs = tuple(
+            engine.semantics.runtime_handler_programs_for_oracle(
+                pulmonic.oracle_id,
+                active_zone="battlefield",
+                event="characteristics.evaluate",
+            )
+        )
+        keyword_program = next(
+            value
+            for value in runtime_programs
+            if any(
+                descriptor.get("handler_id") == HANDLER_ID
+                for descriptor in value.handlers
+            )
+        )
+        self.assertTrue(engine.semantic_program_is_current_trusted(keyword_program))
+        self.assertFalse(
+            any(
+                "replacement" in value.event
+                and engine.semantic_program_is_current_trusted(value)
+                for value in engine.semantics.programs_for_oracle(
+                    pulmonic.oracle_id
+                )
+            )
+        )
+
+        sliver = self.creature(engine, "A", "Pulmonic Witness", subtype="Sliver")
+        non_sliver = self.creature(engine, "A", "Pulmonic Non-Sliver")
+        opponent_sliver = self.creature(
+            engine,
+            "B",
+            "Opponent Pulmonic Witness",
+            subtype="Sliver",
+        )
+        self.assertIn("flying", engine._combat_keywords(sliver))
+        self.assertNotIn("flying", engine._combat_keywords(non_sliver))
+        self.assertIn("flying", engine._combat_keywords(opponent_sliver))
+
+    def test_projection_and_replay_preserve_grants_without_private_identities(self):
+        session = self.session(119_100_003)
+        engine = session.engine
+        self.add_sources(engine)
+        target = self.creature(engine, "A", "Projected Keyword Creature")
+
+        projected = session.projector._snapshot("pilot:B")
+        public_target = next(
+            value
+            for value in projected["players"]["A"]["bf"]
+            if value["id"] == target.ref
+        )
+        self.assertGreaterEqual(
+            {value.casefold() for value in public_target["k"]},
+            {
+                "double strike",
+                "first strike",
+                "flying",
+                "haste",
+                "trample",
+                "vigilance",
+            },
+        )
+        rendered = json.dumps(projected, sort_keys=True)
+        self.assertNotIn(target.object_id, rendered)
+        self.assertNotIn("continuous_effects", rendered)
+
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        engine.state.priority_passes = []
+        engine.state.active_player = "A"
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine.state.started = True
+        engine._grant_priority("D")
+        engine.pump()
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        result = session.act(
+            "pilot:D",
+            {
+                "action_id": "concede",
+                "choices": {"confirm_concede": True},
+                "plan": "REPLAY_FIXED_QUERY_KEYWORD_GRANT",
+                "reason": "Verify typed keyword grants from the exact checkpoint.",
+            },
+        )
+        self.assertTrue(result.ok, result.summary)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "fixed-query-keyword-grants"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import AbstractSet, Any, Mapping
 
 from ..rules.capabilities import CapabilityRegistry
-from .dependency_gate import explicit_capability_gate
+from .dependency_gate import explicit_capabilities_gate
 from .ir_model import append_residual, OracleNode, OracleResidual, SourceSpan
 from .runtime_templates import static_runtime_template
 
@@ -18,7 +18,11 @@ def runtime_handler_node(
     node_id: str,
     line: str,
     span: SourceSpan,
-    compiled: tuple[str, Mapping[str, Any], str],
+    compiled: tuple[
+        str,
+        Mapping[str, Any],
+        str | tuple[str, ...],
+    ],
     kind: str,
     event: str,
     active_zone: str = "battlefield",
@@ -29,9 +33,9 @@ def runtime_handler_node(
 ) -> OracleNode:
     """Lower one already-compiled runtime descriptor into a guarded node."""
 
-    template_id, handler, capability = compiled
-    gate = explicit_capability_gate(
-        capability,
+    template_id, handler, capabilities = compiled
+    gate = explicit_capabilities_gate(
+        (capabilities,) if isinstance(capabilities, str) else capabilities,
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )

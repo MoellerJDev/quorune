@@ -40,7 +40,11 @@ from .zone_templates import static_zone_destination_replacement_handler
 
 @dataclass(frozen=True, slots=True)
 class StaticRuntimeTemplate:
-    compiled: tuple[str, Mapping[str, Any], str]
+    compiled: tuple[
+        str,
+        Mapping[str, Any],
+        str | tuple[str, ...],
+    ]
     kind: str
     event: str
     dependency_reason: str
@@ -222,6 +226,7 @@ def _continuous_static_runtime_template(
     text: str,
     *,
     source_name: str | None,
+    source_is_class: bool,
 ) -> StaticRuntimeTemplate | None:
     """Select one closed continuous-characteristic production."""
 
@@ -247,7 +252,9 @@ def _continuous_static_runtime_template(
                 "rules capability"
             ),
         )
-    keyword_grant = fixed_query_keyword_grant_handler(text)
+    keyword_grant = (
+        None if source_is_class else fixed_query_keyword_grant_handler(text)
+    )
     if keyword_grant is not None:
         return StaticRuntimeTemplate(
             compiled=keyword_grant,
@@ -372,6 +379,7 @@ def static_runtime_template(
     continuous = _continuous_static_runtime_template(
         text,
         source_name=source_name,
+        source_is_class=source_is_class,
     )
     if continuous is not None:
         return continuous

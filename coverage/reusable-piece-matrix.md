@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "428ba420444d83ef8fd41d63b36997681147648d980cc8eb265e52a0e52ae696"
+verified: "26c0159dc35b0e9c892e2ad791e8431460028c04f14553b0ec7744d2e00ad86c"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -22,8 +22,8 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 - Material abilities classified: 59,649
 - Unclassified material spans: 0
 - Mapped pinned rules: 840 / 3,300
-- Applicable piece pairs: 35,044
-- Covered piece pairs: 629
+- Applicable piece pairs: 35,227
+- Covered piece pairs: 638
 
 ## Ontology classes
 
@@ -67,7 +67,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 | Piece | Class | Residuals | Sole blockers | Expected cards | Runtime | Assurance |
 |---|---|---:|---:|---:|---|---|
-| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 9,049 | 3,743 | 3,743 | `absent` | `untested` |
+| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 8,927 | 3,690 | 3,690 | `absent` | `untested` |
 | `residual.effect_clause.unparsed-clause-grammar` | `one_shot_effects` | 2,955 | 283 | 283 | `absent` | `untested` |
 | `residual.mechanic_dependency.cr-611-continuous-effects` | `keyword_mechanics` | 515 | 237 | 237 | `absent` | `untested` |
 | `residual.activated_effect.unparsed-clause-grammar` | `one_shot_effects` | 2,154 | 185 | 185 | `absent` | `untested` |
@@ -81,7 +81,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `residual.effect_clause.destroy-target` | `one_shot_effects` | 553 | 21 | 21 | `absent` | `untested` |
 | `residual.effect_clause.life-change` | `one_shot_effects` | 585 | 19 | 19 | `absent` | `untested` |
 | `residual.keyword_dependency.unearth` | `keyword_mechanics` | 55 | 19 | 19 | `absent` | `untested` |
-| `residual.keyword_dependency.cascade` | `keyword_mechanics` | 37 | 18 | 18 | `absent` | `untested` |
+| `residual.keyword_dependency.cascade` | `keyword_mechanics` | 37 | 19 | 19 | `absent` | `untested` |
 | `residual.effect_clause.exile` | `one_shot_effects` | 636 | 17 | 17 | `absent` | `untested` |
 | `residual.activated_effect.life-change` | `one_shot_effects` | 270 | 17 | 17 | `absent` | `untested` |
 | `residual.keyword_dependency.bestow` | `keyword_mechanics` | 42 | 17 | 17 | `absent` | `untested` |

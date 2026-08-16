@@ -17,6 +17,7 @@
     "tests/fixtures/explore-cards.json",
     "tests/fixtures/fixed-counter-keyword-activations.json",
     "tests/fixtures/fixed-effect-clause-sequence-cards.json",
+    "tests/fixtures/fixed-query-keyword-grant-cards.json",
     "tests/fixtures/fixed-token-creation-cards.json",
     "tests/fixtures/intrinsic-basic-land-mana-cards.json",
     "tests/fixtures/read-ahead-saga-cards.json",
@@ -25,6 +26,24 @@
     "tests/fixtures/station-rules-cards.json",
     "tests/fixtures/typed-land-entry-cards.json"
   ],
-  "dynamic_requirements": [],
+  "dynamic_requirements": [
+    {
+      "source": "tests/test_fixed_query_keyword_grants.py",
+      "symbol": "FixedQueryKeywordGrantRuntimeTests.add_sources",
+      "card_names": [
+        "Aggressive Mammoth",
+        "Cloudshredder Sliver",
+        "Knighthood",
+        "Levitation",
+        "Mass Hysteria",
+        "Rage Reflection",
+        "Serra's Blessing"
+      ],
+      "oracle_ids": [],
+      "deck_files": [],
+      "fixture_files": [],
+      "rationale": "The helper iterates the fixed-query keyword grant source cards by name."
+    }
+  ],
   "full_database_only": []
 }
