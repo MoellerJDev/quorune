@@ -1244,7 +1244,7 @@ def temporary_declaration_restriction_node_capabilities(
         return ()
     return (
         "combat.declaration.typed_components",
-        "continuous.resolution.fixed_characteristics_until_end_of_turn",
+        "continuous.resolution.declaration_rules_until_end_of_turn",
         "target.revalidate_resolution",
     )
 

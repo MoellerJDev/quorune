@@ -53,7 +53,7 @@ def _apply_grant_declaration_restriction_until_end_of_turn(
     host._log(
         actor,
         "combat.declaration_restriction",
-        f"{card.ref} gained a combat declaration restriction until end of turn.",
+        f"{card.ref} is subject to a combat declaration restriction until end of turn.",
         {
             "object": card.ref,
             "restriction": str(effect.get("restriction") or ""),

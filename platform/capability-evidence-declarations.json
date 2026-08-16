@@ -3107,11 +3107,35 @@
     },
     {
       "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_all_four_restrictions_change_declaration_behavior_and_expire",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose each closed resolved restriction with the shared attack and block declaration solver, then remove it at cleanup."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_resolved_rule_survives_ability_removal_while_static_rule_does_not",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Use one shared declaration query in which current-effective static restrictions obey ability removal and an independent resolved rule does not."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_combat_declaration_costs.CombatDeclarationCostTests.test_prison_tax_is_projected_paid_atomically_and_replays",
       "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Project defender-scoped typed attack taxes and commit the selected multiplayer payment atomically."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_four_player_projection_exposes_only_public_declaration_facts",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the same public four-player attack domain to every seat without exposing authoritative declaration-rule identities."
     },
     {
       "capability_id": "combat.declaration.typed_components",
@@ -3139,6 +3163,22 @@
     },
     {
       "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "negative",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.ActivatedTemporaryDeclarationRestrictionTemplateTests.test_open_temporary_declaration_restriction_grammar_stays_residual",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep unsupported source-relative and exception-bearing temporary declaration grammar residual."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "negative",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_malformed_temporary_restriction_rolls_back_without_effect",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed and stale temporary restriction inputs without changing authoritative state."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
       "evidence_class": "positive",
       "test_id": "tests.test_combat_declaration_costs.CombatDeclarationCostTests.test_prison_tax_is_projected_paid_atomically_and_replays",
       "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
@@ -3163,6 +3203,22 @@
     },
     {
       "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "positive",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.ActivatedTemporaryDeclarationRestrictionTemplateTests.test_closed_activated_temporary_declaration_restrictions_compile",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile all four closed activated temporary restriction forms to one typed declaration operation."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_four_player_projection_exposes_only_public_declaration_facts",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose public declaration domains while withholding effect, source, physical, and logical journal identities from every seat packet."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
       "evidence_class": "replay",
       "test_id": "tests.test_combat_declaration_costs.CombatDeclarationCostTests.test_prison_tax_is_projected_paid_atomically_and_replays",
       "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
@@ -3176,6 +3232,22 @@
       "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay a typed simultaneous attack-or-block restriction across distinct legal defenders."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "replay",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_cleanup_expiration_is_exactly_replayable",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the cleanup transition that removes a duration-bound declaration rule and restores the public legal domain."
+    },
+    {
+      "capability_id": "combat.declaration.typed_components",
+      "evidence_class": "replay",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_resolved_rule_survives_ability_removal_while_static_rule_does_not",
+      "official_rule_ids": ["508.1c", "508.1d", "508.1h", "509.1b", "509.1c", "509.1d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Round-trip and exactly replay a resolved declaration rule through the shared static-plus-resolved query."
     },
     {
       "capability_id": "combat.goad.prohibition.controller_creatures",
@@ -4269,6 +4341,110 @@
         "commander_review"
       ],
       "applicability_note": "Apply a reviewed battlefield static ability that gives same-controller permanents with declared subtypes a fixed power/toughness modifier in layer 7c."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_all_four_restrictions_change_declaration_behavior_and_expire",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply every represented object-anchored declaration prohibition through the shared combat solver and remove it at cleanup."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_resolved_rule_survives_ability_removal_while_static_rule_does_not",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep an already resolved rule independent of layer-6 ability removal while a static ability restriction disappears."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_source_departure_preserves_rule_but_target_reentry_does_not",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve source-independent duration after source departure and stop applying the rule to a returned target incarnation."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_four_player_projection_exposes_only_public_declaration_facts",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply the public restriction consistently in a four-player declaration domain without leaking journal identities."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_resolved_rule_survives_ability_removal_while_static_rule_does_not",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject either suppression of the journaled rule or mutation back to an ability-fragment grant."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "negative",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.ActivatedTemporaryDeclarationRestrictionTemplateTests.test_open_temporary_declaration_restriction_grammar_stays_residual",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Refuse source-relative, exception-bearing, and otherwise open declaration-rule grammar at compilation."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "negative",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_illegal_target_at_resolution_commits_no_declaration_rule",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Commit no declaration rule when the locked object is no longer a legal resolution target."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "negative",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_malformed_temporary_restriction_rolls_back_without_effect",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject malformed and stale declaration-rule inputs without mutating the authoritative duration journal."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "positive",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.ActivatedTemporaryDeclarationRestrictionTemplateTests.test_closed_activated_temporary_declaration_restrictions_compile",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile the four bounded target-creature restriction forms into the closed typed operation."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "positive",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_all_four_restrictions_change_declaration_behavior_and_expire",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Create each closed resolved declaration rule and enforce its exact attack or block result until cleanup."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_four_player_projection_exposes_only_public_declaration_facts",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep effect, source, physical, and logical identities authoritative-only while exposing the public legal declaration domain."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "replay",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_cleanup_expiration_is_exactly_replayable",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Exactly replay cleanup expiration and the restored declaration domain from authoritative commands."
+    },
+    {
+      "capability_id": "continuous.resolution.declaration_rules_until_end_of_turn",
+      "evidence_class": "replay",
+      "test_id": "tests.test_temporary_declaration_restriction_effects.TemporaryDeclarationRestrictionRuntimeTests.test_resolved_rule_survives_ability_removal_while_static_rule_does_not",
+      "official_rule_ids": ["508.1c", "509.1b", "611.2c", "514.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Round-trip and exactly replay the typed declaration-rule journal entry without consulting Oracle prose."
     },
     {
       "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",

@@ -11,6 +11,11 @@ from .continuous_effects import (
     ContinuousOperation,
     Layer,
 )
+from .declaration_rule_effects import (
+    ContinuousJournalEffect,
+    ResolutionDeclarationRuleEffect,
+)
+from .declaration_fragments import DeclarationRestrictionTemplate
 from .object_predicate import ObjectQuerySpec
 from .object_query import object_matches_query, object_query_result
 
@@ -130,11 +135,14 @@ class ContinuousEffectStateHost(Protocol):
 
 def commit_continuous_effect(
     state: Any,
-    effect: ContinuousEffect,
-) -> ContinuousEffect:
+    effect: ContinuousJournalEffect,
+) -> ContinuousJournalEffect:
     """Append one validated effect through the canonical journal owner."""
 
-    if not isinstance(effect, ContinuousEffect):
+    if not isinstance(
+        effect,
+        (ContinuousEffect, ResolutionDeclarationRuleEffect),
+    ):
         raise ContinuousEffectStateError(
             "Continuous-effect commits require a typed effect"
         )
@@ -232,6 +240,46 @@ def create_resolution_continuous_effect(
     return commit_continuous_effect(host.state, effect)
 
 
+def create_resolution_declaration_rule_effect(
+    host: ContinuousEffectStateHost,
+    *,
+    source: ResolutionEffectSource,
+    targets: Sequence[Any],
+    restriction: DeclarationRestrictionTemplate,
+    duration: ContinuousEffectDuration = (
+        ContinuousEffectDuration.UNTIL_END_OF_TURN
+    ),
+) -> ResolutionDeclarationRuleEffect | None:
+    """Commit one typed declaration rule for a locked affected-object set."""
+
+    journal = host.state.continuous_effects
+    if journal is None:
+        return None
+    identities = tuple(
+        ContinuousObjectIdentity(
+            object_id=card.object_id,
+            logical_object_id=card.logical_object_id,
+        )
+        for card in targets
+    )
+    if not identities:
+        return None
+    effect = ResolutionDeclarationRuleEffect(
+        effect_id=host._next_ref("DR"),
+        source_id=source.object_id or source.stack_ref,
+        timestamp=host._next_zone_timestamp(),
+        restriction=restriction,
+        duration=duration,
+        locked_objects=identities,
+    )
+    committed = commit_continuous_effect(host.state, effect)
+    if not isinstance(committed, ResolutionDeclarationRuleEffect):
+        raise ContinuousEffectStateError(
+            "Declaration-rule commit returned the wrong effect type"
+        )
+    return committed
+
+
 def active_resolution_effects(
     state: Any, card: Any
 ) -> tuple[ContinuousEffect, ...]:
@@ -245,7 +293,29 @@ def active_resolution_effects(
     return tuple(
         effect
         for effect in journal
-        if identity in effect.locked_objects
+        if isinstance(effect, ContinuousEffect)
+        and identity in effect.locked_objects
+    )
+
+
+def active_resolution_declaration_rule_effects(
+    state: Any,
+    card: Any,
+) -> tuple[ResolutionDeclarationRuleEffect, ...]:
+    """Return declaration rules locked to this battlefield incarnation."""
+
+    journal = state.continuous_effects
+    if not journal:
+        return ()
+    identity = ContinuousObjectIdentity(
+        object_id=card.object_id,
+        logical_object_id=card.logical_object_id,
+    )
+    return tuple(
+        effect
+        for effect in journal
+        if isinstance(effect, ResolutionDeclarationRuleEffect)
+        and identity in effect.locked_objects
     )
 
 
@@ -266,7 +336,9 @@ def expire_end_of_turn_continuous_effects(state: Any) -> int:
 __all__ = [
     "ContinuousEffectStateError",
     "ResolutionEffectSource",
+    "active_resolution_declaration_rule_effects",
     "active_resolution_effects",
+    "create_resolution_declaration_rule_effect",
     "create_resolution_continuous_effect",
     "expire_end_of_turn_continuous_effects",
     "matching_battlefield_objects",

@@ -1185,6 +1185,7 @@ def capability_covered_mechanics(
         {
             "continuous.power_toughness.fixed_anthem",
             "continuous.resolution.fixed_characteristics_until_end_of_turn",
+            "continuous.resolution.declaration_rules_until_end_of_turn",
             "continuous.resolution.fixed_keyword_zone_object",
         }
     ):

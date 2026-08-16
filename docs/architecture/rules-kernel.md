@@ -75,7 +75,12 @@ client reconstruction. `continuous_effect_state.py` owns the authoritative
 resolution-effect journal and expiration; `characteristic_evaluation.py`
 combines that journal with live CardProgram static effects for both engine
 legality and principal-scoped projection. Raw journal entries and physical
-object identities never enter the projection.
+object identities never enter the projection. Resolution-created combat
+declaration rules share the duration journal but are not characteristics and
+do not enter the layer evaluator. The declaration owner combines them with
+restrictions from current effective static abilities through one read-only
+query, so ability removal affects static restrictions without erasing an
+independent rule that already resolved.
 
 ## Inputs and outputs
 
