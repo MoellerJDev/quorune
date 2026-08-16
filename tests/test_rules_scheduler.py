@@ -508,14 +508,18 @@ class RulesSchedulerTests(unittest.TestCase):
             self.assertTrue(candidate["universal_subsystem"])
         history = self.queue["work_selection"]["reviewed_rerank_history"]
         self.assertEqual(
-            {
-                "rules:ordinary-shroud-target-legality",
-                "rules:ordinary-echo-upkeep-trigger",
-                "rules:ordinary-fixed-threshold-crew",
-                "compiler:fixed-effect-clause-sequences",
-            },
-            {row["candidate_id"] for row in history},
+            self.catalog["work_selection"]["reviewed_rerank_history"],
+            history,
         )
+        candidate_ids = {candidate["candidate_id"] for candidate in candidates}
+        for row in history:
+            self.assertEqual(
+                {"candidate_id", "selected_over", "reason"}, set(row)
+            )
+            self.assertRegex(row["candidate_id"], r"^(rules|compiler):")
+            self.assertIn(row["selected_over"], candidate_ids)
+            self.assertNotEqual(row["candidate_id"], row["selected_over"])
+            self.assertGreaterEqual(len(row["reason"].split()), 12)
 
     def test_work_selection_policy_fails_closed(self):
         policy = deepcopy(self.catalog["work_selection"])

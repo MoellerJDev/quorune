@@ -386,6 +386,24 @@
       "resolution": "The composition suite now enumerates all four promoted pre-existing two-clause forms, the leaf template suites still prove atomic-parser rejection, and the integrated leaf suites no longer misclassify supported compositions. AGENTS.md now requires a cross-leaf negative-suite audit whenever a composition layer broadens accepted syntax.",
       "run_id": 31909012248,
       "summary": "Three more leaf compiler regressions asserted integrated residual status for two-clause abilities that the new composition owner intentionally promotes; this repeated the preceding mass-damage promotion escape."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "casting-costs-mana",
+        "generated-validation"
+      ],
+      "head_sha": "41f0b893ceabb24127223bad558f8c3e997f6ecf",
+      "id": "ci-20260816-23",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_rules_scheduler.RulesSchedulerTests.test_every_serious_candidate_carries_auditable_reranking_context",
+        "test_static_action_permissions.StaticActionPermissionCompilerTests.test_unsupported_permission_wording_and_malformed_descriptors_fail_closed"
+      ],
+      "resolution": "The duplicated history allowlist was replaced with structural assertions against the canonical catalog and live selected-candidate set, so future reviewed reranks require one source entry instead of a synchronized test literal. The obsolete Haste grant was removed from the action-permission residual table because the fixed-query composition suite already asserts that exact promoted form. The existing AGENTS.md cross-leaf audit rule mechanically covers future grammar promotions, and the path policy already selected both affected shards.",
+      "run_id": 31917201086,
+      "summary": "The fixed-query keyword-grant harvest repeated two prior deterministic escape patterns: the governance regression duplicated the complete reviewed rerank-history candidate list, and a leaf compiler negative suite still asserted integrated residual status for syntax promoted by the new composition owner."
     }
   ],
   "known_flaky_tests": [],
@@ -393,7 +411,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-15T21:39:22Z",
+  "observed_at": "2026-08-16T00:38:00Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -438,7 +456,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "91dfd0d576f5cfbfa1db2a09c27537381714ee19a543fc1b8ff42869137b438f",
+  "source_fingerprint": "46a4b22d29adb70d976339ec799d8a7c93fd21f8f2da64389e71f0309c7c74e2",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -449,11 +467,11 @@
       "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 6,
-      "source_correctness": 6
+      "source_correctness": 7
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 17,
-    "escape_count": 22,
+    "deterministic_escape_count": 18,
+    "escape_count": 23,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [
