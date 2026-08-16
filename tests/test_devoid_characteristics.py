@@ -15,6 +15,7 @@ from quorune.card_programs import (
     bind_card_program_runtime,
     compile_card_program,
 )
+from quorune.card_programs.commands import runtime_component_status
 from quorune.carddb import CardDatabase
 from quorune.characteristic_evaluation import evaluate_card_characteristics
 from quorune.characteristic_fragments import (
@@ -151,6 +152,22 @@ class DevoidCompilerTests(unittest.TestCase):
         )
         self.assertEqual("all", ability.active_zone)
         self.assertEqual((), program.residuals)
+
+        components = [
+            row
+            for row in runtime_component_status("commander_review")[
+                "runtime_components"
+            ]
+            if row["family"]
+            == "ability.static.colorless_characteristic_definition"
+        ]
+        self.assertEqual(1, len(components))
+        self.assertEqual(HANDLER_ID, components[0]["handler_id"])
+        self.assertEqual(
+            [CAPABILITY_ID],
+            components[0]["capability_dependencies"],
+        )
+        self.assertTrue(components[0]["capability_closure"]["trusted"])
 
     def test_nonordinary_devoid_wording_remains_source_spanned_residual(self):
         record = replace(

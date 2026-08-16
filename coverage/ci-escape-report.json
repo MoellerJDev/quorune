@@ -404,6 +404,23 @@
       "resolution": "The duplicated history allowlist was replaced with structural assertions against the canonical catalog and live selected-candidate set, so future reviewed reranks require one source entry instead of a synchronized test literal. The obsolete Haste grant was removed from the action-permission residual table because the fixed-query composition suite already asserts that exact promoted form. The existing AGENTS.md cross-leaf audit rule mechanically covers future grammar promotions, and the path policy already selected both affected shards.",
       "run_id": 31917201086,
       "summary": "The fixed-query keyword-grant harvest repeated two prior deterministic escape patterns: the governance regression duplicated the complete reviewed rerank-history candidate list, and a leaf compiler negative suite still asserted integrated residual status for syntax promoted by the new composition owner."
+    },
+    {
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "failed_surfaces": [
+        "compiler-cardprogram"
+      ],
+      "head_sha": "67baa6d1fe82683bd3b53de7b9c39b7b1aadb125",
+      "id": "ci-20260816-24",
+      "impact_edge_status": "added",
+      "regressions": [
+        "test_devoid_characteristics.DevoidCompilerTests.test_ordinary_devoid_compiles_to_all_zone_characteristic_definition",
+        "test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound"
+      ],
+      "resolution": "The Devoid-focused compiler witness now verifies the exact registered family, handler, capability dependency, and trusted closure, while the global closed inventory includes that family. The existing impact policy already selected compiler-cardprogram; the focused module now makes the registration obligation executable in the locally permitted Devoid check.",
+      "run_id": 31924413599,
+      "summary": "The Devoid harvest registered a capability-bound runtime component, but its focused local evidence omitted the global family-inventory ratchet despite the registration-change review rule."
     }
   ],
   "known_flaky_tests": [],
@@ -411,7 +428,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-16T00:38:00Z",
+  "observed_at": "2026-08-16T03:43:00Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -456,7 +473,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "46a4b22d29adb70d976339ec799d8a7c93fd21f8f2da64389e71f0309c7c74e2",
+  "source_fingerprint": "75efbb1e196169f186c15700859710a16af7039ccd97a6fee27a26406ad658f0",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -466,12 +483,12 @@
       "flaky_test": 6,
       "generated_artifact_drift": 2,
       "infrastructure": 1,
-      "missing_affected_test": 6,
+      "missing_affected_test": 7,
       "source_correctness": 7
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 18,
-    "escape_count": 23,
+    "deterministic_escape_count": 19,
+    "escape_count": 24,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

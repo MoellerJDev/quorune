@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-16T00:38:00Z",
+  "observed_at": "2026-08-16T03:43:00Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -346,6 +346,21 @@
       ],
       "impact_edge_status": "not_applicable",
       "resolution": "The duplicated history allowlist was replaced with structural assertions against the canonical catalog and live selected-candidate set, so future reviewed reranks require one source entry instead of a synchronized test literal. The obsolete Haste grant was removed from the action-permission residual table because the fixed-query composition suite already asserts that exact promoted form. The existing AGENTS.md cross-leaf audit rule mechanically covers future grammar promotions, and the path policy already selected both affected shards."
+    },
+    {
+      "id": "ci-20260816-24",
+      "run_id": 31924413599,
+      "head_sha": "67baa6d1fe82683bd3b53de7b9c39b7b1aadb125",
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "summary": "The Devoid harvest registered a capability-bound runtime component, but its focused local evidence omitted the global family-inventory ratchet despite the registration-change review rule.",
+      "failed_surfaces": ["compiler-cardprogram"],
+      "regressions": [
+        "test_devoid_characteristics.DevoidCompilerTests.test_ordinary_devoid_compiles_to_all_zone_characteristic_definition",
+        "test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound"
+      ],
+      "impact_edge_status": "added",
+      "resolution": "The Devoid-focused compiler witness now verifies the exact registered family, handler, capability dependency, and trusted closure, while the global closed inventory includes that family. The existing impact policy already selected compiler-cardprogram; the focused module now makes the registration obligation executable in the locally permitted Devoid check."
     }
   ],
   "recent_pull_requests": [
