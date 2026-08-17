@@ -637,6 +637,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/casting_cost_host.py",
+      "layer": "rules",
+      "owning_subsystem": "casting_activation_and_costs",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/characteristic_evaluation.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -984,6 +998,21 @@
       "file": "quorune/compiled_cast_timing.py",
       "layer": "semantics",
       "owning_subsystem": "cast_timing",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/compiled_morph.py",
+      "layer": "semantics",
+      "owning_subsystem": "face_down_cards",
       "allowed_dependency_layers": [
         "adapter",
         "domain",
@@ -3349,6 +3378,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/morph.py",
+      "layer": "rules",
+      "owning_subsystem": "face_down_cards",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/object_predicate.py",
       "layer": "domain",
       "owning_subsystem": "object_query",
@@ -4455,6 +4498,20 @@
         "semantics"
       ],
       "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/rules/morph_actions.py",
+      "layer": "rules",
+      "owning_subsystem": "face_down_cards",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "read_only",
       "card_specificity_policy": "generic_no_growth",
       "visibility_sensitivity": "authoritative_internal",
       "replay_participation": "none"
@@ -5850,6 +5907,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/morph.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/nodes.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -6788,5 +6860,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "4c8ccc070315c7aff4e0d3d2f8804764d88c8222f3bad1be2999a5eb27e8f9b4"
+  "fingerprint": "ca9b86d8e8a4de08357b79387d8ee3b1145543d01bea6bbff60062408fc23d75"
 }

@@ -26,6 +26,7 @@ from .attachments import (
     detach_object,
 )
 from .carddb import CardDatabase, CardRecord
+from .casting_cost_host import CastingCostHostMixin
 from .carddb_characteristics import (
     separate_custom_display_text,
 )
@@ -237,7 +238,6 @@ from .replacement_decisions import (
 from .replacement_effects import ReplacementChoiceRequired
 from .replacement.immutable import FrozenMap, thaw_value
 from .rules.casting import (
-    build_cast_cost_options,
     build_cast_proposal,
     CastProposalError,
     CastProposalRequest,
@@ -367,6 +367,7 @@ class ActionResult:
 
 class CommanderEngine(
     AbilityFragmentHostMixin,
+    CastingCostHostMixin,
     TriggerProcessingHostMixin,
     TargetSelectionOwnerMixin,
     HiddenSearchOwnerMixin,
@@ -848,6 +849,7 @@ class CommanderEngine(
         base: Mapping[str, Any],
         *,
         runtime_effects: Sequence[ContinuousEffect] = (),
+        ignore_face_down: bool = False,
     ) -> dict[str, Any]:
         """Delegate CR 613 evaluation to its rules-owned subsystem."""
 
@@ -857,6 +859,7 @@ class CommanderEngine(
                 card,
                 base,
                 runtime_effects=runtime_effects,
+                ignore_face_down=ignore_face_down,
             ),
         )
 
@@ -865,6 +868,7 @@ class CommanderEngine(
         value: str | CardInstance,
         *,
         printed_entry_characteristics: bool = False,
+        ignore_face_down: bool = False,
     ) -> dict[str, Any]:
         card = value if isinstance(value, CardInstance) else self.state.cards[value]
         record = self.card_record(card)
@@ -885,6 +889,7 @@ class CommanderEngine(
             card,
             base,
             runtime_effects=runtime_effects,
+            ignore_face_down=ignore_face_down,
         )
         base = apply_dynamic_characteristic_fragments(self, card, base)
         if (
@@ -3470,31 +3475,6 @@ class CommanderEngine(
             maximum = value
         return maximum
 
-    def _cast_cost_options(
-        self,
-        seat: str,
-        card: CardInstance,
-        program: SemanticProgram | None,
-        *,
-        response: Mapping[str, Any] | None = None,
-        hint: bool,
-        force_without_mana_cost: bool = False,
-    ) -> list[dict[str, Any]]:
-        """Return canonical typed cost choices as protocol dictionaries."""
-
-        return [
-            option.to_dict()
-            for option in build_cast_cost_options(
-                self,
-                seat,
-                card,
-                program,
-                response=response,
-                hint=hint,
-                force_without_mana_cost=force_without_mana_cost,
-            )
-        ]
-
     def _priority_action_hints(self, seat: str) -> dict[str, Any]:
         return build_priority_action_catalog(self, seat)
 
@@ -3510,7 +3490,7 @@ class CommanderEngine(
         """
 
         hints = dict(hints or self._priority_action_hints(seat))
-        return not any(hints.get(key) for key in ("cast", "lands", "abilities"))
+        return not any(hints.get(key) for key in ("cast", "lands", "abilities", "special_actions"))
 
     # ------------------------------------------------------------------
     # Stack resolution and arbiter role

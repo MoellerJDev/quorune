@@ -9,7 +9,7 @@ maintenance: "hand-maintained"
 
 # Mechanic capability extension guide
 
-Capability registry version 108 is the current incremental trust boundary beside
+Capability registry version 109 is the current incremental trust boundary beside
 the legacy broad mechanic contracts. Fine-grained closures now cover bounded
 families across damage and replacement results, life and counters, draw,
 continuous characteristics and attachments, casting and activation, and combat

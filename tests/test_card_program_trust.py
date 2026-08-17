@@ -216,6 +216,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.trigger.ward",
                 "casting.payment.affinity_artifacts",
                 "casting.payment.convoke",
+                "casting.morph.fixed_mana",
                 "combat.block.self-counter-prohibition",
                 "continuous.fixed_query_ability_grant",
                 "continuous.fixed_query_keyword_grant",

@@ -737,14 +737,18 @@ def _event_programs_for_source(
         if source_characteristics is not None
         else None
     ) or host._effective_card_data(source)
-    programs = [
-        program
-        for program in host.semantics.programs_for_oracle(
-            source.oracle_id,
-            active_zone=active_zone,
-        )
-        if not program.provenance.get("granted_only")
-    ]
+    programs = (
+        []
+        if source.face_down and active_zone in {"battlefield", "stack"}
+        else [
+            program
+            for program in host.semantics.programs_for_oracle(
+                source.oracle_id,
+                active_zone=active_zone,
+            )
+            if not program.provenance.get("granted_only")
+        ]
+    )
     for granted in granted_triggered_specs(
         canonical_ability_fragments(
             characteristics.get("ability_fragments", ())

@@ -42,6 +42,7 @@ class CastProposalRequest:
     card_ref: str
     zones: tuple[str, ...]
     face: str | None = None
+    cast_method: str | None = None
     x_value: int | None = None
     modes: tuple[str, ...] = ()
     targets: FrozenJson = field(default_factory=FrozenObject)
@@ -68,6 +69,8 @@ class CastProposalRequest:
             raise CastProposalError(
                 "Cast requests require an actor, card, and source zone"
             )
+        if self.cast_method not in {None, "morph"}:
+            raise CastProposalError("Unsupported cast method")
         if not isinstance(self.targets, (FrozenObject, FrozenArray)):
             object.__setattr__(self, "targets", freeze_json(self.targets))
         if not isinstance(self.targets, (FrozenObject, FrozenArray)):
@@ -118,6 +121,11 @@ class CastProposalRequest:
             card_ref=str(response.get("card") or response.get("id") or ""),
             zones=zones,
             face=(str(response["face"]) if response.get("face") else None),
+            cast_method=(
+                str(response["cast_method"])
+                if response.get("cast_method")
+                else None
+            ),
             x_value=x_value,
             modes=tuple(str(value) for value in raw_modes),
             targets=freeze_json(response.get("targets") or {}),

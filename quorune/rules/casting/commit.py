@@ -13,9 +13,17 @@ from ...counter_placement import (
     commit_prepared_counter_placements,
     prepare_counter_placements,
 )
+from ...compiled_morph import compiled_fixed_mana_morph_spec
 from ...life_state import LifeStateError, pay_life_cost
 from ...model import StackItem, YieldPolicy
+from ...morph import (
+    FixedManaMorphSpec,
+    MORPH_CAST_METHOD,
+    MORPH_FACE_DOWN_LABEL,
+    MorphError,
+)
 from ..spell_cast_events import SpellCastEvent
+from ...zone_object_state import mark_card_face_down_for_morph
 from ...stack_counter import oracle_has_intrinsic_counter_prohibition
 from ...tap_state import set_permanent_tapped
 from ...trigger_processing import collect_ward_occurrences, enqueue_trigger_batch
@@ -650,6 +658,19 @@ def _create_spell_item(
     card.zone = "stack"
     card.controller = proposal.seat
     card.active_face = proposal.face
+    morph_spec = None
+    if details.get("cast_method") == MORPH_CAST_METHOD:
+        try:
+            morph_spec = FixedManaMorphSpec.from_dict(details.get("morph") or {})
+        except MorphError as exc:
+            raise CastProposalError(
+                str(exc), reason="morph_contract_malformed"
+            ) from exc
+        mark_card_face_down_for_morph(
+            card,
+            controller=proposal.seat,
+            spec=morph_spec,
+        )
     destination = (
         "battlefield"
         if any(
@@ -683,7 +704,11 @@ def _create_spell_item(
         ref=ref,
         kind="spell",
         controller=proposal.seat,
-        label=card.active_face or record.name,
+        label=(
+            MORPH_FACE_DOWN_LABEL
+            if morph_spec is not None
+            else card.active_face or record.name
+        ),
         card_object_id=card.object_id,
         semantic_key=proposal.semantic_key,
         targets=list(proposal.targets),
@@ -718,6 +743,14 @@ def _create_spell_item(
             ),
             "granted_improvise": used_improvise,
             "cost_option": proposal.cost_option_id,
+            **(
+                {
+                    "cast_method": MORPH_CAST_METHOD,
+                    "morph_spec_fingerprint": morph_spec.fingerprint,
+                }
+                if morph_spec is not None
+                else {}
+            ),
             **(
                 {"target_schema_override": details["target_schema_override"]}
                 if details.get("target_schema_override") is not None
@@ -905,6 +938,20 @@ def commit_cast(
 
     card, record, program = _revalidate_source(host, proposal)
     details = dict(thaw_json(proposal.details))
+    if details.get("cast_method") == MORPH_CAST_METHOD:
+        try:
+            proposed_morph = FixedManaMorphSpec.from_dict(
+                details.get("morph") or {}
+            )
+        except MorphError as exc:
+            raise CastProposalError(
+                str(exc), reason="morph_contract_malformed"
+            ) from exc
+        if compiled_fixed_mana_morph_spec(host, card) != proposed_morph:
+            raise CastProposalError(
+                "The fixed-mana Morph contract changed before commit",
+                reason="stale_morph_contract",
+            )
     selected_option = dict(details["selected_cost_option"])
     requirements = dict(thaw_json(proposal.requirements))
     try:

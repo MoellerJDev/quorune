@@ -108,6 +108,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/compiled_activated_abilities.py",
         "quorune/compiled_cast_costs.py",
         "quorune/compiled_cast_timing.py",
+        "quorune/compiled_morph.py",
     }:
         return "semantics"
     if relative in {
@@ -206,6 +207,8 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/mechanic_contracts.py",
         "quorune/menace.py",
         "quorune/mentor.py",
+        "quorune/morph.py",
+        "quorune/casting_cost_host.py",
         "quorune/permanent_exile.py",
         "quorune/permanent_designations.py",
         "quorune/zone_object_state.py",
@@ -279,6 +282,14 @@ def _owner(relative: str, layer: str) -> str:
         return "oracle_compiler"
     if relative == "quorune/rules/source_references.py":
         return "oracle_compiler"
+    if relative == "quorune/casting_cost_host.py":
+        return "casting_activation_and_costs"
+    if relative in {
+        "quorune/compiled_morph.py",
+        "quorune/morph.py",
+        "quorune/rules/morph_actions.py",
+    }:
+        return "face_down_cards"
     if relative.startswith("quorune/rules/"):
         return "rules_capabilities"
     if relative.startswith("quorune/aura/"):

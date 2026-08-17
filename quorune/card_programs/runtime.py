@@ -56,7 +56,11 @@ def collect_card_program_continuous_effects(
             if metrics is not None:
                 metrics.battlefield_objects_inspected += 1
             source = state.cards[object_id]
-            if source.controller != seat or source.phased_out:
+            if (
+                source.controller != seat
+                or source.phased_out
+                or getattr(source, "face_down", False)
+            ):
                 continue
             programs = semantics.runtime_handler_programs_for_oracle(
                 source.oracle_id,

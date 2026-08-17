@@ -132,7 +132,14 @@ class ActionOffer:
     """One immutable, principal-scoped executable action advertisement."""
 
     action_id: str
-    action: Literal["cast", "activate", "play_land", "concede", "mana_undo"]
+    action: Literal[
+        "cast",
+        "activate",
+        "play_land",
+        "turn_face_up",
+        "concede",
+        "mana_undo",
+    ]
     seat: str
     label: str
     expiry_revision: int = 0
@@ -146,6 +153,7 @@ class ActionOffer:
             "cast",
             "activate",
             "play_land",
+            "turn_face_up",
             "concede",
             "mana_undo",
         }:

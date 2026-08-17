@@ -175,7 +175,7 @@ class StateProjector:
                 return True
             seats = self._view_seats_for(principal)
             return any(
-                seat == card.owner
+                seat in {card.owner, card.controller}
                 or seat in card.known_to
                 or seat in card.revealed_to
                 for seat in seats
@@ -316,7 +316,14 @@ class StateProjector:
         elif visible:
             obj["cid"] = card.oracle_id[:8]
             effective = self._effective(card)
-            obj["n"] = effective["n"]
+            if card.face_down:
+                try:
+                    record = self.card_db.by_oracle_id(card.oracle_id)
+                    obj["n"] = record.name
+                except KeyError:
+                    obj["n"] = card.printed_name
+            else:
+                obj["n"] = effective["n"]
             characteristic_override = bool(
                 effective.get("_characteristic_override")
                 or active_resolution_effects(self.state, card)
@@ -443,6 +450,37 @@ class StateProjector:
             ],
         }
 
+    def _stack_snapshot(self, principal: str) -> list[dict[str, Any]]:
+        stack: list[dict[str, Any]] = []
+        for item in reversed(self.state.stack):
+            card = (
+                self.state.cards.get(item.card_object_id)
+                if item.card_object_id
+                else None
+            )
+            hidden_face_down = bool(
+                card is not None
+                and card.face_down
+                and not self._card_visible(card, principal)
+            )
+            row = {
+                "id": item.ref,
+                "kind": item.kind,
+                "ctl": item.controller,
+                "label": "Face-down spell" if hidden_face_down else item.label,
+                **({"targets": item.targets} if item.targets else {}),
+            }
+            if card is not None:
+                row.update(
+                    {
+                        key: value
+                        for key, value in self._obj(card, principal).items()
+                        if key != "id"
+                    }
+                )
+            stack.append(row)
+        return stack
+
     def _snapshot(self, principal: str) -> dict[str, Any]:
         view_seats = self._view_seats_for(principal)
         players: dict[str, Any] = {}
@@ -520,27 +558,7 @@ class StateProjector:
             players[player_seat] = summary
 
         turn = self._turn_snapshot()
-        stack = []
-        for item in reversed(self.state.stack):
-            stack_row = {
-                "id": item.ref,
-                "kind": item.kind,
-                "ctl": item.controller,
-                "label": item.label,
-                **({"targets": item.targets} if item.targets else {}),
-            }
-            if item.card_object_id and item.card_object_id in self.state.cards:
-                projected_card = self._obj(
-                    self.state.cards[item.card_object_id], principal
-                )
-                stack_row.update(
-                    {
-                        key: value
-                        for key, value in projected_card.items()
-                        if key != "id"
-                    }
-                )
-            stack.append(stack_row)
+        stack = self._stack_snapshot(principal)
         combat = {
             "atk": {
                 self.state.cards[oid].ref: defender

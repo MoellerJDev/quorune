@@ -147,9 +147,16 @@ def _compiled_payment_mechanics(
     record: Any,
     schema: Mapping[str, Any],
     program: Any,
+    *,
+    suppress_source_costs: bool = False,
 ) -> list[dict[str, Any]] | None:
     """Resolve trusted compiled affinity and convoke payment mechanics."""
 
+    if suppress_source_costs:
+        mechanics: list[dict[str, Any]] = []
+        if host.state.players[seat].stats.get("next_spell_improvise"):
+            mechanics.append({"kind": "improvise"})
+        return mechanics
     mechanics = host._cost_payment_mechanics(record, schema)
     declared_affinity = any(
         str(value.get("kind") or "").casefold() == "affinity"
@@ -215,6 +222,9 @@ def _initial_options(
     *,
     hint: bool,
     force_without_mana_cost: bool,
+    alternative_base: Mapping[str, Any] | None,
+    cast_type_line: str | None,
+    suppress_source_costs: bool,
 ) -> tuple[
     list[dict[str, Any]],
     list[dict[str, Any]],
@@ -227,7 +237,12 @@ def _initial_options(
     cast_without_mana = force_without_mana_cost or bool(
         temporary_permission and temporary_permission.get("without_mana_cost")
     )
-    if cast_without_mana:
+    if alternative_base is not None:
+        if cast_without_mana or (x_value is not None and int(x_value) != 0):
+            return None
+        printed = [copy.deepcopy(dict(alternative_base))]
+        has_x = False
+    elif cast_without_mana:
         if x_value is not None and int(x_value) != 0:
             return None
         printed = [
@@ -246,14 +261,29 @@ def _initial_options(
             x_value=int(x_value) if x_value is not None else None,
             hint=hint,
         )
-    schema = dict(program.cost_schema or {}) if program else {}
+    schema = (
+        {}
+        if suppress_source_costs
+        else dict(program.cost_schema or {}) if program else {}
+    )
     record = host.card_record(card)
     if record is None:
         return None
     spend_context = host._spell_mana_spend_context(
-        str(host._effective_card_data(card).get("type_line") or "")
+        str(
+            cast_type_line
+            if cast_type_line is not None
+            else host._effective_card_data(card).get("type_line") or ""
+        )
     )
-    mechanics = _compiled_payment_mechanics(host, seat, record, schema, program)
+    mechanics = _compiled_payment_mechanics(
+        host,
+        seat,
+        record,
+        schema,
+        program,
+        suppress_source_costs=suppress_source_costs,
+    )
     if mechanics is None:
         return None
     commander_tax = (
@@ -261,6 +291,11 @@ def _initial_options(
         if card.zone == "command" and card.is_commander
         else 0
     )
+    if alternative_base is not None:
+        for option in printed:
+            requirements = host._mana_vector(option.get("requirements"))
+            requirements["GENERIC"] += commander_tax
+            option["requirements"] = requirements
     base = list(printed)
     for raw in [] if cast_without_mana else schema.get("alternate_costs", []):
         alternative = dict(raw)
@@ -333,10 +368,18 @@ class StaticCastCostModifier:
 
 
 def _static_generic_reduction(
-    host: CastCostHost, seat: str, card: Any
+    host: CastCostHost,
+    seat: str,
+    card: Any,
+    *,
+    cast_type_line: str | None = None,
 ) -> int:
     spell_types, _, _ = host._type_parts(
-        str(host._effective_card_data(card).get("type_line") or "")
+        str(
+            cast_type_line
+            if cast_type_line is not None
+            else host._effective_card_data(card).get("type_line") or ""
+        )
     )
     total = 0
     for object_id in host.state.players[seat].zones["battlefield"]:
@@ -355,9 +398,19 @@ def _static_generic_reduction(
 
 
 def _apply_static_reductions(
-    host: CastCostHost, seat: str, card: Any, option: dict[str, Any]
+    host: CastCostHost,
+    seat: str,
+    card: Any,
+    option: dict[str, Any],
+    *,
+    cast_type_line: str | None = None,
 ) -> None:
-    reduction = _static_generic_reduction(host, seat, card)
+    reduction = _static_generic_reduction(
+        host,
+        seat,
+        card,
+        cast_type_line=cast_type_line,
+    )
     if not reduction:
         return
     applied = min(int(option["requirements"]["GENERIC"]), reduction)
@@ -912,6 +965,7 @@ def _finalize_option(
     hint: bool,
     spend_context: Any,
     has_x: bool,
+    cast_type_line: str | None,
 ) -> CastCostOption | None:
     option = copy.deepcopy(option)
     selected_additional_costs = option.pop(
@@ -920,7 +974,13 @@ def _finalize_option(
     if selected_additional_costs is not None:
         mandatory_costs = list(selected_additional_costs)
     option["base_requirements"] = host._mana_vector(option["requirements"])
-    _apply_static_reductions(host, seat, card, option)
+    _apply_static_reductions(
+        host,
+        seat,
+        card,
+        option,
+        cast_type_line=cast_type_line,
+    )
     exile_spec = option.get("exile_from_hand")
     if isinstance(exile_spec, Mapping):
         candidates = host._exile_cost_candidates(seat, card, exile_spec)
@@ -1004,6 +1064,9 @@ def build_cast_cost_options(
     response: Mapping[str, Any] | None = None,
     hint: bool,
     force_without_mana_cost: bool = False,
+    alternative_base: Mapping[str, Any] | None = None,
+    cast_type_line: str | None = None,
+    suppress_source_costs: bool = False,
 ) -> tuple[CastCostOption, ...]:
     """Return immutable, currently payable server-authoritative cost choices."""
 
@@ -1016,6 +1079,9 @@ def build_cast_cost_options(
         submission,
         hint=hint,
         force_without_mana_cost=force_without_mana_cost,
+        alternative_base=alternative_base,
+        cast_type_line=cast_type_line,
+        suppress_source_costs=suppress_source_costs,
     )
     if initial is None:
         return ()
@@ -1033,6 +1099,7 @@ def build_cast_cost_options(
             hint=hint,
             spend_context=spend_context,
             has_x=has_x,
+            cast_type_line=cast_type_line,
         )
         if finalized is not None:
             result.append(finalized)

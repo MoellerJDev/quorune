@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "4822758f59b811fa713f5e65e532dc834c4758f92c36d9036780f3494730f23f",
+    "evaluated_input_fingerprint": "076d851c456ca418db23ef494c778548c1ccc459e2dc6239c7f0f7a46e06160a",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -558,6 +558,12 @@
       "id": "fixed_counter_removal_effect_closure",
       "name": "Typed direct permanent counter-removal effects",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers 139 Commander-legal ordinary fixed-mana Morph abilities to one source-spanned component and promotes 37 complete cards. A second casting offer uses the face-down creature spell's {3} alternative and characteristics, preserves private identity through stack and battlefield projection, suppresses face-down static and printed-trigger participation, and reveals on turn-up or zone departure. The controller-only turn-face-up special action uses the shared effective-keyword boundary, pays the typed fixed cost atomically, creates no stack object, stabilizes before returning priority, and replays exactly. Megamorph, two variable costs, twelve nonmana costs, copy/grant/text changes, residual turn-up behavior, arbitrary static ability applicability, and dynamic characteristic-count interactions remain fail-closed.",
+      "id": "typed_fixed_mana_morph",
+      "name": "Typed fixed-mana Morph",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -597,11 +603,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 41027,
+      "material_residuals": 40888,
       "status_counts": {
-        "exact": 4599,
-        "partial": 12513,
-        "unresolved": 14511
+        "exact": 4636,
+        "partial": 12474,
+        "unresolved": 14513
       },
       "total": 31623
     },
@@ -611,28 +617,28 @@
     "mechanics": {
       "status_counts": {
         "partial": 66,
-        "tested": 35,
+        "tested": 36,
         "trusted": 8,
-        "unclassified": 316
+        "unclassified": 315
       },
       "total": 425,
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 48294,
+      "material_residuals": 48155,
       "status_counts": {
-        "exact": 7676,
-        "partial": 13642,
-        "unresolved": 17305
+        "exact": 7713,
+        "partial": 13603,
+        "unresolved": 17307
       },
       "total": 38623
     },
     "rules": {
-      "blocked": 433,
-      "definition_only": 155,
+      "blocked": 447,
+      "definition_only": 159,
       "passing": 234,
       "total": 3300,
-      "unreviewed": 2478
+      "unreviewed": 2460
     },
     "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
   },
@@ -660,7 +666,7 @@
     "generated_validation_modules": 29,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 282,
+    "primary_test_modules": 283,
     "primary_test_shards": 13,
     "schema_files": 18,
     "server_files": 5,
@@ -670,31 +676,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 41030,
+        "material_residuals": 40891,
         "status_counts": {
-          "residual": 27024,
-          "trusted": 4599
+          "residual": 26987,
+          "trusted": 4636
         },
         "trust_basis_counts": {
-          "capability_closed": 4583,
+          "capability_closed": 4620,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 27024
+          "unresolved": 26987
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 48296,
+        "material_residuals": 48157,
         "status_counts": {
           "failed": 2248,
-          "residual": 30944,
-          "trusted": 5431
+          "residual": 30907,
+          "trusted": 5468
         },
         "trust_basis_counts": {
-          "capability_closed": 5415,
+          "capability_closed": 5452,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30944
+          "unresolved": 30907
         }
       }
     },

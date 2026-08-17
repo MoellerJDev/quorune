@@ -1,5 +1,5 @@
 {
-  "contract_count": 109,
+  "contract_count": 110,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -443,6 +443,12 @@
       "mechanic_id": "monstrosity",
       "path": "mechanics/contracts/monstrosity.json",
       "sha256": "9a0e316006720739c9e8a4bf30f63ff136def3ea44a0e1c9fec1ed66aba0cc41",
+      "version": 1
+    },
+    {
+      "mechanic_id": "morph",
+      "path": "mechanics/contracts/morph.json",
+      "sha256": "a8022f7da972b7da2c4f1a4ba524a79cefe934b19f22492f82e9fd5e33d4e4bd",
       "version": 1
     },
     {
@@ -3441,19 +3447,44 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/morph.json",
+      "contract_sha256": "a8022f7da972b7da2c4f1a4ba524a79cefe934b19f22492f82e9fd5e33d4e4bd",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "FixedManaMorphSpec, fixed_mana_morph_keyword_node, FixedManaMorphHandler, compiled_fixed_mana_morph_spec, casting proposal/commit, face-down characteristic evaluation, morph special-action owner, zone-object state, priority, projection, and replay",
+      "implementation_version": "typed-fixed-mana-morph-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Megamorph, Disguise, Manifest, Cloak, and other face-down methods",
+        "variable, hybrid, Phyrexian, snow, and nonmana Morph costs",
+        "copied, granted, text-changed, and dynamically added Morph",
+        "card copies, spell copies, tokens, multiface cards, and merged permanents",
+        "turn-face-up triggers or replacement abilities on residual CardPrograms",
+        "arbitrary static component ability addition and removal until one shared applicability query exists",
+        "dynamic characteristic counts and affected copy or type-changing interactions",
+        "aggregate Morph and CR 708 coverage remain incomplete"
+      ],
       "mechanic_id": "morph",
       "official_name": "Morph",
       "rule_references": [
         "702.37"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_mana_morph_descriptor_is_strict_and_registered",
+        "test_fixed_mana_morph_compiles_source_spanned_typed_program",
+        "test_nonordinary_morph_costs_remain_residual",
+        "test_morph_dependency_fails_closed",
+        "test_morph_compiler_mutation_is_killed",
+        "test_morph_cast_turn_up_privacy_and_replay",
+        "test_face_down_static_source_is_inert_until_turned_face_up",
+        "test_stale_or_ability_removed_turn_up_rolls_back",
+        "test_stale_morph_cast_contract_rolls_back_before_payment",
+        "test_face_down_departure_reveals_identity_and_resets_method",
+        "test_land_card_has_only_the_trusted_morph_cast_offer"
+      ],
       "trust_level": "untrusted"
     },
     {

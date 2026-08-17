@@ -552,6 +552,12 @@ def _validate_priority_response(
         raise ReplacementEffectError(
             "Mana-payment cast response is malformed"
         )
+    if action == "turn_face_up" and (
+        not isinstance(response.get("card"), str) or not response.get("card")
+    ):
+        raise ReplacementEffectError(
+            "Mana-payment turn-face-up response is malformed"
+        )
 
 
 def _validate_replacement_journal(
@@ -799,7 +805,7 @@ def _decode_mana_continuation(
     if (
         not isinstance(seat, str)
         or not seat
-        or action not in {"cast", "activate"}
+        or action not in {"cast", "activate", "turn_face_up"}
         or not isinstance(response, Mapping)
         or not isinstance(frame, Mapping)
     ):
