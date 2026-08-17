@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "18227444f064176229b39d43b397835a7c86d461565201019b8b4e80852ff0b4",
-  "declaration_source_fingerprint": "e8388c639ac63cdc5442f83f80fbb7237a85fd472d94389f3ea21356e5757678",
+  "registry_fingerprint": "e6245b0b3f46781aae34e815b439e7940e5a93b5bc035b6dc23141fd09cfd4e5",
+  "declaration_source_fingerprint": "050f40cda20da85450c2de73ce279624e92f43cd9e7c538443dea7554cd053d6",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -23229,6 +23229,68 @@
     {
       "capability_id": "damage.prevention.persistent_amount",
       "evidence_class": "interaction",
+      "test_id": "tests.test_damage_prevention_shields.DamagePreventionShieldTests.test_combat_and_recipient_scopes_filter_without_consuming_shield",
+      "official_rule_ids": [
+        "609.7",
+        "609.7a",
+        "609.7b",
+        "615.1",
+        "615.2",
+        "615.3",
+        "615.4",
+        "615.5",
+        "615.6",
+        "615.7",
+        "615.8",
+        "615.9",
+        "615.11",
+        "615.12",
+        "615.12a",
+        "615.13",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply one scoped shield only when both the combat flag and typed recipient kind match, without consuming it on excluded damage events."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_damage_prevention_shields.DamagePreventionShieldTests.test_combat_scope_composes_with_chosen_source_identity",
+      "official_rule_ids": [
+        "609.7",
+        "609.7a",
+        "609.7b",
+        "615.1",
+        "615.2",
+        "615.3",
+        "615.4",
+        "615.5",
+        "615.6",
+        "615.7",
+        "615.8",
+        "615.9",
+        "615.11",
+        "615.12",
+        "615.12a",
+        "615.13",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Require both the combat scope and the incarnation-pinned chosen source to match before preventing damage."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "interaction",
       "test_id": "tests.test_damage_prevention_shields.DamagePreventionShieldTests.test_prevention_dispatches_one_aggregate_event_per_effect",
       "official_rule_ids": [
         "609.7",
@@ -23414,6 +23476,37 @@
     },
     {
       "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_prevention_scope_condition_mutants_are_killed",
+      "official_rule_ids": [
+        "609.7",
+        "609.7a",
+        "609.7b",
+        "615.1",
+        "615.2",
+        "615.3",
+        "615.4",
+        "615.5",
+        "615.6",
+        "615.7",
+        "615.8",
+        "615.9",
+        "615.11",
+        "615.12",
+        "615.12a",
+        "615.13",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove combat or recipient-kind scope from the replacement conditions independently and prove each mutant admits excluded damage."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
       "evidence_class": "negative",
       "test_id": "tests.test_damage_prevention_creation.DamagePreventionCreationTests.test_countered_chosen_permanent_spell_is_a_new_graveyard_object",
       "official_rule_ids": [
@@ -23442,6 +23535,37 @@
         "commander_review"
       ],
       "applicability_note": "Do not follow a chosen permanent spell through a countered stack-to-graveyard zone change."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "negative",
+      "test_id": "tests.test_damage_prevention_shields.DamagePreventionShieldTests.test_malformed_prevention_scope_preserves_authoritative_state",
+      "official_rule_ids": [
+        "609.7",
+        "609.7a",
+        "609.7b",
+        "615.1",
+        "615.2",
+        "615.3",
+        "615.4",
+        "615.5",
+        "615.6",
+        "615.7",
+        "615.8",
+        "615.9",
+        "615.11",
+        "615.12",
+        "615.12a",
+        "615.13",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject unknown damage or recipient scope values before creating a shield or changing the authoritative state hash."
     },
     {
       "capability_id": "damage.prevention.persistent_amount",
@@ -23597,6 +23721,37 @@
         "commander_review"
       ],
       "applicability_note": "Expire represented until-end-of-turn prevention state at the cleanup boundary."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "positive",
+      "test_id": "tests.test_oracle_ir.OracleIRTests.test_combat_scoped_prevention_compiles_in_spell_and_activated_contexts",
+      "official_rule_ids": [
+        "609.7",
+        "609.7a",
+        "609.7b",
+        "615.1",
+        "615.2",
+        "615.3",
+        "615.4",
+        "615.5",
+        "615.6",
+        "615.7",
+        "615.8",
+        "615.9",
+        "615.11",
+        "615.12",
+        "615.12a",
+        "615.13",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile closed combat-only, player-recipient, target-source, fixed-amount, and self-protection forms through the persistent shield capability in spell and activated contexts."
     },
     {
       "capability_id": "damage.prevention.persistent_amount",
@@ -39752,5 +39907,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "0a75ec643118f31cc1949108e1e16e6c98ebc0a1e225866548203d21428cba1a"
+  "fingerprint": "f7f19c0083f2ea9b2ecd43bdacc81eef162ac2287b507c0cb16624a0f1ce5a62"
 }

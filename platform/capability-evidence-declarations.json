@@ -9225,6 +9225,22 @@
     {
       "capability_id": "damage.prevention.persistent_amount",
       "evidence_class": "interaction",
+      "test_id": "tests.test_damage_prevention_shields.DamagePreventionShieldTests.test_combat_and_recipient_scopes_filter_without_consuming_shield",
+      "official_rule_ids": ["609.7", "609.7a", "609.7b", "615.1", "615.2", "615.3", "615.4", "615.5", "615.6", "615.7", "615.8", "615.9", "615.11", "615.12", "615.12a", "615.13", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply one scoped shield only when both the combat flag and typed recipient kind match, without consuming it on excluded damage events."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_damage_prevention_shields.DamagePreventionShieldTests.test_combat_scope_composes_with_chosen_source_identity",
+      "official_rule_ids": ["609.7", "609.7a", "609.7b", "615.1", "615.2", "615.3", "615.4", "615.5", "615.6", "615.7", "615.8", "615.9", "615.11", "615.12", "615.12a", "615.13", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Require both the combat scope and the incarnation-pinned chosen source to match before preventing damage."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "interaction",
       "test_id": "tests.test_damage_prevention_shields.DamagePreventionShieldTests.test_prevention_dispatches_one_aggregate_event_per_effect",
       "official_rule_ids": ["609.7", "609.7a", "609.7b", "615.1", "615.2", "615.3", "615.4", "615.5", "615.6", "615.7", "615.8", "615.9", "615.11", "615.12", "615.12a", "615.13", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -9272,11 +9288,27 @@
     },
     {
       "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_prevention_scope_condition_mutants_are_killed",
+      "official_rule_ids": ["609.7", "609.7a", "609.7b", "615.1", "615.2", "615.3", "615.4", "615.5", "615.6", "615.7", "615.8", "615.9", "615.11", "615.12", "615.12a", "615.13", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove combat or recipient-kind scope from the replacement conditions independently and prove each mutant admits excluded damage."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
       "evidence_class": "negative",
       "test_id": "tests.test_damage_prevention_creation.DamagePreventionCreationTests.test_countered_chosen_permanent_spell_is_a_new_graveyard_object",
       "official_rule_ids": ["609.7", "609.7a", "609.7b", "615.1", "615.2", "615.3", "615.4", "615.5", "615.6", "615.7", "615.8", "615.9", "615.11", "615.12", "615.12a", "615.13", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Do not follow a chosen permanent spell through a countered stack-to-graveyard zone change."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "negative",
+      "test_id": "tests.test_damage_prevention_shields.DamagePreventionShieldTests.test_malformed_prevention_scope_preserves_authoritative_state",
+      "official_rule_ids": ["609.7", "609.7a", "609.7b", "615.1", "615.2", "615.3", "615.4", "615.5", "615.6", "615.7", "615.8", "615.9", "615.11", "615.12", "615.12a", "615.13", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject unknown damage or recipient scope values before creating a shield or changing the authoritative state hash."
     },
     {
       "capability_id": "damage.prevention.persistent_amount",
@@ -9317,6 +9349,14 @@
       "official_rule_ids": ["609.7", "609.7a", "609.7b", "615.1", "615.2", "615.3", "615.4", "615.5", "615.6", "615.7", "615.8", "615.9", "615.11", "615.12", "615.12a", "615.13", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Expire represented until-end-of-turn prevention state at the cleanup boundary."
+    },
+    {
+      "capability_id": "damage.prevention.persistent_amount",
+      "evidence_class": "positive",
+      "test_id": "tests.test_oracle_ir.OracleIRTests.test_combat_scoped_prevention_compiles_in_spell_and_activated_contexts",
+      "official_rule_ids": ["609.7", "609.7a", "609.7b", "615.1", "615.2", "615.3", "615.4", "615.5", "615.6", "615.7", "615.8", "615.9", "615.11", "615.12", "615.12a", "615.13", "616.1", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile closed combat-only, player-recipient, target-source, fixed-amount, and self-protection forms through the persistent shield capability in spell and activated contexts."
     },
     {
       "capability_id": "damage.prevention.persistent_amount",

@@ -15,7 +15,9 @@ from .damage_modifier_state import (
     DealDamagePreventionAftermath,
     GainLifePreventionAftermath,
     PlaceCountersPreventionAftermath,
+    PreventionDamageKind,
     PreventionMode,
+    PreventionRecipientKind,
 )
 from .object_query import (
     ObjectQueryError,
@@ -283,6 +285,8 @@ class PreventionShieldCreationRequest:
     mode: PreventionMode
     duration: DamageModifierDuration
     subjects: tuple[PreventionSubjectAllocation, ...]
+    damage_kind: PreventionDamageKind = PreventionDamageKind.ANY
+    recipient_kind: PreventionRecipientKind = PreventionRecipientKind.ANY
     chosen_source_ref: str | None = None
     source_predicate: ObjectQuerySpec = ObjectQuerySpec()
     label: str = ""
@@ -299,6 +303,12 @@ class PreventionShieldCreationRequest:
         ):
             raise DamagePreventionCreationError(
                 "Prevention creation requires typed mode and duration"
+            )
+        if not isinstance(self.damage_kind, PreventionDamageKind) or not isinstance(
+            self.recipient_kind, PreventionRecipientKind
+        ):
+            raise DamagePreventionCreationError(
+                "Prevention creation requires typed damage and recipient scope"
             )
         subjects = tuple(self.subjects)
         if not subjects or any(
@@ -722,6 +732,8 @@ def plan_prevention_shield_creation(
                 remaining=allocation.amount,
                 duration=request.duration,
                 created_turn_sequence=int(host.state.turn_sequence),
+                damage_kind=request.damage_kind,
+                recipient_kind=request.recipient_kind,
                 chosen_source=chosen,
                 label=request.label,
                 aftermath=_aftermath_for_subject(host, request, subject),

@@ -458,6 +458,28 @@ _WITNESSES = {
         "Creatures of the chosen color without flying can't attack you.",
         "{3}{W}{U}",
     ),
+    "hallowed-healer": _Witness(
+        "Hallowed Healer",
+        "Creature — Human Cleric",
+        "{T}: Prevent the next 2 damage that would be dealt to any target "
+        "this turn.\n"
+        "Threshold — {T}: Prevent the next 4 damage that would be dealt to "
+        "any target this turn. Activate only if there are seven or more "
+        "cards in your graveyard.",
+        "{2}{W}",
+        power="1",
+        toughness="1",
+    ),
+    "winds-of-qal-sisma": _Witness(
+        "Winds of Qal Sisma",
+        "Instant",
+        "Prevent all combat damage that would be dealt this turn.\n"
+        "Ferocious — If you control a creature with power 4 or greater, "
+        "instead prevent all combat damage that would be dealt this turn by "
+        "creatures your opponents control.",
+        "{1}{G}",
+        ("Ferocious",),
+    ),
 }
 
 
@@ -468,6 +490,21 @@ def _pair(left: str, right: str) -> Pair:
 DESTROY_DAMAGE_PREVENTION_PAIR = _pair(
     "capability.permanent.destroy.effect",
     "residual.replacement.damage-prevention",
+)
+
+PREVENTION_AND_REPLACEMENT_PAIRS = (
+    _pair(
+        "capability.damage.prevention.persistent_amount",
+        "residual.replacement.damage-prevention",
+    ),
+    _pair(
+        "capability.damage.prevention.persistent_amount",
+        "residual.replacement.replacement-applicability",
+    ),
+    _pair(
+        "capability.damage.prevention.persistent_amount",
+        "residual.replacement.self-replacement-and-prevention-ordering",
+    ),
 )
 
 TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS = (
@@ -631,6 +668,7 @@ ALL_HIGH_RISK_BOUNDARY_PAIRS = tuple(
             *CONTINUOUS_AND_REPLACEMENT_PAIRS,
             *TRIGGER_AND_REPLACEMENT_PAIRS,
             *DECLARATION_AND_REPLACEMENT_PAIRS,
+            *PREVENTION_AND_REPLACEMENT_PAIRS,
             *TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS,
         }
     )
@@ -653,7 +691,7 @@ _bind("starforged-sword", *ATTACHMENT_AND_CONTINUOUS_PAIRS[6:8])
 _bind("junk-jet", ATTACHMENT_AND_CONTINUOUS_PAIRS[8])
 _bind("soratami-cloud-chariot", ATTACHMENT_AND_CONTINUOUS_PAIRS[9])
 _bind("prismatic-circle", *EFFECT_AND_REPLACEMENT_PAIRS[:3])
-_bind("spike-weaver", EFFECT_AND_REPLACEMENT_PAIRS[3])
+_bind("serras-hymn", EFFECT_AND_REPLACEMENT_PAIRS[3])
 _bind("tekuthal", *EFFECT_AND_REPLACEMENT_PAIRS[4:6])
 _bind("zabaz", *EFFECT_AND_REPLACEMENT_PAIRS[6:8])
 _bind("jaya", *EFFECT_AND_REPLACEMENT_PAIRS[8:12])
@@ -708,6 +746,8 @@ _bind("ovinomancer", TRIGGER_AND_REPLACEMENT_PAIRS[1], TRIGGER_AND_REPLACEMENT_P
 _bind("kindred-discovery", *TRIGGER_AND_REPLACEMENT_PAIRS[2:4])
 _bind("kindred-discovery", *TRIGGER_AND_REPLACEMENT_PAIRS[6:8])
 _bind("teferis-moat", *DECLARATION_AND_REPLACEMENT_PAIRS)
+_bind("hallowed-healer", PREVENTION_AND_REPLACEMENT_PAIRS[0])
+_bind("winds-of-qal-sisma", *PREVENTION_AND_REPLACEMENT_PAIRS[1:])
 _bind(
     "bewitching-leechcraft",
     TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS[0],
@@ -882,6 +922,7 @@ __all__ = [
     "DECLARATION_AND_REPLACEMENT_PAIRS",
     "DESTROY_DAMAGE_PREVENTION_PAIR",
     "EFFECT_AND_REPLACEMENT_PAIRS",
+    "PREVENTION_AND_REPLACEMENT_PAIRS",
     "TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS",
     "TRIGGER_AND_REPLACEMENT_PAIRS",
     "ZONE_AND_CHOICE_PAIRS",

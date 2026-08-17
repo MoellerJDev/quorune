@@ -30,6 +30,12 @@ produces a mutation-only commit plan. Unpreventable damage does not consume a
 shield. Finite modifiers retain their exact remainder across events; expired
 or exhausted modifiers are removed by their declared lifecycle owner.
 
+Each durable shield carries closed damage and recipient scope. The represented
+scope distinguishes any damage from combat damage and all recipients from
+players only. The replacement query composes that scope with the
+existing subject and incarnation-pinned chosen-source predicates, so excluded
+noncombat or recipient-kind events neither apply nor consume the shield.
+
 Preparation and commit are separated. A continuation fingerprints the damage
 event, available amount, source snapshot, modifier set, chooser, and prior
 journal. If any input drifts before resume, validation fails without partial
@@ -55,7 +61,9 @@ Runtime components and handlers never mutate shield state directly. Generic
 code does not recognize card names or Oracle IDs. New prevention grammar must
 compile to typed descriptors with exact predicates, provenance, duration, and
 capability dependencies; unsupported predicates and aftermath forms stay
-material residuals.
+material residuals. Source or recipient characteristic predicates,
+controller-relative recipient groups, combat-source exceptions, and
+"all but N" quantities remain outside the represented scoped-shield boundary.
 
 See [ADR 0012](../adr/0012-damage-transaction-and-static-prevention.md),
 [ADR 0015](../adr/0015-durable-damage-modifier-ownership.md), and

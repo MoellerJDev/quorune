@@ -12,16 +12,23 @@ from quorune.damage import (
     prepare_damage_batch,
     resolve_damage_batch,
 )
+from quorune.errors import GameRuleError
 from quorune.model import GameState
 from quorune.object_query import ObjectQuerySpec
 from quorune.projection import StateProjector
-from quorune.record import checkpoint_envelope, replay_record
+from quorune.record import (
+    authoritative_state_hash,
+    checkpoint_envelope,
+    replay_record,
+)
 from quorune.damage_prevention import (
     ChosenDamageSource,
     DamageModifierDuration,
     DamagePreventionShield,
     DamageSubject,
+    PreventionDamageKind,
     PreventionMode,
+    PreventionRecipientKind,
     expire_end_of_turn_damage_modifiers,
 )
 from quorune.replacement_effects import (
@@ -40,6 +47,8 @@ class DamagePreventionShieldTests(DamageReplacementPipelineBase):
         mode: PreventionMode = PreventionMode.AMOUNT,
         remaining: int | None = 3,
         chosen_source=None,
+        damage_kind: PreventionDamageKind = PreventionDamageKind.ANY,
+        recipient_kind: PreventionRecipientKind = PreventionRecipientKind.ANY,
     ) -> DamagePreventionShield:
         value = DamagePreventionShield(
             shield_id=shield_id,
@@ -47,13 +56,15 @@ class DamagePreventionShieldTests(DamageReplacementPipelineBase):
             controller="B",
             subject=DamageSubject(
                 ref=subject,
-                kind="player",
-                controller=subject,
+                kind="any" if subject == "*" else "player",
+                controller="B" if subject == "*" else subject,
             ),
             mode=mode,
             remaining=remaining,
             duration=DamageModifierDuration.UNTIL_END_OF_TURN,
             created_turn_sequence=engine.state.turn_sequence,
+            damage_kind=damage_kind,
+            recipient_kind=recipient_kind,
             chosen_source=chosen_source,
             label="Fixture prevention shield",
         )
@@ -117,6 +128,151 @@ class DamagePreventionShieldTests(DamageReplacementPipelineBase):
         removed = expire_end_of_turn_damage_modifiers(engine.state)
         self.assertEqual((shield.shield_id,), removed)
         self.assertEqual([], engine.state.damage_prevention_shields)
+
+    def test_combat_and_recipient_scopes_filter_without_consuming_shield(self):
+        engine = self.session(615013, players=4).engine
+        source = self.add_permanent(
+            engine, seat="A", name="Mishra, Eminent One", ref="a-source"
+        )
+        creature = self.add_permanent(
+            engine, seat="B", name="Mishra, Eminent One", ref="b-creature"
+        )
+        self.shield(
+            engine,
+            subject="*",
+            mode=PreventionMode.ALL,
+            remaining=None,
+            damage_kind=PreventionDamageKind.COMBAT,
+            recipient_kind=PreventionRecipientKind.PLAYER,
+        )
+
+        noncombat = resolve_damage_batch(
+            engine,
+            (
+                self.proposal(
+                    engine,
+                    source=source,
+                    target="B",
+                    amount=2,
+                    event_id="damage:scoped-noncombat",
+                ),
+            ),
+        )
+        permanent = resolve_damage_batch(
+            engine,
+            (
+                self.proposal(
+                    engine,
+                    source=source,
+                    target=creature,
+                    amount=2,
+                    combat=True,
+                    event_id="damage:scoped-permanent",
+                ),
+            ),
+        )
+        combat_player = resolve_damage_batch(
+            engine,
+            (
+                self.proposal(
+                    engine,
+                    source=source,
+                    target="B",
+                    amount=2,
+                    combat=True,
+                    event_id="damage:scoped-player",
+                ),
+            ),
+        )
+
+        self.assertEqual(2, noncombat.dealt_amount)
+        self.assertEqual(2, permanent.dealt_amount)
+        self.assertEqual(0, combat_player.dealt_amount)
+        self.assertEqual(38, engine.state.players["B"].life)
+        self.assertEqual(1, len(engine.state.damage_prevention_shields))
+
+    def test_malformed_prevention_scope_preserves_authoritative_state(self):
+        engine = self.session(615014).engine
+        base = {
+            "op": "create_damage_prevention_shield",
+            "source": "fixture:malformed-scope",
+            "subject": "*",
+            "mode": "all",
+            "duration": "until_end_of_turn",
+        }
+        for field, value in (
+            ("damage_kind", "noncombat"),
+            ("recipient_kind", "creature"),
+        ):
+            with self.subTest(field=field):
+                before = authoritative_state_hash(engine.state)
+                with self.assertRaises(GameRuleError):
+                    engine.apply_effect({**base, field: value}, actor="B")
+                self.assertEqual(before, authoritative_state_hash(engine.state))
+
+    def test_combat_scope_composes_with_chosen_source_identity(self):
+        engine = self.session(615015, players=4).engine
+        chosen = self.add_permanent(
+            engine, seat="A", name="Mishra, Eminent One", ref="chosen-source"
+        )
+        other = self.add_permanent(
+            engine, seat="C", name="Mishra, Eminent One", ref="other-source"
+        )
+        self.shield(
+            engine,
+            subject="*",
+            mode=PreventionMode.ALL,
+            remaining=None,
+            damage_kind=PreventionDamageKind.COMBAT,
+            chosen_source=ChosenDamageSource(
+                ref=chosen.ref,
+                object_id=chosen.object_id,
+            ),
+        )
+
+        results = (
+            resolve_damage_batch(
+                engine,
+                (
+                    self.proposal(
+                        engine,
+                        source=chosen,
+                        target="B",
+                        amount=1,
+                        event_id="damage:chosen-noncombat",
+                    ),
+                ),
+            ),
+            resolve_damage_batch(
+                engine,
+                (
+                    self.proposal(
+                        engine,
+                        source=other,
+                        target="B",
+                        amount=1,
+                        combat=True,
+                        event_id="damage:other-combat",
+                    ),
+                ),
+            ),
+            resolve_damage_batch(
+                engine,
+                (
+                    self.proposal(
+                        engine,
+                        source=chosen,
+                        target="B",
+                        amount=1,
+                        combat=True,
+                        event_id="damage:chosen-combat",
+                    ),
+                ),
+            ),
+        )
+
+        self.assertEqual([1, 1, 0], [result.dealt_amount for result in results])
+        self.assertEqual(38, engine.state.players["B"].life)
 
     def test_unpreventable_damage_does_not_consume_shield(self):
         engine = self.session(615020).engine
@@ -580,7 +736,12 @@ class DamagePreventionShieldTests(DamageReplacementPipelineBase):
         source_c = self.add_permanent(
             engine, seat="C", name="Mishra, Eminent One", ref="c-source"
         )
-        shield = self.shield(engine, remaining=4)
+        shield = self.shield(
+            engine,
+            remaining=4,
+            damage_kind=PreventionDamageKind.COMBAT,
+            recipient_kind=PreventionRecipientKind.PLAYER,
+        )
         engine.state.active_player = "A"
         engine.state.phase = "combat"
         engine.state.step = "combat_damage"

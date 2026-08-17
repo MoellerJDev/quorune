@@ -7,7 +7,9 @@ from ..damage_modifier_state import (
     DamageModifierDuration,
     DamageRedirectionEffect,
     DamageSubject,
+    PreventionDamageKind,
     PreventionMode,
+    PreventionRecipientKind,
 )
 from ..damage_prevention_creation import (
     DealDamageAftermathRequest,
@@ -375,6 +377,12 @@ def _apply_create_damage_prevention_shield(
             duration=duration,
             subjects=_selected_prevention_subjects(
                 host, effect, actor=actor, mode=mode
+            ),
+            damage_kind=PreventionDamageKind(
+                str(effect.get("damage_kind") or "any")
+            ),
+            recipient_kind=PreventionRecipientKind(
+                str(effect.get("recipient_kind") or "any")
             ),
             chosen_source_ref=(
                 str(effect["chosen_source"])

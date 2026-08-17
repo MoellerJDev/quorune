@@ -31,6 +31,16 @@ class DamageModifierDuration(str, Enum):
     UNTIL_USED = "until_used"
 
 
+class PreventionDamageKind(str, Enum):
+    ANY = "any"
+    COMBAT = "combat"
+
+
+class PreventionRecipientKind(str, Enum):
+    ANY = "any"
+    PLAYER = "player"
+
+
 def _exact_fields(
     value: Mapping[str, Any], expected: set[str], *, label: str
 ) -> None:
@@ -957,6 +967,8 @@ class DamagePreventionShield:
     remaining: int | None
     duration: DamageModifierDuration
     created_turn_sequence: int
+    damage_kind: PreventionDamageKind = PreventionDamageKind.ANY
+    recipient_kind: PreventionRecipientKind = PreventionRecipientKind.ANY
     chosen_source: ChosenDamageSource | None = None
     label: str = ""
     aftermath: tuple[PreventionAftermath, ...] = ()
@@ -974,6 +986,12 @@ class DamagePreventionShield:
         ):
             raise DamageModifierError(
                 "A prevention shield requires typed mode and duration"
+            )
+        if not isinstance(self.damage_kind, PreventionDamageKind) or not isinstance(
+            self.recipient_kind, PreventionRecipientKind
+        ):
+            raise DamageModifierError(
+                "A prevention shield requires typed damage and recipient scope"
             )
         if self.mode == PreventionMode.AMOUNT:
             if type(self.remaining) is not int or self.remaining < 1:
@@ -1041,6 +1059,10 @@ class DamagePreventionShield:
             ),
             "label": self.label,
         }
+        if self.damage_kind != PreventionDamageKind.ANY:
+            result["damage_kind"] = self.damage_kind.value
+        if self.recipient_kind != PreventionRecipientKind.ANY:
+            result["recipient_kind"] = self.recipient_kind.value
         if self.aftermath:
             result["aftermath"] = [value.to_dict() for value in self.aftermath]
         if self.triggered_ability is not None:
@@ -1065,7 +1087,12 @@ class DamagePreventionShield:
         }
         optional = {
             field
-            for field in ("aftermath", "triggered_ability")
+            for field in (
+                "aftermath",
+                "damage_kind",
+                "recipient_kind",
+                "triggered_ability",
+            )
             if field in value
         }
         _exact_fields(value, expected | optional, label="Prevention shield")
@@ -1080,9 +1107,15 @@ class DamagePreventionShield:
         try:
             mode = PreventionMode(str(value["mode"]))
             duration = DamageModifierDuration(str(value["duration"]))
+            damage_kind = PreventionDamageKind(
+                str(value.get("damage_kind") or "any")
+            )
+            recipient_kind = PreventionRecipientKind(
+                str(value.get("recipient_kind") or "any")
+            )
         except ValueError as exc:
             raise DamageModifierError(
-                "Prevention shield mode or duration is unsupported"
+                "Prevention shield mode, duration, or scope is unsupported"
             ) from exc
         raw_trigger = value.get("triggered_ability")
         if raw_trigger is not None and not isinstance(raw_trigger, Mapping):
@@ -1106,6 +1139,8 @@ class DamagePreventionShield:
             remaining=value["remaining"],
             duration=duration,
             created_turn_sequence=value["created_turn_sequence"],
+            damage_kind=damage_kind,
+            recipient_kind=recipient_kind,
             chosen_source=(
                 ChosenDamageSource.from_dict(chosen)
                 if isinstance(chosen, Mapping)

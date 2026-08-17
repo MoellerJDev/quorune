@@ -412,6 +412,125 @@ class OracleIRTests(unittest.TestCase):
                     node.effects[0],
                 )
 
+    def test_combat_scoped_prevention_compiles_in_spell_and_activated_contexts(self):
+        base = self.db.lookup("Lightning Bolt")
+        registry = load_default_capability_registry()
+        cases = (
+            (
+                "damage-prevention-all-combat-v1",
+                "Instant",
+                "Prevent all combat damage that would be dealt this turn.",
+                {"damage_kind": "combat", "subject": "*"},
+            ),
+            (
+                "damage-prevention-all-combat-to-players-v1",
+                "Instant",
+                (
+                    "Prevent all combat damage that would be dealt to players "
+                    "this turn."
+                ),
+                {"damage_kind": "combat", "recipient_kind": "player"},
+            ),
+            (
+                "damage-prevention-all-combat-by-target-v1",
+                "Artifact",
+                (
+                    "{2}, {T}: Prevent all combat damage that would be dealt by "
+                    "target creature this turn."
+                ),
+                {"damage_kind": "combat", "chosen_source": "$target.0"},
+            ),
+            (
+                "damage-prevention-all-combat-to-from-self-v1",
+                "Creature — Spirit",
+                (
+                    "{3}{W}: Prevent all combat damage that would be dealt to and "
+                    "dealt by this creature this turn."
+                ),
+                {"damage_kind": "combat"},
+            ),
+            (
+                "damage-prevention-fixed-combat-shield-v1",
+                "Creature — Griffin",
+                (
+                    "{1}{W}: Prevent the next 1 combat damage that would be dealt "
+                    "to target player or planeswalker this turn."
+                ),
+                {"damage_kind": "combat", "amount": 1},
+            ),
+            (
+                "damage-prevention-all-shield-self-v1",
+                "Creature — Antelope",
+                (
+                    "Discard a card: Prevent all damage that would be dealt to "
+                    "this creature this turn."
+                ),
+                {"subject": "$source"},
+            ),
+            (
+                "damage-prevention-chosen-source-next-instance-v1",
+                "Enchantment",
+                (
+                    "{1}: The next time a blue source of your choice would deal "
+                    "damage to you this turn, prevent that damage."
+                ),
+                {"op": "choose_damage_source"},
+            ),
+        )
+        for index, (template, type_line, text, expected) in enumerate(cases):
+            with self.subTest(template=template):
+                ir = compile_oracle_card(
+                    replace(
+                        base,
+                        oracle_id=f"fixture-combat-prevention-{index}",
+                        name="Fixture Combat Prevention",
+                        type_line=type_line,
+                        oracle_text=text,
+                    ),
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                node = ir.faces[0].nodes[0]
+                self.assertEqual(template, node.template_id)
+                self.assertEqual("exact", ir.status)
+                self.assertIn(
+                    "damage.prevention.persistent_amount",
+                    node.capability_dependencies,
+                )
+                self.assertTrue(
+                    any(
+                        all(
+                            effect.get(field) == value
+                            for field, value in expected.items()
+                        )
+                        for effect in node.effects
+                    )
+                )
+
+        two_target_clauses = compile_oracle_card(
+            replace(
+                base,
+                oracle_id="fixture-combat-prevention-two-targets",
+                name="Fixture Two-Target Combat Prevention",
+                type_line="Instant",
+                oracle_text=(
+                    "Prevent all combat damage target creature would deal this "
+                    "turn.\nPrevent all combat damage that would be dealt to "
+                    "target creature this turn."
+                ),
+            ),
+            capability_registry=registry,
+            capability_profile="commander_review",
+        )
+        self.assertEqual("exact", two_target_clauses.status)
+        self.assertEqual(
+            [
+                "damage-prevention-all-combat-by-target-v1",
+                "damage-prevention-all-combat-to-target-v1",
+            ],
+            [node.template_id for node in two_target_clauses.faces[0].nodes],
+        )
+
     def test_fixed_continuous_modifiers_compile_exactly_without_card_names(self):
         base = self.db.lookup("Lightning Bolt")
         registry = load_default_capability_registry()
@@ -931,14 +1050,18 @@ class OracleIRTests(unittest.TestCase):
                 self.assertEqual(mode, choice["shield"]["mode"])
                 self.assertEqual(subject, choice["shield"]["subject"])
 
-    def test_divided_and_combat_only_prevention_remain_unresolved(self):
+    def test_divided_and_open_combat_prevention_remain_unresolved(self):
         base = self.db.lookup("Lightning Bolt")
         for oracle_text in (
             (
                 "Prevent the next 4 damage that would be dealt this turn to any "
                 "number of targets, divided as you choose."
             ),
-            "Prevent the next 1 combat damage that would be dealt to you this turn.",
+            (
+                "Prevent all combat damage that would be dealt by creatures other "
+                "than target creature this turn."
+            ),
+            "Prevent all combat damage that would be dealt next turn.",
         ):
             record = replace(
                 base,
