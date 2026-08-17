@@ -1154,6 +1154,94 @@
       "applicability_note": "Preserve the authoritative state hash when origin, ownership, object kind, or logical identity validation fails."
     },
     {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_fixed_life_and_mana_alternatives_share_total_cost_options",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Fold each fixed branch into the same total-cost pipeline before static reduction and restricted-mana affordability filter the server-authored options."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_zone_replacement_suspends_alternative_cost_before_mutation_and_replays",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend the selected discard branch for competing destination replacements before mana, discard, or stack mutation, then resume the same typed branch."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_zone_replacement_suspends_alternative_cost_before_mutation_and_replays",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resolve the affected caster's replacement order in four-player state without changing the selected alternative-cost branch."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostCompilerTests.test_alternative_compiler_mutant_is_killed",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the closed binary grammar production rather than retaining a false exact spell promotion."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostCompilerTests.test_alternative_descriptor_and_unsupported_grammar_fail_closed",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject optional, variable, random, tap, composite, repeated, nested, duplicate, and non-binary cost expressions and malformed descriptors."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_stale_alternative_selection_rolls_back",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a selected branch whose object payment is no longer legal before mana or stack mutation."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostCompilerTests.test_fixed_alternative_costs_compile_source_spanned_programs",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower representative mana, life, discard, sacrifice, and graveyard-exile binary expressions into exact source-spanned typed nodes."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_cost_options_require_explicit_branch_and_commit_selected_payment",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Advertise distinct payable branch identities, require an explicit selection, exclude the spell from discard candidates, and commit only that branch."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_private_alternative_discard_offer_is_seat_scoped",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project private discard candidates only to the caster and omit those hand references from opposing views."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_zone_replacement_suspends_alternative_cost_before_mutation_and_replays",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the selected branch, suspended destination-replacement decision, mana payment, and stack placement to the identical authoritative hash."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_alternative",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_stale_alternative_selection_rolls_back",
+      "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve the authoritative hash when a selected object-payment branch becomes stale."
+    },
+    {
       "capability_id": "casting.additional_cost.fixed_counter_placement",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_counter_additional_costs.FixedCounterAdditionalCostRuntimeTests.test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
@@ -1234,6 +1322,62 @@
       "applicability_note": "Replay the suspended cast-cost replacement choice, counter result, mana payment, and stack placement to the identical authoritative state hash."
     },
     {
+      "capability_id": "casting.additional_cost.fixed_life_payment",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_fixed_life_and_mana_alternatives_share_total_cost_options",
+      "official_rule_ids": ["119.4", "601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep fixed life and fixed mana branches distinct while the shared total-cost owner applies reductions and restricted-mana affordability."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_life_payment",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostCompilerTests.test_alternative_compiler_mutant_is_killed",
+      "official_rule_ids": ["119.4", "601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the direct fixed-life grammar production rather than retaining a false exact spell promotion."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_life_payment",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostCompilerTests.test_alternative_descriptor_and_unsupported_grammar_fail_closed",
+      "official_rule_ids": ["119.4", "601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject variable, optional, nonpositive, nested, duplicate, and malformed life-payment expressions and descriptors."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_life_payment",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_fixed_life_cost_stale_payment_rolls_back",
+      "official_rule_ids": ["119.4", "601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a previously affordable fixed life payment after the caster's life total falls below the pinned amount."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_life_payment",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_fixed_life_cost_compiles_and_pays",
+      "official_rule_ids": ["119.4", "601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile one mandatory fixed-life clause, pay it through the canonical life owner, and place the spell on the stack."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_life_payment",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_fixed_life_cost_compiles_and_pays",
+      "official_rule_ids": ["119.4", "601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the fixed life payment, mana payment, and stack placement to the identical authoritative hash."
+    },
+    {
+      "capability_id": "casting.additional_cost.fixed_life_payment",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_alternative_additional_costs.FixedAlternativeAdditionalCostRuntimeTests.test_fixed_life_cost_stale_payment_rolls_back",
+      "official_rule_ids": ["119.4", "601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Roll back mana and stack mutations when a fixed life payment becomes stale before commit."
+    },
+    {
       "capability_id": "casting.additional_cost.fixed_sacrifice",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostRuntimeTests.test_sacrifice_is_not_destruction_and_uses_owner_graveyard",
@@ -1279,7 +1423,7 @@
       "test_id": "tests.test_fixed_sacrifice_additional_costs.FixedSacrificeAdditionalCostCompilerTests.test_fixed_sacrifice_cost_grammar_fails_closed",
       "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Leave optional, variable, multiple, alternate, dynamic, historical, and compound sacrifice wording as precise material residuals."
+      "applicability_note": "Leave optional, variable, multiple, dynamic, historical, and compound sacrifice wording outside both the direct leaf and typed binary alternative owners."
     },
     {
       "capability_id": "casting.additional_cost.fixed_sacrifice",
@@ -1295,7 +1439,7 @@
       "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_cost_grammar_fails_closed",
       "official_rule_ids": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Reject dynamic and historical sacrifice qualities, alternatives, and variable or multiple payments."
+      "applicability_note": "Reject dynamic and historical sacrifice qualities and variable or multiple payments while typed fixed binary alternatives remain separately owned."
     },
     {
       "capability_id": "casting.additional_cost.fixed_sacrifice",
@@ -1399,7 +1543,7 @@
       "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_cost_grammar_fails_closed",
       "official_rule_ids": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Keep random, variable, multiple, optional, and alternative discard costs as precise residuals."
+      "applicability_note": "Keep random, variable, multiple, optional, and non-binary discard costs as precise residuals."
     },
     {
       "capability_id": "casting.additional_cost.zone_change.fixed_discard",
@@ -1455,7 +1599,7 @@
       "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_cost_grammar_fails_closed",
       "official_rule_ids": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Keep variable, multiple, optional, alternative, and dynamic exile costs as precise residuals."
+      "applicability_note": "Keep variable, multiple, optional, non-binary, and dynamic exile costs as precise residuals."
     },
     {
       "capability_id": "casting.additional_cost.zone_change.fixed_exile",
@@ -1511,7 +1655,7 @@
       "test_id": "tests.test_fixed_zone_change_additional_costs.FixedZoneChangeAdditionalCostCompilerTests.test_fixed_zone_change_cost_grammar_fails_closed",
       "official_rule_ids": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Keep variable, multiple, state-qualified, and alternative return costs as precise residuals."
+      "applicability_note": "Keep variable, multiple, state-qualified, and non-binary return costs as precise residuals."
     },
     {
       "capability_id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",

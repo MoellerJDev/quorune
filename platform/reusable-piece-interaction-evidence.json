@@ -1576,6 +1576,24 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_fixed_life_and_mana_alternatives_share_total_cost_options",
+      "piece_ids": ["capability.casting.additional_cost.fixed_alternative", "capability.casting.additional_cost.fixed_life_payment"],
+      "capability_ids": ["casting.additional_cost.fixed_alternative", "casting.additional_cost.fixed_life_payment"],
+      "interaction_order": 2,
+      "assertion": "One typed binary cost exposes fixed-life and fixed-mana branches as distinct total-cost options; static reduction can make the mana branch payable without allowing spell-restricted mana or charging the unselected life branch."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
+      "test_id": "test_zone_replacement_suspends_alternative_cost_before_mutation_and_replays",
+      "piece_ids": ["capability.casting.additional_cost.fixed_alternative", "capability.casting.additional_cost.zone_change.fixed_discard", "capability.zone.change.destination_replacement"],
+      "capability_ids": ["casting.additional_cost.fixed_alternative", "casting.additional_cost.zone_change.fixed_discard", "zone.change.destination_replacement"],
+      "interaction_order": 3,
+      "assertion": "The selected discard branch retains its typed identity while competing destination replacements suspend before hand, mana, spell, or stack mutation; the private continuation survives restart and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_discard_replacement_suspends_before_mutation_and_replays",
       "piece_ids": ["capability.casting.additional_cost.zone_change.fixed_discard", "capability.zone.change.destination_replacement"],
       "capability_ids": ["casting.additional_cost.zone_change.fixed_discard", "zone.change.destination_replacement"],

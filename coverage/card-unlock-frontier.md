@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "690f0973e622592c2ee7bf4219c765f935d07d683ced75c84b99da383ca976fc"
+verified: "70070164e034f60c87933d825a8098fbe68b10f1ea46b37ea26c6dbc9fb2253a"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -14,10 +14,10 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 ## Snapshot
 
 - Cards considered: 31,623
-- Oracle states: `{"exact":4587,"partial":12513,"unresolved":14523}`
-- CardProgram states: `{"residual":27036,"trusted":4587}`
+- Oracle states: `{"exact":4599,"partial":12513,"unresolved":14511}`
+- CardProgram states: `{"residual":27024,"trusted":4599}`
 - Hard construction failures: 0
-- Frontier fingerprint: `690f0973e622592c2ee7bf4219c765f935d07d683ced75c84b99da383ca976fc`
+- Frontier fingerprint: `70070164e034f60c87933d825a8098fbe68b10f1ea46b37ea26c6dbc9fb2253a`
 
 ## Highest-leverage single families
 
@@ -29,7 +29,6 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `keyword_dependency:morph` | 141 | 141 | 37 | 141 | missing_contract | medium |
 | `mechanic_dependency:cr-615-prevention-effects` | 78 | 76 | 28 | 31 | partial | high |
 | `activated_effect:return` | 417 | 416 | 26 | 47 | missing_lowering | high |
-| `effect_clause:typed-spell-additional-cost-clause` | 123 | 123 | 26 | 26 | missing_lowering | high |
 | `effect_clause:life-change` | 575 | 572 | 20 | 56 | missing_lowering | high |
 | `keyword_dependency:unearth` | 55 | 55 | 20 | 55 | missing_contract | medium |
 | `keyword_dependency:cascade` | 37 | 37 | 19 | 37 | missing_contract | medium |
@@ -44,6 +43,7 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `activated_effect:put-onto-battlefield` | 288 | 286 | 14 | 32 | missing_lowering | high |
 | `mechanic_dependency:cr-400-general` | 26 | 26 | 14 | 26 | partial | high |
 | `activated_effect:unparsed-this-creature-can` | 39 | 39 | 14 | 23 | missing_lowering | high |
+| `effect_clause:typed-spell-additional-cost-clause` | 106 | 106 | 14 | 14 | missing_lowering | high |
 | `effect_clause:exile` | 629 | 609 | 13 | 96 | missing_lowering | high |
 | `keyword_dependency:changeling` | 62 | 62 | 13 | 62 | missing_contract | medium |
 | `keyword_dependency:storm` | 33 | 33 | 12 | 33 | missing_contract | medium |
@@ -60,7 +60,6 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:unearth` | 4,006 | 9,344 | 9,344 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-615-prevention-effects` | 4,005 | 9,320 | 9,320 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:create-token` | 4,004 | 9,355 | 9,369 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:typed-spell-additional-cost-clause` | 4,003 | 9,315 | 9,412 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:cascade` | 4,002 | 9,326 | 9,326 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:changeling` | 3,999 | 9,351 | 9,351 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:start-your-engines` | 3,998 | 9,329 | 9,329 |
@@ -73,6 +72,7 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:draw` | 3,993 | 9,351 | 9,351 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:return` | 3,993 | 9,317 | 9,317 |
 | `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:unparsed-surveil-1` | 3,993 | 9,310 | 9,314 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:storm` | 3,992 | 9,322 | 9,322 |
 
 ## Hard construction failures
 

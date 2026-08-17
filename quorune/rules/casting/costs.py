@@ -26,6 +26,12 @@ from ..casting_additional_costs import (
     fixed_zone_change_cost_candidates,
     legacy_additional_cost_candidates,
 )
+from ..casting_additional_cost_groups import (
+    FixedManaPaymentAdditionalCost,
+    fixed_additional_cost_option_label,
+    fixed_alternative_additional_cost,
+    fixed_life_payment_additional_cost,
+)
 
 
 class CastCostHost(Protocol):
@@ -96,6 +102,110 @@ class CastCostHost(Protocol):
 
     def _maximum_affordable_x(self, seat: str, card: Any) -> int: ...
 
+
+def _expand_fixed_alternative_options(
+    host: CastCostHost,
+    expanded: list[dict[str, Any]],
+    mandatory: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]] | None:
+    """Expand one closed binary additional cost into explicit cost options."""
+
+    if len(mandatory) != 1:
+        return expanded, mandatory
+    try:
+        alternative = fixed_alternative_additional_cost(mandatory[0])
+    except AdditionalCostError:
+        return None
+    if alternative is None:
+        return expanded, mandatory
+
+    alternatives: list[dict[str, Any]] = []
+    for base_option in expanded:
+        for index, cost in enumerate(alternative.options, start=1):
+            option = copy.deepcopy(base_option)
+            option["base_cost_option"] = str(base_option["id"])
+            option["id"] = (
+                f"{base_option['id']}+additional-alternative-{index}"
+            )
+            option["kind"] = "additional_alternative"
+            option["label"] = fixed_additional_cost_option_label(cost)
+            if isinstance(cost, FixedManaPaymentAdditionalCost):
+                requirements = host._mana_vector(option["requirements"])
+                for symbol, amount in cost.requirements:
+                    requirements[symbol] += amount
+                option["requirements"] = requirements
+                option["_selected_additional_costs"] = []
+            else:
+                option["_selected_additional_costs"] = [cost.to_descriptor()]
+            alternatives.append(option)
+    return alternatives, []
+
+
+def _compiled_payment_mechanics(
+    host: CastCostHost,
+    seat: str,
+    record: Any,
+    schema: Mapping[str, Any],
+    program: Any,
+) -> list[dict[str, Any]] | None:
+    """Resolve trusted compiled affinity and convoke payment mechanics."""
+
+    mechanics = host._cost_payment_mechanics(record, schema)
+    declared_affinity = any(
+        str(value.get("kind") or "").casefold() == "affinity"
+        for value in mechanics
+    )
+    mechanics = [
+        value
+        for value in mechanics
+        if str(value.get("kind") or "").casefold() != "affinity"
+    ]
+    compiled_affinity = compiled_affinity_specs(
+        host,
+        record.oracle_id,
+        spell_program=program,
+    )
+    if compiled_affinity:
+        mechanics.extend(
+            specification.to_payment_mechanic()
+            for specification in compiled_affinity
+        )
+    elif declared_affinity or "affinity" in {
+        str(value).casefold() for value in record.keywords
+    }:
+        return None
+
+    declared_convoke = any(
+        str(value.get("kind") or "").casefold() == "convoke"
+        for value in mechanics
+    )
+    mechanics = [
+        value
+        for value in mechanics
+        if str(value.get("kind") or "").casefold() != "convoke"
+    ]
+    compiled_convoke = compiled_convoke_specs(
+        host,
+        record.oracle_id,
+        spell_program=program,
+    )
+    if compiled_convoke:
+        mechanics.append(
+            {
+                "kind": "convoke",
+                "schema_version": compiled_convoke[0].schema_version,
+            }
+        )
+    elif declared_convoke:
+        return None
+    if host.state.players[seat].stats.get("next_spell_improvise") and not any(
+        str(value.get("kind") or "").casefold() == "improvise"
+        for value in mechanics
+    ):
+        mechanics.append({"kind": "improvise"})
+    return mechanics
+
+
 def _initial_options(
     host: CastCostHost,
     seat: str,
@@ -143,58 +253,9 @@ def _initial_options(
     spend_context = host._spell_mana_spend_context(
         str(host._effective_card_data(card).get("type_line") or "")
     )
-    mechanics = host._cost_payment_mechanics(record, schema)
-    declared_affinity = any(
-        str(value.get("kind") or "").casefold() == "affinity"
-        for value in mechanics
-    )
-    mechanics = [
-        value
-        for value in mechanics
-        if str(value.get("kind") or "").casefold() != "affinity"
-    ]
-    compiled_affinity = compiled_affinity_specs(
-        host,
-        record.oracle_id,
-        spell_program=program,
-    )
-    if compiled_affinity:
-        mechanics.extend(
-            specification.to_payment_mechanic()
-            for specification in compiled_affinity
-        )
-    elif declared_affinity or "affinity" in {
-        str(value).casefold() for value in record.keywords
-    }:
+    mechanics = _compiled_payment_mechanics(host, seat, record, schema, program)
+    if mechanics is None:
         return None
-    declared_convoke = any(
-        str(value.get("kind") or "").casefold() == "convoke"
-        for value in mechanics
-    )
-    mechanics = [
-        value
-        for value in mechanics
-        if str(value.get("kind") or "").casefold() != "convoke"
-    ]
-    compiled_convoke = compiled_convoke_specs(
-        host,
-        record.oracle_id,
-        spell_program=program,
-    )
-    if compiled_convoke:
-        mechanics.append(
-            {
-                "kind": "convoke",
-                "schema_version": compiled_convoke[0].schema_version,
-            }
-        )
-    elif declared_convoke:
-        return None
-    if host.state.players[seat].stats.get("next_spell_improvise") and not any(
-        str(value.get("kind") or "").casefold() == "improvise"
-        for value in mechanics
-    ):
-        mechanics.append({"kind": "improvise"})
     commander_tax = (
         2 * host.state.players[seat].commander_casts.get(card.oracle_id, 0)
         if card.zone == "command" and card.is_commander
@@ -242,6 +303,14 @@ def _initial_options(
                 }
             )
     mandatory = [dict(value) for value in schema.get("additional_costs", [])]
+    alternative_expansion = _expand_fixed_alternative_options(
+        host,
+        expanded,
+        mandatory,
+    )
+    if alternative_expansion is None:
+        return None
+    expanded, mandatory = alternative_expansion
     return expanded, mandatory, mechanics, spend_context, has_x
 
 
@@ -643,6 +712,7 @@ def _fixed_zone_change_selection(
     host: CastCostHost,
     *,
     seat: str,
+    source_object_id: str,
     cost: FixedZoneChangeAdditionalCost,
     cost_position: int,
     response: Mapping[str, Any],
@@ -650,7 +720,12 @@ def _fixed_zone_change_selection(
     choice_schema: dict[str, Any],
 ) -> tuple[bool, dict[str, Any] | None]:
     candidates = list(
-        fixed_zone_change_cost_candidates(host, actor=seat, cost=cost)
+        fixed_zone_change_cost_candidates(
+            host,
+            actor=seat,
+            cost=cost,
+            exclude_object_id=source_object_id,
+        )
     )
     if not candidates:
         return False, None
@@ -747,6 +822,7 @@ def _apply_additional_costs(
             valid, selected = _fixed_zone_change_selection(
                 host,
                 seat=seat,
+                source_object_id=card.object_id,
                 cost=zone_change_cost,
                 cost_position=index,
                 response=response,
@@ -757,6 +833,16 @@ def _apply_additional_costs(
                 return False
             if selected is not None:
                 selected_nonmana.append(selected)
+            continue
+        try:
+            life_cost = fixed_life_payment_additional_cost(additional)
+        except AdditionalCostError:
+            return False
+        if life_cost is not None:
+            if len(mandatory_costs) != 1:
+                return False
+            if host.state.players[seat].life < life_cost.amount:
+                return False
             continue
         if kind == "life_x":
             selected_x = int(response["x"]) if response.get("x") is not None else 0
@@ -828,6 +914,11 @@ def _finalize_option(
     has_x: bool,
 ) -> CastCostOption | None:
     option = copy.deepcopy(option)
+    selected_additional_costs = option.pop(
+        "_selected_additional_costs", None
+    )
+    if selected_additional_costs is not None:
+        mandatory_costs = list(selected_additional_costs)
     option["base_requirements"] = host._mana_vector(option["requirements"])
     _apply_static_reductions(host, seat, card, option)
     exile_spec = option.get("exile_from_hand")

@@ -28,6 +28,9 @@ from ..casting_additional_costs import (
     fixed_zone_change_additional_cost,
     fixed_zone_change_cost_candidates,
 )
+from ..casting_additional_cost_groups import (
+    fixed_life_payment_additional_cost,
+)
 from .model import CastProposalError
 from .costs import revalidate_convoke_payment
 
@@ -179,6 +182,35 @@ def _pay_life_additional_cost(
     except LifeStateError as exc:
         raise CastProposalError(
             "The selected life payment is no longer payable",
+            status="unpayable",
+            reason="life_cost_unpayable",
+        ) from exc
+    host._log(
+        proposal.seat,
+        "cost.life",
+        f"{proposal.seat} paid {amount} life to cast {card.printed_name}.",
+        {
+            "object": card.ref,
+            "amount": amount,
+            "cost_option": selected_option["id"],
+        },
+        importance=1,
+        changed_players=[proposal.seat],
+    )
+
+
+def _pay_fixed_life_additional_cost(
+    host: CastCommitHost,
+    proposal: CastProposal,
+    card: Any,
+    selected_option: Mapping[str, Any],
+    amount: int,
+) -> None:
+    try:
+        pay_life_cost(host, proposal.seat, amount)
+    except LifeStateError as exc:
+        raise CastProposalError(
+            "The fixed life payment is no longer payable",
             status="unpayable",
             reason="life_cost_unpayable",
         ) from exc
@@ -379,6 +411,7 @@ def _resolve_fixed_zone_change_additional_cost(
             host,
             actor=proposal.seat,
             cost=cost,
+            exclude_object_id=proposal.object_id,
         )
     ):
         raise CastProposalError(
@@ -476,6 +509,21 @@ def _commit_additional_costs(
             semantic_events=True,
         )
     for additional in selected_option.get("additional_costs", []):
+        try:
+            fixed_life = fixed_life_payment_additional_cost(additional)
+        except AdditionalCostError as exc:
+            raise CastProposalError(
+                str(exc), reason="additional_cost_malformed"
+            ) from exc
+        if fixed_life is not None:
+            _pay_fixed_life_additional_cost(
+                host,
+                proposal,
+                card,
+                selected_option,
+                fixed_life.amount,
+            )
+            continue
         if additional.get("kind") == "life_x":
             _pay_life_additional_cost(
                 host, proposal, response, card, selected_option

@@ -404,6 +404,11 @@
         "candidate_id": "compiler:typed-direct-target-exile",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "The generated rank-one choose-one header family has zero sole blockers and all 273 occurrences still require sibling grammar. The rank-two exile frontier is actionable but decomposes into distinct battlefield-target, graveyard, mass, cost, library, and linked-result owners; a pinned-corpus probe selected its existing-owner direct-target slice at 18 exact abilities across 17 cards, including seven complete Commander cards. This slice reuses DirectPermanentTargetSpec and leaves combat-state, numeric-characteristic, mixed type/subtype, hidden-zone, mass, cost, and linked exile grammar residual."
+      },
+      {
+        "candidate_id": "compiler:typed-fixed-alternative-additional-costs",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "The rank-one choose-one aggregate still has zero sole blockers and is not one coherent grammar family. The rank-two 123-card additional-cost bucket was classified into typed children; this closed binary fixed-cost owner immediately harvests its mana, life, and existing single-object zone-change alternatives while leaving optional, variable, random, tap, reveal, and named-mechanic costs residual. Morph was deferred because face-down proposal and characteristic foundations are not yet present."
       }
     ]
   },

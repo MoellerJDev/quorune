@@ -13,7 +13,9 @@ from .ir_model import (
     append_residual,
 )
 from .spell_additional_cost_templates import (
+    fixed_alternative_additional_cost_template,
     fixed_counter_additional_cost_template,
+    fixed_life_payment_additional_cost_template,
     fixed_sacrifice_additional_cost_template,
     fixed_zone_change_additional_cost_template,
 )
@@ -282,6 +284,12 @@ def typed_additional_cost_spell_node(
         cost_mechanics = ()
     if cost is None:
         cost = fixed_zone_change_additional_cost_template(first_clause)
+        cost_mechanics = ()
+    if cost is None:
+        cost = fixed_life_payment_additional_cost_template(first_clause)
+        cost_mechanics = ()
+    if cost is None:
+        cost = fixed_alternative_additional_cost_template(first_clause)
         cost_mechanics = ()
     if cost is None and not first_clause.casefold().startswith(
         _ADDITIONAL_COST_PREFIX

@@ -2,7 +2,7 @@
 title: "Oracle compiler architecture"
 status: "current"
 authoritative_source: "quorune/oracle_ir.py, quorune/compiler, and quorune/card_programs"
-verified: "2026-08-15"
+verified: "2026-08-16"
 audience: "compiler and rules contributors"
 maintenance: "hand-maintained"
 ---
@@ -74,6 +74,20 @@ one em-dash-delimited fixed positive life cost to a source-spanned upkeep
 trigger. Both forms place the age counter before calculating the optional
 payment and require the shared replacement-aware counter owner; unsupported
 costs and additional cumulative-upkeep instances remain material residuals.
+
+`compiler/spell_additional_cost_templates.py` owns one closed binary
+additional-cost expression. Each side must independently lower to a positive
+fixed ordinary-mana payment, a positive fixed-life payment, or one existing
+single-object discard, sacrifice, exile, or return payment. The casting owner
+publishes one distinct cost-option identity per currently payable branch,
+requires the pilot to select that identity when more than one branch is
+available, folds a selected mana leaf into the total cost before reductions
+and payment mechanics, and commits only the selected nonmana leaf. A spell is
+excluded from its own discard candidates because this engine retains the card
+in its origin zone until cost commit. Optional, three-or-more-branch,
+variable, random, repeatable, composite, reveal, tap, linked-result, and named
+mechanic costs remain source-spanned residuals. Direct mandatory positive
+fixed-life costs use the same life-payment leaf and canonical life owner.
 
 `compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
 It accepts only live battlefield sets representable by `ObjectQuerySpec`: a

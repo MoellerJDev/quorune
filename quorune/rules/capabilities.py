@@ -21,7 +21,9 @@ from .counter_removal_capabilities import (
     fixed_counter_removal_node_capabilities,
 )
 from .node_capability_shapes import (
+    fixed_alternative_additional_cost_node_capabilities,
     fixed_counter_additional_cost_node_capabilities,
+    fixed_life_payment_additional_cost_node_capabilities,
     fixed_sacrifice_additional_cost_node_capabilities,
     fixed_zone_change_additional_cost_node_capabilities,
     fixed_counter_placement_batch_node_capabilities,
@@ -1016,7 +1018,17 @@ def capability_dependencies_for_node(
     all_operations = _nested_effect_operations(effects)
     dependencies: set[str] = set()
     dependencies.update(
+        fixed_alternative_additional_cost_node_capabilities(
+            cost_schema=cost_schema
+        )
+    )
+    dependencies.update(
         fixed_counter_additional_cost_node_capabilities(
+            cost_schema=cost_schema
+        )
+    )
+    dependencies.update(
+        fixed_life_payment_additional_cost_node_capabilities(
             cost_schema=cost_schema
         )
     )
@@ -1228,6 +1240,13 @@ def capability_covered_mechanics(
     if "casting.additional_cost.fixed_counter_placement" in supplied:
         covered.update({"cr-601-casting-spells", "cr-122-counters"})
     if "casting.additional_cost.fixed_sacrifice" in supplied:
+        covered.add("cr-601-casting-spells")
+    if supplied.intersection(
+        {
+            "casting.additional_cost.fixed_alternative",
+            "casting.additional_cost.fixed_life_payment",
+        }
+    ):
         covered.add("cr-601-casting-spells")
     if supplied.intersection(
         {

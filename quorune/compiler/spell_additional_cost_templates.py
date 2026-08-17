@@ -7,16 +7,20 @@ import re
 from typing import Any, Mapping
 
 from ..additional_cost_vocabulary import (
+    ALTERNATIVE_ADDITIONAL_COST_KIND,
     DISCARD_ONE_COST,
     EXILE_ONE_FROM_BATTLEFIELD_COST,
     EXILE_ONE_FROM_GRAVEYARD_COST,
     FIXED_ZONE_CHANGE_COST_CONTRACTS,
+    FIXED_LIFE_PAYMENT_COST_KIND,
+    FIXED_MANA_PAYMENT_COST_KIND,
     RETURN_ONE_TO_OWNER_HAND_COST,
     SACRIFICE_COST_KIND,
     SACRIFICE_ONE_COST,
     ZONE_CHANGE_COST_KIND,
 )
 from ..object_predicate import ObjectQuerySpec
+from ..util import mana_cost_to_vector
 from .creature_subtypes import canonical_creature_subtype
 from .fixed_numbers import FIXED_COUNT_PATTERN, fixed_number
 
@@ -66,6 +70,19 @@ _FIXED_RETURN_COST = re.compile(
     r"As an additional cost to cast this spell, return "
     r"(?P<article>a|an) (?P<quality>[A-Za-z ]+) you control "
     r"to its owner's hand\.?",
+    re.IGNORECASE,
+)
+_FIXED_LIFE_COST = re.compile(
+    rf"As an additional cost to cast this spell, pay "
+    rf"(?P<count>{FIXED_COUNT_PATTERN}|\d+) life\.?",
+    re.IGNORECASE,
+)
+_FIXED_MANA_LEAF = re.compile(
+    r"pay (?P<mana>(?:\{(?:\d+|[WUBRGC])\})+)",
+    re.IGNORECASE,
+)
+_ADDITIONAL_COST_CLAUSE = re.compile(
+    r"As an additional cost to cast this spell, (?P<body>.+?)\.?",
     re.IGNORECASE,
 )
 _COLOR_WORDS = {
@@ -236,6 +253,123 @@ class FixedZoneChangeAdditionalCostTemplate:
         return {"additional_costs": [dict(self.descriptor)]}
 
 
+@dataclass(frozen=True, slots=True)
+class FixedLifePaymentAdditionalCostTemplate:
+    """One positive fixed life payment made while casting a spell."""
+
+    amount: int
+
+    def __post_init__(self) -> None:
+        if type(self.amount) is not int or self.amount <= 0:
+            raise ValueError(
+                "Fixed life additional-cost amount must be positive"
+            )
+
+    @property
+    def template_id(self) -> str:
+        return f"spell-additional-cost-fixed-life-{self.amount}-v1"
+
+    @property
+    def descriptor(self) -> Mapping[str, Any]:
+        return {
+            "schema_version": 1,
+            "kind": FIXED_LIFE_PAYMENT_COST_KIND,
+            "amount": self.amount,
+        }
+
+    @property
+    def cost_schema(self) -> Mapping[str, Any]:
+        return {"additional_costs": [dict(self.descriptor)]}
+
+
+@dataclass(frozen=True, slots=True)
+class FixedManaPaymentAdditionalCostTemplate:
+    """One positive ordinary fixed mana payment used as a cost leaf."""
+
+    requirements: tuple[tuple[str, int], ...]
+
+    def __post_init__(self) -> None:
+        requirements = dict(self.requirements)
+        expected = ("GENERIC", "W", "U", "B", "R", "G", "C")
+        if (
+            tuple(key for key, _ in self.requirements) != expected
+            or len(requirements) != len(expected)
+            or any(
+                type(amount) is not int or amount < 0
+                for amount in requirements.values()
+            )
+            or not any(requirements.values())
+        ):
+            raise ValueError(
+                "Fixed mana additional costs require a positive ordinary vector"
+            )
+
+    @property
+    def template_id(self) -> str:
+        terms = [
+            f"{key.casefold()}-{amount}"
+            for key, amount in self.requirements
+            if amount
+        ]
+        return "spell-additional-cost-fixed-mana-" + "-".join(terms) + "-v1"
+
+    @property
+    def descriptor(self) -> Mapping[str, Any]:
+        return {
+            "schema_version": 1,
+            "kind": FIXED_MANA_PAYMENT_COST_KIND,
+            "requirements": dict(self.requirements),
+        }
+
+
+FixedAlternativeLeafTemplate = (
+    FixedZoneChangeAdditionalCostTemplate
+    | FixedLifePaymentAdditionalCostTemplate
+    | FixedManaPaymentAdditionalCostTemplate
+)
+
+
+@dataclass(frozen=True, slots=True)
+class FixedAlternativeAdditionalCostTemplate:
+    """One printed binary choice among independently typed fixed costs."""
+
+    options: tuple[FixedAlternativeLeafTemplate, ...]
+
+    def __post_init__(self) -> None:
+        if len(self.options) != 2:
+            raise ValueError(
+                "Fixed alternative additional costs require two options"
+            )
+        if self.options[0].descriptor == self.options[1].descriptor:
+            raise ValueError(
+                "Fixed alternative additional-cost options must be distinct"
+            )
+
+    @property
+    def template_id(self) -> str:
+        terms = [
+            option.template_id
+            .removeprefix("spell-additional-cost-")
+            .removesuffix("-v1")
+            for option in self.options
+        ]
+        return "spell-additional-cost-fixed-alternative-" + "-or-".join(
+            terms
+        ) + "-v1"
+
+    @property
+    def descriptor(self) -> Mapping[str, Any]:
+        return {
+            "schema_version": 1,
+            "kind": ALTERNATIVE_ADDITIONAL_COST_KIND,
+            "options": [dict(option.descriptor) for option in self.options],
+        }
+
+    @property
+    def cost_schema(self) -> Mapping[str, Any]:
+        return {"additional_costs": [dict(self.descriptor)]}
+
+
 def _article_matches(article: str, noun: str) -> bool:
     expected = "an" if noun[0].casefold() in "aeiou" else "a"
     return article.casefold() == expected
@@ -392,6 +526,101 @@ def fixed_zone_change_additional_cost_template(
     )
 
 
+def fixed_life_payment_additional_cost_template(
+    text: str,
+) -> FixedLifePaymentAdditionalCostTemplate | None:
+    """Parse one mandatory positive fixed life payment."""
+
+    match = _FIXED_LIFE_COST.fullmatch(text.strip())
+    if match is None:
+        return None
+    amount = fixed_number(match.group("count"))
+    if amount <= 0:
+        return None
+    return FixedLifePaymentAdditionalCostTemplate(amount)
+
+
+def _fixed_mana_additional_cost_leaf_template(
+    text: str,
+) -> FixedManaPaymentAdditionalCostTemplate | None:
+    match = _FIXED_MANA_LEAF.fullmatch(text.strip())
+    if match is None:
+        return None
+    requirements, complex_symbols = mana_cost_to_vector(match.group("mana"))
+    if complex_symbols or not any(requirements.values()):
+        return None
+    return FixedManaPaymentAdditionalCostTemplate(
+        tuple(requirements.items())
+    )
+
+
+def _fixed_zone_change_additional_cost_leaf_template(
+    text: str,
+) -> FixedZoneChangeAdditionalCostTemplate | None:
+    clause = (
+        "As an additional cost to cast this spell, "
+        + text.strip().removesuffix(".")
+        + "."
+    )
+    typed = fixed_zone_change_additional_cost_template(clause)
+    if typed is not None:
+        return typed
+    legacy = fixed_sacrifice_additional_cost_template(clause)
+    if legacy is None:
+        return None
+    return FixedZoneChangeAdditionalCostTemplate(
+        SACRIFICE_ONE_COST,
+        ObjectQuerySpec.from_dict(legacy.descriptor["predicate"]),
+    )
+
+
+def _fixed_alternative_leaf_template(
+    text: str,
+) -> FixedAlternativeLeafTemplate | None:
+    mana = _fixed_mana_additional_cost_leaf_template(text)
+    if mana is not None:
+        return mana
+    life = fixed_life_payment_additional_cost_template(
+        "As an additional cost to cast this spell, "
+        + text.strip().removesuffix(".")
+        + "."
+    )
+    if life is not None:
+        return life
+    return _fixed_zone_change_additional_cost_leaf_template(text)
+
+
+def fixed_alternative_additional_cost_template(
+    text: str,
+) -> FixedAlternativeAdditionalCostTemplate | None:
+    """Parse one unambiguous printed binary fixed additional-cost choice."""
+
+    match = _ADDITIONAL_COST_CLAUSE.fullmatch(text.strip())
+    if match is None:
+        return None
+    body = match.group("body").removesuffix(".")
+    if (
+        "(" in body
+        or " and " in body.casefold()
+        or body.casefold().startswith("you may ")
+    ):
+        return None
+    candidates: list[FixedAlternativeAdditionalCostTemplate] = []
+    for separator in re.finditer(r"\s+or\s+", body, re.IGNORECASE):
+        first = _fixed_alternative_leaf_template(body[: separator.start()])
+        second = _fixed_alternative_leaf_template(body[separator.end() :])
+        if first is not None and second is not None:
+            try:
+                candidates.append(
+                    FixedAlternativeAdditionalCostTemplate((first, second))
+                )
+            except ValueError:
+                continue
+    if len(candidates) != 1:
+        return None
+    return candidates[0]
+
+
 def fixed_counter_additional_cost_template(
     text: str,
 ) -> FixedCounterAdditionalCostTemplate | None:
@@ -435,10 +664,15 @@ def fixed_sacrifice_additional_cost_template(
 
 
 __all__ = [
+    "FixedAlternativeAdditionalCostTemplate",
     "FixedCounterAdditionalCostTemplate",
+    "FixedLifePaymentAdditionalCostTemplate",
+    "FixedManaPaymentAdditionalCostTemplate",
     "FixedSacrificeAdditionalCostTemplate",
     "FixedZoneChangeAdditionalCostTemplate",
     "fixed_counter_additional_cost_template",
+    "fixed_alternative_additional_cost_template",
+    "fixed_life_payment_additional_cost_template",
     "fixed_sacrifice_additional_cost_template",
     "fixed_zone_change_additional_cost_template",
 ]
