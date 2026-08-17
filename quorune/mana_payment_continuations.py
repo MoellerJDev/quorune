@@ -6,6 +6,7 @@ from typing import Any, Mapping, Protocol
 
 from .errors import GameRuleError
 from .mana_undo import clear_mana_undo_stack
+from .rules.morph_actions import commit_turn_face_up
 from .replacement.ordering import (
     ReplacementChoiceRequired,
     replacement_choice_payload,
@@ -37,9 +38,9 @@ def issue_mana_payment_replacement_choice(
 ) -> None:
     """Suspend a rolled-back cast/activation cost at a CR 616 choice."""
 
-    if action not in {"cast", "activate"}:
+    if action not in {"cast", "activate", "turn_face_up"}:
         raise ReplacementEffectError(
-            "Only casts and activations have resumable mana payments"
+            "Only represented priority actions have resumable mana payments"
         )
     pending = required.pending
     if pending.choice.chooser != seat:
@@ -132,8 +133,10 @@ def execute_mana_choice_capable_priority_action(
 ) -> bool:
     """Run one payment atomically or replace it with a strict continuation."""
 
-    if action not in {"cast", "activate"}:
-        raise ValueError("Only casts and activations may suspend mana payment")
+    if action not in {"cast", "activate", "turn_face_up"}:
+        raise ValueError(
+            "Only represented priority actions may suspend mana payment"
+        )
     internal_fields = {
         "_mana_payment_id",
         "_mana_replacement_selections",
@@ -152,8 +155,14 @@ def execute_mana_choice_capable_priority_action(
             if action == "cast":
                 clear_mana_undo_stack(host.state.players[seat].stats)
                 host._cast(seat, payload)
-            else:
+            elif action == "activate":
                 host._activate(seat, payload)
+            else:
+                commit_turn_face_up(
+                    host,
+                    seat=seat,
+                    response=payload,
+                )
     except ReplacementChoiceRequired as required:
         issue_mana_payment_replacement_choice(
             host,

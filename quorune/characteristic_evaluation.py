@@ -14,6 +14,7 @@ from .continuous_effects import (
 )
 from .continuous_effect_model import ContinuousEffectError
 from .model import CardInstance
+from .morph import MORPH_FACE_DOWN_ANNOTATION
 from .keyword_counters import keyword_counter_abilities
 from .util import unique_preserving_order
 from .ability_fragments import (
@@ -237,11 +238,27 @@ def _object_continuous_effects(
     added_subtypes: Sequence[str],
     *,
     has_colorless_definition: bool,
+    ignore_face_down: bool = False,
 ) -> list[ContinuousEffect]:
     effects: list[ContinuousEffect] = []
     copy_effect = _copy_effect(card, overrides)
     if copy_effect is not None:
         effects.append(copy_effect)
+    face_down_values = card.annotations.get(MORPH_FACE_DOWN_ANNOTATION)
+    if card.face_down and not ignore_face_down and face_down_values is not None:
+        effects.append(
+            ContinuousEffect(
+                effect_id=f"{card.object_id}:face-down",
+                source_id=card.object_id,
+                layer=Layer.COPY,
+                sublayer="1b",
+                timestamp=0,
+                operations=(
+                    ContinuousOperation("face_down", face_down_values),
+                ),
+                duration=ContinuousEffectDuration.ZONE_OBJECT,
+            )
+        )
     if has_colorless_definition:
         effects.append(
             ContinuousEffect(
@@ -435,6 +452,7 @@ def evaluate_card_characteristics(
     base: Mapping[str, Any],
     *,
     runtime_effects: Sequence[ContinuousEffect] = (),
+    ignore_face_down: bool = False,
 ) -> dict[str, Any]:
     """Evaluate one object's declarative CR 613 characteristic state.
 
@@ -459,6 +477,11 @@ def evaluate_card_characteristics(
         or card.annotations.get("granted_ability_fragments")
         or card.annotations.get("bestowed")
         or has_colorless_definition
+        or (
+            card.face_down
+            and not ignore_face_down
+            and card.annotations.get(MORPH_FACE_DOWN_ANNOTATION) is not None
+        )
         or runtime_effects
     )
     if not layered:
@@ -491,6 +514,7 @@ def evaluate_card_characteristics(
         added_types,
         added_subtypes,
         has_colorless_definition=has_colorless_definition,
+        ignore_face_down=ignore_face_down,
     )
     effects.extend(runtime_effects)
     evaluated = evaluate_continuous_effects(

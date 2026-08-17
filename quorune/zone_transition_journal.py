@@ -26,7 +26,12 @@ def journal_zone_move(
     identity_became_hidden = (
         card.zone in HIDDEN_ZONES and not plan.origin_identity_public
     )
-    if identity_became_hidden:
+    identity_remains_face_down = bool(
+        card.face_down
+        and card.zone in {"battlefield", "exile", "stack", "command"}
+        and not plan.origin_identity_public
+    )
+    if identity_became_hidden or identity_remains_face_down:
         host._log(
             None,
             "zone.move",
@@ -50,7 +55,15 @@ def journal_zone_move(
                 JOURNAL_REASON_FIELD: reason,
                 "tapped": card.tapped,
             },
-            visibility=sorted({card.owner, "analyst", *reveal_to}),
+            visibility=sorted(
+                {
+                    card.owner,
+                    card.controller,
+                    "analyst",
+                    *card.known_to,
+                    *reveal_to,
+                }
+            ),
             changed_objects=[card.object_id],
             changed_players=[card.owner, card.controller],
         )

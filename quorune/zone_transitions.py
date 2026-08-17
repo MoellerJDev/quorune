@@ -513,8 +513,14 @@ class ZoneTransitionOwner:
                     target,
                     source_timestamp=self.next_timestamp(),
                 )
-        card.known_to = list(self.host.seats)
-        card.revealed_to = list(self.host.seats)
+        if card.face_down:
+            card.known_to = sorted({*card.known_to, card.controller})
+            card.revealed_to = sorted(
+                set(card.revealed_to).intersection(card.known_to)
+            )
+        else:
+            card.known_to = list(self.host.seats)
+            card.revealed_to = list(self.host.seats)
         self.host._refresh_world_supertype_timestamp(
             card,
             gained_at=card.zone_timestamp,

@@ -64584,23 +64584,27 @@
       "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.37",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphCompilerTests.test_fixed_mana_morph_compiles_source_spanned_typed_program"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/morph.json"
+      ],
+      "notes": [
+        "Keyword heading; casting.morph.fixed_mana owns only the bounded ordinary fixed-mana slice while aggregate Morph remains partial."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.37",
       "rule_text_sha256": "61ce25d9ba800a072aec433eec96594a17797694b5e14d9939bb36d9daa01861",
       "schema_version": 1,
@@ -64609,26 +64613,50 @@
         "end_line": 4283,
         "start_line": 4282
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "variable and nonmana Morph costs remain outside the fixed ordinary-mana capability",
+        "copied, granted, text-changed, multiface, and merged objects remain excluded"
       ],
       "case_id": "cr-702.37a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "hidden_information",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphCompilerTests.test_fixed_mana_morph_compiles_source_spanned_typed_program",
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+        "tests.test_morph_rules.FixedManaMorphCompilerTests.test_nonordinary_morph_costs_remain_residual"
+      ],
+      "implementation_components": [
+        "quorune.morph.FixedManaMorphSpec",
+        "quorune.compiler.keyword_nodes.fixed_mana_morph_keyword_node",
+        "quorune.rules.casting.proposal.build_cast_offer",
+        "quorune.rules.morph_actions.commit_turn_face_up"
+      ],
+      "notes": [
+        "The narrow capability is tested and trusted; the aggregate rule remains blocked by the named excluded families."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "hidden_information",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.37a",
       "rule_text_sha256": "bed1ffb8b995ee9cda0725bcdac6144f2b6f67af22bb7ebcc4517247f18f05a1",
       "schema_version": 1,
@@ -64637,26 +64665,37 @@
         "end_line": 4285,
         "start_line": 4284
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Megamorph turn-up counter placement and its replacement interaction are not represented"
       ],
       "case_id": "cr-702.37b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphModelTests.test_fixed_mana_morph_descriptor_is_strict_and_registered"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/morph.json"
+      ],
+      "notes": [
+        "Megamorph is rejected by the closed Morph grammar and cannot inherit the fixed-mana capability."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.37b",
       "rule_text_sha256": "4bab4718df2b6aedc4ec448e6bbd7fba959b532ef7b5ce14f65eaa38c37da442",
       "schema_version": 1,
@@ -64665,26 +64704,53 @@
         "end_line": 4287,
         "start_line": 4286
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "unrepresented external alternate-cost prohibitions and replacement-sensitive mana-source costs remain fail-closed",
+        "casting from every unusual authorized zone is not independently certified"
       ],
       "case_id": "cr-702.37c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_land_card_has_only_the_trusted_morph_cast_offer",
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_stale_morph_cast_contract_rolls_back_before_payment"
+      ],
+      "implementation_components": [
+        "quorune.rules.casting.costs.build_cast_cost_options",
+        "quorune.rules.casting.proposal.build_cast_proposal",
+        "quorune.rules.casting.commit.commit_cast",
+        "quorune.characteristic_evaluation.evaluate_card_characteristics",
+        "quorune.zone_transitions.ZoneTransitionOwner"
+      ],
+      "notes": [
+        "The face-down spell uses only its represented characteristics, typed {3} alternative, ordinary priority, and canonical cast and zone owners."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.37c",
       "rule_text_sha256": "2d75975239b4b70e9221449cad060f853b84dbd65a644a8eea7d76d1e0256766",
       "schema_version": 1,
@@ -64693,26 +64759,30 @@
         "end_line": 4289,
         "start_line": 4288
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.37d",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_land_card_has_only_the_trusted_morph_cast_offer"
+      ],
+      "implementation_components": [
+        "quorune.compiled_morph.compiled_fixed_mana_morph_spec"
+      ],
+      "notes": [
+        "A server-authored trusted descriptor is required; a raw face-down cast command cannot authorize itself."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.37d",
       "rule_text_sha256": "0493ee580401c22ab057ca69da2c8c538ecd41446aed13c5e30fe65f9becd9de",
       "schema_version": 1,
@@ -64721,26 +64791,52 @@
         "end_line": 4291,
         "start_line": 4290
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "nonmana and variable costs remain unrepresented",
+        "arbitrary copied or granted Morph and broader static ability applicability remain excluded"
       ],
       "case_id": "cr-702.37e",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_stale_or_ability_removed_turn_up_rolls_back",
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_face_down_static_source_is_inert_until_turned_face_up"
+      ],
+      "implementation_components": [
+        "quorune.rules.morph_actions.build_turn_face_up_offer",
+        "quorune.rules.morph_actions.commit_turn_face_up",
+        "quorune.turn_priority_owner.TurnPriorityDecisionOwner.complete_special_action",
+        "quorune.zone_object_state.turn_card_face_up"
+      ],
+      "notes": [
+        "The fixed slice uses no stack object, no response window, and the shared effective-keyword boundary before atomic payment."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.37e",
       "rule_text_sha256": "16496e943eb1020702e2938c19ad593b3f994bfc8e84e7e5ca46f99b9c2af736",
       "schema_version": 1,
@@ -64749,26 +64845,37 @@
         "end_line": 4293,
         "start_line": 4292
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "X-valued Morph costs and downstream X references are not represented"
       ],
       "case_id": "cr-702.37f",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphCompilerTests.test_nonordinary_morph_costs_remain_residual"
+      ],
+      "implementation_components": [
+        "quorune.morph.compile_fixed_mana_morph"
+      ],
+      "notes": [
+        "Both pinned X-cost cards remain material residuals."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.37f",
       "rule_text_sha256": "f6e7a72031472bfd262e44485241bd7faff5d4e40980b90d75ec2466c62fbd56",
       "schema_version": 1,
@@ -64777,26 +64884,30 @@
         "end_line": 4295,
         "start_line": 4294
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.37g",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702.37"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/morph.json"
+      ],
+      "notes": [
+        "The contract links the supported keyword slice to the reviewed CR 708 behaviors below."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.37g",
       "rule_text_sha256": "995896583122d4ea26debadd843cdd4725747178c6b1e4f44107fff497bf8b80",
       "schema_version": 1,
@@ -64805,7 +64916,7 @@
         "end_line": 4297,
         "start_line": 4296
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
       "assertion_kind": "inventory_only",
@@ -85444,21 +85555,25 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-708",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/morph.json"
+      ],
+      "notes": [
+        "Section heading; aggregate face-down behavior remains partial."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "708",
       "rule_text_sha256": "5a4141c9366356e3f765abd0199f6a904852671f816a5589a366dee9c5c3d311",
       "schema_version": 1,
@@ -85467,7 +85582,7 @@
         "end_line": 5698,
         "start_line": 5697
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
       "assertion_kind": "inventory_only",
@@ -85498,23 +85613,42 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "characteristic sets supplied by other face-down methods remain unrepresented",
+        "copy and merged-object interactions remain excluded"
       ],
       "case_id": "cr-708.2",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "interaction",
+        "hidden_information",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_face_down_static_source_is_inert_until_turned_face_up"
+      ],
+      "implementation_components": [
+        "quorune.characteristic_evaluation.evaluate_card_characteristics",
+        "quorune.continuous_effects._apply_face_down"
+      ],
+      "notes": [
+        "Morph values apply in layer 1b and clear typed abilities before later represented effects."
+      ],
+      "required_scenarios": [
+        "positive",
+        "interaction",
+        "hidden_information",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "708.2",
       "rule_text_sha256": "eb62233df909be8ca7656bbab121062f0bc4fe43bdb24855ec49abd055be87e5",
       "schema_version": 1,
@@ -85523,7 +85657,7 @@
         "end_line": 5702,
         "start_line": 5701
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",
@@ -85582,23 +85716,38 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "non-Morph put-onto-battlefield face-down producers remain unimplemented"
       ],
       "case_id": "cr-708.3",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "interaction"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_face_down_static_source_is_inert_until_turned_face_up"
+      ],
+      "implementation_components": [
+        "quorune.card_programs.runtime.collect_card_program_continuous_effects",
+        "quorune.trigger_discovery.dispatch_semantic_event",
+        "quorune.zone_transitions.ZoneTransitionOwner"
+      ],
+      "notes": [
+        "A resolving Morph spell enters with the same face-down method while its printed static component is inert."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "708.3",
       "rule_text_sha256": "e17560b6aab6aa862874a4136cd9c61937b294a7e1b7a3d6e6786ee7c99268a1",
       "schema_version": 1,
@@ -85607,26 +85756,45 @@
         "end_line": 5708,
         "start_line": 5707
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "other face-down casting permissions and every unusual-zone interaction are not complete"
       ],
       "case_id": "cr-708.4",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "interaction",
+        "hidden_information",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_land_card_has_only_the_trusted_morph_cast_offer"
+      ],
+      "implementation_components": [
+        "quorune.rules.casting.proposal.build_cast_proposal",
+        "quorune.rules.casting.commit.commit_cast",
+        "quorune.trigger_discovery.dispatch_semantic_event"
+      ],
+      "notes": [
+        "Spell type, timing, cost modifiers, cast history, triggers, and resolution consume face-down rather than face-up characteristics."
+      ],
+      "required_scenarios": [
+        "positive",
+        "interaction",
+        "hidden_information",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "708.4",
       "rule_text_sha256": "77851770162e8da395c898da0bbf93e3395b7294a99fef07d7bebb1bfdef1521",
       "schema_version": 1,
@@ -85635,26 +85803,42 @@
         "end_line": 5710,
         "start_line": 5709
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "face-down identities in other zones and every merged-object view are not generalized"
       ],
       "case_id": "cr-708.5",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "multiplayer",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay"
+      ],
+      "implementation_components": [
+        "quorune.projection.StateProjector"
+      ],
+      "notes": [
+        "The controller view retains physical identity while unrelated seats receive only the stable face-down object."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "multiplayer",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "708.5",
       "rule_text_sha256": "92d962d5612f72030537c520043c40ef9f28334a120bdee5ee2eaa93078b3201",
       "schema_version": 1,
@@ -85663,7 +85847,7 @@
         "end_line": 5712,
         "start_line": 5711
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",
@@ -85722,23 +85906,42 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "copy values, merged permanents, and unrepresented turn-up replacement abilities remain excluded"
       ],
       "case_id": "cr-708.8",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_stale_or_ability_removed_turn_up_rolls_back"
+      ],
+      "implementation_components": [
+        "quorune.rules.morph_actions.commit_turn_face_up",
+        "quorune.zone_object_state.turn_card_face_up",
+        "quorune.characteristic_evaluation.evaluate_card_characteristics"
+      ],
+      "notes": [
+        "The same logical object retains counters, control history, and continuous effects; no enter event is emitted."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "708.8",
       "rule_text_sha256": "df4c9f9821cd67d48343451b91f1dec77eb6c86ec104dfbe429485d2abefe31e",
       "schema_version": 1,
@@ -85747,26 +85950,44 @@
         "end_line": 5718,
         "start_line": 5717
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "merged components, player departure, and end-of-game reveal are not independently certified"
       ],
       "case_id": "cr-708.9",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "interaction",
+        "multiplayer",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_face_down_departure_reveals_identity_and_resets_method"
+      ],
+      "implementation_components": [
+        "quorune.zone_transition_journal.journal_zone_move",
+        "quorune.zone_object_state.reset_card_after_zone_change",
+        "quorune.projection.StateProjector"
+      ],
+      "notes": [
+        "Battlefield and stack departures reveal publicly before the destination incarnation loses its face-down method."
+      ],
+      "required_scenarios": [
+        "positive",
+        "interaction",
+        "multiplayer",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "708.9",
       "rule_text_sha256": "fdb4fc89649d5cbb792d5f9dd19cc9bb89b736cea3a92e24ecb7cd7b8e4c9a7a",
       "schema_version": 1,
@@ -85775,26 +85996,37 @@
         "end_line": 5720,
         "start_line": 5719
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "face-down copy-value preservation and face-up copied values are not represented"
       ],
       "case_id": "cr-708.10",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_stale_morph_cast_contract_rolls_back_before_payment"
+      ],
+      "implementation_components": [
+        "quorune.compiled_morph.compiled_fixed_mana_morph_spec"
+      ],
+      "notes": [
+        "Any copied-value annotation excludes the bounded Morph runtime contract."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "708.10",
       "rule_text_sha256": "e6d64667af1e72a89fad49dfa8d5cac9764f61bdbe1ad960552762ce3c778cf7",
       "schema_version": 1,
@@ -85803,26 +86035,37 @@
         "end_line": 5722,
         "start_line": 5721
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "as-turned-face-up replacement abilities and broader turn-up trigger grammar are not represented"
       ],
       "case_id": "cr-708.11",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphCompilerTests.test_nonordinary_morph_costs_remain_residual"
+      ],
+      "implementation_components": [
+        "quorune.rules.morph_actions.commit_turn_face_up"
+      ],
+      "notes": [
+        "Residual CardPrograms cannot expose the bounded turn-face-up action."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "708.11",
       "rule_text_sha256": "68950f5559b748487095be99a3635708413774efb496387d6ecb5f6640073c38",
       "schema_version": 1,
@@ -85831,26 +86074,37 @@
         "end_line": 5724,
         "start_line": 5723
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "effect-directed reveal of face-down permanents and characteristic reads ignoring continuous effects are not represented"
       ],
       "case_id": "cr-708.12",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "708"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_morph_rules.FixedManaMorphCompilerTests.test_nonordinary_morph_costs_remain_residual"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/morph.json"
+      ],
+      "notes": [
+        "The Morph special-action reveal does not claim the broader reveal-effect family."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "708.12",
       "rule_text_sha256": "a83fcc4167e1df2e9146cf3ce3cc6cd1500a096923288e9d450b4d3647620fd2",
       "schema_version": 1,
@@ -85859,7 +86113,7 @@
         "end_line": 5726,
         "start_line": 5725
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

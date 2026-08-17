@@ -33,6 +33,11 @@ from ..read_ahead import (
 from ..semantic_runtime.sunburst import SUNBURST_MECHANIC_ID, SunburstSpec
 from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from ..modular import MODULAR_MECHANIC_ID, ModularSpec
+from ..morph import (
+    compile_fixed_mana_morph,
+    MORPH_CAPABILITY_ID,
+    morph_handler_descriptor,
+)
 from .cumulative_upkeep_nodes import (
     fixed_life_cumulative_upkeep_node,
     fixed_mana_cumulative_upkeep_node,
@@ -81,6 +86,7 @@ _RENOWN_MECHANIC = RENOWN_MECHANIC_ID
 _MODULAR_MECHANIC = MODULAR_MECHANIC_ID
 _ECHO_MECHANIC = ECHO_MECHANIC_ID
 _DEVOID_MECHANIC = DEVOID_MECHANIC_ID
+_MORPH_MECHANIC = "morph"
 _TOXIC_MECHANIC = "toxic"
 _GROUPED_SPLIT_MECHANICS = (
     _AFFINITY_MECHANIC,
@@ -286,6 +292,9 @@ def closed_special_keyword_node(
     )
     if counter_activation is not None:
         return counter_activation
+    morph = fixed_mana_morph_keyword_node(**values)
+    if morph is not None:
+        return morph
     if mechanics == (_DEVOID_MECHANIC,):
         ordinary = (
             material_line.strip().rstrip(".").casefold()
@@ -391,6 +400,90 @@ def closed_special_keyword_node(
         if node is not None:
             return node
     return None
+
+
+def fixed_mana_morph_keyword_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    mechanics: tuple[str, ...],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+) -> OracleNode | None:
+    """Lower one ordinary fixed-mana Morph ability or retain its blocker."""
+
+    if mechanics != (_MORPH_MECHANIC,):
+        return None
+    spec = compile_fixed_mana_morph(material_line)
+    ordinary = spec is not None
+    gate = explicit_capability_gate(
+        MORPH_CAPABILITY_ID,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    blockers = gate.blockers if ordinary else ("mechanic:morph-unsupported-cost",)
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind="dependency_contract" if ordinary else "keyword_grammar",
+                text=line,
+                span=span,
+                reason=(
+                    "Morph depends on a blocked typed fixed-mana contract"
+                    if ordinary
+                    else "Morph cost is outside the fixed ordinary-mana grammar"
+                ),
+                blockers=blockers,
+            ),
+        )
+        if blockers
+        else ()
+    )
+    return OracleNode(
+        node_id=node_id,
+        kind="keyword_ability",
+        text=line,
+        span=span,
+        active_zone="all",
+        event="morph.action",
+        lowerable=ordinary,
+        exact=ordinary and not residual_ids,
+        template_id=(
+            "morph-fixed-mana-face-down-special-action-v1"
+            if ordinary
+            else None
+        ),
+        handlers=(morph_handler_descriptor(spec),) if spec is not None else (),
+        runtime_coverage=(
+            "face_down_cast",
+            "face_down_characteristics",
+            "turn_face_up_special_action",
+        )
+        if ordinary
+        else (),
+        mechanics=mechanics,
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities if ordinary else (),
+        capability_closure=(
+            gate.closure.reachable
+            if ordinary and gate.closure is not None
+            else ()
+        ),
+        capability_profile=(
+            gate.closure.profile
+            if ordinary and gate.closure is not None
+            else None
+        ),
+        capability_fingerprint=(
+            gate.closure.fingerprint
+            if ordinary and gate.closure is not None
+            else None
+        ),
+    )
 
 
 def ordinary_convoke_keyword_node(

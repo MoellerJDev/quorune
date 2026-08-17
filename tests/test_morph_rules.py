@@ -1,0 +1,627 @@
+from __future__ import annotations
+
+from copy import deepcopy
+import json
+from pathlib import Path
+import tempfile
+import unittest
+from unittest import mock
+
+from common import ROOT, keep_all, make_session
+from quorune.carddb import CardDatabase
+from quorune.compiler import keyword_nodes as keyword_nodes_module
+from quorune.compiled_morph import compiled_fixed_mana_morph_spec
+from quorune.continuous_effect_model import Layer
+from quorune.continuous_effect_state import (
+    ResolutionEffectSource,
+    create_resolution_continuous_effect,
+)
+from quorune.continuous_effects import ContinuousOperation
+from quorune.deck import DeckLoader
+from quorune.errors import GameRuleError
+from quorune.model import CardInstance
+from quorune.morph import (
+    compile_fixed_mana_morph,
+    FixedManaMorphSpec,
+    MORPH_CAPABILITY_ID,
+    MORPH_HANDLER_ID,
+    MorphError,
+    morph_handler_descriptor,
+)
+from quorune.oracle_ir import compile_oracle_card, register_generated_programs
+from quorune.record import (
+    authoritative_state_hash,
+    checkpoint_envelope,
+    replay_record,
+)
+from quorune.rules.capabilities import (
+    CapabilityRegistry,
+    load_default_capability_registry,
+)
+from quorune.rules.casting.commit import commit_cast
+from quorune.rules.casting.model import CastProposalError, CastProposalRequest
+from quorune.rules.casting.proposal import build_cast_proposal
+from quorune.rules.morph_actions import commit_turn_face_up
+from quorune.semantic_runtime import SemanticNodeError
+from quorune.semantic_runtime.morph import default_fixed_mana_morph_registry
+from quorune.semantics import SemanticRegistry
+from scripts.build_test_database import build_fixture_database
+
+
+REGISTRY_PATH = ROOT / "quorune" / "rules" / "capability-registry.json"
+FIXTURE_PATH = ROOT / "tests" / "fixtures" / "morph-rules-cards.json"
+
+
+def focused_card_database(directory: str) -> CardDatabase:
+    database = Path(directory) / "morph-rules.sqlite3"
+    build_fixture_database(
+        [
+            ROOT / "tests" / "fixtures" / "scryfall-exact-lists.json",
+            FIXTURE_PATH,
+        ],
+        database,
+    )
+    return CardDatabase(database)
+
+
+class FixedManaMorphModelTests(unittest.TestCase):
+    def test_fixed_mana_morph_descriptor_is_strict_and_registered(self):
+        spec = compile_fixed_mana_morph("Morph {2}{W}.")
+        self.assertIsNotNone(spec)
+        assert spec is not None
+        self.assertEqual(
+            {
+                "GENERIC": 2,
+                "W": 1,
+                "U": 0,
+                "B": 0,
+                "R": 0,
+                "G": 0,
+                "C": 0,
+            },
+            spec.requirements_dict,
+        )
+        self.assertEqual("{2}{W}", spec.cost_text)
+        self.assertEqual(spec, FixedManaMorphSpec.from_dict(spec.to_dict()))
+        self.assertEqual(
+            (spec,),
+            default_fixed_mana_morph_registry().lower(
+                morph_handler_descriptor(spec),
+                None,
+            ),
+        )
+
+        malformed = spec.to_dict()
+        malformed["unknown"] = True
+        with self.assertRaisesRegex(MorphError, "closed shape"):
+            FixedManaMorphSpec.from_dict(malformed)
+        descriptor = morph_handler_descriptor(spec)
+        descriptor["event"] = "activate"
+        with self.assertRaises(SemanticNodeError):
+            default_fixed_mana_morph_registry().validate(descriptor)
+
+        for unsupported in (
+            "Morph {X}{R}",
+            "Morph {W/U}",
+            "Morph—Pay 5 life.",
+            "Megamorph {1}{U}",
+        ):
+            with self.subTest(unsupported=unsupported):
+                self.assertIsNone(compile_fixed_mana_morph(unsupported))
+
+
+class FixedManaMorphCompilerTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.temporary = tempfile.TemporaryDirectory()
+        cls.db = focused_card_database(cls.temporary.name)
+        cls.capabilities = load_default_capability_registry()
+        cls.registry_value = json.loads(
+            REGISTRY_PATH.read_text(encoding="utf-8")
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.db.close()
+        cls.temporary.cleanup()
+
+    def compile(self, name: str, *, capabilities=None):
+        return compile_oracle_card(
+            self.db.lookup(name),
+            capability_registry=capabilities or self.capabilities,
+            capability_profile="commander_review",
+        )
+
+    def morph_node(self, name: str = "Lumithread Field", *, capabilities=None):
+        ir = self.compile(name, capabilities=capabilities)
+        return ir, next(
+            node
+            for node in ir.faces[0].nodes
+            if "morph" in node.mechanics
+        )
+
+    def test_fixed_mana_morph_compiles_source_spanned_typed_program(self):
+        record = self.db.lookup("Lumithread Field")
+        ir, node = self.morph_node()
+
+        self.assertTrue(node.exact, ir.material_residuals)
+        self.assertEqual("keyword_ability", node.kind)
+        self.assertEqual("all", node.active_zone)
+        self.assertEqual("morph.action", node.event)
+        self.assertEqual(
+            "morph-fixed-mana-face-down-special-action-v1",
+            node.template_id,
+        )
+        self.assertEqual((MORPH_CAPABILITY_ID,), node.capability_dependencies)
+        self.assertEqual(MORPH_HANDLER_ID, node.handlers[0]["handler_id"])
+        self.assertEqual(
+            record.oracle_text[node.span.start : node.span.end],
+            node.text,
+        )
+
+        registry = SemanticRegistry(include_builtin_packs=False)
+        register_generated_programs(
+            self.db,
+            registry,
+            (record,),
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+            promote_exact_effect_programs=True,
+        )
+        program = next(
+            program
+            for program in registry.programs_for_oracle(record.oracle_id)
+            if program.event == "morph.action"
+        )
+        self.assertEqual("trusted", program.trust_level)
+        self.assertTrue(
+            registry.card_program_for_oracle(record.oracle_id).trust_closure[
+                "trusted"
+            ]
+        )
+
+    def test_nonordinary_morph_costs_remain_residual(self):
+        variable_ir, variable = self.morph_node("Warbreak Trumpeter")
+        self.assertFalse(variable.exact)
+        self.assertTrue(variable.residual_ids)
+        self.assertTrue(variable_ir.material_residuals)
+        self.assertIsNone(variable.template_id)
+
+        nonmana = self.compile("Gift of Doom")
+        self.assertTrue(nonmana.material_residuals)
+        self.assertFalse(
+            any(
+                node.template_id
+                == "morph-fixed-mana-face-down-special-action-v1"
+                for node in nonmana.faces[0].nodes
+            )
+        )
+
+    def test_morph_dependency_fails_closed(self):
+        value = deepcopy(self.registry_value)
+        row = next(
+            item
+            for item in value["capabilities"]
+            if item["id"] == MORPH_CAPABILITY_ID
+        )
+        row["status"] = "blocked"
+        row["blockers"] = ["focused Morph dependency mutation"]
+        _ir, node = self.morph_node(
+            capabilities=CapabilityRegistry(value)
+        )
+        self.assertFalse(node.exact)
+        self.assertTrue(node.residual_ids)
+
+    def test_morph_compiler_mutation_is_killed(self):
+        def assert_exact() -> None:
+            _ir, node = self.morph_node()
+            self.assertTrue(node.exact)
+            self.assertEqual(MORPH_HANDLER_ID, node.handlers[0]["handler_id"])
+
+        assert_exact()
+        with mock.patch.object(
+            keyword_nodes_module,
+            "fixed_mana_morph_keyword_node",
+            return_value=None,
+        ):
+            with self.assertRaises((AssertionError, StopIteration)):
+                assert_exact()
+
+
+class FixedManaMorphRuntimeTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.temporary = tempfile.TemporaryDirectory()
+        cls.db = focused_card_database(cls.temporary.name)
+        loader = DeckLoader(cls.db)
+        cls.mishra = loader.load(
+            ROOT / "examples" / "mishra-eminent-one.txt",
+            commander="Mishra, Eminent One",
+            deck_name="Mishra",
+        )
+        cls.zimone = loader.load(
+            ROOT / "examples" / "zimone-and-dina.txt",
+            commander="Zimone and Dina",
+            deck_name="Zimone",
+        )
+        cls.capabilities = load_default_capability_registry()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.db.close()
+        cls.temporary.cleanup()
+
+    def session(self, seed: int, *, players: int = 4):
+        session = make_session(
+            self.db,
+            self.mishra,
+            self.zimone,
+            players=players,
+            seed=seed,
+            auto_pass_empty=False,
+        )
+        keep_all(session)
+        session.engine.permissions.invalidate_current()
+        session.engine.state.pending_decision = None
+        session.engine.state.priority_player = None
+        session.engine.state.priority_passes = []
+        session.commands.clear()
+        session.decisions.clear()
+        return session
+
+    def add_card(self, session, *, name: str, ref: str, zone: str = "hand"):
+        engine = session.engine
+        record = self.db.lookup(name)
+        card = CardInstance(
+            object_id=f"fixture:{ref}",
+            ref=ref,
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner="B",
+            controller="B",
+            zone=zone,
+            zone_timestamp=engine.state.event_sequence + 1,
+            acquired_control_turn_count=-1,
+            known_to=["B"] if zone in {"hand", "library"} else list(engine.seats),
+            revealed_to=[] if zone in {"hand", "library"} else list(engine.seats),
+        )
+        engine.state.cards[card.object_id] = card
+        engine.state.players["B"].zones[zone].append(card.object_id)
+        register_generated_programs(
+            self.db,
+            engine.semantics,
+            (record,),
+            capability_registry=self.capabilities,
+            capability_profile=engine.state.config.review_profile,
+            promote_exact_runtime_handlers=True,
+            promote_exact_effect_programs=True,
+        )
+        return card
+
+    @staticmethod
+    def prepare_priority(session, seat: str = "B") -> None:
+        engine = session.engine
+        engine.state.active_player = seat
+        engine.state.started = True
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine.state.stack.clear()
+        engine.state.priority_passes = []
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        engine.permissions.invalidate_current()
+        engine._grant_priority(seat)
+        engine.pump()
+
+    @staticmethod
+    def resolve_spell_with_passes(session, card) -> None:
+        for _ in range(12):
+            if card.zone != "stack":
+                return
+            principal = session.pending_principals()[0]
+            result = session.act(principal, {"action_id": "pass"})
+            if not result.ok:
+                raise AssertionError(result.summary)
+        raise AssertionError("Face-down spell did not resolve")
+
+    def test_morph_cast_turn_up_privacy_and_replay(self):
+        session = self.session(70237001, players=4)
+        engine = session.engine
+        card = self.add_card(session, name="Lumithread Field", ref="MORPH1")
+        witness_ref = engine.create_token(
+            "B",
+            name="Morph Witness",
+            characteristics={
+                "type_line": "Token Creature",
+                "power": "2",
+                "toughness": "2",
+            },
+            reason="Morph rules fixture",
+        )[0]
+        witness = engine._resolve_object("B", witness_ref)
+        engine.state.players["B"].mana_pool.update(
+            {"W": 1, "C": 4}
+        )
+        self.prepare_priority(session)
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        actions = engine._priority_action_hints("B")["actions"]
+        ordinary = next(
+            action
+            for action in actions
+            if action.get("card") == card.ref and action["id"] == f"cast:{card.ref}"
+        )
+        morph = next(
+            action
+            for action in actions
+            if action["id"] == f"cast-morph:{card.ref}"
+        )
+        self.assertEqual("{1}{W}", ordinary["cost"])
+        self.assertEqual("{3}", morph["cost"])
+        self.assertEqual("morph", morph["cast_method"])
+
+        result = session.act(
+            "pilot:B",
+            {"action_id": morph["id"]},
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual("stack", card.zone)
+        self.assertTrue(card.face_down)
+        effective = engine._effective_card_data(card)
+        self.assertEqual("", effective["name"])
+        self.assertEqual("", effective["mana_cost"])
+        self.assertEqual(0, effective["mana_value"])
+        self.assertEqual("Creature", effective["type_line"])
+        self.assertEqual("2", effective["power"])
+        self.assertEqual("2", effective["toughness"])
+        self.assertEqual([], effective["keywords"])
+        opponent = json.dumps(
+            session.packet("pilot:A", full=True),
+            sort_keys=True,
+        )
+        owner = json.dumps(
+            session.packet("pilot:B", full=True)["state"],
+            sort_keys=True,
+        )
+        self.assertNotIn(card.printed_name, opponent)
+        self.assertIn(card.printed_name, owner)
+        self.assertIn("Face-down spell", opponent)
+
+        self.resolve_spell_with_passes(session, card)
+        self.assertEqual("battlefield", card.zone)
+        self.assertTrue(card.face_down)
+        self.assertEqual("2", engine._effective_card_data(witness)["toughness"])
+        self.assertNotIn(
+            card.printed_name,
+            json.dumps(
+                session.packet("pilot:A", full=True),
+                sort_keys=True,
+            ),
+        )
+
+        turn_offer = next(
+            action
+            for action in engine._priority_action_hints("B")["actions"]
+            if action["id"] == f"turn-face-up:{card.ref}"
+        )
+        self.assertEqual("{1}{W}", turn_offer["cost"])
+        result = session.act(
+            "pilot:B",
+            {"action_id": turn_offer["id"]},
+        )
+        self.assertTrue(result.ok, result.summary)
+        self.assertFalse(card.face_down)
+        self.assertEqual("Enchantment", engine._effective_card_data(card)["type_line"])
+        self.assertEqual("3", engine._effective_card_data(witness)["toughness"])
+        self.assertIn(
+            card.printed_name,
+            json.dumps(
+                session.packet("pilot:A", full=True)["state"],
+                sort_keys=True,
+            ),
+        )
+        self.assertFalse(engine.state.stack)
+        self.assertEqual("B", engine.state.priority_player)
+        self.assertTrue(
+            any(event.code == "permanent.turn_face_up" for event in engine.state.events)
+        )
+        expected_hash = authoritative_state_hash(engine.state)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            game_dir = Path(temporary) / "morph-replay"
+            session.save(game_dir)
+            replay = replay_record(game_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_face_down_static_source_is_inert_until_turned_face_up(self):
+        session = self.session(70237002, players=2)
+        engine = session.engine
+        card = self.add_card(
+            session,
+            name="Lumithread Field",
+            ref="MORPH2",
+            zone="hand",
+        )
+        witness_ref = engine.create_token(
+            "B",
+            name="Static Witness",
+            characteristics={
+                "type_line": "Token Creature",
+                "power": "1",
+                "toughness": "1",
+            },
+            reason="Morph static-source fixture",
+        )[0]
+        witness = engine._resolve_object("B", witness_ref)
+        engine.state.players["B"].mana_pool.update({"W": 1, "C": 4})
+        self.prepare_priority(session)
+        morph = next(
+            action
+            for action in engine._priority_action_hints("B")["actions"]
+            if action["id"] == f"cast-morph:{card.ref}"
+        )
+        engine.permissions.invalidate_current()
+        engine._cast("B", morph)
+        engine.state.priority_player = None
+        engine._prepare_stack_resolution()
+
+        self.assertTrue(card.face_down)
+        self.assertEqual("1", engine._effective_card_data(witness)["toughness"])
+        engine.state.priority_player = "B"
+        commit_turn_face_up(
+            engine,
+            seat="B",
+            response={"card": card.ref, "pay": "auto"},
+        )
+        self.assertEqual("2", engine._effective_card_data(witness)["toughness"])
+
+    def test_stale_or_ability_removed_turn_up_rolls_back(self):
+        session = self.session(70237003, players=2)
+        engine = session.engine
+        card = self.add_card(
+            session,
+            name="Lumithread Field",
+            ref="MORPH3",
+            zone="hand",
+        )
+        engine.state.players["B"].mana_pool.update({"W": 1, "C": 4})
+        self.prepare_priority(session)
+        morph = next(
+            action
+            for action in engine._priority_action_hints("B")["actions"]
+            if action["id"] == f"cast-morph:{card.ref}"
+        )
+        engine.permissions.invalidate_current()
+        engine._cast("B", morph)
+        engine.state.priority_player = None
+        engine._prepare_stack_resolution()
+        engine.state.priority_player = "B"
+        offer = next(
+            action
+            for action in engine._priority_action_hints("B")["actions"]
+            if action["id"] == f"turn-face-up:{card.ref}"
+        )
+        removed = create_resolution_continuous_effect(
+            engine,
+            source=ResolutionEffectSource(
+                stack_ref="test:morph-remove-all-abilities"
+            ),
+            targets=(card,),
+            layer=Layer.ABILITY,
+            sublayer="6",
+            operations=(ContinuousOperation("remove_all_abilities"),),
+        )
+        self.assertIsNotNone(removed)
+        self.assertNotIn(
+            "morph",
+            {
+                keyword.casefold()
+                for keyword in engine._effective_card_data(
+                    card, ignore_face_down=True
+                )["keywords"]
+            },
+        )
+        before = authoritative_state_hash(engine.state)
+
+        with self.assertRaisesRegex(GameRuleError, "cannot currently"):
+            commit_turn_face_up(
+                engine,
+                seat="B",
+                response=offer,
+            )
+
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        self.assertTrue(card.face_down)
+
+    def test_stale_morph_cast_contract_rolls_back_before_payment(self):
+        session = self.session(70237006, players=2)
+        engine = session.engine
+        card = self.add_card(
+            session,
+            name="Lumithread Field",
+            ref="MORPH6",
+            zone="hand",
+        )
+        engine.state.players["B"].mana_pool["C"] = 3
+        self.prepare_priority(session)
+        offer = next(
+            action
+            for action in engine._priority_action_hints("B")["actions"]
+            if action["id"] == f"cast-morph:{card.ref}"
+        )
+        proposal = build_cast_proposal(
+            engine,
+            CastProposalRequest.from_submission("B", offer),
+        )
+        card.annotations["copy_overrides"] = {"name": "Copied fixture"}
+        before = authoritative_state_hash(engine.state)
+
+        with self.assertRaisesRegex(CastProposalError, "changed before commit"):
+            commit_cast(engine, proposal, offer)
+
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        self.assertEqual("hand", card.zone)
+        self.assertEqual(3, engine.state.players["B"].mana_pool["C"])
+
+    def test_face_down_departure_reveals_identity_and_resets_method(self):
+        session = self.session(70237005, players=4)
+        engine = session.engine
+        card = self.add_card(
+            session,
+            name="Lumithread Field",
+            ref="MORPH5",
+            zone="hand",
+        )
+        engine.state.players["B"].mana_pool["C"] = 3
+        self.prepare_priority(session)
+        morph = next(
+            action
+            for action in engine._priority_action_hints("B")["actions"]
+            if action["id"] == f"cast-morph:{card.ref}"
+        )
+        engine.permissions.invalidate_current()
+        engine._cast("B", morph)
+        engine.state.priority_player = None
+        engine._prepare_stack_resolution()
+        self.assertTrue(card.face_down)
+        self.assertNotIn(
+            card.printed_name,
+            json.dumps(session.packet("pilot:A", full=True), sort_keys=True),
+        )
+
+        engine.move_card(
+            card.object_id,
+            "graveyard",
+            reason="Morph departure reveal fixture",
+        )
+
+        self.assertEqual("graveyard", card.zone)
+        self.assertFalse(card.face_down)
+        self.assertNotIn("face_down_method", card.annotations)
+        self.assertNotIn("face_down_characteristics", card.annotations)
+        self.assertIn(
+            card.printed_name,
+            json.dumps(session.packet("pilot:A", full=True), sort_keys=True),
+        )
+
+    def test_land_card_has_only_the_trusted_morph_cast_offer(self):
+        session = self.session(70237004, players=2)
+        card = self.add_card(session, name="Zoetic Cavern", ref="MORPH4")
+        session.engine.state.players["B"].mana_pool["C"] = 3
+        self.prepare_priority(session)
+
+        actions = [
+            action
+            for action in session.engine._priority_action_hints("B")["actions"]
+            if action.get("card") == card.ref and action["action"] == "cast"
+        ]
+        self.assertEqual([f"cast-morph:{card.ref}"], [row["id"] for row in actions])
+        self.assertIsNotNone(compiled_fixed_mana_morph_spec(session.engine, card))
+
+
+if __name__ == "__main__":
+    unittest.main()

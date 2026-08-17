@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "4d55edbe611d5e87750c6c9f6b1dfac6316fd0cfb05e338501ba06e3147e5c08",
-  "declaration_source_fingerprint": "e6e6ca7bbfe7a074c063ee2f9551b236650a8f7e9ba8b46472b20ea456261843",
+  "registry_fingerprint": "35baf5fc7b3a8852f3e667391bad4fbe5db7478ddcfbdf212388f23242ad41ea",
+  "declaration_source_fingerprint": "d03dccc2304e2ce9c0be2d05f0ee43c5e9e926dda06287840c0cafcf2cf34f5f",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -4230,6 +4230,318 @@
         "commander_review"
       ],
       "applicability_note": "Replay the represented return payment to the identical authoritative hash."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_face_down_departure_reveals_identity_and_resets_method",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reveal a face-down permanent to every seat as it leaves the battlefield, create the destination incarnation face up, and remove the Morph method marker through the zone-object owner."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_face_down_static_source_is_inert_until_turned_face_up",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suppress every trusted static runtime component while its source is face down, then restore the same typed component after the Morph effect ends."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose casting, zone transition, face-down continuous characteristics, fixed mana payment, priority, state stabilization, and reveal without creating a turn-up stack object."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the face-down spell across a four-player priority round and reveal the face-up identity to every seat only after the controller commits the special action."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_morph_rules.FixedManaMorphCompilerTests.test_morph_compiler_mutation_is_killed",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the closed Morph production and prove the real card loses exact capability trust rather than retaining a hidden fallback."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_morph_rules.FixedManaMorphCompilerTests.test_nonordinary_morph_costs_remain_residual",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep variable and nonmana Morph costs outside the fixed ordinary-mana contract without an executable fallback."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_stale_morph_cast_contract_rolls_back_before_payment",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate the complete CardProgram and exact typed Morph descriptor before mana payment when a copied-value mutation makes the advertised cast contract stale."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_stale_or_ability_removed_turn_up_rolls_back",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Recompute would-be-face-up effective keyword presence and reject a stale action before mana or face state changes when layer 6 removes Morph."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_morph_rules.FixedManaMorphCompilerTests.test_fixed_mana_morph_compiles_source_spanned_typed_program",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one source-spanned ordinary fixed-mana Morph line to a trusted immutable descriptor and exact CardProgram ability."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Offer and pay the distinct face-down cast cost, preserve its layer-1b characteristics through resolution, then pay the fixed no-stack turn-face-up action."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose the face-down identity only to its controller view on the stack and battlefield while every opponent receives the stable public face-down object."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "replay",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_morph_cast_turn_up_privacy_and_replay",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the exact cast, multiplayer passes, face-down persistence, turn-up payment, public reveal, and final authoritative state hash."
     },
     {
       "capability_id": "casting.payment.affinity_artifacts",
@@ -38177,5 +38489,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "4cf2dcf7a18f9eb90507c7261abd162d5a83a90b20d7e1e66c8c22b09a70fd6b"
+  "fingerprint": "a71bfe792f7b67601b1a1247c2b71e1781ee6ff19557268201fb893012a47031"
 }

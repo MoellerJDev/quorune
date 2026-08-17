@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "3879acee7a9eee995c51bdb29e01f35227a997ea3332612b44daae877076787b"
+verified: "a73969517cd70b30ec975ecb038af4ec499c52f271afe7a38e29c5b9697783d1"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,12 +11,12 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `4412d5700cf5ee8a6e2918b4d2f32a4fa1fca141a0f27972465df8870d21ff62`
+Source fingerprint: `c4b3b28af1204ea63e62db421669d8e19dab3c3ca64c8e4011130262017dbcf3`
 
 ## Current top-level state
 
 - Pinned rules: `3300`
-- Queued rules: `2911`
+- Queued rules: `2907`
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
@@ -34,7 +34,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 1 | selected | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 273 | 0 | 0 |
 | 2 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 14 | 106 | 0 | 0 |
 | 3 | deferred | `frontier:keyword_dependency:kicker` | `card_family` | 0 | 208 | 0 | 0 |
-| 4 | deferred | `frontier:keyword_dependency:morph` | `card_family` | 37 | 141 | 0 | 0 |
+| 4 | deferred | `frontier:keyword_dependency:enchant` | `card_family` | 0 | 139 | 0 | 0 |
 | 5 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
 | 6 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
 | 7 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |

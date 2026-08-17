@@ -89,6 +89,17 @@ variable, random, repeatable, composite, reveal, tap, linked-result, and named
 mechanic costs remain source-spanned residuals. Direct mandatory positive
 fixed-life costs use the same life-payment leaf and canonical life owner.
 
+`compiler/keyword_nodes.py` owns one closed ordinary fixed-mana Morph
+production. It lowers the turn-up cost to a typed all-zone runtime component;
+the casting proposal owner separately supplies the face-down `{3}` creature-
+spell alternative, suppresses printed costs and abilities, and retains
+external cost modifiers that apply to the represented face-down spell. The
+same descriptor later authorizes a controller-only no-stack turn-face-up
+action through the current effective-keyword boundary. Megamorph, variable,
+hybrid, Phyrexian, snow, nonmana, copied, granted, text-changed, multiface,
+merged, and residual turn-up families remain source-spanned residuals or
+fail-closed runtime exclusions.
+
 `compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
 It accepts only live battlefield sets representable by `ObjectQuerySpec`: a
 source-controller relation over closed type, pinned creature-subtype, color,

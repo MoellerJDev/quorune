@@ -18,6 +18,8 @@ from .action_proposals import (
 )
 from .activation.proposal import build_activation_offer
 from .casting.proposal import build_cast_offer
+from ..morph import MORPH_CAST_METHOD
+from .morph_actions import build_turn_face_up_offer
 
 
 class ActionCatalogHost(Protocol):
@@ -70,24 +72,40 @@ def _cast_offers(
     offers: list[dict[str, Any]] = []
     diagnostics: list[dict[str, Any]] = []
     for card in _cast_candidates(host, seat):
-        result = build_cast_offer(host, seat, card)
-        if result.status == "payable":
-            assert result.offer is not None
-            castable.append(card.ref)
-            offers.append(result.offer.to_dict())
-            continue
-        if result.reason in {"land_not_spell", "timing", "custom_token"}:
-            continue
-        diagnostics.append(
-            {
-                "id": f"cast:{card.ref}",
-                "kind": "cast",
-                "card": card.ref,
-                "from": card.zone,
-                "status": result.status,
-                "reason": result.reason,
-            }
-        )
+        for cast_method in (None, MORPH_CAST_METHOD):
+            result = build_cast_offer(
+                host,
+                seat,
+                card,
+                cast_method=cast_method,
+            )
+            if result.status == "payable":
+                assert result.offer is not None
+                if card.ref not in castable:
+                    castable.append(card.ref)
+                offers.append(result.offer.to_dict())
+                continue
+            if result.reason in {
+                "land_not_spell",
+                "timing",
+                "custom_token",
+                "morph_contract_unavailable",
+            }:
+                continue
+            diagnostics.append(
+                {
+                    "id": (
+                        f"cast-morph:{card.ref}"
+                        if cast_method == MORPH_CAST_METHOD
+                        else f"cast:{card.ref}"
+                    ),
+                    "kind": "cast",
+                    "card": card.ref,
+                    "from": card.zone,
+                    "status": result.status,
+                    "reason": result.reason,
+                }
+            )
     return castable, offers, diagnostics
 
 
@@ -294,6 +312,24 @@ def _concede_offer(host: ActionCatalogHost, seat: str) -> dict[str, Any]:
     ).to_dict()
 
 
+def _turn_face_up_offers(
+    host: ActionCatalogHost,
+    seat: str,
+) -> tuple[list[str], list[dict[str, Any]]]:
+    refs: list[str] = []
+    offers: list[dict[str, Any]] = []
+    for object_id in host.state.players[seat].zones["battlefield"]:
+        card = host.state.cards[object_id]
+        if card.controller != seat:
+            continue
+        offer = build_turn_face_up_offer(host, seat, card)
+        if offer is None:
+            continue
+        refs.append(card.ref)
+        offers.append(offer.to_dict())
+    return refs, offers
+
+
 def build_priority_action_catalog(
     host: ActionCatalogHost, seat: str
 ) -> dict[str, Any]:
@@ -304,16 +340,19 @@ def build_priority_action_catalog(
     abilities, mana_abilities, activation_offers, activation_diagnostics = (
         _ability_offers(host, seat)
     )
+    turn_face_up, turn_face_up_offers = _turn_face_up_offers(host, seat)
     actions = priority_actions_with_mana_undo(host.state, seat)
     actions.extend(land_offers)
     actions.extend(cast_offers)
     actions.extend(activation_offers)
+    actions.extend(turn_face_up_offers)
     actions.append(_concede_offer(host, seat))
     return {
         "cast": castable,
         "lands": lands,
         "abilities": abilities,
         "mana_abilities": mana_abilities,
+        "special_actions": turn_face_up,
         "actions": actions,
         "diagnostic": {
             "unpayable": [

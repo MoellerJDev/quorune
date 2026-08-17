@@ -109,6 +109,19 @@ text changes, face-down producers, and dynamic characteristic counts remain
 outside trust rather than introducing a family-specific layer-6 applicability
 path.
 
+`casting.morph.fixed-mana.v1` owns the bounded ordinary fixed-mana Morph
+descriptor. One trusted complete CardProgram exposes a distinct private
+face-down cast offer and an identity-pinned `turn_face_up` priority action.
+The face-down method applies its 2/2 colorless nameless typeless creature
+values in copy layer 1b, survives only stack to battlefield, suppresses static
+runtime components and printed trigger discovery while the source is face
+down, and reveals through the projection and zone-journal owners. Turn-up
+eligibility previews the same object's effective face-up keywords, so a
+represented layer-6 Morph removal blocks payment. Arbitrary static ability
+addition/removal, copy, dynamic counts, Megamorph, other face-down methods,
+variable and nonmana costs, and residual turn-up behavior remain outside
+trust; no family-specific Oracle interpretation supplies them.
+
 `participation.untap-step.static.v1` lowers closed source, attached-object,
 global, and other-player static wording into immutable CR 502 participation
 values. The runtime query evaluates the complete typed `ObjectQuerySpec`

@@ -199,6 +199,7 @@ class TurnPriorityDecisionOwner:
                 "play_land",
                 "cast",
                 "activate",
+                "turn_face_up",
                 "undo_mana",
                 "concede",
             ],
@@ -220,7 +221,7 @@ class TurnPriorityDecisionOwner:
                 response=response,
                 entry_action_id=decision.decision_id,
             )
-        elif action in {"cast", "activate"}:
+        elif action in {"cast", "activate", "turn_face_up"}:
             execute_mana_choice_capable_priority_action(
                 self.host,
                 seat=seat,
@@ -242,6 +243,16 @@ class TurnPriorityDecisionOwner:
             self.host._eliminate_players([seat], reason="conceded")
         else:
             raise GameRuleError(f"Unsupported priority action {action}")
+
+    def complete_special_action(self, seat: str) -> None:
+        """Stabilize one committed no-stack action before restoring priority."""
+
+        if seat not in self.host.active_seats:
+            raise GameRuleError("Special-action seat is no longer active")
+        self.state.priority_player = None
+        self.state.priority_passes = []
+        if not self.host._stabilize():
+            self.state.priority_player = seat
 
     def set_yield(self, seat: str, value: Any) -> None:
         mode = str(value or "none")
