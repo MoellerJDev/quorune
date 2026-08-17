@@ -54,6 +54,7 @@ from .node_capability_shapes import (
 from .token_creation_capability_shapes import (
     fixed_token_creation_node_capabilities,
 )
+from .mill_capability_shapes import fixed_mill_node_capabilities
 from .optional_counter_capability_shapes import (
     optional_fixed_counter_event_trigger_node_capabilities,
 )
@@ -905,6 +906,7 @@ def _targeted_effect_capabilities(
         fixed_damage_node_capabilities,
         mass_destruction_node_capabilities,
         fixed_draw_node_capabilities,
+        fixed_mill_node_capabilities,
         fixed_life_node_capabilities,
         fixed_controller_effect_sequence_node_capabilities,
         fixed_counter_controller_effect_sequence_node_capabilities,
@@ -1176,6 +1178,8 @@ def capability_covered_mechanics(
         covered.add("return-to-owner-hand")
     if "stack.counter.effect" in supplied:
         covered.add("counter")
+    if "zone.mill.fixed" in supplied:
+        covered.add("mill")
     if supplied.intersection(
         {
             "zone.draw.result_generated_ordering",

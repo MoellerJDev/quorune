@@ -329,6 +329,7 @@ def _activated_effect_dependency_gate(
             "life",
             "lose_life",
             "lose_life_each_opponent",
+            "mill",
             "modify_all_matching_permanents_until_end_of_turn",
             "modify_stats_until_end_of_turn",
             "scry",

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "0c1036d064c87641910754ce716dd6349039146e9fb86b63899df8cf01818bc2",
-  "declaration_source_fingerprint": "69e71e4eea5ee68cbccdd8d4eb0638ecfa2cd84e252c4687a9ba9b37c5c9c2ac",
+  "registry_fingerprint": "d543daa62c26c7bf0a8cc4fe66bdf9e87040318a9672003af08323016b844ec3",
+  "declaration_source_fingerprint": "bec7a6496a0eecf396b85c59896b92bcede7dea06d21d8a75ab313bb84c96cdf",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -40030,6 +40030,132 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     },
     {
+      "capability_id": "zone.mill.fixed",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_mill_rules.FixedMillRuntimeTests.test_target_mill_revalidates_and_zone_replacement_preserves_actual_result",
+      "official_rule_ids": [
+        "400.7",
+        "701.17",
+        "701.17a",
+        "701.17b",
+        "701.17c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose target-player Mill with resolution target legality and a battlefield destination replacement, preserving each card's actual exile result and void counter."
+    },
+    {
+      "capability_id": "zone.mill.fixed",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_mill_rules.FixedMillRuntimeTests.test_four_player_target_mill_is_public_privacy_safe_and_replays",
+      "official_rule_ids": [
+        "400.7",
+        "701.17",
+        "701.17a",
+        "701.17b",
+        "701.17c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve a target-player Mill instruction in four-player state while applying an opponent-owned public replacement source and returning priority normally."
+    },
+    {
+      "capability_id": "zone.mill.fixed",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_mill_rules.FixedMillCompilerTests.test_mill_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "400.7",
+        "701.17",
+        "701.17a",
+        "701.17b",
+        "701.17c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the fixed Mill lowering or block each zone dependency and prove no represented instruction retains exact executable trust."
+    },
+    {
+      "capability_id": "zone.mill.fixed",
+      "evidence_class": "negative",
+      "test_id": "tests.test_mill_rules.FixedMillRuntimeTests.test_stale_plan_and_malformed_intent_fail_before_mutation",
+      "official_rule_ids": [
+        "400.7",
+        "701.17",
+        "701.17a",
+        "701.17b",
+        "701.17c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a changed library top and a nonpositive typed intent without modifying the authoritative state hash."
+    },
+    {
+      "capability_id": "zone.mill.fixed",
+      "evidence_class": "positive",
+      "test_id": "tests.test_mill_rules.FixedMillCompilerTests.test_fixed_mill_compiles_across_spell_trigger_and_activation",
+      "official_rule_ids": [
+        "400.7",
+        "701.17",
+        "701.17a",
+        "701.17b",
+        "701.17c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower controller, target-player, and target-opponent fixed quantities across spell, triggered, and activated contexts to capability-closed programs."
+    },
+    {
+      "capability_id": "zone.mill.fixed",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_mill_rules.FixedMillRuntimeTests.test_four_player_target_mill_is_public_privacy_safe_and_replays",
+      "official_rule_ids": [
+        "400.7",
+        "701.17",
+        "701.17a",
+        "701.17b",
+        "701.17c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose public graveyard or exile references to every seat after commitment without projecting hidden library order or authoritative physical IDs."
+    },
+    {
+      "capability_id": "zone.mill.fixed",
+      "evidence_class": "replay",
+      "test_id": "tests.test_mill_rules.FixedMillRuntimeTests.test_four_player_target_mill_is_public_privacy_safe_and_replays",
+      "official_rule_ids": [
+        "400.7",
+        "701.17",
+        "701.17a",
+        "701.17b",
+        "701.17c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay target selection, simultaneous replacement-aware movement, actual public destinations, priority, and final authoritative hash."
+    },
+    {
       "capability_id": "zone.self_move.activated",
       "evidence_class": "interaction",
       "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_tapped_reanimation_and_aura_return_use_zone_owners",
@@ -40230,5 +40356,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "004dacbd72ba038929e50e0d0a073a4af75b0de9d73881711b689e4d8cafe178"
+  "fingerprint": "18c0d1f43b5926abd580dcf6b21b214609dfface1e9cbe5afd3067edd1ccb838"
 }

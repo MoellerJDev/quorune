@@ -64,6 +64,7 @@ from ..rules.node_capability_shapes import (
 from ..rules.token_creation_capability_shapes import (
     fixed_token_creation_node_capabilities,
 )
+from ..rules.mill_capability_shapes import fixed_mill_node_capabilities
 from ..rules.fixed_controller_effect_shapes import (
     fixed_counter_controller_effect_sequence_node_capabilities,
     fixed_controller_effect_sequence_node_capabilities,
@@ -476,6 +477,21 @@ def _is_closed_fixed_draw_program(program: SemanticProgram) -> bool:
                 for value in program.coverage
                 if value.startswith("cr-")
             ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_mill_program(program: SemanticProgram) -> bool:
+    """Recognize only mandatory fixed-count single-player Mill effects."""
+
+    required = set(
+        fixed_mill_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
         )
     )
     return bool(required) and required.issubset(
@@ -1180,6 +1196,7 @@ def _closed_effect_recognizers():
         _is_closed_fixed_choose_one_modal_program,
         _is_closed_fixed_damage_program,
         _is_closed_fixed_draw_program,
+        _is_closed_fixed_mill_program,
         _is_closed_fixed_life_program,
         _is_closed_fixed_scry_program,
         _is_closed_fixed_token_creation_program,

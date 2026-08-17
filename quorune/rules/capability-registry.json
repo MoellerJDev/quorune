@@ -763,6 +763,33 @@
       "status": "trusted"
     },
     {
+      "id": "zone.mill.fixed",
+      "version": 1,
+      "official_rules": ["400.7", "701.17", "701.17a", "701.17b", "701.17c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one mandatory positive fixed-count Mill instruction for the controller, one target player, or one target opponent through an immutable current-library-top plan and the canonical simultaneous zone-transition owner.",
+        "inputs": ["one capability-shaped fixed Mill effect", "active actor and affected player", "positive fixed count", "exact current library top identities", "current destination replacements and normalized zone-trigger sources"],
+        "outputs": ["one immutable Mill plan", "as-many-as-possible result for a short library", "one simultaneous replacement-aware library-to-graveyard batch", "actual destination and new-incarnation results", "privacy-safe public journal", "exact replay"],
+        "exclusions": ["Mill as a cost or optional action", "zero, variable, multiplied, half-library, or state-derived counts", "each-player, each-opponent, any-number-of-targets, or repeated Mill", "linked cards-milled-this-way consumers under CR 701.17c-d", "graveyard-order-sensitive interactions while CR 404.3 remains blocked", "private face-down or hidden-destination result consumers"]
+      },
+      "dependencies": ["trigger.event.normalized_zone_change", "trigger.placement.apnap", "zone.change.destination_replacement"],
+      "implementation_components": ["quorune.milling.MillRequest", "quorune.milling.MillPlan", "quorune.milling.MillResult", "quorune.compiler.mill_templates.fixed_mill_effect_template", "quorune.semantic_runtime.generic.MillHandler", "quorune.semantic_runtime.intents.MillCardsIntent", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
+      "positive_tests": ["test_fixed_mill_compiles_across_spell_trigger_and_activation", "test_mill_commits_top_first_and_as_many_as_possible"],
+      "negative_tests": ["test_dynamic_optional_group_and_linked_mill_remain_residual", "test_stale_plan_and_malformed_intent_fail_before_mutation"],
+      "interaction_tests": ["test_target_mill_revalidates_and_zone_replacement_preserves_actual_result"],
+      "multiplayer_tests": ["test_four_player_target_mill_is_public_privacy_safe_and_replays"],
+      "privacy_tests": ["test_four_player_target_mill_is_public_privacy_safe_and_replays"],
+      "replay_tests": ["test_four_player_target_mill_is_public_privacy_safe_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking destination replacement, normalized zone events, or APNAP trigger placement prevents the fixed Mill node from receiving trusted closure.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused mutations remove the typed Mill template or bypass current-top revalidation; compiler exactness and authoritative state assertions reject both survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "library.scry.fixed_controller",
       "version": 1,
       "official_rules": ["401.4", "701.22", "701.22a", "701.22b"],

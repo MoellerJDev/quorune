@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 701.17 — Mandatory fixed-count Mill",
+  "cases": [
+    {
+      "rule_id": "701.17",
+      "rule_text_sha256": "a5feb9527e767094e51f94fbb5bed705526f5fff586dbb4dcec2619a76a8864c",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.capabilities.CapabilityRegistry"],
+      "executable_test_ids": ["tests.test_mill_rules.FixedMillCompilerTests.test_fixed_mill_compiles_across_spell_trigger_and_activation"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword-action heading; the bounded mandatory fixed single-player family is owned by zone.mill.fixed."]
+    },
+    {
+      "rule_id": "701.17a",
+      "rule_text_sha256": "30f2978f15964a0fb9a143c1be44117c852bf10d5971b506dfe315844170257a",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.mill_templates.fixed_mill_effect_template", "quorune.milling.prepare_mill", "quorune.milling.commit_mill", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
+      "executable_test_ids": ["tests.test_mill_rules.FixedMillCompilerTests.test_fixed_mill_compiles_across_spell_trigger_and_activation", "tests.test_mill_rules.FixedMillCompilerTests.test_dynamic_optional_group_and_linked_mill_remain_residual", "tests.test_mill_rules.FixedMillRuntimeTests.test_mill_commits_top_first_and_as_many_as_possible", "tests.test_mill_rules.FixedMillRuntimeTests.test_target_mill_revalidates_and_zone_replacement_preserves_actual_result", "tests.test_mill_rules.FixedMillRuntimeTests.test_four_player_target_mill_is_public_privacy_safe_and_replays"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["each-player, each-opponent, repeated, optional, cost, dynamic, and linked-result Mill variants remain unsupported", "graveyard-order-sensitive interactions remain outside trust while CR 404.3 is blocked"],
+      "notes": ["The fine-grained capability moves the exact current library top through one simultaneous replacement-aware zone transaction and records every actual destination without exposing hidden library state."]
+    },
+    {
+      "rule_id": "701.17b",
+      "rule_text_sha256": "2f3ab7a370cdba4147ff0da9e6b59d81c2e79662032292e79f680a6c8a1b3fc7",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.milling.prepare_mill", "quorune.compiler.mill_templates.fixed_mill_effect_template"],
+      "executable_test_ids": ["tests.test_mill_rules.FixedMillRuntimeTests.test_mill_commits_top_first_and_as_many_as_possible", "tests.test_mill_rules.FixedMillCompilerTests.test_dynamic_optional_group_and_linked_mill_remain_residual"],
+      "required_scenarios": ["positive", "negative"],
+      "covered_scenarios": ["positive", "negative"],
+      "blockers": ["Mill choices and Mill costs do not yet share a typed feasibility and payment boundary"],
+      "notes": ["Mandatory fixed instructions mill as many as possible from a short or empty library; optional and cost forms remain residual rather than borrowing mandatory semantics."]
+    },
+    {
+      "rule_id": "701.17c",
+      "rule_text_sha256": "7e57d69b1e0ff965805686b80b02c10d71425675d4467882f7308402e2e6a566",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.milling.MillResult"],
+      "executable_test_ids": ["tests.test_mill_rules.FixedMillRuntimeTests.test_target_mill_revalidates_and_zone_replacement_preserves_actual_result", "tests.test_mill_rules.FixedMillCompilerTests.test_dynamic_optional_group_and_linked_mill_remain_residual"],
+      "required_scenarios": ["interaction", "negative"],
+      "covered_scenarios": ["interaction", "negative"],
+      "blockers": ["the compiler does not yet bind linked cards-milled-this-way consumers to the typed actual-destination result"],
+      "notes": ["The owner records actual destinations and new incarnations, including replacement exile, but only standalone instructions receive trust."]
+    },
+    {
+      "rule_id": "701.17d",
+      "rule_text_sha256": "691fa886ddecfd9b4eac1b0f819d800b33fe3c48cb986195a04a1281eaa17a4a",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.milling.MillResult"],
+      "executable_test_ids": ["tests.test_mill_rules.FixedMillCompilerTests.test_dynamic_optional_group_and_linked_mill_remain_residual"],
+      "required_scenarios": ["negative"],
+      "covered_scenarios": ["negative"],
+      "blockers": ["single-card Mill replaced into multiple cards and every linked information, permission, or action consumer remain unrepresented"],
+      "notes": ["No linked-result wording is promoted by the fixed standalone grammar."]
+    }
+  ]
+}

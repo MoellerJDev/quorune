@@ -170,6 +170,7 @@
     "quorune/mana_undo.py",
     "quorune/mechanic_contracts.py",
     "quorune/menace.py",
+    "quorune/milling.py",
     "quorune/mentor.py",
     "quorune/model.py",
     "quorune/oracle_ir.py",
@@ -354,6 +355,7 @@
       ,"quorune/damage_prevention_aftermath.py": "typed prevention-aftermath planner delegating mutation to canonical life and counter owners"
       ,"quorune/mana_mode_effects.py": "typed mana-mode side-effect coordinator delegating to canonical damage, life, and zone owners"
       ,"quorune/mana_payment_continuations.py": "atomic mana-payment suspension coordinator"
+      ,"quorune/milling.py": "typed fixed Mill planner and coordinator delegating simultaneous mutation to the canonical zone-transition owner"
       ,"quorune/effect_runtime/life_effects.py": "registry-owned life-effect planner delegating mutation to the canonical life owner"
       ,"quorune/rules/action_catalog.py": "read-only executable action-offer catalog"
       ,"quorune/rules/action_explanations.py": "principal-scoped read-only unavailable-action explanations"

@@ -18,6 +18,7 @@ from ..effect_contracts import (
     REANIMATE_OPERATION,
 )
 from ..model import CardInstance
+from ..milling import mill_cards, MillRequest
 from ..object_predicate import ObjectQueryError, ObjectQuerySpec
 from ..targets import TargetGroup
 from ..util import unique_preserving_order
@@ -507,32 +508,20 @@ def _apply_mill(
     operation: str,
     reason: str,
 ) -> Any:
-    op = operation
-    seat = str(effect.get("player") or actor)
-    host._require_seat(seat, in_game=True)
+    del operation
     count = max(0, int(effect.get("count", 1)))
-    library = host.state.players[seat].zones["library"]
-    object_ids = list(reversed(library[-count:])) if count else []
-    moved = host._move_cards_simultaneously(
-        [(object_id, "graveyard") for object_id in object_ids],
-        reason=reason,
-        log=False,
+    if not count:
+        return []
+    result = mill_cards(
+        host,
+        MillRequest(
+            actor=actor,
+            player=str(effect.get("player") or actor),
+            count=count,
+            reason=reason,
+        ),
     )
-    host._log(
-        actor,
-        "card.mill",
-        f"{seat} milled {len(moved)} card(s).",
-        {
-            "player": seat,
-            "count": len(moved),
-            "objects": [card.ref for card in moved],
-            "reason": reason,
-        },
-        importance=1,
-        changed_objects=[card.object_id for card in moved],
-        changed_players=[seat],
-    )
-    return [card.ref for card in moved]
+    return list(result.refs)
 
 
 

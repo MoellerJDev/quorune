@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "mill",
+  "official_name": "Mill",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["400.7", "701.17", "701.17a", "701.17b", "701.17c", "701.17d"],
+  "glossary_references": ["mill"],
+  "dependencies": ["graveyard", "library", "object-zone-identity", "replacement-ordering", "resolving-spells-and-abilities"],
+  "coverage_status": "tested",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["library", "graveyard", "exile"],
+    "objects": ["one active affected player", "the exact current top cards of that player's library", "one new zone incarnation per moved physical card"],
+    "events": ["mandatory fixed-count Mill instruction", "simultaneous destination-replacement-aware zone batch", "normalized actual-destination zone events", "privacy-safe Mill result journal"],
+    "state_reads": ["active actor and affected player", "current library size and top identities", "current destination replacements", "current zone-trigger sources"],
+    "state_writes": ["canonical simultaneous zone transitions", "replacement result counters", "public result journal", "ordinary APNAP zone-trigger batch"],
+    "costs": [],
+    "timing": ["spell targets are selected on cast, triggered targets on placement, and every direct player target is revalidated immediately before resolution"],
+    "targets": ["one player or one opponent through the existing public player-target schema"],
+    "choices": ["none in the represented mandatory slice"],
+    "hidden_information": ["library order remains hidden before commitment", "only cards whose actual destination is public are named in the public Mill journal"],
+    "apnap": ["zone-change triggers from the simultaneous Mill result enter the ordinary trigger batch"],
+    "layers": [],
+    "replacement_effects": ["every requested graveyard move enters the canonical destination-replacement batch before the first mutation"],
+    "copy": [],
+    "control_change": ["the affected player is captured from the controller or revalidated direct target"],
+    "zone_change": ["a short library mills as many cards as possible", "the typed result records each actual destination and new logical incarnation"],
+    "source_leaves": ["an already-created spell or triggered ability resolves independently of source departure"]
+  },
+  "variants": ["controller mills a fixed count", "target player mills a fixed count", "target opponent mills a fixed count", "short or empty library", "destination replacement", "stale prepared library top", "spell, triggered, and activated contexts", "fixed Mill followed by an independently typed sibling effect"],
+  "witness_cards": [
+    {"name": "Tome Scour", "oracle_id": "446a9d7e-9c1a-4e83-8342-2ed5acae2eed"},
+    {"name": "Mind Sculpt", "oracle_id": "4d8592d7-2e36-4a7a-be9e-7c8f512d5f62"},
+    {"name": "Codex Shredder", "oracle_id": "ef7b11ab-24e7-4e7c-91a7-920bade6e60b"},
+    {"name": "Perpetual Timepiece", "oracle_id": "17b4778b-82b1-4845-ad08-00f3ff66877b"}
+  ],
+  "rulings": [],
+  "test_ids": ["test_fixed_mill_compiles_across_spell_trigger_and_activation", "test_dynamic_optional_group_and_linked_mill_remain_residual", "test_mill_dependency_and_compiler_mutations_fail_closed", "test_mill_commits_top_first_and_as_many_as_possible", "test_stale_plan_and_malformed_intent_fail_before_mutation", "test_target_mill_revalidates_and_zone_replacement_preserves_actual_result", "test_four_player_target_mill_is_public_privacy_safe_and_replays"],
+  "implementation": {
+    "component": "quorune.milling, quorune.compiler.mill_templates, quorune.rules.mill_capability_shapes, quorune.semantic_runtime.generic.MillHandler, and the canonical zone-transition owner",
+    "version": "typed-fixed-mill-v1",
+    "capability_ids": ["zone.mill.fixed"],
+    "supported_slice": "One mandatory positive fixed-count controller, target-player, or target-opponent Mill instruction with no linked result consumer."
+  },
+  "known_blockers": ["Mill costs, optional Mill, dynamic, multiplied, half-library, and state-derived quantities remain unsupported", "each-player, each-opponent, any-number-of-targets, and repeated Mill need a multiplayer batch owner", "linked cards-milled-this-way consumers under CR 701.17c-d need typed actual-result bindings", "graveyard-order-sensitive interactions remain excluded while CR 404.3 is blocked", "aggregate library, graveyard, replacement, and zone-trigger coverage remains incomplete"],
+  "review_status": "reviewed"
+}

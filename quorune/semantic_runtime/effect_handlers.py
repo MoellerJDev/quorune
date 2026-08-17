@@ -65,5 +65,5 @@ class DomainEffectHandler:
 DOMAIN_EFFECT_HANDLERS = tuple(
     DomainEffectHandler(operation=operation, contract=contract)
     for operation, contract in effect_operation_contracts()
-    if operation not in {"bounce", "destroy"}
+    if operation not in {"bounce", "destroy", "mill"}
 )

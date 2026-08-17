@@ -13,6 +13,7 @@ from .intents import (
     BecomeMonarchIntent,
     DrawCardsIntent,
     IntentPlan,
+    MillCardsIntent,
 )
 from .nodes import (
     BecomeMonarchNode,
@@ -74,6 +75,48 @@ class DrawHandler:
                     count=node.count,
                     reason=node.reason,
                     private=node.private,
+                ),
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class MillHandler:
+    handler_id: str = "generic.mill.v1"
+    schema_version: int = 1
+    family: str = "zone.mill"
+    operation: str = "mill"
+    rule_references: tuple[str, ...] = (
+        "400.7",
+        "701.17",
+        "701.17a",
+        "701.17b",
+        "701.17c",
+    )
+    capability_dependencies: tuple[str, ...] = ("zone.mill.fixed",)
+
+    def lower(
+        self,
+        effect: Mapping[str, Any],
+        context: ReadOnlyHandlerContext,
+    ) -> IntentPlan:
+        if set(effect) - {"op", "player", "count", "reason"}:
+            raise SemanticNodeError("Mill effects have a closed schema")
+        count = _count(effect)
+        if count <= 0:
+            raise SemanticNodeError("Mill count must be positive")
+        player = context.query.require_active_seat(
+            str(effect.get("player") or context.actor)
+        )
+        return IntentPlan(
+            operation=self.operation,
+            handler_id=self.handler_id,
+            intents=(
+                MillCardsIntent(
+                    actor=context.actor,
+                    player=player,
+                    count=count,
+                    reason=_reason(effect, context),
                 ),
             ),
         )
@@ -225,6 +268,7 @@ class BecomeMonarchHandler:
 
 GENERIC_HANDLERS = (
     DrawHandler(),
+    MillHandler(),
     DrawEachPlayerHandler(),
     DrawWithActionsHandler(),
     BecomeMonarchHandler(),

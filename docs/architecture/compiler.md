@@ -67,6 +67,18 @@ batch. Dynamic amounts, target-player drains that could affect the controller,
 each-player loss, life-total setting, exchanges, and unequal drains remain
 source-spanned residuals.
 
+`compiler/mill_templates.py` owns one mandatory positive fixed-count Mill
+instruction for the controller, one target player, or one target opponent.
+The same grammar is consumed by spell, triggered, and activated contexts and
+feeds one immutable current-library-top plan into the canonical simultaneous
+zone-transition owner. A short library mills as many cards as possible;
+destination replacements, actual public results, target revalidation, APNAP
+zone triggers, rollback, privacy, and replay remain shared. Optional and cost
+Mill, dynamic or half-library quantities, player groups, linked
+cards-milled-this-way consumers, and graveyard-order-sensitive interactions
+while CR 404.3 is blocked remain source-spanned residuals or explicit trust
+exclusions.
+
 `compiler/fixed_effect_clause_sequences.py` owns the general closed
 two-sentence composition boundary. It accepts exactly two top-level,
 period-separated, mandatory clauses when each clause independently lowers to

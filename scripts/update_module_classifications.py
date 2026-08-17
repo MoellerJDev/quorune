@@ -208,6 +208,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/mana_undo.py",
         "quorune/mechanic_contracts.py",
         "quorune/menace.py",
+        "quorune/milling.py",
         "quorune/mentor.py",
         "quorune/morph.py",
         "quorune/kicker.py",
@@ -323,6 +324,8 @@ def _owner(relative: str, layer: str) -> str:
     if relative == "quorune/unearth.py":
         return "graveyard_actions"
     if relative == "quorune/self_zone_move.py":
+        return "zones_and_object_identity"
+    if relative == "quorune/milling.py":
         return "zones_and_object_identity"
     if relative in {
         "quorune/cast_timing.py",
