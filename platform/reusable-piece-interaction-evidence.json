@@ -3379,6 +3379,25 @@
       ],
       "interaction_order": 2,
       "assertion": "A compiler-owned target-opponent drain revalidates the selected active opponent before one replacement-aware life batch commits the opponent loss and controller gain, then replays the exact result."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
+      "test_id": "test_cascade_cast_revalidates_additional_cost_and_targets",
+      "piece_ids": [
+        "capability.casting.additional_cost.fixed_sacrifice",
+        "capability.permanent.destroy.effect",
+        "capability.target.revalidate_resolution",
+        "capability.trigger.keyword.cascade"
+      ],
+      "capability_ids": [
+        "casting.additional_cost.fixed_sacrifice",
+        "permanent.destroy.effect",
+        "target.revalidate_resolution",
+        "trigger.keyword.cascade"
+      ],
+      "interaction_order": 4,
+      "assertion": "Cascade offers a lower-mana-value spell through the one-shot exile-cast owner, preserves its mandatory artifact-sacrifice cost, revalidates its creature target, and resolves destruction through the canonical owner in one ordinary cast transaction."
     }
   ]
 }

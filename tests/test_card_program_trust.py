@@ -207,6 +207,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.static.trigger_multiplier",
                 "ability.trigger.bushido",
                 "ability.trigger.battle_cry",
+                "ability.trigger.cascade",
                 "ability.trigger.dethrone",
                 "ability.trigger.exalted",
                 "ability.trigger.flanking",

@@ -120,6 +120,7 @@
     "quorune/ability_fragments.py",
     "quorune/aerial_blocking.py",
     "quorune/attack_counter_triggers.py",
+    "quorune/cascade.py",
     "quorune/choice_forms.py",
     "quorune/combat.py",
     "quorune/combat_constraints.py",
@@ -323,6 +324,7 @@
       ,"quorune/zone_object_state.py": "typed object-local CR 400.7 reset owner behind the canonical zone transition"
       ,"quorune/zone_transitions.py": "typed authoritative single and simultaneous zone-membership, logical-incarnation, timestamp, LKI, and announcement owner"
       ,"quorune/selection/public_choice.py": "typed represented public nontarget choice projection, continuation validation, and authoritative result coordination"
+      ,"quorune/selection/exile_cast.py": "typed one-shot public exile-cast choice, continuation validation, and authoritative resolution cleanup owner"
       ,"quorune/selection/searching.py": "typed hidden-zone search projection, continuation validation, result binding, and canonical zone-transition coordination"
       ,"quorune/selection/storm.py": "typed Storm copy-target selection and authoritative stack-copy commit owner"
       ,"quorune/selection/targeting.py": "typed target proposal, projection, completion, and resolution revalidation owner"
@@ -344,6 +346,7 @@
       ,"quorune/object_query.py": "typed read-only object selection predicates"
       ,"quorune/zone_trigger_events.py": "immutable normalized CR 603.6 zone-change occurrence and event derivation"
       ,"quorune/zone_trigger_processing.py": "read-only zone-trigger detection coordinator delegating placement and mutation to canonical owners"
+      ,"quorune/cascade.py": "typed Cascade trigger and resolution coordinator delegating casting, zone movement, choice, and cleanup mutation to canonical owners"
       ,"quorune/semantic_runtime/action_permissions.py": "read-only trusted static action-permission discovery over active battlefield sources"
       ,"quorune/semantic_runtime/casting_activation_metadata.py": "read-only trusted casting-permission and loyalty-cost metadata discovery over current source-pinned programs"
       ,"quorune/semantic_runtime/untap_steps.py": "read-only trusted untap-step participation discovery over current effective characteristics"

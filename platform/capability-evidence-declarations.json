@@ -2162,6 +2162,62 @@
       "applicability_note": "Reject changed type, color, controller, tap, phase, or logical identity before spending mana, tapping a permanent, or moving the spell."
     },
     {
+      "capability_id": "casting.permission.one_shot_exile_without_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_cascade_cast_revalidates_additional_cost_and_targets",
+      "official_rule_ids": ["118.9", "406.3", "601.2", "601.2b", "601.2f", "608.2f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose the free alternative cost with current mandatory additional-cost payment and target selection through the ordinary cast transaction."
+    },
+    {
+      "capability_id": "casting.permission.one_shot_exile_without_mana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_four_player_cascade_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["118.9", "406.3", "601.2", "601.2b", "601.2f", "608.2f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose the public exiled card and legal cast facts while authorizing only the resolving trigger's controller in a four-player game."
+    },
+    {
+      "capability_id": "casting.permission.one_shot_exile_without_mana",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_cascade_rules.CascadeCompilerTests.test_cascade_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["118.9", "406.3", "601.2", "601.2b", "601.2f", "608.2f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Block the one-shot exile-cast dependency and prove the printed producer cannot retain exact executable trust."
+    },
+    {
+      "capability_id": "casting.permission.one_shot_exile_without_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_stale_or_malformed_cascade_choice_rolls_back",
+      "official_rule_ids": ["118.9", "406.3", "601.2", "601.2b", "601.2f", "608.2f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a changed exile incarnation or forged option fingerprint before any cast or cleanup mutation."
+    },
+    {
+      "capability_id": "casting.permission.one_shot_exile_without_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_cascade_exiles_casts_and_random_bottoms",
+      "official_rule_ids": ["118.9", "406.3", "601.2", "601.2b", "601.2f", "608.2f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Offer and commit one public exiled card through the ordinary face, target, cost, casting, cleanup, and stack owners without paying its mana cost."
+    },
+    {
+      "capability_id": "casting.permission.one_shot_exile_without_mana",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_four_player_cascade_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["118.9", "406.3", "601.2", "601.2b", "601.2f", "608.2f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep authoritative physical and logical object identities out of every projected decision packet."
+    },
+    {
+      "capability_id": "casting.permission.one_shot_exile_without_mana",
+      "evidence_class": "replay",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_four_player_cascade_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["118.9", "406.3", "601.2", "601.2b", "601.2f", "608.2f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the exact exile identities, offered options, cast-or-decline response, random cleanup, and final authoritative hash."
+    },
+    {
       "capability_id": "casting.zone.self_graveyard.controlled_subtype",
       "evidence_class": "interaction",
       "test_id": "tests.test_casting_activation_metadata.SelfZoneCastPermissionRuntimeTests.test_self_graveyard_cast_permission_is_typed_principal_scoped_and_replays",
@@ -16722,6 +16778,62 @@
       "official_rule_ids": ["603.2", "603.6", "603.6a", "603.6c", "603.10", "603.10a", "603.10e"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the countered-spell transition, normalized event ordering, trigger journal inputs, and final state hash exactly."
+    },
+    {
+      "capability_id": "trigger.keyword.cascade",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_cascade_cast_revalidates_additional_cost_and_targets",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.85", "702.85a", "702.85c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose Cascade with the ordinary additional-cost, target, destruction, zone-event, and stack-resolution owners."
+    },
+    {
+      "capability_id": "trigger.keyword.cascade",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_four_player_cascade_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.85", "702.85a", "702.85c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Preserve public exile facts, controller-only action authority, and four-player priority after cleanup."
+    },
+    {
+      "capability_id": "trigger.keyword.cascade",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_cascade_rules.CascadeCompilerTests.test_cascade_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.85", "702.85a", "702.85c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the dedicated Cascade node or block each dependency and prove no generic keyword fallback retains trust."
+    },
+    {
+      "capability_id": "trigger.keyword.cascade",
+      "evidence_class": "negative",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_stale_or_malformed_cascade_choice_rolls_back",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.85", "702.85a", "702.85c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject stale exiled objects and malformed continuations without changing the authoritative hash."
+    },
+    {
+      "capability_id": "trigger.keyword.cascade",
+      "evidence_class": "positive",
+      "test_id": "tests.test_cascade_rules.CascadeCompilerTests.test_cascade_keyword_lowers_each_instance_with_precise_spans",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.85", "702.85a", "702.85c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower every ordinary printed Cascade instance to a distinct source-spanned trusted stack-zone trigger descriptor."
+    },
+    {
+      "capability_id": "trigger.keyword.cascade",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_four_player_cascade_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.85", "702.85a", "702.85c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project public card references and legal options without physical IDs, logical IDs, or hidden library order."
+    },
+    {
+      "capability_id": "trigger.keyword.cascade",
+      "evidence_class": "replay",
+      "test_id": "tests.test_cascade_rules.CascadeRuntimeTests.test_four_player_cascade_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.85", "702.85a", "702.85c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay trigger placement, public exile, choice, deterministic random order, cleanup, and the final state hash."
     },
     {
       "capability_id": "trigger.keyword.echo.fixed_mana",

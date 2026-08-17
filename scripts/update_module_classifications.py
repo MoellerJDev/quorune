@@ -132,6 +132,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
     ) or relative in {
         "quorune/activation_usage.py",
         "quorune/abilities.py",
+        "quorune/cascade.py",
         "quorune/affected_permanents.py",
         "quorune/amass.py",
         "quorune/ability_fragments.py",
@@ -381,6 +382,7 @@ def _owner(relative: str, layer: str) -> str:
         return "life_state"
     if relative in {
         "quorune/delayed_triggers.py",
+        "quorune/cascade.py",
         "quorune/player_result_events.py",
         "quorune/trigger_batches.py",
         "quorune/trigger_discovery.py",

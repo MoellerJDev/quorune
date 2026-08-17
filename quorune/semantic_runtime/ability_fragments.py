@@ -47,6 +47,7 @@ MENTOR_FRAGMENT_HANDLER_ID = "ability.trigger.mentor.v1"
 DETHRONE_FRAGMENT_HANDLER_ID = "ability.trigger.dethrone.v1"
 TRAINING_FRAGMENT_HANDLER_ID = "ability.trigger.training.v1"
 RENOWN_FRAGMENT_HANDLER_ID = "ability.trigger.renown.v1"
+CASCADE_FRAGMENT_HANDLER_ID = "ability.trigger.cascade.v1"
 PROWESS_FRAGMENT_HANDLER_ID = "ability.trigger.prowess.v1"
 TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID = (
     "ability.static.trigger-multiplier.v1"
@@ -610,6 +611,46 @@ class RenownAbilityFragmentHandler:
 
 
 @dataclass(frozen=True, slots=True)
+class CascadeAbilityFragmentHandler:
+    handler_id: str = CASCADE_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.trigger.cascade"
+    event: str = "spell.cast"
+    rule_references: tuple[str, ...] = (
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.85",
+        "702.85a",
+        "702.85c",
+    )
+    capability_dependencies: tuple[str, ...] = ("trigger.keyword.cascade",)
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> SpellCastKeywordTriggerSpec:
+        fragment = _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=SpellCastKeywordTriggerSpec,
+        )
+        if fragment.kind is not SpellCastKeywordTriggerKind.CASCADE:
+            raise SemanticNodeError(
+                "The Cascade runtime handler requires a Cascade fragment"
+            )
+        return fragment
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
 class ProwessAbilityFragmentHandler:
     handler_id: str = PROWESS_FRAGMENT_HANDLER_ID
     schema_version: int = 1
@@ -876,6 +917,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
         (
             BattleCryAbilityFragmentHandler(),
             BushidoAbilityFragmentHandler(),
+            CascadeAbilityFragmentHandler(),
             CounterMaximumAbilityFragmentHandler(),
             DeclarationCostAbilityFragmentHandler(),
             DeclarationRequirementAbilityFragmentHandler(),
@@ -921,6 +963,7 @@ __all__ = [
     "ENCHANT_FRAGMENT_HANDLER_ID",
     "BUSHIDO_FRAGMENT_HANDLER_ID",
     "BATTLE_CRY_FRAGMENT_HANDLER_ID",
+    "CASCADE_FRAGMENT_HANDLER_ID",
     "COUNTER_MAXIMUM_FRAGMENT_HANDLER_ID",
     "CONDITIONAL_KEYWORD_FRAGMENT_HANDLER_ID",
     "COLORLESS_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID",
@@ -944,6 +987,7 @@ __all__ = [
     "EnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
+    "CascadeAbilityFragmentHandler",
     "CounterMaximumAbilityFragmentHandler",
     "DeclarationCostAbilityFragmentHandler",
     "DeclarationRequirementAbilityFragmentHandler",

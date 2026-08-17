@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
+from ...cascade import cascade_trigger_items
 from ...convoke import ConvokeError
 from ...counter_placement import (
     CounterPlacementError,
@@ -883,7 +884,9 @@ def _dispatch_cast_events(
     item: StackItem,
     costs: _AdditionalCostCommit,
 ) -> None:
-    trigger_batch: list[StackItem] = []
+    trigger_batch = list(
+        cascade_trigger_items(host, spell=item, card=card)
+    )
     for (
         paid,
         origin,
