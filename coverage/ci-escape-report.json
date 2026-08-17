@@ -421,6 +421,38 @@
       "resolution": "The Devoid-focused compiler witness now verifies the exact registered family, handler, capability dependency, and trusted closure, while the global closed inventory includes that family. The existing impact policy already selected compiler-cardprogram; the focused module now makes the registration obligation executable in the locally permitted Devoid check.",
       "run_id": 31924413599,
       "summary": "The Devoid harvest registered a capability-bound runtime component, but its focused local evidence omitted the global family-inventory ratchet despite the registration-change review rule."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "main-smoke"
+      ],
+      "head_sha": "df595f203df287a3fe9afd5bb60292aa4d720a7c",
+      "id": "ci-20260817-25",
+      "impact_edge_status": "added",
+      "regressions": [
+        "test_certification_receipt.CertificationReceiptTests.test_verify_main_falls_back_to_recent_squash_merge_payload"
+      ],
+      "resolution": "Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Focused unit coverage and a real PR 274 receipt verification exercise the fallback.",
+      "run_id": 32037282014,
+      "summary": "Main smoke rejected the squash-merged combat-prevention head because GitHub's commit-associated pull-request endpoint returned no PR for the new main SHA."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "main-smoke"
+      ],
+      "head_sha": "9e14e7eaf12b92ad75e23805777ff56cdca9f0ca",
+      "id": "ci-20260817-26",
+      "impact_edge_status": "added",
+      "regressions": [
+        "test_certification_receipt.CertificationReceiptTests.test_verify_main_falls_back_to_recent_squash_merge_payload"
+      ],
+      "resolution": "Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Empty and ambiguous selections remain fail-closed.",
+      "run_id": 32040255059,
+      "summary": "The next squash merge repeated the empty commit-associated PR response and failed Main smoke before dependency installation, confirming the prior receipt lookup was deterministically incomplete."
     }
   ],
   "known_flaky_tests": [],
@@ -428,7 +460,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-16T03:43:00Z",
+  "observed_at": "2026-08-17T14:48:02Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -473,7 +505,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "75efbb1e196169f186c15700859710a16af7039ccd97a6fee27a26406ad658f0",
+  "source_fingerprint": "851958ee9c290fb709a325e8181601bdc069018dea38e98493c2474eea158bef",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -484,11 +516,11 @@
       "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 7,
-      "source_correctness": 7
+      "source_correctness": 9
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 19,
-    "escape_count": 24,
+    "deterministic_escape_count": 21,
+    "escape_count": 26,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [
