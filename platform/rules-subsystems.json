@@ -414,6 +414,16 @@
         "candidate_id": "compiler:fixed-player-life-effects",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "The generated rank-one candidate is only 273 identical nonexecuting Choose one headers with zero sole-blocker cards, and the rank-two additional-cost candidate remains a heterogeneous mix of discard, sacrifice, tap, exile, reveal, random, variable, and named-mechanic costs. A pinned-corpus probe instead measured one closed fixed player-life grammar across spell and activated contexts at 55 exact abilities and 14 complete cards through the existing target-revalidation, life-replacement, multiplayer batch, replay, and privacy owners."
+      },
+      {
+        "candidate_id": "compiler:typed-combat-prevention",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "The rank-one Choose one header remained a nonexecuting structural carrier with zero sole blockers, while the rank-two additional-cost aggregate still decomposed into unrelated cost families. A pinned-corpus prevention probe found one coherent existing-owner boundary: capability-close already-lowered finite and chosen-source shields, then add typed combat-only and player-recipient scope for exact Fog, target-source, target-recipient, self, and fixed-combat forms. The landed census gained 90 exact Commander cards and 110 exact abilities, removed 116 material residuals, and kept uncovered high-risk interaction debt at zero."
+      },
+      {
+        "candidate_id": "compiler:activated-fixed-characteristics",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "After the prevention harvest, the generated header and additional-cost leaders remained noncoherent, and measured token, destroy, exile, and modal residual aggregates fragmented into many small linked or predicate families. The blocked CR 611 aggregate instead decomposed into 515 already-lowered activated fixed-characteristic nodes using one trusted duration owner: self stats, resolution-locked controlled-creature stats, and a closed self keyword set. The landed census gained 332 exact Commander cards and 515 exact abilities while excluding static components, dynamic characteristic counts, copy, face-down, same-layer dependency, and player or game-rule effects."
       }
     ]
   },
