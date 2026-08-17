@@ -120,6 +120,16 @@ Trample through existing consumers. Multiple, and/or, variable, nonmana,
 copied, granted, kicked-trigger, spell-rider, dynamic, and open entry families
 remain source-spanned residuals.
 
+`compiler/activated_mana_nodes.py` also owns three exact source-self zone-move
+effects: graveyard to owner hand, graveyard to battlefield tapped, and a
+battlefield Aura to owner hand. The typed descriptor replaces the parser's
+default battlefield active zone with the represented origin and records the
+destination, tapped state, source form, and complete-card policy. Only the
+battlefield result requires the shared complete-card admission certificate;
+the hand-return forms may remain independently executable on partial cards.
+Untapped, targeted, mass, optional, conditional, multiple-object, copied,
+granted, and text-changed movement stays source-spanned and residual.
+
 `compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
 It accepts only live battlefield sets representable by `ObjectQuerySpec`: a
 source-controller relation over closed type, pinned creature-subtype, color,

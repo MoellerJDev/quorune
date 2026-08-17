@@ -64,6 +64,10 @@
     {
       "id": "compact-ci-card-dependencies",
       "depends_on": [
+        "architecture-audit",
+        "capability-evidence",
+        "module-classifications",
+        "reusable-pieces",
         "rules-derived"
       ],
       "outputs": [

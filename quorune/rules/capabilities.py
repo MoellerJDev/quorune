@@ -199,6 +199,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
         "casting.kicker.fixed_mana",
         "replacement.kicker.fixed_entry",
     ),
+    "self-zone-move": ("zone.self_move.activated",),
     **{
         mechanic: ("combat.block.landwalk.basic_type",)
         for mechanic in _BASIC_LANDWALK_MECHANICS

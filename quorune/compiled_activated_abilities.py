@@ -5,13 +5,15 @@ from __future__ import annotations
 from typing import Any, Mapping, Protocol
 
 from .abilities import ActivatedAbility
-from .card_programs.admission import program_has_complete_card_program_admission
+from .card_programs.admission import (
+    descriptor_requires_complete_card_program,
+    program_has_complete_card_program_admission,
+)
 from .card_programs.validation import program_source_is_current
 from .replacement.immutable import thaw_value
 from .semantic_runtime.activated_abilities import (
     activated_abilities_from_descriptors,
 )
-from .unearth import UNEARTH_ABILITY_HANDLER_ID
 
 
 _EXILE_ZONE = "exile"
@@ -97,7 +99,7 @@ def compiled_activated_abilities(
         if not program_source_is_current(host.card_db, program):
             continue
         if any(
-            descriptor.get("handler_id") == UNEARTH_ABILITY_HANDLER_ID
+            descriptor_requires_complete_card_program(descriptor)
             for descriptor in program.handlers
         ) and not program_has_complete_card_program_admission(program):
             continue

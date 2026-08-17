@@ -55,6 +55,7 @@ from .unearth import (
     UNEARTH_EFFECT_HANDLERS,
     UnearthEffectHandler,
 )
+from .self_zone_move import SELF_ZONE_MOVE_EFFECT_HANDLERS
 from .cast_permissions import (
     CastPermissionRegistry,
     default_cast_permission_registry,
@@ -353,6 +354,7 @@ def default_semantic_handler_registry() -> SemanticHandlerRegistry:
             *STATION_HANDLERS,
             *ZONE_OBJECT_KEYWORD_HANDLERS,
             *UNEARTH_EFFECT_HANDLERS,
+            *SELF_ZONE_MOVE_EFFECT_HANDLERS,
             *DOMAIN_EFFECT_HANDLERS,
         )
     )

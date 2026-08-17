@@ -3316,6 +3316,36 @@
       "capability_ids": ["token.creation.fixed_definition", "zone.draw.library_to_hand"],
       "interaction_order": 2,
       "assertion": "A compiler-owned fixed Clue definition creates a token whose typed activation pays mana, sacrifices through the canonical source-zone transaction, draws privately through the shared draw owner, and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_tapped_reanimation_and_aura_return_use_zone_owners",
+      "piece_ids": [
+        "capability.attachment.aura.simple_object",
+        "capability.zone.self_move.activated"
+      ],
+      "capability_ids": [
+        "attachment.aura.simple_object",
+        "zone.self_move.activated"
+      ],
+      "interaction_order": 2,
+      "assertion": "An attached Conviction retains live typed Aura legality until its source-self activation resolves, then canonical zone movement removes both reciprocal attachment references before placing the card in its owner's hand."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_target_revalidation_and_self_return_coexist_on_one_card",
+      "piece_ids": [
+        "capability.target.revalidate_resolution",
+        "capability.zone.self_move.activated"
+      ],
+      "capability_ids": [
+        "target.revalidate_resolution",
+        "zone.self_move.activated"
+      ],
+      "interaction_order": 2,
+      "assertion": "Tymaret's complete source-pinned CardProgram first rejects a departed planeswalker target, then exposes and resolves its separate graveyard self-return without sharing target or source-incarnation state between the abilities."
     }
   ]
 }

@@ -26,6 +26,10 @@ from ..intrinsic_basic_land_mana import (
     expected_intrinsic_basic_land_mana_reminder,
 )
 from ..rules.capabilities import CapabilityRegistry
+from ..self_zone_move import (
+    compile_self_zone_move,
+    self_zone_move_handler_descriptor,
+)
 from .activated_costs import activated_ability_cost
 from .dependency_gate import (
     DependencyGate,
@@ -316,6 +320,7 @@ def _activated_effect_dependency_gate(
             "lose_life",
             "lose_life_each_opponent",
             "scry",
+            "self_zone_move",
             "tap",
             "untap",
         }
@@ -645,6 +650,8 @@ def activated_oracle_node(
     if color_set_mana is not None:
         return color_set_mana
     effect_material = _activated_effect_material(ability)
+    self_zone_move = compile_self_zone_move(ability)
+    handlers: tuple[Mapping[str, Any], ...] = ()
     regeneration = self_regeneration_effect_template(effect_material)
     activated_damage = activated_source_damage_effect_template(
         effect_material
@@ -654,7 +661,14 @@ def activated_oracle_node(
             effect_material
         )
     )
-    if declaration_restriction is not None:
+    if self_zone_move is not None:
+        ability = self_zone_move.ability
+        template = "activated-self-zone-move-v1"
+        effects = (self_zone_move.effect(),)
+        target_schema = None
+        mechanics = ("self-zone-move",)
+        handlers = (self_zone_move_handler_descriptor(self_zone_move),)
+    elif declaration_restriction is not None:
         template, effects, target_schema, mechanics = (
             declaration_restriction.compiled()
         )
@@ -727,6 +741,7 @@ def activated_oracle_node(
         cost=activated_ability_cost(ability),
         effects=effects,
         target_schema=target_schema,
+        handlers=handlers,
         mechanics=mechanics,
         residual_ids=tuple(residual_ids),
         capability_dependencies=gate.capabilities,

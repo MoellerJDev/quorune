@@ -146,6 +146,16 @@ delegates commitment to the existing counter and entry-keyword owners. Partial
 cards, unsupported costs, kicked triggers, spell riders, dynamic quantities,
 and open entry effects fail closed without Oracle interpretation.
 
+`ability.activated.self-zone-move.v1` owns the corrected activation origin and
+closed movement descriptor for source-self hand returns and tapped
+reanimation. `generic.self-zone-move.v1` lowers it to an intent pinned to the
+stack source's physical and logical incarnation. Resolution revalidates the
+origin and current Aura form, then delegates destination replacement, owner-
+zone routing, tapped entry, attachment cleanup, normalized zone events,
+projection, and replay to the canonical zone-transition owner. Battlefield
+materialization uses the shared descriptor-driven complete-card admission
+query; no handler-family check or runtime Oracle-text comparison participates.
+
 `participation.untap-step.static.v1` lowers closed source, attached-object,
 global, and other-player static wording into immutable CR 502 participation
 values. The runtime query evaluates the complete typed `ObjectQuerySpec`

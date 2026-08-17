@@ -137,6 +137,7 @@ VALID_EFFECT_OPERATIONS = {
     "untap",
     "untap_all_creatures",
     "unearth",
+    "self_zone_move",
     "exchange_artifact_zones",
     "veil_of_summer",
     "pay_or_lose",

@@ -127,6 +127,7 @@
       "test_ordinary_crew",
       "test_ordinary_cycling",
       "test_resolution_rules",
+      "test_self_zone_move_rules",
       "test_spells_abilities_effects_general",
       "test_stack_rules",
       "test_static_abilities",

@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "eb2a288845fcac8f84f318d420ff23c785e0760d",
+  "baseline_commit": "c06315d84770fb896656e82ec380e04928cbb964",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -1672,9 +1672,9 @@
     "physical_lines": 7780
   },
   "exception_binding": {
-    "adr": "docs/adr/0074-typed-fixed-mana-unearth.md",
-    "allowance_fingerprint": "5e08f410080884912b6568ada54eb2eca4523f4f529e8459f0c125cf7862a4f9",
-    "exception_id": "ARCH-EXC-0038"
+    "adr": "docs/adr/0076-typed-self-zone-move-activations.md",
+    "allowance_fingerprint": "157a539c4605f53de56debd367a81095a616c7c023ada532d10ec771569d3d41",
+    "exception_id": "ARCH-EXC-0039"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1762,6 +1762,11 @@
       "symbol": "CodexCliArenaRunner.run"
     },
     {
+      "file": "quorune/compiler/activated_mana_nodes.py",
+      "logical_lines": 159,
+      "symbol": "activated_oracle_node"
+    },
+    {
       "file": "quorune/compiler/dependency_gate.py",
       "logical_lines": 152,
       "symbol": "keyword_dependency_gate"
@@ -1813,7 +1818,7 @@
     },
     {
       "file": "quorune/oracle_ir.py",
-      "logical_lines": 250,
+      "logical_lines": 227,
       "symbol": "_compile_face"
     },
     {
@@ -2023,6 +2028,7 @@
     "sacrifice_if_present",
     "scry",
     "search",
+    "self_zone_move",
     "shuffle_graveyard_bottom_random",
     "shuffle_into_library",
     "springheart_landfall",

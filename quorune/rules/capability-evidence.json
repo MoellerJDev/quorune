@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "6869efac7131cf73ff99680b2d7e5c392f4655d53dfb32302a4dd7f31d4098a6",
-  "declaration_source_fingerprint": "b1925d25fe6ee43b953745455ad4d81487f70dcac12f9c0eb5a1cfa3be4aaf71",
+  "registry_fingerprint": "8f3d5f8b311f64c4aecd935dddac9833f9d91eba06d2201a4e3b31b16045f2f9",
+  "declaration_source_fingerprint": "4b898fdf78f0d48f4bf24a95e0603920aff3ad2dc12beb4793f69d3fbba6646e",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -2211,6 +2211,28 @@
         "commander_review"
       ],
       "applicability_note": "Suspend a nonspell Aura entry before mutation and resume the exact semantic frame after its controller chooses."
+    },
+    {
+      "capability_id": "attachment.aura.simple_object",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_tapped_reanimation_and_aura_return_use_zone_owners",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Activate an attached Conviction, resolve its source-self return through the canonical zone owner, and prove reciprocal Aura attachment cleanup before owner-hand placement."
     },
     {
       "capability_id": "attachment.aura.simple_object",
@@ -34825,6 +34847,21 @@
     {
       "capability_id": "target.revalidate_resolution",
       "evidence_class": "interaction",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_target_revalidation_and_self_return_coexist_on_one_card",
+      "official_rule_ids": [
+        "115.1",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use Tymaret's current complete CardProgram to reject a departed planeswalker target, then independently activate its source-self graveyard return on the next ordinary priority window."
+    },
+    {
+      "capability_id": "target.revalidate_resolution",
+      "evidence_class": "interaction",
       "test_id": "tests.test_targeting_v070.ExactTargetingTests.test_modes_reb_and_pyroblast_use_actual_target_rules",
       "official_rule_ids": [
         "115.1",
@@ -39297,7 +39334,207 @@
         "commander_review"
       ],
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_tapped_reanimation_and_aura_return_use_zone_owners",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose source-pinned activation with tapped battlefield entry, Aura attachment cleanup, owner-zone routing, replacements, and normalized zone events through the canonical zone owner."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_target_revalidation_and_self_return_coexist_on_one_card",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Execute Tymaret's target-revalidated damage activation and its later source-self graveyard return from the same complete source-pinned CardProgram without cross-binding either ability."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_graveyard_to_hand_is_owner_scoped_private_and_replays",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Advertise one graveyard activation only to its owner while preserving public source identity and private authoritative object identity across four seats."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveCompilerTests.test_self_zone_move_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove typed self-zone-move production and independently block every dependency so no represented activation retains exact trust."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "negative",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveCompilerTests.test_unsupported_self_zone_move_shapes_remain_residual",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep untapped reanimation, changed source or graveyard ownership, and multi-object forms source-spanned and nonexecutable."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "negative",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_partial_reanimation_and_stale_sources_fail_closed",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Withhold battlefield materialization for a partial CardProgram and make resolution a no-op after the represented graveyard incarnation becomes stale."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "positive",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveCompilerTests.test_supported_self_zone_moves_compile_source_spanned_programs",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower all three exact source-self forms to typed zone, destination, tapped-state, source-form, admission-policy, and runtime-handler descriptors."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "positive",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_tapped_reanimation_and_aura_return_use_zone_owners",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pay, stack, revalidate, and resolve complete tapped reanimation and battlefield Aura return without consulting Oracle prose."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_graveyard_to_hand_is_owner_scoped_private_and_replays",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the activation owner-scoped and exclude authoritative physical object identity from every principal packet after the public card enters its owner's hand."
+    },
+    {
+      "capability_id": "zone.self_move.activated",
+      "evidence_class": "replay",
+      "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_graveyard_to_hand_is_owner_scoped_private_and_replays",
+      "official_rule_ids": [
+        "400.2",
+        "400.3",
+        "400.7",
+        "602.1",
+        "602.2",
+        "608.2c",
+        "701.23"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "c9583b7cd9e1b2a06d8e83ce6ade131646dadae3ea83f967f87f5513bab096ee"
+  "fingerprint": "c60a59adceb54678e37e6ae1e5d4d484e8cfd5886a788a4e5440bb0ec56599e9"
 }

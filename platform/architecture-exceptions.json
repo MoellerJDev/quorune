@@ -879,6 +879,33 @@
         "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
         "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0039",
+      "adr": "docs/adr/0076-typed-self-zone-move-activations.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "157a539c4605f53de56debd367a81095a616c7c023ada532d10ec771569d3d41",
+      "exact_allowance": "Only the schema-4 structural state-write identities, owner classifications, zero prohibited runtime Oracle-text and card-identity dispatch counts, engine methods, size ceilings, Oracle-ID literals, legacy helpers, module classifications, and the reviewed self_zone_move operation serialized after typed source-self activated zone movement.",
+      "rationale": "The measured broad family adds one closed source-self zone-move operation and a typed rules-layer coordinator. CommanderEngine, direct and unowned GameState writes, oversized symbols, Oracle-ID literals, runtime Oracle prose, and card-identity dispatch remain flat. Existing activation, mana, zone transition, replacement, attachment, trigger, reset, projection, rollback, privacy, and replay owners retain authority.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact residual identities and counts in the rebound schema-4 baseline plus self_zone_move, generic.self-zone-move.v1, ability.activated.self-zone-move.v1, corrected graveyard active zones, and descriptor-driven complete-card admission described by ADR 0076; new runtime Oracle interpretation, card-identity dispatch, unowned mutation, engine-local writes, oversized symbols, arbitrary callbacks, family-specific ability-presence checks, dynamic characteristic counts, untapped or open zone movement, or additional unreviewed operations remain forbidden.",
+      "removal_condition": "Remove the exception when the registered universal-operation inventory no longer requires baseline review; retain the self-zone-move owner only while exact grammar, corrected active zones, conditional complete-card admission, source incarnation, canonical owner routing, replacement ordering, attachment cleanup, tapped entry, rollback, privacy, mutation, and replay evidence remain enforced.",
+      "target_milestone": "capability-closed broad compiler harvest through typed universal rules owners",
+      "replay_implications": "The source-spanned descriptor records origin, destination, tapped state, source form, and complete-card policy; Game Record v3 preserves the ordinary activation, source incarnation, replacement selections, canonical zone journal, and final state without consulting Oracle prose.",
+      "privacy_implications": "Activation authority is owner scoped, public source identity follows ordinary known-information rules, and authoritative physical and logical identities remain outside every seat projection. No hidden candidate or opposing private choice is added.",
+      "security_implications": "Only a capability-closed source-spanned CardProgram can emit the strict operation; malformed descriptors, partial battlefield materialization, stale or phased incarnations, noncard sources, non-Aura current forms, unsupported costs, tampered replacement selections, and untrusted dependencies fail before mutation.",
+      "tests": [
+        "tests.test_self_zone_move_rules.SelfZoneMoveModelTests.test_descriptor_and_effect_handler_are_closed_and_typed",
+        "tests.test_self_zone_move_rules.SelfZoneMoveCompilerTests.test_supported_self_zone_moves_compile_source_spanned_programs",
+        "tests.test_self_zone_move_rules.SelfZoneMoveCompilerTests.test_unsupported_self_zone_move_shapes_remain_residual",
+        "tests.test_self_zone_move_rules.SelfZoneMoveCompilerTests.test_self_zone_move_dependency_and_compiler_mutations_fail_closed",
+        "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_graveyard_to_hand_is_owner_scoped_private_and_replays",
+        "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_tapped_reanimation_and_aura_return_use_zone_owners",
+        "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_target_revalidation_and_self_return_coexist_on_one_card",
+        "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_partial_reanimation_and_stale_sources_fail_closed",
+        "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
+      ]
     }
   ]
 }
