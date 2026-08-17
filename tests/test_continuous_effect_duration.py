@@ -5,14 +5,17 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from common import keep_all, load_assets, make_session
+from quorune.carddb import CardRecord
 from quorune.attachments import attach_objects
 from quorune.compiler.continuous_templates import (
     controlled_creature_fixed_modifier,
     controlled_creature_until_end_of_turn_effect,
     fixed_power_toughness_anthem_handler,
 )
+from quorune.compiler.dependency_gate import DependencyGate
 from quorune.characteristic_evaluation import (
     evaluate_card_characteristics,
     type_parts,
@@ -48,6 +51,30 @@ from quorune.semantic_runtime.intents import (
     SetCardDesignationIntent,
 )
 from quorune.semantics import SemanticProgram
+
+
+def activated_characteristic_card(text: str) -> CardRecord:
+    return CardRecord(
+        oracle_id="00000000-0000-4000-8000-000000611200",
+        name="Activated Characteristic Fixture",
+        mana_cost="{2}",
+        mana_value=2.0,
+        type_line="Artifact Creature — Test",
+        oracle_text=text,
+        power="2",
+        toughness="2",
+        loyalty=None,
+        defense=None,
+        colors=(),
+        color_identity=(),
+        keywords=(),
+        produced_mana=(),
+        layout="normal",
+        released_at="2026-01-01",
+        legalities={"commander": "legal"},
+        faces=(),
+        raw={},
+    )
 
 
 def locked_effect(
@@ -441,6 +468,113 @@ class ContinuousEffectModelTests(unittest.TestCase):
             "Other creatures you control get +1/+1 until end of turn."
         )
         self.assertEqual("$source", other[1][0]["predicate"]["exclude_ref"])
+
+    def test_activated_fixed_characteristic_effects_are_capability_closed(self):
+        registry = load_default_capability_registry()
+        cases = (
+            (
+                "{B}: This creature gets +1/+1 until end of turn.",
+                "modify-self-creature-stats-eot-v1",
+                "modify_stats_until_end_of_turn",
+            ),
+            (
+                "{5}: Creatures you control get +1/+1 until end of turn.",
+                "modify-controlled-creatures-fixed-stats-eot-v1",
+                "modify_all_matching_permanents_until_end_of_turn",
+            ),
+            (
+                "{4}: Other creatures you control get +1/+0 until end of turn.",
+                "modify-controlled-creatures-fixed-stats-eot-v1",
+                "modify_all_matching_permanents_until_end_of_turn",
+            ),
+        )
+        for text, template_id, operation in cases:
+            with self.subTest(text=text):
+                ir = compile_oracle_card(
+                    activated_characteristic_card(text),
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                self.assertEqual("exact", ir.status)
+                node = ir.faces[0].nodes[0]
+                self.assertEqual(template_id, node.template_id)
+                self.assertEqual(operation, node.effects[0]["op"])
+                self.assertIn(
+                    "continuous.resolution.fixed_characteristics_until_end_of_turn",
+                    node.capability_dependencies,
+                )
+
+        for keyword in (
+            "deathtouch",
+            "double strike",
+            "first strike",
+            "flying",
+            "haste",
+            "hexproof",
+            "indestructible",
+            "lifelink",
+            "menace",
+            "reach",
+            "trample",
+            "vigilance",
+        ):
+            with self.subTest(keyword=keyword):
+                ir = compile_oracle_card(
+                    activated_characteristic_card(
+                        f"{{1}}: This creature gains {keyword} until end of turn."
+                    ),
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                self.assertEqual("exact", ir.status)
+                node = ir.faces[0].nodes[0]
+                self.assertEqual(
+                    "grant_keyword_until_end_of_turn",
+                    node.effects[0]["op"],
+                )
+                self.assertIn(
+                    "continuous.resolution.fixed_characteristics_until_end_of_turn",
+                    node.capability_dependencies,
+                )
+
+    def test_dynamic_activated_characteristic_effects_remain_residual(self):
+        registry = load_default_capability_registry()
+        for text in (
+            "{1}: This creature gets +X/+X until end of turn.",
+            (
+                "{1}: Creatures you control get +X/+X until end of turn, where "
+                "X is the number of creatures you control."
+            ),
+            "{1}: This creature gets +1/+1.",
+            "{1}: This creature gains protection from red until end of turn.",
+        ):
+            with self.subTest(text=text):
+                ir = compile_oracle_card(
+                    activated_characteristic_card(text),
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                self.assertNotEqual("exact", ir.status)
+                self.assertTrue(ir.material_residuals)
+
+    def test_activated_characteristic_dependency_gate_mutant_is_killed(self):
+        def assert_exact() -> None:
+            ir = compile_oracle_card(
+                activated_characteristic_card(
+                    "{B}: This creature gets +1/+1 until end of turn."
+                ),
+                capability_registry=load_default_capability_registry(),
+                capability_profile="commander_review",
+            )
+            self.assertEqual("exact", ir.status)
+
+        assert_exact()
+        with patch(
+            "quorune.compiler.activated_mana_nodes.dependency_gate",
+            return_value=DependencyGate(blockers=("capability:mutant",)),
+        ):
+            with self.assertRaises(AssertionError):
+                assert_exact()
 
     def test_semantic_program_cannot_spoof_authoritative_resolution_source(self):
         with self.assertRaisesRegex(
