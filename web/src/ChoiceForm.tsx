@@ -4,6 +4,7 @@ import {
   choicesWithDefaults,
   copyTargetGroups,
   list,
+  orderedPartitionNames,
   record,
   targetGroups,
   type ChoiceField,
@@ -115,9 +116,10 @@ function OrderedPartition({
   labelFor: (value: string) => string;
 }) {
   const partition = record(value);
-  const configured = Object.entries(record(field.partitions));
-  const groups = configured.length === 2
-    ? configured.map(([name, descriptor]) => [name, record(descriptor)] as const)
+  const configured = record(field.partitions);
+  const names = orderedPartitionNames(field);
+  const groups = Object.keys(configured).length === 2
+    ? names.map((name) => [name, record(configured[name])] as const)
     : [
         ["top", { label: "Top of library", order: "top_to_bottom" }],
         ["bottom", { label: "Bottom of library", order: "bottom_to_top" }],

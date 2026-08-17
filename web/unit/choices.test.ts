@@ -208,7 +208,7 @@ test("ordered library partitions require every legal card exactly once", () => {
   assert.match(validateChoices(scry, choices).join(" "), /every card|same card/);
 });
 
-test("ordered library partitions honor server-issued Surveil destinations", () => {
+test("ordered library partitions honor server-issued Surveil destinations and ordering", () => {
   const surveil = form([
     {
       name: "cards",
@@ -220,11 +220,11 @@ test("ordered library partitions honor server-issued Surveil destinations", () =
         { value: "A02", label: "Second" },
       ],
       partitions: {
-        top: { label: "Top of library", order: "top_to_bottom" },
         graveyard: {
           label: "Graveyard",
           order: "graveyard_top_to_bottom",
         },
+        top: { label: "Top of library", order: "top_to_bottom" },
       },
     },
   ]);

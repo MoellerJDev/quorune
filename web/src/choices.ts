@@ -15,9 +15,16 @@ function stringValue(value: JsonValue | undefined): string {
   return value === undefined || value === null ? "" : String(value);
 }
 
-function orderedPartitionNames(field: ChoiceField): string[] {
-  const names = Object.keys(record(field.partitions));
-  return names.length === 2 ? names : ["top", "bottom"];
+export function orderedPartitionNames(field: ChoiceField): string[] {
+  const groups = Object.entries(record(field.partitions));
+  if (groups.length !== 2) return ["top", "bottom"];
+  return groups
+    .sort(([, left], [, right]) => {
+      const leftIsLibraryTop = record(left).order === "top_to_bottom";
+      const rightIsLibraryTop = record(right).order === "top_to_bottom";
+      return Number(rightIsLibraryTop) - Number(leftIsLibraryTop);
+    })
+    .map(([name]) => name);
 }
 
 function initialField(field: ChoiceField): JsonValue | undefined {

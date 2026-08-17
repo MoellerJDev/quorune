@@ -10985,7 +10985,7 @@
           "visibility": "private"
         }
       ],
-      "logical_lines": 165772,
+      "logical_lines": 165781,
       "methods": {
         "dunder": 467,
         "private": 802,
@@ -11508,8 +11508,8 @@
           "file": "web/src/ChoiceForm.tsx",
           "functions_and_methods": null,
           "language": "web",
-          "logical_lines": 659,
-          "physical_lines": 680
+          "logical_lines": 661,
+          "physical_lines": 682
         },
         {
           "file": "quorune/compiler/direct_target.py",
@@ -12072,6 +12072,13 @@
           "physical_lines": 377
         },
         {
+          "file": "web/src/choices.ts",
+          "functions_and_methods": null,
+          "language": "web",
+          "logical_lines": 340,
+          "physical_lines": 357
+        },
+        {
           "file": "quorune/relative_power_target.py",
           "functions_and_methods": 16,
           "language": "python",
@@ -12084,13 +12091,6 @@
           "language": "python",
           "logical_lines": 333,
           "physical_lines": 357
-        },
-        {
-          "file": "web/src/choices.ts",
-          "functions_and_methods": null,
-          "language": "web",
-          "logical_lines": 333,
-          "physical_lines": 350
         },
         {
           "file": "quorune/record_trust.py",
@@ -14905,7 +14905,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 181816,
+      "physical_lines": 181825,
       "python_file_count": 497,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -26065,7 +26065,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "f5ba2d67387ccbc1e5f97320f6b89bdfd66ad838e74a0835520fdf735e1f1d46",
+      "fingerprint": "477ac3eda2ff83195bd8e6f9e2547955db857285420d1aedcea6d91afe57a82d",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
