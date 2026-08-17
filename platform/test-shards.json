@@ -155,6 +155,7 @@
       "test_semantic_searches",
       "test_shroud_targeting",
       "test_stack_counter_rules",
+      "test_surveil_rules",
       "test_targeting_v070",
       "test_trigger_targeting",
       "test_typed_ability_fragments"

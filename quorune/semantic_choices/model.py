@@ -220,11 +220,26 @@ class OrderingChoice:
 
 @dataclass(frozen=True, slots=True)
 class LibraryPartitionChoice:
-    """Order one private set into complete library-top and -bottom groups."""
+    """Order one private set into two complete destination groups."""
 
     field_name: str
     legal_refs: tuple[str, ...]
     visibility: Visibility = "actor_private"
+    partitions: FrozenMap = field(
+        default_factory=lambda: FrozenMap(
+            {
+                "top": {
+                    _ORDER_SCHEMA_KEY: "top_to_bottom",
+                    "label": "Top of library",
+                },
+                "bottom": {
+                    _ORDER_SCHEMA_KEY: "bottom_to_top",
+                    "label": "Bottom of library",
+                },
+            }
+        )
+    )
+    legacy_destination: str | None = "library_bottom"
 
     def __post_init__(self) -> None:
         _string(self.field_name, field_name="library partition field_name")
@@ -240,22 +255,38 @@ class LibraryPartitionChoice:
             )
         if self.visibility not in {"public", "actor_private"}:
             raise SemanticChoiceError("Unknown library-partition visibility")
+        if not isinstance(self.partitions, FrozenMap):
+            object.__setattr__(self, "partitions", FrozenMap(self.partitions))
+        if len(self.partitions) != 2:
+            raise SemanticChoiceError(
+                "A library partition choice requires exactly two groups"
+            )
+        for name, descriptor in self.partitions.items():
+            _string(name, field_name="library partition group")
+            if not isinstance(descriptor, Mapping) or not isinstance(
+                descriptor.get(_ORDER_SCHEMA_KEY), str
+            ):
+                raise SemanticChoiceError(
+                    "Library partition groups require an ordering"
+                )
+        if self.legacy_destination is not None:
+            _string(
+                self.legacy_destination,
+                field_name="library partition legacy destination",
+            )
 
     def choice_schema(self) -> dict[str, Any]:
-        return {
+        result = {
             "field": self.field_name,
             "shape": "ordered_partition",
             "legal_refs": list(self.legal_refs),
-            # Preserve the legacy destination hint while the typed partition
-            # schema becomes the primary client contract.
-            "destination": "library_bottom",
-            "partitions": {
-                "top": {_ORDER_SCHEMA_KEY: "top_to_bottom"},
-                "bottom": {_ORDER_SCHEMA_KEY: "bottom_to_top"},
-            },
+            "partitions": thaw_value(self.partitions),
             "complete": True,
             "distinct": True,
         }
+        if self.legacy_destination is not None:
+            result["destination"] = self.legacy_destination
+        return result
 
 
 @dataclass(frozen=True, slots=True)

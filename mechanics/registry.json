@@ -1,5 +1,5 @@
 {
-  "contract_count": 113,
+  "contract_count": 114,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -605,6 +605,12 @@
       "mechanic_id": "sunburst",
       "path": "mechanics/contracts/sunburst.json",
       "sha256": "75d93b044cdb242afff37e5b3f1d8dbd0bc35ea359d6f1ab5cc088916c63f3bc",
+      "version": 1
+    },
+    {
+      "mechanic_id": "surveil",
+      "path": "mechanics/contracts/surveil.json",
+      "sha256": "223a29c711ff69e9f627adcfac20402ae96e459274b70637a678e65a4aa8a760",
       "version": 1
     },
     {
@@ -6422,19 +6428,40 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/surveil.json",
+      "contract_sha256": "223a29c711ff69e9f627adcfac20402ae96e459274b70637a678e65a4aa8a760",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "701"
       ],
-      "implementation_component": null,
+      "implementation_component": "SurveilChoiceHandler, LibraryPartitionChoice, OrderedLibraryPartition, SurveilArrangement, SurveilLibraryIntent, commit_surveil_arrangement, and the canonical zone-transition owner",
+      "implementation_version": "typed-fixed-controller-surveil-v1",
       "kind": "keyword_action",
+      "known_blockers": [
+        "Surveil 0 and dynamic, variable, optional, cost, target-player, each-player, repeated, copied, or granted forms remain residual",
+        "effects that add looked-at cards under CR 701.25b need a typed additive inspection boundary",
+        "linked cards-put-into-graveyard or cards-left-on-top consumers need typed actual-result bindings",
+        "Surveil-event consumer grammar beyond the emitted normalized event remains residual",
+        "graveyard-order-sensitive interactions outside the represented simultaneous ordering remain excluded"
+      ],
       "mechanic_id": "surveil",
       "official_name": "Surveil",
       "rule_references": [
         "701.25"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_surveil_compiles_across_spell_trigger_activation_and_sequence",
+        "test_dynamic_targeted_linked_and_event_consumer_surveil_remain_residual",
+        "test_surveil_shape_dependency_and_compiler_mutants_fail_closed",
+        "test_surveil_orders_top_and_graveyard_and_replays_exactly",
+        "test_surveil_short_and_empty_library_emit_exact_events",
+        "test_stale_identity_and_malformed_surveil_fail_before_mutation",
+        "test_surveil_destination_replacement_resumes_before_public_commit",
+        "test_surveil_then_draw_sequence_resumes_in_printed_order",
+        "test_residual_surveil_pairs_remain_fail_closed_at_cardprogram_boundary",
+        "test_surveil_runtime_validation_mutant_is_killed"
+      ],
       "trust_level": "untrusted"
     },
     {

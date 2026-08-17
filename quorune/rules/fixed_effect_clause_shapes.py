@@ -41,6 +41,7 @@ from .node_capability_shapes import (
 from .token_creation_capability_shapes import (
     fixed_token_creation_node_capabilities,
 )
+from .surveil_capability_shapes import fixed_surveil_node_capabilities
 
 
 FIXED_EFFECT_CLAUSE_SEQUENCE_MECHANIC = "fixed-effect-clause-sequence"
@@ -63,6 +64,7 @@ _COMPONENT_RESOLVERS = (
     fixed_draw_node_capabilities,
     fixed_life_node_capabilities,
     fixed_scry_node_capabilities,
+    fixed_surveil_node_capabilities,
     single_explore_node_capabilities,
     single_proliferate_node_capabilities,
     self_regeneration_node_capabilities,

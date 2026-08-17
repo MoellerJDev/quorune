@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 113,
+  "registry_version": 114,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -813,6 +813,33 @@
       "dependency_fail_closed_rationale": "The bounded Scry owner consumes one exact current private library and has no optional capability dependency.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_scry_capability_gate_mutant_is_killed removes the closed node-shape mapping and the exact CardProgram closure assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "library.surveil.fixed_controller",
+      "version": 1,
+      "official_rules": ["404.3", "701.25", "701.25a", "701.25b", "701.25c", "701.25d"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one mandatory positive fixed-count Surveil instruction for its controller through a private identity-pinned top/graveyard partition, canonical destination replacement and zone transition, exact top reordering, and one normalized Surveil event.",
+        "inputs": ["one capability-shaped fixed controller Surveil effect", "positive fixed count", "current private library top identities", "complete top-to-bottom and graveyard-top-to-bottom response orderings", "current destination replacements", "stable semantic-choice and replacement continuations"],
+        "outputs": ["one private looked-at set", "one exact retained top order", "one simultaneous replacement-aware selected-card zone batch", "actual public destinations", "one normalized Surveil event even when no cards can be looked at", "privacy-safe journal and exact replay"],
+        "exclusions": ["Surveil 0", "dynamic, variable, multiplied, or state-derived counts", "target-player, each-player, repeated, copied, or granted Surveil", "effects that add looked-at cards while Surveilling under CR 701.25b", "linked cards-put-into-graveyard or cards-left-on-top consumers", "Surveil-trigger compiler grammar", "graveyard-order-sensitive interactions outside the represented simultaneous ordering", "optional or cost Surveil"]
+      },
+      "dependencies": ["trigger.event.normalized_zone_change", "trigger.placement.apnap", "zone.change.destination_replacement"],
+      "implementation_components": ["quorune.compiler.surveil_templates.fixed_surveil_effect_template", "quorune.rules.surveil_capability_shapes.fixed_surveil_node_capabilities", "quorune.semantic_choices.surveil.SurveilChoiceHandler", "quorune.semantic_choices.model.LibraryPartitionChoice", "quorune.rules.library_partition.OrderedLibraryPartition", "quorune.rules.library_partition.commit_ordered_library_partition", "quorune.rules.library_surveillance.SurveilArrangement", "quorune.rules.library_surveillance.commit_surveil_arrangement", "quorune.semantic_runtime.intents.SurveilLibraryIntent", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
+      "positive_tests": ["test_fixed_surveil_compiles_across_spell_trigger_activation_and_sequence", "test_surveil_short_and_empty_library_emit_exact_events"],
+      "negative_tests": ["test_dynamic_targeted_linked_and_event_consumer_surveil_remain_residual", "test_residual_surveil_pairs_remain_fail_closed_at_cardprogram_boundary", "test_stale_identity_and_malformed_surveil_fail_before_mutation"],
+      "interaction_tests": ["test_surveil_destination_replacement_resumes_before_public_commit", "test_surveil_short_and_empty_library_emit_exact_events", "test_surveil_then_draw_sequence_resumes_in_printed_order"],
+      "multiplayer_tests": ["test_surveil_orders_top_and_graveyard_and_replays_exactly"],
+      "privacy_tests": ["test_surveil_orders_top_and_graveyard_and_replays_exactly", "test_surveil_destination_replacement_resumes_before_public_commit"],
+      "replay_tests": ["test_surveil_orders_top_and_graveyard_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking destination replacement, normalized zone events, or APNAP trigger placement prevents fixed Surveil nodes from receiving trusted closure.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler mutation removes fixed Surveil lowering and returns every witness to precise material residuals; the runtime mutation bypasses identity-pinned top validation and is rejected by the unchanged-state regression.",
       "blockers": [],
       "status": "trusted"
     },

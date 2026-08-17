@@ -14,6 +14,7 @@ from ..entry_counter_model import EffectEntryCounter
 from ..creature_subtypes import canonical_creature_subtype
 from ..replacement.immutable import FrozenMap, freeze_value
 from ..rules.library_scry import ScryArrangement
+from ..rules.library_surveillance import SurveilArrangement
 from ..zone_object_keyword_model import (
     ZoneObjectKeywordGrantError,
     normalized_zone_object_keyword,
@@ -644,6 +645,39 @@ class ScryLibraryIntent:
     def __post_init__(self) -> None:
         if not isinstance(self.arrangement, ScryArrangement):
             raise TypeError("Scry intents require an immutable arrangement")
+
+
+@dataclass(frozen=True, slots=True)
+class SurveilLibraryIntent:
+    actor: str
+    player: str
+    arrangement: SurveilArrangement
+    requested_count: int
+    reason: str
+    replacement_selections: tuple[str | FrozenMap, ...] = ()
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.player, self.reason)
+        ):
+            raise ValueError(
+                "Surveil intents require an actor, player, and reason"
+            )
+        if not isinstance(self.arrangement, SurveilArrangement):
+            raise TypeError("Surveil intents require an immutable arrangement")
+        if type(self.requested_count) is not int or self.requested_count <= 0:
+            raise ValueError(
+                "Surveil intents require a positive fixed count"
+            )
+        object.__setattr__(
+            self,
+            "replacement_selections",
+            _freeze_replacement_selections(
+                tuple(self.replacement_selections),
+                family="Surveil",
+            ),
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -1318,6 +1352,7 @@ SemanticIntent: TypeAlias = (
     | RevealLibraryCardsIntent
     | MoveLibraryCardsToBottomIntent
     | ScryLibraryIntent
+    | SurveilLibraryIntent
     | ReorderLibraryTopIntent
     | PayManaCostIntent
     | PlaceCountersIntent

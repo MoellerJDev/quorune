@@ -16,6 +16,18 @@ player and the analyst record, and issue a strict schema. The response is
 revalidated against the exact looked-at identities before any library order is
 changed.
 
+## Shared ordered partition
+
+`LibraryPartitionChoice` is the one private complete-partition schema for
+looked-at library cards. The server names the two destinations and their order
+semantics; the browser renders those issued destinations without deriving a
+card-specific choice. Scry supplies `top` and `bottom`, while Surveil supplies
+`top` and `graveyard`.
+
+`OrderedLibraryPartition` validates that every looked-at reference occurs
+exactly once across the two groups. Operation-specific arrangements retain
+their own rules and commit owners after this shared schema boundary.
+
 ## Fixed Scry
 
 `library.scry.fixed_controller` owns one positive fixed-count Scry instruction
@@ -37,11 +49,28 @@ replay. New clients should use the ordered partition. Runtime code does not
 parse Oracle text, and ordinary top-card reordering remains a separate typed
 operation rather than a second Scry implementation.
 
+## Fixed Surveil
+
+`library.surveil.fixed_controller` owns one mandatory positive fixed-count
+Surveil instruction for its controller. The private continuation pins every
+looked-at physical and logical object identity. `SurveilArrangement` requires a
+complete `top` and `graveyard` partition, including the order of both groups.
+
+`commit_surveil_arrangement` revalidates the exact current library top, commits
+selected cards through the canonical simultaneous destination-replacement and
+zone-transition owner, then orders the retained cards on top. The public result
+names only cards whose actual destination is public; retained identities and
+library order stay private. The owner emits `player.surveilled` after the whole
+process, including when a positive instruction finds an empty library, and
+replacement choices resume through the ordinary semantic-intent continuation.
+
 ## Deliberate boundary
 
 The current family excludes simultaneous instructions for multiple players,
 dynamic counts, effects that add cards while Scrying, Scry-trigger compilation,
-Surveil, fateseal, and non-Scry library ordering. In particular, CR 701.22c
-requires a future APNAP decision coordinator and simultaneous commit; a normal
-four-player game in which one player Scrying has opponents is not that case.
-
+fateseal, and other non-Scry library ordering. Fixed Surveil separately excludes
+zero, dynamic, optional, cost, targeted, repeated, copied, and granted forms;
+additional looked-at cards; linked result consumers; and Surveil-event consumer
+grammar. In particular, CR 701.22c requires a future APNAP decision coordinator
+and simultaneous commit; a normal four-player game in which one player Scrying
+has opponents is not that case.

@@ -906,6 +906,34 @@
         "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
         "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0040",
+      "adr": "docs/adr/0077-typed-fixed-surveil-resolution.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "f1e4599c42d3e2de5db815b618d1747acca97fe118eb4b4db7bc5b903b8ca85e",
+      "exact_allowance": "Only the schema-4 structural state-write identities, owner classifications, zero prohibited runtime Oracle-text and card-identity dispatch counts, engine methods, size ceilings, Oracle-ID literals, legacy helpers, module classifications, and the reviewed surveil operation serialized after typed fixed-count controller Surveil and the shared ordered-library-partition extraction.",
+      "rationale": "The measured broad family adds one closed fixed-count controller Surveil operation, a private identity-pinned choice handler, and a typed replacement-continuation codec. CommanderEngine does not grow; direct and unowned GameState writes, oversized symbols, Oracle-ID literals, runtime Oracle prose, and card-identity dispatch do not grow. Existing semantic choice, zone transition, destination replacement, trigger, draw, projection, rollback, and replay owners retain authority, while the shared partition owner removes duplicate Scry and Surveil list mutation.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact residual identities and counts in the rebound schema-4 baseline plus surveil, choice.library.surveil.v1, library.surveil.fixed_controller v1, SurveilLibraryIntent, the generalized server-issued ordered_partition destinations, and player.surveilled described by ADR 0077; new runtime Oracle interpretation, card-identity dispatch, unowned mutation, engine-local writes, oversized symbols, arbitrary callbacks, family-specific ability-presence checks, dynamic characteristic counts, target-player or group Surveil, additional looked-at cards, linked results, unsupported event consumers, or additional unreviewed operations remain forbidden.",
+      "removal_condition": "Remove the exception when the registered universal-operation inventory no longer requires baseline review; retain the Surveil owner only while exact fixed grammar, controller scope, private identity pinning, simultaneous destination replacement, shared ordered partition, normalized post-process event, rollback, privacy, mutation, and replay evidence remain enforced.",
+      "target_milestone": "capability-closed broad compiler harvest through typed universal rules owners",
+      "replay_implications": "The source-spanned effect records a fixed count; Game Record v3 preserves the actor-private partition, physical and logical continuation identity, replacement selections, actual public destinations, retained top order, normalized Surveil event, and following sequence effects without consulting Oracle prose.",
+      "privacy_implications": "Only the resolving controller receives looked-at references and the partition action. Other principals receive neither retained identities nor authoritative object IDs; cards are named publicly only after an actual public destination, and replacement-order authority remains affected-seat scoped.",
+      "security_implications": "Only a capability-closed source-spanned CardProgram can emit the strict controller-only operation; malformed counts or fields, actor/controller mismatch, incomplete partitions, stale physical or logical identities, changed library tops, tampered replacement continuations, and untrusted sibling grammar fail before mutation.",
+      "tests": [
+        "tests.test_surveil_rules.FixedSurveilCompilerTests.test_fixed_surveil_compiles_across_spell_trigger_activation_and_sequence",
+        "tests.test_surveil_rules.FixedSurveilCompilerTests.test_dynamic_targeted_linked_and_event_consumer_surveil_remain_residual",
+        "tests.test_surveil_rules.FixedSurveilCompilerTests.test_surveil_shape_dependency_and_compiler_mutants_fail_closed",
+        "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_orders_top_and_graveyard_and_replays_exactly",
+        "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_destination_replacement_resumes_before_public_commit",
+        "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_then_draw_sequence_resumes_in_printed_order",
+        "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_stale_identity_and_malformed_surveil_fail_before_mutation",
+        "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_runtime_validation_mutant_is_killed",
+        "tests.test_scry_rules.ScryRuntimeTests.test_scry_orders_top_and_bottom_and_replays_exactly",
+        "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
+      ]
     }
   ]
 }

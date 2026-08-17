@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "c06315d84770fb896656e82ec380e04928cbb964",
+  "baseline_commit": "0b202a6ff83da5e76b7296c406cc09bcdd4ec241",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -10,7 +10,7 @@
   "direct_game_state_write_classification_counts": {
     "canonical_mutation_owner_write": 16,
     "compatibility_adapter_write": 11,
-    "grandfathered_engine_debt": 55,
+    "grandfathered_engine_debt": 54,
     "orchestration_root_replacement": 1
   },
   "direct_game_state_write_identities": [
@@ -157,12 +157,6 @@
       "kind": "assignment",
       "state_path": "combat",
       "symbol": "_finish_combat_phase"
-    },
-    {
-      "file": "quorune/engine.py",
-      "kind": "mutating_call:remove",
-      "state_path": "stack",
-      "symbol": "_finish_siege_defeated_resolution"
     },
     {
       "file": "quorune/engine.py",
@@ -478,7 +472,7 @@
     }
   ],
   "direct_game_state_writes_by_file": {
-    "quorune/engine.py": 56,
+    "quorune/engine.py": 55,
     "quorune/permissions.py": 8,
     "quorune/record.py": 11,
     "quorune/selection/storm.py": 3,
@@ -486,7 +480,7 @@
     "quorune/zone_transitions.py": 3
   },
   "engine": {
-    "logical_lines": 7257,
+    "logical_lines": 7080,
     "methods": [
       {
         "kind": "method",
@@ -651,11 +645,6 @@
       {
         "kind": "method",
         "name": "_begin_resolve_item",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_begin_siege_defeated_resolution",
         "visibility": "private"
       },
       {
@@ -981,11 +970,6 @@
       {
         "kind": "method",
         "name": "_finish_combat_phase",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_finish_siege_defeated_resolution",
         "visibility": "private"
       },
       {
@@ -1669,12 +1653,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 7780
+    "physical_lines": 7595
   },
   "exception_binding": {
-    "adr": "docs/adr/0076-typed-self-zone-move-activations.md",
-    "allowance_fingerprint": "157a539c4605f53de56debd367a81095a616c7c023ada532d10ec771569d3d41",
-    "exception_id": "ARCH-EXC-0039"
+    "adr": "docs/adr/0077-typed-fixed-surveil-resolution.md",
+    "allowance_fingerprint": "f1e4599c42d3e2de5db815b618d1747acca97fe118eb4b4db7bc5b903b8ca85e",
+    "exception_id": "ARCH-EXC-0040"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1767,11 +1751,6 @@
       "symbol": "activated_oracle_node"
     },
     {
-      "file": "quorune/compiler/dependency_gate.py",
-      "logical_lines": 152,
-      "symbol": "keyword_dependency_gate"
-    },
-    {
       "file": "quorune/declaration_costs.py",
       "logical_lines": 249,
       "symbol": "parse_declaration_cost_line"
@@ -1780,11 +1759,6 @@
       "file": "quorune/declaration_restrictions.py",
       "logical_lines": 881,
       "symbol": "parse_declaration_restriction_line"
-    },
-    {
-      "file": "quorune/engine.py",
-      "logical_lines": 151,
-      "symbol": "CommanderEngine._begin_siege_defeated_resolution"
     },
     {
       "file": "quorune/engine.py",
@@ -1798,7 +1772,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 241,
+      "logical_lines": 240,
       "symbol": "CommanderEngine._prepare_stack_resolution"
     },
     {
@@ -1820,11 +1794,6 @@
       "file": "quorune/oracle_ir.py",
       "logical_lines": 227,
       "symbol": "_compile_face"
-    },
-    {
-      "file": "quorune/oracle_ir.py",
-      "logical_lines": 157,
-      "symbol": "_effect_template"
     },
     {
       "file": "quorune/preflight.py",
@@ -1880,7 +1849,7 @@
   "oversized_modules": [
     {
       "file": "quorune/engine.py",
-      "logical_lines": 7257
+      "logical_lines": 7080
     },
     {
       "file": "quorune/record.py",
@@ -2033,6 +2002,7 @@
     "shuffle_into_library",
     "springheart_landfall",
     "station",
+    "surveil",
     "sylvan_library_settle",
     "tap",
     "transmute_artifact",

@@ -4,6 +4,7 @@ import {
   choicesWithDefaults,
   copyTargetGroups,
   list,
+  orderedPartitionNames,
   record,
   targetGroups,
   type ChoiceField,
@@ -115,8 +116,14 @@ function OrderedPartition({
   labelFor: (value: string) => string;
 }) {
   const partition = record(value);
-  const top = list(partition.top).map(String);
-  const bottom = list(partition.bottom).map(String);
+  const configured = record(field.partitions);
+  const names = orderedPartitionNames(field);
+  const groups = Object.keys(configured).length === 2
+    ? names.map((name) => [name, record(configured[name])] as const)
+    : [
+        ["top", { label: "Top of library", order: "top_to_bottom" }],
+        ["bottom", { label: "Bottom of library", order: "bottom_to_top" }],
+      ] as const;
   const options = list(field.options).map(record);
   const optionLabels = new Map(
     options.map((option) => [
@@ -129,47 +136,66 @@ function OrderedPartition({
     return optionLabels.get(ref) || labelFor(ref);
   }
 
-  function moveBetween(ref: string, destination: "top" | "bottom") {
-    const nextTop = top.filter((candidate) => candidate !== ref);
-    const nextBottom = bottom.filter((candidate) => candidate !== ref);
-    if (destination === "top") nextTop.push(ref);
-    else nextBottom.push(ref);
-    onValue({ top: nextTop, bottom: nextBottom });
+  function groupLabel(name: string, descriptor: ChoiceField): string {
+    return text(descriptor.label) || name.replaceAll("_", " ");
   }
 
-  function reorder(group: "top" | "bottom", index: number, offset: number) {
-    const values = group === "top" ? [...top] : [...bottom];
+  function groupRefs(name: string): string[] {
+    return list(partition[name]).map(String);
+  }
+
+  function moveBetween(ref: string, destination: string) {
+    const next: Record<string, JsonValue> = {};
+    for (const [name] of groups) {
+      next[name] = groupRefs(name).filter((candidate) => candidate !== ref);
+    }
+    next[destination] = [...list(next[destination]).map(String), ref];
+    onValue(next);
+  }
+
+  function reorder(group: string, index: number, offset: number) {
+    const values = [...groupRefs(group)];
     const target = index + offset;
     if (target < 0 || target >= values.length) return;
     [values[index], values[target]] = [values[target], values[index]];
-    onValue(group === "top" ? { top: values, bottom } : { top, bottom: values });
+    onValue({ ...partition, [group]: values });
   }
 
   function orderedGroup(
-    group: "top" | "bottom",
-    refs: string[],
-    orderLabel: string,
+    group: string,
+    descriptor: ChoiceField,
   ) {
+    const refs = groupRefs(group);
+    const order = text(descriptor.order);
+    const orderLabel =
+      order === "top_to_bottom"
+        ? "First row becomes the next card drawn; the last row is deepest in this top group."
+        : order === "bottom_to_top"
+          ? "First row becomes the library's bottom card; the last row is nearest the top of this bottom group."
+          : order === "graveyard_top_to_bottom"
+            ? "First row is the top card of the graveyard."
+            : "The listed order is the submitted destination order.";
+    const label = groupLabel(group, descriptor);
     return (
       <div className="choice-partition-group">
-        <strong>{group === "top" ? "Top of library" : "Bottom of library"}</strong>
+        <strong>{label}</strong>
         <span className="choice-help">{orderLabel}</span>
         <ol
           className="choice-order"
-          aria-label={`${group === "top" ? "Top" : "Bottom"} group order. ${orderLabel}`}
+          aria-label={`${label} group order. ${orderLabel}`}
         >
           {refs.map((ref, index) => (
             <li key={ref} data-card-ref={ref}>
               <span>{cardLabel(ref)}</span>
               <button
                 type="button"
-                aria-label={`Move ${cardLabel(ref)}, item ${index + 1} of ${refs.length}, toward the ${group === "top" ? "top" : "bottom"} of the library`}
+                aria-label={`Move ${cardLabel(ref)}, item ${index + 1} of ${refs.length}, earlier in ${label}`}
                 onClick={() => reorder(group, index, -1)}
                 disabled={index === 0}
               >↑</button>
               <button
                 type="button"
-                aria-label={`Move ${cardLabel(ref)}, item ${index + 1} of ${refs.length}, away from the ${group === "top" ? "top" : "bottom"} of the library`}
+                aria-label={`Move ${cardLabel(ref)}, item ${index + 1} of ${refs.length}, later in ${label}`}
                 onClick={() => reorder(group, index, 1)}
                 disabled={index === refs.length - 1}
               >↓</button>
@@ -186,35 +212,30 @@ function OrderedPartition({
       <div className="choice-options">
         {options.map((option, optionIndex) => {
           const ref = text(option.value);
+          const selectedGroup = groups.find(([name]) =>
+            groupRefs(name).includes(ref),
+          )?.[0] ?? groups[0][0];
           return (
             <label key={ref} className="choice-option">
               <span>{cardLabel(ref)}</span>
               <select
                 data-testid={`choice-${text(field.name)}-${testValue(ref)}`}
-                aria-label={`Choose a Scry destination for ${cardLabel(ref)}, looked-at card ${optionIndex + 1} of ${options.length}`}
-                value={bottom.includes(ref) ? "bottom" : "top"}
-                onChange={(event) =>
-                  moveBetween(ref, event.target.value as "top" | "bottom")
-                }
+                aria-label={`Choose a destination for ${cardLabel(ref)}, looked-at card ${optionIndex + 1} of ${options.length}`}
+                value={selectedGroup}
+                onChange={(event) => moveBetween(ref, event.target.value)}
               >
-                <option value="top">Top</option>
-                <option value="bottom">Bottom</option>
+                {groups.map(([name, descriptor]) => (
+                  <option key={name} value={name}>{groupLabel(name, descriptor)}</option>
+                ))}
               </select>
             </label>
           );
         })}
       </div>
       <div className="choice-partition-orders">
-        {orderedGroup(
-          "top",
-          top,
-          "First row becomes the next card drawn; the last row is deepest in this top group.",
-        )}
-        {orderedGroup(
-          "bottom",
-          bottom,
-          "First row becomes the library's bottom card; the last row is nearest the top of this bottom group.",
-        )}
+        {groups.map(([name, descriptor]) => (
+          <div key={name}>{orderedGroup(name, descriptor)}</div>
+        ))}
       </div>
     </fieldset>
   );

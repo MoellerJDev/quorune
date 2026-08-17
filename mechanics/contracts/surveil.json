@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "surveil",
+  "official_name": "Surveil",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["404.3", "701.25", "701.25a", "701.25b", "701.25c", "701.25d"],
+  "glossary_references": ["surveil"],
+  "dependencies": ["graveyard", "library", "object-zone-identity", "replacement-ordering", "resolving-spells-and-abilities"],
+  "coverage_status": "tested",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["library", "graveyard", "replacement destinations"],
+    "objects": ["the exact current top cards of the resolving controller's library", "identity-pinned looked-at cards", "new zone incarnations for cards moved from the library"],
+    "events": ["one positive fixed-count controller Surveil instruction", "one private ordered partition", "normalized actual-destination zone events", "one normalized player.surveilled event after the process completes"],
+    "state_reads": ["resolving controller", "current private library top identities", "current destination replacements", "current normalized trigger sources"],
+    "state_writes": ["one simultaneous selected-card zone batch", "one exact retained-top order", "privacy-safe public result journal", "ordinary APNAP trigger batches"],
+    "costs": [],
+    "timing": ["the private partition and selected-card replacement choices suspend the same resolving instruction before mutation"],
+    "targets": [],
+    "choices": ["a complete private top and graveyard partition", "exact top-to-bottom order for each destination", "applicable destination-replacement order"],
+    "hidden_information": ["looked-at identities and retained library order remain actor-private", "only references whose actual destination is public appear in the public Surveil result"],
+    "apnap": ["zone-change and represented Surveil-event triggers use the ordinary trigger substrate"],
+    "layers": [],
+    "replacement_effects": ["every selected library-to-graveyard move enters one canonical simultaneous destination-replacement batch before mutation"],
+    "copy": ["copied represented spells reuse the source-pinned fixed Surveil effect"],
+    "control_change": ["the resolving instruction captures its current controller before issuing the private choice"],
+    "zone_change": ["a short library contributes every available card", "a selected card records its actual replacement destination and new incarnation", "a retained card must preserve its original physical and logical identity"],
+    "source_leaves": ["an already-created spell or triggered ability resolves independently of continued source presence"]
+  },
+  "variants": ["positive fixed-count controller Surveil", "short or empty library", "selected destination replacement", "spell, self-entry trigger, activated, and independently typed two-clause sequence contexts"],
+  "witness_cards": [
+    {"name": "Consider", "oracle_id": "4c9bcba6-87b5-4fb3-97ee-6fe5b739337d"}
+  ],
+  "rulings": [],
+  "test_ids": ["test_fixed_surveil_compiles_across_spell_trigger_activation_and_sequence", "test_dynamic_targeted_linked_and_event_consumer_surveil_remain_residual", "test_surveil_shape_dependency_and_compiler_mutants_fail_closed", "test_surveil_orders_top_and_graveyard_and_replays_exactly", "test_surveil_short_and_empty_library_emit_exact_events", "test_stale_identity_and_malformed_surveil_fail_before_mutation", "test_surveil_destination_replacement_resumes_before_public_commit", "test_surveil_then_draw_sequence_resumes_in_printed_order", "test_residual_surveil_pairs_remain_fail_closed_at_cardprogram_boundary", "test_surveil_runtime_validation_mutant_is_killed"],
+  "implementation": {
+    "component": "SurveilChoiceHandler, LibraryPartitionChoice, OrderedLibraryPartition, SurveilArrangement, SurveilLibraryIntent, commit_surveil_arrangement, and the canonical zone-transition owner",
+    "version": "typed-fixed-controller-surveil-v1",
+    "capability_ids": ["library.surveil.fixed_controller"],
+    "supported_slice": "One mandatory positive fixed-count Surveil instruction for its controller with no linked result consumer or additional looked-at cards."
+  },
+  "known_blockers": ["Surveil 0 and dynamic, variable, optional, cost, target-player, each-player, repeated, copied, or granted forms remain residual", "effects that add looked-at cards under CR 701.25b need a typed additive inspection boundary", "linked cards-put-into-graveyard or cards-left-on-top consumers need typed actual-result bindings", "Surveil-event consumer grammar beyond the emitted normalized event remains residual", "graveyard-order-sensitive interactions outside the represented simultaneous ordering remain excluded"],
+  "review_status": "reviewed"
+}

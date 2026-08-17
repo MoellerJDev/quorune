@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 701.25 — Mandatory fixed-count controller Surveil",
+  "cases": [
+    {
+      "rule_id": "701.25",
+      "rule_text_sha256": "d2227ab38851c50b22e9610f6fe9b13c7b5c6c5c7f68e2ac4d0fa92727b39453",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.capabilities.CapabilityRegistry"],
+      "executable_test_ids": ["tests.test_surveil_rules.FixedSurveilCompilerTests.test_fixed_surveil_compiles_across_spell_trigger_activation_and_sequence"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword-action heading; the bounded mandatory positive fixed controller family is owned by library.surveil.fixed_controller."]
+    },
+    {
+      "rule_id": "701.25a",
+      "rule_text_sha256": "8e0a47ee5164c8b9096a6b6e70d10e984022549d3c18f69356e74c810011d693",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.surveil_templates.fixed_surveil_effect_template", "quorune.semantic_choices.surveil.SurveilChoiceHandler", "quorune.rules.library_surveillance.commit_surveil_arrangement", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
+      "executable_test_ids": ["tests.test_surveil_rules.FixedSurveilCompilerTests.test_fixed_surveil_compiles_across_spell_trigger_activation_and_sequence", "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_orders_top_and_graveyard_and_replays_exactly", "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_destination_replacement_resumes_before_public_commit", "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_then_draw_sequence_resumes_in_printed_order"],
+      "required_scenarios": ["positive", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["dynamic, targeted, optional, cost, repeated, copied, granted, linked-result, and additional-card variants remain unsupported"],
+      "notes": ["The represented owner validates one private physical/logical identity snapshot, commits selected cards through the canonical simultaneous replacement-aware zone owner, and then orders the retained top group."]
+    },
+    {
+      "rule_id": "701.25b",
+      "rule_text_sha256": "d352e11287e5c0cd9acd7d6a851ecf5cdcdd7de96126797d0e7b3bd7942a3112",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.surveil_templates.fixed_surveil_effect_template"],
+      "executable_test_ids": ["tests.test_surveil_rules.FixedSurveilCompilerTests.test_dynamic_targeted_linked_and_event_consumer_surveil_remain_residual"],
+      "required_scenarios": ["negative"],
+      "covered_scenarios": ["negative"],
+      "blockers": ["effects that add cards to the looked-at Surveil set have no typed additive inspection descriptor"],
+      "notes": ["Only the printed fixed count contributes cards to the represented private partition."]
+    },
+    {
+      "rule_id": "701.25c",
+      "rule_text_sha256": "0302f1b28c2f8685ca76a4d9bd239866f09f716362610f48c9a70034b7d1b9cd",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.surveil_templates.fixed_surveil_effect_template", "quorune.semantic_choices.surveil.SurveilChoiceHandler"],
+      "executable_test_ids": ["tests.test_surveil_rules.FixedSurveilCompilerTests.test_dynamic_targeted_linked_and_event_consumer_surveil_remain_residual", "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_short_and_empty_library_emit_exact_events"],
+      "required_scenarios": ["positive", "negative"],
+      "covered_scenarios": ["positive", "negative"],
+      "blockers": ["Surveil 0 remains a precise compiler residual rather than an executable no-event instruction"],
+      "notes": ["Every represented instruction has a positive count; a positive instruction still emits a Surveil event when the library is empty."]
+    },
+    {
+      "rule_id": "701.25d",
+      "rule_text_sha256": "09f53e9572287a7ab4c9de411b32a34115aa2b6e646bba2dc508d6b98df8b494",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.library_surveillance.commit_surveil_arrangement", "quorune.trigger_discovery.dispatch_semantic_event"],
+      "executable_test_ids": ["tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_short_and_empty_library_emit_exact_events", "tests.test_surveil_rules.FixedSurveilCompilerTests.test_dynamic_targeted_linked_and_event_consumer_surveil_remain_residual", "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_residual_surveil_pairs_remain_fail_closed_at_cardprogram_boundary"],
+      "required_scenarios": ["positive", "negative", "interaction"],
+      "covered_scenarios": ["positive", "negative", "interaction"],
+      "blockers": ["compiler grammar for abilities that trigger whenever a player surveils remains unsupported"],
+      "notes": ["The action emits player.surveilled only after selected moves and retained-top ordering finish, including when a positive instruction cannot look at any cards; unsupported event consumers remain outside trusted CardPrograms."]
+    }
+  ]
+}
