@@ -261,12 +261,12 @@ test("@browser-rules @scry @privacy @persistence ordered Scry is accessible, pri
     await expect(bottom).toContainText("nearest the top of this bottom group");
 
     const moveTop = top.getByRole("button", {
-      name: "Move Island, item 2 of 2, toward the top of the library",
+      name: "Move Island, item 2 of 2, earlier in Top of library",
     });
     await moveTop.focus();
     await host.keyboard.press("Enter");
     await bottom.getByRole("button", {
-      name: "Move Island, item 2 of 2, toward the bottom of the library",
+      name: "Move Island, item 2 of 2, earlier in Bottom of library",
     }).click();
     const orderedRefs = async (group: ReturnType<Page["locator"]>) =>
       group.locator("ol li").evaluateAll((rows) =>
