@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "4dadfe178efeb50e90c469418fc6aa5ec2ec036c7b6200bb379757a5eb436435",
+    "evaluated_input_fingerprint": "47cc79fb20e5629c51201d7fdc620a78757a93fc5557e38d36c5ecb9fc98af47",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -606,6 +606,12 @@
       "id": "typed_fixed_surveillance",
       "name": "Typed mandatory fixed-count Surveil",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers 73 fixed public conditions that determine whether a land enters tapped. The completed database-backed census promotes 46 exact, trusted, capability-closed Commander cards, adds 73 ability programs, and removes 73 material residuals; partial cards fall by 44 and unresolved cards by two. The full corpus gains the same 46 exact/trusted/capability-closed cards and 73 programs while removing 73 residuals, with failed status unchanged. One typed metric, integral bound, and tap polarity covers controller land and basic-land counts, individual basic land subtypes, aggregate opponent lands, minimum active-player life, and represented legendary, color, Mount, and Vehicle controller predicates. The existing zone.entry.tapped_state owner remains canonical; simultaneous entrants snapshot only already-present phased-in permanents through the effective-characteristic boundary, so they cannot count each other and type-changing reads do not depend on the entering object. Real Rivendell and Fire Nation Palace fail-closed admission regressions keep all 181 applicable high-risk pairs covered with zero uncovered. Turn-relative, variable, chosen, hidden, counter-qualified, history-sensitive, and unsupported same-layer predicates remain fail-closed.",
+      "id": "typed_fixed_entry_conditions",
+      "name": "Typed fixed land-entry conditions",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -645,11 +651,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 39569,
+      "material_residuals": 39496,
       "status_counts": {
-        "exact": 5306,
-        "partial": 11972,
-        "unresolved": 14345
+        "exact": 5352,
+        "partial": 11928,
+        "unresolved": 14343
       },
       "total": 31623
     },
@@ -667,11 +673,11 @@
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 46803,
+      "material_residuals": 46730,
       "status_counts": {
-        "exact": 8391,
-        "partial": 13097,
-        "unresolved": 17135
+        "exact": 8437,
+        "partial": 13053,
+        "unresolved": 17133
       },
       "total": 38623
     },
@@ -708,7 +714,7 @@
     "generated_validation_modules": 29,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 290,
+    "primary_test_modules": 291,
     "primary_test_shards": 13,
     "schema_files": 18,
     "server_files": 5,
@@ -718,31 +724,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 39572,
+        "material_residuals": 39499,
         "status_counts": {
-          "residual": 26317,
-          "trusted": 5306
+          "residual": 26271,
+          "trusted": 5352
         },
         "trust_basis_counts": {
-          "capability_closed": 5290,
+          "capability_closed": 5336,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26317
+          "unresolved": 26271
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 46805,
+        "material_residuals": 46732,
         "status_counts": {
           "failed": 2248,
-          "residual": 30229,
-          "trusted": 6146
+          "residual": 30183,
+          "trusted": 6192
         },
         "trust_basis_counts": {
-          "capability_closed": 6130,
+          "capability_closed": 6176,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30229
+          "unresolved": 30183
         }
       }
     },

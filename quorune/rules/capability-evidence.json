@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "97bc786d6a209f59a7d648ee545232bd407326565e4f232aa4e336cfeb0d3d0e",
-  "declaration_source_fingerprint": "92004118755f224fe637ba55d97d6a132dae0eafe84c22c5abb0080acfbbb426",
+  "registry_fingerprint": "f30639298d0d5af7445d98f90b7f7affb3f7ee9cc8eb81f53fbd4a1d862d4521",
+  "declaration_source_fingerprint": "04676e9e0d386abd92e9e2a0113767fc05789aacf152b76427f685f0b610ee7b",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -40277,6 +40277,258 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     },
     {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_effective_basic_subtypes_feed_entry_condition_without_cycle",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Count an effective basic land subtype added to already-present battlefield lands before evaluating an entering land, without making the entering object part of the characteristic query."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_fixed_condition_competes_with_ambient_entry_replacement",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suspend before mutation when a fixed intrinsic tapped condition competes with a controller-wide enter-untapped replacement, then resume through ordinary CR 616 ordering."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_player_life_opponent_land_and_permanent_queries_compose",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Evaluate public active-player life, aggregate opponent land count, and a controller's current legendary-creature presence through the same fixed condition owner."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_simultaneous_entries_exclude_each_other",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Snapshot both land-entry conditions before a simultaneous batch so neither entering land contributes to the other's count."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_player_life_opponent_land_and_permanent_queries_compose",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Aggregate lands across all three opponents and inspect the minimum life among all active players in four-player state."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionCompilerTests.test_fixed_entry_condition_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove fixed-condition lowering and prove the source span becomes material residual instead of retaining executable trust."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionCompilerTests.test_fixed_entry_condition_shapes_and_unsupported_grammar_fail_closed",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject turn-relative, variable, opponent-creature, artifact-count, chosen-player, widened-subject, and malformed metric descriptors."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionCompilerTests.test_residual_entry_condition_siblings_remain_fail_closed",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep a card outside trusted CardProgram admission when its exact fixed entry condition has an unresolved activated or triggered sibling."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_unrelated_zone_changes_do_not_collect_entry_metrics",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Prove ordinary zone changes and unrelated battlefield entries do not scan or materialize the rich fixed-condition metric snapshot."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionCompilerTests.test_fixed_entry_condition_family_compiles_capability_closed",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower fixed land, basic-land, basic-subtype, life, opponent-land, legendary-creature, color, Mount, and Vehicle entry conditions to one strict typed handler."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_land_count_and_basic_count_conditions_use_preentry_snapshot",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve maximum other-land, minimum other-land, and minimum basic-land conditions from one immutable preentry snapshot."
+    },
+    {
+      "capability_id": "zone.entry.tapped_state.fixed_condition",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_fixed_condition_land_play_replays_exactly",
+      "official_rule_ids": [
+        "119.4",
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "614.12a",
+        "616.1",
+        "616.1e",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay an ordinary priority-issued land play through fixed condition evaluation and the canonical zone journal to the same authoritative hash."
+    },
+    {
       "capability_id": "zone.mill.fixed",
       "evidence_class": "interaction",
       "test_id": "tests.test_mill_rules.FixedMillRuntimeTests.test_target_mill_revalidates_and_zone_replacement_preserves_actual_result",
@@ -40603,5 +40855,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "077088097415df4749ce189260e950776b92c41b1fa3765116e58ad6a8e6d26f"
+  "fingerprint": "d876c9f17827c7c64c735df839a7e687837b92aff6d86947d11fec4a7fa2b393"
 }

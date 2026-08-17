@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 114,
+  "registry_version": 115,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -1056,6 +1056,33 @@
       "dependency_fail_closed_rationale": "This bounded family depends only on the shared zone replacement, zone transition, face binding, and nonreplaceable life-payment owners.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_entry_state_compiler_mutation_is_killed removes the closed typed lowering and proves the previously exact source span becomes a material residual instead of falling back to runtime Oracle interpretation.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "zone.entry.tapped_state.fixed_condition",
+      "version": 1,
+      "official_rules": ["119.4", "614.1c", "614.1d", "614.12", "614.12a", "616.1", "616.1e", "616.1f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Resolve one source-pinned fixed public condition that determines whether an entering land is tapped from an immutable preentry snapshot over already-present battlefield characteristics and active-player life.",
+        "inputs": ["exact selected CardProgram face", "prospective land characteristics", "destination controller", "closed metric and integral bound", "already-present effective battlefield types, subtypes, supertypes, and colors", "current active-player life totals", "complete applicable replacement snapshot"],
+        "outputs": ["one affected-object tapped-entry replacement when the fixed condition and polarity require it", "canonical simultaneous replacement ordering", "replay-stable preentry facts and zone-transition commit"],
+        "exclusions": ["turn-number and active-turn conditions", "variable, hidden-information, chosen, named-card, counter, or history-sensitive predicates", "conditions involving another simultaneously entering object", "unsupported same-layer characteristic dependencies", "optional tap-state choices and life payments", "nonland subjects"]
+      },
+      "dependencies": ["zone.entry.tapped_state"],
+      "implementation_components": ["quorune.compiler.entry_state_templates.static_entry_state_handler", "quorune.entry_state_conditions.FixedEntryCondition", "quorune.entry_state_metrics.entry_condition_metrics", "quorune.semantic_runtime.entry_state.FixedEntryConditionReplacementHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.zone_transitions.ZoneTransitionOwner"],
+      "positive_tests": ["test_fixed_entry_condition_family_compiles_capability_closed", "test_land_count_and_basic_count_conditions_use_preentry_snapshot"],
+      "negative_tests": ["test_fixed_entry_condition_shapes_and_unsupported_grammar_fail_closed", "test_residual_entry_condition_siblings_remain_fail_closed", "test_unrelated_zone_changes_do_not_collect_entry_metrics"],
+      "interaction_tests": ["test_effective_basic_subtypes_feed_entry_condition_without_cycle", "test_fixed_condition_competes_with_ambient_entry_replacement", "test_player_life_opponent_land_and_permanent_queries_compose", "test_simultaneous_entries_exclude_each_other"],
+      "multiplayer_tests": ["test_player_life_opponent_land_and_permanent_queries_compose"],
+      "privacy_tests": [],
+      "replay_tests": ["test_fixed_condition_land_play_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking the canonical entry tap-state capability prevents the fixed-condition descriptor from receiving trusted closure.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_fixed_entry_condition_compiler_mutant_is_killed removes the closed lowering and proves the source span becomes material residual instead of falling back to runtime Oracle interpretation.",
       "blockers": [],
       "status": "trusted"
     },

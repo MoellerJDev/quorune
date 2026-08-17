@@ -319,12 +319,12 @@
       "status": "blocked",
       "assertion_kind": "unsupported_fail_closed",
       "reviewed": true,
-      "implementation_components": ["semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "semantic_runtime.entry_state.EntryStateReplacementHandler", "card_program_faces.program_matches_face"],
-      "executable_test_ids": ["tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners", "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_selected_mdfc_face_isolates_entry_program", "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_entry_preparation_rejects_stale_face_and_rolls_back"],
+      "implementation_components": ["semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "semantic_runtime.entry_state.EntryStateReplacementHandler", "semantic_runtime.entry_state.FixedEntryConditionReplacementHandler", "entry_state_conditions.FixedEntryCondition", "card_program_faces.program_matches_face"],
+      "executable_test_ids": ["tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_land_entry_families_use_typed_snapshot_and_canonical_owners", "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_selected_mdfc_face_isolates_entry_program", "tests.test_typed_land_entry_participation.TypedLandEntryRuntimeTests.test_entry_preparation_rejects_stale_face_and_rolls_back", "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_land_count_and_basic_count_conditions_use_preentry_snapshot", "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_player_life_opponent_land_and_permanent_queries_compose", "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_simultaneous_entries_exclude_each_other", "tests.test_fixed_entry_conditions.FixedEntryConditionRuntimeTests.test_effective_basic_subtypes_feed_entry_condition_without_cycle"],
       "required_scenarios": ["positive", "negative", "interaction", "hidden_information"],
       "covered_scenarios": ["positive", "negative", "interaction"],
       "blockers": ["entry applicability is not generically recomputed from would-exist battlefield characteristics after every replacement", "external static effects and full copy/layer interactions are incomplete"],
-      "notes": ["The reviewed unconditional, bond, check, shock, and controlled-land untapped family uses exact selected-face programs and immutable pre-entry facts; the full would-exist evaluator remains incomplete."]
+      "notes": ["The reviewed unconditional, bond, check, shock, controlled-land untapped, and fixed public-condition families use exact selected-face programs and immutable pre-entry facts. Fixed condition counts query only already-present effective battlefield characteristics and exclude every simultaneously entering object; the full would-exist evaluator remains incomplete."]
     },
     {
       "rule_id": "614.12a",

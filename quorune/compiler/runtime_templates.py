@@ -31,6 +31,7 @@ from .draw_templates import (
     static_draw_restriction_handler,
 )
 from .entry_state_templates import static_entry_state_handler
+from ..entry_state_conditions import FIXED_ENTRY_CONDITION_HANDLER_ID
 from .life_templates import static_life_handler
 from .token_templates import static_additional_token_replacement_handler
 from .trigger_participation_templates import static_trigger_multiplier_handler
@@ -209,7 +210,12 @@ def _source_permanent_participation_template(
     )
     if entry_state is None:
         return None
-    relation = str(entry_state[1]["source_relation"])
+    relation = (
+        "affected_object"
+        if entry_state[1].get("handler_id")
+        == FIXED_ENTRY_CONDITION_HANDLER_ID
+        else str(entry_state[1]["source_relation"])
+    )
     return StaticRuntimeTemplate(
         compiled=entry_state,
         kind="replacement_effect",

@@ -3561,6 +3561,58 @@
       "capability_ids": ["library.surveil.fixed_controller"],
       "interaction_order": 2,
       "assertion": "A fixed Surveil producer remains locally represented while an unsupported sibling Surveil-event consumer keeps the complete card outside trusted runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_fixed_condition_competes_with_ambient_entry_replacement",
+      "piece_ids": [
+        "capability.zone.entry.tapped_state",
+        "capability.zone.entry.tapped_state.fixed_condition"
+      ],
+      "capability_ids": [
+        "zone.entry.tapped_state",
+        "zone.entry.tapped_state.fixed_condition"
+      ],
+      "interaction_order": 2,
+      "assertion": "A fixed intrinsic tapped condition and the canonical controller-wide enter-untapped replacement suspend before mutation, resume through ordinary CR 616 ordering, and commit through one land-entry path."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
+      "test_id": "test_simultaneous_entries_exclude_each_other",
+      "piece_ids": [
+        "capability.zone.entry.tapped_state.fixed_condition",
+        "mechanic.cr-614-replacement-effects",
+        "mechanic.cr-616-interaction-of-replacement-and-or-prevention-effects"
+      ],
+      "capability_ids": ["zone.entry.tapped_state.fixed_condition"],
+      "interaction_order": 3,
+      "assertion": "Both fixed entry conditions are prepared from one simultaneous preentry snapshot before either CR 614 replacement mutates state, and ordinary CR 616 ordering retains the resulting tapped instructions."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_residual_entry_condition_siblings_remain_fail_closed",
+      "piece_ids": [
+        "capability.zone.entry.tapped_state.fixed_condition",
+        "residual.target_or_choice.conditional-effect"
+      ],
+      "capability_ids": ["zone.entry.tapped_state.fixed_condition"],
+      "interaction_order": 2,
+      "assertion": "Rivendell retains its exact fixed entry condition while its unsupported conditional Scry activation keeps the complete CardProgram unresolved and unavailable to trusted runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_residual_entry_condition_siblings_remain_fail_closed",
+      "piece_ids": [
+        "capability.zone.entry.tapped_state.fixed_condition",
+        "residual.target_or_choice.target-predicate"
+      ],
+      "capability_ids": ["zone.entry.tapped_state.fixed_condition"],
+      "interaction_order": 2,
+      "assertion": "Fire Nation Palace retains its exact fixed entry condition while its unsupported targeted Firebending activation keeps the complete CardProgram unresolved and unavailable to trusted runtime admission."
     }
   ]
 }

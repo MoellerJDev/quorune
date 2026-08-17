@@ -5,6 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
+from ..entry_state_conditions import (
+    FIXED_ENTRY_CONDITION_HANDLER_ID,
+    FixedEntryCondition,
+    FixedEntryConditionError,
+)
 from ..landwalk import BASIC_LAND_TYPES
 from ..replacement import AddAmount, ReplacementClass, ReplacementEffect, SetField
 from .component_registry import exact_fields
@@ -122,7 +127,10 @@ class EntryStateReplacementHandler:
             raise SemanticNodeError(
                 "Runtime handler ID does not match the entry-state registry"
             )
-        if descriptor["schema_version"] != self.schema_version:
+        if (
+            type(descriptor["schema_version"]) is not int
+            or descriptor["schema_version"] != self.schema_version
+        ):
             raise SemanticNodeError(
                 f"Unsupported {self.handler_id} schema version"
             )
@@ -360,10 +368,125 @@ class EntryStateReplacementHandler:
         return node.optional_life
 
 
+@dataclass(frozen=True, slots=True)
+class FixedEntryConditionReplacementHandler:
+    handler_id: str = FIXED_ENTRY_CONDITION_HANDLER_ID
+    schema_version: int = 1
+    family: str = "replacement.zone.entry_state"
+    event: str = "zone.change"
+    rule_references: tuple[str, ...] = (
+        "614.1c",
+        "614.1d",
+        "614.12",
+        "616.1",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "zone.entry.tapped_state.fixed_condition",
+    )
+
+    def validate(
+        self,
+        descriptor: Mapping[str, Any],
+    ) -> FixedEntryCondition:
+        exact_fields(
+            descriptor,
+            {
+                "handler_id",
+                "schema_version",
+                "event",
+                "subject",
+                "condition",
+            },
+            field="fixed entry-condition runtime handler",
+        )
+        if descriptor["handler_id"] != self.handler_id:
+            raise SemanticNodeError(
+                "Runtime handler ID does not match fixed entry conditions"
+            )
+        if (
+            type(descriptor["schema_version"]) is not int
+            or descriptor["schema_version"] != self.schema_version
+        ):
+            raise SemanticNodeError(
+                "Unsupported fixed entry-condition schema version"
+            )
+        if descriptor["event"] != self.event:
+            raise SemanticNodeError(
+                "Fixed entry conditions must handle zone.change"
+            )
+        subject = descriptor["subject"]
+        if not isinstance(subject, Mapping):
+            raise SemanticNodeError(
+                "Fixed entry-condition subject must be an object"
+            )
+        exact_fields(
+            subject,
+            {"types_all"},
+            field="fixed entry-condition subject",
+        )
+        if subject["types_all"] != ["land"]:
+            raise SemanticNodeError(
+                "Fixed entry conditions require a land subject"
+            )
+        try:
+            return FixedEntryCondition.from_dict(descriptor["condition"])
+        except FixedEntryConditionError as exc:
+            raise SemanticNodeError(str(exc)) from exc
+
+    def source_replacement_effect(
+        self,
+        descriptor: Mapping[str, Any],
+        **kwargs: Any,
+    ) -> ReplacementEffect:
+        del kwargs
+        self.validate(descriptor)
+        raise SemanticNodeError(
+            "Fixed entry conditions belong only to the affected object"
+        )
+
+    def subject_replacement_effect(
+        self,
+        descriptor: Mapping[str, Any],
+        *,
+        subject: Any,
+        component_id: str,
+    ) -> ReplacementEffect | None:
+        condition = self.validate(descriptor)
+        if (
+            subject.destination != "battlefield"
+            or subject.destination_controller is None
+            or "land" not in subject.object_types
+        ):
+            return None
+        try:
+            condition_met = condition.is_met(subject.entry_condition_metrics)
+        except FixedEntryConditionError as exc:
+            raise SemanticNodeError(str(exc)) from exc
+        if condition_met is not condition.tapped_when_met:
+            return None
+        return ReplacementEffect(
+            effect_id=(
+                f"{self.handler_id}:{subject.object_ref}:{component_id}"
+            ),
+            source_id=subject.object_ref,
+            event_kind=self.event,
+            replacement_class=ReplacementClass.OTHER,
+            conditions={
+                "destination": {"eq": "battlefield"},
+                "object_ref": {"eq": subject.object_ref},
+                "object_types": {"contains_all": ["land"]},
+            },
+            operations=(SetField("tapped", True),),
+            label=f"{subject.object_ref}: enter tapped",
+        )
+
+
 __all__ = [
     "ENTRY_STATE_HANDLER_ID",
+    "FIXED_ENTRY_CONDITION_HANDLER_ID",
     "EntryStateNode",
     "EntryStateReplacementHandler",
     "EntryStateSourceContext",
     "EntryStateSubjectContext",
+    "FixedEntryConditionReplacementHandler",
 ]

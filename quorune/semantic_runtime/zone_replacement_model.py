@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ..entry_keyword_grants import EntryKeywordGrant
 from ..entry_counters import EffectEntryCounter, IntrinsicEntryCounter
+from ..entry_state_conditions import FixedEntryMetric
+from ..replacement.immutable import FrozenMap
 from ..replacement_effects import (
     ReplaceableEvent,
     ReplacementBatchChoice,
@@ -121,6 +123,7 @@ class ZoneChangeSubjectSnapshot:
     entry_pay_life: bool | None = None
     opponent_count: int = 0
     controller_basic_land_types: tuple[str, ...] = ()
+    entry_condition_metrics: FrozenMap = field(default_factory=FrozenMap)
     opponent_was_dealt_damage_this_turn: bool = False
     mana_colors_spent: tuple[str, ...] = ()
     intrinsic_entry_counters: tuple[IntrinsicEntryCounter, ...] = ()
@@ -215,6 +218,32 @@ class ZoneChangeSubjectSnapshot:
             "controller_basic_land_types",
             basic_types,
         )
+        metrics = self.entry_condition_metrics
+        if not isinstance(metrics, FrozenMap):
+            try:
+                metrics = FrozenMap(metrics)
+            except (TypeError, ValueError) as exc:
+                raise ZoneReplacementError(
+                    "Zone replacement entry metrics must be an object"
+                ) from exc
+        allowed_entry_metrics = {metric.value for metric in FixedEntryMetric}
+        if any(key not in allowed_entry_metrics for key in metrics):
+            raise ZoneReplacementError(
+                "Zone replacement entry metric keys are outside the closed "
+                "vocabulary"
+            )
+        if any(
+            type(value) is not int
+            or (
+                value < 0
+                and key != FixedEntryMetric.MINIMUM_PLAYER_LIFE.value
+            )
+            for key, value in metrics.items()
+        ):
+            raise ZoneReplacementError(
+                "Zone replacement entry metrics must be nonnegative integers"
+            )
+        object.__setattr__(self, "entry_condition_metrics", metrics)
         if type(self.opponent_was_dealt_damage_this_turn) is not bool:
             raise ZoneReplacementError(
                 "Zone replacement turn-history facts must be boolean"
