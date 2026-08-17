@@ -429,6 +429,11 @@
         "candidate_id": "compiler:ordinary-cascade",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "The generated rank-one Choose one family remained a nonexecuting structural header with zero sole-blocker cards, while the additional-cost and Enchant leaders still decomposed into unrelated cost, attachment, player, and object-predicate foundations. Cascade was the strongest coherent dependency-ready family with a measured complete-card gain and a reusable prerequisite for the broader exile/play-permission frontier. The landed census gained 19 exact, trusted, capability-closed Commander cards and 42 exact ability programs, removed 37 material residuals, established one typed one-shot cast-from-exile continuation, and kept uncovered high-risk interaction debt at zero."
+      },
+      {
+        "candidate_id": "compiler:fixed-mill-instructions",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "After Cascade, the generated Choose one header still had zero sole-blocker cards, while additional-cost, Enchant, Changeling, Bestow, and token aggregates remained heterogeneous or crossed larger characteristic, attachment, or linked-result foundations. The fixed Mill families instead shared one mandatory positive-count grammar across spell, triggered, and activated contexts and one existing zone-transition substrate. The landed census gained 44 exact, trusted, capability-closed Commander cards and 62 ability programs, removed 105 material residuals, and established a typed actual-destination Mill result for later Surveil and linked-result work while explicit runtime and fail-closed tests kept uncovered high-risk interaction debt at zero."
       }
     ]
   },

@@ -1,5 +1,5 @@
 {
-  "contract_count": 112,
+  "contract_count": 113,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -437,6 +437,12 @@
       "mechanic_id": "mentor",
       "path": "mechanics/contracts/mentor.json",
       "sha256": "bdfc66dc01344c95bffb7a5fbef6fc05f2da287f232116c0de65ae0a6defebb7",
+      "version": 1
+    },
+    {
+      "mechanic_id": "mill",
+      "path": "mechanics/contracts/mill.json",
+      "sha256": "7fbfe012207c7ef581826a1b83ea2cbd6d00e6554b17c26a2b22b50ed4efb1cf",
       "version": 1
     },
     {
@@ -6041,19 +6047,37 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/mill.json",
+      "contract_sha256": "7fbfe012207c7ef581826a1b83ea2cbd6d00e6554b17c26a2b22b50ed4efb1cf",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "701"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.milling, quorune.compiler.mill_templates, quorune.rules.mill_capability_shapes, quorune.semantic_runtime.generic.MillHandler, and the canonical zone-transition owner",
+      "implementation_version": "typed-fixed-mill-v1",
       "kind": "keyword_action",
+      "known_blockers": [
+        "Mill costs, optional Mill, dynamic, multiplied, half-library, and state-derived quantities remain unsupported",
+        "each-player, each-opponent, any-number-of-targets, and repeated Mill need a multiplayer batch owner",
+        "linked cards-milled-this-way consumers under CR 701.17c-d need typed actual-result bindings",
+        "graveyard-order-sensitive interactions remain excluded while CR 404.3 is blocked",
+        "aggregate library, graveyard, replacement, and zone-trigger coverage remains incomplete"
+      ],
       "mechanic_id": "mill",
       "official_name": "Mill",
       "rule_references": [
         "701.17"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_mill_compiles_across_spell_trigger_and_activation",
+        "test_dynamic_optional_group_and_linked_mill_remain_residual",
+        "test_mill_dependency_and_compiler_mutations_fail_closed",
+        "test_mill_commits_top_first_and_as_many_as_possible",
+        "test_stale_plan_and_malformed_intent_fail_before_mutation",
+        "test_target_mill_revalidates_and_zone_replacement_preserves_actual_result",
+        "test_four_player_target_mill_is_public_privacy_safe_and_replays"
+      ],
       "trust_level": "untrusted"
     },
     {

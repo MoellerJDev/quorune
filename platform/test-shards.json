@@ -266,6 +266,7 @@
       "test_fixed_target_effect_sequences",
       "test_fixed_token_creation_effects",
       "test_mentor_rules",
+      "test_mill_rules",
       "test_oracle_ir",
       "test_persist_undying_rules",
       "test_preflight_v080",

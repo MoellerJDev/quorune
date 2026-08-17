@@ -37,6 +37,7 @@ from .intents import (
     LifeChangeIntent,
     MoveObjectsSimultaneouslyIntent,
     MoveLibraryCardsToBottomIntent,
+    MillCardsIntent,
     ScryLibraryIntent,
     PayManaCostIntent,
     PayLifeIntent,
@@ -461,6 +462,33 @@ def _execute_counter_placement_intent(
     return "player_counters", sink.place_player_counters_intent(intent)
 
 
+PlayerIntent = BecomeMonarchIntent | MillCardsIntent
+PLAYER_INTENT_TYPES = (BecomeMonarchIntent, MillCardsIntent)
+
+
+def _execute_player_intent(
+    sink: SemanticIntentSink,
+    intent: PlayerIntent,
+) -> tuple[str, object]:
+    if isinstance(intent, BecomeMonarchIntent):
+        return intent.player, sink.become_monarch(
+            intent.player,
+            reason=intent.reason,
+        )
+    from ..milling import MillRequest, mill_cards
+
+    result = mill_cards(
+        sink,
+        MillRequest(
+            actor=intent.actor,
+            player=intent.player,
+            count=intent.count,
+            reason=intent.reason,
+        ),
+    )
+    return intent.player, result.refs
+
+
 def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
     if any(isinstance(intent, DrawCardsIntent) for intent in plan.intents):
         raise SemanticNodeError(
@@ -468,12 +496,8 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
         )
     results: list[tuple[str, object]] = []
     for intent in plan.intents:
-        if isinstance(intent, BecomeMonarchIntent):
-            result = sink.become_monarch(
-                intent.player,
-                reason=intent.reason,
-            )
-            results.append((intent.player, result))
+        if isinstance(intent, PLAYER_INTENT_TYPES):
+            results.append(_execute_player_intent(sink, intent))
             continue
         if isinstance(intent, SetPermanentTappedIntent):
             result = tap_state.set_permanent_tapped(

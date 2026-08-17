@@ -73,6 +73,25 @@ class DrawCardsIntent:
 
 
 @dataclass(frozen=True, slots=True)
+class MillCardsIntent:
+    actor: str
+    player: str
+    count: int
+    reason: str
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.player, self.reason)
+        ):
+            raise ValueError(
+                "Mill intents require an actor, player, and reason"
+            )
+        if type(self.count) is not int or self.count <= 0:
+            raise ValueError("Mill intents require a positive fixed count")
+
+
+@dataclass(frozen=True, slots=True)
 class BecomeMonarchIntent:
     player: str
     reason: str
@@ -1272,6 +1291,7 @@ class DomainEffectIntent:
 
 SemanticIntent: TypeAlias = (
     DrawCardsIntent
+    | MillCardsIntent
     | BecomeMonarchIntent
     | SetPermanentTappedIntent
     | UntapAllCreaturesIntent

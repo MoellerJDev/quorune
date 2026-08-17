@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "4a5d51288b051854e60967425c6dd99ac7308250201aab87865719dac9a4ebe1"
+verified: "ea5485f979e87d4f30f27ed352c69c0d5e82d513cfaae50c54f4e75012cee704"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -40,6 +40,7 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Ugin, Eye of the Storms | 176 | 26 | 6 | 5 | 13 | 3 | `blocked` |
 | Invasion of Fiora // Marchesa, Resolute Monarch | 175 | 17 | 5 | 7 | 6 | 17 | `blocked` |
 | Ojer Taq, Deepest Foundation // Temple of Civilization | 175 | 23 | 7 | 6 | 9 | 2 | `blocked` |
+| Devoted Grafkeeper // Departed Soulkeeper | 174 | 23 | 6 | 6 | 6 | 7 | `blocked` |
 | Ral, Monsoon Mage // Ral, Leyline Prodigy | 174 | 17 | 5 | 6 | 12 | 17 | `blocked` |
 | Invasion of Moag // Bloomwielder Dryads | 173 | 20 | 6 | 4 | 5 | 16 | `blocked` |
 | Miles Morales // Ultimate Spider-Man | 172 | 24 | 6 | 5 | 6 | 11 | `blocked` |
@@ -60,7 +61,6 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Invasion of Vryn // Overloaded Mage-Ring | 162 | 12 | 5 | 3 | 8 | 24 | `blocked` |
 | Path of Mettle // Metzali, Tower of Triumph | 162 | 19 | 5 | 6 | 6 | 10 | `blocked` |
 | Aethersphere Harvester | 161 | 16 | 5 | 4 | 6 | 22 | `blocked` |
+| Covetous Castaway // Ghostly Castigator | 161 | 20 | 6 | 5 | 6 | 7 | `blocked` |
 | Invasion of Gobakhan // Lightshield Array | 161 | 13 | 5 | 4 | 9 | 19 | `blocked` |
-| Urza, Planeswalker | 161 | 22 | 4 | 6 | 10 | 11 | `blocked` |
-| Faithbound Judge // Sinner's Judgment | 159 | 21 | 5 | 7 | 8 | 1 | `blocked` |
 | Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |

@@ -52,6 +52,7 @@ from .compiler.fixed_keyword_entry_nodes import fixed_keyword_entry_nodes
 from .compiler.explore_templates import single_explore_effect_template
 from .compiler.keyword_templates import keyword_mechanics
 from .compiler.life_templates import fixed_life_effect_template
+from .compiler.mill_templates import fixed_mill_effect_template
 from .compiler.modal_templates import fixed_choose_one_modal_spell_template
 from .compiler.keyword_nodes import (
     bloodthirst_keyword_node,
@@ -278,34 +279,15 @@ def _effect_template(
     life_template = fixed_life_effect_template(normalized)
     if life_template is not None:
         return life_template.compiled()
+    mill_template = fixed_mill_effect_template(normalized)
+    if mill_template is not None:
+        return mill_template.compiled()
     sequence = fixed_controller_effect_sequence_template(normalized)
     if sequence is not None:
         return sequence.compiled()
     typed = typed_resolution_effect_template(normalized, card_name=card_name, source_is_permanent=source_is_permanent, source_attachment_relation=source_attachment_relation)
     if typed is not None:
         return typed
-    match = re.fullmatch(
-        r"target player mills (?P<count>\d+) cards?\.?",
-        normalized,
-        re.IGNORECASE,
-    )
-    if match:
-        return (
-            "mill-target-player-v1",
-            (
-                {
-                    "op": "mill",
-                    "player": "$target.0",
-                    "count": int(match.group("count")),
-                },
-            ),
-            {
-                "zones": ["player"],
-                "categories": ["player"],
-                "count": 1,
-            },
-            ("mill", "cr-115-targets"),
-        )
     tap_state = targeted_tap_state_effect_template(normalized, source_is_permanent=source_is_permanent, source_card_types=source_card_types, source_attachment_relation=source_attachment_relation)
     if tap_state is not None:
         return tap_state.compiled()

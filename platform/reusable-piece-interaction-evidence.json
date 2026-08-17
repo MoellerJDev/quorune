@@ -3398,6 +3398,89 @@
       ],
       "interaction_order": 4,
       "assertion": "Cascade offers a lower-mana-value spell through the one-shot exile-cast owner, preserves its mandatory artifact-sacrifice cost, revalidates its creature target, and resolves destruction through the canonical owner in one ordinary cast transaction."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
+      "test_id": "test_target_mill_revalidates_and_zone_replacement_preserves_actual_result",
+      "piece_ids": [
+        "capability.target.revalidate_resolution",
+        "capability.zone.change.destination_replacement",
+        "capability.zone.mill.fixed"
+      ],
+      "capability_ids": [
+        "target.revalidate_resolution",
+        "zone.change.destination_replacement",
+        "zone.mill.fixed"
+      ],
+      "interaction_order": 3,
+      "assertion": "A direct-player Mill spell revalidates the active player target, snapshots the exact current library top, and sends the simultaneous requested graveyard moves through the canonical destination-replacement owner while retaining each actual public result."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_aura_attachment_and_triggered_mill_compose",
+      "piece_ids": [
+        "capability.attachment.aura.simple_object",
+        "capability.zone.mill.fixed"
+      ],
+      "capability_ids": [
+        "attachment.aura.simple_object",
+        "zone.mill.fixed"
+      ],
+      "interaction_order": 2,
+      "assertion": "A simple Aura spell uses the canonical target and attachment owners, remains attached after entry, and places its separate fixed Mill trigger through the ordinary stack before the shared Mill owner commits the library result."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_hexproof_target_legality_and_activated_mill_compose",
+      "piece_ids": [
+        "capability.target.protection.hexproof_permanent",
+        "capability.zone.mill.fixed"
+      ],
+      "capability_ids": [
+        "target.protection.hexproof_permanent",
+        "zone.mill.fixed"
+      ],
+      "interaction_order": 2,
+      "assertion": "A current Hexproof permanent remains excluded from an opponent-controlled target schema while its controller independently activates and resolves the same object's fixed target-player Mill ability."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_residual_mill_pairs_remain_fail_closed_at_cardprogram_boundary",
+      "piece_ids": [
+        "capability.zone.mill.fixed",
+        "residual.target_or_choice.conditional-effect"
+      ],
+      "capability_ids": ["zone.mill.fixed"],
+      "interaction_order": 2,
+      "assertion": "An independently recognized fixed Mill sentence does not make a spell with a separate unresolved conditional effect a trusted CardProgram."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_residual_mill_pairs_remain_fail_closed_at_cardprogram_boundary",
+      "piece_ids": [
+        "capability.zone.mill.fixed",
+        "residual.target_or_choice.multiple-targets"
+      ],
+      "capability_ids": ["zone.mill.fixed"],
+      "interaction_order": 2,
+      "assertion": "An independently recognized fixed Mill sentence does not admit the same spell's unresolved multiple-target instruction into trusted runtime execution."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_residual_mill_pairs_remain_fail_closed_at_cardprogram_boundary",
+      "piece_ids": [
+        "capability.zone.mill.fixed",
+        "residual.target_or_choice.target-predicate"
+      ],
+      "capability_ids": ["zone.mill.fixed"],
+      "interaction_order": 2,
+      "assertion": "An independently recognized fixed Mill sentence remains capability-closed while an unsupported sibling target predicate keeps the complete CardProgram unresolved."
     }
   ]
 }

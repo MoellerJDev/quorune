@@ -1864,6 +1864,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/mill_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/modal_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -3472,6 +3487,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/milling.py",
+      "layer": "rules",
+      "owning_subsystem": "zones_and_object_identity",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "read_only",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/model.py",
       "layer": "domain",
       "owning_subsystem": "legacy_domain",
@@ -4594,6 +4623,20 @@
     },
     {
       "file": "quorune/rules/library_scry.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/rules/mill_capability_shapes.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
       "allowed_dependency_layers": [
@@ -7065,5 +7108,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "4e8fb4244f55d93ce81d64fe0268bdd36810c37ae594721818e7eead4cb54a10"
+  "fingerprint": "2299a4fa36a65d5f55c1000f0d10a2abc146f724a364b05a892d8f18c52cb1b9"
 }
