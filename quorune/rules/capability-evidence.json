@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "e6245b0b3f46781aae34e815b439e7940e5a93b5bc035b6dc23141fd09cfd4e5",
-  "declaration_source_fingerprint": "050f40cda20da85450c2de73ce279624e92f43cd9e7c538443dea7554cd053d6",
+  "registry_fingerprint": "76ca0903b49b9a1492be0eaa594af7176d6a911016a858d547b5c77b0f077264",
+  "declaration_source_fingerprint": "d7ec652a805532b88eeea2c7e759fb45794fd044f62f564ece100545d3be8304",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -11804,6 +11804,25 @@
     },
     {
       "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectModelTests.test_activated_characteristic_dependency_gate_mutant_is_killed",
+      "official_rule_ids": [
+        "611.2a",
+        "611.2c",
+        "613.1d",
+        "613.1f",
+        "613.1g",
+        "613.4c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Block the activated producer's typed dependency gate and prove the fixed characteristic node loses exact trust."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
       "evidence_class": "negative",
       "test_id": "tests.test_continuous_effect_duration.ContinuousEffectEngineTests.test_malformed_mass_predicate_rolls_back_without_effect",
       "official_rule_ids": [
@@ -11820,6 +11839,25 @@
         "commander_review"
       ],
       "applicability_note": "Reject a malformed mass predicate without committing an authoritative effect."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
+      "evidence_class": "negative",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectModelTests.test_dynamic_activated_characteristic_effects_remain_residual",
+      "official_rule_ids": [
+        "611.2a",
+        "611.2c",
+        "613.1d",
+        "613.1f",
+        "613.1g",
+        "613.4c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep dynamic quantities, missing duration, and unsupported keyword grants outside the fixed activated characteristic boundary."
     },
     {
       "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
@@ -11858,6 +11896,25 @@
         "commander_review"
       ],
       "applicability_note": "Create and apply one fixed mass power/toughness effect to its resolution-time set."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
+      "evidence_class": "positive",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectModelTests.test_activated_fixed_characteristic_effects_are_capability_closed",
+      "official_rule_ids": [
+        "611.2a",
+        "611.2c",
+        "613.1d",
+        "613.1f",
+        "613.1g",
+        "613.4c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile fixed self stats, resolution-locked controlled-creature stats, and the closed self keyword vocabulary through the existing trusted duration owner."
     },
     {
       "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
@@ -39907,5 +39964,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "f7f19c0083f2ea9b2ecd43bdacc81eef162ac2287b507c0cb16624a0f1ce5a62"
+  "fingerprint": "39bf3a586b248725d4fcd4d97f179f89d97068f6e1c9ba85313d04a8cb9f4c1c"
 }

@@ -139,6 +139,16 @@ the hand-return forms may remain independently executable on partial cards.
 Untapped, targeted, mass, optional, conditional, multiple-object, copied,
 granted, and text-changed movement stays source-spanned and residual.
 
+The same activated-effect owner admits closed fixed characteristic results
+through the existing resolution-created continuous-effect capability. It
+lowers fixed numeric self power/toughness changes, fixed numeric
+controller-creature affected sets, and the closed self keyword vocabulary to
+the canonical duration journal and effective-characteristic query. Dynamic or
+state-derived quantities, unsupported keywords, missing or alternate
+durations, copy and face-down semantics, and player or game-rule effects remain
+residual. This producer adds no family-specific ability-presence check and
+performs no dynamic characteristic count.
+
 `compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
 It accepts only live battlefield sets representable by `ObjectQuerySpec`: a
 source-controller relation over closed type, pinned creature-subtype, color,

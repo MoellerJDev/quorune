@@ -4936,11 +4936,27 @@
     },
     {
       "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectModelTests.test_activated_characteristic_dependency_gate_mutant_is_killed",
+      "official_rule_ids": ["611.2a", "611.2c", "613.1d", "613.1f", "613.1g", "613.4c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Block the activated producer's typed dependency gate and prove the fixed characteristic node loses exact trust."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
       "evidence_class": "negative",
       "test_id": "tests.test_continuous_effect_duration.ContinuousEffectEngineTests.test_malformed_mass_predicate_rolls_back_without_effect",
       "official_rule_ids": ["611.2a", "611.2c", "613.1d", "613.1f", "613.1g", "613.4c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Reject a malformed mass predicate without committing an authoritative effect."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
+      "evidence_class": "negative",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectModelTests.test_dynamic_activated_characteristic_effects_remain_residual",
+      "official_rule_ids": ["611.2a", "611.2c", "613.1d", "613.1f", "613.1g", "613.4c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep dynamic quantities, missing duration, and unsupported keyword grants outside the fixed activated characteristic boundary."
     },
     {
       "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
@@ -4957,6 +4973,14 @@
       "official_rule_ids": ["611.2a", "611.2c", "613.1d", "613.1f", "613.1g", "613.4c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Create and apply one fixed mass power/toughness effect to its resolution-time set."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
+      "evidence_class": "positive",
+      "test_id": "tests.test_continuous_effect_duration.ContinuousEffectModelTests.test_activated_fixed_characteristic_effects_are_capability_closed",
+      "official_rule_ids": ["611.2a", "611.2c", "613.1d", "613.1f", "613.1g", "613.4c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile fixed self stats, resolution-locked controlled-creature stats, and the closed self keyword vocabulary through the existing trusted duration owner."
     },
     {
       "capability_id": "continuous.resolution.fixed_characteristics_until_end_of_turn",
