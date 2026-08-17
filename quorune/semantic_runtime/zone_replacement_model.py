@@ -125,6 +125,7 @@ class ZoneChangeSubjectSnapshot:
     mana_colors_spent: tuple[str, ...] = ()
     intrinsic_entry_counters: tuple[IntrinsicEntryCounter, ...] = ()
     effect_entry_counters: tuple[EffectEntryCounter, ...] = ()
+    cast_option: str | None = None
 
     def __post_init__(self) -> None:
         required = (
@@ -178,6 +179,12 @@ class ZoneChangeSubjectSnapshot:
             "effect_entry_counters",
             effect_entry_counters,
         )
+        if self.cast_option is not None and (
+            type(self.cast_option) is not str or not self.cast_option
+        ):
+            raise ZoneReplacementError(
+                "Zone replacement cast option must be nonempty or null"
+            )
         if type(self.is_card_object) is not bool:
             raise ZoneReplacementError(
                 "Zone replacement card-object state must be boolean"

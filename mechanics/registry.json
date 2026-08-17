@@ -1,5 +1,5 @@
 {
-  "contract_count": 110,
+  "contract_count": 111,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -365,6 +365,12 @@
       "mechanic_id": "intimidate",
       "path": "mechanics/contracts/intimidate.json",
       "sha256": "8d0de73960a3a0a97f4e384626bedefdea3c2b61369b0da67baa7c4034a1b914",
+      "version": 1
+    },
+    {
+      "mechanic_id": "kicker",
+      "path": "mechanics/contracts/kicker.json",
+      "sha256": "4eb2d9e8b793840f32030a6c2170c6174119810a5c5816be28e1c62b8f74cbc9",
       "version": 1
     },
     {
@@ -3054,19 +3060,44 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/kicker.json",
+      "contract_sha256": "4eb2d9e8b793840f32030a6c2170c6174119810a5c5816be28e1c62b8f74cbc9",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "FixedManaKickerSpec, FixedKickedEntrySpec, source-pinned runtime components, total-cost composition, paid-spell fact, immutable zone snapshots, and canonical entry replacement owners",
+      "implementation_version": "typed-fixed-mana-kicker-entry-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "multiple and and/or Kicker",
+        "variable, hybrid, Phyrexian, snow, and nonmana Kicker costs",
+        "kicked spell-result alternatives",
+        "cast and entry triggers conditioned on Kicker",
+        "dynamic quantities",
+        "linked targets and result references",
+        "ability fragments and keyword counters",
+        "copied, granted, removed, and text-changing Kicker",
+        "aggregate Kicker coverage remains incomplete"
+      ],
       "mechanic_id": "kicker",
       "official_name": "Kicker",
       "rule_references": [
         "702.33"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_kicker_and_entry_descriptors_are_strict",
+        "test_fixed_kicker_and_entry_compile_source_spanned_programs",
+        "test_multi_and_variable_kicker_and_open_entry_results_remain_residual",
+        "test_kicker_dependency_and_compiler_mutations_fail_closed",
+        "test_kicked_cost_entry_counters_keyword_and_replay",
+        "test_normal_cast_omits_kicked_entry_results",
+        "test_kicked_counter_replacement_is_nested_and_replays",
+        "test_partial_card_withholds_kicker_option",
+        "test_kicked_haste_consumes_existing_attack_legality",
+        "test_stale_kicker_contract_rolls_back"
+      ],
       "trust_level": "untrusted"
     },
     {

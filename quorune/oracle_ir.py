@@ -30,7 +30,7 @@ from .compiler.activated_mana_nodes import (
 from .compiler.ability_keyword_fragments import (
     lower_ability_keyword_fragments,
 )
-from .compiler.declaration_nodes import declaration_static_node
+from .compiler.closed_static_nodes import closed_static_or_replacement_node
 from .compiler.dependency_gate import (
     dependency_gate as _dependency_gate,
     keyword_dependency_gate,
@@ -76,9 +76,6 @@ from .compiler.ir_model import (
     OracleResidual,
     SourceSpan,
 )
-from .compiler.intrinsic_counter_nodes import (
-    intrinsic_counter_prohibition_node,
-)
 from .compiler.prevention_templates import (
     fixed_prevention_effect_template,
     prevention_trigger_effect_template,
@@ -89,7 +86,6 @@ from .compiler.resolution_effect_templates import (
 from .compiler.scry_templates import fixed_scry_effect_template
 from .compiler.static_runtime_nodes import (
     runtime_handler_node,
-    static_runtime_node,
 )
 from .compiler.spell_additional_cost_nodes import (
     typed_additional_cost_spell_node,
@@ -1164,37 +1160,12 @@ def _compile_face(
             nodes.extend(event_nodes)
             continue
 
-        counter_prohibition = intrinsic_counter_prohibition_node(
+        closed_static = closed_static_or_replacement_node(
             node_id=node_id,
             line=line,
             material_line=material_line,
             span=span,
-            capability_registry=capability_registry,
-            capability_profile=capability_profile,
-            residuals=residuals,
-        )
-        if counter_prohibition is not None:
-            nodes.append(counter_prohibition)
-            continue
-
-        declaration_node = declaration_static_node(
-            node_id=node_id,
-            line=line,
-            card_name=face_name or record.name,
-            span=span,
-            residuals=residuals,
-            capability_registry=capability_registry,
-            capability_profile=capability_profile,
-        )
-        if declaration_node is not None:
-            nodes.append(declaration_node)
-            continue
-
-        runtime_node = static_runtime_node(
-            node_id=node_id,
-            line=line,
-            material_line=material_line,
-            span=span, source_name=face_name or record.name,
+            source_name=face_name or record.name,
             card_types=card_types,
             permanent_card_types=_PERMANENT_CARD_TYPES,
             source_is_class=("class" in type_parts(type_line)[1]),
@@ -1202,8 +1173,8 @@ def _compile_face(
             capability_profile=capability_profile,
             residuals=residuals,
         )
-        if runtime_node is not None:
-            nodes.append(runtime_node)
+        if closed_static is not None:
+            nodes.append(closed_static)
             continue
 
         if _REPLACEMENT_MARKERS.search(line):

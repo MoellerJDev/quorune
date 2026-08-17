@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "0112f308eed2c2d0ae90908d9d53694b6ad7e59467a7dbb7fbcc5d9cbfe96ce4"
+verified: "ef8bb686f38ea4eea35508192bb1fa35dd15074df5f087f076224196bf3627d9"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -14,17 +14,17 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 ## Snapshot
 
 - Cards considered: 31,623
-- Oracle states: `{"exact":4656,"partial":12454,"unresolved":14513}`
-- CardProgram states: `{"residual":26967,"trusted":4656}`
+- Oracle states: `{"exact":4676,"partial":12418,"unresolved":14529}`
+- CardProgram states: `{"residual":26947,"trusted":4676}`
 - Hard construction failures: 0
-- Frontier fingerprint: `0112f308eed2c2d0ae90908d9d53694b6ad7e59467a7dbb7fbcc5d9cbfe96ce4`
+- Frontier fingerprint: `ef8bb686f38ea4eea35508192bb1fa35dd15074df5f087f076224196bf3627d9`
 
 ## Highest-leverage single families
 
 | Family | Occurrences | Cards | Sole-blocker cards | Exact abilities | Readiness | Risk |
 |---|---:|---:|---:|---:|---|---|
-| `continuous_layer:continuous-effect-layers-and-dependencies` | 8,908 | 7,188 | 3,717 | 8,908 | missing_lowering | very_high |
-| `mechanic_dependency:cr-611-continuous-effects` | 515 | 473 | 243 | 381 | partial | high |
+| `continuous_layer:continuous-effect-layers-and-dependencies` | 8,884 | 7,169 | 3,720 | 8,884 | missing_lowering | very_high |
+| `mechanic_dependency:cr-611-continuous-effects` | 515 | 473 | 244 | 381 | partial | high |
 | `replacement:damage-prevention` | 208 | 203 | 45 | 74 | missing_lowering | very_high |
 | `mechanic_dependency:cr-615-prevention-effects` | 78 | 76 | 28 | 31 | partial | high |
 | `activated_effect:return` | 417 | 416 | 26 | 47 | missing_lowering | high |
@@ -53,26 +53,26 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 
 | Families | Exact cards | Exact abilities | Residuals |
 |---|---:|---:|---:|
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, replacement:damage-prevention` | 4,035 | 9,363 | 9,375 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:return` | 4,021 | 9,336 | 9,357 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:bestow` | 4,020 | 9,331 | 9,331 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-615-prevention-effects` | 4,017 | 9,320 | 9,320 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:create-token` | 4,016 | 9,355 | 9,369 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:cascade` | 4,014 | 9,326 | 9,326 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:changeling` | 4,011 | 9,351 | 9,351 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:start-your-engines` | 4,010 | 9,329 | 9,329 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:life-change` | 4,009 | 9,345 | 9,346 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:exile` | 4,008 | 9,330 | 9,339 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:life-change` | 4,007 | 9,324 | 9,332 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:equip` | 4,007 | 9,314 | 9,314 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:affinity-unsupported-wording` | 4,006 | 9,325 | 9,325 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:unparsed-this-creature-can` | 4,006 | 9,312 | 9,321 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:draw` | 4,005 | 9,351 | 9,351 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:return` | 4,005 | 9,317 | 9,317 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:unparsed-surveil-1` | 4,005 | 9,310 | 9,314 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:storm` | 4,004 | 9,322 | 9,322 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:put-onto-battlefield` | 4,004 | 9,321 | 9,322 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-400-general` | 4,003 | 9,315 | 9,315 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, replacement:damage-prevention` | 4,039 | 9,339 | 9,351 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:return` | 4,025 | 9,312 | 9,333 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:bestow` | 4,024 | 9,307 | 9,307 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-615-prevention-effects` | 4,021 | 9,296 | 9,296 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:create-token` | 4,020 | 9,331 | 9,345 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:cascade` | 4,018 | 9,302 | 9,302 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:changeling` | 4,015 | 9,327 | 9,327 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:start-your-engines` | 4,014 | 9,305 | 9,305 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:life-change` | 4,013 | 9,321 | 9,322 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:exile` | 4,012 | 9,306 | 9,315 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:life-change` | 4,011 | 9,300 | 9,308 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:equip` | 4,011 | 9,290 | 9,290 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:affinity-unsupported-wording` | 4,010 | 9,301 | 9,301 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:unparsed-this-creature-can` | 4,010 | 9,288 | 9,297 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:draw` | 4,009 | 9,327 | 9,327 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, effect_clause:return` | 4,009 | 9,293 | 9,293 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:unparsed-surveil-1` | 4,009 | 9,286 | 9,290 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, keyword_dependency:storm` | 4,008 | 9,298 | 9,298 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, activated_effect:put-onto-battlefield` | 4,008 | 9,297 | 9,298 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, mechanic_dependency:cr-611-continuous-effects, mechanic_dependency:cr-400-general` | 4,007 | 9,291 | 9,291 |
 
 ## Hard construction failures
 

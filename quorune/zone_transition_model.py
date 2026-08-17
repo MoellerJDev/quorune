@@ -101,6 +101,7 @@ class ZoneDepartureSnapshot:
     attachments: tuple[str, ...]
     attached_to: str | None
     trigger_sources: DepartureTriggerSnapshot
+    cast_option: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

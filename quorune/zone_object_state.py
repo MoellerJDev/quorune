@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 
 from .model import CardInstance
+from .kicker import KICKER_ANNOTATION
 from .morph import (
     FixedManaMorphSpec,
     MORPH_FACE_DOWN_ANNOTATION,
@@ -16,6 +17,19 @@ from .morph import (
 
 class ZoneObjectStateError(ValueError):
     """A zone-object reset request is malformed."""
+
+
+def mark_card_kicked(card: CardInstance) -> None:
+    """Record one paid Kicker cost on the current spell object."""
+
+    if (
+        not isinstance(card, CardInstance)
+        or card.zone != "stack"
+        or card.object_kind != "card"
+        or card.annotations.get(KICKER_ANNOTATION) is not None
+    ):
+        raise ZoneObjectStateError("Paid Kicker spell state is malformed")
+    card.annotations[KICKER_ANNOTATION] = True
 
 
 def mark_card_unearthed(card: CardInstance) -> None:
@@ -165,6 +179,7 @@ def reset_card_after_zone_change(
 
 __all__ = [
     "mark_card_face_down_for_morph",
+    "mark_card_kicked",
     "mark_card_unearthed",
     "ZoneObjectStateError",
     "reset_card_after_zone_change",

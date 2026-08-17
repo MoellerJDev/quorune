@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 110,
+  "registry_version": 111,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -5106,6 +5106,60 @@
       "dependency_fail_closed_rationale": "Blocking Haste consumption, zone-object keyword ownership, APNAP trigger placement, or destination replacement prevents the Unearth node from receiving trusted closure; the activation catalog never falls back to keyword or Oracle prose.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_unearth_dependency_and_compiler_mutations_fail_closed removes the closed node production and independently blocks each required capability, proving exact runtime admission disappears.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "casting.kicker.fixed_mana",
+      "version": 1,
+      "official_rules": ["601.2f", "601.2g", "601.2h", "601.2i", "702.33", "702.33a", "702.33b", "702.33c", "702.33f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile one single fixed ordinary-mana Kicker ability into an optional additional total-cost branch and preserve the paid-kicker fact through the spell's current stack incarnation.",
+        "inputs": ["one physical normal-layout card", "one source-spanned single fixed ordinary-mana Kicker line", "complete current CardProgram admission", "one selected server-authored total-cost option", "ordinary casting and mana payment"],
+        "outputs": ["one normal and one kicked total-cost option", "canonical mana payment", "one source-pinned paid-kicker stack fact", "zone-entry replacement and trigger context", "exact replay"],
+        "exclusions": ["multiple, and/or, repeated, variable, hybrid, Phyrexian, snow, and nonmana Kicker costs", "copied, granted, modified, or text-changed Kicker", "multiface cards and spell copies", "partial cards whose kicked result remains residual", "cost reduction or increase rules outside existing total-cost composition"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.kicker.FixedManaKickerSpec", "quorune.compiler.kicker_nodes.fixed_mana_kicker_keyword_node", "quorune.semantic_runtime.kicker.FixedManaKickerHandler", "quorune.compiled_kicker.compiled_fixed_mana_kicker_spec", "quorune.rules.casting.costs._program_cost_options", "quorune.rules.casting.commit.commit_cast", "quorune.zone_object_state.mark_card_kicked", "quorune.zone_trigger_events.ZoneChangeOccurrence"],
+      "positive_tests": ["test_fixed_kicker_and_entry_compile_source_spanned_programs", "test_kicked_cost_entry_counters_keyword_and_replay"],
+      "negative_tests": ["test_multi_and_variable_kicker_and_open_entry_results_remain_residual", "test_partial_card_withholds_kicker_option", "test_stale_kicker_contract_rolls_back"],
+      "interaction_tests": ["test_kicked_counter_replacement_is_nested_and_replays", "test_kicked_haste_consumes_existing_attack_legality"],
+      "multiplayer_tests": ["test_kicked_cost_entry_counters_keyword_and_replay"],
+      "privacy_tests": ["test_kicked_cost_entry_counters_keyword_and_replay"],
+      "replay_tests": ["test_kicked_cost_entry_counters_keyword_and_replay", "test_kicked_counter_replacement_is_nested_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded fixed-mana Kicker cost component has no child capability; its closed descriptor, complete-card admission certificate, total-cost option identity, and stale commit revalidation fail closed independently.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_kicker_dependency_and_compiler_mutations_fail_closed removes the closed Kicker production and proves the real cards lose exact admission instead of retaining an optional-cost fallback.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "replacement.kicker.fixed_entry",
+      "version": 1,
+      "official_rules": ["122.1b", "122.6", "614.1c", "614.12", "614.16", "616.1", "702.33d", "702.33f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Apply one fixed kicked enters-with result as a mandatory self-replacement that creates positive +1/+1 counters and optionally grants one represented zone-object keyword.",
+        "inputs": ["one trusted paid-kicker stack fact", "same physical card proposing battlefield entry", "one fixed positive +1/+1 counter amount", "optional Flying, First strike, Haste, or Trample", "prospective controller and current replacement set"],
+        "outputs": ["one mandatory self-replacement", "nested replacement-aware counter placement", "optional identity-pinned layer-6 keyword grant", "normalized kicked entry fact", "canonical journal and exact replay"],
+        "exclusions": ["dynamic, nonpositive, distributed, optional, or non-+1/+1 counters", "multiple or chosen keywords", "ability fragments or attack permissions", "trample and other keyword counters", "kicked triggers, spell-result riders, modal or linked results", "unrepresented replacement, continuous-effect, or keyword consumers"]
+      },
+      "dependencies": ["activation.tap_untap_cost.haste", "casting.kicker.fixed_mana", "combat.attack.haste", "combat.block.flying", "combat.damage.assignment.trample", "combat.damage.participation.strike_steps", "counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.kicker.FixedKickedEntrySpec", "quorune.compiler.kicker_nodes.fixed_kicked_entry_node", "quorune.semantic_runtime.kicker.FixedKickedEntryHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.replacement.operations.CreateAffectedObjectCounter", "quorune.replacement.operations.GrantAffectedObjectKeyword", "quorune.entry_keyword_grants.commit_entry_keyword_grants", "quorune.entry_results.commit_prepared_entry_results"],
+      "positive_tests": ["test_fixed_kicker_and_entry_compile_source_spanned_programs", "test_kicked_cost_entry_counters_keyword_and_replay"],
+      "negative_tests": ["test_multi_and_variable_kicker_and_open_entry_results_remain_residual", "test_partial_card_withholds_kicker_option"],
+      "interaction_tests": ["test_kicked_counter_replacement_is_nested_and_replays", "test_kicked_haste_consumes_existing_attack_legality"],
+      "multiplayer_tests": ["test_kicked_cost_entry_counters_keyword_and_replay"],
+      "privacy_tests": ["test_kicked_cost_entry_counters_keyword_and_replay"],
+      "replay_tests": ["test_kicked_cost_entry_counters_keyword_and_replay", "test_kicked_counter_replacement_is_nested_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking fixed Kicker, counter quantity replacement, or any represented keyword consumer prevents the kicked-entry node from receiving trusted closure.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_kicker_dependency_and_compiler_mutations_fail_closed removes the kicked-entry production and independently blocks its dependencies, so no card retains exact entry behavior.",
       "blockers": [],
       "status": "trusted"
     },

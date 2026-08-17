@@ -27,6 +27,7 @@ from .life_state import (
     commit_life_payment,
     prepare_life_payment,
 )
+from .kicker import KICKER_ANNOTATION
 from .model import CardInstance, GameState, StackItem
 from .relative_power_target import pin_host_relative_power_source_departures
 from .station import pin_host_station_departures
@@ -406,6 +407,11 @@ class ZoneTransitionOwner:
                 semantic_events=semantic_events,
                 origin=card.zone,
             ),
+            cast_option=(
+                "kicked"
+                if card.annotations.get(KICKER_ANNOTATION) is True
+                else None
+            ),
         )
 
     def _commit_move(
@@ -749,6 +755,7 @@ class ZoneTransitionOwner:
             cause=reason,
             transition_kind=transition_kind,
             read_ahead_chapter=read_ahead_chapter,
+            cast_option=departure.cast_option,
         )
         owns_trigger_batch = trigger_batch is None
         event_triggers = trigger_batch if trigger_batch is not None else []

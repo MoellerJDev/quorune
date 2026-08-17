@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "00c43a14500fc7c44512c3bac47cd726fb0005ba40f2df0e9985f0e61222a02e"
+verified: "d1136aaa376a4484cce1d165569773ed32d53d9bf84d8a5da12e7203ca47f8c9"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -49,9 +49,9 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar | 169 | 19 | 6 | 6 | 11 | 10 | `blocked` |
 | Gwen Stacy // Ghost-Spider | 168 | 22 | 5 | 5 | 8 | 13 | `blocked` |
 | Invasion of Kaldheim // Pyre of the World Tree | 168 | 16 | 5 | 4 | 5 | 22 | `blocked` |
-| Jace, Mirror Mage | 168 | 23 | 4 | 4 | 11 | 13 | `blocked` |
 | Ajani, Nacatl Pariah // Ajani, Nacatl Avenger | 166 | 23 | 4 | 5 | 10 | 15 | `blocked` |
 | Chandra, Fire of Kaladesh // Chandra, Roaring Flame | 166 | 21 | 4 | 5 | 9 | 15 | `blocked` |
+| Jace, Mirror Mage | 166 | 23 | 4 | 4 | 10 | 13 | `blocked` |
 | Athreos, Shroud-Veiled | 165 | 18 | 5 | 4 | 3 | 24 | `blocked` |
 | Dr. Madison Li | 165 | 22 | 7 | 4 | 6 | 10 | `blocked` |
 | Starscream, Power Hungry // Starscream, Seeker Leader | 165 | 17 | 4 | 8 | 4 | 19 | `blocked` |

@@ -33,6 +33,7 @@ from ..replacement_effects import (
 from ..rules.capabilities import load_default_capability_registry
 from ..turn_history import opponent_was_dealt_damage_this_turn
 from ..unearth import unearthed_leave_replacement
+from ..kicker import KICKER_ANNOTATION
 from .component_registry import RuntimeComponentRegistry, exact_fields
 from .context import SemanticNodeError
 from .counter_replacements import (
@@ -42,6 +43,7 @@ from .self_entry_counters import SelfEntryCounterHandler
 from .conditional_entry_counters import ConditionalSelfEntryCounterHandler
 from .sunburst import SunburstEntryCounterHandler
 from .entry_choices import ReadAheadEntryChoiceHandler, RiotEntryChoiceHandler
+from .kicker import FixedKickedEntryHandler
 from ..read_ahead import READ_AHEAD_ENTRY_HANDLER_ID
 from .entry_state import ENTRY_STATE_HANDLER_ID, EntryStateReplacementHandler
 from .zone_replacement_model import (
@@ -394,6 +396,7 @@ def default_zone_change_replacement_registry(
             EntryStateReplacementHandler(),
             ReadAheadEntryChoiceHandler(),
             RiotEntryChoiceHandler(),
+            FixedKickedEntryHandler(),
             SelfEntryCounterHandler(),
             SunburstEntryCounterHandler(),
             ZoneDestinationReplacementHandler(),
@@ -885,6 +888,11 @@ def _zone_change_snapshot_subjects(
                         sorted({*card_types, *subtypes, *supertypes})
                     ),
                     is_card_object=card.is_card_object,
+                    cast_option=(
+                        "kicked"
+                        if card.annotations.get(KICKER_ANNOTATION) is True
+                        else None
+                    ),
                 )
             )
         except (
@@ -1099,6 +1107,11 @@ def _snapshot_event(
             "object_types": list(subject.object_types),
             "logical_object_id": subject.logical_object_id,
             "owner": subject.owner,
+            **(
+                {"cast_option": subject.cast_option}
+                if subject.cast_option is not None
+                else {}
+            ),
             "tapped": subject.requested_tapped,
             "entry_life_payment": 0,
             "read_ahead_chapter": None,
