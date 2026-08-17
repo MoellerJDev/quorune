@@ -112,6 +112,13 @@ class FixedEffectClauseSequenceCompilerTests(unittest.TestCase):
             ),
             (
                 sequence_record(
+                    "Draw a card. Target opponent loses 1 life."
+                ),
+                "spell_ability",
+                ("draw", "lose_life"),
+            ),
+            (
+                sequence_record(
                     "Fixed Clause Sequence deals 2 damage to each creature. "
                     "Scry 1."
                 ),
