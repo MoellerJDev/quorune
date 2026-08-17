@@ -123,6 +123,7 @@ VALID_EFFECT_OPERATIONS = {
     "reveal_top_permanent",
     "search",
     "scry",
+    "surveil",
     "sylvan_library_settle",
     "springheart_landfall",
     "station",

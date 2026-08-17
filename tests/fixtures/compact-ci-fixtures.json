@@ -46,6 +46,17 @@
       "deck_files": [],
       "fixture_files": [],
       "rationale": "The helper iterates the fixed-query keyword grant source cards by name."
+    },
+    {
+      "source": "tests/test_surveil_rules.py",
+      "symbol": "FixedSurveilRuntimeTests.register",
+      "card_names": [
+        "Dauthi Voidwalker"
+      ],
+      "oracle_ids": [],
+      "deck_files": [],
+      "fixture_files": [],
+      "rationale": "The helper accepts explicit replacement-source witness names; this module calls it only for Dauthi Voidwalker."
     }
   ],
   "full_database_only": []

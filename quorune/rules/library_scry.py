@@ -5,6 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Protocol
 
+from .library_partition import (
+    LibraryPartitionError,
+    OrderedLibraryPartition,
+    commit_ordered_library_partition,
+    partition_refs,
+)
+
 
 class ScryError(ValueError):
     """A Scry instruction, arrangement, or current library is malformed."""
@@ -14,14 +21,10 @@ _LIBRARY_ZONE = "library"
 
 
 def _refs(value: Any, *, field: str) -> tuple[str, ...]:
-    if not isinstance(value, (list, tuple)):
-        raise ScryError(f"{field} must be a list of object references")
-    result = tuple(value)
-    if any(type(ref) is not str or not ref for ref in result):
-        raise ScryError(f"{field} must contain nonempty object references")
-    if len(result) != len(set(result)):
-        raise ScryError(f"{field} must not contain duplicate references")
-    return result
+    try:
+        return partition_refs(value, field=field)
+    except LibraryPartitionError as exc:
+        raise ScryError(str(exc)) from exc
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,19 +45,20 @@ class ScryArrangement:
             self.bottom_bottom_first,
             field="bottom_bottom_first",
         )
-        if set(top).intersection(bottom):
-            raise ScryError("Scry top and bottom groups must be disjoint")
-        if len(top) + len(bottom) != len(looked) or set((*top, *bottom)) != set(
-            looked
-        ):
-            raise ScryError(
-                "Scry top and bottom groups must partition every looked-at card"
+        try:
+            partition = OrderedLibraryPartition(
+                looked_top_first=looked,
+                top_top_first=top,
+                destination_refs=bottom,
+                destination="bottom",
             )
+        except LibraryPartitionError as exc:
+            raise ScryError(str(exc)) from exc
         if type(self.legacy_subset_response) is not bool:
             raise ScryError("Scry legacy-response state must be boolean")
-        object.__setattr__(self, "looked_top_first", looked)
-        object.__setattr__(self, "top_top_first", top)
-        object.__setattr__(self, "bottom_bottom_first", bottom)
+        object.__setattr__(self, "looked_top_first", partition.looked_top_first)
+        object.__setattr__(self, "top_top_first", partition.top_top_first)
+        object.__setattr__(self, "bottom_bottom_first", partition.destination_refs)
 
     @classmethod
     def from_response(
@@ -138,10 +142,16 @@ def commit_scry_arrangement(
     if current_top != looked_ids:
         raise ScryError("The looked-at library top changed before Scry completed")
     by_ref = dict(zip(arrangement.looked_top_first, looked_ids, strict=True))
-    untouched = library[: len(library) - len(looked_ids)]
     bottom_ids = [by_ref[ref] for ref in arrangement.bottom_bottom_first]
     top_ids = [by_ref[ref] for ref in arrangement.top_top_first]
-    library[:] = [*bottom_ids, *untouched, *reversed(top_ids)]
+    try:
+        commit_ordered_library_partition(
+            library,
+            top_top_first=top_ids,
+            bottom_bottom_first=bottom_ids,
+        )
+    except LibraryPartitionError as exc:
+        raise ScryError(str(exc)) from exc
     changed_ids = (
         bottom_ids
         if arrangement.legacy_subset_response

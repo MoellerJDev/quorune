@@ -15,6 +15,11 @@ function stringValue(value: JsonValue | undefined): string {
   return value === undefined || value === null ? "" : String(value);
 }
 
+function orderedPartitionNames(field: ChoiceField): string[] {
+  const names = Object.keys(record(field.partitions));
+  return names.length === 2 ? names : ["top", "bottom"];
+}
+
 function initialField(field: ChoiceField): JsonValue | undefined {
   if (field.default !== undefined) return structuredClone(field.default);
   const control = stringValue(field.control);
@@ -38,11 +43,12 @@ function initialField(field: ChoiceField): JsonValue | undefined {
     return [];
   }
   if (control === "ordered_partition") {
+    const [primary, secondary] = orderedPartitionNames(field);
     return {
-      top: list(field.options).map((option) =>
+      [primary]: list(field.options).map((option) =>
         stringValue(record(option).value),
       ),
-      bottom: [],
+      [secondary]: [],
     };
   }
   if (control === "copy_targets") {
@@ -228,14 +234,15 @@ function fieldErrors(field: ChoiceField, values: ChoiceValues): string[] {
     }
   } else if (control === "ordered_partition") {
     const partition = record(value);
-    const top = list(partition.top).map(String);
-    const bottom = list(partition.bottom).map(String);
-    const selected = [...top, ...bottom];
+    const groups = orderedPartitionNames(field);
+    const selected = groups.flatMap((group) =>
+      list(partition[group]).map(String),
+    );
     const legal = list(field.options).map((option) =>
       stringValue(record(option).value),
     );
     if (selected.length !== legal.length) {
-      errors.push(`${label} must place every card on top or bottom.`);
+      errors.push(`${label} must place every card in one destination group.`);
     }
     if (new Set(selected).size !== selected.length) {
       errors.push(`${label} cannot place the same card twice.`);

@@ -20,7 +20,13 @@ from ..semantic_runtime import (
     PlacePlayerCountersIntent,
     ProliferateIntent,
     ProliferateSubject,
+    SurveilLibraryIntent,
     ZoneMoveIntent,
+)
+from ..rules.library_surveillance import (
+    SurveilArrangement,
+    SurveilError,
+    SurveilObjectIdentity,
 )
 from .model import SemanticChoiceError
 
@@ -117,6 +123,18 @@ _LIFE_CHANGE_FIELDS = {
     _REASON_FIELD,
     "source_ref",
 }
+_SURVEIL_FIELDS = {
+    "actor",
+    "player",
+    "arrangement",
+    "requested_count",
+    _REASON_FIELD,
+}
+_SURVEIL_ARRANGEMENT_FIELDS = {
+    "looked",
+    "top_top_first",
+    "graveyard_refs",
+}
 
 
 def counter_intent_identity(intent: PlaceCountersIntent) -> dict[str, Any]:
@@ -177,6 +195,28 @@ def validate_counter_intent_identity(value: Mapping[str, Any]) -> dict[str, Any]
         _REASON_FIELD: reason,
         "source_ref": source,
     }
+
+
+def _surveil_intent_identity(
+    intent: SurveilLibraryIntent,
+) -> tuple[str, dict[str, Any]]:
+    return (
+        "surveil_library",
+        {
+            "actor": intent.actor,
+            "player": intent.player,
+            "arrangement": {
+                "looked": [
+                    identity.to_dict()
+                    for identity in intent.arrangement.looked
+                ],
+                "top_top_first": list(intent.arrangement.top_top_first),
+                "graveyard_refs": list(intent.arrangement.graveyard_refs),
+            },
+            "requested_count": intent.requested_count,
+            _REASON_FIELD: intent.reason,
+        },
+    )
 
 
 def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
@@ -320,6 +360,8 @@ def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
             "zone_move",
             identity,
         )
+    if isinstance(intent, SurveilLibraryIntent):
+        return _surveil_intent_identity(intent)
     raise SemanticChoiceError(
         "Semantic replacement continuation requires a supported typed intent"
     )
@@ -495,6 +537,45 @@ def _validate_counter_target_set_intent_identity(
     }
 
 
+def _validate_surveil_intent_identity(
+    value: Mapping[str, Any],
+) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or set(value) != _SURVEIL_FIELDS:
+        raise SemanticChoiceError(
+            "Surveil intent identity fields are malformed"
+        )
+    raw_arrangement = value["arrangement"]
+    if (
+        not isinstance(raw_arrangement, Mapping)
+        or set(raw_arrangement) != _SURVEIL_ARRANGEMENT_FIELDS
+        or not isinstance(raw_arrangement["looked"], (list, tuple))
+    ):
+        raise SemanticChoiceError(
+            "Surveil intent arrangement is malformed"
+        )
+    try:
+        arrangement = SurveilArrangement(
+            looked=tuple(
+                SurveilObjectIdentity.from_dict(identity)
+                for identity in raw_arrangement["looked"]
+            ),
+            top_top_first=tuple(raw_arrangement["top_top_first"]),
+            graveyard_refs=tuple(raw_arrangement["graveyard_refs"]),
+        )
+        intent = SurveilLibraryIntent(
+            actor=value["actor"],
+            player=value["player"],
+            arrangement=arrangement,
+            requested_count=value["requested_count"],
+            reason=value[_REASON_FIELD],
+        )
+    except (SurveilError, TypeError, ValueError) as exc:
+        raise SemanticChoiceError(
+            "Surveil intent identity is malformed"
+        ) from exc
+    return semantic_intent_identity(intent)[1]
+
+
 def validate_semantic_intent_identity(
     kind: str,
     value: Mapping[str, Any],
@@ -515,6 +596,8 @@ def validate_semantic_intent_identity(
         return _validate_proliferate_intent_identity(value)
     if kind == "create_token":
         return _validate_create_token_intent_identity(value)
+    if kind == "surveil_library":
+        return _validate_surveil_intent_identity(value)
     if kind != "zone_move":
         raise SemanticChoiceError("Unknown semantic intent continuation kind")
     if not isinstance(value, Mapping):
@@ -843,6 +926,7 @@ def with_replacement_selections(
     | PlacePlayerCountersIntent
     | ProliferateIntent
     | CreateTokenIntent
+    | SurveilLibraryIntent
     | ZoneMoveIntent
 ):
     if not isinstance(
@@ -856,6 +940,7 @@ def with_replacement_selections(
             PlacePlayerCountersIntent,
             ProliferateIntent,
             CreateTokenIntent,
+            SurveilLibraryIntent,
             ZoneMoveIntent,
         ),
     ):

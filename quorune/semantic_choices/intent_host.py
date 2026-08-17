@@ -57,6 +57,10 @@ from ..permanent_designations import (
     become_renowned,
 )
 from ..rules.library_scry import ScryError, commit_scry_arrangement
+from ..rules.library_surveillance import (
+    SurveilError,
+    commit_surveil_arrangement,
+)
 from ..replacement.immutable import thaw_value
 from ..replacement import ReplacementChoiceRequired, ReplacementEventBatch
 from ..semantic_runtime import (
@@ -78,6 +82,7 @@ from ..semantic_runtime import (
     LifeChangeIntent,
     MoveLibraryCardsToBottomIntent,
     ScryLibraryIntent,
+    SurveilLibraryIntent,
     MoveObjectsSimultaneouslyIntent,
     PayLifeIntent,
     PayManaCostIntent,
@@ -743,6 +748,23 @@ class SemanticChoiceIntentHostMixin:
                 reason=intent.reason,
             )
         except ScryError as exc:
+            raise GameRuleError(str(exc)) from exc
+
+    def surveil_library_intent(
+        self,
+        intent: SurveilLibraryIntent,
+    ) -> object:
+        try:
+            return commit_surveil_arrangement(
+                self,
+                actor=intent.actor,
+                player=intent.player,
+                arrangement=intent.arrangement,
+                requested_count=intent.requested_count,
+                reason=intent.reason,
+                replacement_selections=intent.replacement_selections,
+            )
+        except SurveilError as exc:
             raise GameRuleError(str(exc)) from exc
 
     def reorder_library_top_intent(

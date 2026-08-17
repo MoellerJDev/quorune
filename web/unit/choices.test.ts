@@ -208,6 +208,35 @@ test("ordered library partitions require every legal card exactly once", () => {
   assert.match(validateChoices(scry, choices).join(" "), /every card|same card/);
 });
 
+test("ordered library partitions honor server-issued Surveil destinations", () => {
+  const surveil = form([
+    {
+      name: "cards",
+      label: "Cards",
+      control: "ordered_partition",
+      required: true,
+      options: [
+        { value: "A01", label: "First" },
+        { value: "A02", label: "Second" },
+      ],
+      partitions: {
+        top: { label: "Top of library", order: "top_to_bottom" },
+        graveyard: {
+          label: "Graveyard",
+          order: "graveyard_top_to_bottom",
+        },
+      },
+    },
+  ]);
+  const choices = initialChoices(surveil);
+  assert.deepEqual(choices.cards, { top: ["A01", "A02"], graveyard: [] });
+  choices.cards = { top: ["A02"], graveyard: ["A01"] };
+  assert.deepEqual(validateChoices(surveil, choices), []);
+  assert.deepEqual(executableChoices(surveil, choices), {
+    cards: { top: ["A02"], graveyard: ["A01"] },
+  });
+});
+
 test("mana modes preserve an exact server-issued bundle", () => {
   const mana = form([
     {

@@ -22,6 +22,7 @@ from ..semantic_runtime import (
     PlaceCountersOnTargetsIntent,
     PlacePlayerCountersIntent,
     ProliferateIntent,
+    SurveilLibraryIntent,
     ZoneMoveIntent,
     execute_intent_plan,
 )
@@ -253,6 +254,7 @@ def continue_semantic_completion(
                     PlaceCountersOnTargetsIntent,
                     PlacePlayerCountersIntent,
                     ProliferateIntent,
+                    SurveilLibraryIntent,
                     ZoneMoveIntent,
                 ),
             ):

@@ -39,6 +39,7 @@ from .intents import (
     MoveLibraryCardsToBottomIntent,
     MillCardsIntent,
     ScryLibraryIntent,
+    SurveilLibraryIntent,
     PayManaCostIntent,
     PayLifeIntent,
     PlaceCounterBatchIntent,
@@ -149,6 +150,11 @@ class SemanticIntentSink(
         self,
         intent: ScryLibraryIntent,
     ) -> tuple[str, ...]: ...
+
+    def surveil_library_intent(
+        self,
+        intent: SurveilLibraryIntent,
+    ) -> object: ...
 
     def reorder_library_top_intent(
         self,
@@ -397,6 +403,7 @@ LibraryIntent = (
     | RevealLibraryCardsIntent
     | MoveLibraryCardsToBottomIntent
     | ScryLibraryIntent
+    | SurveilLibraryIntent
     | ReorderLibraryTopIntent
 )
 LIBRARY_INTENT_TYPES = (
@@ -406,6 +413,7 @@ LIBRARY_INTENT_TYPES = (
     RevealLibraryCardsIntent,
     MoveLibraryCardsToBottomIntent,
     ScryLibraryIntent,
+    SurveilLibraryIntent,
     ReorderLibraryTopIntent,
 )
 
@@ -427,6 +435,8 @@ def _execute_library_intent(
         return intent.player, sink.move_library_cards_to_bottom_intent(intent)
     if isinstance(intent, ScryLibraryIntent):
         return intent.player, sink.scry_library_intent(intent)
+    if isinstance(intent, SurveilLibraryIntent):
+        return intent.player, sink.surveil_library_intent(intent)
     return intent.player, sink.reorder_library_top_intent(intent)
 
 

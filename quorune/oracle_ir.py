@@ -85,6 +85,7 @@ from .compiler.resolution_effect_templates import (
     typed_resolution_effect_template,
 )
 from .compiler.scry_templates import fixed_scry_effect_template
+from .compiler.surveil_templates import fixed_surveil_effect_template
 from .compiler.static_runtime_nodes import (
     runtime_handler_node,
 )
@@ -381,6 +382,9 @@ def _effect_template(
     scry_template = fixed_scry_effect_template(normalized)
     if scry_template is not None:
         return scry_template.compiled()
+    surveil_template = fixed_surveil_effect_template(normalized)
+    if surveil_template is not None:
+        return surveil_template.compiled()
     return None, (), None, ()
 
 

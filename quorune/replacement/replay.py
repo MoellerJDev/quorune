@@ -988,6 +988,7 @@ def _decode_semantic_intent_continuation(
             "place_counters_on_targets",
             "place_player_counters",
             "proliferate",
+            "surveil_library",
             "zone_move",
         }
         or type(intent_index) is not int

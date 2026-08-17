@@ -79,6 +79,15 @@ cards-milled-this-way consumers, and graveyard-order-sensitive interactions
 while CR 404.3 is blocked remain source-spanned residuals or explicit trust
 exclusions.
 
+`compiler/surveil_templates.py` owns one mandatory positive fixed-count
+controller Surveil instruction. The leaf grammar is shared by spell,
+self-entry trigger, activated, and independently typed two-clause contexts.
+It issues the generic private ordered-partition choice and delegates selected
+library-to-graveyard cards to the canonical simultaneous zone-transition owner;
+runtime never reparses the printed instruction. Zero, dynamic, optional, cost,
+targeted, repeated, copied, granted, additional-look, linked-result, and
+unsupported Surveil-event trigger forms remain source-spanned residuals.
+
 `compiler/fixed_effect_clause_sequences.py` owns the general closed
 two-sentence composition boundary. It accepts exactly two top-level,
 period-separated, mandatory clauses when each clause independently lowers to
