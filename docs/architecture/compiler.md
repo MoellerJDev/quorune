@@ -58,6 +58,15 @@ order. Each clause reuses its existing typed owner; the sequence adds only the
 immutable ordering and continuation boundary. Optional, modal, conditional,
 variable, linked, repeated, and larger instruction families remain residual.
 
+`compiler/life_templates.py` owns fixed life changes shared by spell and
+activated contexts. In addition to controller gain/loss, it lowers one direct
+player gain or loss, one opponent-only loss or equal drain, and one equal
+each-opponent drain. Direct targets use the ordinary public player-target and
+resolution-revalidation boundary; table-wide drains use one canonical life
+batch. Dynamic amounts, target-player drains that could affect the controller,
+each-player loss, life-total setting, exchanges, and unequal drains remain
+source-spanned residuals.
+
 `compiler/fixed_effect_clause_sequences.py` owns the general closed
 two-sentence composition boundary. It accepts exactly two top-level,
 period-separated, mandatory clauses when each clause independently lowers to

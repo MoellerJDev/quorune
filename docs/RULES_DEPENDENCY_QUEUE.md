@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "e7f5e3884f5fcecbc02a5ef5aa9637255c5f45be9643ed832a654894382f55d6"
+verified: "b65151c842ec55a5143ddb8237f98698f6f657281a10e3e4d373320990b3c408"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `5302f9e60af8410ea33499a189595e23b69854aa1f535ea8ed47d9eb2f1f09b1`
+Source fingerprint: `64d9d8b9f4b8e62abdeb8e40b49b67aa655b0efea638662b5d7113b12f84034a`
 
 ## Current top-level state
 
@@ -31,8 +31,8 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 273 | 0 | 0 |
-| 2 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 14 | 106 | 0 | 0 |
+| 1 | selected | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 271 | 0 | 0 |
+| 2 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 16 | 106 | 0 | 0 |
 | 3 | deferred | `frontier:keyword_dependency:enchant` | `card_family` | 0 | 139 | 0 | 0 |
 | 4 | deferred | `frontier:target_or_choice:typed-enchant-restriction` | `rules_foundation` | 0 | 139 | 0 | 0 |
 | 5 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |

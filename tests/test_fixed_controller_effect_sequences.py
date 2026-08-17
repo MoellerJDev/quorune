@@ -270,7 +270,7 @@ class FixedControllerEffectSequenceCompilerTests(unittest.TestCase):
         for text in (
             "Draw cards equal to the number of creatures you control. Scry 1.",
             "Scry 1, then you may draw a card.",
-            "Draw a card. Target opponent loses 1 life.",
+            "Draw a card. Each player loses 1 life.",
             "Draw a card. Scry 1. You gain 1 life.",
             "Draw a card unless an opponent pays {1}.",
         ):

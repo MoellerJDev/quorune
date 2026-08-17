@@ -409,6 +409,11 @@
         "candidate_id": "compiler:typed-fixed-alternative-additional-costs",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "The rank-one choose-one aggregate still has zero sole blockers and is not one coherent grammar family. The rank-two 123-card additional-cost bucket was classified into typed children; this closed binary fixed-cost owner immediately harvests its mana, life, and existing single-object zone-change alternatives while leaving optional, variable, random, tap, reveal, and named-mechanic costs residual. Morph was deferred because face-down proposal and characteristic foundations are not yet present."
+      },
+      {
+        "candidate_id": "compiler:fixed-player-life-effects",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "The generated rank-one candidate is only 273 identical nonexecuting Choose one headers with zero sole-blocker cards, and the rank-two additional-cost candidate remains a heterogeneous mix of discard, sacrifice, tap, exile, reveal, random, variable, and named-mechanic costs. A pinned-corpus probe instead measured one closed fixed player-life grammar across spell and activated contexts at 55 exact abilities and 14 complete cards through the existing target-revalidation, life-replacement, multiplayer batch, replay, and privacy owners."
       }
     ]
   },
