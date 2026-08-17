@@ -31,25 +31,49 @@ def fixed_life_node_capabilities(
     """Return life ownership only for the closed fixed-value grammar."""
 
     mechanics = {str(value).casefold() for value in mechanic_ids}
-    if (
-        "cr-119-life" not in mechanics
-        or target_schema is not None
-        or len(effects) != 1
-    ):
+    if "cr-119-life" not in mechanics or len(effects) != 1:
         return ()
     effect = effects[0]
     operation = effect.get("op")
+    dependencies = {"life.change.effect"}
+    any_player_schema = {
+        "zones": ["player"],
+        "categories": ["player"],
+        "player_relation": "any",
+        "count": 1,
+    }
+    opponent_schema = {
+        **any_player_schema,
+        "player_relation": "opponent",
+    }
+    actual_schema = dict(target_schema or {})
     if operation == _LIFE_OPERATION:
+        player = effect.get("player")
         valid = (
             set(effect) == {"op", "player", "delta"}
-            and effect.get("player") == "$controller"
+            and player in {"$controller", "$target.0"}
             and _positive_int(effect.get("delta"))
+            and (
+                player == "$controller"
+                or actual_schema == any_player_schema
+            )
+        )
+        expected_schema = (
+            None if player == "$controller" else any_player_schema
         )
     elif operation == "lose_life":
+        player = effect.get("player")
         valid = (
             set(effect) == {"op", "player", "amount"}
-            and effect.get("player") == "$controller"
+            and player in {"$controller", "$target.0"}
             and _positive_int(effect.get("amount"))
+            and (
+                player == "$controller"
+                or actual_schema in (any_player_schema, opponent_schema)
+            )
+        )
+        expected_schema = (
+            None if player == "$controller" else actual_schema
         )
     elif operation == "lose_life_each_opponent":
         valid = (
@@ -57,9 +81,31 @@ def fixed_life_node_capabilities(
             and _positive_int(effect.get("amount"))
             and "cr-101-the-magic-golden-rules" in mechanics
         )
+        expected_schema = None
+    elif operation == "drain_opponent":
+        valid = (
+            set(effect) == {"op", "target", "amount"}
+            and effect.get("target") == "$target.0"
+            and _positive_int(effect.get("amount"))
+        )
+        expected_schema = opponent_schema
+    elif operation == "drain_each_opponent":
+        valid = (
+            set(effect) == {"op", "amount"}
+            and _positive_int(effect.get("amount"))
+            and "cr-101-the-magic-golden-rules" in mechanics
+        )
+        expected_schema = None
     else:
         valid = False
-    return ("life.change.effect",) if valid else ()
+        expected_schema = None
+    if not valid or dict(target_schema or {}) != dict(expected_schema or {}):
+        return ()
+    if target_schema is not None:
+        if "cr-115-targets" not in mechanics:
+            return ()
+        dependencies.add("target.revalidate_resolution")
+    return tuple(sorted(dependencies))
 
 
 def fixed_controller_effect_sequence_node_capabilities(

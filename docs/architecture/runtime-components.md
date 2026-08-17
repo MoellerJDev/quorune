@@ -156,6 +156,14 @@ projection, and replay to the canonical zone-transition owner. Battlefield
 materialization uses the shared descriptor-driven complete-card admission
 query; no handler-family check or runtime Oracle-text comparison participates.
 
+The `effect.life` family accepts the compiler's fixed direct-player and
+opponent relations without adding a second life owner. Targeted gain, loss,
+and opponent drain revalidate the selected active player before resolution;
+each-opponent drain derives the current opposing seats. All requested changes
+enter the existing replacement-aware life batch so multiplier choices,
+journaling, trigger records, rollback, projection, and replay retain their
+canonical behavior.
+
 `participation.untap-step.static.v1` lowers closed source, attached-object,
 global, and other-player static wording into immutable CR 502 participation
 values. The runtime query evaluates the complete typed `ObjectQuerySpec`

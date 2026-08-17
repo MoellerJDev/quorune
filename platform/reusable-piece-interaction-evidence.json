@@ -3346,6 +3346,21 @@
       ],
       "interaction_order": 2,
       "assertion": "Tymaret's complete source-pinned CardProgram first rejects a departed planeswalker target, then exposes and resolves its separate graveyard self-return without sharing target or source-incarnation state between the abilities."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_target_opponent_drain_replacement_and_replay_are_exact",
+      "piece_ids": [
+        "capability.life.change.effect",
+        "capability.target.revalidate_resolution"
+      ],
+      "capability_ids": [
+        "life.change.effect",
+        "target.revalidate_resolution"
+      ],
+      "interaction_order": 2,
+      "assertion": "A compiler-owned target-opponent drain revalidates the selected active opponent before one replacement-aware life batch commits the opponent loss and controller gain, then replays the exact result."
     }
   ]
 }

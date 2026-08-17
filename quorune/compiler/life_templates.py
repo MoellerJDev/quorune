@@ -44,6 +44,7 @@ def static_life_handler(
 class FixedLifeEffectTemplate:
     template_id: str
     effect: Mapping[str, Any]
+    target_schema: Mapping[str, Any] | None = None
     mechanic_ids: tuple[str, ...] = (LIFE_MECHANIC,)
 
     def compiled(
@@ -51,18 +52,116 @@ class FixedLifeEffectTemplate:
     ) -> tuple[
         str,
         tuple[Mapping[str, Any], ...],
-        None,
+        Mapping[str, Any] | None,
         tuple[str, ...],
     ]:
-        return self.template_id, (self.effect,), None, self.mechanic_ids
+        return (
+            self.template_id,
+            (self.effect,),
+            self.target_schema,
+            self.mechanic_ids,
+        )
+
+
+def _player_target_schema(relation: str) -> dict[str, Any]:
+    if relation not in {"any", "opponent"}:
+        raise ValueError("Life-change player relation is unsupported")
+    return {
+        "zones": ["player"],
+        "categories": ["player"],
+        "player_relation": relation,
+        "count": 1,
+    }
 
 
 def fixed_life_effect_template(
     text: str,
 ) -> FixedLifeEffectTemplate | None:
-    """Lower only positive fixed controller gain/loss and table loss."""
+    """Lower closed fixed controller, target-player, and opponent changes."""
 
     normalized = " ".join(text.strip().split())
+    match = re.fullmatch(
+        rf"target opponent loses (?P<count>{FIXED_COUNT_PATTERN}) life "
+        rf"and you gain (?P<gain>{FIXED_COUNT_PATTERN}) life\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if match:
+        count = fixed_number(match.group("count"))
+        gain = fixed_number(match.group("gain"))
+        if count <= 0 or gain != count:
+            return None
+        return FixedLifeEffectTemplate(
+            template_id="drain-target-opponent-v1",
+            effect={
+                "op": "drain_opponent",
+                "target": "$target.0",
+                "amount": count,
+            },
+            target_schema=_player_target_schema("opponent"),
+            mechanic_ids=(LIFE_MECHANIC, "cr-115-targets"),
+        )
+    match = re.fullmatch(
+        rf"each opponent loses (?P<count>{FIXED_COUNT_PATTERN}) life "
+        rf"and you gain (?P<gain>{FIXED_COUNT_PATTERN}) life\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if match:
+        count = fixed_number(match.group("count"))
+        gain = fixed_number(match.group("gain"))
+        if count <= 0 or gain != count:
+            return None
+        return FixedLifeEffectTemplate(
+            template_id="drain-each-opponent-v1",
+            effect={"op": "drain_each_opponent", "amount": count},
+            mechanic_ids=(
+                LIFE_MECHANIC,
+                "cr-101-the-magic-golden-rules",
+            ),
+        )
+    match = re.fullmatch(
+        rf"target player gains (?P<count>{FIXED_COUNT_PATTERN}) life\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if match:
+        count = fixed_number(match.group("count"))
+        if count <= 0:
+            return None
+        return FixedLifeEffectTemplate(
+            template_id="gain-life-target-player-v1",
+            effect={
+                "op": _LIFE_OPERATION,
+                "player": "$target.0",
+                "delta": count,
+            },
+            target_schema=_player_target_schema("any"),
+            mechanic_ids=(LIFE_MECHANIC, "cr-115-targets"),
+        )
+    match = re.fullmatch(
+        rf"target (?P<relation>player|opponent) loses "
+        rf"(?P<count>{FIXED_COUNT_PATTERN}) life\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if match:
+        count = fixed_number(match.group("count"))
+        if count <= 0:
+            return None
+        relation = match.group("relation").casefold()
+        return FixedLifeEffectTemplate(
+            template_id=f"lose-life-target-{relation}-v1",
+            effect={
+                "op": "lose_life",
+                "player": "$target.0",
+                "amount": count,
+            },
+            target_schema=_player_target_schema(
+                "opponent" if relation == "opponent" else "any"
+            ),
+            mechanic_ids=(LIFE_MECHANIC, "cr-115-targets"),
+        )
     match = re.fullmatch(
         rf"(?:you )?gain (?P<count>{FIXED_COUNT_PATTERN}) life\.?",
         normalized,

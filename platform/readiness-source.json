@@ -569,6 +569,12 @@
       "name": "Typed self-zone-move activations",
       "status": "implemented_on_current_source_tree",
       "evidence": "The current source tree lowers 71 Commander-legal source-self activations across graveyard-to-owner-hand, graveyard-to-battlefield-tapped, and battlefield-Aura-to-owner-hand forms, promoting 33 complete cards and removing 71 material residuals in the database-backed census. One source-spanned descriptor corrects the active zone, pins physical and logical incarnation, and delegates ordinary activation, fixed costs, replacement-aware movement, owner routing, tapped entry, Aura attachment cleanup, normalized zone events, projection, rollback, and replay to existing owners. Battlefield materialization uses the shared descriptor-driven complete-card admission boundary; hand returns remain independently executable on partial cards. Untapped, targeted, mass, optional, conditional, multiple-object, copied, granted, and text-changed forms remain fail-closed."
+    },
+    {
+      "id": "typed_fixed_player_life_effects",
+      "name": "Typed fixed player-life effects",
+      "status": "implemented_on_current_source_tree",
+      "evidence": "The current source tree lowers 83 fixed player-life nodes across spell and activated contexts, promoting 50 exact/trusted/capability-closed Commander cards, adding 39 ability programs, and removing 102 material residuals. One shared compiler grammar covers fixed target-player gain or loss, target-opponent loss or equal drain, ordinary each-opponent loss, and equal each-opponent drain. Direct targets use the canonical public player-target and resolution-revalidation owner; all requested changes enter the existing replacement-aware life batch, so multipliers, four-player opponent derivation, normalized life-gain events, journaling, projection, rollback, and replay remain shared. Dynamic amounts, target-player drains that may affect the controller, each-player loss, life-total setting, exchanges, and unequal drains remain fail-closed. High-risk interaction coverage remains 170/170 with zero uncovered debt."
     }
   ],
   "platform": {

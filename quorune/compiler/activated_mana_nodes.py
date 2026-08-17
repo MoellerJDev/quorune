@@ -295,6 +295,8 @@ def _activated_effect_dependency_gate(
             "choose_option",
             "damage",
             "damage_each_opponent",
+            "drain_each_opponent",
+            "drain_opponent",
             "draw",
             "draw_each_player",
             "draw_with_actions",

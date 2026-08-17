@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "b6d62465dd111abc29f6f016034e18a6deb5187173a5bfb90930e1d77c2db348",
+    "evaluated_input_fingerprint": "54752c868629c70966885f56a95f7f9012a9b05cade3b417661b75b706f5ab8b",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -582,6 +582,12 @@
       "id": "typed_self_zone_move_activations",
       "name": "Typed self-zone-move activations",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers 83 fixed player-life nodes across spell and activated contexts, promoting 50 exact/trusted/capability-closed Commander cards, adding 39 ability programs, and removing 102 material residuals. One shared compiler grammar covers fixed target-player gain or loss, target-opponent loss or equal drain, ordinary each-opponent loss, and equal each-opponent drain. Direct targets use the canonical public player-target and resolution-revalidation owner; all requested changes enter the existing replacement-aware life batch, so multipliers, four-player opponent derivation, normalized life-gain events, journaling, projection, rollback, and replay remain shared. Dynamic amounts, target-player drains that may affect the controller, each-player loss, life-total setting, exchanges, and unequal drains remain fail-closed. High-risk interaction coverage remains 170/170 with zero uncovered debt.",
+      "id": "typed_fixed_player_life_effects",
+      "name": "Typed fixed player-life effects",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -621,11 +627,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 40547,
+      "material_residuals": 40445,
       "status_counts": {
-        "exact": 4709,
-        "partial": 12402,
-        "unresolved": 14512
+        "exact": 4759,
+        "partial": 12397,
+        "unresolved": 14467
       },
       "total": 31623
     },
@@ -643,11 +649,11 @@
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 47800,
+      "material_residuals": 47694,
       "status_counts": {
-        "exact": 7786,
-        "partial": 13531,
-        "unresolved": 17306
+        "exact": 7837,
+        "partial": 13525,
+        "unresolved": 17261
       },
       "total": 38623
     },
@@ -684,7 +690,7 @@
     "generated_validation_modules": 29,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 286,
+    "primary_test_modules": 287,
     "primary_test_shards": 13,
     "schema_files": 18,
     "server_files": 5,
@@ -694,31 +700,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 40550,
+        "material_residuals": 40448,
         "status_counts": {
-          "residual": 26914,
-          "trusted": 4709
+          "residual": 26864,
+          "trusted": 4759
         },
         "trust_basis_counts": {
-          "capability_closed": 4693,
+          "capability_closed": 4743,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26914
+          "unresolved": 26864
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 47802,
+        "material_residuals": 47696,
         "status_counts": {
           "failed": 2248,
-          "residual": 30834,
-          "trusted": 5541
+          "residual": 30783,
+          "trusted": 5592
         },
         "trust_basis_counts": {
-          "capability_closed": 5525,
+          "capability_closed": 5576,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30834
+          "unresolved": 30783
         }
       }
     },

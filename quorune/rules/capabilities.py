@@ -253,6 +253,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
         "permanent.indestructible.ordinary",
     ),
     _VIGILANCE_MECHANIC: ("combat.attack.vigilance",),
+    "cr-101-the-magic-golden-rules": ("life.change.effect",),
     "cr-119-life": ("life.change.effect",),
     "cr-121-drawing-a-card": ("zone.draw.library_to_hand",),
     "scry": ("library.scry.fixed_controller",),

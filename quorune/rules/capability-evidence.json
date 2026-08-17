@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "8f3d5f8b311f64c4aecd935dddac9833f9d91eba06d2201a4e3b31b16045f2f9",
-  "declaration_source_fingerprint": "4b898fdf78f0d48f4bf24a95e0603920aff3ad2dc12beb4793f69d3fbba6646e",
+  "registry_fingerprint": "18227444f064176229b39d43b397835a7c86d461565201019b8b4e80852ff0b4",
+  "declaration_source_fingerprint": "e8388c639ac63cdc5442f83f80fbb7237a85fd472d94389f3ea21356e5757678",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -26939,13 +26939,37 @@
     {
       "capability_id": "life.change.effect",
       "evidence_class": "interaction",
-      "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_drain_log_reports_final_replacement_adjusted_values",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeRuntimeTests.test_target_opponent_drain_replacement_and_replay_are_exact",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Target one opponent through the shared player-target boundary, then commit the fixed loss and replacement-adjusted controller gain in one typed life batch and replay the exact result."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_drain_log_reports_final_replacement_adjusted_values",
+      "official_rule_ids": [
+        "101.3",
+        "115.1",
+        "119.1",
+        "119.2",
+        "119.3",
+        "119.4",
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -26959,11 +26983,14 @@
       "evidence_class": "interaction",
       "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -26975,13 +27002,58 @@
     {
       "capability_id": "life.change.effect",
       "evidence_class": "multiplayer",
-      "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_table_wide_loss_and_drain_are_simultaneous_typed_batches",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeRuntimeTests.test_each_opponent_drain_is_one_four_player_life_batch",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lose fixed life for each of three opponents and apply one replacement-adjusted controller gain through a single four-player batch."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeRuntimeTests.test_target_opponent_drain_replacement_and_replay_are_exact",
+      "official_rule_ids": [
+        "101.3",
+        "115.1",
+        "119.1",
+        "119.2",
+        "119.3",
+        "119.4",
+        "119.9",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose only the three opposing seats as legal targets in four-player state and leave the controller outside the target-opponent relation."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_table_wide_loss_and_drain_are_simultaneous_typed_batches",
+      "official_rule_ids": [
+        "101.3",
+        "115.1",
+        "119.1",
+        "119.2",
+        "119.3",
+        "119.4",
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -26995,11 +27067,14 @@
       "evidence_class": "mutation",
       "test_id": "tests.test_capability_implementation_mutations.CapabilityImplementationMutationTests.test_life_effect_commit_mutant_is_killed",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -27011,13 +27086,37 @@
     {
       "capability_id": "life.change.effect",
       "evidence_class": "mutation",
-      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_tampered_semantic_life_intent_fails_closed_without_mutation",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeCompilerTests.test_life_capability_dependencies_and_compiler_mutation_fail_closed",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the shared fixed player-life production and independently block life or target closure so no represented node retains exact admission."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_tampered_semantic_life_intent_fails_closed_without_mutation",
+      "official_rule_ids": [
+        "101.3",
+        "115.1",
+        "119.1",
+        "119.2",
+        "119.3",
+        "119.4",
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -27029,13 +27128,37 @@
     {
       "capability_id": "life.change.effect",
       "evidence_class": "negative",
-      "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_invalid_batch_member_rolls_back_every_life_change",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeCompilerTests.test_dynamic_and_simultaneous_unowned_life_shapes_remain_residual",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep dynamic amounts, target-player drains, each-player loss, life-total setting, exchanges, and mismatched drains outside the closed compiler grammar."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "negative",
+      "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_invalid_batch_member_rolls_back_every_life_change",
+      "official_rule_ids": [
+        "101.3",
+        "115.1",
+        "119.1",
+        "119.2",
+        "119.3",
+        "119.4",
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -27047,13 +27170,58 @@
     {
       "capability_id": "life.change.effect",
       "evidence_class": "positive",
-      "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_life_and_loss_commit_through_the_typed_batch_owner",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeCompilerTests.test_spell_and_activated_player_life_nodes_are_exact_and_spanned",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower fixed player gain, player or opponent loss, target-opponent drain, and each-opponent drain through one source-spanned grammar in spell and activated contexts."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeRuntimeTests.test_target_player_gain_uses_live_replacement_owner",
+      "official_rule_ids": [
+        "101.3",
+        "115.1",
+        "119.1",
+        "119.2",
+        "119.3",
+        "119.4",
+        "119.9",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Cast a compiler-owned target-player gain spell and commit the doubled result through the live replacement and life owners."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "positive",
+      "test_id": "tests.test_life_effect_runtime.LifeEffectRuntimeTests.test_life_and_loss_commit_through_the_typed_batch_owner",
+      "official_rule_ids": [
+        "101.3",
+        "115.1",
+        "119.1",
+        "119.2",
+        "119.3",
+        "119.4",
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -27067,11 +27235,14 @@
       "evidence_class": "positive",
       "test_id": "tests.test_oracle_ir.OracleIRTests.test_fixed_life_self_enter_trigger_replays_exactly",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -27085,11 +27256,14 @@
       "evidence_class": "privacy",
       "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -27101,13 +27275,37 @@
     {
       "capability_id": "life.change.effect",
       "evidence_class": "replay",
-      "test_id": "tests.test_oracle_ir.OracleIRTests.test_fixed_life_self_enter_trigger_replays_exactly",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeRuntimeTests.test_target_opponent_drain_replacement_and_replay_are_exact",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the selected opponent, fixed activated cost, replacement-adjusted loss and gain, life journal, and final authoritative hash."
+    },
+    {
+      "capability_id": "life.change.effect",
+      "evidence_class": "replay",
+      "test_id": "tests.test_oracle_ir.OracleIRTests.test_fixed_life_self_enter_trigger_replays_exactly",
+      "official_rule_ids": [
+        "101.3",
+        "115.1",
+        "119.1",
+        "119.2",
+        "119.3",
+        "119.4",
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -27121,11 +27319,14 @@
       "evidence_class": "replay",
       "test_id": "tests.test_semantic_counter_replacement_continuations.SemanticCounterReplacementContinuationTests.test_semantic_life_intent_replacement_suspends_and_replays_exactly",
       "official_rule_ids": [
+        "101.3",
+        "115.1",
         "119.1",
         "119.2",
         "119.3",
         "119.4",
-        "119.9"
+        "119.9",
+        "608.2b"
       ],
       "supported_profiles": [
         "traditional",
@@ -34832,6 +35033,21 @@
     {
       "capability_id": "target.revalidate_resolution",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeRuntimeTests.test_target_opponent_drain_replacement_and_replay_are_exact",
+      "official_rule_ids": [
+        "115.1",
+        "608.2b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate one selected active opponent before committing the fixed simultaneous loss-and-gain life transaction."
+    },
+    {
+      "capability_id": "target.revalidate_resolution",
+      "evidence_class": "interaction",
       "test_id": "tests.test_keyword_counter_composition.KeywordCounterCompositionTests.test_hexproof_counter_feeds_offer_and_resolution_revalidation",
       "official_rule_ids": [
         "115.1",
@@ -39536,5 +39752,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "c60a59adceb54678e37e6ae1e5d4d484e8cfd5886a788a4e5440bb0ec56599e9"
+  "fingerprint": "0a75ec643118f31cc1949108e1e16e6c98ebc0a1e225866548203d21428cba1a"
 }
