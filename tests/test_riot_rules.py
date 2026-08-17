@@ -183,10 +183,10 @@ class RiotCompilerAndModelTests(unittest.TestCase):
             (RiotEntryChoiceNode, ("", 1, "haste", "702.136a")),
             (RiotEntryChoiceNode, ("+1/+1", True, "haste", "702.136a")),
             (RiotEntryChoiceNode, ("+1/+1", 1, "flying", "702.136a")),
-            (GrantAffectedObjectKeyword, ("flying",)),
+            (GrantAffectedObjectKeyword, ("deathtouch",)),
             (GrantAffectedObjectKeyword, ("haste", True)),
             (EntryKeywordGrant, ("", "haste", 0)),
-            (EntryKeywordGrant, ("effect", "flying", 0)),
+            (EntryKeywordGrant, ("effect", "deathtouch", 0)),
         ):
             with self.subTest(constructor=constructor.__name__):
                 with self.assertRaises(
