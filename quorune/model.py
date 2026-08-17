@@ -176,6 +176,9 @@ class CardInstance:
     # CR 702.112b public noncopiable designation for this logical object.
     # False is omitted from serialized state for historical replay parity.
     renowned: bool = False
+    # CR 702.84a creates one public noncopiable designation and leave-
+    # battlefield replacement on the returned logical object.
+    unearthed: bool = False
     annotations: dict[str, Any] = field(default_factory=dict)
     attached_to: str | None = None
     attachments: list[str] = field(default_factory=list)
@@ -230,6 +233,8 @@ class CardInstance:
             )
         if type(self.renowned) is not bool:
             raise ValueError("A renowned designation must be a boolean")
+        if type(self.unearthed) is not bool:
+            raise ValueError("An unearthed designation must be a boolean")
         if (
             type(self.acquired_control_timestamp) is not int
             or self.acquired_control_timestamp < 0
@@ -268,6 +273,8 @@ class CardInstance:
         if not self.renowned:
             # Keep historical Game Record v3 card payloads byte-compatible.
             payload.pop("renowned")
+        if not self.unearthed:
+            payload.pop("unearthed")
         if not self.regeneration_shields:
             # Keep checkpoints created before regeneration byte-compatible.
             payload.pop("regeneration_shields")

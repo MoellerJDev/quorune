@@ -50,6 +50,7 @@ from scripts.build_test_database import build_fixture_database
 
 REGISTRY_PATH = ROOT / "quorune" / "rules" / "capability-registry.json"
 FIXTURE_PATH = ROOT / "tests" / "fixtures" / "morph-rules-cards.json"
+PARTIAL_FIXTURE_PATH = ROOT / "tests" / "fixtures" / "morph-partial-card.json"
 
 
 def focused_card_database(directory: str) -> CardDatabase:
@@ -58,6 +59,7 @@ def focused_card_database(directory: str) -> CardDatabase:
         [
             ROOT / "tests" / "fixtures" / "scryfall-exact-lists.json",
             FIXTURE_PATH,
+            PARTIAL_FIXTURE_PATH,
         ],
         database,
     )
@@ -621,6 +623,37 @@ class FixedManaMorphRuntimeTests(unittest.TestCase):
         ]
         self.assertEqual([f"cast-morph:{card.ref}"], [row["id"] for row in actions])
         self.assertIsNotNone(compiled_fixed_mana_morph_spec(session.engine, card))
+
+    def test_partial_card_does_not_receive_a_morph_cast_offer(self):
+        session = self.session(70237007, players=2)
+        card = self.add_card(session, name="Brine Elemental", ref="MORPH-PARTIAL")
+        session.engine.state.players["B"].mana_pool["C"] = 3
+        self.prepare_priority(session)
+
+        actions = session.engine._priority_action_hints("B")["actions"]
+        self.assertFalse(
+            any(row.get("id") == f"cast-morph:{card.ref}" for row in actions)
+        )
+        self.assertIsNone(compiled_fixed_mana_morph_spec(session.engine, card))
+        program = next(
+            program
+            for program in session.engine.semantics.programs_for_oracle(
+                card.oracle_id,
+                event="morph.action",
+            )
+            if any(
+                descriptor.get("handler_id") == MORPH_HANDLER_ID
+                for descriptor in program.handlers
+            )
+        )
+        self.assertEqual(
+            {
+                "schema_version": 1,
+                "oracle_ir_status": "partial",
+                "material_residual_count": 1,
+            },
+            program.provenance["card_program_admission"],
+        )
 
 
 if __name__ == "__main__":

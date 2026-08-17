@@ -110,7 +110,7 @@ outside trust rather than introducing a family-specific layer-6 applicability
 path.
 
 `casting.morph.fixed-mana.v1` owns the bounded ordinary fixed-mana Morph
-descriptor. One trusted complete CardProgram exposes a distinct private
+descriptor. One trusted source-pinned complete-card certificate exposes a distinct private
 face-down cast offer and an identity-pinned `turn_face_up` priority action.
 The face-down method applies its 2/2 colorless nameless typeless creature
 values in copy layer 1b, survives only stack to battlefield, suppresses static
@@ -121,6 +121,16 @@ represented layer-6 Morph removal blocks payment. Arbitrary static ability
 addition/removal, copy, dynamic counts, Megamorph, other face-down methods,
 variable and nonmana costs, and residual turn-up behavior remain outside
 trust; no family-specific Oracle interpretation supplies them.
+
+`ability.activated.unearth.v1` owns the bounded ordinary fixed-mana Unearth
+activation descriptor, and `generic.unearth.v1` lowers its return and delayed-
+exile results to one typed intent. Runtime admission requires the compiler's
+complete-card certificate, then uses the shared activation proposal and commit
+owners. Resolution delegates the card move, zone-object Haste grant, public
+noncopiable designation, self-replacement, delayed trigger, and CR 400.7 reset
+to their canonical owners. Countered, stale, partial-card, copied, granted,
+multiface, and nonordinary-cost variants fail closed without interpreting
+Oracle or reminder prose.
 
 `participation.untap-step.static.v1` lowers closed source, attached-object,
 global, and other-player static wording into immutable CR 502 participation

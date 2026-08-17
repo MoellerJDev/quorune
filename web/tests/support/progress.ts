@@ -209,6 +209,45 @@ function canonicalProgress(progress: readonly BrowserProgress[]): string {
   );
 }
 
+function hasIdleDecisionProjectionSplit(
+  progress: readonly BrowserProgress[],
+): boolean {
+  const views = progress.filter((entry) => entry.gameId !== null);
+  if (views.length < 2) return false;
+  const first = views[0];
+  const sameAuthoritativeState = views.every((entry) =>
+    entry.gameId === first.gameId
+    && entry.stateRevision === first.stateRevision
+    && entry.commandCount === first.commandCount
+    && entry.eventCount === first.eventCount
+    && entry.priorityPlayer === first.priorityPlayer
+  );
+  const decisions = views.map((entry) => entry.decisionId);
+  const serverIdle = views.every((entry) =>
+    (entry.server?.processing_kind ?? null) === null
+    && (entry.server?.queue_depth ?? 0) === 0
+    && (entry.server?.persistence?.pending ?? false) === false
+  );
+  return sameAuthoritativeState
+    && serverIdle
+    && decisions.some((value) => value === null)
+    && decisions.some((value) => value !== null);
+}
+
+async function recoverIdleDecisionProjectionSplit(
+  pages: readonly Page[],
+): Promise<void> {
+  await Promise.all(
+    pages.map(async (page) => {
+      await page.reload({ waitUntil: "domcontentloaded", timeout: 30_000 });
+      await page.locator(".game-shell").waitFor({
+        state: "visible",
+        timeout: 30_000,
+      });
+    }),
+  );
+}
+
 function rerunCommand(testInfo: TestInfo): string {
   const title = testInfo.title.replaceAll('"', '\\"');
   const group = process.env.MTG_BROWSER_GROUP || "focused";
@@ -232,6 +271,7 @@ export async function driveUntil(
   let lastProgressAt = started;
   let progress = await captureProgress(pages);
   let progressKey = canonicalProgress(progress);
+  const recoveredProjectionSplits = new Set<string>();
 
   while (!(await goal())) {
     let submitted = options.advance ? await options.advance() : false;
@@ -262,6 +302,23 @@ export async function driveUntil(
     }
 
     const now = Date.now();
+    const recoveryDelayMs = Math.min(15_000, Math.floor(noProgressMs / 3));
+    if (
+      now - lastProgressAt >= recoveryDelayMs
+      && !recoveredProjectionSplits.has(progressKey)
+      && hasIdleDecisionProjectionSplit(progress)
+    ) {
+      // A reconnect is the supported recovery when two authenticated views
+      // agree on authoritative progress but only one exposes the current
+      // decision. Recover once per unchanged snapshot; a repeated split still
+      // reaches the ordinary no-progress failure instead of hiding a defect.
+      recoveredProjectionSplits.add(progressKey);
+      await recoverIdleDecisionProjectionSplit(pages);
+      progress = await captureProgress(pages);
+      progressKey = canonicalProgress(progress);
+      lastProgressAt = Date.now();
+      continue;
+    }
     if (now - lastProgressAt >= noProgressMs || now - started >= overallMs) {
       const reason =
         now - lastProgressAt >= noProgressMs

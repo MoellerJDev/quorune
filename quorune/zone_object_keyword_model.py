@@ -14,6 +14,7 @@ ZONE_OBJECT_KEYWORDS = frozenset(
     {
         "first strike",
         "flying",
+        "haste",
         "trample",
         "vigilance",
     }

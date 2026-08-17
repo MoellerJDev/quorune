@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "076d851c456ca418db23ef494c778548c1ccc459e2dc6239c7f0f7a46e06160a",
+    "evaluated_input_fingerprint": "05087800db34b26032c5b1d337cdbdb1217407840d74b0ec3db6e03dee2f55f6",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -560,9 +560,15 @@
       "status": "implemented_on_current_source_tree"
     },
     {
-      "evidence": "The current source tree lowers 139 Commander-legal ordinary fixed-mana Morph abilities to one source-spanned component and promotes 37 complete cards. A second casting offer uses the face-down creature spell's {3} alternative and characteristics, preserves private identity through stack and battlefield projection, suppresses face-down static and printed-trigger participation, and reveals on turn-up or zone departure. The controller-only turn-face-up special action uses the shared effective-keyword boundary, pays the typed fixed cost atomically, creates no stack object, stabilizes before returning priority, and replays exactly. Megamorph, two variable costs, twelve nonmana costs, copy/grant/text changes, residual turn-up behavior, arbitrary static ability applicability, and dynamic characteristic-count interactions remain fail-closed.",
+      "evidence": "The current source tree lowers 139 Commander-legal ordinary fixed-mana Morph abilities to one source-spanned component and promotes 37 complete cards. A second casting offer uses the face-down creature spell's {3} alternative and characteristics, preserves private identity through stack and battlefield projection, suppresses face-down static and printed-trigger participation, and reveals on turn-up or zone departure. The controller-only turn-face-up special action uses the shared effective-keyword boundary, pays the typed fixed cost atomically, creates no stack object, stabilizes before returning priority, and replays exactly. A source-pinned complete-card certificate now withholds independently exact Morph from cards whose other material behavior remains residual. Megamorph, two variable costs, twelve nonmana costs, copy/grant/text changes, residual turn-up behavior, arbitrary static ability applicability, and dynamic characteristic-count interactions remain fail-closed.",
       "id": "typed_fixed_mana_morph",
       "name": "Typed fixed-mana Morph",
+      "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers 55 Commander-legal ordinary fixed-mana Unearth abilities to one source-spanned graveyard activation and promotes the 20 cards for which it is the final material blocker. The ordinary activation owner enforces owner scope, sorcery timing, fixed mana payment, stack timing, and stale-source revalidation. Resolution delegates the battlefield return, zone-object Haste, public noncopiable designation, mandatory self-replacement, next-end-step delayed trigger, CR 400.7 reset, projection, and replay to existing typed owners. The same source-pinned complete-card certificate used by Morph withholds Unearth from cards whose other material behavior remains residual. Variable and nonmana costs, copied or granted instances, multiface cards, and wider graveyard ability-changing effects remain fail-closed.",
+      "id": "typed_fixed_mana_unearth",
+      "name": "Typed fixed-mana Unearth",
       "status": "implemented_on_current_source_tree"
     }
   ],
@@ -603,10 +609,10 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 40888,
+      "material_residuals": 40833,
       "status_counts": {
-        "exact": 4636,
-        "partial": 12474,
+        "exact": 4656,
+        "partial": 12454,
         "unresolved": 14513
       },
       "total": 31623
@@ -625,10 +631,10 @@
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 48155,
+      "material_residuals": 48098,
       "status_counts": {
-        "exact": 7713,
-        "partial": 13603,
+        "exact": 7733,
+        "partial": 13583,
         "unresolved": 17307
       },
       "total": 38623
@@ -666,7 +672,7 @@
     "generated_validation_modules": 29,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 283,
+    "primary_test_modules": 284,
     "primary_test_shards": 13,
     "schema_files": 18,
     "server_files": 5,
@@ -676,31 +682,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 40891,
+        "material_residuals": 40836,
         "status_counts": {
-          "residual": 26987,
-          "trusted": 4636
+          "residual": 26967,
+          "trusted": 4656
         },
         "trust_basis_counts": {
-          "capability_closed": 4620,
+          "capability_closed": 4640,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26987
+          "unresolved": 26967
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 48157,
+        "material_residuals": 48100,
         "status_counts": {
           "failed": 2248,
-          "residual": 30907,
-          "trusted": 5468
+          "residual": 30887,
+          "trusted": 5488
         },
         "trust_basis_counts": {
-          "capability_closed": 5452,
+          "capability_closed": 5472,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30907
+          "unresolved": 30887
         }
       }
     },

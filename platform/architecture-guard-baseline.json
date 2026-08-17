@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "70ec79c8ec688873f6e4485ad710ea1f788dd8fa",
+  "baseline_commit": "eb2a288845fcac8f84f318d420ff23c785e0760d",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -486,7 +486,7 @@
     "quorune/zone_transitions.py": 3
   },
   "engine": {
-    "logical_lines": 7286,
+    "logical_lines": 7257,
     "methods": [
       {
         "kind": "method",
@@ -691,11 +691,6 @@
       {
         "kind": "method",
         "name": "_cast",
-        "visibility": "private"
-      },
-      {
-        "kind": "method",
-        "name": "_cast_cost_options",
         "visibility": "private"
       },
       {
@@ -1674,12 +1669,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 7811
+    "physical_lines": 7780
   },
   "exception_binding": {
-    "adr": "docs/adr/0070-typed-fixed-token-definition-batches.md",
-    "allowance_fingerprint": "26b1acf3778e178e3c21b67e8b80d50ece5ac59c216e8d4c531203bcafd950aa",
-    "exception_id": "ARCH-EXC-0037"
+    "adr": "docs/adr/0074-typed-fixed-mana-unearth.md",
+    "allowance_fingerprint": "5e08f410080884912b6568ada54eb2eca4523f4f529e8459f0c125cf7862a4f9",
+    "exception_id": "ARCH-EXC-0038"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1788,7 +1783,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 230,
+      "logical_lines": 222,
       "symbol": "CommanderEngine._declaration_restrictions"
     },
     {
@@ -1880,7 +1875,7 @@
   "oversized_modules": [
     {
       "file": "quorune/engine.py",
-      "logical_lines": 7286
+      "logical_lines": 7257
     },
     {
       "file": "quorune/record.py",
@@ -2035,6 +2030,7 @@
     "sylvan_library_settle",
     "tap",
     "transmute_artifact",
+    "unearth",
     "untap",
     "untap_all_creatures",
     "veil_of_summer"

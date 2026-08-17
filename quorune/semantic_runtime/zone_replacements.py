@@ -32,6 +32,7 @@ from ..replacement_effects import (
 )
 from ..rules.capabilities import load_default_capability_registry
 from ..turn_history import opponent_was_dealt_damage_this_turn
+from ..unearth import unearthed_leave_replacement
 from .component_registry import RuntimeComponentRegistry, exact_fields
 from .context import SemanticNodeError
 from .counter_replacements import (
@@ -495,6 +496,9 @@ def collect_zone_change_replacement_effects(
             or source.controller not in host.active_seats
         ):
             continue
+        unearth_replacement = unearthed_leave_replacement(source)
+        if unearth_replacement is not None:
+            effects.append(unearth_replacement)
         record = host.card_record(source)
         if record is None:
             continue

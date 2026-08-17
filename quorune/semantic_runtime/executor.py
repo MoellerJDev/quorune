@@ -9,6 +9,7 @@ from ..permanent_exile import PermanentExileHost
 from ..regeneration import RegenerationHost
 from ..return_to_hand import ReturnToHandHost
 from ..tap_state import TapStateHost
+from ..unearth import resolve_unearth_intent, UnearthIntent
 from .context import SemanticNodeError
 from .intents import (
     AddManaIntent,
@@ -225,7 +226,6 @@ class SemanticIntentSink(
         self,
         intent: DestroyPermanentSetIntent,
     ) -> Any: ...
-
 
 @dataclass(frozen=True, slots=True)
 class DrawResolutionBatch:
@@ -518,6 +518,10 @@ def execute_intent_plan(sink: SemanticIntentSink, plan: IntentPlan) -> object:
         if isinstance(intent, ZoneMoveIntent):
             result = sink.move_object_intent(intent)
             results.append((intent.object_ref, result))
+            continue
+        if isinstance(intent, UnearthIntent):
+            result = resolve_unearth_intent(sink, intent)
+            results.append((intent.card_ref, result))
             continue
         if isinstance(intent, MoveObjectsSimultaneouslyIntent):
             result = sink.move_objects_simultaneously_intent(intent)

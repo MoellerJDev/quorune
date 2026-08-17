@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "35baf5fc7b3a8852f3e667391bad4fbe5db7478ddcfbdf212388f23242ad41ea",
-  "declaration_source_fingerprint": "d03dccc2304e2ce9c0be2d05f0ee43c5e9e926dda06287840c0cafcf2cf34f5f",
+  "registry_fingerprint": "9efa5261f4ade8438d17b0987e08946496438f8d29db8ba5099d783e0afac444",
+  "declaration_source_fingerprint": "aec19b659b5c8368340c985393311720f92bd8e368a6f572901bf72edd1043c4",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -1924,6 +1924,227 @@
         "commander_review"
       ],
       "applicability_note": "Replay a current-haste mana activation from an exact initial checkpoint and command."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_control_change_phasing_and_returned_incarnation_are_isolated",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preserve the unearthed designation through control change and phasing, make the delayed trigger ignore a phased-out object, and clear every effect on the next incarnation."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose graveyard activation, canonical mana, stack resolution, zone movement, Haste, the leave replacement, delayed-trigger placement, public projection, and exact replay."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearthed_leave_replacement_precedes_competing_destination",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply the incarnation-bound Unearth self-replacement before a competing opponent graveyard-destination replacement and prove the competing effect never consumes the event."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the graveyard activation owner-scoped while all four seats receive the public returned designation and delayed trigger."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearthed_leave_replacement_precedes_competing_destination",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the affected object's mandatory self-replacement correctly while an opponent controls another applicable public zone replacement in four-player state."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthCompilerTests.test_unearth_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the closed Unearth production and independently block every dependency so no activation retains exact runtime admission."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthCompilerTests.test_nonordinary_unearth_costs_remain_residual",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep variable and other nonordinary Unearth costs as precise source-spanned residuals without a runtime fallback."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_complete_card_program_admission_hides_partial_unearth_card",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Withhold an exact Unearth ability when returning the card would expose independently residual enters or permanent behavior."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_countered_or_stale_unearth_activation_leaves_card_in_graveyard",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Leave the source card unchanged when the activation is countered and make resolution a no-op after the graveyard incarnation becomes stale."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthCompilerTests.test_fixed_mana_unearth_compiles_source_spanned_typed_program",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower the complete printed line to one graveyard activation, fixed mana vector, typed effect intent, registered descriptor, and capability-closed CardProgram."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Advertise, pay, resolve, return, grant Haste, designate, schedule, project, and eventually exile one real fixed-mana Unearth card."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the server-issued activation exclusive to the card owner while projecting only public graveyard, battlefield, designation, and delayed-trigger facts to opponents."
+    },
+    {
+      "capability_id": "activation.unearth.fixed_mana",
+      "evidence_class": "replay",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "602.1",
+        "602.2",
+        "702.84",
+        "702.84a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the activation, mana payment, battlefield incarnation, Haste journal, unearthed designation, delayed trigger, projection state, and final authoritative hash."
     },
     {
       "capability_id": "attachment.aura.simple_object",
@@ -4386,6 +4607,32 @@
         "commander_review"
       ],
       "applicability_note": "Keep variable and nonmana Morph costs outside the fixed ordinary-mana contract without an executable fallback."
+    },
+    {
+      "capability_id": "casting.morph.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_morph_rules.FixedManaMorphRuntimeTests.test_partial_card_does_not_receive_a_morph_cast_offer",
+      "official_rule_ids": [
+        "116.2b",
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.37",
+        "702.37a",
+        "702.37c",
+        "702.37e",
+        "708.2",
+        "708.4",
+        "708.5",
+        "708.8",
+        "708.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Withhold Morph when turning the card face up would expose a separate material residual, even though the independently exact Morph handler itself is trusted."
     },
     {
       "capability_id": "casting.morph.fixed_mana",
@@ -11406,6 +11653,24 @@
     },
     {
       "capability_id": "continuous.resolution.fixed_keyword_zone_object",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "400.7",
+        "608.2c",
+        "611.2a",
+        "611.2c",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed the returned object's typed Haste grant into current summoning-sickness attack legality while retaining the same logical incarnation."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays",
       "official_rule_ids": [
@@ -11421,6 +11686,24 @@
         "commander_review"
       ],
       "applicability_note": "Resolve one target-threaded counter and persistent keyword sequence in four-player APNAP state without issuing another seat the affected-object replacement choice."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "400.7",
+        "608.2c",
+        "611.2a",
+        "611.2c",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Grant Haste to the returned logical object in four-player state while keeping the activation owner-scoped and the resulting keyword public."
     },
     {
       "capability_id": "continuous.resolution.fixed_keyword_zone_object",
@@ -11514,6 +11797,24 @@
     },
     {
       "capability_id": "continuous.resolution.fixed_keyword_zone_object",
+      "evidence_class": "positive",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "400.7",
+        "608.2c",
+        "611.2a",
+        "611.2c",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Commit one source-pinned Haste grant to the returned battlefield incarnation and consume it through current attack legality."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
       "evidence_class": "privacy",
       "test_id": "tests.test_fixed_target_effect_sequences.FixedTargetEffectSequenceRuntimeTests.test_four_player_zone_object_keyword_sequence_is_private_and_replays",
       "official_rule_ids": [
@@ -11529,6 +11830,24 @@
         "commander_review"
       ],
       "applicability_note": "Keep authoritative physical identity and replacement continuation data out of every nonchoosing seat projection."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "400.7",
+        "608.2c",
+        "611.2a",
+        "611.2c",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the public Haste result while retaining continuous-effect physical and logical identity only in authoritative state."
     },
     {
       "capability_id": "continuous.resolution.fixed_keyword_zone_object",
@@ -11565,6 +11884,24 @@
         "commander_review"
       ],
       "applicability_note": "Reload the affected-seat counter-replacement continuation, commit the persistent result once, and replay the completed record to the identical hash."
+    },
+    {
+      "capability_id": "continuous.resolution.fixed_keyword_zone_object",
+      "evidence_class": "replay",
+      "test_id": "tests.test_unearth_rules.OrdinaryUnearthRuntimeTests.test_unearth_offer_resolution_haste_and_delayed_exile_replay",
+      "official_rule_ids": [
+        "400.7",
+        "608.2c",
+        "611.2a",
+        "611.2c",
+        "613.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the source-pinned Haste grant, returned battlefield incarnation, and current attack-legality result to the identical authoritative hash."
     },
     {
       "capability_id": "continuous.resolution.fixed_keyword_zone_object",
@@ -38489,5 +38826,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "a71bfe792f7b67601b1a1247c2b71e1781ee6ff19557268201fb893012a47031"
+  "fingerprint": "a73ed8efb769ac024031b64596a4dc0d9c621f04574a7001bb86268eec470bb8"
 }

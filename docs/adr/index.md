@@ -88,3 +88,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0071 — typed fixed Choose one modal spells](0071-typed-fixed-choose-one-modal-spells.md)
 - [ADR 0072 — resolution-created declaration rules](0072-resolution-created-declaration-rules.md)
 - [ADR 0073 — typed fixed-mana Morph](0073-typed-fixed-mana-morph.md)
+- [ADR 0074 — typed fixed-mana Unearth](0074-typed-fixed-mana-unearth.md)

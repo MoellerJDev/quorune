@@ -136,6 +136,7 @@ VALID_EFFECT_OPERATIONS = {
     "modify_all_matching_permanents_until_end_of_turn",
     "untap",
     "untap_all_creatures",
+    "unearth",
     "exchange_artifact_zones",
     "veil_of_summer",
     "pay_or_lose",

@@ -100,6 +100,16 @@ hybrid, Phyrexian, snow, nonmana, copied, granted, text-changed, multiface,
 merged, and residual turn-up families remain source-spanned residuals or
 fail-closed runtime exclusions.
 
+`compiler/unearth_nodes.py` owns one closed ordinary fixed-mana Unearth
+production. It lowers the graveyard-only sorcery-speed activation to a typed
+fixed mana descriptor and one `unearth` semantic operation. The descriptor
+requires a compiler-pinned complete-card admission certificate because
+resolution materializes the card's other behavior on the battlefield. The
+runtime coordinator delegates return, Haste, leave replacement, and delayed
+trigger behavior to their existing typed owners. Variable and nonmana costs,
+copied or granted instances, multiface cards, and cards with other material
+residuals remain source-spanned residuals or fail-closed runtime exclusions.
+
 `compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
 It accepts only live battlefield sets representable by `ObjectQuerySpec`: a
 source-controller relation over closed type, pinned creature-subtype, color,

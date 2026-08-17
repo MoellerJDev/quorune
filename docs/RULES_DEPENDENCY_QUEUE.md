@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "a73969517cd70b30ec975ecb038af4ec499c52f271afe7a38e29c5b9697783d1"
+verified: "b26b160d2dc8084b8f2cda12dd60e14a5a7633e78dbb64576eb649e2ebfad2fb"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `c4b3b28af1204ea63e62db421669d8e19dab3c3ca64c8e4011130262017dbcf3`
+Source fingerprint: `7a8839a591a1e73f7a71267b6a4059613f411fd697dcb2e8d7d2e464f90bdcf1`
 
 ## Current top-level state
 
@@ -41,7 +41,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 8 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
 | 9 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
 | 10 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 11 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 241 | 381 | 0 | 0 |
+| 11 | blocked | `frontier:mechanic_dependency:cr-611-continuous-effects` | `rules_foundation` | 243 | 381 | 0 | 0 |
 
 Selected reason: Meets a post-stabilization card, exact-ability, or material-residual harvest threshold but remains behind higher-priority correctness gates.
 
