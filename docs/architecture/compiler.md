@@ -110,6 +110,16 @@ trigger behavior to their existing typed owners. Variable and nonmana costs,
 copied or granted instances, multiface cards, and cards with other material
 residuals remain source-spanned residuals or fail-closed runtime exclusions.
 
+`compiler/kicker_nodes.py` owns one single fixed ordinary-mana Kicker cost and
+one closed kicked counter-plus-keyword entry replacement. The cost component
+adds a server-authored optional total-cost branch only for a complete admitted
+CardProgram. Its paid stack fact flows into immutable zone-replacement and
+normalized entry snapshots. The entry component creates a nested replacement-
+aware +1/+1 counter event and optionally grants Flying, First Strike, Haste, or
+Trample through existing consumers. Multiple, and/or, variable, nonmana,
+copied, granted, kicked-trigger, spell-rider, dynamic, and open entry families
+remain source-spanned residuals.
+
 `compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
 It accepts only live battlefield sets representable by `ObjectQuerySpec`: a
 source-controller relation over closed type, pinned creature-subtype, color,

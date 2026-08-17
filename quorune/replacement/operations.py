@@ -352,7 +352,13 @@ class GrantAffectedObjectKeyword:
                 "Affected-object keyword must be a string"
             )
         keyword = " ".join(self.keyword.casefold().split())
-        if keyword not in {"haste"}:
+        if keyword not in {
+            "flying",
+            "first strike",
+            "haste",
+            "trample",
+            "vigilance",
+        }:
             raise ReplacementOperationError(
                 "Affected-object keyword is outside the represented vocabulary"
             )

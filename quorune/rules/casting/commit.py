@@ -14,6 +14,8 @@ from ...counter_placement import (
     prepare_counter_placements,
 )
 from ...compiled_morph import compiled_fixed_mana_morph_spec
+from ...compiled_kicker import compiled_fixed_mana_kicker_spec
+from ...kicker import KICKER_MECHANIC_ID
 from ...life_state import LifeStateError, pay_life_cost
 from ...model import StackItem, YieldPolicy
 from ...morph import (
@@ -23,7 +25,7 @@ from ...morph import (
     MorphError,
 )
 from ..spell_cast_events import SpellCastEvent
-from ...zone_object_state import mark_card_face_down_for_morph
+from ...zone_object_state import mark_card_face_down_for_morph, mark_card_kicked
 from ...stack_counter import oracle_has_intrinsic_counter_prohibition
 from ...tap_state import set_permanent_tapped
 from ...trigger_processing import collect_ward_occurrences, enqueue_trigger_batch
@@ -658,6 +660,8 @@ def _create_spell_item(
     card.zone = "stack"
     card.controller = proposal.seat
     card.active_face = proposal.face
+    if str(selected_option.get("kind") or "").casefold() == KICKER_MECHANIC_ID:
+        mark_card_kicked(card)
     morph_spec = None
     if details.get("cast_method") == MORPH_CAST_METHOD:
         try:
@@ -953,6 +957,17 @@ def commit_cast(
                 reason="stale_morph_contract",
             )
     selected_option = dict(details["selected_cost_option"])
+    if str(selected_option.get("kind") or "").casefold() == KICKER_MECHANIC_ID:
+        current_kicker = compiled_fixed_mana_kicker_spec(host, card)
+        if (
+            current_kicker is None
+            or selected_option.get("kicker_fingerprint")
+            != current_kicker.fingerprint
+        ):
+            raise CastProposalError(
+                "The fixed-mana Kicker contract changed before commit",
+                reason="stale_kicker_contract",
+            )
     requirements = dict(thaw_json(proposal.requirements))
     try:
         convoke_plan = revalidate_convoke_payment(

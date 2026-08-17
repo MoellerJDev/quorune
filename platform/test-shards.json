@@ -117,6 +117,7 @@
       "test_fixed_zone_change_additional_costs",
       "test_flash_cast_timing",
       "test_intrinsic_basic_land_mana",
+      "test_kicker_rules",
       "test_loyalty_abilities",
       "test_loyalty_counter_cost_replacements",
       "test_main_phase_rules",

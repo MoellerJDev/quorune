@@ -7,6 +7,7 @@ from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
 from ...compiled_cast_costs import compiled_affinity_specs, compiled_convoke_specs
+from ...compiled_kicker import compiled_fixed_mana_kicker_spec
 from ...convoke import (
     CONVOKE_PAYMENT_SYMBOLS,
     ConvokeCandidate,
@@ -266,6 +267,22 @@ def _initial_options(
         if suppress_source_costs
         else dict(program.cost_schema or {}) if program else {}
     )
+    kicker = (
+        compiled_fixed_mana_kicker_spec(host, card)
+        if not suppress_source_costs
+        else None
+    )
+    if kicker is not None:
+        schema = copy.deepcopy(schema)
+        optional_costs = list(schema.get("optional_costs", ()))
+        if any(
+            str(value.get("id") or "") == "kicked"
+            or str(value.get("kind") or "").casefold() == "kicker"
+            for value in optional_costs
+        ):
+            return None
+        optional_costs.append(kicker.cast_cost_option())
+        schema["optional_costs"] = optional_costs
     record = host.card_record(card)
     if record is None:
         return None

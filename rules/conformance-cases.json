@@ -64005,23 +64005,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.33",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerCompilerTests.test_fixed_kicker_and_entry_compile_source_spanned_programs"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/kicker.json"
+      ],
+      "notes": [
+        "Keyword heading; the two typed capabilities own only the bounded cost and entry slice while aggregate Kicker remains partial."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.33",
       "rule_text_sha256": "129001dfc968fe13fa74cb9104ed00d1fa48eab0a4d3917b5b48401878bcfe91",
       "schema_version": 1,
@@ -64030,26 +64034,52 @@
         "end_line": 4245,
         "start_line": 4244
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "multiple, and/or, variable, and nonmana costs remain outside the fixed single-cost capability",
+        "copied, granted, modified, and unusual alternate-cost interactions remain excluded"
       ],
       "case_id": "cr-702.33a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.33"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+        "tests.test_kicker_rules.FixedKickerCompilerTests.test_multi_and_variable_kicker_and_open_entry_results_remain_residual",
+        "tests.test_kicker_rules.FixedKickerRuntimeTests.test_stale_kicker_contract_rolls_back"
+      ],
+      "implementation_components": [
+        "quorune.kicker.FixedManaKickerSpec",
+        "quorune.compiler.kicker_nodes.fixed_mana_kicker_keyword_node",
+        "quorune.rules.casting.costs._initial_options",
+        "quorune.rules.casting.commit.commit_cast"
+      ],
+      "notes": [
+        "The bounded cost is optional additional mana composed into the ordinary total-cost transaction; aggregate CR 702.33a remains blocked."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "hidden_information",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.33a",
       "rule_text_sha256": "e7b32f4e9f6356703f3f2d140d432a4b67a49baaaca9b5a00323aa6133132b62",
       "schema_version": 1,
@@ -64058,26 +64088,37 @@
         "end_line": 4247,
         "start_line": 4246
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "two independent and/or Kicker costs and their separately linked results are not represented"
       ],
       "case_id": "cr-702.33b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.33"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerCompilerTests.test_multi_and_variable_kicker_and_open_entry_results_remain_residual"
+      ],
+      "implementation_components": [
+        "quorune.kicker.compile_fixed_mana_kicker"
+      ],
+      "notes": [
+        "The closed grammar rejects multiple Kicker instances rather than collapsing their paid identities."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.33b",
       "rule_text_sha256": "7fd2fba29acb990ba47bb8e4e1b35bc1a6db68b4c4d59620161b53b8bfcc8cd8",
       "schema_version": 1,
@@ -64086,26 +64127,37 @@
         "end_line": 4249,
         "start_line": 4248
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "repeatable and multikicker payments, counts, and linked quantities are not represented"
       ],
       "case_id": "cr-702.33c",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.33"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerCompilerTests.test_multi_and_variable_kicker_and_open_entry_results_remain_residual"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/kicker.json"
+      ],
+      "notes": [
+        "One Boolean paid fact cannot authorize repeated-payment results."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.33c",
       "rule_text_sha256": "3b57f7562a3a32c7cee3058f2a37b5ab76acdbf5700d032aed5499c9ec6e14a3",
       "schema_version": 1,
@@ -64114,26 +64166,45 @@
         "end_line": 4251,
         "start_line": 4250
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "multiple paid Kicker identities and counts remain unsupported"
       ],
       "case_id": "cr-702.33d",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.33"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+        "tests.test_kicker_rules.FixedKickerRuntimeTests.test_normal_cast_omits_kicked_entry_results"
+      ],
+      "implementation_components": [
+        "quorune.zone_object_state.mark_card_kicked",
+        "quorune.semantic_runtime.zone_replacement_model.ZoneChangeSubjectSnapshot",
+        "quorune.zone_trigger_events.ZoneChangeOccurrence"
+      ],
+      "notes": [
+        "The selected cost records one source-pinned spell fact and immutable entry snapshot; normal casting records none."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.33d",
       "rule_text_sha256": "3ce678692b96ad652c4a9aa41cbd563f7fe852de7723aa1221143b71919670fe",
       "schema_version": 1,
@@ -64142,26 +64213,39 @@
         "end_line": 4253,
         "start_line": 4252
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "kicked triggers, spell riders, dynamic quantities, and broader linked results remain residual"
       ],
       "case_id": "cr-702.33e",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative",
+        "interaction"
+      ],
       "dependency_rule_ids": [
         "702.33"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerRuntimeTests.test_partial_card_withholds_kicker_option"
+      ],
+      "implementation_components": [
+        "quorune.card_programs.admission.CompleteCardProgramAdmission",
+        "quorune.compiled_kicker.compiled_fixed_mana_kicker_spec"
+      ],
+      "notes": [
+        "Complete-card admission prevents a represented cost from exposing an unsupported linked result."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.33e",
       "rule_text_sha256": "eb9e726c86e406f55d9047b311dce23ada6ab54acd31609bfdf7b6c81224b7bd",
       "schema_version": 1,
@@ -64170,26 +64254,48 @@
         "end_line": 4255,
         "start_line": 4254
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "conditional spell effects, cast and entry triggers, modes, targets, and result alternatives remain outside this entry-replacement slice"
       ],
       "case_id": "cr-702.33f",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.33"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+        "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_counter_replacement_is_nested_and_replays",
+        "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_haste_consumes_existing_attack_legality"
+      ],
+      "implementation_components": [
+        "quorune.kicker.FixedKickedEntrySpec",
+        "quorune.semantic_runtime.kicker.FixedKickedEntryHandler",
+        "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot"
+      ],
+      "notes": [
+        "The paid fact selects only the closed counter-plus-keyword self-replacement; no runtime prose decides a result."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.33f",
       "rule_text_sha256": "520979c815ae85f8258ba1ab3072a3b6af7bb9d750816f0b0edf0e77fbfaee91",
       "schema_version": 1,
@@ -64198,26 +64304,37 @@
         "end_line": 4257,
         "start_line": 4256
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "results that count how many times a spell was kicked are not represented"
       ],
       "case_id": "cr-702.33g",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.33"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerCompilerTests.test_multi_and_variable_kicker_and_open_entry_results_remain_residual"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/kicker.json"
+      ],
+      "notes": [
+        "The bounded contract records a Boolean paid fact only."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.33g",
       "rule_text_sha256": "5d5d9e952ff0f4496355fe14b054d099f83ba9f0652fce60bc21ec5d9eebc8b8",
       "schema_version": 1,
@@ -64226,26 +64343,36 @@
         "end_line": 4259,
         "start_line": 4258
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Sticker Kicker and sticker-dependent cost/result behavior are not represented"
       ],
       "case_id": "cr-702.33h",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.33"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_kicker_rules.FixedKickerCompilerTests.test_multi_and_variable_kicker_and_open_entry_results_remain_residual"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/kicker.json"
+      ],
+      "notes": [
+        "Sticker-dependent Kicker remains outside the normal-layout fixed-mana grammar."
+      ],
+      "required_scenarios": [
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "702.33h",
       "rule_text_sha256": "28c13ee13f0d79877756dba5c4f868118df1d5bd05fc4743d66a908e9ae78817",
       "schema_version": 1,
@@ -64254,7 +64381,7 @@
         "end_line": 4261,
         "start_line": 4260
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

@@ -557,6 +557,12 @@
       "name": "Typed fixed-mana Unearth",
       "status": "implemented_on_current_source_tree",
       "evidence": "The current source tree lowers 55 Commander-legal ordinary fixed-mana Unearth abilities to one source-spanned graveyard activation and promotes the 20 cards for which it is the final material blocker. The ordinary activation owner enforces owner scope, sorcery timing, fixed mana payment, stack timing, and stale-source revalidation. Resolution delegates the battlefield return, zone-object Haste, public noncopiable designation, mandatory self-replacement, next-end-step delayed trigger, CR 400.7 reset, projection, and replay to existing typed owners. The same source-pinned complete-card certificate used by Morph withholds Unearth from cards whose other material behavior remains residual. Variable and nonmana costs, copied or granted instances, multiface cards, and wider graveyard ability-changing effects remain fail-closed."
+    },
+    {
+      "id": "typed_fixed_mana_kicker_entry",
+      "name": "Typed fixed-mana Kicker entry",
+      "status": "implemented_on_current_source_tree",
+      "evidence": "The current source tree lowers 187 Commander-legal single fixed ordinary-mana Kicker abilities and 27 closed kicked counter-plus-keyword entry replacements, promoting 20 complete cards in the bounded corpus probe. One complete-card-admitted optional total-cost branch uses canonical casting and mana payment, records a typed paid-Kicker spell fact, and revalidates its compiler fingerprint before commit. The immutable fact feeds a mandatory self-entry replacement, nested counter-quantity replacement, optional Flying, First Strike, Haste, or Trample zone-object grant, normalized entry context, privacy projection, rollback, and exact replay. Multiple, and/or, variable, nonmana, copied, granted, kicked-trigger, spell-rider, dynamic, and open entry families remain fail-closed."
     }
   ],
   "platform": {

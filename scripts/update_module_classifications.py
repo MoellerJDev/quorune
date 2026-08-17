@@ -109,6 +109,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/compiled_cast_costs.py",
         "quorune/compiled_cast_timing.py",
         "quorune/compiled_morph.py",
+        "quorune/compiled_kicker.py",
     }:
         return "semantics"
     if relative in {
@@ -208,6 +209,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/menace.py",
         "quorune/mentor.py",
         "quorune/morph.py",
+        "quorune/kicker.py",
         "quorune/casting_cost_host.py",
         "quorune/permanent_exile.py",
         "quorune/permanent_designations.py",
@@ -291,6 +293,11 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/rules/morph_actions.py",
     }:
         return "face_down_cards"
+    if relative in {
+        "quorune/compiled_kicker.py",
+        "quorune/kicker.py",
+    }:
+        return "casting_kicker"
     if relative.startswith("quorune/rules/"):
         return "rules_capabilities"
     if relative.startswith("quorune/aura/"):

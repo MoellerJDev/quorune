@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "9efa5261f4ade8438d17b0987e08946496438f8d29db8ba5099d783e0afac444",
-  "declaration_source_fingerprint": "aec19b659b5c8368340c985393311720f92bd8e368a6f572901bf72edd1043c4",
+  "registry_fingerprint": "6869efac7131cf73ff99680b2d7e5c392f4655d53dfb32302a4dd7f31d4098a6",
+  "declaration_source_fingerprint": "b1925d25fe6ee43b953745455ad4d81487f70dcac12f9c0eb5a1cfa3be4aaf71",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -4451,6 +4451,248 @@
         "commander_review"
       ],
       "applicability_note": "Replay the represented return payment to the identical authoritative hash."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_counter_replacement_is_nested_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose the paid optional Kicker cost with a self-entry replacement and nested counter-quantity replacement before battlefield commitment."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_haste_consumes_existing_attack_legality",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Carry the paid Kicker fact through entry and feed the resulting Haste grant into current summoning-sickness attack legality."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose the total-cost choice only to the casting seat while every seat receives the eventual public battlefield result."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_kicker_rules.FixedKickerCompilerTests.test_kicker_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove fixed Kicker production and block every declared dependency so no optional-cost fallback retains exact trust."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_kicker_rules.FixedKickerCompilerTests.test_multi_and_variable_kicker_and_open_entry_results_remain_residual",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep multi-kicker, and/or, variable, nonmana, dynamic, and open kicked-result forms source-spanned and nonexecutable."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_partial_card_withholds_kicker_option",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Withhold the Kicker branch when a separate kicked result remains a material residual despite the independently exact cost component."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_stale_kicker_contract_rolls_back",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Revalidate the source-pinned Kicker descriptor before payment and stack mutation when the advertised card contract becomes stale."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_kicker_rules.FixedKickerCompilerTests.test_fixed_kicker_and_entry_compile_source_spanned_programs",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one single fixed ordinary-mana Kicker line to a trusted component with a compiler-pinned complete-card certificate."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Advertise, select, pay, stack, resolve, and replay one fixed Kicker branch through the canonical cast transaction."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep cast authority and payment selection seat-scoped while projecting no authoritative physical identity."
+    },
+    {
+      "capability_id": "casting.kicker.fixed_mana",
+      "evidence_class": "replay",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2g",
+        "601.2h",
+        "601.2i",
+        "702.33",
+        "702.33a",
+        "702.33b",
+        "702.33c",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the total-cost selection, mana payment, paid-kicker stack fact, and final authoritative battlefield hash."
     },
     {
       "capability_id": "casting.morph.fixed_mana",
@@ -30665,6 +30907,237 @@
       "applicability_note": "Replay the exact protected-object filtering and selected legal Aura attachment from a pinned continuation."
     },
     {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_counter_replacement_is_nested_and_replays",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply the kicked self-replacement before the nested counter-quantity replacement and commit only the fully resolved counter result."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_haste_consumes_existing_attack_legality",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Commit the kicked entry's Haste grant to the new logical object and consume it through existing attack legality."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the affected entering object's public counter and keyword result in four-player state without cross-seat cast authority."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_kicker_rules.FixedKickerCompilerTests.test_kicker_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove fixed kicked-entry production and block each counter or keyword dependency so no result retains exact admission."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "negative",
+      "test_id": "tests.test_kicker_rules.FixedKickerCompilerTests.test_multi_and_variable_kicker_and_open_entry_results_remain_residual",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep dynamic counters, open keyword fragments, kicked triggers, modal riders, and other entry grammars as material residuals."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "negative",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_partial_card_withholds_kicker_option",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Prevent a paid-kicker entry when its linked result is not represented by the complete current CardProgram."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "positive",
+      "test_id": "tests.test_kicker_rules.FixedKickerCompilerTests.test_fixed_kicker_and_entry_compile_source_spanned_programs",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one fixed kicked counter-plus-keyword line to a source-spanned self-replacement descriptor."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "positive",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Create the nested +1/+1 counter event and optional zone-object keyword before the card enters."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project only public counters and effective keyword facts while keeping replacement and logical identity internal."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_cost_entry_counters_keyword_and_replay",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the paid-kicker fact, self-replacement, nested counter event, keyword journal, and final authoritative hash."
+    },
+    {
+      "capability_id": "replacement.kicker.fixed_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_counter_replacement_is_nested_and_replays",
+      "official_rule_ids": [
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1",
+        "702.33d",
+        "702.33f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Preserve the nested counter replacement journal and doubled committed amount through exact replay."
+    },
+    {
       "capability_id": "resolution.effect_sequence.fixed_clauses",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_effect_clause_sequences.FixedEffectClauseSequenceRuntimeTests.test_life_follows_shielded_destruction_and_replays",
@@ -38826,5 +39299,5 @@
       "applicability_note": "Persist the exact replacement batch, effects, priority frame, land response, and applied journal in a versioned continuation."
     }
   ],
-  "fingerprint": "a73ed8efb769ac024031b64596a4dc0d9c621f04574a7001bb86268eec470bb8"
+  "fingerprint": "c9583b7cd9e1b2a06d8e83ce6ade131646dadae3ea83f967f87f5513bab096ee"
 }

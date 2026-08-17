@@ -89,3 +89,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0072 — resolution-created declaration rules](0072-resolution-created-declaration-rules.md)
 - [ADR 0073 — typed fixed-mana Morph](0073-typed-fixed-mana-morph.md)
 - [ADR 0074 — typed fixed-mana Unearth](0074-typed-fixed-mana-unearth.md)
+- [ADR 0075 — typed fixed-mana Kicker entry](0075-typed-fixed-mana-kicker-entry.md)

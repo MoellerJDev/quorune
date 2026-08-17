@@ -155,6 +155,7 @@ class ZoneChangeOccurrence:
     cause: str = ""
     transition_kind: ZoneTransitionKind = ZoneTransitionKind.ORDINARY
     read_ahead_chapter: int | None = None
+    cast_option: str | None = None
     schema_version: int = 1
 
     def __post_init__(self) -> None:
@@ -191,6 +192,12 @@ class ZoneChangeOccurrence:
         ):
             raise ZoneTriggerEventError(
                 "zone_occurrence.read_ahead_chapter must be positive or null"
+            )
+        if self.cast_option is not None and (
+            type(self.cast_option) is not str or not self.cast_option
+        ):
+            raise ZoneTriggerEventError(
+                "zone_occurrence.cast_option must be nonempty or null"
             )
         if type(self.schema_version) is not int or self.schema_version != 1:
             raise ZoneTriggerEventError(
@@ -261,6 +268,8 @@ class ZoneChangeOccurrence:
             result["transition_kind"] = self.transition_kind.value
         if self.read_ahead_chapter is not None:
             result["read_ahead_chapter"] = self.read_ahead_chapter
+        if self.cast_option is not None:
+            result["cast_option"] = self.cast_option
         return result
 
     @property
@@ -342,6 +351,8 @@ def normalized_zone_trigger_events(
         "attached_to": occurrence.previous_attached_to,
         "types": sorted(previous_types),
     }
+    if occurrence.cast_option is not None:
+        common["cast_option"] = occurrence.cast_option
     result: list[NormalizedZoneTriggerEvent] = []
     if occurrence.transition_kind is ZoneTransitionKind.SACRIFICE:
         result.append(

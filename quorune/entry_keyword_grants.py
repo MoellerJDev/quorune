@@ -38,7 +38,13 @@ class EntryKeywordGrant:
                 "Entry keyword grants require a string keyword"
             )
         keyword = " ".join(self.keyword.casefold().split())
-        if keyword not in {"haste"}:
+        if keyword not in {
+            "flying",
+            "first strike",
+            "haste",
+            "trample",
+            "vigilance",
+        }:
             raise EntryKeywordGrantError(
                 "Entry keyword grant is outside the represented vocabulary"
             )

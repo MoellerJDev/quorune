@@ -132,6 +132,20 @@ to their canonical owners. Countered, stale, partial-card, copied, granted,
 multiface, and nonordinary-cost variants fail closed without interpreting
 Oracle or reminder prose.
 
+`casting.kicker.fixed-mana.v1` owns one single fixed ordinary-mana Kicker cost
+descriptor. It contributes an optional additional total-cost branch only when
+the compiler's complete-card admission certificate is exact, and commit
+revalidates the descriptor before payment. The selected cost records one typed
+paid-Kicker spell fact that zone replacement and normalized entry events capture
+before CR 400.7 reset.
+
+`replacement.zone.kicked-entry.v1` consumes that immutable fact for one closed
+mandatory self-replacement. It creates a nested +1/+1 counter event and an
+optional affected-object Flying, First Strike, Haste, or Trample grant, then
+delegates commitment to the existing counter and entry-keyword owners. Partial
+cards, unsupported costs, kicked triggers, spell riders, dynamic quantities,
+and open entry effects fail closed without Oracle interpretation.
+
 `participation.untap-step.static.v1` lowers closed source, attached-object,
 global, and other-player static wording into immutable CR 502 participation
 values. The runtime query evaluates the complete typed `ObjectQuerySpec`

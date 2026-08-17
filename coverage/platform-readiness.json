@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "05087800db34b26032c5b1d337cdbdb1217407840d74b0ec3db6e03dee2f55f6",
+    "evaluated_input_fingerprint": "25ad5a02b288efffd4731ffde196a9f0c5a1f07dcdcc2a944bd3de0223bddd2a",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -570,6 +570,12 @@
       "id": "typed_fixed_mana_unearth",
       "name": "Typed fixed-mana Unearth",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers 187 Commander-legal single fixed ordinary-mana Kicker abilities and 27 closed kicked counter-plus-keyword entry replacements, promoting 20 complete cards in the bounded corpus probe. One complete-card-admitted optional total-cost branch uses canonical casting and mana payment, records a typed paid-Kicker spell fact, and revalidates its compiler fingerprint before commit. The immutable fact feeds a mandatory self-entry replacement, nested counter-quantity replacement, optional Flying, First Strike, Haste, or Trample zone-object grant, normalized entry context, privacy projection, rollback, and exact replay. Multiple, and/or, variable, nonmana, copied, granted, kicked-trigger, spell-rider, dynamic, and open entry families remain fail-closed.",
+      "id": "typed_fixed_mana_kicker_entry",
+      "name": "Typed fixed-mana Kicker entry",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -609,11 +615,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 40833,
+      "material_residuals": 40618,
       "status_counts": {
-        "exact": 4656,
-        "partial": 12454,
-        "unresolved": 14513
+        "exact": 4676,
+        "partial": 12418,
+        "unresolved": 14529
       },
       "total": 31623
     },
@@ -623,28 +629,28 @@
     "mechanics": {
       "status_counts": {
         "partial": 66,
-        "tested": 36,
+        "tested": 37,
         "trusted": 8,
-        "unclassified": 315
+        "unclassified": 314
       },
       "total": 425,
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 48098,
+      "material_residuals": 47871,
       "status_counts": {
-        "exact": 7733,
-        "partial": 13583,
-        "unresolved": 17307
+        "exact": 7753,
+        "partial": 13547,
+        "unresolved": 17323
       },
       "total": 38623
     },
     "rules": {
-      "blocked": 447,
-      "definition_only": 159,
+      "blocked": 455,
+      "definition_only": 160,
       "passing": 234,
       "total": 3300,
-      "unreviewed": 2460
+      "unreviewed": 2451
     },
     "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
   },
@@ -672,7 +678,7 @@
     "generated_validation_modules": 29,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 284,
+    "primary_test_modules": 285,
     "primary_test_shards": 13,
     "schema_files": 18,
     "server_files": 5,
@@ -682,31 +688,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 40836,
+        "material_residuals": 40621,
         "status_counts": {
-          "residual": 26967,
-          "trusted": 4656
+          "residual": 26947,
+          "trusted": 4676
         },
         "trust_basis_counts": {
-          "capability_closed": 4640,
+          "capability_closed": 4660,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26967
+          "unresolved": 26947
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 48100,
+        "material_residuals": 47873,
         "status_counts": {
           "failed": 2248,
-          "residual": 30887,
-          "trusted": 5488
+          "residual": 30867,
+          "trusted": 5508
         },
         "trust_basis_counts": {
-          "capability_closed": 5472,
+          "capability_closed": 5492,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30887
+          "unresolved": 30867
         }
       }
     },
