@@ -1836,6 +1836,33 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.damage.prevention.persistent_amount", "residual.replacement.damage-prevention"],
+      "capability_ids": ["damage.prevention.persistent_amount"],
+      "interaction_order": 2,
+      "assertion": "Hallowed Healer compiles its ordinary fixed shield while the separate Threshold prevention ability remains residual, and strict runtime admission rejects the incomplete CardProgram."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.damage.prevention.persistent_amount", "residual.replacement.replacement-applicability"],
+      "capability_ids": ["damage.prevention.persistent_amount"],
+      "interaction_order": 2,
+      "assertion": "Winds of Qal Sisma compiles its unconditional Fog clause while its Ferocious replacement applicability stays residual, and strict runtime admission rejects the incomplete CardProgram."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": ["capability.damage.prevention.persistent_amount", "residual.replacement.self-replacement-and-prevention-ordering"],
+      "capability_ids": ["damage.prevention.persistent_amount"],
+      "interaction_order": 2,
+      "assertion": "Winds of Qal Sisma keeps its conditional instead branch outside trust while preserving the independently typed Fog clause, and strict runtime admission rejects the incomplete CardProgram."
+    },
+    {
+      "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
       "test_id": "test_semantic_life_intent_replacement_suspends_and_replays_exactly",
       "piece_ids": ["capability.life.change.effect","capability.life.gain.replacement.static_multiplier"],
@@ -1860,15 +1887,6 @@
       "capability_ids": ["counter.producer.fixed_event_trigger", "trigger.placement.apnap"],
       "interaction_order": 2,
       "assertion": "Two simultaneous fixed counter triggers controlled by different players enter one ordinary four-player APNAP placement batch."
-    },
-    {
-      "evidence_class": "interaction",
-      "assurance_kind": "fail_closed_runtime_admission",
-      "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
-      "piece_ids": ["capability.counter.producer.fixed_event_trigger", "residual.replacement.damage-prevention"],
-      "capability_ids": ["counter.producer.fixed_event_trigger"],
-      "interaction_order": 2,
-      "assertion": "Spore Flower emits its exact upkeep counter trigger as a trusted executable CardProgram while its separate activated damage-prevention effect remains material residual text."
     },
     {
       "evidence_class": "interaction",

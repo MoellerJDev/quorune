@@ -73,7 +73,9 @@ from quorune.damage_prevention import (
     DamageModifierDuration,
     DamagePreventionShield,
     DamageSubject,
+    PreventionDamageKind,
     PreventionMode,
+    PreventionRecipientKind,
 )
 from quorune.damage_modifier_state import (
     ChosenDamageSource,
@@ -2736,6 +2738,78 @@ class CapabilityImplementationMutationTests(unittest.TestCase):
         ):
             with self.assertRaises(AssertionError):
                 assert_shield_is_consumed()
+
+    def test_prevention_scope_condition_mutants_are_killed(self):
+        shield = DamagePreventionShield(
+            shield_id="scoped-mutation-shield",
+            source_id="scoped-mutation-effect",
+            controller="B",
+            subject=DamageSubject("*", "any", "B"),
+            mode=PreventionMode.ALL,
+            remaining=None,
+            duration=DamageModifierDuration.UNTIL_END_OF_TURN,
+            created_turn_sequence=1,
+            damage_kind=PreventionDamageKind.COMBAT,
+            recipient_kind=PreventionRecipientKind.PLAYER,
+        )
+
+        def damage_event(*, combat: bool, target_kind: str):
+            return replacement_effects.ReplaceableEvent(
+                event_id=f"damage:{combat}:{target_kind}",
+                kind="damage",
+                affected_player="B",
+                payload={
+                    "amount": 1,
+                    "combat": combat,
+                    "target_kind": target_kind,
+                },
+            )
+
+        def assert_scope() -> None:
+            effect = damage_prevention_module._shield_replacement_effect(
+                shield
+            )
+            self.assertIsNotNone(
+                replacement_effects.replacement_choice(
+                    damage_event(combat=True, target_kind="player"),
+                    (effect,),
+                )
+            )
+            self.assertIsNone(
+                replacement_effects.replacement_choice(
+                    damage_event(combat=False, target_kind="player"),
+                    (effect,),
+                )
+            )
+            self.assertIsNone(
+                replacement_effects.replacement_choice(
+                    damage_event(combat=True, target_kind="permanent"),
+                    (effect,),
+                )
+            )
+
+        assert_scope()
+        original = damage_prevention_module._shield_replacement_effect
+        for removed in ("combat", "target_kind"):
+            with self.subTest(removed=removed):
+                def scope_mutant(value, *, removed_field=removed):
+                    effect = original(value)
+                    return replace(
+                        effect,
+                        conditions={
+                            field: condition
+                            for field, condition in effect.conditions.items()
+                            if field != removed_field
+                        },
+                    )
+
+                with patch.object(
+                    damage_prevention_module,
+                    "_shield_replacement_effect",
+                    scope_mutant,
+                ):
+                    with self.assertRaises(AssertionError):
+                        assert_scope()
 
     def test_prevention_trigger_quantity_mutant_is_killed(self):
         source = DamageSourceSnapshot(

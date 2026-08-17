@@ -10,7 +10,9 @@ from .damage_modifier_state import (
     DamagePreventionShield,
     DamageRedirectionEffect,
     DamageSubject,
+    PreventionDamageKind,
     PreventionMode,
+    PreventionRecipientKind,
 )
 from .replacement import (
     PreventAmount,
@@ -48,6 +50,10 @@ def _shield_replacement_effect(
     shield: DamagePreventionShield,
 ) -> ReplacementEffect:
     conditions = shield.subject.event_conditions()
+    if shield.damage_kind == PreventionDamageKind.COMBAT:
+        conditions["combat"] = {"eq": True}
+    if shield.recipient_kind != PreventionRecipientKind.ANY:
+        conditions["target_kind"] = {"eq": shield.recipient_kind.value}
     if shield.chosen_source is not None:
         conditions.update(shield.chosen_source.event_conditions())
     operation: PreventAmount | PreventUsingShield
@@ -244,6 +250,8 @@ def commit_damage_modifier_plan(
                     remaining=remaining[shield.shield_id],
                     duration=shield.duration,
                     created_turn_sequence=shield.created_turn_sequence,
+                    damage_kind=shield.damage_kind,
+                    recipient_kind=shield.recipient_kind,
                     chosen_source=shield.chosen_source,
                     label=shield.label,
                     aftermath=shield.aftermath,
@@ -332,6 +340,8 @@ def project_damage_modifier_snapshot(
                 remaining=after,
                 duration=shield.duration,
                 created_turn_sequence=shield.created_turn_sequence,
+                damage_kind=shield.damage_kind,
+                recipient_kind=shield.recipient_kind,
                 chosen_source=shield.chosen_source,
                 label=shield.label,
                 aftermath=shield.aftermath,

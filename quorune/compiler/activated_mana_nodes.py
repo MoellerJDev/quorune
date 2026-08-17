@@ -284,6 +284,11 @@ def _activated_effect_dependency_gate(
     capability_registry: CapabilityRegistry | None,
     capability_profile: str,
 ) -> DependencyGate:
+    prevention_operations = {
+        "choose_damage_source",
+        "create_damage_prevention_shield",
+        "life",
+    }
     capability_shaped_effect = (
         len(effects) == 1
         and str(effects[0].get("op") or "")
@@ -291,7 +296,9 @@ def _activated_effect_dependency_gate(
             "amass",
             "bounce",
             "counter_stack_target",
+            "create_damage_prevention_shield",
             "create_token",
+            "choose_damage_source",
             "choose_option",
             "damage",
             "damage_each_opponent",
@@ -327,6 +334,14 @@ def _activated_effect_dependency_gate(
             "untap",
         }
     )
+    closed_prevention_effect = (
+        "cr-615-prevention-effects" in mechanics
+        and bool(effects)
+        and all(
+            str(effect.get("op") or "") in prevention_operations
+            for effect in effects
+        )
+    )
     closed_target_sequence = (
         bool(
             {
@@ -354,7 +369,9 @@ def _activated_effect_dependency_gate(
         )
     )
     if (
-        capability_shaped_effect or closed_target_sequence
+        capability_shaped_effect
+        or closed_prevention_effect
+        or closed_target_sequence
     ) and capability_registry is not None:
         return dependency_gate(
             mechanics=mechanics,

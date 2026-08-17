@@ -30,7 +30,8 @@ _DYNAMIC_AMOUNT_TOKEN = chr(120)
 _LIFE_CAPTURE = "".join(("li", "fe"))
 _SUBJECT_PATTERN = (
     r"any target|target creature(?: you control)?|"
-    r"target artifact creature|target legendary creature|you"
+    r"target artifact creature|target legendary creature|"
+    r"target player or planeswalker|you"
 )
 _SOURCE_QUALIFIER_PATTERN = (
     r"white|blue|black|red|green|black or red|artifact|land|creature|"
@@ -54,6 +55,13 @@ def _target_schema(phrase: str) -> Mapping[str, Any] | None:
             "zones": ["player", "battlefield"],
             "categories": ["player", "permanent"],
             "predicate": "damageable",
+            "count": 1,
+        }
+    if normalized == "target player or planeswalker":
+        return {
+            "zones": ["player", "battlefield"],
+            "categories": ["player", "permanent"],
+            "predicate": "player_or_planeswalker",
             "count": 1,
         }
     if normalized in {
@@ -533,6 +541,152 @@ def _ordinary_shield(normalized: str) -> PreventionTemplate | None:
     return None
 
 
+def _fixed_combat_shield(normalized: str) -> PreventionTemplate | None:
+    match = re.fullmatch(
+        r"prevent the next (?P<amount>\d+|x) combat damage that would be dealt to "
+        rf"(?P<subject>{_SUBJECT_PATTERN}) this turn\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if match is None:
+        return None
+    subject = match.group("subject").casefold()
+    target_schema = _target_schema(subject)
+    return (
+        "damage-prevention-fixed-combat-shield-v1",
+        (
+            {
+                "op": "create_damage_prevention_shield",
+                "source": "$source",
+                "subject": (
+                    "$controller" if subject == "you" else "$target.0"
+                ),
+                "mode": "amount",
+                "amount": _amount_value(match.group("amount")),
+                "duration": "until_end_of_turn",
+                "damage_kind": "combat",
+            },
+        ),
+        target_schema,
+        _rules(target_schema),
+    )
+
+
+def _all_combat_damage(normalized: str) -> PreventionTemplate | None:
+    if re.fullmatch(
+        r"prevent all combat damage that would be dealt this turn\.?",
+        normalized,
+        re.IGNORECASE,
+    ):
+        return (
+            "damage-prevention-all-combat-v1",
+            (
+                {
+                    "op": "create_damage_prevention_shield",
+                    "source": "$source",
+                    "subject": "*",
+                    "mode": "all",
+                    "duration": "until_end_of_turn",
+                    "damage_kind": "combat",
+                },
+            ),
+            None,
+            _rules(None),
+        )
+    if re.fullmatch(
+        r"prevent all combat damage that would be dealt to players this turn\.?",
+        normalized,
+        re.IGNORECASE,
+    ):
+        return (
+            "damage-prevention-all-combat-to-players-v1",
+            (
+                {
+                    "op": "create_damage_prevention_shield",
+                    "source": "$source",
+                    "subject": "*",
+                    "mode": "all",
+                    "duration": "until_end_of_turn",
+                    "damage_kind": "combat",
+                    "recipient_kind": "player",
+                },
+            ),
+            None,
+            _rules(None),
+        )
+    source_match = re.fullmatch(
+        r"prevent all combat damage (?:(?:that would be dealt by )?target "
+        r"creature(?: would deal)?) this turn\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if source_match is not None:
+        target_schema = _target_schema("target creature")
+        return (
+            "damage-prevention-all-combat-by-target-v1",
+            (
+                {
+                    "op": "create_damage_prevention_shield",
+                    "source": "$source",
+                    "subject": "*",
+                    "chosen_source": "$target.0",
+                    "mode": "all",
+                    "duration": "until_end_of_turn",
+                    "damage_kind": "combat",
+                },
+            ),
+            target_schema,
+            _rules(target_schema),
+        )
+    target_match = re.fullmatch(
+        r"prevent all combat damage that would be dealt to target creature "
+        r"this turn\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if target_match is not None:
+        target_schema = _target_schema("target creature")
+        return (
+            "damage-prevention-all-combat-to-target-v1",
+            (
+                {
+                    "op": "create_damage_prevention_shield",
+                    "source": "$source",
+                    "subject": "$target.0",
+                    "mode": "all",
+                    "duration": "until_end_of_turn",
+                    "damage_kind": "combat",
+                },
+            ),
+            target_schema,
+            _rules(target_schema),
+        )
+    self_match = re.fullmatch(
+        r"prevent all combat damage that would be dealt to and dealt by this "
+        r"(?:artifact|creature|permanent) this turn\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if self_match is None:
+        return None
+    common = {
+        "op": "create_damage_prevention_shield",
+        "source": "$source",
+        "mode": "all",
+        "duration": "until_end_of_turn",
+        "damage_kind": "combat",
+    }
+    return (
+        "damage-prevention-all-combat-to-from-self-v1",
+        (
+            {**common, "subject": "$source"},
+            {**common, "subject": "*", "chosen_source": "$source"},
+        ),
+        None,
+        _rules(None),
+    )
+
+
 def _ordinary_all_damage(normalized: str) -> PreventionTemplate | None:
     match = re.fullmatch(
         rf"prevent all damage that would be dealt to "
@@ -559,6 +713,31 @@ def _ordinary_all_damage(normalized: str) -> PreventionTemplate | None:
         ),
         target_schema,
         _rules(target_schema),
+    )
+
+
+def _self_all_damage(normalized: str) -> PreventionTemplate | None:
+    match = re.fullmatch(
+        r"prevent all damage that would be dealt to this "
+        r"(?:artifact|creature|permanent) this turn\.?",
+        normalized,
+        re.IGNORECASE,
+    )
+    if match is None:
+        return None
+    return (
+        "damage-prevention-all-shield-self-v1",
+        (
+            {
+                "op": "create_damage_prevention_shield",
+                "source": "$source",
+                "subject": "$source",
+                "mode": "all",
+                "duration": "until_end_of_turn",
+            },
+        ),
+        None,
+        _rules(None),
     )
 
 
@@ -624,8 +803,11 @@ _PREVENTION_PRODUCTIONS = (
     _scaled_life_aftermath,
     _counter_aftermath,
     _shared_color_creatures,
+    _fixed_combat_shield,
+    _all_combat_damage,
     _ordinary_shield,
     _ordinary_all_damage,
+    _self_all_damage,
     _self_shield,
     _source_shield,
 )

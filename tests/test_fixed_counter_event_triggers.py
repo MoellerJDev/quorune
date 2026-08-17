@@ -901,11 +901,6 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                     "self-replacement and prevention ordering",
                 },
             ),
-            (
-                "Spore Flower",
-                "Prevent all combat damage",
-                set(),
-            ),
         )
         for name, residual_text, expected_blockers in residual_cases:
             with self.subTest(name=name):
@@ -952,6 +947,49 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                 self.assertTrue(
                     trigger_programs[0].capability_closure["trusted"]
                 )
+
+        spore_flower = self.db.lookup("Spore Flower", fuzzy=False)
+        compiled = compile_oracle_card(
+            spore_flower,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+        )
+        self.assertEqual("partial", compiled.status)
+        templates = {
+            node.template_id: node
+            for face in compiled.faces
+            for node in face.nodes
+        }
+        trigger_nodes = [
+            node
+            for template_id, node in templates.items()
+            if template_id in TEMPLATE_IDS
+        ]
+        self.assertEqual(1, len(trigger_nodes))
+        self.assertTrue(trigger_nodes[0].exact)
+        prevention = templates["damage-prevention-all-combat-v1"]
+        self.assertFalse(prevention.lowerable)
+        self.assertFalse(prevention.exact)
+        self.assertEqual(
+            "create_damage_prevention_shield",
+            prevention.effects[0]["op"],
+        )
+        self.assertIn(
+            "damage.prevention.persistent_amount",
+            prevention.capability_dependencies,
+        )
+        self.assertFalse(
+            any(
+                "Prevent all combat damage" in residual.text
+                for residual in compiled.material_residuals
+            )
+        )
+        self.assertTrue(
+            any(
+                residual.kind == "cost"
+                for residual in compiled.material_residuals
+            )
+        )
 
     def test_adjacent_event_and_effect_variants_remain_material(self):
         variants = (
