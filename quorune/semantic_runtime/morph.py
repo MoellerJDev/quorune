@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Mapping
 
+from ..card_programs.admission import REQUIRES_COMPLETE_CARD_PROGRAM_FIELD
 from ..morph import (
     FixedManaMorphSpec,
     MORPH_CAPABILITY_ID,
@@ -39,7 +40,13 @@ class FixedManaMorphHandler:
     def validate(self, descriptor: Mapping[str, Any]) -> FixedManaMorphSpec:
         exact_fields(
             descriptor,
-            {"handler_id", "schema_version", "event", "morph"},
+            {
+                "handler_id",
+                "schema_version",
+                "event",
+                REQUIRES_COMPLETE_CARD_PROGRAM_FIELD,
+                "morph",
+            },
             field="fixed-mana Morph handler",
         )
         if descriptor["handler_id"] != self.handler_id:
@@ -48,6 +55,8 @@ class FixedManaMorphHandler:
             raise SemanticNodeError("Unsupported Morph handler schema version")
         if descriptor["event"] != self.event:
             raise SemanticNodeError("Morph handler event mismatch")
+        if descriptor[REQUIRES_COMPLETE_CARD_PROGRAM_FIELD] is not True:
+            raise SemanticNodeError("Morph requires complete-card program admission")
         value = descriptor["morph"]
         if not isinstance(value, Mapping):
             raise SemanticNodeError("Morph descriptor must be an object")

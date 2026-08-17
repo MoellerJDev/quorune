@@ -130,7 +130,8 @@
       "test_stack_rules",
       "test_static_abilities",
       "test_static_action_permissions",
-      "test_typed_activated_ability_catalog"
+      "test_typed_activated_ability_catalog",
+      "test_unearth_rules"
     ],
     "targets-choices-continuations": [
       "test_aura_targeting_entry",

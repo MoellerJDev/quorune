@@ -36,8 +36,11 @@ Compile only one complete ordinary `Morph {fixed ordinary mana}` line into a
 source-spanned `FixedManaMorphSpec`. Its registered CardProgram component is
 active in all zones and carries the fixed turn-up mana vector; runtime never
 parses Oracle prose. Runtime discovery also requires the complete current
-CardProgram to be trusted, so an exact Morph ability does not make an otherwise
-residual card behavior-authoritative.
+card to carry a compiler-pinned complete-card admission certificate, so an
+independently exact Morph ability does not make an otherwise residual card
+behavior-authoritative. The semantic-program compatibility CardProgram is not
+used for this decision because it does not contain the complete Oracle IR
+residual inventory.
 
 Casting publishes a second immutable cast offer for the same physical card.
 That offer supplies a typed `{3}` base alternative, the face-down `Creature`
@@ -86,7 +89,8 @@ still requires the shared cross-component ability-presence boundary.
 ## Consequences
 
 - The fixed-mana slice promotes 139 Commander Morph abilities and 37 complete
-  cards while the two variable costs and twelve nonmana costs remain residual.
+  cards while the two variable costs, twelve nonmana costs, and cards with
+  independently residual turn-up behavior remain fail closed at runtime.
 - The same cast and priority catalogs own advertisement and acceptance; stale
   identity, control, affordability, method, CardProgram, and layer-6 ability
   state fail closed before mutation.

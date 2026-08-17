@@ -18,6 +18,20 @@ class ZoneObjectStateError(ValueError):
     """A zone-object reset request is malformed."""
 
 
+def mark_card_unearthed(card: CardInstance) -> None:
+    """Commit CR 702.84a's noncopiable designation to one incarnation."""
+
+    if (
+        not isinstance(card, CardInstance)
+        or card.zone != "battlefield"
+        or card.object_kind != "card"
+        or card.phased_out
+        or card.unearthed
+    ):
+        raise ZoneObjectStateError("Unearthed designation is malformed")
+    card.unearthed = True
+
+
 def mark_card_face_down_for_morph(
     card: CardInstance,
     *,
@@ -99,6 +113,7 @@ def reset_card_after_zone_change(
     card.goaded_by.clear()
     card.monstrous_value = None
     card.renowned = False
+    card.unearthed = False
     card.attacking = None
     card.blocking = None
     card.attached_to = None
@@ -150,6 +165,7 @@ def reset_card_after_zone_change(
 
 __all__ = [
     "mark_card_face_down_for_morph",
+    "mark_card_unearthed",
     "ZoneObjectStateError",
     "reset_card_after_zone_change",
     "turn_card_face_up",

@@ -45,6 +45,7 @@ from .cumulative_upkeep_nodes import (
 from .echo_nodes import fixed_mana_echo_node
 from .crew_nodes import ordinary_crew_keyword_node
 from .station_nodes import ordinary_station_keyword_node
+from .unearth_nodes import ordinary_unearth_keyword_node
 from .cycling_nodes import ordinary_cycling_keyword_node
 from .counter_keyword_activation_nodes import (
     fixed_counter_keyword_activation_node,
@@ -295,6 +296,9 @@ def closed_special_keyword_node(
     morph = fixed_mana_morph_keyword_node(**values)
     if morph is not None:
         return morph
+    unearth = ordinary_unearth_keyword_node(**values)
+    if unearth is not None:
+        return unearth
     if mechanics == (_DEVOID_MECHANIC,):
         ordinary = (
             material_line.strip().rstrip(".").casefold()

@@ -3,6 +3,11 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any, Callable, Iterable, Mapping, Sequence
 
+from ..card_programs.admission import (
+    CARD_PROGRAM_ADMISSION_FIELD,
+    CompleteCardProgramAdmission,
+    descriptor_requires_complete_card_program,
+)
 from ..carddb import CardRecord
 from ..rules.capabilities import CapabilityRegistry
 from ..semantics import SemanticProgram
@@ -297,6 +302,11 @@ def _node_group_provenance(
         }
         for node in nodes
     ]
+    requires_complete_card_program = any(
+        descriptor_requires_complete_card_program(handler)
+        for node in nodes
+        for handler in node.handlers
+    )
     return {
         "source_oracle_hash": ir.oracle_hash,
         "source_rulings_hash": rulings_hash,
@@ -325,6 +335,15 @@ def _node_group_provenance(
                 if trust_level != "trusted"
                 else "verified"
             )
+        ),
+        **(
+            {
+                CARD_PROGRAM_ADMISSION_FIELD: (
+                    CompleteCardProgramAdmission.from_oracle_ir(ir).to_dict()
+                )
+            }
+            if requires_complete_card_program
+            else {}
         ),
         **(
             {"source_spans": source_spans, "components": components}

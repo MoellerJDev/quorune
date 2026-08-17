@@ -47,6 +47,14 @@ from .components import (
     runtime_component_registry_fingerprint,
     validate_runtime_handler_descriptors,
 )
+from .unearth import (
+    default_ordinary_unearth_ability_registry,
+    OrdinaryUnearthAbilityHandler,
+    OrdinaryUnearthAbilityRegistry,
+    ordinary_unearth_specs_from_descriptors,
+    UNEARTH_EFFECT_HANDLERS,
+    UnearthEffectHandler,
+)
 from .cast_permissions import (
     CastPermissionRegistry,
     default_cast_permission_registry,
@@ -344,6 +352,7 @@ def default_semantic_handler_registry() -> SemanticHandlerRegistry:
             *COUNTER_REMOVAL_HANDLERS,
             *STATION_HANDLERS,
             *ZONE_OBJECT_KEYWORD_HANDLERS,
+            *UNEARTH_EFFECT_HANDLERS,
             *DOMAIN_EFFECT_HANDLERS,
         )
     )

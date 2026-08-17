@@ -13,6 +13,7 @@ import hashlib
 import re
 from typing import Any, Mapping, Protocol
 
+from .card_programs.admission import REQUIRES_COMPLETE_CARD_PROGRAM_FIELD
 from .keyword_abilities import normalized_characteristic_keywords
 from .util import mana_cost_to_vector, stable_json
 
@@ -129,6 +130,7 @@ def morph_handler_descriptor(spec: FixedManaMorphSpec) -> dict[str, Any]:
         "handler_id": MORPH_HANDLER_ID,
         "schema_version": 1,
         "event": MORPH_RUNTIME_EVENT,
+        REQUIRES_COMPLETE_CARD_PROGRAM_FIELD: True,
         "morph": spec.to_dict(),
     }
 

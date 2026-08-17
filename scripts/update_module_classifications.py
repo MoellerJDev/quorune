@@ -232,6 +232,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/turn_step_owner.py",
         "quorune/untap_step.py",
         "quorune/untap_step_coordination.py",
+        "quorune/unearth.py",
         "quorune/card_overrides/shortcuts.py",
         "quorune/stack_counter.py",
         "quorune/stack_resolution.py",
@@ -310,6 +311,8 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/station.py",
     }:
         return "activated_abilities"
+    if relative == "quorune/unearth.py":
+        return "graveyard_actions"
     if relative in {
         "quorune/cast_timing.py",
         "quorune/compiled_cast_timing.py",

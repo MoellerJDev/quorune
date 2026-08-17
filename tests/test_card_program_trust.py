@@ -190,6 +190,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.activated.cycling",
                 "ability.activated.crew",
                 "ability.activated.station",
+                "ability.activated.unearth",
                 "ability.enchant.linked_graveyard_creature",
                 "ability.static.enchant",
                 "ability.static.flash",

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Protocol
 
+from .card_programs.admission import program_has_complete_card_program_admission
 from .morph import FixedManaMorphSpec, MORPH_RUNTIME_EVENT
 from .semantic_runtime.morph import default_fixed_mana_morph_registry
 
@@ -29,12 +30,6 @@ def compiled_fixed_mana_morph_spec(
         or card.annotations.get("copy_overrides") is not None
     ):
         return None
-    card_program = host.semantics.card_program_for_oracle(record.oracle_id)
-    if (
-        card_program is None
-        or card_program.trust_closure.get("trusted") is not True
-    ):
-        return None
     registry = default_fixed_mana_morph_registry()
     result: list[FixedManaMorphSpec] = []
     for program in host.semantics.runtime_handler_programs_for_oracle(
@@ -43,6 +38,8 @@ def compiled_fixed_mana_morph_spec(
         event=MORPH_RUNTIME_EVENT,
     ):
         if not host.semantic_program_is_current_trusted(program):
+            continue
+        if not program_has_complete_card_program_admission(program):
             continue
         for descriptor in program.handlers:
             if registry.describe(str(descriptor.get("handler_id") or "")) is None:
