@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-16T03:43:00Z",
+  "observed_at": "2026-08-17T14:48:02Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -361,6 +361,34 @@
       ],
       "impact_edge_status": "added",
       "resolution": "The Devoid-focused compiler witness now verifies the exact registered family, handler, capability dependency, and trusted closure, while the global closed inventory includes that family. The existing impact policy already selected compiler-cardprogram; the focused module now makes the registration obligation executable in the locally permitted Devoid check."
+    },
+    {
+      "id": "ci-20260817-25",
+      "run_id": 32037282014,
+      "head_sha": "df595f203df287a3fe9afd5bb60292aa4d720a7c",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "Main smoke rejected the squash-merged combat-prevention head because GitHub's commit-associated pull-request endpoint returned no PR for the new main SHA.",
+      "failed_surfaces": ["main-smoke"],
+      "regressions": [
+        "test_certification_receipt.CertificationReceiptTests.test_verify_main_falls_back_to_recent_squash_merge_payload"
+      ],
+      "impact_edge_status": "added",
+      "resolution": "Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Focused unit coverage and a real PR 274 receipt verification exercise the fallback."
+    },
+    {
+      "id": "ci-20260817-26",
+      "run_id": 32040255059,
+      "head_sha": "9e14e7eaf12b92ad75e23805777ff56cdca9f0ca",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "The next squash merge repeated the empty commit-associated PR response and failed Main smoke before dependency installation, confirming the prior receipt lookup was deterministically incomplete.",
+      "failed_surfaces": ["main-smoke"],
+      "regressions": [
+        "test_certification_receipt.CertificationReceiptTests.test_verify_main_falls_back_to_recent_squash_merge_payload"
+      ],
+      "impact_edge_status": "added",
+      "resolution": "Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Empty and ambiguous selections remain fail-closed."
     }
   ],
   "recent_pull_requests": [

@@ -292,19 +292,36 @@ def select_merged_pull_request(value: Any, *, merge_sha: str) -> Mapping[str, An
         raise CertificationReceiptError(
             "GitHub associated-pull-request response is malformed"
         )
-    candidates = [
-        row
-        for row in value
-        if isinstance(row, Mapping)
-        and row.get("state") == "closed"
-        and row.get("merged_at")
-        and row.get("merge_commit_sha") == merge_sha
-    ]
+    candidates: dict[int, Mapping[str, Any]] = {}
+    for row in value:
+        if (
+            not isinstance(row, Mapping)
+            or row.get("state") != "closed"
+            or not row.get("merged_at")
+            or row.get("merge_commit_sha") != merge_sha
+        ):
+            continue
+        number = row.get("number")
+        if type(number) is not int or number <= 0:
+            raise CertificationReceiptError(
+                "Merged pull request has no valid number"
+            )
+        existing = candidates.setdefault(number, row)
+        existing_head = existing.get("head")
+        candidate_head = row.get("head")
+        if (
+            isinstance(existing_head, Mapping)
+            and isinstance(candidate_head, Mapping)
+            and existing_head.get("sha") != candidate_head.get("sha")
+        ):
+            raise CertificationReceiptError(
+                "Duplicate merged pull request payloads disagree on head SHA"
+            )
     if len(candidates) != 1:
         raise CertificationReceiptError(
             "Current main commit must identify exactly one merged pull request"
         )
-    return candidates[0]
+    return next(iter(candidates.values()))
 
 
 def successful_pr_runs(value: Any, *, exact_head_sha: str) -> tuple[Mapping[str, Any], ...]:
@@ -486,8 +503,21 @@ def verify_main_certification(
     if not _SHA.fullmatch(merge_sha):
         raise CertificationReceiptError("merge_sha must be a lowercase full Git SHA")
     api = f"https://api.github.com/repos/{repository}"
+    associated = _github_json(
+        f"{api}/commits/{merge_sha}/pulls",
+        token,
+    )
+    recent = _github_json(
+        f"{api}/pulls?state=closed&sort=updated"
+        "&direction=desc&per_page=100",
+        token,
+    )
+    if not isinstance(associated, list) or not isinstance(recent, list):
+        raise CertificationReceiptError(
+            "GitHub merged-pull-request responses are malformed"
+        )
     pull_request = select_merged_pull_request(
-        _github_json(f"{api}/commits/{merge_sha}/pulls", token),
+        [*associated, *recent],
         merge_sha=merge_sha,
     )
     pull_request_number = _positive_integer(

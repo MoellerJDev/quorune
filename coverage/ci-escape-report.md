@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "75efbb1e196169f186c15700859710a16af7039ccd97a6fee27a26406ad658f0"
+verified: "851958ee9c290fb709a325e8181601bdc069018dea38e98493c2474eea158bef"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 24
-- Deterministic escapes: 19
+- Escapes: 26
+- Deterministic escapes: 21
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -50,6 +50,8 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260815-22` | [31909012248](https://github.com/NullPriority/quorune/actions/runs/31909012248) | `source_correctness` | `not_applicable` | The composition suite now enumerates all four promoted pre-existing two-clause forms, the leaf template suites still prove atomic-parser rejection, and the integrated leaf suites no longer misclassify supported compositions. AGENTS.md now requires a cross-leaf negative-suite audit whenever a composition layer broadens accepted syntax. |
 | `ci-20260816-23` | [31917201086](https://github.com/NullPriority/quorune/actions/runs/31917201086) | `source_correctness` | `not_applicable` | The duplicated history allowlist was replaced with structural assertions against the canonical catalog and live selected-candidate set, so future reviewed reranks require one source entry instead of a synchronized test literal. The obsolete Haste grant was removed from the action-permission residual table because the fixed-query composition suite already asserts that exact promoted form. The existing AGENTS.md cross-leaf audit rule mechanically covers future grammar promotions, and the path policy already selected both affected shards. |
 | `ci-20260816-24` | [31924413599](https://github.com/NullPriority/quorune/actions/runs/31924413599) | `missing_affected_test` | `added` | The Devoid-focused compiler witness now verifies the exact registered family, handler, capability dependency, and trusted closure, while the global closed inventory includes that family. The existing impact policy already selected compiler-cardprogram; the focused module now makes the registration obligation executable in the locally permitted Devoid check. |
+| `ci-20260817-25` | [32037282014](https://github.com/NullPriority/quorune/actions/runs/32037282014) | `source_correctness` | `added` | Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Focused unit coverage and a real PR 274 receipt verification exercise the fallback. |
+| `ci-20260817-26` | [32040255059](https://github.com/NullPriority/quorune/actions/runs/32040255059) | `source_correctness` | `added` | Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Empty and ambiguous selections remain fail-closed. |
 
 ## Measurement limitations
 

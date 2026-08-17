@@ -413,12 +413,17 @@ observed CI incidents.
 compact replay/server suite, generated integration state, pinned rules, wheel
 metadata, and the production browser build. It is an integration alarm, not a
 second complete pre-merge suite. Before those checks, it resolves the pull
-request associated with the current merge commit, finds a successful PR workflow
-for that exact head, downloads its live certification receipt, and requires the
-current tracked source tree to have the same fingerprint. A squash merge passes
-without a follow-up status commit because commit identity is deliberately not
-the equivalence boundary; a materially different tree, missing/stale receipt,
-failed gate, direct push, or mismatched GitHub coordinate fails closed.
+request associated with the current merge commit from both GitHub's
+commit-association endpoint and the recent closed-pull-request listing. The
+latter is required because GitHub may temporarily or indefinitely return no
+commit association for a squash merge. Duplicate payloads for the same PR are
+deduplicated by number, while zero or multiple matching PRs still fail closed.
+The workflow then finds a successful PR run for that exact head, downloads its
+live certification receipt, and requires the current tracked source tree to
+have the same fingerprint. A squash merge passes without a follow-up status
+commit because commit identity is deliberately not the equivalence boundary;
+a materially different tree, missing/stale receipt, failed gate, direct push,
+or mismatched GitHub coordinate fails closed.
 
 `.github/workflows/nightly.yml` owns expensive breadth:
 

@@ -20,6 +20,7 @@ from scripts.certification_receipt import (
     select_receipt_artifact,
     successful_pr_runs,
     validate_receipt,
+    verify_main_certification,
 )
 from scripts.source_tree_fingerprint import (
     tracked_ref_source_fingerprint,
@@ -188,6 +189,101 @@ class CertificationReceiptTests(unittest.TestCase):
             "https://example.invalid/receipt",
             artifact["archive_download_url"],
         )
+
+    def test_merged_pull_selection_deduplicates_sources_and_fails_closed(self):
+        merged = {
+            "number": 132,
+            "state": "closed",
+            "merged_at": "2026-08-07T00:00:00Z",
+            "merge_commit_sha": "d" * 40,
+            "head": {"sha": "a" * 40},
+        }
+        selected = select_merged_pull_request(
+            [merged, dict(merged)],
+            merge_sha="d" * 40,
+        )
+        self.assertEqual(132, selected["number"])
+        with self.assertRaisesRegex(
+            CertificationReceiptError,
+            "exactly one",
+        ):
+            select_merged_pull_request([], merge_sha="d" * 40)
+        with self.assertRaisesRegex(
+            CertificationReceiptError,
+            "exactly one",
+        ):
+            select_merged_pull_request(
+                [merged, {**merged, "number": 133}],
+                merge_sha="d" * 40,
+            )
+
+    def test_verify_main_falls_back_to_recent_squash_merge_payload(self):
+        expected = receipt()
+        archive = io.BytesIO()
+        with zipfile.ZipFile(archive, "w") as zipped:
+            zipped.writestr(
+                RECEIPT_FILENAME,
+                json.dumps(expected.to_dict(), sort_keys=True),
+            )
+        recent_pull = {
+            "number": expected.pull_request,
+            "state": "closed",
+            "merged_at": "2026-08-07T00:00:00Z",
+            "merge_commit_sha": "d" * 40,
+            "head": {"sha": expected.exact_head_sha},
+        }
+        responses = iter(
+            (
+                [],
+                [recent_pull],
+                {
+                    "workflow_runs": [
+                        {
+                            "id": expected.workflow_run_id,
+                            "event": "pull_request",
+                            "head_sha": expected.exact_head_sha,
+                            "name": "PR",
+                            "path": ".github/workflows/ci.yml",
+                        }
+                    ]
+                },
+                {
+                    "artifacts": [
+                        {
+                            "name": (
+                                "exact-head-certification-"
+                                f"{expected.workflow_run_id}"
+                            ),
+                            "expired": False,
+                            "archive_download_url": (
+                                "https://example.invalid/receipt"
+                            ),
+                        }
+                    ]
+                },
+            )
+        )
+        with (
+            patch(
+                "scripts.certification_receipt._github_json",
+                side_effect=lambda *_args: next(responses),
+            ),
+            patch(
+                "scripts.certification_receipt._github_request",
+                return_value=archive.getvalue(),
+            ),
+            patch(
+                "scripts.certification_receipt."
+                "tracked_worktree_source_fingerprint",
+                return_value=expected.source_tree_fingerprint,
+            ),
+        ):
+            actual = verify_main_certification(
+                repository=expected.repository,
+                merge_sha="d" * 40,
+                token="test-token",
+            )
+        self.assertEqual(expected, actual)
 
     def test_artifact_archive_requires_one_canonical_receipt(self):
         expected = receipt()
