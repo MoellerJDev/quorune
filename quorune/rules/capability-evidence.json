@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "d543daa62c26c7bf0a8cc4fe66bdf9e87040318a9672003af08323016b844ec3",
-  "declaration_source_fingerprint": "bec7a6496a0eecf396b85c59896b92bcede7dea06d21d8a75ab313bb84c96cdf",
+  "registry_fingerprint": "97bc786d6a209f59a7d648ee545232bd407326565e4f232aa4e336cfeb0d3d0e",
+  "declaration_source_fingerprint": "92004118755f224fe637ba55d97d6a132dae0eafe84c22c5abb0080acfbbb426",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -27282,6 +27282,253 @@
       "applicability_note": "Replay the exact private partition response to the same authoritative library order and final state hash."
     },
     {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_destination_replacement_resumes_before_public_commit",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suspend selected library-to-graveyard movement before mutation, preserve the private looked-at identity through a replacement continuation, and commit the chosen public exile result exactly once."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_then_draw_sequence_resumes_in_printed_order",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suspend a typed two-clause effect sequence at its private Surveil partition, commit that result first, and resume the following private draw from the newly ordered library top."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_orders_top_and_graveyard_and_replays_exactly",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve one controller-only Surveil instruction in four-player state while keeping the private top group scoped to its actor and exposing only cards moved to public zones."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_surveil_rules.FixedSurveilCompilerTests.test_surveil_shape_dependency_and_compiler_mutants_fail_closed",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the fixed Surveil compiler production or block each zone dependency and prove no represented instruction retains exact executable trust."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_runtime_validation_mutant_is_killed",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Bypass the identity-pinned library-top validation and prove the stale-continuation unchanged-state regression rejects the surviving mutant."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_surveil_rules.FixedSurveilCompilerTests.test_dynamic_targeted_linked_and_event_consumer_surveil_remain_residual",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep zero, dynamic, optional, targeted, linked-result, and unsupported Surveil-event trigger grammar as precise material residuals."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_residual_surveil_pairs_remain_fail_closed_at_cardprogram_boundary",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep cards with a recognized fixed Surveil sentence and an unresolved conditional, multiple-target, or Surveil-event consumer sibling outside trusted CardProgram admission."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "negative",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_stale_identity_and_malformed_surveil_fail_before_mutation",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a new object incarnation and malformed typed intent without changing the authoritative state hash."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "positive",
+      "test_id": "tests.test_surveil_rules.FixedSurveilCompilerTests.test_fixed_surveil_compiles_across_spell_trigger_activation_and_sequence",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one shared fixed Surveil action across spell, self-entry trigger, activated, and ordered two-effect sequence contexts."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "positive",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_short_and_empty_library_emit_exact_events",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Look at as many cards as exist and emit one normalized positive-count Surveil event even when every prescribed library action is impossible."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_destination_replacement_resumes_before_public_commit",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose the replacement-order decision only to the affected player while every other seat remains unable to see the selected library card before commitment."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_orders_top_and_graveyard_and_replays_exactly",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep looked-at identities and the retained top order private while projecting only references that actually reached public zones and never authoritative physical IDs."
+    },
+    {
+      "capability_id": "library.surveil.fixed_controller",
+      "evidence_class": "replay",
+      "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_orders_top_and_graveyard_and_replays_exactly",
+      "official_rule_ids": [
+        "404.3",
+        "701.25",
+        "701.25a",
+        "701.25b",
+        "701.25c",
+        "701.25d"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the private partition, simultaneous public movement, retained top ordering, normalized event, and final authoritative state hash exactly."
+    },
+    {
       "capability_id": "life.change.effect",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_player_life_effects.FixedPlayerLifeRuntimeTests.test_target_opponent_drain_replacement_and_replay_are_exact",
@@ -40356,5 +40603,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "18c0d1f43b5926abd580dcf6b21b214609dfface1e9cbe5afd3067edd1ccb838"
+  "fingerprint": "077088097415df4749ce189260e950776b92c41b1fa3765116e58ad6a8e6d26f"
 }

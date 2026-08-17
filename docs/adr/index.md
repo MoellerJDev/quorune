@@ -91,3 +91,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0074 — typed fixed-mana Unearth](0074-typed-fixed-mana-unearth.md)
 - [ADR 0075 — typed fixed-mana Kicker entry](0075-typed-fixed-mana-kicker-entry.md)
 - [ADR 0076 — typed self-zone-move activations](0076-typed-self-zone-move-activations.md)
+- [ADR 0077 — typed fixed Surveil resolution](0077-typed-fixed-surveil-resolution.md)
