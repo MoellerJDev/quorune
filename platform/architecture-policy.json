@@ -370,6 +370,7 @@
       ,"quorune/target_protection_engine_adapter.py": "narrow read-only CommanderEngine compatibility query for immutable target-protection snapshots"
       ,"quorune/target_predicates.py": "closed read-only target-predicate evaluation over current and pinned characteristics"
       ,"quorune/unearth.py": "typed Unearth coordinator delegating zone mutation, continuous effects, designation reset, replacement, and delayed-trigger placement to canonical owners"
+      ,"quorune/self_zone_move.py": "typed source-self zone-move coordinator delegating activation, replacement-aware movement, owner-zone routing, attachment cleanup, tapped entry, trigger discovery, privacy, and replay to canonical owners"
       ,"quorune/selection/apnap.py": "typed read-only APNAP and simultaneous-choice coordinator delegating result mutation to canonical owners"
       ,"quorune/selection/model.py": "immutable versioned selection contract and continuation model"
       ,"quorune/selection/target_query.py": "narrow read-only target identity and last-known-information query"

@@ -41,6 +41,7 @@ from .mana_abilities import default_fixed_mana_ability_registry
 from .morph import default_fixed_mana_morph_registry
 from .kicker import default_fixed_mana_kicker_registry
 from .unearth import default_ordinary_unearth_ability_registry
+from .self_zone_move import default_self_zone_move_ability_registry
 from .continuous_components import (
     default_continuous_effect_component_registry,
 )
@@ -80,6 +81,7 @@ def runtime_component_registries() -> tuple[Any, ...]:
         default_fixed_mana_morph_registry(),
         default_fixed_mana_kicker_registry(),
         default_ordinary_unearth_ability_registry(),
+        default_self_zone_move_ability_registry(),
         default_token_creation_replacement_registry(),
         default_untap_step_component_registry(),
         default_zone_change_replacement_registry(),

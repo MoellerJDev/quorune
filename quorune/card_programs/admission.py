@@ -3,10 +3,11 @@ from __future__ import annotations
 """Source-pinned admission for effects that materialize card behavior.
 
 Some independently exact abilities can safely execute on an otherwise partial
-card.  Effects such as Morph and Unearth are different: they put the physical
-card into a state where its other abilities can immediately matter.  These
-effects therefore require a compiler-certified complete card boundary rather
-than the legacy semantic-program compatibility view.
+card. Effects such as Morph, Unearth, and battlefield self-return are different:
+they put the physical card into a state where its other abilities can
+immediately matter. These effects therefore require a compiler-certified
+complete card boundary rather than the legacy semantic-program compatibility
+view.
 """
 
 from dataclasses import dataclass

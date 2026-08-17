@@ -34,6 +34,7 @@ from ..semantic_runtime.cycling_abilities import (
     ordinary_cycling_specs_from_descriptors,
 )
 from ..semantic_runtime.unearth import ordinary_unearth_specs_from_descriptors
+from ..semantic_runtime.self_zone_move import self_zone_move_specs_from_descriptors
 from ..semantic_runtime.counter_keyword_abilities import (
     fixed_counter_keyword_specs_from_descriptors,
 )
@@ -191,6 +192,7 @@ def _specialized_ability(
             color_set_mana_specs_from_descriptors(handlers),
             ordinary_cycling_specs_from_descriptors(handlers),
             ordinary_unearth_specs_from_descriptors(handlers),
+            self_zone_move_specs_from_descriptors(handlers),
             fixed_counter_keyword_specs_from_descriptors(handlers),
             ordinary_crew_specs_from_descriptors(handlers),
             ordinary_station_specs_from_descriptors(handlers),

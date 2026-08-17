@@ -229,6 +229,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/work_selection.py",
         "quorune/saga_lifecycle.py",
         "quorune/saga_progression.py",
+        "quorune/self_zone_move.py",
         "quorune/turn_counter_coordination.py",
         "quorune/turn_priority_owner.py",
         "quorune/turn_step_owner.py",
@@ -320,6 +321,8 @@ def _owner(relative: str, layer: str) -> str:
         return "activated_abilities"
     if relative == "quorune/unearth.py":
         return "graveyard_actions"
+    if relative == "quorune/self_zone_move.py":
+        return "zones_and_object_identity"
     if relative in {
         "quorune/cast_timing.py",
         "quorune/compiled_cast_timing.py",
