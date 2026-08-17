@@ -89,6 +89,36 @@ def _lower_toxic_fragment(
     )
 
 
+def _lower_cascade_fragment(
+    material_line: str,
+    mechanics: tuple[str, ...],
+) -> AbilityKeywordFragmentLowering | None:
+    if mechanics != ("cascade",):
+        return None
+    if material_line.strip().rstrip(".").casefold() != "cascade":
+        return AbilityKeywordFragmentLowering(
+            residual_kind="unsupported_cascade_variant",
+            residual_reason=(
+                "Cascade wording is outside the closed printed keyword grammar"
+            ),
+            residual_blockers=("ordinary printed Cascade",),
+        )
+    return AbilityKeywordFragmentLowering(
+        handlers=(
+            {
+                "handler_id": "ability.trigger.cascade.v1",
+                "schema_version": 1,
+                "event": "spell.cast",
+                "fragment": ability_fragment_to_dict(
+                    SpellCastKeywordTriggerSpec(
+                        kind=SpellCastKeywordTriggerKind.CASCADE,
+                    )
+                ),
+            },
+        )
+    )
+
+
 def lower_ability_keyword_fragments(
     material_line: str,
     mechanics: tuple[str, ...],
@@ -134,6 +164,9 @@ def lower_ability_keyword_fragments(
         )
     if mechanics == (TOXIC_ABILITY_FRAGMENT_KIND,):
         return _lower_toxic_fragment(material_line)
+    cascade = _lower_cascade_fragment(material_line, mechanics)
+    if cascade is not None:
+        return cascade
     if mechanics == ("prowess",):
         matching_parts = tuple(
             part

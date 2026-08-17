@@ -646,6 +646,12 @@ def _keyword_nodes(
         re.IGNORECASE,
     ):
         mechanics = (CYCLING_MECHANIC_ID,)
+    if (
+        mechanics is None
+        and any(str(keyword).casefold() == "cascade" for keyword in keywords)
+        and re.match(r"^Cascade\b", material_line, re.IGNORECASE)
+    ):
+        mechanics = ("cascade",)
     if mechanics is None:
         return ()
 

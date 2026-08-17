@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "cascade",
+  "official_name": "Cascade",
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "rule_references": ["601.2i", "603.2", "603.3", "702.85", "702.85a", "702.85b", "702.85c"],
+  "glossary_references": ["cascade"],
+  "dependencies": ["exile", "handling-triggered-abilities", "library", "object-zone-identity", "resolving-spells-and-abilities", "stack"],
+  "coverage_status": "tested",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["stack", "library", "exile"],
+    "objects": ["one selected-face spell with a trusted printed Cascade descriptor", "one ordinary Cascade trigger occurrence", "zero or more public exiled physical cards", "at most one lower-mana-value nonland cast candidate"],
+    "events": ["normalized completed spell cast", "ordinary Cascade trigger placement", "sequential public library-to-exile movement", "optional cast without paying mana cost", "simultaneous random-bottom cleanup"],
+    "state_reads": ["source spell stack mana value including announced X", "controller's current library top", "front-face card type and mana value in exile", "current face-specific trusted spell programs", "current targets and additional costs"],
+    "state_writes": ["ordinary APNAP trigger batch", "canonical zone transitions", "one public cast-or-decline continuation", "ordinary spell stack object", "deterministic library-bottom order"],
+    "costs": ["the mana cost is replaced by the no-mana alternative; represented mandatory and optional additional costs remain payable and revalidated"],
+    "timing": ["each instance triggers only when the source spell is cast and resolves independently above that spell"],
+    "targets": ["the cast candidate uses its current trusted face-specific target schema"],
+    "choices": ["same-controller simultaneous Cascade triggers use ordinary trigger ordering", "the trigger controller chooses one current cast option or declines"],
+    "hidden_information": ["cards become public as they enter exile", "random-bottom cleanup exposes count but not the new hidden library order or authoritative IDs"],
+    "apnap": ["Cascade and other represented completed-cast triggers enter one ordinary placement batch"],
+    "layers": ["printed stack-zone descriptors do not claim granted, copied, removed, or text-changed Cascade"],
+    "replacement_effects": ["zone movement delegates to the canonical destination-replacement owner; a replacement choice during the sequential exile loop remains outside the resumable Cascade slice"],
+    "copy": ["a copied spell is not cast and does not trigger Cascade", "granted or copied Cascade requires separately trusted stack-ability propagation"],
+    "control_change": ["the casting player controls the trigger and its cast choice"],
+    "zone_change": ["the source spell may leave before the trigger resolves because its stack mana value is captured at trigger creation", "cleanup follows exact exiled incarnations and fails closed if one changes unexpectedly"],
+    "source_leaves": ["source departure does not stop an already-created Cascade trigger"]
+  },
+  "variants": ["ordinary single printed instance", "four printed instances", "no eligible card", "eligible card with targets and an additional cost", "decline", "stale exiled candidate", "four-player projection and exact replay"],
+  "witness_cards": [
+    {"name": "Maelstrom Colossus", "oracle_id": "06fc3eb1-7a48-42a0-8a5c-d61bd5aacfff"},
+    {"name": "Apex Devastator", "oracle_id": "b4d6747c-3516-4e71-be30-af007c6b1dc4"},
+    {"name": "Bloodbraid Elf", "oracle_id": "3f0c9466-5ab9-4205-a84f-b4b27b5a678e"}
+  ],
+  "rulings": [],
+  "test_ids": ["test_cascade_keyword_lowers_each_instance_with_precise_spans", "test_unsupported_cascade_wording_remains_material_residual", "test_cascade_dependency_and_compiler_mutations_fail_closed", "test_cascade_exiles_casts_and_random_bottoms", "test_multiple_cascade_instances_trigger_separately", "test_empty_or_ineligible_library_bottoms_without_choice", "test_cascade_cast_revalidates_additional_cost_and_targets", "test_stale_or_malformed_cascade_choice_rolls_back", "test_four_player_cascade_choice_is_public_and_replays_exactly"],
+  "implementation": {
+    "component": "quorune.compiler.keyword_nodes.cascade_keyword_node, quorune.semantic_runtime.ability_fragments.CascadeAbilityFragmentHandler, quorune.cascade, quorune.selection.exile_cast, and quorune.zone_transitions.ZoneTransitionOwner",
+    "version": "typed-ordinary-cascade-v1",
+    "capability_ids": ["casting.permission.one_shot_exile_without_mana", "trigger.keyword.cascade"],
+    "supported_slice": "Ordinary printed Cascade on a cast face with current registered card data and trusted castable results, excluding CR 702.85b action windows and resumable replacement choices during the sequential exile loop."
+  },
+  "known_blockers": ["CR 702.85b as-you-cascade action windows are not represented", "granted, copied, removed, conditional, text-changed, and face-down Cascade need trusted typed stack-ability propagation", "a destination-replacement choice during sequential library exile needs a resumable Cascade continuation", "aggregate casting, triggered-ability, library, exile, copy, and replacement coverage remains incomplete"],
+  "review_status": "reviewed"
+}

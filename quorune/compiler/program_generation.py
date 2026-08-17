@@ -90,6 +90,7 @@ from .program_composition import (
 
 
 _EVOLVE_MECHANIC = "evolve"
+_CASCADE_MECHANIC = "cascade"
 _PROWESS_MECHANIC = "prowess"
 _EXILE_MECHANIC = "exile"
 _TOXIC_MECHANIC = "toxic"
@@ -111,6 +112,43 @@ def runtime_handler_footprint(
     ):
         return None
     return program.active_zone, program.event, handler_descriptors
+
+
+def _distinct_generated_siblings(
+    existing: SemanticProgram,
+    candidate: SemanticProgram,
+) -> bool:
+    authored_by = str(candidate.provenance.get("authored_by") or "")
+    return bool(
+        existing.key != candidate.key
+        and authored_by.startswith("oracle-ir-v")
+        and existing.provenance.get("authored_by") == authored_by
+    )
+
+
+def _generated_runtime_program_is_shadowed(
+    candidate: SemanticProgram,
+    existing_programs: Iterable[SemanticProgram],
+) -> bool:
+    existing = tuple(existing_programs)
+    footprint = runtime_handler_footprint(candidate)
+    if footprint is not None and any(
+        program.trust_level == "trusted"
+        and runtime_handler_footprint(program) == footprint
+        and not _distinct_generated_siblings(program, candidate)
+        for program in existing
+    ):
+        return True
+    return bool(
+        candidate.ability_id.startswith("trigger:")
+        and any(
+            program.trust_level == "trusted"
+            and program.active_zone == candidate.active_zone
+            and program.event == candidate.event
+            and not _distinct_generated_siblings(program, candidate)
+            for program in existing
+        )
+    )
 
 
 def _runtime_handler_semantic_descriptor(
@@ -217,6 +255,7 @@ def _generated_ability_id(
             and parts[-2]
             in {
                 _EVOLVE_MECHANIC,
+                _CASCADE_MECHANIC,
                 _PROWESS_MECHANIC,
                 PERSIST_KEYWORD,
                 RENOWN_MECHANIC_ID,
@@ -1472,24 +1511,9 @@ def register_generated_programs(
             ):
                 skipped_existing += 1
                 continue
-            footprint = runtime_handler_footprint(program)
-            if footprint is not None and any(
-                existing.trust_level == "trusted"
-                and runtime_handler_footprint(existing) == footprint
-                for existing in registry.programs_for_oracle(record.oracle_id)
-            ):
-                skipped_existing += 1
-                continue
-            if (
-                program.ability_id.startswith("trigger:")
-                and any(
-                    existing.trust_level == "trusted"
-                    and existing.active_zone == program.active_zone
-                    and existing.event == program.event
-                    for existing in registry.programs_for_oracle(
-                        record.oracle_id
-                    )
-                )
+            if _generated_runtime_program_is_shadowed(
+                program,
+                registry.programs_for_oracle(record.oracle_id),
             ):
                 # Reviewed event handlers take precedence. Trigger program
                 # keys are author-defined, so key equality alone cannot detect

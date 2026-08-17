@@ -70,6 +70,7 @@
       ,"quorune/zone_transition_model.py"
       ,"quorune/zone_transitions.py"
       ,"quorune/selection/public_choice.py"
+      ,"quorune/selection/exile_cast.py"
       ,"quorune/selection/searching.py"
       ,"quorune/selection/storm.py"
       ,"quorune/selection/targeting.py"
@@ -259,6 +260,7 @@
         "quorune/selection/searching.py",
         "quorune/selection/apnap.py",
         "quorune/selection/storm.py",
+        "quorune/selection/exile_cast.py",
         "quorune/selection/public_choice.py",
         "quorune/semantic_choices",
         "quorune/object_query.py",

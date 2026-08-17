@@ -875,6 +875,78 @@ class ZoneTransitionOwner:
             ),
         )
 
+    def move_exiled_cards_to_library_bottom_random(
+        self,
+        object_ids: Sequence[str],
+        *,
+        owner: str,
+        randomization_key: str,
+        reason: str,
+    ) -> tuple[CardInstance, ...]:
+        """Move one public exile group to its owner's library bottom at random."""
+
+        self.host._require_seat(owner)
+        if type(randomization_key) is not str or not randomization_key:
+            raise GameRuleError(
+                "Random-bottom movement requires an identity key"
+            )
+        normalized = tuple(object_ids)
+        if any(
+            type(object_id) is not str or not object_id
+            for object_id in normalized
+        ):
+            raise GameRuleError(
+                "Random-bottom object identities must be nonempty strings"
+            )
+        if len(normalized) != len(set(normalized)):
+            raise GameRuleError("Random-bottom object identities must be unique")
+        cards = tuple(
+            self.state.cards.get(object_id) for object_id in normalized
+        )
+        if any(
+            card is None or card.owner != owner or card.zone != EXILE_ZONE
+            for card in cards
+        ):
+            raise GameRuleError(
+                "Random-bottom movement requires current exiled cards of one owner"
+            )
+        if not normalized:
+            return ()
+        ordered = list(normalized)
+        random.Random(
+            f"{self.state.config.seed}|{owner}|library-bottom-random|"
+            f"{randomization_key}"
+        ).shuffle(ordered)
+        moved = tuple(
+            self.move_cards_simultaneously(
+                [(object_id, LIBRARY_ZONE) for object_id in ordered],
+                reason=reason,
+                log=False,
+            )
+        )
+        library = self.state.players[owner].zones[LIBRARY_ZONE]
+        bottom = [
+            object_id
+            for object_id in ordered
+            if self.state.cards[object_id].zone == LIBRARY_ZONE
+            and self.state.cards[object_id].owner == owner
+        ]
+        bottom_set = set(bottom)
+        library[:] = [
+            *bottom,
+            *(object_id for object_id in library if object_id not in bottom_set),
+        ]
+        self.host._log(
+            owner,
+            "library.bottom.random",
+            f"{owner} put {len(bottom)} card(s) on the bottom at random.",
+            {"count": len(bottom), JOURNAL_REASON_FIELD: reason},
+            importance=2,
+            changed_objects=bottom,
+            changed_players=[owner],
+        )
+        return moved
+
     def shuffle_library(self, seat: str, *, reason: str = "shuffle") -> None:
         self.host._require_seat(seat)
         player = self.state.players[seat]

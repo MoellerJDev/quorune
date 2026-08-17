@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "source": "Scryfall-compatible Oracle subset for Cascade tests",
+  "fixture_kind": "public_exact-list_card_data",
+  "cards": [
+    {
+      "oracle_id": "40000000-0000-4000-8000-000000000001",
+      "name": "Maelstrom Colossus",
+      "mana_cost": "{8}",
+      "cmc": 8,
+      "type_line": "Artifact Creature — Golem",
+      "oracle_text": "Cascade",
+      "power": "7",
+      "toughness": "7",
+      "loyalty": null,
+      "defense": null,
+      "layout": "normal",
+      "released_at": "2021-06-18",
+      "colors": [],
+      "color_identity": [],
+      "keywords": ["Cascade"],
+      "produced_mana": [],
+      "legalities": {"commander": "legal", "duel": "legal"}
+    },
+    {
+      "oracle_id": "40000000-0000-4000-8000-000000000002",
+      "name": "Apex Devastator",
+      "mana_cost": "{8}{G}{G}",
+      "cmc": 10,
+      "type_line": "Creature — Chimera Hydra",
+      "oracle_text": "Cascade, cascade, cascade, cascade",
+      "power": "10",
+      "toughness": "10",
+      "loyalty": null,
+      "defense": null,
+      "layout": "normal",
+      "released_at": "2020-11-20",
+      "colors": ["G"],
+      "color_identity": ["G"],
+      "keywords": ["Cascade"],
+      "produced_mana": [],
+      "legalities": {"commander": "legal", "duel": "legal"}
+    },
+    {
+      "oracle_id": "40000000-0000-4000-8000-000000000003",
+      "name": "Cascade Trial",
+      "mana_cost": "{1}{B}",
+      "cmc": 2,
+      "type_line": "Sorcery",
+      "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact.\nDestroy target creature.",
+      "power": null,
+      "toughness": null,
+      "loyalty": null,
+      "defense": null,
+      "layout": "normal",
+      "released_at": "2026-08-17",
+      "colors": ["B"],
+      "color_identity": ["B"],
+      "keywords": [],
+      "produced_mana": [],
+      "legalities": {"commander": "legal", "duel": "legal"}
+    },
+    {
+      "oracle_id": "40000000-0000-4000-8000-000000000004",
+      "name": "Cascade Creature // Cascade Refuge",
+      "mana_cost": "{2}{G} // ",
+      "cmc": 3,
+      "type_line": "Creature — Beast // Land",
+      "oracle_text": "",
+      "power": "3",
+      "toughness": "3",
+      "loyalty": null,
+      "defense": null,
+      "layout": "modal_dfc",
+      "released_at": "2026-08-17",
+      "colors": ["G"],
+      "color_identity": ["G"],
+      "keywords": [],
+      "produced_mana": [],
+      "card_faces": [
+        {
+          "name": "Cascade Creature",
+          "mana_cost": "{2}{G}",
+          "type_line": "Creature — Beast",
+          "oracle_text": "",
+          "power": "3",
+          "toughness": "3",
+          "colors": ["G"]
+        },
+        {
+          "name": "Cascade Refuge",
+          "mana_cost": "",
+          "type_line": "Land",
+          "oracle_text": "",
+          "colors": []
+        }
+      ],
+      "legalities": {"commander": "legal", "duel": "legal"}
+    }
+  ],
+  "rulings": []
+}

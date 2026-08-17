@@ -1,5 +1,5 @@
 {
-  "contract_count": 111,
+  "contract_count": 112,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -77,6 +77,12 @@
       "mechanic_id": "bushido",
       "path": "mechanics/contracts/bushido.json",
       "sha256": "9c9b69c620ab84e9d3fd3a1d9fd173e7dfbf97c56ae947d0b2ef30b55e588126",
+      "version": 1
+    },
+    {
+      "mechanic_id": "cascade",
+      "path": "mechanics/contracts/cascade.json",
+      "sha256": "6707df35f43e17ec681141415b500e7b99640c18b580835f657480cc87bef2cb",
       "version": 1
     },
     {
@@ -1115,19 +1121,38 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/cascade.json",
+      "contract_sha256": "6707df35f43e17ec681141415b500e7b99640c18b580835f657480cc87bef2cb",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.compiler.keyword_nodes.cascade_keyword_node, quorune.semantic_runtime.ability_fragments.CascadeAbilityFragmentHandler, quorune.cascade, quorune.selection.exile_cast, and quorune.zone_transitions.ZoneTransitionOwner",
+      "implementation_version": "typed-ordinary-cascade-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "CR 702.85b as-you-cascade action windows are not represented",
+        "granted, copied, removed, conditional, text-changed, and face-down Cascade need trusted typed stack-ability propagation",
+        "a destination-replacement choice during sequential library exile needs a resumable Cascade continuation",
+        "aggregate casting, triggered-ability, library, exile, copy, and replacement coverage remains incomplete"
+      ],
       "mechanic_id": "cascade",
       "official_name": "Cascade",
       "rule_references": [
         "702.85"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_cascade_keyword_lowers_each_instance_with_precise_spans",
+        "test_unsupported_cascade_wording_remains_material_residual",
+        "test_cascade_dependency_and_compiler_mutations_fail_closed",
+        "test_cascade_exiles_casts_and_random_bottoms",
+        "test_multiple_cascade_instances_trigger_separately",
+        "test_empty_or_ineligible_library_bottoms_without_choice",
+        "test_cascade_cast_revalidates_additional_cost_and_targets",
+        "test_stale_or_malformed_cascade_choice_rolls_back",
+        "test_four_player_cascade_choice_is_public_and_replays_exactly"
+      ],
       "trust_level": "untrusted"
     },
     {

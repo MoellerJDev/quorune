@@ -59,6 +59,7 @@ class CombatKeywordTriggerKind(str, Enum):
 class SpellCastKeywordTriggerKind(str, Enum):
     """Closed printed keywords tied to a normalized spell-cast event."""
 
+    CASCADE = "cascade"
     PROWESS = "prowess"
 
 

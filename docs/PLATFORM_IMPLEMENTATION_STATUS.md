@@ -2,7 +2,7 @@
 title: "Platform implementation status"
 status: "generated"
 authoritative_source: "platform/readiness-source.json"
-verified: "72ac5b174f6109e0c79559c52193f8ae9b9868b5136ba8620b2eade006d72592"
+verified: "4b7475691ee248cb75f5901bd97d9bd9e63293d3c5218b11969d8e3a90d50386"
 audience: "maintainers, operators, and contributors"
 maintenance: "generated"
 generated_source: "coverage/platform-readiness.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_platform_status.p
 
 # Platform implementation status
 
-Source fingerprint: `72ac5b174f6109e0c79559c52193f8ae9b9868b5136ba8620b2eade006d72592`
+Source fingerprint: `4b7475691ee248cb75f5901bd97d9bd9e63293d3c5218b11969d8e3a90d50386`
 
 ## Current top-level state
 
@@ -23,7 +23,7 @@ Source fingerprint: `72ac5b174f6109e0c79559c52193f8ae9b9868b5136ba8620b2eade006d
 - Exact replay: `implemented_command_replay_with_additive_card_program_trust_and_exact_runtime_binding_provenance`
 - Hidden-information projection: `implemented_projected_protocol`
 - Core AI dependency: `none_for_core_tests_or_runtime`
-- Primary test modules: `287`
+- Primary test modules: `288`
 - Primary test shards: `13`
 - Rules snapshot integrated: yes
 - Rules snapshot complete: no

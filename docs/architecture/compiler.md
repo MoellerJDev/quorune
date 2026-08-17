@@ -2,7 +2,7 @@
 title: "Oracle compiler architecture"
 status: "current"
 authoritative_source: "quorune/oracle_ir.py, quorune/compiler, and quorune/card_programs"
-verified: "2026-08-16"
+verified: "2026-08-17"
 audience: "compiler and rules contributors"
 maintenance: "hand-maintained"
 ---
@@ -108,6 +108,19 @@ action through the current effective-keyword boundary. Megamorph, variable,
 hybrid, Phyrexian, snow, nonmana, copied, granted, text-changed, multiface,
 merged, and residual turn-up families remain source-spanned residuals or
 fail-closed runtime exclusions.
+
+`compiler/cascade_nodes.py` owns ordinary printed Cascade as one independently
+source-spanned stack-zone trigger per instance. The casting transaction
+materializes those descriptors into the ordinary APNAP trigger batch and
+captures the selected spell face's mana value, including announced X. The
+runtime coordinator publicly exiles to the first lower-mana-value nonland,
+then delegates the optional cast to the generic one-shot exile-cast choice
+owner. That owner revalidates the selected face, no-mana alternative,
+additional costs, targets, and spell program before casting; the canonical
+zone owner simultaneously returns every uncast card to the library bottom in
+a deterministic random order. CR 702.85b action windows, replacement-choice
+suspension during the sequential exile loop, and granted, copied,
+text-changed, conditional, or face-down Cascade remain fail-closed.
 
 `compiler/unearth_nodes.py` owns one closed ordinary fixed-mana Unearth
 production. It lowers the graveyard-only sorcery-speed activation to a typed

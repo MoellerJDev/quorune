@@ -163,6 +163,7 @@ from .selection.targeting import TargetSelectionOwnerMixin
 from .selection.searching import HiddenSearchOwnerMixin
 from .selection.apnap import ApnapChoiceOwnerMixin
 from .selection.storm import StormTargetChoiceOwnerMixin
+from .selection.exile_cast import OneShotExileCastChoiceOwnerMixin
 from .selection.public_choice import PublicChoiceOwnerMixin
 from . import turn_counter_coordination
 from . import untap_step_coordination
@@ -373,6 +374,7 @@ class CommanderEngine(
     HiddenSearchOwnerMixin,
     ApnapChoiceOwnerMixin,
     StormTargetChoiceOwnerMixin,
+    OneShotExileCastChoiceOwnerMixin,
     PublicChoiceOwnerMixin,
     SemanticChoiceCoordinationMixin,
     SemanticChoiceIntentHostMixin,
@@ -1478,6 +1480,8 @@ class CommanderEngine(
             self._complete_battle_entry_protector_choice(decision)
         elif kind == "battle.siege_defeated":
             self._complete_siege_defeated_choice(decision)
+        elif kind == "selection.exile_cast":
+            self._complete_one_shot_exile_cast_choice(decision)
         elif kind == "choice.apnap":
             self._complete_apnap_choice(decision)
         elif kind == "replacement.order":
@@ -3639,194 +3643,6 @@ class CommanderEngine(
             return True
         return False
 
-    def _finish_siege_defeated_resolution(
-        self,
-        item: StackItem,
-        *,
-        outcome: str,
-        card: CardInstance | None = None,
-        cast_stack_ref: str | None = None,
-    ) -> None:
-        if item in self.state.stack:
-            self.state.stack.remove(item)
-        self._log(
-            item.controller,
-            "battle.siege_defeated.resolve",
-            f"Resolved {item.ref}: {item.label} ({outcome}).",
-            {
-                "stack": item.ref,
-                "battle": card.ref if card is not None else None,
-                "outcome": outcome,
-                "cast_stack": cast_stack_ref,
-            },
-            importance=2,
-            changed_objects=(
-                [card.object_id] if card is not None else []
-            ),
-            changed_players=[item.controller],
-        )
-        if self._stabilize():
-            return
-        self._grant_priority(self.state.active_player)
-
-    def _begin_siege_defeated_resolution(
-        self,
-        item: StackItem,
-    ) -> None:
-        """Resolve the intrinsic CR 310.11b Siege ability natively."""
-
-        card = self.state.cards.get(item.source_object_id or "")
-        expected_logical_object_id = str(
-            item.context.get("source_logical_object_id") or ""
-        )
-        if (
-            card is None
-            or card.zone != "battlefield"
-            or card.logical_object_id != expected_logical_object_id
-        ):
-            self._finish_siege_defeated_resolution(
-                item,
-                outcome="source_unavailable",
-                card=card,
-            )
-            return
-
-        self.move_card(
-            card.object_id,
-            "exile",
-            reason="Siege defeated trigger",
-            semantic_events=True,
-        )
-        if card.zone != "exile":
-            self._finish_siege_defeated_resolution(
-                item,
-                outcome="exile_failed",
-                card=card,
-            )
-            return
-
-        record = self.card_record(card)
-        can_cast_transformed = bool(
-            card.is_card_object
-            and record is not None
-            and record.layout == "transform"
-            and len(record.faces) >= 2
-            and str(record.faces[1].get("name") or "")
-        )
-        if not can_cast_transformed:
-            self._finish_siege_defeated_resolution(
-                item,
-                outcome="exiled_not_castable_transformed",
-                card=card,
-            )
-            return
-
-        transformed_face_data = dict(record.faces[1])
-        transformed_face = str(transformed_face_data["name"])
-        semantic_key = (
-            f"{record.oracle_id}:spell:{transformed_face}"
-        )
-        program = self.semantics.get(semantic_key)
-        transformed_types, _, _ = self._type_parts(
-            str(transformed_face_data.get("type_line") or "")
-        )
-        if transformed_types.intersection({"instant", "sorcery"}) and (
-            program is None
-            or (
-                program.target_schema is None
-                and not self.semantic_program_is_current_trusted(program)
-            )
-        ):
-            self.permissions.issue(
-                kind="arbiter.resolve",
-                role="arbiter",
-                actors=["arbiter"],
-                allowed_actions=[
-                    "resolve",
-                    "register_and_resolve",
-                    "counter_as_rule",
-                    "fizzle",
-                ],
-                payload_by_actor={
-                    "arbiter": {
-                        "stack": item.ref,
-                        "label": item.label,
-                        "controller": item.controller,
-                        "semantic_key": item.semantic_key,
-                        "default_destination": None,
-                        "reason": (
-                            "transformed Siege spell lacks trusted typed "
-                            "cast semantics"
-                        ),
-                        "battle": card.ref,
-                        "transformed_face": transformed_face,
-                    }
-                },
-            )
-            return
-
-        options = self._cast_cost_options(
-            item.controller,
-            card,
-            program,
-            hint=True,
-            force_without_mana_cost=True,
-        )
-        public_options: list[dict[str, Any]] = []
-        for option in options:
-            target_specification = (
-                dict(option["target_schema"])
-                if isinstance(
-                    option.get("target_schema"), Mapping
-                )
-                else (
-                    program.target_schema
-                    if program is not None
-                    else None
-                )
-            )
-            public_target_schema = None
-            if target_specification is not None:
-                public_target_schema = self._public_target_schema(
-                    item.controller,
-                    target_specification,
-                    source_ref=card.ref,
-                )
-                if public_target_schema is None:
-                    continue
-            public_option = {
-                key: copy.deepcopy(value)
-                for key, value in option.items()
-                if key
-                in {
-                    "id",
-                    "kind",
-                    "requirements",
-                    "choice_schema",
-                    "label",
-                }
-            }
-            if public_target_schema is not None:
-                public_option["target_schema"] = (
-                    public_target_schema
-                )
-            public_options.append(public_option)
-        if not public_options:
-            self._finish_siege_defeated_resolution(
-                item,
-                outcome="exiled_cast_unavailable",
-                card=card,
-            )
-            return
-
-        self._begin_siege_defeated_choice(
-            item=item,
-            card=card,
-            name=record.name,
-            transformed_face=transformed_face,
-            public_options=public_options,
-        )
-
     def _prepare_stack_resolution(self) -> None:
         if self.state.pending_trigger_batches and self._stabilize():
             return
@@ -3836,8 +3652,7 @@ class CommanderEngine(
         item = self.state.stack[-1]
         if self._begin_battle_entry_protector_choice(item):
             return
-        if item.semantic_key == "builtin:siege-defeated":
-            self._begin_siege_defeated_resolution(item)
+        if self._begin_intrinsic_exile_cast_resolution(item):
             return
         if item.semantic_key == "builtin:storm":
             self._prepare_storm_resolution(item)

@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "f0bcd78a3d68f93db8f815c28d71d97a43cd667e55b5e4528882bbe2928ba891"
+verified: "8184603adec9ca8e358918db0b0bd11d1b9668175d39dc4ce4f18f070f74264c"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,12 +11,12 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `a2ce58686f5a96f3a9a94138fbf2e96b19903706ad671784810965ed227c6207`
+Source fingerprint: `a2a606c4b13b8bdeb22a75731f9d620cb73c3796248373cac3ddbb5215826ca9`
 
 ## Current top-level state
 
 - Pinned rules: `3300`
-- Queued rules: `2906`
+- Queued rules: `2905`
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
@@ -36,7 +36,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 3 | deferred | `frontier:keyword_dependency:enchant` | `card_family` | 0 | 139 | 0 | 0 |
 | 4 | deferred | `frontier:target_or_choice:typed-enchant-restriction` | `rules_foundation` | 0 | 139 | 0 | 0 |
 | 5 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 6 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 55 |
+| 6 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 54 |
 | 7 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
 | 8 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
 | 9 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |

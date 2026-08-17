@@ -155,6 +155,28 @@ def _ward_dependency_gate(
     )
 
 
+def _spell_cast_trigger_dependency_gate(
+    mechanics: tuple[str, ...],
+    material_line: str,
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+) -> DependencyGate | None:
+    if mechanics not in {(_CASCADE_MECHANIC,), (_PROWESS_MECHANIC,)}:
+        return None
+    mechanic = mechanics[0]
+    capability_id = f"trigger.keyword.{mechanic}"
+    if material_line.strip().rstrip(".").casefold() == mechanic:
+        return explicit_capability_gate(
+            capability_id,
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+        )
+    return DependencyGate(
+        blockers=(f"mechanic:{mechanic}-unsupported-wording",),
+        capabilities=(capability_id,),
+    )
+
+
 def keyword_dependency_gate(
     *,
     material_line: str,
@@ -228,17 +250,11 @@ def keyword_dependency_gate(
             blockers=("mechanic:evolve-unsupported-wording",),
             capabilities=("counter.producer.evolve",),
         )
-    if mechanics == (_PROWESS_MECHANIC,):
-        if material_line.strip().rstrip(".").casefold() == _PROWESS_MECHANIC:
-            return explicit_capability_gate(
-                "trigger.keyword.prowess",
-                capability_registry=capability_registry,
-                capability_profile=capability_profile,
-            )
-        return DependencyGate(
-            blockers=("mechanic:prowess-unsupported-wording",),
-            capabilities=("trigger.keyword.prowess",),
-        )
+    spell_cast_trigger = _spell_cast_trigger_dependency_gate(
+        mechanics, material_line, capability_registry, capability_profile
+    )
+    if spell_cast_trigger is not None:
+        return spell_cast_trigger
     if ward := _ward_dependency_gate(
         mechanics,
         material_line,
@@ -319,6 +335,7 @@ __all__ = [
 ]
 
 _DREDGE_MECHANIC = "dredge"
+_CASCADE_MECHANIC = "cascade"
 _FABRICATE_MECHANIC = "fabricate"
 _EVOLVE_MECHANIC = "evolve"
 _PERSIST_MECHANIC = PERSIST_KEYWORD
