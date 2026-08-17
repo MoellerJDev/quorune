@@ -10507,13 +10507,13 @@
       ]
     },
     "interaction_assurance_baseline": {
-      "applicable_high_risk_pairs": 173,
-      "applicable_piece_pairs": 39380,
+      "applicable_high_risk_pairs": 172,
+      "applicable_piece_pairs": 39379,
       "available": true,
-      "covered_high_risk_pairs": 173,
-      "covered_piece_pairs": 666,
+      "covered_high_risk_pairs": 172,
+      "covered_piece_pairs": 665,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "42fa083f742d0c3d46d051f9a978dc9b2e68c766a95902b170e8b525d8b289c5",
+      "source_fingerprint": "1a5989dc568b1e7333b667bac64d81185ab7623cee3c3bd098d3daa65fd49bcf",
       "uncovered_high_risk_pairs": 0
     },
     "migration_queue": [],
@@ -25853,7 +25853,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "7e0d8a93e6a3fd96e5696463a1cc5d58ed1d6e613b1bac7c1f74016d83aafcd3",
+      "fingerprint": "c057b3b520bccb166d0f65fa8d603165f8aa7902554605bb0128145e47dacd0a",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {

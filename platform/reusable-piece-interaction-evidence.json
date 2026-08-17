@@ -1892,15 +1892,6 @@
       "evidence_class": "interaction",
       "assurance_kind": "fail_closed_runtime_admission",
       "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
-      "piece_ids": ["capability.counter.producer.fixed_event_trigger", "residual.replacement.damage-prevention"],
-      "capability_ids": ["counter.producer.fixed_event_trigger"],
-      "interaction_order": 2,
-      "assertion": "Spore Flower emits its exact upkeep counter trigger as a trusted executable CardProgram while its separate activated damage-prevention effect remains material residual text."
-    },
-    {
-      "evidence_class": "interaction",
-      "assurance_kind": "fail_closed_runtime_admission",
-      "test_id": "test_closed_event_bindings_compile_exact_counter_effect_bodies",
       "piece_ids": ["capability.counter.producer.fixed_event_trigger", "residual.replacement.replacement-applicability"],
       "capability_ids": ["counter.producer.fixed_event_trigger"],
       "interaction_order": 2,
