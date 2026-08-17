@@ -499,6 +499,7 @@ def fixed_sacrifice_cost_candidates(
     *,
     actor: str,
     cost: FixedSacrificeAdditionalCost,
+    exclude_object_id: str | None = None,
 ) -> tuple[str, ...]:
     """Return controlled sacrifice candidates using effective characteristics."""
 
@@ -506,6 +507,7 @@ def fixed_sacrifice_cost_candidates(
         host,
         actor=actor,
         cost=FixedZoneChangeAdditionalCost.from_legacy_sacrifice(cost),
+        exclude_object_id=exclude_object_id,
     )
 
 
@@ -514,11 +516,14 @@ def fixed_zone_change_cost_candidates(
     *,
     actor: str,
     cost: FixedZoneChangeAdditionalCost,
+    exclude_object_id: str | None = None,
 ) -> tuple[str, ...]:
     """Return operation-owned candidates through one immutable query path."""
 
     rows = []
     for object_id in host.state.players[actor].zones[cost.origin_zone]:
+        if object_id == exclude_object_id:
+            continue
         card = host.state.cards[object_id]
         effective = host._effective_card_data(card)
         rows.append(

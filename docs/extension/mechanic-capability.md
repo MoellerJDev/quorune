@@ -2,14 +2,14 @@
 title: "Mechanic capability extension guide"
 status: "current"
 authoritative_source: "quorune/rules/capabilities.py, its packaged registry, and ADR 0004"
-verified: "2026-08-05"
+verified: "2026-08-16"
 audience: "rules, compiler, and architecture contributors"
 maintenance: "hand-maintained"
 ---
 
 # Mechanic capability extension guide
 
-Capability registry version 105 is the current incremental trust boundary beside
+Capability registry version 108 is the current incremental trust boundary beside
 the legacy broad mechanic contracts. Fine-grained closures now cover bounded
 families across damage and replacement results, life and counters, draw,
 continuous characteristics and attachments, casting and activation, and combat

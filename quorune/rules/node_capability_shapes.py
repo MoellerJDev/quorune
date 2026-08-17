@@ -10,14 +10,11 @@ from .casting_additional_costs import (
     FixedSacrificeAdditionalCost,
     FixedZoneChangeAdditionalCost,
 )
-from ..additional_cost_vocabulary import (
-    DISCARD_ONE_COST,
-    EXILE_ONE_FROM_BATTLEFIELD_COST,
-    EXILE_ONE_FROM_GRAVEYARD_COST,
-    RETURN_ONE_TO_OWNER_HAND_COST,
-    SACRIFICE_ONE_COST,
+from .casting_additional_cost_groups import (
+    fixed_alternative_additional_cost_node_capabilities,
+    fixed_life_payment_additional_cost_node_capabilities,
+    fixed_zone_change_additional_cost_capability,
 )
-
 from ..attachment_references import (
     AttachmentReferenceError,
     AttachmentReferenceSpec,
@@ -121,20 +118,7 @@ def fixed_zone_change_additional_cost_node_capabilities(
         cost = FixedZoneChangeAdditionalCost.from_descriptor(raw_costs[0])
     except (AdditionalCostError, TypeError):
         return ()
-    capability = {
-        DISCARD_ONE_COST: "casting.additional_cost.zone_change.fixed_discard",
-        SACRIFICE_ONE_COST: "casting.additional_cost.fixed_sacrifice",
-        EXILE_ONE_FROM_GRAVEYARD_COST: (
-            "casting.additional_cost.zone_change.fixed_exile"
-        ),
-        EXILE_ONE_FROM_BATTLEFIELD_COST: (
-            "casting.additional_cost.zone_change.fixed_exile"
-        ),
-        RETURN_ONE_TO_OWNER_HAND_COST: (
-            "casting.additional_cost.zone_change.fixed_return_to_owner_hand"
-        ),
-    }[cost.operation]
-    return (capability,)
+    return (fixed_zone_change_additional_cost_capability(cost),)
 
 
 _FIXED_DAMAGE_TARGET_SCHEMAS: dict[str, Mapping[str, Any]] = {
@@ -1513,7 +1497,9 @@ def fixed_player_counter_placement_node_capabilities(
 
 __all__ = [
     "direct_target_predicate_capabilities",
+    "fixed_alternative_additional_cost_node_capabilities",
     "fixed_counter_additional_cost_node_capabilities",
+    "fixed_life_payment_additional_cost_node_capabilities",
     "fixed_sacrifice_additional_cost_node_capabilities",
     "fixed_zone_change_additional_cost_node_capabilities",
     "fixed_damage_node_capabilities",

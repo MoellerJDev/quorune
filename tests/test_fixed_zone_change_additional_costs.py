@@ -175,7 +175,6 @@ class FixedZoneChangeAdditionalCostCompilerTests(unittest.TestCase):
             "discard two cards",
             "discard a card at random",
             "discard X land cards",
-            "discard a card or pay 3 life",
             "exile two creature cards from your graveyard",
             "exile X cards from your graveyard",
             "exile a modified creature you control",
@@ -183,7 +182,6 @@ class FixedZoneChangeAdditionalCostCompilerTests(unittest.TestCase):
             "return a tapped creature you control to its owner's hand",
             "sacrifice a modified creature",
             "sacrifice a creature with power 4 or greater",
-            "sacrifice a creature or pay {3}",
             "sacrifice a NotARealSubtype",
         )
         for clause in unsupported:

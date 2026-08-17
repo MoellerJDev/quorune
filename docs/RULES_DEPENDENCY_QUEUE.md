@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "b46e9128908eb268f691cef2f5cefefa92fa0bff6d0edb12ca73f8fc00583642"
+verified: "3879acee7a9eee995c51bdb29e01f35227a997ea3332612b44daae877076787b"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `da25fe261920d6b967a7d3eaa1736d4a0fe320708daa8f8f27ead376748523a6`
+Source fingerprint: `4412d5700cf5ee8a6e2918b4d2f32a4fa1fca141a0f27972465df8870d21ff62`
 
 ## Current top-level state
 
@@ -32,7 +32,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
 | 1 | selected | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 273 | 0 | 0 |
-| 2 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 26 | 123 | 0 | 0 |
+| 2 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 14 | 106 | 0 | 0 |
 | 3 | deferred | `frontier:keyword_dependency:kicker` | `card_family` | 0 | 208 | 0 | 0 |
 | 4 | deferred | `frontier:keyword_dependency:morph` | `card_family` | 37 | 141 | 0 | 0 |
 | 5 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |

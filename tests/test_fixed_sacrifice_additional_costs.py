@@ -136,7 +136,6 @@ class FixedSacrificeAdditionalCostCompilerTests(unittest.TestCase):
             "sacrifice a creature with power 4 or greater",
             "sacrifice an tapped creature",
             "sacrifice a creature you control",
-            "sacrifice a creature or pay 2 life",
             "you may sacrifice a creature",
             "sacrifice a creature rather than pay this spell's mana cost",
         )

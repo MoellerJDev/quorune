@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 107,
+  "registry_version": 108,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -358,6 +358,33 @@
       "status": "trusted"
     },
     {
+      "id": "casting.additional_cost.fixed_alternative",
+      "version": 1,
+      "official_rules": ["601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Choose exactly one of two source-spanned fixed additional-cost leaves, expose each currently payable branch as a distinct server-authored total-cost option, and commit only the selected typed leaf before stack placement.",
+        "inputs": ["one binary typed alternative-cost descriptor", "two distinct fixed ordinary-mana, fixed-life, or single-object zone-change leaves", "one selected server-authored cost-option identity", "current mana, life, and object-payment state"],
+        "outputs": ["one distinct payable cast option per currently affordable branch", "the selected branch folded into the spell's total cost", "one typed nonmana commit when selected", "transactional rollback, private replacement continuation, and exact replay"],
+        "exclusions": ["optional costs", "three or more alternatives", "variable, random, repeatable, linked-result, or composite leaves", "counter, reveal, tap, collect-evidence, forage, behold, blight, or waterbend leaves", "choices whose branch changes the spell result", "copied spells and alternate casting procedures outside the represented cast path"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.spell_additional_cost_templates.FixedAlternativeAdditionalCostTemplate", "quorune.compiler.spell_additional_cost_nodes.typed_additional_cost_spell_node", "quorune.rules.casting_additional_cost_groups.FixedAlternativeAdditionalCost", "quorune.rules.casting.costs._initial_options", "quorune.rules.casting.costs._apply_additional_costs", "quorune.rules.casting.commit._commit_additional_costs"],
+      "positive_tests": ["test_fixed_alternative_costs_compile_source_spanned_programs", "test_cost_options_require_explicit_branch_and_commit_selected_payment"],
+      "negative_tests": ["test_alternative_descriptor_and_unsupported_grammar_fail_closed", "test_stale_alternative_selection_rolls_back"],
+      "interaction_tests": ["test_zone_replacement_suspends_alternative_cost_before_mutation_and_replays", "test_fixed_life_and_mana_alternatives_share_total_cost_options"],
+      "multiplayer_tests": ["test_zone_replacement_suspends_alternative_cost_before_mutation_and_replays"],
+      "privacy_tests": ["test_private_alternative_discard_offer_is_seat_scoped"],
+      "replay_tests": ["test_zone_replacement_suspends_alternative_cost_before_mutation_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "test_alternative_capability_closure_fails_closed blocks the binary grouping capability and each selected zone-change leaf dependency, proving that the complete source-spanned spell remains inexact.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_alternative_compiler_mutant_is_killed removes the binary grammar production; exact source-spanned compiler and distinct runtime-option assertions reject the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "casting.additional_cost.fixed_counter_placement",
       "version": 1,
       "official_rules": ["601.2f", "601.2g", "601.2h", "601.2i", "122.6", "614.16", "616.1"],
@@ -385,15 +412,42 @@
       "status": "trusted"
     },
     {
+      "id": "casting.additional_cost.fixed_life_payment",
+      "version": 1,
+      "official_rules": ["119.4", "601.2f", "601.2g", "601.2h", "601.2i"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Pay one positive fixed amount of life as a mandatory additional casting cost, either directly or as the selected leaf of the typed binary alternative-cost owner.",
+        "inputs": ["one source-spanned fixed-life descriptor", "one positive integral life amount", "the caster's current life total", "one selected cast-cost option"],
+        "outputs": ["a cast option only when the payment is currently affordable", "one nonreplaceable canonical life-cost transition", "spell stack placement only after payment", "transactional rollback and exact replay"],
+        "exclusions": ["variable, optional, repeatable, Phyrexian, or half-life payments", "life loss as an effect", "effects that prohibit or replace paying life", "three-or-more-branch or composite additional costs"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.spell_additional_cost_templates.FixedLifePaymentAdditionalCostTemplate", "quorune.rules.casting_additional_cost_groups.FixedLifePaymentAdditionalCost", "quorune.rules.casting.costs._apply_additional_costs", "quorune.rules.casting.commit._pay_fixed_life_additional_cost", "quorune.life_state.pay_life_cost"],
+      "positive_tests": ["test_fixed_life_cost_compiles_and_pays"],
+      "negative_tests": ["test_fixed_life_cost_stale_payment_rolls_back", "test_alternative_descriptor_and_unsupported_grammar_fail_closed"],
+      "interaction_tests": ["test_fixed_life_and_mana_alternatives_share_total_cost_options"],
+      "multiplayer_tests": [],
+      "privacy_tests": [],
+      "replay_tests": ["test_fixed_life_cost_compiles_and_pays"],
+      "required_evidence": ["positive", "negative", "interaction", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "test_alternative_capability_closure_fails_closed blocks the fixed-life capability and proves both direct and alternative source-spanned spell nodes remain inexact.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_alternative_compiler_mutant_is_killed removes the shared additional-cost production and the fixed-life exact compiler assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "casting.additional_cost.fixed_sacrifice",
-      "version": 2,
+      "version": 3,
       "official_rules": ["601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.21a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
-        "summary": "Pay one mandatory additional cost by choosing and sacrificing exactly one permanent the caster controls that matches a closed effective type, subtype, supertype, color, or nonland predicate, before the spell is placed on the stack.",
+        "summary": "Pay one typed additional-cost leaf by choosing and sacrificing exactly one permanent the caster controls that matches a closed effective type, subtype, supertype, color, or nonland predicate, before the spell is placed on the stack.",
         "inputs": ["one source-spanned typed additional-cost descriptor", "one public phased-in permanent controlled by the caster", "one closed effective characteristic predicate", "current effective characteristics", "stable replacement-aware zone-change identity"],
         "outputs": ["one payable cast offer with a seat-scoped object choice", "one replacement-aware battlefield departure as a casting cost", "normalized departure and dies events before cast-event dispatch", "spell stack placement only after the cost is paid", "transactional rollback, private replacement continuation, and exact replay"],
-        "exclusions": ["zero, multiple, optional, variable, or repeatable sacrifices", "dynamic or historical qualities such as modified, power thresholds, or damage dealt this turn", "alternative or composite additional costs", "sacrifice effects rather than casting costs", "nonpermanent objects and phased-out permanents", "multiple simultaneous sacrifice events", "copied spells and alternate casting procedures outside the represented ordinary cast path"]
+        "exclusions": ["zero, multiple, optional, variable, or repeatable sacrifices", "dynamic or historical qualities such as modified, power thresholds, or damage dealt this turn", "alternative costs outside the typed binary fixed-cost owner", "composite additional costs", "sacrifice effects rather than casting costs", "nonpermanent objects and phased-out permanents", "multiple simultaneous sacrifice events", "copied spells and alternate casting procedures outside the represented ordinary cast path"]
       },
       "dependencies": ["trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
       "implementation_components": ["quorune.compiler.spell_additional_cost_templates.FixedSacrificeAdditionalCostTemplate", "quorune.compiler.spell_additional_cost_templates.FixedZoneChangeAdditionalCostTemplate", "quorune.compiler.spell_additional_cost_nodes.typed_additional_cost_spell_node", "quorune.rules.casting_additional_costs.FixedZoneChangeAdditionalCost", "quorune.rules.casting.costs._apply_additional_costs", "quorune.rules.casting.commit._resolve_fixed_zone_change_additional_cost", "quorune.mana_payment_continuations.issue_mana_payment_replacement_choice", "quorune.replacement.replay.ReplacementContinuation", "CommanderEngine.move_card"],
@@ -413,14 +467,14 @@
     },
     {
       "id": "casting.additional_cost.zone_change.fixed_discard",
-      "version": 1,
+      "version": 2,
       "official_rules": ["400.2", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.9a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
-        "summary": "Pay one mandatory additional cost by choosing exactly one owned card in the caster's hand that matches a closed card-type or color predicate and discarding it before stack placement.",
+        "summary": "Pay one typed additional-cost leaf by choosing exactly one owned card in the caster's hand that matches a closed card-type or color predicate and discarding it before stack placement.",
         "inputs": ["one source-spanned typed zone-change cost descriptor", "one private card in the caster's hand", "an unqualified card, one card type, or one color union", "stable replacement-aware zone-change identity"],
         "outputs": ["one seat-scoped payable cast offer", "one replacement-aware hand-to-graveyard move", "one normalized discard event before cast-event dispatch", "transactional rollback, private replacement continuation, and exact replay"],
-        "exclusions": ["random, variable, multiple, optional, or alternative discards", "discarding another player's card", "compound predicates outside the represented type and color family", "cost-order choices involving multiple nonmana costs", "copied spells and unrepresented alternate casting procedures"]
+        "exclusions": ["random, variable, multiple, or optional discards", "alternative costs outside the typed binary fixed-cost owner", "discarding another player's card", "compound predicates outside the represented type and color family", "cost-order choices involving multiple nonmana costs", "copied spells and unrepresented alternate casting procedures"]
       },
       "dependencies": ["trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
       "implementation_components": ["quorune.compiler.spell_additional_cost_templates.FixedZoneChangeAdditionalCostTemplate", "quorune.compiler.spell_additional_cost_nodes.typed_additional_cost_spell_node", "quorune.rules.casting_additional_costs.FixedZoneChangeAdditionalCost", "quorune.rules.casting.costs._apply_additional_costs", "quorune.rules.casting.commit._resolve_fixed_zone_change_additional_cost", "quorune.mana_payment_continuations.issue_mana_payment_replacement_choice", "CommanderEngine.move_card"],
@@ -440,14 +494,14 @@
     },
     {
       "id": "casting.additional_cost.zone_change.fixed_exile",
-      "version": 1,
+      "version": 2,
       "official_rules": ["400.2", "400.7", "406.1", "406.2", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1", "701.13a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
-        "summary": "Pay one mandatory additional cost by exiling exactly one matching card owned in the caster's graveyard or one matching permanent the caster controls.",
+        "summary": "Pay one typed additional-cost leaf by exiling exactly one matching card owned in the caster's graveyard or one matching permanent the caster controls.",
         "inputs": ["one source-spanned typed zone-change cost descriptor", "one known graveyard card or phased-in controlled permanent", "one closed card-type union", "stable replacement-aware zone-change identity"],
         "outputs": ["one seat-scoped payable cast offer", "one replacement-aware move to exile", "normalized graveyard-departure or battlefield-departure events", "transactional rollback, private replacement continuation, and exact replay"],
-        "exclusions": ["variable, multiple, optional, or alternative exile costs", "exiling cards controlled or owned by another player", "linked exiled-card result dependencies", "dynamic or historical predicates", "cost-order choices involving multiple nonmana costs"]
+        "exclusions": ["variable, multiple, or optional exile costs", "alternative costs outside the typed binary fixed-cost owner", "exiling cards controlled or owned by another player", "linked exiled-card result dependencies", "dynamic or historical predicates", "cost-order choices involving multiple nonmana costs"]
       },
       "dependencies": ["trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
       "implementation_components": ["quorune.compiler.spell_additional_cost_templates.FixedZoneChangeAdditionalCostTemplate", "quorune.compiler.spell_additional_cost_nodes.typed_additional_cost_spell_node", "quorune.rules.casting_additional_costs.FixedZoneChangeAdditionalCost", "quorune.rules.casting.costs._apply_additional_costs", "quorune.rules.casting.commit._resolve_fixed_zone_change_additional_cost", "CommanderEngine.move_card"],
@@ -467,14 +521,14 @@
     },
     {
       "id": "casting.additional_cost.zone_change.fixed_return_to_owner_hand",
-      "version": 1,
+      "version": 2,
       "official_rules": ["400.2", "400.3", "400.7", "601.2f", "601.2g", "601.2h", "601.2i", "614.1", "616.1"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
-        "summary": "Pay one mandatory additional cost by returning exactly one matching phased-in permanent the caster controls to its owner's hand.",
+        "summary": "Pay one typed additional-cost leaf by returning exactly one matching phased-in permanent the caster controls to its owner's hand.",
         "inputs": ["one source-spanned typed zone-change cost descriptor", "one public controlled permanent", "an unqualified permanent or one canonical permanent card type", "stable replacement-aware zone-change identity"],
         "outputs": ["one seat-scoped payable cast offer", "one replacement-aware battlefield-to-owner-hand move", "normalized battlefield-departure events", "correct owner routing through control changes", "transactional rollback and exact replay"],
-        "exclusions": ["variable, multiple, optional, or alternative return costs", "returning an uncontrolled or phased-out permanent", "dynamic, historical, subtype, supertype, or color predicates", "cost-order choices involving multiple nonmana costs"]
+        "exclusions": ["variable, multiple, or optional return costs", "alternative costs outside the typed binary fixed-cost owner", "returning an uncontrolled or phased-out permanent", "dynamic, historical, subtype, supertype, or color predicates", "cost-order choices involving multiple nonmana costs"]
       },
       "dependencies": ["trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
       "implementation_components": ["quorune.compiler.spell_additional_cost_templates.FixedZoneChangeAdditionalCostTemplate", "quorune.compiler.spell_additional_cost_nodes.typed_additional_cost_spell_node", "quorune.rules.casting_additional_costs.FixedZoneChangeAdditionalCost", "quorune.rules.casting.costs._apply_additional_costs", "quorune.rules.casting.commit._resolve_fixed_zone_change_additional_cost", "CommanderEngine.move_card"],

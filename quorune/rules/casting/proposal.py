@@ -297,6 +297,26 @@ def _cast_program_and_cost(
     _validate_declared_cost(host, request, card, commander_tax)
     semantic_key = _spell_semantic_key(record, face)
     program = host.semantics.get(semantic_key)
+    if request.cost_option_id is None:
+        advertised = tuple(
+            CastCostOption.from_dict(value)
+            for value in host._cast_cost_options(
+                request.actor,
+                card,
+                program,
+                response=response,
+                hint=True,
+                force_without_mana_cost=request.force_without_mana_cost,
+            )
+        )
+        if sum(
+            option.kind == "additional_alternative"
+            for option in advertised
+        ) > 1:
+            raise CastProposalError(
+                "Select one of the advertised additional-cost branches",
+                reason="cost_option_required",
+            )
     options = tuple(
         CastCostOption.from_dict(value)
         for value in host._cast_cost_options(
