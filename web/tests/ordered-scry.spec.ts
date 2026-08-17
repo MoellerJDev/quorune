@@ -245,7 +245,7 @@ test("@browser-rules @scry @privacy @persistence ordered Scry is accessible, pri
       expect(testId).toMatch(/^choice-cards-/);
       refs.push(testId!.slice("choice-cards-".length));
       await expect(selector).toHaveAccessibleName(
-        new RegExp(`^Choose a Scry destination for Island, looked-at card ${index + 1} of 4$`),
+        new RegExp(`^Choose a destination for Island, looked-at card ${index + 1} of 4$`),
       );
     }
     const opponentHtml = await opponent.content();
