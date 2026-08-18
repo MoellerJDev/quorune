@@ -220,13 +220,20 @@ class DevoidCompilerTests(unittest.TestCase):
             )
         )
 
-        with patch(
-            "quorune.compiler.keyword_nodes.lower_ability_keyword_fragments",
-            return_value=type(
-                "EmptyLowering",
-                (),
-                {"handlers": (), "residual_kind": None},
-            )(),
+        from quorune.compiler.characteristic_definition_nodes import _FAMILIES
+
+        empty_lowering = type(
+            "EmptyLowering",
+            (),
+            {"handlers": (), "residual_kind": None},
+        )()
+        mutated_family = replace(
+            _FAMILIES["devoid"],
+            lowerer=lambda material, mechanics: empty_lowering,
+        )
+        with patch.dict(
+            _FAMILIES,
+            {"devoid": mutated_family},
         ):
             mutated = compile_oracle_card(
                 self.record,
