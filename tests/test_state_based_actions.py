@@ -77,8 +77,8 @@ class StateBasedActionPrimitiveTests(unittest.TestCase):
         self.assertIn("704.5q", contract["rule_references"])
         self.assertIn("704.5r", contract["rule_references"])
         self.assertIn("704.5v", contract["rule_references"])
-        self.assertIn("704.5w", contract["rule_references"])
         self.assertIn("704.5x", contract["rule_references"])
+        self.assertIn("704.5y", contract["rule_references"])
         row = next(
             item
             for item in registry["mechanics"]
@@ -93,7 +93,7 @@ class StateBasedActionPrimitiveTests(unittest.TestCase):
         for mechanic_id, filename, rule_id in (
             ("cr-120-damage", "damage.json", "120.3h"),
             ("cr-210-defense", "defense.json", "210.1"),
-            ("cr-310-battles", "battles.json", "310.11b"),
+            ("cr-310-battles", "battles.json", "310.12b"),
         ):
             related = json.loads(
                 (
@@ -140,18 +140,19 @@ class StateBasedActionPrimitiveTests(unittest.TestCase):
             "310.6",
             "310.7",
             "310.8",
-            "310.8a",
-            "310.8b",
-            "310.8c",
-            "310.8d",
-            "310.8e",
-            "310.8f",
-            "310.8g",
             "310.9",
+            "310.9a",
+            "310.9b",
+            "310.9c",
+            "310.9d",
+            "310.9e",
+            "310.9f",
+            "310.9g",
             "310.10",
             "310.11",
-            "310.11a",
-            "310.11b",
+            "310.12",
+            "310.12a",
+            "310.12b",
         }
 
         self.assertEqual(
@@ -701,7 +702,7 @@ class StateBasedActionEngineTests(unittest.TestCase):
             card.object_id,
             "battlefield",
             controller="A",
-            reason="CR 310.11b test setup",
+            reason="CR 310.12b test setup",
             semantic_events=False,
         )
         card.annotations["copy_overrides"] = {

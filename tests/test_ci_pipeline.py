@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 from tempfile import TemporaryDirectory
 import unittest
 
@@ -572,6 +573,51 @@ class CiPipelineTests(unittest.TestCase):
         config = (ROOT / "web/playwright.config.ts").read_text(encoding="utf-8")
         self.assertIn("headless: true", config)
         self.assertIn('open: "never"', config)
+
+    def test_cloud_generated_workflow_is_read_only_parallel_and_downloadable(self):
+        cloud = (
+            ROOT / ".github/workflows/generated-artifacts.yml"
+        ).read_text(encoding="utf-8")
+        jobs_text = cloud.split("\njobs:\n", 1)[1]
+        jobs = set(
+            re.findall(
+                r"^  ([a-z][a-z0-9_]*):$",
+                jobs_text,
+                flags=re.MULTILINE,
+            )
+        )
+
+        self.assertEqual(
+            {
+                "plan",
+                "database",
+                "foundations",
+                "corpus",
+                "fanout",
+                "architecture",
+                "reusable",
+                "compact",
+                "scheduler",
+                "bundle",
+            },
+            jobs,
+        )
+        self.assertIn('branches: ["main"]', cloud)
+        self.assertIn("workflow_dispatch:", cloud)
+        self.assertIn("contents: read", cloud)
+        self.assertNotIn("contents: write", cloud)
+        self.assertNotIn("pull-requests: write", cloud)
+        self.assertIn("--from-rules-manifest", cloud)
+        self.assertIn("max-parallel: 5", cloud)
+        self.assertIn("max-parallel: 2", cloud)
+        self.assertIn("owner: [card-unlock-frontier, platform-status]", cloud)
+        self.assertIn("--owner compiler-corpus-coverage", cloud)
+        self.assertIn("--owner reusable-pieces", cloud)
+        self.assertIn("actions/download-artifact@v4", cloud)
+        self.assertIn("merge-multiple: true", cloud)
+        self.assertIn("scripts/finalize_generated.py --check", cloud)
+        self.assertIn("cloud-generated-${{ needs.plan.outputs.source_sha }}", cloud)
+        self.assertIn("git diff --exit-code --", cloud)
 
 
 if __name__ == "__main__":

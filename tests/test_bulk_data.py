@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import gzip
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -11,9 +13,11 @@ from quorune.bulk import (
     ScryfallBulkItem,
     _download_bulk_item,
     _prune_managed_bulk_cache,
+    build_pinned_scryfall_database,
     fetch_bulk_manifest,
     parse_bulk_manifest,
 )
+from quorune.carddb import CardDatabase
 
 
 class _Response(io.BytesIO):
@@ -29,6 +33,103 @@ class _Response(io.BytesIO):
 
 
 class ScryfallBulkDataTests(unittest.TestCase):
+    def test_pinned_snapshot_build_verifies_archives_counts_and_metadata(self):
+        card = {
+            "oracle_id": "00000000-0000-4000-8000-000000000001",
+            "name": "Pinned Cloud Fixture",
+            "mana_cost": "{1}",
+            "cmc": 1,
+            "type_line": "Artifact",
+            "oracle_text": "",
+            "colors": [],
+            "color_identity": [],
+            "keywords": [],
+            "produced_mana": [],
+            "layout": "normal",
+            "released_at": "2026-01-01",
+            "legalities": {"commander": "legal"},
+        }
+        archives = {
+            "https://data.scryfall.io/oracle-pinned.jsonl.gz": gzip.compress(
+                (json.dumps(card) + "\n").encode("utf-8")
+            ),
+            "https://data.scryfall.io/rulings-pinned.jsonl.gz": gzip.compress(
+                b""
+            ),
+        }
+        snapshot = {
+            "available": True,
+            "database_schema_version": "2",
+            "oracle_bulk": {
+                "updated_at": "2026-08-06T09:02:54Z",
+                "download_uri": next(iter(archives)),
+                "sha256": hashlib.sha256(
+                    archives[next(iter(archives))]
+                ).hexdigest(),
+                "oracle_id_count": 1,
+            },
+            "rulings_bulk": {
+                "updated_at": "2026-08-06T09:00:37Z",
+                "download_uri": list(archives)[1],
+                "sha256": hashlib.sha256(
+                    archives[list(archives)[1]]
+                ).hexdigest(),
+                "ruling_count": 0,
+            },
+        }
+
+        def fake_urlopen(request, timeout):
+            self.assertEqual(7, timeout)
+            payload = archives[request.full_url]
+            return _Response(payload, {"Content-Length": str(len(payload))})
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "pinned.sqlite3"
+            result = build_pinned_scryfall_database(
+                snapshot,
+                output,
+                download_dir=root / "bulk",
+                timeout=7,
+                urlopen=fake_urlopen,
+            )
+            with CardDatabase(output) as database:
+                metadata = database.metadata()
+
+        self.assertEqual(1, result["cards"])
+        self.assertEqual("rules/manifest.json", result["snapshot_source"])
+        self.assertEqual(
+            snapshot["oracle_bulk"]["sha256"],
+            metadata["oracle_source_sha256"],
+        )
+        self.assertEqual(
+            snapshot["oracle_bulk"]["download_uri"],
+            metadata["scryfall_oracle_download_uri"],
+        )
+
+    def test_pinned_snapshot_rejects_untrusted_download_host(self):
+        with self.assertRaises(ScryfallBulkDataError):
+            build_pinned_scryfall_database(
+                {
+                    "available": True,
+                    "database_schema_version": "2",
+                    "oracle_bulk": {
+                        "updated_at": "now",
+                        "download_uri": "https://attacker.invalid/oracle.gz",
+                        "sha256": "a" * 64,
+                        "oracle_id_count": 1,
+                    },
+                    "rulings_bulk": {
+                        "updated_at": "now",
+                        "download_uri": "https://data.scryfall.io/rulings.gz",
+                        "sha256": "b" * 64,
+                        "ruling_count": 0,
+                    },
+                },
+                "ignored.sqlite3",
+                download_dir="ignored-bulk",
+            )
+
     def test_manifest_prefers_streamable_jsonl_and_ignores_untrusted_hosts(self):
         items = parse_bulk_manifest(
             {

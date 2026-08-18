@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "effective_date": "2026-06-19",
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "family": "CR 605 — Mana Abilities",
   "cases": [
     {
@@ -47,7 +47,7 @@
     },
     {
       "rule_id": "605.1a",
-      "rule_text_sha256": "fb1b636d76dced65f402d80a6c6d9d8d2c49cfa14c2d70025790d650a7537837",
+      "rule_text_sha256": "bba810b7a9efeee97bbb967d5c58d1d8df2373f08bf559ef3849a0531f676f4c",
       "classification": "behavioral",
       "status": "blocked",
       "assertion_kind": "unsupported_fail_closed",
@@ -71,10 +71,11 @@
       ],
       "blockers": [
         "the possible-mana-output Oracle grammar is not complete across conditional, delayed, granted, and multi-instruction activated abilities",
-        "target and loyalty exclusions are exact for parsed abilities, but that does not prove complete ability discovery"
+        "target and loyalty exclusions are exact for parsed abilities, but that does not prove complete ability discovery",
+        "the new cost-and-effect exclusion for moving cards to or from a library has a conservative fail-closed classifier but no complete typed grammar"
       ],
       "notes": [
-        "A target-free basic mana ability is recognized, while a targeted or loyalty-symbol ability is excluded. The family remains blocked on complete possible-output recognition."
+        "A target-free basic mana ability is recognized, while a targeted or loyalty-symbol ability is excluded. Closed fixed-output families reject uncompiled library-moving costs and effects, and the general parser conservatively marks known library-moving forms nonmana; the rule remains blocked on complete possible-output and movement recognition."
       ]
     },
     {

@@ -1,16 +1,16 @@
 {
   "current_snapshot_complete": false,
-  "effective_date": "2026-06-19",
+  "effective_date": "2026-08-07",
   "oracle_enrichment_complete": false,
   "schema_version": 1,
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "status_counts": {
     "partial": 66,
     "tested": 42,
     "trusted": 8,
-    "unclassified": 309
+    "unclassified": 311
   },
-  "total_mechanics": 425,
-  "trusted_fraction": 0.018824,
+  "total_mechanics": 427,
+  "trusted_fraction": 0.018735,
   "trusted_mechanics": 8
 }

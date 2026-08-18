@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
+  "family": "August 2026 changed state and designation rules",
+  "cases": [
+    {
+      "rule_id": "704.5v",
+      "rule_text_sha256": "74eb2a0214d2bf240dbeb2eef259a04a13a045284d13e83d816e907ffd869ab3",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["evaluate_permanent_state_based_actions", "CommanderEngine._battle_trigger_pending", "CommanderEngine._stabilize"],
+      "executable_test_ids": ["tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_zero_defense_battle_waits_for_its_pending_trigger", "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_trigger_from_same_incarnation_defers_state_action", "tests.test_state_based_actions.StateBasedActionEngineTests.test_old_incarnation_trigger_does_not_defer_battle_state_action", "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_damage_and_state_action_replay_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "replay"],
+      "blockers": [],
+      "notes": ["The existing identity-pinned pending-trigger exception is now explicitly scoped to Siege battles and remains fully represented."]
+    },
+    {
+      "rule_id": "704.5w",
+      "rule_text_sha256": "4c1252e85ad0b3a4538143b92240161c4a5ef8c3b61b0ad7de0c04a22f7f2921",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/battles.json"],
+      "executable_test_ids": [],
+      "required_scenarios": ["positive", "negative", "interaction", "replay"],
+      "covered_scenarios": [],
+      "blockers": ["Non-Siege Battle zero-defense behavior is not represented or trusted"],
+      "notes": ["Unsupported Battle subtypes are not admitted through the existing Siege state-action path."]
+    },
+    {
+      "rule_id": "704.5x",
+      "rule_text_sha256": "100d4adfee32aa47eccaad088ec10ef552b302b5d2e8b43869b1459ec2bb00e4",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["CommanderEngine._repair_battle_protectors", "CommanderEngine._complete_battle_protector_choice"],
+      "executable_test_ids": ["tests.test_state_based_actions.StateBasedActionEngineTests.test_invalid_battle_protector_waits_while_it_is_attacked", "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_protector_choice_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "blockers": ["Protector predicates for non-Siege Battle subtypes and simultaneous APNAP repair choices remain unsupported"],
+      "notes": ["Represented absent-protector repair waits while a Battle is attacked, but the new subtype-open rule remains blocked."]
+    },
+    {
+      "rule_id": "704.5y",
+      "rule_text_sha256": "907a042585a60f70115db0afebfd62ff90ad01d8d17b301519665e22cbc6ca48",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["CommanderEngine._repair_battle_protectors", "CommanderEngine._complete_battle_protector_choice"],
+      "executable_test_ids": ["tests.test_state_based_actions.StateBasedActionEngineTests.test_controller_protector_is_repaired_even_while_attacked", "tests.test_state_based_actions.StateBasedActionEngineTests.test_invalid_siege_protector_is_repaired_by_its_controller"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer"],
+      "blockers": ["Protector validity for non-Siege Battle subtypes and complete replayable simultaneous repair ordering remain unsupported"],
+      "notes": ["The represented Siege repair does not wait for attackers, matching the narrowed current rule within its blocked broader family."]
+    },
+    {
+      "rule_id": "704.5z",
+      "rule_text_sha256": "e9405e22f5ec24dfb27b0c4086375076c55720aeab1bec641dda537c68bc1e0f",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": [],
+      "executable_test_ids": [],
+      "required_scenarios": ["positive", "negative", "interaction", "replay"],
+      "covered_scenarios": [],
+      "blockers": ["Role uniqueness and timestamp ordering have no state-based-action owner"],
+      "notes": ["This text moved from former CR 704.5y; no prior passing trust existed to preserve."]
+    },
+    {
+      "rule_id": "722.3a",
+      "rule_text_sha256": "dc4b092335050f9cb2c06b441ab5d1d3588b13f90a377ff3c9738ff48e626935",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": [],
+      "executable_test_ids": [],
+      "required_scenarios": ["positive", "negative", "interaction", "replay"],
+      "covered_scenarios": [],
+      "blockers": ["Prepare spells, alternative characteristics, and the prepared designation are not represented"],
+      "notes": ["The August source change corrects punctuation only; unsupported behavior remains blocked and no prior trust is inherited."]
+    }
+  ]
+}

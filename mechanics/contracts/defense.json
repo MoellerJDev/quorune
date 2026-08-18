@@ -3,8 +3,8 @@
   "contract_version": 2,
   "mechanic_id": "cr-210-defense",
   "official_name": "Defense",
-  "effective_date": "2026-06-19",
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "rule_references": [
     "210",
     "210.1",
@@ -119,6 +119,7 @@
     "version": "defense-v2"
   },
   "known_blockers": [
+    "non-Siege zero-defense handling under CR 704.5w is not represented or trusted",
     "complete replacement-effect ordering for modified battlefield entry counters is not implemented",
     "effects that directly set or switch a battle's defense outside ordinary counter changes are not implemented",
     "the current Oracle snapshot contains provisional post-rules-snapshot Control Point battles whose final defense rules are not present in the pinned CR"

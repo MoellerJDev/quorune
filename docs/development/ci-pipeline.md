@@ -139,6 +139,39 @@ database census in the same finalization run:
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write --db data\scryfall-current.sqlite3
 ```
 
+### Cloud-generated artifact bundles
+
+`.github/workflows/generated-artifacts.yml` offloads the same governed writers
+to GitHub-hosted runners. Every `main` push automatically rebuilds the exact
+database pinned by `rules/manifest.json`, fans independent foundation and
+post-corpus owners out in parallel, follows the remaining manifest dependency
+order, verifies the assembled fixed point, and uploads
+`cloud-generated-<commit>`. The workflow has read-only repository permissions
+and never commits or opens a pull request. On `main`, regenerated outputs must
+be byte-identical to the merge.
+
+For a feature branch, first create and push an authorized source-checkpoint
+commit. Dispatch the workflow definition from `main` while selecting that
+exact commit as its input:
+
+```powershell
+gh workflow run generated-artifacts.yml --ref main -f ref=<source-sha>
+gh run list --workflow generated-artifacts.yml --limit 10
+gh run download <run-id> --name cloud-generated-<source-sha> `
+  --dir local\cloud-generated-download
+.\.venv\Scripts\python.exe scripts\cloud_generated_artifacts.py install-bundle `
+  --bundle-dir local\cloud-generated-download --expected-commit <source-sha>
+```
+
+The installer accepts only the current `HEAD`, validates the bundle receipt,
+the canonical manifest output set, the source-tree fingerprint, and each file
+hash, then writes a local ordinary finalization receipt for the pre-push hook.
+Inspect and stage the generated changes with the authoritative source before
+the final commit. Exact-head PR CI remains mandatory. A cloud bundle is not
+permission to merge stale sources, defer generated changes to a later PR, or
+replace manual pinned-rules, protocol-binding, demo, or performance-baseline
+workflows.
+
 Write mode runs generators in topological order and repeats only changed
 generators and their downstream automatic or derived-only consumers until a
 bounded pass changes nothing. A requested database-backed corpus rebuild occurs

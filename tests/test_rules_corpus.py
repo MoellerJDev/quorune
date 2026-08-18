@@ -113,6 +113,40 @@ class RulesCorpusTests(unittest.TestCase):
         self.assertIn("activate", mechanic_ids)
         self.assertIn("flying", mechanic_ids)
 
+    def test_parse_keeps_multi_letter_subrules_distinct(self):
+        parsed = parse_comprehensive_rules(
+            RULES_FIXTURE.replace(
+                "100.1a A dependent subrule used by the parser test.",
+                "100.1a A dependent subrule used by the parser test.\n"
+                "100.1aa A later state-based action subrule.",
+            ),
+            source_sha256="a" * 64,
+        )
+        by_id = {row["rule_id"]: row for row in parsed["rules"]}
+
+        self.assertEqual("100.1", by_id["100.1aa"]["parent_rule_id"])
+        self.assertNotEqual(
+            by_id["100.1a"]["text_sha256"],
+            by_id["100.1aa"]["text_sha256"],
+        )
+
+    def test_current_snapshot_indexes_august_additions_and_multi_letter_rule(self):
+        root = Path(__file__).resolve().parents[1]
+        manifest = json.loads(
+            (root / "rules" / "manifest.json").read_text(encoding="utf-8")
+        )
+        rule_index = json.loads(
+            (root / "rules" / "rule-index.json").read_text(encoding="utf-8")
+        )
+        by_id = {row["rule_id"]: row for row in rule_index["rules"]}
+
+        self.assertEqual("2026-08-07", manifest["effective_date"])
+        self.assertEqual("cr-index-v2", manifest["parser_version"])
+        self.assertEqual("Recruit", by_id["701.70"]["heading"])
+        self.assertEqual("Storied", by_id["702.195"]["heading"])
+        self.assertGreater(by_id["122.1j"]["text_length"], 0)
+        self.assertEqual("704.5", by_id["704.5aa"]["parent_rule_id"])
+
     def test_sync_writes_compact_derived_files_and_verifies_raw_hash(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

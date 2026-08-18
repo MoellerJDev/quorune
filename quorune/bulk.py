@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
-from .carddb import CardDatabase, build_card_database
+from .carddb import CardDatabase, build_card_database, file_sha256
 from .util import stable_json
 from .version import __version__
 
@@ -244,6 +244,223 @@ def refresh_scryfall_database(
             "rulings_sha256": metadata["rulings_source_sha256"],
             "oracle_download": str(oracle_path),
             "rulings_download": str(rulings_path),
+        }
+    )
+    return result
+
+
+def _pinned_bulk_snapshot(
+    snapshot: Mapping[str, Any],
+) -> tuple[
+    str,
+    dict[str, ScryfallBulkItem],
+    dict[str, str],
+    dict[str, int],
+]:
+    if not isinstance(snapshot, Mapping) or snapshot.get("available") is not True:
+        raise ScryfallBulkDataError("Pinned card-data snapshot is unavailable")
+    expected_schema_version = str(snapshot.get("database_schema_version") or "")
+    if not expected_schema_version:
+        raise ScryfallBulkDataError(
+            "Pinned card-data database schema version is unavailable"
+        )
+    item_specs = {
+        "oracle_cards": ("oracle_bulk", "oracle_id_count"),
+        "rulings": ("rulings_bulk", "ruling_count"),
+    }
+    items: dict[str, ScryfallBulkItem] = {}
+    expected_hashes: dict[str, str] = {}
+    expected_counts: dict[str, int] = {}
+    for item_type, (field, count_field) in item_specs.items():
+        raw = snapshot.get(field)
+        if not isinstance(raw, Mapping):
+            raise ScryfallBulkDataError(f"Pinned snapshot has no {field}")
+        uri = str(raw.get("download_uri") or "")
+        parsed = urllib.parse.urlparse(uri)
+        if (
+            parsed.scheme.casefold() != "https"
+            or (parsed.hostname or "").casefold() not in ALLOWED_DOWNLOAD_HOSTS
+        ):
+            raise ScryfallBulkDataError(
+                f"Pinned {item_type} download must use trusted Scryfall HTTPS"
+            )
+        digest = str(raw.get("sha256") or "")
+        if len(digest) != 64 or any(
+            value not in "0123456789abcdef" for value in digest
+        ):
+            raise ScryfallBulkDataError(
+                f"Pinned {item_type} SHA-256 is missing or malformed"
+            )
+        count = raw.get(count_field)
+        if type(count) is not int or count < 0:
+            raise ScryfallBulkDataError(
+                f"Pinned {item_type} count is missing or malformed"
+            )
+        items[item_type] = ScryfallBulkItem(
+            type=item_type,
+            name=item_type,
+            updated_at=str(raw.get("updated_at") or ""),
+            download_uri=uri,
+        )
+        expected_hashes[item_type] = digest
+        expected_counts[item_type] = count
+    return expected_schema_version, items, expected_hashes, expected_counts
+
+
+def _download_pinned_bulk_items(
+    items: Mapping[str, ScryfallBulkItem],
+    expected_hashes: Mapping[str, str],
+    download_path: Path,
+    *,
+    timeout: float,
+    force_download: bool,
+    urlopen: Callable[..., Any],
+) -> dict[str, Path]:
+    downloaded: dict[str, Path] = {}
+    for item_type, item in items.items():
+        path = _download_bulk_item(
+            item,
+            download_path,
+            timeout=timeout,
+            force=force_download,
+            urlopen=urlopen,
+        )
+        if file_sha256(path) != expected_hashes[item_type]:
+            path = _download_bulk_item(
+                item,
+                download_path,
+                timeout=timeout,
+                force=True,
+                urlopen=urlopen,
+            )
+        if file_sha256(path) != expected_hashes[item_type]:
+            raise ScryfallBulkDataError(
+                f"Pinned {item_type} archive does not match its SHA-256"
+            )
+        downloaded[item_type] = path
+    return downloaded
+
+
+def _build_pinned_database_file(
+    output: Path,
+    downloaded: Mapping[str, Path],
+    items: Mapping[str, ScryfallBulkItem],
+    expected_counts: Mapping[str, int],
+    expected_schema_version: str,
+) -> dict[str, Any]:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_name(output.name + ".building")
+    if temporary.exists():
+        temporary.unlink()
+    try:
+        result = build_card_database(
+            downloaded["oracle_cards"],
+            downloaded["rulings"],
+            temporary,
+            overwrite=True,
+        )
+        connection = sqlite3.connect(temporary)
+        try:
+            connection.executemany(
+                "INSERT OR REPLACE INTO metadata(key, value) VALUES (?, ?)",
+                [
+                    ("bulk_manifest_url", "rules/manifest.json"),
+                    (
+                        "scryfall_oracle_updated_at",
+                        items["oracle_cards"].updated_at,
+                    ),
+                    (
+                        "scryfall_oracle_download_uri",
+                        items["oracle_cards"].download_uri,
+                    ),
+                    (
+                        "scryfall_rulings_updated_at",
+                        items["rulings"].updated_at,
+                    ),
+                    (
+                        "scryfall_rulings_download_uri",
+                        items["rulings"].download_uri,
+                    ),
+                ],
+            )
+            connection.commit()
+            connection.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            connection.execute("PRAGMA journal_mode=DELETE")
+        finally:
+            connection.close()
+        with CardDatabase(temporary) as database:
+            metadata = database.metadata()
+        observed_counts = {
+            "oracle_cards": int(metadata.get("card_count") or -1),
+            "rulings": int(metadata.get("ruling_count") or -1),
+        }
+        if observed_counts != expected_counts:
+            raise ScryfallBulkDataError(
+                "Pinned database counts do not match the rules manifest: "
+                f"expected={expected_counts}, observed={observed_counts}"
+            )
+        if metadata.get("schema_version") != expected_schema_version:
+            raise ScryfallBulkDataError(
+                "Pinned database schema does not match the rules manifest: "
+                f"expected={expected_schema_version}, "
+                f"observed={metadata.get('schema_version')}"
+            )
+        temporary.replace(output)
+    except Exception:
+        if temporary.exists():
+            temporary.unlink()
+        raise
+    return result
+
+
+def build_pinned_scryfall_database(
+    snapshot: Mapping[str, Any],
+    output_path: str | Path,
+    *,
+    download_dir: str | Path,
+    timeout: float = 60,
+    force_download: bool = False,
+    urlopen: Callable[..., Any] = urllib.request.urlopen,
+) -> dict[str, Any]:
+    """Rebuild the exact card database pinned by the rules manifest."""
+
+    (
+        expected_schema_version,
+        items,
+        expected_hashes,
+        expected_counts,
+    ) = _pinned_bulk_snapshot(snapshot)
+    download_path = Path(download_dir)
+    downloaded = _download_pinned_bulk_items(
+        items,
+        expected_hashes,
+        download_path,
+        timeout=timeout,
+        force_download=force_download,
+        urlopen=urlopen,
+    )
+    output = Path(output_path)
+    result = _build_pinned_database_file(
+        output,
+        downloaded,
+        items,
+        expected_counts,
+        expected_schema_version,
+    )
+
+    _prune_managed_bulk_cache(
+        download_path,
+        {downloaded["oracle_cards"], downloaded["rulings"]},
+    )
+    result.update(
+        {
+            "database": str(output),
+            "database_sha256": file_sha256(output),
+            "oracle_sha256": expected_hashes["oracle_cards"],
+            "rulings_sha256": expected_hashes["rulings"],
+            "oracle_download": str(downloaded["oracle_cards"]),
+            "rulings_download": str(downloaded["rulings"]),
+            "snapshot_source": "rules/manifest.json",
         }
     )
     return result

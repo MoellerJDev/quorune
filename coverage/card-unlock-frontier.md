@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "563861df759f03b49aaeecb289b00c333ec5efa5b27f09338ababdcb8cb57c35"
+verified: "d68c9be287cde1ea53855b695a10ba86a2ff72cc3cee7c0b6476707f3753ba1b"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,7 +17,7 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 - Oracle states: `{"exact":5386,"partial":11894,"unresolved":14343}`
 - CardProgram states: `{"residual":26237,"trusted":5386}`
 - Hard construction failures: 0
-- Frontier fingerprint: `563861df759f03b49aaeecb289b00c333ec5efa5b27f09338ababdcb8cb57c35`
+- Frontier fingerprint: `d68c9be287cde1ea53855b695a10ba86a2ff72cc3cee7c0b6476707f3753ba1b`
 
 ## Highest-leverage single families
 
@@ -34,7 +34,7 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `activated_effect:unparsed-this-creature-can` | 39 | 39 | 16 | 23 | missing_lowering | high |
 | `effect_clause:typed-spell-additional-cost-clause` | 106 | 106 | 16 | 16 | missing_lowering | high |
 | `effect_clause:exile` | 628 | 608 | 15 | 96 | missing_lowering | high |
-| `activated_effect:exile` | 376 | 349 | 14 | 41 | missing_lowering | high |
+| `activated_effect:exile` | 377 | 350 | 14 | 41 | missing_lowering | high |
 | `activated_effect:put-onto-battlefield` | 288 | 286 | 14 | 32 | missing_lowering | high |
 | `keyword_dependency:storm` | 33 | 33 | 13 | 33 | missing_contract | medium |
 | `effect_clause:sacrifice` | 114 | 114 | 12 | 37 | missing_lowering | high |

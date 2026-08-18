@@ -3,8 +3,8 @@
   "contract_version": 2,
   "mechanic_id": "cr-503-upkeep-step",
   "official_name": "Upkeep Step",
-  "effective_date": "2026-06-19",
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "rule_references": [
     "503",
     "503.1",

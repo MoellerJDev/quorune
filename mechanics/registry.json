@@ -4,701 +4,701 @@
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
       "path": "mechanics/contracts/activating-activated-abilities.json",
-      "sha256": "e2f85029cc1ded5873f36ed43d1ba121b2b9cd186a023d131f5704f98041a96e",
+      "sha256": "ef2e063b9e2a70b4d33fd83cff0df8380552e922bad721f096caf3350c334684",
       "version": 1
     },
     {
       "mechanic_id": "adapt",
       "path": "mechanics/contracts/adapt.json",
-      "sha256": "cc52acbfb4bc40c0f286a523fa64781bca16e03d626b479ad54c4c4ea5753cfe",
+      "sha256": "16c66974fc72bfc6e471ed56bdd5ecd60a3a815ba1022a0af06bfb765e100438",
       "version": 1
     },
     {
       "mechanic_id": "affinity",
       "path": "mechanics/contracts/affinity.json",
-      "sha256": "ec9959442d9a98c4ddf988783a3a47301b0fc494b5920760841fd866191fb37b",
+      "sha256": "0180ea25576b3c2f0f87c01b7a9b755178ed40db276380b0db556eb0a5a15530",
       "version": 1
     },
     {
       "mechanic_id": "amass",
       "path": "mechanics/contracts/amass.json",
-      "sha256": "6641c200e1518f7b0ef33fd5876c0db6e430123ab45b142bc530d06412f1da4c",
+      "sha256": "871965460d58befdc9683420f96d6236458de181953dfb0138ff826fbadbb88e",
       "version": 1
     },
     {
       "mechanic_id": "cr-407-ante",
       "path": "mechanics/contracts/ante.json",
-      "sha256": "faecdde543bd72d13cf2f39fee5aec8a48bf12a3075212e0793e16caee95b0b1",
+      "sha256": "7831efaf6a3c30c28f65becb75e0d6fbab684f47a3b1a03030ee684711997e4e",
       "version": 1
     },
     {
       "mechanic_id": "cr-122-counters",
       "path": "mechanics/contracts/basic-counters.json",
-      "sha256": "b4dcdfda4baab4cd8c89078c6f8bb761d7bd8125ebcacffc1a5e538309d2224b",
+      "sha256": "e86b78f9ab19e6a640e4d5a1c8e0eca822dc65ea1d966949e112d895252d5510",
       "version": 18
     },
     {
       "mechanic_id": "cr-111-tokens",
       "path": "mechanics/contracts/basic-token-creation.json",
-      "sha256": "d4037754d6a822e68f4b7ae16824e0891034408e7e78b67e9e296bcdaa1f417f",
+      "sha256": "1736420c29d8ed5aa0d7bd0249e6ac71f2e80205fd8aa01609f560d3e3727879",
       "version": 4
     },
     {
       "mechanic_id": "battle-cry",
       "path": "mechanics/contracts/battle-cry.json",
-      "sha256": "13f70e183196a3a175b887d0220a13e90904e2fdb3a4f3c9d7ba583de7233d31",
+      "sha256": "c0324024fc0357499a935e92c52129532d4c8b4ce6d50c07621a1bfd0e396511",
       "version": 1
     },
     {
       "mechanic_id": "cr-403-battlefield",
       "path": "mechanics/contracts/battlefield.json",
-      "sha256": "4efa45262d41990ee78c40d8d7f58b12d0cbaaeecf058882373abe9b1a89357a",
+      "sha256": "6f2bd11f17df2cf89659743021083f3ac60c1600afdfb772dbab35e7a6481fec",
       "version": 2
     },
     {
       "mechanic_id": "cr-310-battles",
       "path": "mechanics/contracts/battles.json",
-      "sha256": "2856c39fff9f94536d5e84b5eb4ea0e983d4a060dd2fc27ea616b17e37c12aa2",
+      "sha256": "bb7253e7c719586b4f0d23aca66b83e475183d989f2fd5dc42db34fd99d6ec8b",
       "version": 5
     },
     {
       "mechanic_id": "cr-507-beginning-of-combat-step",
       "path": "mechanics/contracts/beginning-of-combat.json",
-      "sha256": "e5e8758c7ce64f0831f790ef57a5509b2f19bafa3161941a93b8c134b043df59",
+      "sha256": "22fad984a51b743f81bcd15efd5c7108dacb40590c5fdd77a188a3b6452dd8fc",
       "version": 1
     },
     {
       "mechanic_id": "cr-501-beginning-phase",
       "path": "mechanics/contracts/beginning-phase.json",
-      "sha256": "9b5763c947e84b4106ef49c8f16b4a283a78c48f7fb6499f6eff12b03095bd75",
+      "sha256": "0836b57b4c833774da4fae42e46ba6c2e79dd07669c1973d5ebc50cf67e283ff",
       "version": 1
     },
     {
       "mechanic_id": "bestow",
       "path": "mechanics/contracts/bestow.json",
-      "sha256": "bcbcb2428835404b96d101d598b7e1b9a976bf3f11212cc6005e908314021d2d",
+      "sha256": "fc9c1e731c3e39f1d48ca5baa003adfd5452fd02da9f077c8c60bc01cbdadbe8",
       "version": 1
     },
     {
       "mechanic_id": "bushido",
       "path": "mechanics/contracts/bushido.json",
-      "sha256": "9c9b69c620ab84e9d3fd3a1d9fd173e7dfbf97c56ae947d0b2ef30b55e588126",
+      "sha256": "6329b8432e4da320558a929ee84dbde08519f53796ca17263005aa68b3e4caff",
       "version": 1
     },
     {
       "mechanic_id": "cascade",
       "path": "mechanics/contracts/cascade.json",
-      "sha256": "6707df35f43e17ec681141415b500e7b99640c18b580835f657480cc87bef2cb",
+      "sha256": "1db182256762528080230e23d0727bf4032e1822c504434679af1e96d3b7b4b0",
       "version": 1
     },
     {
       "mechanic_id": "cr-601-casting-spells",
       "path": "mechanics/contracts/casting-spells.json",
-      "sha256": "e0dd4e990cbbd0295a3ea5b3246e416dac115cead4004c4d45709f8fdc33e58f",
+      "sha256": "e726343032c4cf57bc5e5d006c28226829105c46102d6bce65f97924b03763ab",
       "version": 2
     },
     {
       "mechanic_id": "changeling",
       "path": "mechanics/contracts/changeling.json",
-      "sha256": "8f188f233892be30cb6215903c8d8cb82ea6a28230db9d35c01c87501c4c9eb9",
+      "sha256": "a9e2913f4e676b7bb9bf331617a8c5c27b1449017413a7075f2546f07fc7c57b",
       "version": 1
     },
     {
       "mechanic_id": "cr-514-cleanup-step",
       "path": "mechanics/contracts/cleanup-step.json",
-      "sha256": "ea3533538eb616d676571180eb1f783a65ba6962753b344c49180a9bfc2331fb",
+      "sha256": "6d4e8ce566299bb27b5e5f4069b90e5c62bf01d2837fd6c3891019d98e578501",
       "version": 1
     },
     {
       "mechanic_id": "cr-510-combat-damage-step",
       "path": "mechanics/contracts/combat-damage-step.json",
-      "sha256": "d971c1e292db29ba9633976d2aa156737079a3708f85dd9af6c698844396797b",
+      "sha256": "e314b8c9edbbff79b205cee898dee1faa76385a52e352ab66b6a074c88f5068b",
       "version": 5
     },
     {
       "mechanic_id": "cr-506-combat-phase",
       "path": "mechanics/contracts/combat-phase.json",
-      "sha256": "165b977f02ed332f952288fc827361b5d122916c1d3a42c168496df85e1beea1",
+      "sha256": "a03b3726b57fbec35f88087ea404b1853668366f98d06352c46fb787f7fc7d4b",
       "version": 3
     },
     {
       "mechanic_id": "cr-408-command",
       "path": "mechanics/contracts/command-zone.json",
-      "sha256": "e90bd65d12a1e39a0450a82d71d4f60a1d495c7b3042d4816d1767cfaf3395cc",
+      "sha256": "b5458038d60796f6290dba4c149d4e1b98e985d723d383889c7535940fb37b92",
       "version": 1
     },
     {
       "mechanic_id": "cr-613-interaction-of-continuous-effects",
       "path": "mechanics/contracts/continuous-layers.json",
-      "sha256": "d134497c32d15cce341bb720aa46f8506562770cdd1e9c0cd0bfaf8c7455fbf9",
+      "sha256": "b7e6e99ec9d8a4f686ab650b0cdd8f622020872121c8a74215520c37ce68697c",
       "version": 2
     },
     {
       "mechanic_id": "convoke",
       "path": "mechanics/contracts/convoke.json",
-      "sha256": "13d253138a4e508e5068a87515c92943d7b9ea7d410be3b1330cc2b0cb1bfcab",
+      "sha256": "6d2ad46e6c30c84235e39d22c36b5dc1e7821b378fda54dbab29b1a2516e0c67",
       "version": 1
     },
     {
       "mechanic_id": "cr-707-copying-objects",
       "path": "mechanics/contracts/copying-objects.json",
-      "sha256": "6c3620b6ef7d267679778eff709af9d574117e65ba9254464034b1ea8b377e0a",
+      "sha256": "f34a44de5daff3eb7878b31d70071fe72d6084e6056857016d4364c561cfc95a",
       "version": 1
     },
     {
       "mechanic_id": "counter",
       "path": "mechanics/contracts/counter.json",
-      "sha256": "de7e4e249820db72778e5cfb443ac249bab42d97d657b0247ed1df5a9be9fca9",
+      "sha256": "93a994a093c0edf5bd01109159b2a9d0747cc977b02159194055872bc79d76c5",
       "version": 1
     },
     {
       "mechanic_id": "crew",
       "path": "mechanics/contracts/crew.json",
-      "sha256": "28eaa4c025f4e49c049e0335677482088bcfe17f13b3cf96083d67d90ba1f9eb",
+      "sha256": "e6b6a067783408076958bedb95838de84810d651602213395d44a5d8888e67cb",
       "version": 1
     },
     {
       "mechanic_id": "cycling",
       "path": "mechanics/contracts/cycling.json",
-      "sha256": "9bc2133c7a873f7adeb1beb8e6d7cdf54baa2113845980efdabaacbe9903c80c",
+      "sha256": "97770ad3e5b81cb3b78e7649ff81bd8c564862fe50528ec40c543a1658d6677d",
       "version": 1
     },
     {
       "mechanic_id": "cr-120-damage",
       "path": "mechanics/contracts/damage.json",
-      "sha256": "465622ab6df8c5d65d2f55a104a64d6b7ace73976e5a766f4fe2973d8f602e7f",
+      "sha256": "03a8ca9f9cea79ddc8b94fd4085594cd9e671ea43255c7e4b93fd12495fc138b",
       "version": 4
     },
     {
       "mechanic_id": "deathtouch",
       "path": "mechanics/contracts/deathtouch.json",
-      "sha256": "e25c7d6a2945b794a8b1ff5558ee4d213b5117ee28f1c39189533123a31e17b9",
+      "sha256": "42affd86075d894fd60a2fd1fb029316c14075aa791b3e0f73733e5ed3dcfc67",
       "version": 4
     },
     {
       "mechanic_id": "cr-508-declare-attackers-step",
       "path": "mechanics/contracts/declare-attackers-step.json",
-      "sha256": "952841ed3b0020b0c6208a7e3f3765c6aec7a444f501e1e4dd67155e3c8e7d6a",
+      "sha256": "e01a62376018bf471a49e15d72f3fdb18e929c2f29ef38d24fc4ab1da64f087d",
       "version": 10
     },
     {
       "mechanic_id": "cr-509-declare-blockers-step",
       "path": "mechanics/contracts/declare-blockers-step.json",
-      "sha256": "68146673809f052e86a7b209018001a3d9ac7c9c8361d269d3c1a8c2a96d1367",
+      "sha256": "6dcca19404c390fa59e640a4bca24c095655c0dd70319e605d4b7614d79d8fbf",
       "version": 10
     },
     {
       "mechanic_id": "defender",
       "path": "mechanics/contracts/defender.json",
-      "sha256": "2f3eeca28c8c52d6d570c5bda58c08c025a24ba1c5392888576fc0aef2fc814b",
+      "sha256": "42b4f24688940f166260dbe71b614ee7e460eda1ec6a46357c8245f7cf32187e",
       "version": 2
     },
     {
       "mechanic_id": "cr-210-defense",
       "path": "mechanics/contracts/defense.json",
-      "sha256": "5bc419ca9499b6c21eb2624c21ed8272a3db797548862be02f5e7d48d6432be9",
+      "sha256": "c63ab17aa8d3fb795d58c35a7be18d3dfdeaa3dd59a5bf5fd40bb78ab499b20e",
       "version": 2
     },
     {
       "mechanic_id": "destroy",
       "path": "mechanics/contracts/destroy.json",
-      "sha256": "c3b1e8a5bd0cc7db5d20ac2376b69a56412166615597c34b6ed623528a49878d",
+      "sha256": "2d5596f897082ae0e807044418b2920c9a79fbbf7ed2808f118f13f5ea71f29e",
       "version": 3
     },
     {
       "mechanic_id": "dethrone",
       "path": "mechanics/contracts/dethrone.json",
-      "sha256": "7cd758dc96f1414607ebf37b6d92512e948bb12e64ad34437d5f8af05cef824b",
+      "sha256": "952faaf7e4f797c89be1fb49d321384591a8c4ae64a4511e654ab067b57d481a",
       "version": 1
     },
     {
       "mechanic_id": "devoid",
       "path": "mechanics/contracts/devoid.json",
-      "sha256": "246714f0264007867494ed2ae2ac8d527fb8ee2fce01a1d6a9cbe89f736059f7",
+      "sha256": "53bf306b53f6af67f48d427055beeebf6a0b784458abcb417eb066e748ba9875",
       "version": 1
     },
     {
       "mechanic_id": "double-strike",
       "path": "mechanics/contracts/double-strike.json",
-      "sha256": "254d727ff5d7c67e20c6f262eb7a7dc8fa65620ae6dd3b01f54cfa8674bf6dfb",
+      "sha256": "6364946fbf05ae3466cf201fd1797c2eb6a5b2a1cf934fa4980f9bfea287f63c",
       "version": 2
     },
     {
       "mechanic_id": "cr-504-draw-step",
       "path": "mechanics/contracts/draw-step.json",
-      "sha256": "7e3fcfb69ccc81e2be35c2a8b9f7267d9cf30d4d11be038df733600fbf3dae88",
+      "sha256": "94ce6055cb1ff8a5a82c64bc988b97330451aee36f78dce60425ee10d0b63838",
       "version": 1
     },
     {
       "mechanic_id": "cr-121-drawing-a-card",
       "path": "mechanics/contracts/drawing-a-card.json",
-      "sha256": "7d67e3f9c63d53c991cd90f526f947441b055878685b7b124fb60ee042cd0b9a",
+      "sha256": "37530e7a2daa27f118769f8d3caeca75a27fed5bf49efdad066a94f40b6d6228",
       "version": 6
     },
     {
       "mechanic_id": "echo",
       "path": "mechanics/contracts/echo.json",
-      "sha256": "47fa7bafec4025a7cc771dfb796345eba1bfe70fa2395722175aa493f14dd513",
+      "sha256": "a67fc127c038a99c53443a325588ad472533785b8afa17a29e38ab658b9f942d",
       "version": 1
     },
     {
       "mechanic_id": "cr-609-effects",
       "path": "mechanics/contracts/effects.json",
-      "sha256": "132b2a140fde78b92cadb350c2a54d1bdd306e6b61e09912ffe85e134838e87a",
+      "sha256": "807e33e7c5a9dcc28733db6f9566573eabe42dac827ed00b987da5550ae7ecdd",
       "version": 1
     },
     {
       "mechanic_id": "cr-511-end-of-combat-step",
       "path": "mechanics/contracts/end-of-combat.json",
-      "sha256": "93c1854eb2c5929f09287a13da9fb119749fdffb80ac1b229bba698bac238776",
+      "sha256": "b7d770d11160a6c951c73918fe11c5b4292dc9355ec2fd7a4ab96f0ab882aaf8",
       "version": 1
     },
     {
       "mechanic_id": "cr-513-end-step",
       "path": "mechanics/contracts/end-step.json",
-      "sha256": "69728b62208d90d5172347d9ee0e17dcc0e93c0a9fbf578c3b411cde95801cd2",
+      "sha256": "bb7213aa24b0720a1c718c4a7759bf4f39f205ef1d262479546ba437fe2b3cd6",
       "version": 1
     },
     {
       "mechanic_id": "cr-512-ending-phase",
       "path": "mechanics/contracts/ending-phase.json",
-      "sha256": "50e3dfac37b7a9619c7dcdef09a05cc83fc694527be6ae06381f44485cb2526c",
+      "sha256": "3bfa8a5be8104ca0e65e57f6f92312edbe94ccc801e8f4324e83b10c775003e3",
       "version": 1
     },
     {
       "mechanic_id": "evolve",
       "path": "mechanics/contracts/evolve.json",
-      "sha256": "d7f97f58d22e37cddb66b84029362a506c024ef2e320c01d202a287611099515",
+      "sha256": "f1fb6a493dedabf88887ee5dc167a339c79c651ecf9ac497287349c2cb4a7d19",
       "version": 1
     },
     {
       "mechanic_id": "exalted",
       "path": "mechanics/contracts/exalted.json",
-      "sha256": "05080c8d613f0f2a95f4d4b1955a81dd0ccb022a14e1d5e9928c1a8779a3a453",
+      "sha256": "993068e64f07897169670ea7532e5091b36bc144d09366f750afa03d293ecbb5",
       "version": 1
     },
     {
       "mechanic_id": "exhaust",
       "path": "mechanics/contracts/exhaust.json",
-      "sha256": "1b227d843017b9461c96401658639b3bb3e3a810a5b36e3d2f97b95e78d0448d",
+      "sha256": "9b41e7f77e25519ef3a3919c3044c43ba3ac13eeea6ee058f8f0059469693d16",
       "version": 1
     },
     {
       "mechanic_id": "cr-406-exile",
       "path": "mechanics/contracts/exile.json",
-      "sha256": "dc4b5009a4dd0a1899c53abc0f67c7dfacf8f30db258441cee0815ceb8f6f3c7",
+      "sha256": "1a15eec441b47b97529ab5e5ada938940d12f1271ef1bfe9aa6ca5e9621efbb1",
       "version": 1
     },
     {
       "mechanic_id": "fear",
       "path": "mechanics/contracts/fear.json",
-      "sha256": "974ece294c219d7b444a40f74da927a434bbd0b1bc0e6cf4657f9216005940b9",
+      "sha256": "fb39100e2d8c76f2803ed1e4875c9266e490540cc72013e0cbe019a61abeea90",
       "version": 1
     },
     {
       "mechanic_id": "first-strike",
       "path": "mechanics/contracts/first-strike.json",
-      "sha256": "d38c2a1a836d3dea4c28a537cfd9aa539b93724e08d8f4cbe539b9e1feebb07e",
+      "sha256": "77b937410e4d03dcdc635ced0218954c9cfac52100fb5829ca3d6af3ae14422d",
       "version": 2
     },
     {
       "mechanic_id": "flanking",
       "path": "mechanics/contracts/flanking.json",
-      "sha256": "87cb3514931493d1e062b15127f3ae577530dfde4d4c9bbbc5ce1e2bf8dbfd11",
+      "sha256": "fae323f07e99450c59e9c6cd8643cdb4670f6c89ec33cdc60d60c425b86dd897",
       "version": 1
     },
     {
       "mechanic_id": "flash",
       "path": "mechanics/contracts/flash.json",
-      "sha256": "3c85957f4f67f02de145291c5c69d987b8e421dc899c0dae575c47e05579ad3a",
+      "sha256": "3c0e4b2e84f580fcb9b21c7dfbf56dc0b73b390c76094314efe865954f644afb",
       "version": 1
     },
     {
       "mechanic_id": "flying",
       "path": "mechanics/contracts/flying.json",
-      "sha256": "f4686e2bdee8beb5e6e30fb4ab9968c18814225e96e423c584266756cb096115",
+      "sha256": "748bdba731056878bb54076a402e810348077ce01b54c26b69b5e1ebc14ae5d9",
       "version": 2
     },
     {
       "mechanic_id": "goad",
       "path": "mechanics/contracts/goad.json",
-      "sha256": "42217700373af7875e412cb6e9c110d0d9aa12ac84f41dbe23fcd30d4173e4ba",
+      "sha256": "3de4584497a92f47b3f6a79942ca34ceb25c0c94965cdca272656a4f9778b3c4",
       "version": 1
     },
     {
       "mechanic_id": "cr-404-graveyard",
       "path": "mechanics/contracts/graveyard.json",
-      "sha256": "af5de20be216a5752642a745758762d98b49a232bc083f57cf36c23aed02d1d1",
+      "sha256": "f81ecb8da0dbbb0a81638cc14739fb7d502750da829570ea375288221859840a",
       "version": 1
     },
     {
       "mechanic_id": "cr-402-hand",
       "path": "mechanics/contracts/hand.json",
-      "sha256": "495b717cbf0b25a86ed2b3afe41e1992df6f42108ff72778709d6f6b2837dedb",
+      "sha256": "b63b2ec385fe1d8f9d00dee196d62bf6bbd699723cdfb5ed1848a31708eb6ab2",
       "version": 1
     },
     {
       "mechanic_id": "cr-604-handling-static-abilities",
       "path": "mechanics/contracts/handling-static-abilities.json",
-      "sha256": "9cbc8a8b82f46da4b1303421ee4b03e1312df2b618b3d04f750fece85215414e",
+      "sha256": "539238df3c1ad3a3a45155bcf7af20fd9afdfd1b3a03aa80171d46f03acdfcd7",
       "version": 1
     },
     {
       "mechanic_id": "cr-603-handling-triggered-abilities",
       "path": "mechanics/contracts/handling-triggered-abilities.json",
-      "sha256": "7a32cbba88a369f965a170dc56110a0f76015af9fa3dd20cbc6e3958421d8428",
+      "sha256": "f025a1aaa7ab1c1a78d4be044950aba8c9f6b5a0cb7a1e9baac7739605efd1fb",
       "version": 4
     },
     {
       "mechanic_id": "haste",
       "path": "mechanics/contracts/haste.json",
-      "sha256": "9d9081b990e09f6fd956fc9be6dc3cc715ad46f803f2b4f7437f3c4cd16f76ec",
+      "sha256": "2698f673f89c8d62cdb03fda3dd51b3bd87e2d85e46dced1c7d2153865d57f85",
       "version": 1
     },
     {
       "mechanic_id": "hexproof",
       "path": "mechanics/contracts/hexproof.json",
-      "sha256": "03a645620c97dc6caa6a0029637e21706658747f1a8cebc693d563d65db658a4",
+      "sha256": "8079699dfae781f6a5ef7d157d137f5e35994f40d1f1fd549d53b65b65ad3b72",
       "version": 1
     },
     {
       "mechanic_id": "horsemanship",
       "path": "mechanics/contracts/horsemanship.json",
-      "sha256": "3bdab7e786a6163610a88c71f6a826c56447f301279b609d04175cb1a257867c",
+      "sha256": "f22d3db80152bc74d08eac6a0d312af71c25c111514a7c2bda93e1a940419c9e",
       "version": 1
     },
     {
       "mechanic_id": "indestructible",
       "path": "mechanics/contracts/indestructible.json",
-      "sha256": "d5ad8656ebb9734d017e225f658f893323f426c2efc4f2bc906e44c6e0b9f19f",
+      "sha256": "dc8ef3cd59aece1161392ead3efe4c4887c6015a69f0d09820014af5c50d777f",
       "version": 4
     },
     {
       "mechanic_id": "infect",
       "path": "mechanics/contracts/infect.json",
-      "sha256": "26986bcfb5df9a38ec13785aa966b45f8394ac3cf228e41af3ce82300f30507f",
+      "sha256": "4f59776fa131cee608624cd9bc4270d10300dd9dd45447cc530516dfcd142c14",
       "version": 1
     },
     {
       "mechanic_id": "intimidate",
       "path": "mechanics/contracts/intimidate.json",
-      "sha256": "8d0de73960a3a0a97f4e384626bedefdea3c2b61369b0da67baa7c4034a1b914",
+      "sha256": "2e0470ef5dce1be6026599115a5a8e7190be2111b5c91ff1fb1949a752d18da1",
       "version": 1
     },
     {
       "mechanic_id": "kicker",
       "path": "mechanics/contracts/kicker.json",
-      "sha256": "4eb2d9e8b793840f32030a6c2170c6174119810a5c5816be28e1c62b8f74cbc9",
+      "sha256": "2c1028bf12114c722a506ddb042fce7e856ecea48ac2c05594988a699d43b099",
       "version": 1
     },
     {
       "mechanic_id": "landwalk",
       "path": "mechanics/contracts/landwalk.json",
-      "sha256": "5c15294065071b8d2f9e2087adf7a0c1fc46356fdedcb7c9722bf218b5a0e073",
+      "sha256": "a9d7fd9afc072290639af7b70cfbd77a5b0c6004ceab090050aeb98928ac6867",
       "version": 1
     },
     {
       "mechanic_id": "cr-401-library",
       "path": "mechanics/contracts/library.json",
-      "sha256": "17b0c15bcad39e8fd2c49caa402bdc5d784021eec20177b25feba3318e43deb8",
+      "sha256": "e2a4061858eb684f93e10b44e375f73088c1112ffdc5e6f100d05777d75fa68d",
       "version": 1
     },
     {
       "mechanic_id": "lifelink",
       "path": "mechanics/contracts/lifelink.json",
-      "sha256": "bc65ee200118db9c0b708d6bcb55abaf12ea46518923bc4536e6280f7b0da928",
+      "sha256": "7018be3b1bfa08b21e0bd36d0f6e77b9a4b72248dbce9ac69aa709eefce84144",
       "version": 2
     },
     {
       "mechanic_id": "cr-607-linked-abilities",
       "path": "mechanics/contracts/linked-abilities.json",
-      "sha256": "62e669b98c3cb4c34961faea034759a87235e3b025b777906529d06261571349",
+      "sha256": "01bdc74923548405bca5ad5233f4856e65ee2c654e207dde22f427d4041f5f6c",
       "version": 1
     },
     {
       "mechanic_id": "cr-606-loyalty-abilities",
       "path": "mechanics/contracts/loyalty-abilities.json",
-      "sha256": "7667225a2bb1e5f2c62ab876b652efb7153d7293a6a9848d5f3f53238b445a9f",
+      "sha256": "8893e422762151e677ffe521cd0fd7ced149667bf8dbe5e2992fc5ac7c8aa199",
       "version": 3
     },
     {
       "mechanic_id": "cr-505-main-phase",
       "path": "mechanics/contracts/main-phase.json",
-      "sha256": "d4579f00ea85d8871027ac213318018f64cd0cd684a366258fef8590b52b1336",
+      "sha256": "f6f9b83059a9c10f2d5e01cd03ff3eaf1472d77714b535c7aa1c25f702d4a41f",
       "version": 1
     },
     {
       "mechanic_id": "cr-605-mana-abilities",
       "path": "mechanics/contracts/mana-abilities.json",
-      "sha256": "0c41600c9578b285fb3ea9fbc350ed5fc13c76a3fbc6f48fcde9ea2500c7512e",
+      "sha256": "16e2415f54ae0de1c05872cfe7087980abd020885e5f861633fba79617cfc20e",
       "version": 2
     },
     {
       "mechanic_id": "melee",
       "path": "mechanics/contracts/melee.json",
-      "sha256": "5285bf88f7d76f75b4ee762c7c3c51365fa85cfa65de67a3720b32cd2a0e2931",
+      "sha256": "ee41848a2b36ed13af54e313a3a4814b2b477906e1797467fdc1ad2f3c65c038",
       "version": 1
     },
     {
       "mechanic_id": "menace",
       "path": "mechanics/contracts/menace.json",
-      "sha256": "4921c3920c6cda1b2944b655390d29422d922d8825ee5c41a086d9f78e18a0d5",
+      "sha256": "6ef68fc1d8eeeaf4f21f382f98e39230f983854c625fe4832024bb94a51c66b6",
       "version": 2
     },
     {
       "mechanic_id": "mentor",
       "path": "mechanics/contracts/mentor.json",
-      "sha256": "bdfc66dc01344c95bffb7a5fbef6fc05f2da287f232116c0de65ae0a6defebb7",
+      "sha256": "b73f558b631af21149e7565e415432c3cff675a06aed8975bc362359dfb0cbb7",
       "version": 1
     },
     {
       "mechanic_id": "mill",
       "path": "mechanics/contracts/mill.json",
-      "sha256": "7fbfe012207c7ef581826a1b83ea2cbd6d00e6554b17c26a2b22b50ed4efb1cf",
+      "sha256": "d2b58c3feaa002eab533f2395e5589a5805b09c87d0420db47d2dead1786e568",
       "version": 1
     },
     {
       "mechanic_id": "modular",
       "path": "mechanics/contracts/modular.json",
-      "sha256": "888797f1a40bd59657b9b148a0c9594d86b9adb38e8a2a0fb28cd698ae3d41d7",
+      "sha256": "b9760c7e418ad9d44e444f747cab98c0f8d1552b765aa26f271f80cf887d3dd0",
       "version": 1
     },
     {
       "mechanic_id": "cr-725-the-monarch",
       "path": "mechanics/contracts/monarch.json",
-      "sha256": "3a9a07a580385babf6e2182f20f9fad7e2139add24c971b9df6710feb52617f1",
+      "sha256": "32abd5125bdd683db407bafa8785794b93996cb9b32d8e29e9ffdac36b028c69",
       "version": 1
     },
     {
       "mechanic_id": "monstrosity",
       "path": "mechanics/contracts/monstrosity.json",
-      "sha256": "9a0e316006720739c9e8a4bf30f63ff136def3ea44a0e1c9fec1ed66aba0cc41",
+      "sha256": "5d2a115d90f7092dfb5d15c55d3f3e578c4f98e2446a9110cf47a87d3e6fbffa",
       "version": 1
     },
     {
       "mechanic_id": "morph",
       "path": "mechanics/contracts/morph.json",
-      "sha256": "a8022f7da972b7da2c4f1a4ba524a79cefe934b19f22492f82e9fd5e33d4e4bd",
+      "sha256": "ba9a14268db3bb05ef524050b96b321dbd2007bec3f613ade321a577678309f2",
       "version": 1
     },
     {
       "mechanic_id": "cr-802-attack-multiple-players-option",
       "path": "mechanics/contracts/multiplayer-combat-damage-order.json",
-      "sha256": "5abe8fc5cc4f515193ab5660c2f377a995d3cc885c4e197a20b26bc7e27bfcc8",
+      "sha256": "0dcf083a03359a9157761272c853fff8c88fcb051563d54d5ecf62c5fc02d1be",
       "version": 1
     },
     {
       "mechanic_id": "cr-400-general",
       "path": "mechanics/contracts/object-zone-identity.json",
-      "sha256": "2910cfe34ec38dd595a5f2a082100850b31dc9e5c6fae79f3825c13b9ef824c6",
+      "sha256": "8e706c4f75040656dd15e2abd19128ac9cbafe0837f6c1cde63155471343ac3d",
       "version": 5
     },
     {
       "mechanic_id": "persist",
       "path": "mechanics/contracts/persist.json",
-      "sha256": "a2399152880651898009e22770dbf8e3aa973d8076e16991e0f6e9e5b88545d7",
+      "sha256": "595e2220df9ef2619fff3f7ce24df17683168f62faef986bbeabc0ae94e886b3",
       "version": 1
     },
     {
       "mechanic_id": "cr-615-prevention-effects",
       "path": "mechanics/contracts/prevention-effects.json",
-      "sha256": "057b9ffb22fd0564f951367653ed50ca3bcd4b496679927da735b57c9a5144f9",
+      "sha256": "f3a8954352b5c1e389ca9d95345ff73af5a87862ae7d539c8595e3dd3d9f33a3",
       "version": 1
     },
     {
       "mechanic_id": "protection",
       "path": "mechanics/contracts/protection.json",
-      "sha256": "54be5784f632d1ad4626b4a519b879d43b884612e88d826a4c438a6de17af71d",
+      "sha256": "58e57a49fb29bdd800e39db94d0f3e871960ec165c726b69d7ba1483d780bea7",
       "version": 1
     },
     {
       "mechanic_id": "prowess",
       "path": "mechanics/contracts/prowess.json",
-      "sha256": "fb65107736f51607ef7fad34a45c77769bbdd6e3256886382e06806568fc3e7b",
+      "sha256": "0fb7d31bcad0fec5b3bbfdb3ea14693390beae9bd1e0b1d1fd9b8a6ba91edc3a",
       "version": 1
     },
     {
       "mechanic_id": "reach",
       "path": "mechanics/contracts/reach.json",
-      "sha256": "0f0771f3524d538b74046a68a3683d77fdf6e018e4caff94be8ea142904b806e",
+      "sha256": "7bb248d70a0d63933de44914bf22768d389aebafbc35925251745d20b36bac86",
       "version": 1
     },
     {
       "mechanic_id": "regenerate",
       "path": "mechanics/contracts/regenerate.json",
-      "sha256": "4c9b6a291ae23f6762cf205ab16d6a915559540ff0e7223bdc5e113fec209cc3",
+      "sha256": "8971bc08609bfbf6b22b23af5830453941afc155eddf856f99032d942da5cb7c",
       "version": 1
     },
     {
       "mechanic_id": "renown",
       "path": "mechanics/contracts/renown.json",
-      "sha256": "9210316939779be83dfb01c6a117d0ce50a6d04e5ababdc287c54495a2c44d7c",
+      "sha256": "7f45461e1cae6bdc05b60875c339ba6e7cd902b8ec3e3c3786eb465887c55398",
       "version": 1
     },
     {
       "mechanic_id": "cr-616-interaction-of-replacement-and-or-prevention-effects",
       "path": "mechanics/contracts/replacement-ordering.json",
-      "sha256": "5354c35e1a08a8c42f407971ed6725c858ccec129dbf1db9303ace34c41bca8c",
+      "sha256": "a160cfabaa45ab406f64c19d97f1f5e777ef14c0415e513344f73f07c64cb183",
       "version": 5
     },
     {
       "mechanic_id": "cr-611-continuous-effects",
       "path": "mechanics/contracts/resolution-continuous-effects.json",
-      "sha256": "021ac18bdb264cd54eb52c0bbe2f80b8c705661e2ae593ad95f25f456e7f0a8a",
+      "sha256": "cc9e58bea215657bfc229e2b45f054d530de266e3b775ad733dbad41a1480d20",
       "version": 3
     },
     {
       "mechanic_id": "cr-608-resolving-spells-and-abilities",
       "path": "mechanics/contracts/resolving-spells-and-abilities.json",
-      "sha256": "51f213b026e3801e7cb4a3a83727a8901b862347793ff6bff439312e9c9a3367",
+      "sha256": "e6697c18af55e75688847af8611e48c650487d8d48e4fbf8cad8b52773c7cc6f",
       "version": 2
     },
     {
       "mechanic_id": "riot",
       "path": "mechanics/contracts/riot.json",
-      "sha256": "2aaa5431c014a9d854da9ec9665a4f3cbf855e45a6d292fd94f15cfc04283d3f",
+      "sha256": "2c6d340a5987ea2069aa0d08ec402c395cfab152badece901c77bc81b77d39c1",
       "version": 1
     },
     {
       "mechanic_id": "sacrifice",
       "path": "mechanics/contracts/sacrifice.json",
-      "sha256": "6c34d88d5107faf6c140dae02446a16ced331967ab81bd45b399129e157607d1",
+      "sha256": "9df74a35966de9062cb37bdd15c15f0cd1a0d3839e94cb20d22b437a4d7d6da3",
       "version": 1
     },
     {
       "mechanic_id": "scry",
       "path": "mechanics/contracts/scry.json",
-      "sha256": "7558a67654d85a5e08d7df62b2816e2000b331b8c5175405e1d1bdf4875c28ff",
+      "sha256": "02ae98bb85788b86944de7efc7604c021885d89935642394f80db52394044606",
       "version": 1
     },
     {
       "mechanic_id": "shadow",
       "path": "mechanics/contracts/shadow.json",
-      "sha256": "0afd9512e3ec1f66d25277d1d1a9b660e8f817368e1047249cd388a30ad7ac2c",
+      "sha256": "a2a979f5cdec77b862720be420198e1d8ac7817387a570f0d22a79c7bf33cecc",
       "version": 1
     },
     {
       "mechanic_id": "shroud",
       "path": "mechanics/contracts/shroud.json",
-      "sha256": "45417a793c9add61f9d0d0d57319659ac047bfe4ed39a4a71058f570ecce4b89",
+      "sha256": "6c6c18042d9e9f1357913f689e543715cf92eec135db39a456741597dc8986b2",
       "version": 1
     },
     {
       "mechanic_id": "skulk",
       "path": "mechanics/contracts/skulk.json",
-      "sha256": "643d1c6ebcae37be7eae03b81f69bd8a1caa234268f47e9903fa9b3517568bdd",
+      "sha256": "739991d5a3d3e831d71776bbaab8f324aab54c6218ed6a8cae2ab812e41ee58b",
       "version": 1
     },
     {
       "mechanic_id": "cr-600-general",
       "path": "mechanics/contracts/spells-abilities-effects-general.json",
-      "sha256": "28106ee4bc9f6d04a0448f540672dac75f90b370f2d79c1b4ecc549b8059130c",
+      "sha256": "c153b06365f96998a0432026d0971e46ee920f78681f40d104d4356a1cc28c77",
       "version": 1
     },
     {
       "mechanic_id": "cr-405-stack",
       "path": "mechanics/contracts/stack.json",
-      "sha256": "b3c6bcb76fd2a50771de29327cb41a63dbb9461135a6c837c6a701a181ec20cb",
+      "sha256": "32f5bd54726153ab509d89eea514a7523ef1e1e470ca28253b790faebda27397",
       "version": 1
     },
     {
       "mechanic_id": "cr-704-state-based-actions",
       "path": "mechanics/contracts/state-based-actions.json",
-      "sha256": "b4cb21bdae1057deeb85e252ffb4b1dd5fb9f19fd38e4b56abace19c33bc6c9e",
+      "sha256": "49d8722df274d1a46494c0dd54f60cd252f2d70bfab153cafaaf084633f0edf4",
       "version": 9
     },
     {
       "mechanic_id": "station",
       "path": "mechanics/contracts/station.json",
-      "sha256": "b3337db98d3c02eeda232c801e5e8ec12678f3cbc1302b33cd36cee7ef4daf0f",
+      "sha256": "5f9e4d282009c8dc463edcf2644251474166c86903e3a3aaa15707f004730c82",
       "version": 1
     },
     {
       "mechanic_id": "sunburst",
       "path": "mechanics/contracts/sunburst.json",
-      "sha256": "75d93b044cdb242afff37e5b3f1d8dbd0bc35ea359d6f1ab5cc088916c63f3bc",
+      "sha256": "2286de9a5b1e45bf89bec6dbd49400ba244c0fd0534f216ba2a3144a102bda3f",
       "version": 1
     },
     {
       "mechanic_id": "surveil",
       "path": "mechanics/contracts/surveil.json",
-      "sha256": "223a29c711ff69e9f627adcfac20402ae96e459274b70637a678e65a4aa8a760",
+      "sha256": "3d065f1fa2a51995a1a0afa99657eb0153371e84addb14f15e0072b2117538ba",
       "version": 1
     },
     {
       "mechanic_id": "tap-and-untap",
       "path": "mechanics/contracts/tap-and-untap.json",
-      "sha256": "5f10568c8320597bc8673d5d9c8d5cb3c7058cf74cfcf10f51525d61a348e658",
+      "sha256": "a1abf27606c13ec95e629fd8110e13a5ceab4a64fdf281b05e7a116b46f42043",
       "version": 4
     },
     {
       "mechanic_id": "toxic",
       "path": "mechanics/contracts/toxic.json",
-      "sha256": "b1374b87e762ffef3e700749bc420d43f080e0571ba880021215fd4f783ac167",
+      "sha256": "6d32ee3c9ac199e422b929c639933bc45788e687db174bfee6b7fda691500dcc",
       "version": 1
     },
     {
       "mechanic_id": "training",
       "path": "mechanics/contracts/training.json",
-      "sha256": "0393b4ddfa56a8cda780fdbb3006c1e1641e7fe566dedfdbe5427d6a65dd5820",
+      "sha256": "f9900ce1575f78bf8e6f83be36140a3738367c9f7ffeeef6377c78606dab3b3b",
       "version": 1
     },
     {
       "mechanic_id": "trample",
       "path": "mechanics/contracts/trample.json",
-      "sha256": "43d266c6795679b4560610529e0423c79db8d7f6dc524c9dd90ecb130c62f485",
+      "sha256": "d3c2b9a3c497fff986fcd591618d6b293f4ff8b8043fc6cd8ef6fc8dec55c685",
       "version": 3
     },
     {
       "mechanic_id": "cr-500-general",
       "path": "mechanics/contracts/turn-structure.json",
-      "sha256": "b4b8c130aed59398bf70679b58c91e0328d855fb96e462cffceefd9a5bedc122",
+      "sha256": "b3c94ebb8114e0e713dc06c2d373c8dba5cbaee17feffa89293dda0111dc5531",
       "version": 1
     },
     {
       "mechanic_id": "cr-614-replacement-effects",
       "path": "mechanics/contracts/unconditional-enters-tapped.json",
-      "sha256": "45899d24ee8f2a00028a8ecbe878198fea75c39024dfd66a4c9e8b1733acbc16",
+      "sha256": "5de66750e7f1db62a9b6ae34830f43395b5c939fa733938e90a435d9f99e487a",
       "version": 3
     },
     {
       "mechanic_id": "undying",
       "path": "mechanics/contracts/undying.json",
-      "sha256": "c7dc31d6c916087e44c868bd37f8da548a2cfbd73c6af4f90ceb7a259ff98e57",
+      "sha256": "0a234eb05536cd042b55d3a82a2e69be0ae2a31fdcbc014bff913768dd760563",
       "version": 1
     },
     {
       "mechanic_id": "unleash",
       "path": "mechanics/contracts/unleash.json",
-      "sha256": "6a15c8c947108e4a839a83df4e03a650f8c684968b0e2bbbc14101df103dbfbe",
+      "sha256": "94db32fce59f345e280a9fb9e68b986b5b5a5ac8cd784d70764d8b2e4bd60dd8",
       "version": 1
     },
     {
       "mechanic_id": "cr-502-untap-step",
       "path": "mechanics/contracts/untap-step.json",
-      "sha256": "cca9470e1df3796d2c665820c7975c38ff6bc090e0839366a760c09099e3cbe8",
+      "sha256": "6e5f9819c7f2f0ecb5f061c9ac9af381d9164208f3698da4c14a8b1631feffe1",
       "version": 1
     },
     {
       "mechanic_id": "cr-503-upkeep-step",
       "path": "mechanics/contracts/upkeep-step.json",
-      "sha256": "8ee524cede0986e83186d0378c630b17ba0af8fb29e190cabe85c4ea3f27e919",
+      "sha256": "3f5d3c88ac638968dd522faea45b365c601a970f0f0ddb7993a4023bd2465e46",
       "version": 2
     },
     {
       "mechanic_id": "vigilance",
       "path": "mechanics/contracts/vigilance.json",
-      "sha256": "a349f667cb340f27c61a59d6f9807f562d5c779db5612c591118b7e0265ecd02",
+      "sha256": "1a98e03ca8aa5d01c416cd737c8197fbe01b4db0c224645df309310cc2520f50",
       "version": 1
     },
     {
       "mechanic_id": "wither",
       "path": "mechanics/contracts/wither.json",
-      "sha256": "a6706c931cd774ef775fe934baf6a052f15e03a3c721cd2e3ad7aeeecbabb814",
+      "sha256": "194812c20f449d5b233a6278b0f9ec80464fa5403ca4142017da1a099bd00739",
       "version": 1
     }
   ],
-  "effective_date": "2026-06-19",
+  "effective_date": "2026-08-07",
   "generation_status": "cr_index_with_contracts",
   "mechanics": [
     {
@@ -738,7 +738,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/affinity.json",
-      "contract_sha256": "ec9959442d9a98c4ddf988783a3a47301b0fc494b5920760841fd866191fb37b",
+      "contract_sha256": "0180ea25576b3c2f0f87c01b7a9b755178ed40db276380b0db556eb0a5a15530",
       "contract_version": 1,
       "coverage_status": "trusted",
       "dependencies": [
@@ -988,7 +988,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/battle-cry.json",
-      "contract_sha256": "13f70e183196a3a175b887d0220a13e90904e2fdb3a4f3c9d7ba583de7233d31",
+      "contract_sha256": "c0324024fc0357499a935e92c52129532d4c8b4ce6d50c07621a1bfd0e396511",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -1023,7 +1023,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/bestow.json",
-      "contract_sha256": "bcbcb2428835404b96d101d598b7e1b9a976bf3f11212cc6005e908314021d2d",
+      "contract_sha256": "fc9c1e731c3e39f1d48ca5baa003adfd5452fd02da9f077c8c60bc01cbdadbe8",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -1115,7 +1115,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/bushido.json",
-      "contract_sha256": "9c9b69c620ab84e9d3fd3a1d9fd173e7dfbf97c56ae947d0b2ef30b55e588126",
+      "contract_sha256": "6329b8432e4da320558a929ee84dbde08519f53796ca17263005aa68b3e4caff",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -1170,7 +1170,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/cascade.json",
-      "contract_sha256": "6707df35f43e17ec681141415b500e7b99640c18b580835f657480cc87bef2cb",
+      "contract_sha256": "1db182256762528080230e23d0727bf4032e1822c504434679af1e96d3b7b4b0",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -1240,7 +1240,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/changeling.json",
-      "contract_sha256": "8f188f233892be30cb6215903c8d8cb82ea6a28230db9d35c01c87501c4c9eb9",
+      "contract_sha256": "a9e2913f4e676b7bb9bf331617a8c5c27b1449017413a7075f2546f07fc7c57b",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -1380,7 +1380,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/convoke.json",
-      "contract_sha256": "13d253138a4e508e5068a87515c92943d7b9ea7d410be3b1330cc2b0cb1bfcab",
+      "contract_sha256": "6d2ad46e6c30c84235e39d22c36b5dc1e7821b378fda54dbab29b1a2516e0c67",
       "contract_version": 1,
       "coverage_status": "trusted",
       "dependencies": [
@@ -1433,7 +1433,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/crew.json",
-      "contract_sha256": "28eaa4c025f4e49c049e0335677482088bcfe17f13b3cf96083d67d90ba1f9eb",
+      "contract_sha256": "e6b6a067783408076958bedb95838de84810d651602213395d44a5d8888e67cb",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -1498,7 +1498,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/cycling.json",
-      "contract_sha256": "9bc2133c7a873f7adeb1beb8e6d7cdf54baa2113845980efdabaacbe9903c80c",
+      "contract_sha256": "97770ad3e5b81cb3b78e7649ff81bd8c564862fe50528ec40c543a1658d6677d",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -1571,7 +1571,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/deathtouch.json",
-      "contract_sha256": "e25c7d6a2945b794a8b1ff5558ee4d213b5117ee28f1c39189533123a31e17b9",
+      "contract_sha256": "42affd86075d894fd60a2fd1fb029316c14075aa791b3e0f73733e5ed3dcfc67",
       "contract_version": 4,
       "coverage_status": "tested",
       "dependencies": [
@@ -1623,7 +1623,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/defender.json",
-      "contract_sha256": "2f3eeca28c8c52d6d570c5bda58c08c025a24ba1c5392888576fc0aef2fc814b",
+      "contract_sha256": "42b4f24688940f166260dbe71b614ee7e460eda1ec6a46357c8245f7cf32187e",
       "contract_version": 2,
       "coverage_status": "tested",
       "dependencies": [
@@ -1692,7 +1692,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/dethrone.json",
-      "contract_sha256": "7cd758dc96f1414607ebf37b6d92512e948bb12e64ad34437d5f8af05cef824b",
+      "contract_sha256": "952faaf7e4f797c89be1fb49d321384591a8c4ae64a4511e654ab067b57d481a",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -1729,7 +1729,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/devoid.json",
-      "contract_sha256": "246714f0264007867494ed2ae2ac8d527fb8ee2fce01a1d6a9cbe89f736059f7",
+      "contract_sha256": "53bf306b53f6af67f48d427055beeebf6a0b784458abcb417eb066e748ba9875",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -1819,7 +1819,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/double-strike.json",
-      "contract_sha256": "254d727ff5d7c67e20c6f262eb7a7dc8fa65620ae6dd3b01f54cfa8674bf6dfb",
+      "contract_sha256": "6364946fbf05ae3466cf201fd1797c2eb6a5b2a1cf934fa4980f9bfea287f63c",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [
@@ -1870,7 +1870,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/echo.json",
-      "contract_sha256": "47fa7bafec4025a7cc771dfb796345eba1bfe70fa2395722175aa493f14dd513",
+      "contract_sha256": "a67fc127c038a99c53443a325588ad472533785b8afa17a29e38ab658b9f942d",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -2113,7 +2113,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/evolve.json",
-      "contract_sha256": "d7f97f58d22e37cddb66b84029362a506c024ef2e320c01d202a287611099515",
+      "contract_sha256": "f1fb6a493dedabf88887ee5dc167a339c79c651ecf9ac497287349c2cb4a7d19",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -2152,7 +2152,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/exalted.json",
-      "contract_sha256": "05080c8d613f0f2a95f4d4b1955a81dd0ccb022a14e1d5e9928c1a8779a3a453",
+      "contract_sha256": "993068e64f07897169670ea7532e5091b36bc144d09366f750afa03d293ecbb5",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -2188,7 +2188,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/exhaust.json",
-      "contract_sha256": "1b227d843017b9461c96401658639b3bb3e3a810a5b36e3d2f97b95e78d0448d",
+      "contract_sha256": "9b41e7f77e25519ef3a3919c3044c43ba3ac13eeea6ee058f8f0059469693d16",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -2294,7 +2294,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/fear.json",
-      "contract_sha256": "974ece294c219d7b444a40f74da927a434bbd0b1bc0e6cf4657f9216005940b9",
+      "contract_sha256": "fb39100e2d8c76f2803ed1e4875c9266e490540cc72013e0cbe019a61abeea90",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -2342,7 +2342,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/first-strike.json",
-      "contract_sha256": "d38c2a1a836d3dea4c28a537cfd9aa539b93724e08d8f4cbe539b9e1feebb07e",
+      "contract_sha256": "77b937410e4d03dcdc635ced0218954c9cfac52100fb5829ca3d6af3ae14422d",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [
@@ -2375,7 +2375,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/flanking.json",
-      "contract_sha256": "87cb3514931493d1e062b15127f3ae577530dfde4d4c9bbbc5ce1e2bf8dbfd11",
+      "contract_sha256": "fae323f07e99450c59e9c6cd8643cdb4670f6c89ec33cdc60d60c425b86dd897",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -2412,7 +2412,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/flash.json",
-      "contract_sha256": "3c85957f4f67f02de145291c5c69d987b8e421dc899c0dae575c47e05579ad3a",
+      "contract_sha256": "3c0e4b2e84f580fcb9b21c7dfbf56dc0b73b390c76094314efe865954f644afb",
       "contract_version": 1,
       "coverage_status": "trusted",
       "dependencies": [
@@ -2458,7 +2458,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/flying.json",
-      "contract_sha256": "f4686e2bdee8beb5e6e30fb4ab9968c18814225e96e423c584266756cb096115",
+      "contract_sha256": "748bdba731056878bb54076a402e810348077ce01b54c26b69b5e1ebc14ae5d9",
       "contract_version": 2,
       "coverage_status": "trusted",
       "dependencies": [
@@ -2772,7 +2772,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/haste.json",
-      "contract_sha256": "9d9081b990e09f6fd956fc9be6dc3cc715ad46f803f2b4f7437f3c4cd16f76ec",
+      "contract_sha256": "2698f673f89c8d62cdb03fda3dd51b3bd87e2d85e46dced1c7d2153865d57f85",
       "contract_version": 1,
       "coverage_status": "trusted",
       "dependencies": [
@@ -2819,7 +2819,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/hexproof.json",
-      "contract_sha256": "03a645620c97dc6caa6a0029637e21706658747f1a8cebc693d563d65db658a4",
+      "contract_sha256": "8079699dfae781f6a5ef7d157d137f5e35994f40d1f1fd549d53b65b65ad3b72",
       "contract_version": 1,
       "coverage_status": "trusted",
       "dependencies": [
@@ -2885,7 +2885,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/horsemanship.json",
-      "contract_sha256": "3bdab7e786a6163610a88c71f6a826c56447f301279b609d04175cb1a257867c",
+      "contract_sha256": "f22d3db80152bc74d08eac6a0d312af71c25c111514a7c2bda93e1a940419c9e",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -2984,7 +2984,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/indestructible.json",
-      "contract_sha256": "d5ad8656ebb9734d017e225f658f893323f426c2efc4f2bc906e44c6e0b9f19f",
+      "contract_sha256": "dc8ef3cd59aece1161392ead3efe4c4887c6015a69f0d09820014af5c50d777f",
       "contract_version": 4,
       "coverage_status": "partial",
       "dependencies": [
@@ -3027,7 +3027,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/infect.json",
-      "contract_sha256": "26986bcfb5df9a38ec13785aa966b45f8394ac3cf228e41af3ce82300f30507f",
+      "contract_sha256": "4f59776fa131cee608624cd9bc4270d10300dd9dd45447cc530516dfcd142c14",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -3090,7 +3090,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/intimidate.json",
-      "contract_sha256": "8d0de73960a3a0a97f4e384626bedefdea3c2b61369b0da67baa7c4034a1b914",
+      "contract_sha256": "2e0470ef5dce1be6026599115a5a8e7190be2111b5c91ff1fb1949a752d18da1",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -3155,7 +3155,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/kicker.json",
-      "contract_sha256": "4eb2d9e8b793840f32030a6c2170c6174119810a5c5816be28e1c62b8f74cbc9",
+      "contract_sha256": "2c1028bf12114c722a506ddb042fce7e856ecea48ac2c05594988a699d43b099",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -3197,7 +3197,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/landwalk.json",
-      "contract_sha256": "5c15294065071b8d2f9e2087adf7a0c1fc46356fdedcb7c9722bf218b5a0e073",
+      "contract_sha256": "a9d7fd9afc072290639af7b70cfbd77a5b0c6004ceab090050aeb98928ac6867",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -3249,7 +3249,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/lifelink.json",
-      "contract_sha256": "bc65ee200118db9c0b708d6bcb55abaf12ea46518923bc4536e6280f7b0da928",
+      "contract_sha256": "7018be3b1bfa08b21e0bd36d0f6e77b9a4b72248dbce9ac69aa709eefce84144",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [
@@ -3364,7 +3364,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/melee.json",
-      "contract_sha256": "5285bf88f7d76f75b4ee762c7c3c51365fa85cfa65de67a3720b32cd2a0e2931",
+      "contract_sha256": "ee41848a2b36ed13af54e313a3a4814b2b477906e1797467fdc1ad2f3c65c038",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -3400,7 +3400,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/menace.json",
-      "contract_sha256": "4921c3920c6cda1b2944b655390d29422d922d8825ee5c41a086d9f78e18a0d5",
+      "contract_sha256": "6ef68fc1d8eeeaf4f21f382f98e39230f983854c625fe4832024bb94a51c66b6",
       "contract_version": 2,
       "coverage_status": "tested",
       "dependencies": [
@@ -3438,7 +3438,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/mentor.json",
-      "contract_sha256": "bdfc66dc01344c95bffb7a5fbef6fc05f2da287f232116c0de65ae0a6defebb7",
+      "contract_sha256": "b73f558b631af21149e7565e415432c3cff675a06aed8975bc362359dfb0cbb7",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -3519,7 +3519,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/modular.json",
-      "contract_sha256": "888797f1a40bd59657b9b148a0c9594d86b9adb38e8a2a0fb28cd698ae3d41d7",
+      "contract_sha256": "b9760c7e418ad9d44e444f747cab98c0f8d1552b765aa26f271f80cf887d3dd0",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -3573,7 +3573,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/morph.json",
-      "contract_sha256": "a8022f7da972b7da2c4f1a4ba524a79cefe934b19f22492f82e9fd5e33d4e4bd",
+      "contract_sha256": "ba9a14268db3bb05ef524050b96b321dbd2007bec3f613ade321a577678309f2",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -3785,7 +3785,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/persist.json",
-      "contract_sha256": "a2399152880651898009e22770dbf8e3aa973d8076e16991e0f6e9e5b88545d7",
+      "contract_sha256": "595e2220df9ef2619fff3f7ce24df17683168f62faef986bbeabc0ae94e886b3",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -3892,7 +3892,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/protection.json",
-      "contract_sha256": "54be5784f632d1ad4626b4a519b879d43b884612e88d826a4c438a6de17af71d",
+      "contract_sha256": "58e57a49fb29bdd800e39db94d0f3e871960ec165c726b69d7ba1483d780bea7",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -3955,7 +3955,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/prowess.json",
-      "contract_sha256": "fb65107736f51607ef7fad34a45c77769bbdd6e3256886382e06806568fc3e7b",
+      "contract_sha256": "0fb7d31bcad0fec5b3bbfdb3ea14693390beae9bd1e0b1d1fd9b8a6ba91edc3a",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -4047,7 +4047,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/reach.json",
-      "contract_sha256": "0f0771f3524d538b74046a68a3683d77fdf6e018e4caff94be8ea142904b806e",
+      "contract_sha256": "7bb248d70a0d63933de44914bf22768d389aebafbc35925251745d20b36bac86",
       "contract_version": 1,
       "coverage_status": "trusted",
       "dependencies": [
@@ -4157,7 +4157,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/renown.json",
-      "contract_sha256": "9210316939779be83dfb01c6a117d0ce50a6d04e5ababdc287c54495a2c44d7c",
+      "contract_sha256": "7f45461e1cae6bdc05b60875c339ba6e7cd902b8ec3e3c3786eb465887c55398",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -4236,7 +4236,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/riot.json",
-      "contract_sha256": "2aaa5431c014a9d854da9ec9665a4f3cbf855e45a6d292fd94f15cfc04283d3f",
+      "contract_sha256": "2c6d340a5987ea2069aa0d08ec402c395cfab152badece901c77bc81b77d39c1",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -4325,7 +4325,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/shadow.json",
-      "contract_sha256": "0afd9512e3ec1f66d25277d1d1a9b660e8f817368e1047249cd388a30ad7ac2c",
+      "contract_sha256": "a2a979f5cdec77b862720be420198e1d8ac7817387a570f0d22a79c7bf33cecc",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -4356,7 +4356,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/shroud.json",
-      "contract_sha256": "45417a793c9add61f9d0d0d57319659ac047bfe4ed39a4a71058f570ecce4b89",
+      "contract_sha256": "6c6c18042d9e9f1357913f689e543715cf92eec135db39a456741597dc8986b2",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -4392,7 +4392,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/skulk.json",
-      "contract_sha256": "643d1c6ebcae37be7eae03b81f69bd8a1caa234268f47e9903fa9b3517568bdd",
+      "contract_sha256": "739991d5a3d3e831d71776bbaab8f324aab54c6218ed6a8cae2ab812e41ee58b",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -4594,7 +4594,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/station.json",
-      "contract_sha256": "b3337db98d3c02eeda232c801e5e8ec12678f3cbc1302b33cd36cee7ef4daf0f",
+      "contract_sha256": "5f9e4d282009c8dc463edcf2644251474166c86903e3a3aaa15707f004730c82",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -4647,6 +4647,23 @@
       ],
       "implementation_component": null,
       "kind": "keyword_ability",
+      "mechanic_id": "storied",
+      "official_name": "Storied",
+      "rule_references": [
+        "702.195"
+      ],
+      "test_ids": [],
+      "trust_level": "untrusted"
+    },
+    {
+      "category": "additional_rules",
+      "contract_path": null,
+      "coverage_status": "unclassified",
+      "dependencies": [
+        "702"
+      ],
+      "implementation_component": null,
+      "kind": "keyword_ability",
       "mechanic_id": "storm",
       "official_name": "Storm",
       "rule_references": [
@@ -4658,7 +4675,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/sunburst.json",
-      "contract_sha256": "75d93b044cdb242afff37e5b3f1d8dbd0bc35ea359d6f1ab5cc088916c63f3bc",
+      "contract_sha256": "2286de9a5b1e45bf89bec6dbd49400ba244c0fd0534f216ba2a3144a102bda3f",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -4782,7 +4799,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/toxic.json",
-      "contract_sha256": "b1374b87e762ffef3e700749bc420d43f080e0571ba880021215fd4f783ac167",
+      "contract_sha256": "6d32ee3c9ac199e422b929c639933bc45788e687db174bfee6b7fda691500dcc",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -4815,7 +4832,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/training.json",
-      "contract_sha256": "0393b4ddfa56a8cda780fdbb3006c1e1641e7fe566dedfdbe5427d6a65dd5820",
+      "contract_sha256": "f9900ce1575f78bf8e6f83be36140a3738367c9f7ffeeef6377c78606dab3b3b",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -4853,7 +4870,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/trample.json",
-      "contract_sha256": "43d266c6795679b4560610529e0423c79db8d7f6dc524c9dd90ecb130c62f485",
+      "contract_sha256": "d3c2b9a3c497fff986fcd591618d6b293f4ff8b8043fc6cd8ef6fc8dec55c685",
       "contract_version": 3,
       "coverage_status": "tested",
       "dependencies": [
@@ -4979,7 +4996,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/undying.json",
-      "contract_sha256": "c7dc31d6c916087e44c868bd37f8da548a2cfbd73c6af4f90ceb7a259ff98e57",
+      "contract_sha256": "0a234eb05536cd042b55d3a82a2e69be0ae2a31fdcbc014bff913768dd760563",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -5034,7 +5051,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/unleash.json",
-      "contract_sha256": "6a15c8c947108e4a839a83df4e03a650f8c684968b0e2bbbc14101df103dbfbe",
+      "contract_sha256": "94db32fce59f345e280a9fb9e68b986b5b5a5ac8cd784d70764d8b2e4bd60dd8",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -5089,7 +5106,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/vigilance.json",
-      "contract_sha256": "a349f667cb340f27c61a59d6f9807f562d5c779db5612c591118b7e0265ecd02",
+      "contract_sha256": "1a98e03ca8aa5d01c416cd737c8197fbe01b4db0c224645df309310cc2520f50",
       "contract_version": 1,
       "coverage_status": "trusted",
       "dependencies": [
@@ -5183,7 +5200,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/wither.json",
-      "contract_sha256": "a6706c931cd774ef775fe934baf6a052f15e03a3c721cd2e3ad7aeeecbabb814",
+      "contract_sha256": "194812c20f449d5b233a6278b0f9ec80464fa5403ca4142017da1a099bd00739",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -5262,7 +5279,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/adapt.json",
-      "contract_sha256": "cc52acbfb4bc40c0f286a523fa64781bca16e03d626b479ad54c4c4ea5753cfe",
+      "contract_sha256": "16c66974fc72bfc6e471ed56bdd5ecd60a3a815ba1022a0af06bfb765e100438",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -5331,7 +5348,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/amass.json",
-      "contract_sha256": "6641c200e1518f7b0ef33fd5876c0db6e430123ab45b142bc530d06412f1da4c",
+      "contract_sha256": "871965460d58befdc9683420f96d6236458de181953dfb0138ff826fbadbb88e",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -5570,7 +5587,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/counter.json",
-      "contract_sha256": "de7e4e249820db72778e5cfb443ac249bab42d97d657b0247ed1df5a9be9fca9",
+      "contract_sha256": "93a994a093c0edf5bd01109159b2a9d0747cc977b02159194055872bc79d76c5",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -5634,7 +5651,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/destroy.json",
-      "contract_sha256": "c3b1e8a5bd0cc7db5d20ac2376b69a56412166615597c34b6ed623528a49878d",
+      "contract_sha256": "2d5596f897082ae0e807044418b2920c9a79fbbf7ed2808f118f13f5ea71f29e",
       "contract_version": 3,
       "coverage_status": "tested",
       "dependencies": [
@@ -5916,7 +5933,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/goad.json",
-      "contract_sha256": "42217700373af7875e412cb6e9c110d0d9aa12ac84f41dbe23fcd30d4173e4ba",
+      "contract_sha256": "3de4584497a92f47b3f6a79942ca34ceb25c0c94965cdca272656a4f9778b3c4",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -6111,7 +6128,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/mill.json",
-      "contract_sha256": "7fbfe012207c7ef581826a1b83ea2cbd6d00e6554b17c26a2b22b50ed4efb1cf",
+      "contract_sha256": "d2b58c3feaa002eab533f2395e5589a5805b09c87d0420db47d2dead1786e568",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -6146,7 +6163,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/monstrosity.json",
-      "contract_sha256": "9a0e316006720739c9e8a4bf30f63ff136def3ea44a0e1c9fec1ed66aba0cc41",
+      "contract_sha256": "5d2a115d90f7092dfb5d15c55d3f3e578c4f98e2446a9110cf47a87d3e6fbffa",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -6271,8 +6288,25 @@
     },
     {
       "category": "additional_rules",
+      "contract_path": null,
+      "coverage_status": "unclassified",
+      "dependencies": [
+        "701"
+      ],
+      "implementation_component": null,
+      "kind": "keyword_action",
+      "mechanic_id": "recruit",
+      "official_name": "Recruit",
+      "rule_references": [
+        "701.70"
+      ],
+      "test_ids": [],
+      "trust_level": "untrusted"
+    },
+    {
+      "category": "additional_rules",
       "contract_path": "mechanics/contracts/regenerate.json",
-      "contract_sha256": "4c9b6a291ae23f6762cf205ab16d6a915559540ff0e7223bdc5e113fec209cc3",
+      "contract_sha256": "8971bc08609bfbf6b22b23af5830453941afc155eddf856f99032d942da5cb7c",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -6342,7 +6376,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/sacrifice.json",
-      "contract_sha256": "6c34d88d5107faf6c140dae02446a16ced331967ab81bd45b399129e157607d1",
+      "contract_sha256": "9df74a35966de9062cb37bdd15c15f0cd1a0d3839e94cb20d22b437a4d7d6da3",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -6381,7 +6415,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/scry.json",
-      "contract_sha256": "7558a67654d85a5e08d7df62b2816e2000b331b8c5175405e1d1bdf4875c28ff",
+      "contract_sha256": "02ae98bb85788b86944de7efc7604c021885d89935642394f80db52394044606",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [
@@ -6486,7 +6520,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/surveil.json",
-      "contract_sha256": "223a29c711ff69e9f627adcfac20402ae96e459274b70637a678e65a4aa8a760",
+      "contract_sha256": "3d065f1fa2a51995a1a0afa99657eb0153371e84addb14f15e0072b2117538ba",
       "contract_version": 1,
       "coverage_status": "tested",
       "dependencies": [
@@ -6541,7 +6575,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/tap-and-untap.json",
-      "contract_sha256": "5f10568c8320597bc8673d5d9c8d5cb3c7058cf74cfcf10f51525d61a348e658",
+      "contract_sha256": "a1abf27606c13ec95e629fd8110e13a5ceab4a64fdf281b05e7a116b46f42043",
       "contract_version": 4,
       "coverage_status": "tested",
       "dependencies": [
@@ -6909,7 +6943,7 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-token-creation.json",
-      "contract_sha256": "d4037754d6a822e68f4b7ae16824e0891034408e7e78b67e9e296bcdaa1f417f",
+      "contract_sha256": "1736420c29d8ed5aa0d7bd0249e6ac71f2e80205fd8aa01609f560d3e3727879",
       "contract_version": 4,
       "coverage_status": "partial",
       "dependencies": [],
@@ -7065,7 +7099,7 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/damage.json",
-      "contract_sha256": "465622ab6df8c5d65d2f55a104a64d6b7ace73976e5a766f4fe2973d8f602e7f",
+      "contract_sha256": "03a8ca9f9cea79ddc8b94fd4085594cd9e671ea43255c7e4b93fd12495fc138b",
       "contract_version": 4,
       "coverage_status": "partial",
       "dependencies": [],
@@ -7114,7 +7148,7 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/drawing-a-card.json",
-      "contract_sha256": "7d67e3f9c63d53c991cd90f526f947441b055878685b7b124fb60ee042cd0b9a",
+      "contract_sha256": "37530e7a2daa27f118769f8d3caeca75a27fed5bf49efdad066a94f40b6d6228",
       "contract_version": 6,
       "coverage_status": "partial",
       "dependencies": [],
@@ -7194,7 +7228,7 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/basic-counters.json",
-      "contract_sha256": "b4dcdfda4baab4cd8c89078c6f8bb761d7bd8125ebcacffc1a5e538309d2224b",
+      "contract_sha256": "e86b78f9ab19e6a640e4d5a1c8e0eca822dc65ea1d966949e112d895252d5510",
       "contract_version": 18,
       "coverage_status": "partial",
       "dependencies": [],
@@ -7549,7 +7583,7 @@
     {
       "category": "card_characteristics",
       "contract_path": "mechanics/contracts/defense.json",
-      "contract_sha256": "5bc419ca9499b6c21eb2624c21ed8272a3db797548862be02f5e7d48d6432be9",
+      "contract_sha256": "c63ab17aa8d3fb795d58c35a7be18d3dfdeaa3dd59a5bf5fd40bb78ab499b20e",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
@@ -7557,6 +7591,7 @@
       "implementation_version": "defense-v2",
       "kind": "rules_section",
       "known_blockers": [
+        "non-Siege zero-defense handling under CR 704.5w is not represented or trusted",
         "complete replacement-effect ordering for modified battlefield entry counters is not implemented",
         "effects that directly set or switch a battle's defense outside ordinary counter changes are not implemented",
         "the current Oracle snapshot contains provisional post-rules-snapshot Control Point battles whose final defense rules are not present in the pinned CR"
@@ -7774,7 +7809,7 @@
     {
       "category": "card_types",
       "contract_path": "mechanics/contracts/battles.json",
-      "contract_sha256": "2856c39fff9f94536d5e84b5eb4ea0e983d4a060dd2fc27ea616b17e37c12aa2",
+      "contract_sha256": "bb7253e7c719586b4f0d23aca66b83e475183d989f2fd5dc42db34fd99d6ec8b",
       "contract_version": 5,
       "coverage_status": "partial",
       "dependencies": [],
@@ -7785,11 +7820,11 @@
         "nonspell Battle entry still requires a trusted caller to supply any required Siege protector choice",
         "optional, variable, state-derived, copied, face-down, and dynamically characteristic-modified Battle token entry remains outside the prospective-token boundary",
         "attacking or blocking creatures becoming Battles and Battles changing controller during combat are not yet removed from combat by every continuous-effect path",
-        "future Battle subtypes are rejected until their protector predicates are present in a pinned Comprehensive Rules snapshot",
+        "non-Siege Battle subtypes and their distinct zero-defense and protector predicates remain unsupported even though the pinned snapshot now defines them",
         "complete simultaneous/APNAP protector choices and all Battle-targeting interactions are not implemented",
         "the transformed-cast choice exposes compiled cost and target schemas; a nonpermanent back face with target text but no compiled target schema fails closed, and cast-time grammar outside those schemas remains blocked",
         "complete replacement ordering for the defeated-trigger exile and the native semantic resolution of every transformed back face remain separate incomplete dependencies",
-        "the current Oracle snapshot contains two not-yet-Commander-legal Control Point previews that postdate the pinned rules snapshot and remain unsupported"
+        "the current Oracle snapshot contains two not-yet-Commander-legal Control Point previews whose non-Siege behavior remains unsupported"
       ],
       "mechanic_id": "cr-310-battles",
       "official_name": "Battles",
@@ -7913,7 +7948,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/object-zone-identity.json",
-      "contract_sha256": "2910cfe34ec38dd595a5f2a082100850b31dc9e5c6fae79f3825c13b9ef824c6",
+      "contract_sha256": "8e706c4f75040656dd15e2abd19128ac9cbafe0837f6c1cde63155471343ac3d",
       "contract_version": 5,
       "coverage_status": "partial",
       "dependencies": [],
@@ -7971,7 +8006,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/library.json",
-      "contract_sha256": "17b0c15bcad39e8fd2c49caa402bdc5d784021eec20177b25feba3318e43deb8",
+      "contract_sha256": "e2a4061858eb684f93e10b44e375f73088c1112ffdc5e6f100d05777d75fa68d",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8006,7 +8041,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/hand.json",
-      "contract_sha256": "495b717cbf0b25a86ed2b3afe41e1992df6f42108ff72778709d6f6b2837dedb",
+      "contract_sha256": "b63b2ec385fe1d8f9d00dee196d62bf6bbd699723cdfb5ed1848a31708eb6ab2",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8041,7 +8076,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/battlefield.json",
-      "contract_sha256": "4efa45262d41990ee78c40d8d7f58b12d0cbaaeecf058882373abe9b1a89357a",
+      "contract_sha256": "6f2bd11f17df2cf89659743021083f3ac60c1600afdfb772dbab35e7a6481fec",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8078,7 +8113,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/graveyard.json",
-      "contract_sha256": "af5de20be216a5752642a745758762d98b49a232bc083f57cf36c23aed02d1d1",
+      "contract_sha256": "f81ecb8da0dbbb0a81638cc14739fb7d502750da829570ea375288221859840a",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8113,7 +8148,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/stack.json",
-      "contract_sha256": "b3c6bcb76fd2a50771de29327cb41a63dbb9461135a6c837c6a701a181ec20cb",
+      "contract_sha256": "32f5bd54726153ab509d89eea514a7523ef1e1e470ca28253b790faebda27397",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8152,7 +8187,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/exile.json",
-      "contract_sha256": "dc4b5009a4dd0a1899c53abc0f67c7dfacf8f30db258441cee0815ceb8f6f3c7",
+      "contract_sha256": "1a15eec441b47b97529ab5e5ada938940d12f1271ef1bfe9aa6ca5e9621efbb1",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8196,7 +8231,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/ante.json",
-      "contract_sha256": "faecdde543bd72d13cf2f39fee5aec8a48bf12a3075212e0793e16caee95b0b1",
+      "contract_sha256": "7831efaf6a3c30c28f65becb75e0d6fbab684f47a3b1a03030ee684711997e4e",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8228,7 +8263,7 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/command-zone.json",
-      "contract_sha256": "e90bd65d12a1e39a0450a82d71d4f60a1d495c7b3042d4816d1767cfaf3395cc",
+      "contract_sha256": "b5458038d60796f6290dba4c149d4e1b98e985d723d383889c7535940fb37b92",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8266,7 +8301,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/turn-structure.json",
-      "contract_sha256": "b4b8c130aed59398bf70679b58c91e0328d855fb96e462cffceefd9a5bedc122",
+      "contract_sha256": "b3c94ebb8114e0e713dc06c2d373c8dba5cbaee17feffa89293dda0111dc5531",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8305,7 +8340,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/beginning-phase.json",
-      "contract_sha256": "9b5763c947e84b4106ef49c8f16b4a283a78c48f7fb6499f6eff12b03095bd75",
+      "contract_sha256": "0836b57b4c833774da4fae42e46ba6c2e79dd07669c1973d5ebc50cf67e283ff",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8334,7 +8369,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/untap-step.json",
-      "contract_sha256": "cca9470e1df3796d2c665820c7975c38ff6bc090e0839366a760c09099e3cbe8",
+      "contract_sha256": "6e5f9819c7f2f0ecb5f061c9ac9af381d9164208f3698da4c14a8b1631feffe1",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8379,7 +8414,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/upkeep-step.json",
-      "contract_sha256": "8ee524cede0986e83186d0378c630b17ba0af8fb29e190cabe85c4ea3f27e919",
+      "contract_sha256": "3f5d3c88ac638968dd522faea45b365c601a970f0f0ddb7993a4023bd2465e46",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8420,7 +8455,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/draw-step.json",
-      "contract_sha256": "7e3fcfb69ccc81e2be35c2a8b9f7267d9cf30d4d11be038df733600fbf3dae88",
+      "contract_sha256": "94ce6055cb1ff8a5a82c64bc988b97330451aee36f78dce60425ee10d0b63838",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8450,7 +8485,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/main-phase.json",
-      "contract_sha256": "d4579f00ea85d8871027ac213318018f64cd0cd684a366258fef8590b52b1336",
+      "contract_sha256": "f6f9b83059a9c10f2d5e01cd03ff3eaf1472d77714b535c7aa1c25f702d4a41f",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8490,7 +8525,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/combat-phase.json",
-      "contract_sha256": "165b977f02ed332f952288fc827361b5d122916c1d3a42c168496df85e1beea1",
+      "contract_sha256": "a03b3726b57fbec35f88087ea404b1853668366f98d06352c46fb787f7fc7d4b",
       "contract_version": 3,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8498,6 +8533,7 @@
       "implementation_version": "combat-phase-v3",
       "kind": "rules_section",
       "known_blockers": [
+        "protector changes do not yet remove an attacked Battle from combat under the current CR 506.4 wording",
         "single-defender, shared-team-turn, limited-range, and other multiplayer combat options are not implemented",
         "generic effects that put objects attacking or blocking are not implemented",
         "explicit remove-from-combat effect grammar is not implemented outside represented regeneration",
@@ -8530,7 +8566,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/beginning-of-combat.json",
-      "contract_sha256": "e5e8758c7ce64f0831f790ef57a5509b2f19bafa3161941a93b8c134b043df59",
+      "contract_sha256": "22fad984a51b743f81bcd15efd5c7108dacb40590c5fdd77a188a3b6452dd8fc",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8561,7 +8597,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/declare-attackers-step.json",
-      "contract_sha256": "952841ed3b0020b0c6208a7e3f3765c6aec7a444f501e1e4dd67155e3c8e7d6a",
+      "contract_sha256": "e01a62376018bf471a49e15d72f3fdb18e929c2f29ef38d24fc4ab1da64f087d",
       "contract_version": 10,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8662,7 +8698,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/declare-blockers-step.json",
-      "contract_sha256": "68146673809f052e86a7b209018001a3d9ac7c9c8361d269d3c1a8c2a96d1367",
+      "contract_sha256": "6dcca19404c390fa59e640a4bca24c095655c0dd70319e605d4b7614d79d8fbf",
       "contract_version": 10,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8747,7 +8783,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/combat-damage-step.json",
-      "contract_sha256": "d971c1e292db29ba9633976d2aa156737079a3708f85dd9af6c698844396797b",
+      "contract_sha256": "e314b8c9edbbff79b205cee898dee1faa76385a52e352ab66b6a074c88f5068b",
       "contract_version": 5,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8802,7 +8838,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/end-of-combat.json",
-      "contract_sha256": "93c1854eb2c5929f09287a13da9fb119749fdffb80ac1b229bba698bac238776",
+      "contract_sha256": "b7d770d11160a6c951c73918fe11c5b4292dc9355ec2fd7a4ab96f0ab882aaf8",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8829,7 +8865,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/ending-phase.json",
-      "contract_sha256": "50e3dfac37b7a9619c7dcdef09a05cc83fc694527be6ae06381f44485cb2526c",
+      "contract_sha256": "3bfa8a5be8104ca0e65e57f6f92312edbe94ccc801e8f4324e83b10c775003e3",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8857,7 +8893,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/end-step.json",
-      "contract_sha256": "69728b62208d90d5172347d9ee0e17dcc0e93c0a9fbf578c3b411cde95801cd2",
+      "contract_sha256": "bb7213aa24b0720a1c718c4a7759bf4f39f205ef1d262479546ba437fe2b3cd6",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8888,7 +8924,7 @@
     {
       "category": "turn_structure",
       "contract_path": "mechanics/contracts/cleanup-step.json",
-      "contract_sha256": "ea3533538eb616d676571180eb1f783a65ba6962753b344c49180a9bfc2331fb",
+      "contract_sha256": "6d4e8ce566299bb27b5e5f4069b90e5c62bf01d2837fd6c3891019d98e578501",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8925,7 +8961,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/spells-abilities-effects-general.json",
-      "contract_sha256": "28106ee4bc9f6d04a0448f540672dac75f90b370f2d79c1b4ecc549b8059130c",
+      "contract_sha256": "c153b06365f96998a0432026d0971e46ee920f78681f40d104d4356a1cc28c77",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8949,7 +8985,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/casting-spells.json",
-      "contract_sha256": "e0dd4e990cbbd0295a3ea5b3246e416dac115cead4004c4d45709f8fdc33e58f",
+      "contract_sha256": "e726343032c4cf57bc5e5d006c28226829105c46102d6bce65f97924b03763ab",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
@@ -8992,7 +9028,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/activating-activated-abilities.json",
-      "contract_sha256": "e2f85029cc1ded5873f36ed43d1ba121b2b9cd186a023d131f5704f98041a96e",
+      "contract_sha256": "ef2e063b9e2a70b4d33fd83cff0df8380552e922bad721f096caf3350c334684",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9034,7 +9070,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/handling-triggered-abilities.json",
-      "contract_sha256": "7a32cbba88a369f965a170dc56110a0f76015af9fa3dd20cbc6e3958421d8428",
+      "contract_sha256": "f025a1aaa7ab1c1a78d4be044950aba8c9f6b5a0cb7a1e9baac7739605efd1fb",
       "contract_version": 4,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9085,7 +9121,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/handling-static-abilities.json",
-      "contract_sha256": "9cbc8a8b82f46da4b1303421ee4b03e1312df2b618b3d04f750fece85215414e",
+      "contract_sha256": "539238df3c1ad3a3a45155bcf7af20fd9afdfd1b3a03aa80171d46f03acdfcd7",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9118,7 +9154,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/mana-abilities.json",
-      "contract_sha256": "0c41600c9578b285fb3ea9fbc350ed5fc13c76a3fbc6f48fcde9ea2500c7512e",
+      "contract_sha256": "16e2415f54ae0de1c05872cfe7087980abd020885e5f861633fba79617cfc20e",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9126,6 +9162,7 @@
       "implementation_version": "typed-mana-ability-v2",
       "kind": "rules_section",
       "known_blockers": [
+        "the CR 605.1a exclusion for costs or effects that move cards to or from a library is not yet a complete typed classifier outside the closed fixed-output families",
         "triggered mana abilities are not generically identified or dispatched outside the stack",
         "dynamic, conditional, restricted, and side-effecting mana-output grammar remains outside the fixed-output capability",
         "explicit mana activation during arbitrary rule/effect payment windows is not exposed as a general nested decision",
@@ -9150,6 +9187,7 @@
         "test_recordless_mana_plan_ignores_submitted_side_effects",
         "test_fixed_output_compiler_lowers_source_spanned_cardprogram",
         "test_fixed_output_compiler_leaves_dynamic_and_restricted_variants_residual",
+        "test_fixed_output_compiler_rejects_library_movement_costs_and_effects",
         "test_parenthesized_basic_land_reminder_is_not_an_executable_program",
         "test_compiled_alternative_output_is_advertised_accepted_and_replayed",
         "test_compiled_fixed_output_offer_and_activation_share_modes",
@@ -9173,7 +9211,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/loyalty-abilities.json",
-      "contract_sha256": "7667225a2bb1e5f2c62ab876b652efb7153d7293a6a9848d5f3f53238b445a9f",
+      "contract_sha256": "8893e422762151e677ffe521cd0fd7ced149667bf8dbe5e2992fc5ac7c8aa199",
       "contract_version": 3,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9210,7 +9248,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/linked-abilities.json",
-      "contract_sha256": "62e669b98c3cb4c34961faea034759a87235e3b025b777906529d06261571349",
+      "contract_sha256": "01bdc74923548405bca5ad5233f4856e65ee2c654e207dde22f427d4041f5f6c",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9243,7 +9281,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/resolving-spells-and-abilities.json",
-      "contract_sha256": "51f213b026e3801e7cb4a3a83727a8901b862347793ff6bff439312e9c9a3367",
+      "contract_sha256": "e6697c18af55e75688847af8611e48c650487d8d48e4fbf8cad8b52773c7cc6f",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9283,7 +9321,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/effects.json",
-      "contract_sha256": "132b2a140fde78b92cadb350c2a54d1bdd306e6b61e09912ffe85e134838e87a",
+      "contract_sha256": "807e33e7c5a9dcc28733db6f9566573eabe42dac827ed00b987da5550ae7ecdd",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9337,7 +9375,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/resolution-continuous-effects.json",
-      "contract_sha256": "021ac18bdb264cd54eb52c0bbe2f80b8c705661e2ae593ad95f25f456e7f0a8a",
+      "contract_sha256": "cc9e58bea215657bfc229e2b45f054d530de266e3b775ad733dbad41a1480d20",
       "contract_version": 3,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9390,7 +9428,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/continuous-layers.json",
-      "contract_sha256": "d134497c32d15cce341bb720aa46f8506562770cdd1e9c0cd0bfaf8c7455fbf9",
+      "contract_sha256": "b7e6e99ec9d8a4f686ab650b0cdd8f622020872121c8a74215520c37ce68697c",
       "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9422,7 +9460,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/unconditional-enters-tapped.json",
-      "contract_sha256": "45899d24ee8f2a00028a8ecbe878198fea75c39024dfd66a4c9e8b1733acbc16",
+      "contract_sha256": "5de66750e7f1db62a9b6ae34830f43395b5c939fa733938e90a435d9f99e487a",
       "contract_version": 3,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9469,7 +9507,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/prevention-effects.json",
-      "contract_sha256": "057b9ffb22fd0564f951367653ed50ca3bcd4b496679927da735b57c9a5144f9",
+      "contract_sha256": "f3a8954352b5c1e389ca9d95345ff73af5a87862ae7d539c8595e3dd3d9f33a3",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9501,7 +9539,7 @@
     {
       "category": "spells_abilities_effects",
       "contract_path": "mechanics/contracts/replacement-ordering.json",
-      "contract_sha256": "5354c35e1a08a8c42f407971ed6725c858ccec129dbf1db9303ace34c41bca8c",
+      "contract_sha256": "a160cfabaa45ab406f64c19d97f1f5e777ef14c0415e513344f73f07c64cb183",
       "contract_version": 5,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9621,7 +9659,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/state-based-actions.json",
-      "contract_sha256": "b4cb21bdae1057deeb85e252ffb4b1dd5fb9f19fd38e4b56abace19c33bc6c9e",
+      "contract_sha256": "49d8722df274d1a46494c0dd54f60cd252f2d70bfab153cafaaf084633f0edf4",
       "contract_version": 9,
       "coverage_status": "partial",
       "dependencies": [],
@@ -9629,6 +9667,7 @@
       "implementation_version": "state-based-actions-v10",
       "kind": "rules_section",
       "known_blockers": [
+        "the new non-Siege zero-defense action in CR 704.5w and unsupported Battle-subtype protector predicates remain outside the represented Battle state-action slice",
         "specialized copy-object exceptions such as Prepare copies in exile are not implemented",
         "Read Ahead and copied, gained, removed, or layer-modified Saga chapter abilities remain outside the represented ordinary final-chapter action",
         "one completed Saga simultaneously subject to another zone-moving state-based action fails closed until combined-cause replacement provenance is represented",
@@ -9739,7 +9778,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/copying-objects.json",
-      "contract_sha256": "6c3620b6ef7d267679778eff709af9d574117e65ba9254464034b1ea8b377e0a",
+      "contract_sha256": "f34a44de5daff3eb7878b31d70071fe72d6084e6056857016d4364c561cfc95a",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -10033,7 +10072,7 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/monarch.json",
-      "contract_sha256": "3a9a07a580385babf6e2182f20f9fad7e2139add24c971b9df6710feb52617f1",
+      "contract_sha256": "32abd5125bdd683db407bafa8785794b93996cb9b32d8e29e9ffdac36b028c69",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -10218,7 +10257,7 @@
     {
       "category": "multiplayer",
       "contract_path": "mechanics/contracts/multiplayer-combat-damage-order.json",
-      "contract_sha256": "5abe8fc5cc4f515193ab5660c2f377a995d3cc885c4e197a20b26bc7e27bfcc8",
+      "contract_sha256": "0dcf083a03359a9157761272c853fff8c88fcb051563d54d5ecf62c5fc02d1be",
       "contract_version": 1,
       "coverage_status": "partial",
       "dependencies": [],
@@ -10470,7 +10509,7 @@
   "oracle_enrichment_complete": false,
   "registry_version": "mechanics-registry-v1",
   "schema_version": 1,
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "sources": {
     "card_data_snapshot": {
       "available": true,

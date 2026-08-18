@@ -1,50 +1,50 @@
 {
   "conformance": {
     "assertion_kind_counts": {
-      "executable_engine": 238,
-      "inventory_only": 2427,
-      "static_traceability": 165,
-      "unsupported_fail_closed": 470
+      "executable_engine": 239,
+      "inventory_only": 2421,
+      "static_traceability": 167,
+      "unsupported_fail_closed": 482
     },
-    "behavioral_cases": 687,
-    "behavioral_passing_cases": 216,
-    "behavioral_passing_fraction": 0.31441,
-    "blocked_cases": 471,
+    "behavioral_cases": 700,
+    "behavioral_passing_cases": 217,
+    "behavioral_passing_fraction": 0.31,
+    "blocked_cases": 483,
     "classification_counts": {
-      "behavioral": 687,
-      "definition_only": 165,
+      "behavioral": 700,
+      "definition_only": 167,
       "structural": 21,
-      "unclassified": 2427
+      "unclassified": 2421
     },
     "current_snapshot_complete": false,
-    "definition_only_cases": 165,
-    "effective_date": "2026-06-19",
-    "inventory_only_cases": 2427,
+    "definition_only_cases": 167,
+    "effective_date": "2026-08-07",
+    "inventory_only_cases": 2421,
     "schema_version": 1,
     "semantic_failing_cases": 0,
-    "semantic_passing_cases": 237,
+    "semantic_passing_cases": 238,
     "skipped_cases": 0,
-    "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+    "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
     "status_counts": {
-      "blocked": 471,
-      "definition_only": 165,
-      "passing": 237,
-      "unreviewed": 2427
+      "blocked": 483,
+      "definition_only": 167,
+      "passing": 238,
+      "unreviewed": 2421
     },
-    "total_cases": 3300,
-    "unreviewed_cases": 2427
+    "total_cases": 3309,
+    "unreviewed_cases": 2421
   },
   "conformance_snapshot_complete": false,
   "current_snapshot_complete": false,
-  "effective_date": "2026-06-19",
+  "effective_date": "2026-08-07",
   "invalid_statuses": [],
   "schema_version": 1,
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "status_counts": {
-    "unclassified": 3300
+    "unclassified": 3309
   },
-  "total_mechanics": 425,
-  "total_rules": 3300,
+  "total_mechanics": 427,
+  "total_rules": 3309,
   "trusted_fraction": 0.0,
   "trusted_rules": 0
 }

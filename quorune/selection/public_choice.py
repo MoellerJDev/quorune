@@ -255,7 +255,7 @@ class PublicChoiceOwnerMixin:
         self,
         item: StackItem,
     ) -> bool:
-        """Request the represented CR 310.8a protector choice."""
+        """Request the represented CR 310.9a protector choice."""
 
         if (
             item.default_destination != "battlefield"

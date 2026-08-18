@@ -7,6 +7,7 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 import unittest
+from unittest import mock
 
 from scripts.finalize_generated import (
     POST_CHECKS,
@@ -14,6 +15,11 @@ from scripts.finalize_generated import (
     changed_generated_outputs,
     stabilization_ids,
     write_until_stable,
+)
+from scripts.cloud_generated_artifacts import (
+    CloudGeneratedArtifactError,
+    install_bundle,
+    stage_bundle,
 )
 from scripts.update_compiler_corpus_coverage import (
     CompilerCorpusCoverageError,
@@ -49,6 +55,55 @@ from quorune.rules.capabilities import load_default_capability_registry
 
 
 class GeneratedArtifactFinalizationTests(unittest.TestCase):
+    def test_cloud_bundle_round_trip_is_hash_and_commit_bound(self):
+        local = ROOT / "local"
+        local.mkdir(exist_ok=True)
+        with TemporaryDirectory(dir=local) as raw:
+            stage = Path(raw) / "bundle"
+            receipt = stage_bundle(str(stage))
+            installed = install_bundle(
+                str(stage),
+                str(receipt["source_commit"]),
+                write_receipt=False,
+            )
+
+            self.assertEqual(len(all_outputs(load_manifest())), receipt["output_count"])
+            self.assertEqual([], installed["changed_outputs"])
+
+            receipt_path = ROOT / "local" / "imported-receipt.json"
+            with mock.patch(
+                "scripts.cloud_generated_artifacts.write_finalization_receipt",
+                return_value=(receipt_path, object()),
+            ) as writer:
+                imported = install_bundle(
+                    str(stage),
+                    str(receipt["source_commit"]),
+                )
+            writer.assert_called_once()
+            self.assertEqual(
+                str(receipt_path), imported["finalization_receipt"]
+            )
+
+            relative = sorted(receipt["outputs"])[0]
+            (stage / relative).write_bytes(b"corrupt")
+            with self.assertRaisesRegex(
+                CloudGeneratedArtifactError,
+                "missing or corrupt",
+            ):
+                install_bundle(
+                    str(stage),
+                    str(receipt["source_commit"]),
+                    write_receipt=False,
+                )
+
+    def test_cloud_bundle_staging_refuses_paths_outside_local(self):
+        with TemporaryDirectory() as outside:
+            with self.assertRaisesRegex(
+                CloudGeneratedArtifactError,
+                "below local",
+            ):
+                stage_bundle(str(Path(outside) / "bundle"))
+
     def test_compiler_corpus_reports_fail_closed_on_stale_source_or_counts(self):
         capabilities = load_default_capability_registry()
         snapshot = {"oracle_source_sha256": "a" * 64}

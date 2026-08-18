@@ -1,5 +1,5 @@
 {
-  "cached_filename": "MagicCompRules-2026-06-19-e99cd70eb64c.txt",
+  "cached_filename": "MagicCompRules-2026-08-07-68dab840bfb2.txt",
   "card_data_snapshot": {
     "available": true,
     "database_schema_version": "2",
@@ -19,23 +19,23 @@
     }
   },
   "derived_hashes": {
-    "conformance-cases.json": "e2a8652d7b24fb7caa12e8da86bfa3a8111ed7776cfe1a06277f9cb06419f1b6",
-    "dependency-graph.json": "0c2c5095e0875c278e26d58d601246bcc597183ab96be167dec64bc0fe0ae956",
-    "glossary-index.json": "576fad18aaf10a2f1c0f1f257837eae95057721b668fe38740d2182ce9aebb7d",
-    "mechanic-index.json": "72998332705128357f9adc1ba7f20b73a6f5b97ccdda9fc46a95edc5f5ff7fcb",
-    "mechanics/registry.json": "d7c7b94017eb85349aa8007bb476feb849aad2e9a5e24a805d26de3565f5ae36",
-    "rule-index.json": "ae20b6961f35621fe5f9cec5e784416ca14a7723a4f0ffb5d2326aa5555f4347"
+    "conformance-cases.json": "eeb759269b5908b790c60137dcf3b4beafdb88b2bf28eac1c2a2e1344b22e88f",
+    "dependency-graph.json": "08ea3e62913cc3bb3b360c105cb16fa1025f748af58fcf6aa82e1925204a9125",
+    "glossary-index.json": "b87b5c802a2dacbeb13905694a97b0a92510f85fdb31cd81dabb5c814adfded5",
+    "mechanic-index.json": "3b2cdabfdb3aa76e14bde9bd1702c8a661ca31b21f3e3fa61c00474154f9ee0f",
+    "mechanics/registry.json": "d8e53ed8e9f3f8e3131996aeefb3cccdb3d01a514df891a19760ac1644bd10db",
+    "rule-index.json": "18c23ca7dac0f600d75869cd2dee0e7bffa69dcc6c52bdb9344358f88210d8a7"
   },
-  "effective_date": "2026-06-19",
-  "generated_at": "2026-08-09T13:58:09.881587+00:00",
-  "glossary_count": 733,
-  "mechanic_count": 425,
-  "parser_version": "cr-index-v1",
-  "rule_count": 3300,
+  "effective_date": "2026-08-07",
+  "generated_at": "2026-08-18T04:45:47.797391+00:00",
+  "glossary_count": 737,
+  "mechanic_count": 427,
+  "parser_version": "cr-index-v2",
+  "rule_count": 3309,
   "schema_version": 1,
   "section_count": 156,
   "source_page_url": "https://magic.wizards.com/en/rules",
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
-  "source_size_bytes": 975632,
-  "source_url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.txt"
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
+  "source_size_bytes": 977819,
+  "source_url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260808.txt"
 }

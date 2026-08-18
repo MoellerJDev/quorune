@@ -1,5 +1,5 @@
 {
-  "effective_date": "2026-06-19",
+  "effective_date": "2026-08-07",
   "mechanics": [
     {
       "category": "additional_rules",
@@ -3053,6 +3053,23 @@
       ],
       "implementation_component": null,
       "kind": "keyword_ability",
+      "mechanic_id": "storied",
+      "official_name": "Storied",
+      "rule_references": [
+        "702.195"
+      ],
+      "test_ids": [],
+      "trust_level": "untrusted"
+    },
+    {
+      "category": "additional_rules",
+      "contract_path": null,
+      "coverage_status": "unclassified",
+      "dependencies": [
+        "702"
+      ],
+      "implementation_component": null,
+      "kind": "keyword_ability",
       "mechanic_id": "storm",
       "official_name": "Storm",
       "rule_references": [
@@ -4366,6 +4383,23 @@
       "official_name": "Proliferate",
       "rule_references": [
         "701.34"
+      ],
+      "test_ids": [],
+      "trust_level": "untrusted"
+    },
+    {
+      "category": "additional_rules",
+      "contract_path": null,
+      "coverage_status": "unclassified",
+      "dependencies": [
+        "701"
+      ],
+      "implementation_component": null,
+      "kind": "keyword_action",
+      "mechanic_id": "recruit",
+      "official_name": "Recruit",
+      "rule_references": [
+        "701.70"
       ],
       "test_ids": [],
       "trust_level": "untrusted"
@@ -6933,7 +6967,7 @@
       "trust_level": "untrusted"
     }
   ],
-  "parser_version": "cr-index-v1",
+  "parser_version": "cr-index-v2",
   "schema_version": 1,
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769"
 }

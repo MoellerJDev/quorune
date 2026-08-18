@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "bc96626825a48a7786cf4d2afea7bcd2c48cbbd6f6ebabeff0855309a69745d7",
+    "evaluated_input_fingerprint": "862e36a36c0228bc2286d7b0e6d371b5709a08eaff71f4d62f6539f08eec8c5d",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -624,6 +624,12 @@
       "id": "typed_fixed_mana_bestow",
       "name": "Typed fixed-mana Bestow",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree pins the official Comprehensive Rules effective 2026-08-07 and upgrades the derived parser to preserve multi-letter subrules such as CR 704.5aa. The governed delta indexes 18 added, nine removed, and 13 changed rule IDs, with 22 prior IDs invalidated and eight text-identical Battle subrules plus two other text-identical Battle rules retargeted to current numbering. Every added or changed ID is explicitly reviewed: new Hone, Recruit, Storied, non-Siege Battle, protector-change combat, Role, Speed, and Prepare behavior is definition-only, passing, or blocked rather than inheriting the June snapshot's trust. CR 605.1a remains broadly blocked, but the chosen-name nonmana activation capability advances to v2 with a conservative library-movement classifier, and closed fixed-output and intrinsic mana families remain trusted because their typed grammars exclude library-moving costs and effects. Existing Game Record v3 semantics retain their creation-time rules identity.",
+      "id": "rules_snapshot_2026_08_07",
+      "name": "Pinned August 2026 Comprehensive Rules snapshot",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -672,16 +678,16 @@
       "total": 31623
     },
     "current_snapshot_complete": false,
-    "effective_date": "2026-06-19",
+    "effective_date": "2026-08-07",
     "manifest_present": true,
     "mechanics": {
       "status_counts": {
         "partial": 66,
         "tested": 42,
         "trusted": 8,
-        "unclassified": 309
+        "unclassified": 311
       },
-      "total": 425,
+      "total": 427,
       "trusted": 8
     },
     "oracle": {
@@ -694,13 +700,13 @@
       "total": 38623
     },
     "rules": {
-      "blocked": 471,
-      "definition_only": 165,
-      "passing": 237,
-      "total": 3300,
-      "unreviewed": 2427
+      "blocked": 483,
+      "definition_only": 167,
+      "passing": 238,
+      "total": 3309,
+      "unreviewed": 2421
     },
-    "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
+    "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769"
   },
   "schema_version": 3,
   "snapshots": {

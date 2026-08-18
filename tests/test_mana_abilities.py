@@ -121,6 +121,21 @@ class ManaAbilityRuleTests(unittest.TestCase):
         self.assertFalse(loyalty.mana_ability)
         self.assertFalse(nonmana.mana_ability)
 
+    def test_library_moving_output_is_not_a_mana_ability(self):
+        for oracle_text in (
+            "Mill a card, {T}: Add {C}.",
+            "{T}: Add {C}, then draw a card.",
+            "{T}: Add {C}, then put a card from your graveyard on the "
+            "bottom of your library.",
+            "{T}: Add {C}, then explore.",
+        ):
+            with self.subTest(oracle_text=oracle_text):
+                ability = parse_activated_abilities(
+                    card_name="Library Mana Relic",
+                    oracle_text=oracle_text,
+                )[0]
+                self.assertFalse(ability.mana_ability)
+
     def test_mana_classification_survives_zero_output_or_unavailability(self):
         conditional = parse_activated_abilities(
             card_name="Conditional Mana Relic",
