@@ -221,6 +221,17 @@ format characteristic. Nonordinary wording, untyped granted Devoid,
 text-changing producers, and face-down producers remain residual or outside
 trust; the production performs no dynamic characteristic count.
 
+`compiler/changeling_characteristics.py` and the shared characteristic-
+definition node owner likewise lower one ordinary printed Changeling instance
+to `ability.static.all-creature-types-characteristic-definition.v1`. The
+copied fragment applies every subtype from the pinned CR 205.3m vocabulary as
+a layer-4 CDA in every zone. Copies retain the fragment, the CDA precedes later
+non-CDA type setting, and layer-6 ability removal cannot undo the earlier type
+result. Bare keyword text, nonordinary wording, untyped grants, text changes,
+and unrepresented face-down or copy values remain outside trust. The source-
+local definition performs no state-dependent count; subtype consumers read the
+ordinary effective type line instead of a Changeling-specific branch.
+
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,
 then requires the source grammar, emitted effects, target relation, closed

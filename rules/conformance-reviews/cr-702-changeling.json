@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-06-19",
+  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "family": "CR 702.73 — Changeling",
+  "cases": [
+    {
+      "rule_id": "702.73",
+      "rule_text_sha256": "b27c131dd047b512f41dac8f7dbde3d97ea471f70cd5bf20dfc8aa86bda68a2b",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/changeling.json"],
+      "executable_test_ids": ["tests.test_changeling_characteristics.ChangelingCompilerTests.test_ordinary_changeling_compiles_to_all_zone_characteristic_definition"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded ordinary printed family is owned by continuous.characteristics.changeling while nonkeyword and untyped granted forms remain outside trust."]
+    },
+    {
+      "rule_id": "702.73a",
+      "rule_text_sha256": "0ed28f2c420fbe6244429d9e09a95f1f24f6ec3b90c81755cf340a42184399fa",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.characteristic_definition_nodes.characteristic_definition_keyword_node", "quorune.semantic_runtime.ability_fragments.AllCreatureTypesCharacteristicDefinitionAbilityFragmentHandler", "quorune.characteristic_evaluation.evaluate_card_characteristics", "quorune.continuous_effects.evaluate_continuous_effects"],
+      "executable_test_ids": ["tests.test_changeling_characteristics.ChangelingCompilerTests.test_ordinary_changeling_compiles_to_all_zone_characteristic_definition", "tests.test_changeling_characteristics.ChangelingCompilerTests.test_nonordinary_changeling_and_malformed_descriptors_fail_closed", "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_is_every_creature_type_in_all_zones", "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_cda_orders_before_non_cda_type_setting_and_after_copy", "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_shared_subtype_counts_and_queries_use_effective_types", "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_face_down_and_untyped_prose_are_inert", "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_executes_while_replacement_siblings_fail_closed", "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_projection_and_replay_are_identity_safe", "tests.test_combat_declaration_restrictions.CombatDeclarationRestrictionTests.test_shared_creature_subtype_condition_includes_changeling"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["Oracle-equivalent nonkeyword and untyped granted Changeling are not compiled", "text-changing and unrepresented face-down or copy producers remain outside trust", "dynamic characteristic definitions that depend on the affected subtype result remain outside trust"],
+      "notes": ["The ordinary printed keyword emits one copied typed fragment. Characteristic evaluation applies its all-creature-types CDA in every zone after layer-1 copy values and before later non-CDA layer-4 type effects; layer-6 ability removal does not undo the earlier type result."]
+    }
+  ]
+}

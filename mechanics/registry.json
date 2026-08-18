@@ -1,5 +1,5 @@
 {
-  "contract_count": 114,
+  "contract_count": 115,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -90,6 +90,12 @@
       "path": "mechanics/contracts/casting-spells.json",
       "sha256": "e0dd4e990cbbd0295a3ea5b3246e416dac115cead4004c4d45709f8fdc33e58f",
       "version": 2
+    },
+    {
+      "mechanic_id": "changeling",
+      "path": "mechanics/contracts/changeling.json",
+      "sha256": "8f188f233892be30cb6215903c8d8cb82ea6a28230db9d35c01c87501c4c9eb9",
+      "version": 1
     },
     {
       "mechanic_id": "cr-514-cleanup-step",
@@ -1203,19 +1209,40 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/changeling.json",
+      "contract_sha256": "8f188f233892be30cb6215903c8d8cb82ea6a28230db9d35c01c87501c4c9eb9",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.compiler.characteristic_definition_nodes, quorune.semantic_runtime.ability_fragments, quorune.characteristic_evaluation, and quorune.continuous_effects",
+      "implementation_version": "typed-changeling-characteristics-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Oracle-equivalent nonkeyword wording",
+        "untyped granted Changeling",
+        "text-changing interactions",
+        "unrepresented face-down or copy values",
+        "dynamic characteristic definitions that depend on the affected subtype result"
+      ],
       "mechanic_id": "changeling",
       "official_name": "Changeling",
       "rule_references": [
         "702.73"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_ordinary_changeling_compiles_to_all_zone_characteristic_definition",
+        "test_nonordinary_changeling_and_malformed_descriptors_fail_closed",
+        "test_changeling_is_every_creature_type_in_all_zones",
+        "test_changeling_cda_orders_before_non_cda_type_setting_and_after_copy",
+        "test_changeling_shared_subtype_counts_and_queries_use_effective_types",
+        "test_changeling_face_down_and_untyped_prose_are_inert",
+        "test_changeling_executes_while_replacement_siblings_fail_closed",
+        "test_changeling_compiler_and_runtime_mutations_are_killed",
+        "test_changeling_projection_and_replay_are_identity_safe",
+        "test_shared_creature_subtype_condition_includes_changeling"
+      ],
       "trust_level": "untrusted"
     },
     {

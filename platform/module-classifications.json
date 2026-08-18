@@ -1264,6 +1264,36 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/changeling_characteristics.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/compiler/characteristic_definition_nodes.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/closed_static_nodes.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -7208,5 +7238,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "6648931451c3543168338267482b32f0608684413936b64d65964b3bdca23a99"
+  "fingerprint": "1cf6241c96bcc3bb8d0c7deebcbc3a4647b5a7983dd9fb85e989b9bb2689f1b6"
 }

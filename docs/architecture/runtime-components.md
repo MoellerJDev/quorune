@@ -109,6 +109,14 @@ text changes, face-down producers, and dynamic characteristic counts remain
 outside trust rather than introducing a family-specific layer-6 applicability
 path.
 
+`ability.static.all-creature-types-characteristic-definition.v1` is the
+parallel all-zone Changeling boundary. It adds the pinned CR 205.3m creature
+subtype vocabulary in layer 4 as a CDA after copy values and before later
+non-CDA type setting. Existing target, combat, trigger, and count consumers use
+the rendered effective type line; the former combat-only Changeling shortcut is
+not an authority. Face-down objects and untyped or text-changed producers remain
+outside trust, and the definition performs no dynamic characteristic read.
+
 `casting.morph.fixed-mana.v1` owns the bounded ordinary fixed-mana Morph
 descriptor. One trusted source-pinned complete-card certificate exposes a distinct private
 face-down cast offer and an identity-pinned `turn_face_up` priority action.

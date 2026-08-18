@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 115,
+  "registry_version": 116,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -2379,6 +2379,33 @@
       "dependency_fail_closed_rationale": "The bounded definition uses the shared all-zone characteristic and continuous-layer substrates directly and has no capability dependency.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "Focused compiler and layer-5 mutations remove the typed fragment or color removal, and exact CardProgram plus current color assertions reject both survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "continuous.characteristics.changeling",
+      "version": 1,
+      "official_rules": ["205.3m", "604.3", "613.1d", "702.73", "702.73a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile one ordinary printed Changeling instance into a copied typed characteristic-definition fragment that grants every pinned creature subtype in layer 4 in every zone.",
+        "inputs": ["one source-spanned ordinary printed Changeling keyword", "current copied keyword and typed ability-fragment characteristics", "the pinned CR 205.3m creature subtype vocabulary", "current all-zone object characteristics"],
+        "outputs": ["one all-zone all-creature-types characteristic definition", "CDA-first layer-4 ordering", "current subtype predicates and counts through the shared effective type line"],
+        "exclusions": ["Oracle-equivalent nonkeyword wording", "untyped granted Changeling", "text-changing interactions", "face-down objects", "unrepresented copy values", "dynamic characteristic definitions that depend on the affected subtype result"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.characteristic_definition_nodes.characteristic_definition_keyword_node", "quorune.semantic_runtime.ability_fragments.AllCreatureTypesCharacteristicDefinitionAbilityFragmentHandler", "quorune.characteristic_evaluation.evaluate_card_characteristics", "quorune.continuous_effects.evaluate_continuous_effects"],
+      "positive_tests": ["test_ordinary_changeling_compiles_to_all_zone_characteristic_definition", "test_changeling_is_every_creature_type_in_all_zones"],
+      "negative_tests": ["test_nonordinary_changeling_and_malformed_descriptors_fail_closed", "test_changeling_face_down_and_untyped_prose_are_inert"],
+      "interaction_tests": ["test_changeling_cda_orders_before_non_cda_type_setting_and_after_copy", "test_changeling_shared_subtype_counts_and_queries_use_effective_types"],
+      "multiplayer_tests": ["test_changeling_shared_subtype_counts_and_queries_use_effective_types"],
+      "privacy_tests": ["test_changeling_projection_and_replay_are_identity_safe"],
+      "replay_tests": ["test_changeling_projection_and_replay_are_identity_safe"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The bounded definition consumes one copied source-local fragment and the pinned subtype vocabulary through the shared all-zone characteristic evaluator; it performs no state-dependent characteristic count.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and layer-4 mutations remove the typed fragment or all-subtype operation, and exact CardProgram plus current subtype assertions reject both survivors.",
       "blockers": [],
       "status": "trusted"
     },

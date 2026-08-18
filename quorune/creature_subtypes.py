@@ -41,7 +41,7 @@ zombie|zubera
 """
 
 CREATURE_SUBTYPES = frozenset(
-    value.strip()
+    value.strip().replace("’", "'").replace("\ufffd", "'")
     for value in _PINNED_CREATURE_SUBTYPES.replace("\n", "").split("|")
     if value.strip()
 )
@@ -54,7 +54,9 @@ def canonical_creature_subtype(value: str) -> str | None:
 
     if type(value) is not str:
         return None
-    normalized = " ".join(value.casefold().split())
+    normalized = " ".join(
+        value.casefold().replace("’", "'").replace("\ufffd", "'").split()
+    )
     return normalized if normalized in CREATURE_SUBTYPES else None
 
 

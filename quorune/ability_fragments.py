@@ -17,6 +17,7 @@ from .counter_maximums import (
     effective_counter_maximums,
 )
 from .characteristic_fragments import (
+    AllCreatureTypesCharacteristicDefinitionSpec,
     CharacteristicFragmentError,
     ColorlessCharacteristicDefinitionSpec,
     ConditionalKeywordSpec,
@@ -610,6 +611,7 @@ StaticAbilityFragment: TypeAlias = (
     | CounterMaximumSpec
     | TriggerMultiplierSpec
     | WardSpec
+    | AllCreatureTypesCharacteristicDefinitionSpec
     | ColorlessCharacteristicDefinitionSpec
     | ConditionalKeywordSpec
     | DynamicPowerToughnessSpec
@@ -646,6 +648,8 @@ def ability_fragment_to_dict(
         kind = "trigger_multiplier"
     elif isinstance(fragment, WardSpec):
         kind = "ward"
+    elif isinstance(fragment, AllCreatureTypesCharacteristicDefinitionSpec):
+        kind = "all_creature_types_characteristic_definition"
     elif isinstance(fragment, ColorlessCharacteristicDefinitionSpec):
         kind = "colorless_characteristic_definition"
     elif isinstance(fragment, ConditionalKeywordSpec):
@@ -706,6 +710,13 @@ def ability_fragment_from_dict(
         return TriggerMultiplierSpec.from_dict(value["value"])
     if value["kind"] == "ward":
         return WardSpec.from_dict(value["value"])
+    if value["kind"] == "all_creature_types_characteristic_definition":
+        try:
+            return AllCreatureTypesCharacteristicDefinitionSpec.from_dict(
+                value["value"]
+            )
+        except CharacteristicFragmentError as exc:
+            raise AbilityFragmentError(str(exc)) from exc
     if value["kind"] == "colorless_characteristic_definition":
         try:
             return ColorlessCharacteristicDefinitionSpec.from_dict(
@@ -763,6 +774,7 @@ def canonical_ability_fragments(
                 CounterMaximumSpec,
                 TriggerMultiplierSpec,
                 WardSpec,
+                AllCreatureTypesCharacteristicDefinitionSpec,
                 ColorlessCharacteristicDefinitionSpec,
                 ConditionalKeywordSpec,
                 DynamicPowerToughnessSpec,
@@ -963,6 +975,7 @@ def counter_maximum_values(
 
 
 __all__ = [
+    "AllCreatureTypesCharacteristicDefinitionSpec",
     "AbilityFragmentError",
     "CombatKeywordTriggerKind",
     "CombatKeywordTriggerSpec",

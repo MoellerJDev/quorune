@@ -74,6 +74,7 @@
       "test_attached_counter_placement",
       "test_attached_static_characteristics",
       "test_bolster_rules",
+      "test_changeling_characteristics",
       "test_continuous_effect_components",
       "test_continuous_effect_duration",
       "test_counter_placement_replacements",

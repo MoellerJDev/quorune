@@ -5059,7 +5059,6 @@ class CommanderEngine(
             if player is None:
                 return False
             subtype_counts: dict[str, int] = {}
-            changelings = 0
             for card in self.state.cards.values():
                 if (
                     card.zone != "battlefield"
@@ -5073,18 +5072,12 @@ class CommanderEngine(
                 )
                 if "creature" not in card_types:
                     continue
-                has_changeling = "changeling" in normalized_keywords(
-                    data.get("keywords", [])
-                )
-                if has_changeling:
-                    changelings += 1
-                else:
-                    for subtype in subtypes:
-                        subtype_counts[subtype] = (
-                            subtype_counts.get(subtype, 0) + 1
-                        )
-            return changelings >= condition.minimum or any(
-                count + changelings >= condition.minimum
+                for subtype in subtypes:
+                    subtype_counts[subtype] = (
+                        subtype_counts.get(subtype, 0) + 1
+                    )
+            return any(
+                count >= condition.minimum
                 for count in subtype_counts.values()
             )
         player = self._declaration_condition_player(

@@ -5,6 +5,7 @@ from functools import lru_cache
 from typing import Any, Mapping
 
 from ..ability_fragments import (
+    AllCreatureTypesCharacteristicDefinitionSpec,
     AbilityFragmentError,
     CombatKeywordTriggerKind,
     CombatKeywordTriggerSpec,
@@ -63,6 +64,9 @@ DYNAMIC_POWER_TOUGHNESS_FRAGMENT_HANDLER_ID = (
 )
 COLORLESS_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID = (
     "ability.static.colorless-characteristic-definition.v1"
+)
+ALL_CREATURE_TYPES_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID = (
+    "ability.static.all-creature-types-characteristic-definition.v1"
 )
 DECLARATION_COST_FRAGMENT_HANDLER_ID = (
     "ability.static.declaration-cost.v1"
@@ -869,6 +873,45 @@ class DynamicPowerToughnessAbilityFragmentHandler:
 
 
 @dataclass(frozen=True, slots=True)
+class AllCreatureTypesCharacteristicDefinitionAbilityFragmentHandler:
+    handler_id: str = (
+        ALL_CREATURE_TYPES_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID
+    )
+    schema_version: int = 1
+    family: str = "ability.static.all_creature_types_characteristic_definition"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = (
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a",
+    )
+    capability_dependencies: tuple[str, ...] = (
+        "continuous.characteristics.changeling",
+    )
+
+    def validate(
+        self,
+        descriptor: Mapping[str, Any],
+    ) -> AllCreatureTypesCharacteristicDefinitionSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=AllCreatureTypesCharacteristicDefinitionSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
 class ColorlessCharacteristicDefinitionAbilityFragmentHandler:
     handler_id: str = (
         COLORLESS_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID
@@ -915,6 +958,7 @@ class AbilityFragmentRegistry(
 def default_ability_fragment_registry() -> AbilityFragmentRegistry:
     registry = AbilityFragmentRegistry(
         (
+            AllCreatureTypesCharacteristicDefinitionAbilityFragmentHandler(),
             BattleCryAbilityFragmentHandler(),
             BushidoAbilityFragmentHandler(),
             CascadeAbilityFragmentHandler(),
@@ -960,6 +1004,7 @@ def fragments_from_descriptors(
 
 
 __all__ = [
+    "ALL_CREATURE_TYPES_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID",
     "ENCHANT_FRAGMENT_HANDLER_ID",
     "BUSHIDO_FRAGMENT_HANDLER_ID",
     "BATTLE_CRY_FRAGMENT_HANDLER_ID",
@@ -993,6 +1038,7 @@ __all__ = [
     "DeclarationRequirementAbilityFragmentHandler",
     "DeclarationRestrictionAbilityFragmentHandler",
     "ConditionalKeywordAbilityFragmentHandler",
+    "AllCreatureTypesCharacteristicDefinitionAbilityFragmentHandler",
     "ColorlessCharacteristicDefinitionAbilityFragmentHandler",
     "ExaltedAbilityFragmentHandler",
     "FlankingAbilityFragmentHandler",

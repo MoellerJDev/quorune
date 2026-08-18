@@ -49,6 +49,33 @@ class ColorlessCharacteristicDefinitionSpec:
 
 
 @dataclass(frozen=True, slots=True)
+class AllCreatureTypesCharacteristicDefinitionSpec:
+    """One closed all-zone layer-4 all-creature-types definition."""
+
+    schema_version: int = 1
+
+    def __post_init__(self) -> None:
+        if type(self.schema_version) is not int or self.schema_version != 1:
+            raise CharacteristicFragmentError(
+                "Unsupported all-creature-types definition schema version"
+            )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"schema_version": self.schema_version}
+
+    @classmethod
+    def from_dict(
+        cls,
+        value: Mapping[str, Any],
+    ) -> "AllCreatureTypesCharacteristicDefinitionSpec":
+        if not isinstance(value, Mapping) or set(value) != {"schema_version"}:
+            raise CharacteristicFragmentError(
+                "All-creature-types definitions have a closed schema"
+            )
+        return cls(schema_version=value["schema_version"])
+
+
+@dataclass(frozen=True, slots=True)
 class ConditionalKeywordSpec:
     """One closed keyword condition evaluated from public match state."""
 
@@ -189,6 +216,7 @@ class DynamicPowerToughnessSpec:
 
 
 __all__ = [
+    "AllCreatureTypesCharacteristicDefinitionSpec",
     "CharacteristicCountKind",
     "CharacteristicFragmentError",
     "ColorlessCharacteristicDefinitionSpec",
