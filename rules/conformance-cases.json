@@ -72226,23 +72226,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.103",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_bestow_rules.FixedManaBestowCompilerTests.test_fixed_mana_bestow_compiles_capability_closed"
+      ],
+      "implementation_components": [
+        "mechanics/contracts/bestow.json"
+      ],
+      "notes": [
+        "Keyword heading; the bounded fixed ordinary-mana family is owned by casting.bestow.fixed_mana."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.103",
       "rule_text_sha256": "8aca5e018a3525f79c1b083c2adaa9860de53946c3b01f4341295ac7ae909adc",
       "schema_version": 1,
@@ -72251,26 +72255,41 @@
         "end_line": 4749,
         "start_line": 4748
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Variable and nonordinary Bestow costs remain unsupported"
       ],
       "case_id": "cr-702.103a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.103"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_bestow_rules.FixedManaBestowCompilerTests.test_fixed_mana_bestow_compiles_capability_closed",
+        "tests.test_bestow_rules.FixedManaBestowCompilerTests.test_variable_bestow_remains_source_spanned_residual"
+      ],
+      "implementation_components": [
+        "quorune.bestow.FixedManaBestowSpec",
+        "quorune.compiler.bestow_nodes.fixed_mana_bestow_keyword_node",
+        "quorune.rules.casting.costs.build_cast_cost_options"
+      ],
+      "notes": [
+        "The complete-card-admitted descriptor supplies one server-authored alternate cost and Aura target schema."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "702.103a",
       "rule_text_sha256": "2acddd15013569f1897e956a6cc16e0e2aba7ade8642430be8180b46fc92dbbe",
       "schema_version": 1,
@@ -72279,26 +72298,37 @@
         "end_line": 4751,
         "start_line": 4750
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.103b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "multiplayer"
+      ],
       "dependency_rule_ids": [
         "702.103"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_cast_attaches_and_applies_static_modifier"
+      ],
+      "implementation_components": [
+        "quorune.rules.casting.commit.commit_cast",
+        "quorune.effect_runtime.zones_and_attachments._apply_bestow_prepare"
+      ],
+      "notes": [
+        "The selected alternate cost makes the spell an Aura with Enchant creature and preserves ordinary payment and targeting authority."
+      ],
+      "required_scenarios": [
+        "positive",
+        "multiplayer"
+      ],
+      "reviewed": true,
       "rule_id": "702.103b",
       "rule_text_sha256": "63406ab38de0e7c46595526fffaab207279ced8b9200ceb76e1e9ae1d6bca1be",
       "schema_version": 1,
@@ -72307,26 +72337,30 @@
         "end_line": 4753,
         "start_line": 4752
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Bestowed Aura spell copies are outside the trusted fixed-mana capability"
       ],
       "case_id": "cr-702.103c",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "behavioral",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702.103"
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "implementation_components": [
+        "mechanics/contracts/bestow.json"
+      ],
+      "notes": [
+        "The bounded complete-card admission excludes spell-copy certification rather than inferring copied Bestow state."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.103c",
       "rule_text_sha256": "df3e29596781e512b35dfdb049ab38df788c1ff069b55170952b4bbb95ee2936",
       "schema_version": 1,
@@ -72335,26 +72369,37 @@
         "end_line": 4755,
         "start_line": 4754
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Universal cast permissions and prohibitions do not yet evaluate every Bestow-modified characteristic interaction"
       ],
       "case_id": "cr-702.103d",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "interaction"
+      ],
       "dependency_rule_ids": [
         "702.103"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_cost_modifiers_use_aura_spell_characteristics"
+      ],
+      "implementation_components": [
+        "quorune.rules.casting.costs.build_cast_cost_options",
+        "quorune.rules.casting.proposal.build_cast_proposal"
+      ],
+      "notes": [
+        "Option-scoped cost calculation uses the Aura spell type, but wider permission and prohibition grammar remains outside trust."
+      ],
+      "required_scenarios": [
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.103d",
       "rule_text_sha256": "1493ad6876b22815c15f92e34a96ee5e3af15b98883b3ec18a044f3ade6404d8",
       "schema_version": 1,
@@ -72363,26 +72408,35 @@
         "end_line": 4759,
         "start_line": 4756
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.103e",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "interaction"
+      ],
       "dependency_rule_ids": [
         "702.103"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_target_loss_resolves_as_creature"
+      ],
+      "implementation_components": [
+        "quorune.selection.targeting",
+        "CommanderEngine._prepare_stack_resolution"
+      ],
+      "notes": [
+        "An all-illegal Bestow target does not counter the spell; it resolves using the card's ordinary permanent characteristics."
+      ],
+      "required_scenarios": [
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.103e",
       "rule_text_sha256": "3c4dc3d64fff0a08a59797d7bf89b7bd77837aaa540c95922c5a8b4b98a4b569",
       "schema_version": 1,
@@ -72391,26 +72445,35 @@
         "end_line": 4761,
         "start_line": 4760
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.103f",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "interaction"
+      ],
       "dependency_rule_ids": [
         "702.103"
       ],
       "effective_date": "2026-06-19",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_unattached_bestowed_aura_reverts_to_creature"
+      ],
+      "implementation_components": [
+        "quorune.attachments",
+        "quorune.characteristic_evaluation.evaluate_card_characteristics"
+      ],
+      "notes": [
+        "Losing the attachment restores ordinary enchantment-creature characteristics without changing zones."
+      ],
+      "required_scenarios": [
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.103f",
       "rule_text_sha256": "dfc42a487f766b69805a97dbd286f16b28264594052251897491068852c7265a",
       "schema_version": 1,
@@ -72419,26 +72482,30 @@
         "end_line": 4763,
         "start_line": 4762
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Complete phase-out and phase-in attachment restoration is not represented"
       ],
       "case_id": "cr-702.103g",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "behavioral",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702.103"
       ],
       "effective_date": "2026-06-19",
       "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "implementation_components": [
+        "mechanics/contracts/bestow.json"
+      ],
+      "notes": [
+        "Phasing-in unattached remains outside the trusted fixed-mana Bestow capability."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.103g",
       "rule_text_sha256": "6b8821a66244f8bc5f4f85ce4d939aab92d86c17337eef8c7778e3f8da526754",
       "schema_version": 1,
@@ -72447,7 +72514,7 @@
         "end_line": 4765,
         "start_line": 4764
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

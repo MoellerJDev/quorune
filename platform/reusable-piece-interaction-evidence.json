@@ -3652,6 +3652,38 @@
       "capability_ids": ["continuous.characteristics.changeling"],
       "interaction_order": 2,
       "assertion": "The trusted Changeling fragment can be promoted independently, but no sibling replacement program is admitted before its applicability and CR 616 ordering are typed."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "pair_derived",
+      "test_id": "test_bestow_cast_attaches_and_applies_static_modifier",
+      "piece_ids": [
+        "capability.attachment.aura.simple_object",
+        "capability.casting.bestow.fixed_mana",
+        "capability.continuous.attached.fixed_characteristics"
+      ],
+      "capability_ids": [
+        "attachment.aura.simple_object",
+        "casting.bestow.fixed_mana",
+        "continuous.attached.fixed_characteristics"
+      ],
+      "interaction_order": 3,
+      "assertion": "The server-authored fixed Bestow option resolves through the canonical Aura attachment owner, then the independently compiled attached modifier supplies the exact +2/+2 and Reach result."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_bestow_target_loss_resolves_as_creature",
+      "piece_ids": [
+        "capability.casting.bestow.fixed_mana",
+        "capability.target.revalidate_resolution"
+      ],
+      "capability_ids": [
+        "casting.bestow.fixed_mana",
+        "target.revalidate_resolution"
+      ],
+      "interaction_order": 2,
+      "assertion": "Resolution-time target revalidation recognizes an all-illegal Bestow target without countering the spell, allowing the physical card to resolve with its ordinary creature characteristics."
     }
   ]
 }

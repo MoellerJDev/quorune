@@ -449,6 +449,11 @@
         "candidate_id": "compiler:ordinary-changeling",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "After fixed entry conditions, the generated continuous-layer and unparsed-clause leaders remained heterogeneous aggregates. A bounded probe of the 322-card activated token candidate found unsupported token text on every card and only nine already-typed token effects, spanning dynamic copies, loyalty and sacrifice costs, linked results, delayed effects, and conditional activations. Ordinary Changeling instead forms one closed all-zone layer-4 characteristic family; the landed census promotes 17 complete Commander cards and 62 exact abilities while replacing the combat-only shortcut with the shared effective type line and excluding untyped, text-changed, face-down, and state-dependent characteristic definitions."
+      },
+      {
+        "candidate_id": "compiler:ordinary-fixed-mana-bestow",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "After Changeling, the generated continuous-layer and unparsed-clause leaders remained heterogeneous, while the 322-card activated token candidate still mixed dynamic copies, loyalty and sacrifice costs, linked results, delayed effects, and conditional activations. Bestow is one closed 42-card grammar with 41 fixed ordinary-mana forms and 17 sole-blocker Commander cards. It reuses the existing reviewed casting, Aura attachment, target-loss, and characteristic-transition owners and is the measured prerequisite for the broader 139-card Enchant frontier. The landed census gains 17 exact, trusted, capability-closed Commander cards and 41 ability programs, removes 41 material residuals, and keeps uncovered high-risk interaction debt at zero; variable Bestow, unsupported attached results, spell copies, phasing, and wider characteristic-sensitive cast restrictions remain residual or explicit trust exclusions."
       }
     ]
   },

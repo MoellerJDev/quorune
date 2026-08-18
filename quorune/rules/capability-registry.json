@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 116,
+  "registry_version": 117,
   "effective_date": "2026-06-19",
   "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
   "profiles": [
@@ -5241,6 +5241,33 @@
       "dependency_fail_closed_rationale": "The capability has no child capability dependencies; its runtime handler, compiler-pinned complete-card admission certificate, exact state marker, current effective keyword query, and closed cost shape all fail closed independently.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_morph_compiler_mutation_is_killed removes the Morph node production and proves the real card returns to a material dependency residual.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "casting.bestow.fixed_mana",
+      "version": 1,
+      "official_rules": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile one ordinary fixed-mana Bestow ability into a creature-targeted Aura spell alternative that resolves as a creature if its target becomes illegal.",
+        "inputs": ["one physical normal-layout creature card", "one source-spanned ordinary fixed-mana Bestow line", "complete current CardProgram admission", "one selected server-authored Bestow cost option", "one current public creature target", "ordinary casting and mana payment"],
+        "outputs": ["one typed alternate casting-cost option", "Aura spell characteristics and Enchant creature target", "identity-pinned bestow preparation", "attached Aura entry or ordinary creature resolution after target loss", "unattached reversion to creature characteristics", "exact replay"],
+        "exclusions": ["variable, hybrid, Phyrexian, snow, and nonmana Bestow costs", "copied, granted, modified, or multiple Bestow instances", "multiface cards, spell copies, and tokens", "cards whose attached static result remains material", "phasing-in unattached under CR 702.103g", "unrepresented cast permissions or prohibitions that distinguish creature from Aura spells", "unrepresented text-changing, copy, and ability-changing interactions"]
+      },
+      "dependencies": ["attachment.aura.simple_object"],
+      "implementation_components": ["quorune.compiler.bestow_nodes.fixed_mana_bestow_keyword_node", "quorune.semantic_runtime.bestow.FixedManaBestowHandler", "quorune.compiled_bestow.compiled_fixed_mana_bestow_spec", "quorune.rules.casting.costs.build_cast_cost_options", "quorune.rules.casting.commit.commit_cast", "quorune.selection.targeting", "quorune.effect_runtime.zones_and_attachments._apply_bestow_prepare", "quorune.characteristic_evaluation.evaluate_card_characteristics", "quorune.zone_object_state.reset_card_after_zone_change"],
+      "positive_tests": ["test_fixed_mana_bestow_compiles_capability_closed", "test_bestow_cast_attaches_and_applies_static_modifier"],
+      "negative_tests": ["test_bestow_descriptor_rejects_unbound_or_malformed_source_data", "test_variable_bestow_remains_source_spanned_residual", "test_partial_bestow_card_withholds_alternate_cost"],
+      "interaction_tests": ["test_bestow_cost_modifiers_use_aura_spell_characteristics", "test_bestow_target_loss_resolves_as_creature", "test_unattached_bestowed_aura_reverts_to_creature"],
+      "multiplayer_tests": ["test_bestow_cast_attaches_and_applies_static_modifier"],
+      "privacy_tests": ["test_bestow_replay_and_projection_are_identity_safe"],
+      "replay_tests": ["test_bestow_replay_and_projection_are_identity_safe"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking the generic Aura attachment capability prevents the Bestow node from receiving trusted closure; partial cards and stale cost/target identities never receive or commit the alternate cost.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler mutation removes Bestow production and proves the real fixed-mana cards return to material residuals rather than retaining an alternate-cost fallback.",
       "blockers": [],
       "status": "trusted"
     },

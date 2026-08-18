@@ -1,5 +1,5 @@
 {
-  "contract_count": 115,
+  "contract_count": 116,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -71,6 +71,12 @@
       "mechanic_id": "cr-501-beginning-phase",
       "path": "mechanics/contracts/beginning-phase.json",
       "sha256": "9b5763c947e84b4106ef49c8f16b4a283a78c48f7fb6499f6eff12b03095bd75",
+      "version": 1
+    },
+    {
+      "mechanic_id": "bestow",
+      "path": "mechanics/contracts/bestow.json",
+      "sha256": "bcbcb2428835404b96d101d598b7e1b9a976bf3f11212cc6005e908314021d2d",
       "version": 1
     },
     {
@@ -1016,19 +1022,43 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/bestow.json",
+      "contract_sha256": "bcbcb2428835404b96d101d598b7e1b9a976bf3f11212cc6005e908314021d2d",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.bestow, quorune.compiler.bestow_nodes, quorune.semantic_runtime.bestow, quorune.compiled_bestow, quorune.rules.casting, quorune.selection.targeting, quorune.effect_runtime.zones_and_attachments, and quorune.characteristic_evaluation",
+      "implementation_version": "typed-fixed-mana-bestow-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "variable, hybrid, Phyrexian, snow, and nonmana Bestow costs",
+        "partial cards whose attached result remains material",
+        "copied, granted, text-changed, or multiple Bestow instances",
+        "cast permissions and prohibitions that distinguish creature from Aura spells",
+        "phasing in unattached under CR 702.103g",
+        "multiface cards, spell copies, and tokens"
+      ],
       "mechanic_id": "bestow",
       "official_name": "Bestow",
       "rule_references": [
         "702.103"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_fixed_mana_bestow_lowers_complete_alternate_cast_shape",
+        "test_variable_bestow_remains_source_spanned_residual",
+        "test_bestow_descriptor_rejects_unbound_or_malformed_source_data",
+        "test_fixed_mana_bestow_compiles_capability_closed",
+        "test_bestow_compiler_mutation_is_killed",
+        "test_bestow_cast_attaches_and_applies_static_modifier",
+        "test_bestow_cost_modifiers_use_aura_spell_characteristics",
+        "test_bestow_target_loss_resolves_as_creature",
+        "test_unattached_bestowed_aura_reverts_to_creature",
+        "test_partial_bestow_card_withholds_alternate_cost",
+        "test_bestow_replay_and_projection_are_identity_safe",
+        "test_springheart_bestow_landfall_copy_and_unattached_creature_state"
+      ],
       "trust_level": "untrusted"
     },
     {

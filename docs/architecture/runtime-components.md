@@ -117,6 +117,15 @@ the rendered effective type line; the former combat-only Changeling shortcut is
 not an authority. Face-down objects and untyped or text-changed producers remain
 outside trust, and the definition performs no dynamic characteristic read.
 
+`casting.bestow.fixed-mana.v1` validates one complete-card-bound fixed Bestow
+descriptor. The casting owner alone turns it into an alternate cost, Aura type,
+target schema, and identity-pinned preparation effect. Cost-option effects use
+the same trusted stack continuation whether or not the permanent has a separate
+spell-effect program, and cost calculation evaluates each option using its
+server-authored spell type. Target revalidation, attachment, and
+bestowed/unattached characteristics remain in their existing generic owners;
+clients never infer Bestow from Oracle or reminder text.
+
 `casting.morph.fixed-mana.v1` owns the bounded ordinary fixed-mana Morph
 descriptor. One trusted source-pinned complete-card certificate exposes a distinct private
 face-down cast offer and an identity-pinned `turn_face_up` priority action.

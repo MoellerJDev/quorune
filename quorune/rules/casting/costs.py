@@ -8,6 +8,7 @@ from typing import Any, Protocol
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
 from ...compiled_cast_costs import compiled_affinity_specs, compiled_convoke_specs
 from ...compiled_kicker import compiled_fixed_mana_kicker_spec
+from ...compiled_bestow import compiled_fixed_mana_bestow_spec
 from ...convoke import (
     CONVOKE_PAYMENT_SYMBOLS,
     ConvokeCandidate,
@@ -214,6 +215,56 @@ def _compiled_payment_mechanics(
     return mechanics
 
 
+def _with_kicker_cost(
+    host: CastCostHost,
+    card: Any,
+    schema: Mapping[str, Any],
+    *,
+    suppress_source_costs: bool,
+) -> dict[str, Any] | None:
+    result = copy.deepcopy(dict(schema))
+    kicker = (
+        compiled_fixed_mana_kicker_spec(host, card)
+        if not suppress_source_costs
+        else None
+    )
+    if kicker is None:
+        return result
+    optional_costs = list(result.get("optional_costs", ()))
+    if any(
+        str(value.get("id") or "") == "kicked"
+        or str(value.get("kind") or "").casefold() == "kicker"
+        for value in optional_costs
+    ):
+        return None
+    optional_costs.append(kicker.cast_cost_option())
+    result["optional_costs"] = optional_costs
+    return result
+
+
+def _with_bestow_cost(
+    host: CastCostHost,
+    card: Any,
+    schema: Mapping[str, Any],
+    *,
+    suppress_source_costs: bool,
+) -> dict[str, Any] | None:
+    result = copy.deepcopy(dict(schema))
+    bestow = (
+        compiled_fixed_mana_bestow_spec(host, card)
+        if not suppress_source_costs
+        else None
+    )
+    if bestow is None:
+        return result
+    alternate_costs = list(result.get("alternate_costs", ()))
+    if any(str(value.get("id") or "") == "bestow" for value in alternate_costs):
+        return None
+    alternate_costs.append(bestow.cast_cost_option())
+    result["alternate_costs"] = alternate_costs
+    return result
+
+
 def _initial_options(
     host: CastCostHost,
     seat: str,
@@ -224,13 +275,11 @@ def _initial_options(
     hint: bool,
     force_without_mana_cost: bool,
     alternative_base: Mapping[str, Any] | None,
-    cast_type_line: str | None,
     suppress_source_costs: bool,
 ) -> tuple[
     list[dict[str, Any]],
     list[dict[str, Any]],
     list[dict[str, Any]],
-    Any,
     bool,
 ] | None:
     x_value = response.get("x")
@@ -267,32 +316,25 @@ def _initial_options(
         if suppress_source_costs
         else dict(program.cost_schema or {}) if program else {}
     )
-    kicker = (
-        compiled_fixed_mana_kicker_spec(host, card)
-        if not suppress_source_costs
-        else None
+    schema = _with_kicker_cost(
+        host,
+        card,
+        schema,
+        suppress_source_costs=suppress_source_costs,
     )
-    if kicker is not None:
-        schema = copy.deepcopy(schema)
-        optional_costs = list(schema.get("optional_costs", ()))
-        if any(
-            str(value.get("id") or "") == "kicked"
-            or str(value.get("kind") or "").casefold() == "kicker"
-            for value in optional_costs
-        ):
-            return None
-        optional_costs.append(kicker.cast_cost_option())
-        schema["optional_costs"] = optional_costs
+    if schema is None:
+        return None
+    schema = _with_bestow_cost(
+        host,
+        card,
+        schema,
+        suppress_source_costs=suppress_source_costs,
+    )
+    if schema is None:
+        return None
     record = host.card_record(card)
     if record is None:
         return None
-    spend_context = host._spell_mana_spend_context(
-        str(
-            cast_type_line
-            if cast_type_line is not None
-            else host._effective_card_data(card).get("type_line") or ""
-        )
-    )
     mechanics = _compiled_payment_mechanics(
         host,
         seat,
@@ -363,7 +405,7 @@ def _initial_options(
     if alternative_expansion is None:
         return None
     expanded, mandatory = alternative_expansion
-    return expanded, mandatory, mechanics, spend_context, has_x
+    return expanded, mandatory, mechanics, has_x
 
 
 @dataclass(frozen=True, slots=True)
@@ -1097,14 +1139,25 @@ def build_cast_cost_options(
         hint=hint,
         force_without_mana_cost=force_without_mana_cost,
         alternative_base=alternative_base,
-        cast_type_line=cast_type_line,
         suppress_source_costs=suppress_source_costs,
     )
     if initial is None:
         return ()
-    expanded, mandatory, mechanics, spend_context, has_x = initial
+    expanded, mandatory, mechanics, has_x = initial
     result = []
     for option in expanded:
+        option_cast_type_line = (
+            str(option["cast_type_line"])
+            if option.get("cast_type_line")
+            else cast_type_line
+        )
+        spend_context = host._spell_mana_spend_context(
+            str(
+                option_cast_type_line
+                if option_cast_type_line is not None
+                else host._effective_card_data(card).get("type_line") or ""
+            )
+        )
         finalized = _finalize_option(
             host,
             seat,
@@ -1116,7 +1169,7 @@ def build_cast_cost_options(
             hint=hint,
             spend_context=spend_context,
             has_x=has_x,
-            cast_type_line=cast_type_line,
+            cast_type_line=option_cast_type_line,
         )
         if finalized is not None:
             result.append(finalized)
