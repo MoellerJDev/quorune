@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "f30639298d0d5af7445d98f90b7f7affb3f7ee9cc8eb81f53fbd4a1d862d4521",
-  "declaration_source_fingerprint": "04676e9e0d386abd92e9e2a0113767fc05789aacf152b76427f685f0b610ee7b",
+  "registry_fingerprint": "93bfd5458024cca508f83b02b24cf39c0cec528311a45686605ab2be764e34b3",
+  "declaration_source_fingerprint": "d3e3e2de01d2390243cd17c30fba3c2a892f92b93562adcba2380e735fc576ed",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -11029,6 +11029,186 @@
         "commander_review"
       ],
       "applicability_note": "Apply additive basic-land-type wording in layer 4 and derive the corresponding intrinsic mana ability."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_cda_orders_before_non_cda_type_setting_and_after_copy",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply copied Changeling after layer-1 values, before later non-CDA layer-4 type setting, and preserve the earlier result across layer-6 ability removal."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_shared_subtype_counts_and_queries_use_effective_types",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Feed the cycle-safe layer-4 result into the shared effective type line for Army, Elf, Goblin, Human, and Sliver predicates without a Changeling-specific consumer."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_shared_subtype_counts_and_queries_use_effective_types",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Evaluate object-local effective subtype predicates inside a four-player Commander session without consulting player-private state."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_compiler_and_runtime_mutations_are_killed",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of either the typed compiler fragment or the pinned all-subtype layer operation."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "negative",
+      "test_id": "tests.test_changeling_characteristics.ChangelingCompilerTests.test_nonordinary_changeling_and_malformed_descriptors_fail_closed",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject nonordinary keyword wording, wrong fragment kinds, unknown events, and invalid schema versions before behavior is admitted."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "negative",
+      "test_id": "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_face_down_and_untyped_prose_are_inert",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Refuse to infer all creature types from display prose or a bare keyword, and clear the copied fragment at the represented face-down boundary."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "positive",
+      "test_id": "tests.test_changeling_characteristics.ChangelingCompilerTests.test_ordinary_changeling_compiles_to_all_zone_characteristic_definition",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one ordinary source-spanned Changeling keyword into a capability-closed all-zone typed layer-4 characteristic definition."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "positive",
+      "test_id": "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_is_every_creature_type_in_all_zones",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply every creature subtype from the pinned CR 205.3m vocabulary to the represented object in each supported zone."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_projection_and_replay_are_identity_safe",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the public Changeling object without physical object IDs or internal typed fragments."
+    },
+    {
+      "capability_id": "continuous.characteristics.changeling",
+      "evidence_class": "replay",
+      "test_id": "tests.test_changeling_characteristics.ChangelingRuntimeTests.test_changeling_projection_and_replay_are_identity_safe",
+      "official_rule_ids": [
+        "205.3m",
+        "604.3",
+        "613.1d",
+        "702.73",
+        "702.73a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pin the all-zone typed fragment, subtype snapshot, and runtime registry into the checkpoint before exact command replay."
     },
     {
       "capability_id": "continuous.characteristics.conditional_keyword",
@@ -40855,5 +41035,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "d876c9f17827c7c64c735df839a7e687837b92aff6d86947d11fec4a7fa2b393"
+  "fingerprint": "1830d008bbd7da16e26e4e4af1791868a6bc80fe8742e9cd61223da4052930b2"
 }

@@ -195,6 +195,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.enchant.linked_graveyard_creature",
                 "ability.static.enchant",
                 "ability.static.flash",
+                "ability.static.all_creature_types_characteristic_definition",
                 "ability.static.colorless_characteristic_definition",
                 "ability.static.counter_maximum",
                 "ability.static.conditional_keyword",

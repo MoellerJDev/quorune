@@ -13,6 +13,9 @@ from quorune.ability_fragments import (
     ability_fragment_to_dict,
 )
 from quorune.aura import SimpleEnchantSpec
+from quorune.characteristic_fragments import (
+    AllCreatureTypesCharacteristicDefinitionSpec,
+)
 from quorune.declaration_restrictions import (
     parse_declaration_restriction_line,
 )
@@ -74,6 +77,7 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
         *,
         oracle_text: str = "",
         keywords: tuple[str, ...] = (),
+        ability_fragments: list[dict] | None = None,
         power: str = "2",
         toughness: str = "2",
         subtype: str = "Test",
@@ -86,10 +90,10 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
             characteristics={
                 "type_line": type_line or f"Token Creature — {subtype}",
                 "oracle_text": oracle_text,
-                "ability_fragments": compiled_declaration_fragments(
-                    name,
-                    oracle_text,
-                ),
+                "ability_fragments": [
+                    *(ability_fragments or []),
+                    *compiled_declaration_fragments(name, oracle_text),
+                ],
                 "power": power,
                 "toughness": toughness,
                 "colors": list(colors),
@@ -1805,6 +1809,11 @@ class CombatDeclarationRestrictionTests(unittest.TestCase):
             "Changeling Ally",
             subtype="Shapeshifter",
             keywords=("Changeling",),
+            ability_fragments=[
+                ability_fragment_to_dict(
+                    AllCreatureTypesCharacteristicDefinitionSpec()
+                )
+            ],
         )
         self.assertFalse(engine._can_block(attacker, blocker)[0])
 

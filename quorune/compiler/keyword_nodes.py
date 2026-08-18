@@ -53,16 +53,16 @@ from .counter_keyword_activation_nodes import (
     fixed_counter_keyword_activation_node,
 )
 from .ability_keyword_fragments import lower_ability_keyword_fragments
+from .characteristic_definition_nodes import (
+    characteristic_definition_keyword_node,
+)
 from .dependency_gate import (
     DependencyGate,
     explicit_capability_gate,
     explicit_capabilities_gate,
     keyword_dependency_gate,
 )
-from .devoid_characteristics import (
-    DEVOID_FRAGMENT_HANDLER_ID,
-    DEVOID_MECHANIC_ID,
-)
+from .devoid_characteristics import DEVOID_MECHANIC_ID
 from .ir_model import (
     OracleNode,
     OracleResidual,
@@ -292,6 +292,11 @@ def closed_special_keyword_node(
         "capability_profile": capability_profile,
         "residuals": residuals,
     }
+    characteristic_definition = characteristic_definition_keyword_node(
+        **values,
+    )
+    if characteristic_definition is not None:
+        return characteristic_definition
     counter_activation = fixed_counter_keyword_activation_node(
         **values,
         printed_power=printed_power,
@@ -307,91 +312,6 @@ def closed_special_keyword_node(
     kicker = fixed_mana_kicker_keyword_node(**values)
     if kicker is not None:
         return kicker
-    if mechanics == (_DEVOID_MECHANIC,):
-        ordinary = (
-            material_line.strip().rstrip(".").casefold()
-            == _DEVOID_MECHANIC
-        )
-        gate = explicit_capability_gate(
-            "continuous.characteristics.devoid",
-            capability_registry=capability_registry,
-            capability_profile=capability_profile,
-        )
-        blockers = (
-            gate.blockers
-            if ordinary
-            else ("mechanic:devoid-unsupported-wording",)
-        )
-        residual_ids = (
-            (
-                append_residual(
-                    residuals,
-                    kind=(
-                        "dependency_contract" if ordinary else "keyword_grammar"
-                    ),
-                    text=line,
-                    span=span,
-                    reason=(
-                        "Devoid depends on a blocked typed layer-5 capability"
-                        if ordinary
-                        else "Devoid wording is outside the ordinary keyword grammar"
-                    ),
-                    blockers=blockers,
-                ),
-            )
-            if blockers
-            else ()
-        )
-        lowering = lower_ability_keyword_fragments(
-            material_line,
-            mechanics,
-        )
-        if ordinary and not lowering.handlers:
-            residual_ids += (
-                append_residual(
-                    residuals,
-                    kind="dependency_contract",
-                    text=line,
-                    span=span,
-                    reason=(
-                        "Devoid lowering did not produce its required typed "
-                        "characteristic descriptor"
-                    ),
-                    blockers=(DEVOID_FRAGMENT_HANDLER_ID,),
-                ),
-            )
-        closure = gate.closure
-        return OracleNode(
-            node_id=node_id,
-            kind="static_ability",
-            text=line,
-            span=span,
-            active_zone="all",
-            event="continuous",
-            lowerable=ordinary,
-            exact=ordinary and not residual_ids,
-            template_id=(
-                "devoid-colorless-characteristic-definition-v1"
-                if ordinary
-                else None
-            ),
-            handlers=lowering.handlers if ordinary else (),
-            runtime_coverage=("layer_5_colorless_characteristic",)
-            if ordinary
-            else (),
-            mechanics=mechanics,
-            residual_ids=residual_ids,
-            capability_dependencies=gate.capabilities,
-            capability_closure=(
-                closure.reachable if closure is not None else ()
-            ),
-            capability_profile=(
-                closure.profile if closure is not None else None
-            ),
-            capability_fingerprint=(
-                closure.fingerprint if closure is not None else None
-            ),
-        )
     renown = renown_keyword_node(
         **values,
         trusted_mechanics=trusted_mechanics,

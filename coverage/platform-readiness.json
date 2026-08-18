@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "47cc79fb20e5629c51201d7fdc620a78757a93fc5557e38d36c5ecb9fc98af47",
+    "evaluated_input_fingerprint": "e5a3bd7b70c8044eeecc052fb831f192649209c3c6d7ee0398fef3cd59e1061e",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -612,6 +612,12 @@
       "id": "typed_fixed_entry_conditions",
       "name": "Typed fixed land-entry conditions",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers all 62 ordinary printed Changeling instances to one copied all-zone layer-4 characteristic-definition fragment. The completed database-backed census promotes 17 exact, trusted, capability-closed Commander cards, adds 62 ability programs, and removes 62 material residuals; partial cards fall by 17 and unresolved cards remain flat. The full corpus gains 22 exact/trusted/capability-closed cards and 72 programs while removing 72 residuals, with failed status unchanged. The source-local CDA adds the pinned CR 205.3m creature subtype vocabulary after layer-1 copy values and before later non-CDA type setting; layer-6 ability removal does not undo the earlier type result. Existing target, combat, and count consumers use the shared effective type line, and the former combat-only Changeling shortcut is removed. Four-player subtype queries, all-zone evaluation, copy, type-setting, ability removal, face-down exclusion, exact replay, privacy, malformed descriptors, compiler/runtime mutations, and Bloodline Pretender fail-closed replacement admission are explicit. All 183 applicable high-risk pairs remain covered with zero uncovered. Untyped grants, text changes, nonordinary wording, unrepresented face-down or copy values, and dynamic characteristic definitions that depend on the affected subtype result remain fail-closed.",
+      "id": "typed_ordinary_changeling",
+      "name": "Typed ordinary Changeling characteristics",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -651,10 +657,10 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 39496,
+      "material_residuals": 39434,
       "status_counts": {
-        "exact": 5352,
-        "partial": 11928,
+        "exact": 5369,
+        "partial": 11911,
         "unresolved": 14343
       },
       "total": 31623
@@ -665,28 +671,28 @@
     "mechanics": {
       "status_counts": {
         "partial": 66,
-        "tested": 40,
+        "tested": 41,
         "trusted": 8,
-        "unclassified": 311
+        "unclassified": 310
       },
       "total": 425,
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 46730,
+      "material_residuals": 46658,
       "status_counts": {
-        "exact": 8437,
-        "partial": 13053,
+        "exact": 8459,
+        "partial": 13031,
         "unresolved": 17133
       },
       "total": 38623
     },
     "rules": {
-      "blocked": 466,
-      "definition_only": 163,
+      "blocked": 467,
+      "definition_only": 164,
       "passing": 234,
       "total": 3300,
-      "unreviewed": 2437
+      "unreviewed": 2435
     },
     "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
   },
@@ -714,7 +720,7 @@
     "generated_validation_modules": 29,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 291,
+    "primary_test_modules": 292,
     "primary_test_shards": 13,
     "schema_files": 18,
     "server_files": 5,
@@ -724,31 +730,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 39499,
+        "material_residuals": 39437,
         "status_counts": {
-          "residual": 26271,
-          "trusted": 5352
+          "residual": 26254,
+          "trusted": 5369
         },
         "trust_basis_counts": {
-          "capability_closed": 5336,
+          "capability_closed": 5353,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26271
+          "unresolved": 26254
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 46732,
+        "material_residuals": 46660,
         "status_counts": {
           "failed": 2248,
-          "residual": 30183,
-          "trusted": 6192
+          "residual": 30161,
+          "trusted": 6214
         },
         "trust_basis_counts": {
-          "capability_closed": 6176,
+          "capability_closed": 6198,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30183
+          "unresolved": 30161
         }
       }
     },

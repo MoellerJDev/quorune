@@ -23,8 +23,10 @@ from .ability_fragments import (
 )
 from .abilities import ActivatedAbility
 from .characteristic_fragments import (
+    AllCreatureTypesCharacteristicDefinitionSpec,
     ColorlessCharacteristicDefinitionSpec,
 )
+from .creature_subtypes import CREATURE_SUBTYPES
 
 
 _CARD_TYPES = {
@@ -231,12 +233,58 @@ def _has_colorless_characteristic_definition(
     )
 
 
+def _has_all_creature_types_characteristic_definition(
+    base: Mapping[str, Any],
+    overrides: Mapping[str, Any],
+) -> bool:
+    fragments = overrides.get(
+        "ability_fragments",
+        base.get("ability_fragments", ()),
+    )
+    return any(
+        isinstance(fragment, AllCreatureTypesCharacteristicDefinitionSpec)
+        for fragment in canonical_ability_fragments(fragments)
+    )
+
+
+def _all_creature_types_effect(
+    card: CardInstance,
+    *,
+    enabled: bool,
+    face_down_values: Any,
+    ignore_face_down: bool,
+) -> ContinuousEffect | None:
+    if not enabled or (
+        card.face_down
+        and not ignore_face_down
+        and face_down_values is not None
+    ):
+        return None
+    return ContinuousEffect(
+        effect_id=f"{card.object_id}:all-creature-types-definition",
+        source_id=card.object_id,
+        layer=Layer.TYPE,
+        sublayer="4",
+        timestamp=0,
+        operations=(
+            ContinuousOperation(
+                "add_types",
+                sorted(CREATURE_SUBTYPES),
+                field="subtypes",
+            ),
+        ),
+        characteristic_defining=True,
+        duration=ContinuousEffectDuration.ZONE_OBJECT,
+    )
+
+
 def _object_continuous_effects(
     card: CardInstance,
     overrides: Mapping[str, Any],
     added_types: Sequence[str],
     added_subtypes: Sequence[str],
     *,
+    has_all_creature_types_definition: bool,
     has_colorless_definition: bool,
     ignore_face_down: bool = False,
 ) -> list[ContinuousEffect]:
@@ -272,6 +320,14 @@ def _object_continuous_effects(
                 duration=ContinuousEffectDuration.ZONE_OBJECT,
             )
         )
+    all_creature_types = _all_creature_types_effect(
+        card,
+        enabled=has_all_creature_types_definition,
+        face_down_values=face_down_values,
+        ignore_face_down=ignore_face_down,
+    )
+    if all_creature_types is not None:
+        effects.append(all_creature_types)
     type_operations: list[ContinuousOperation] = []
     if card.annotations.get("bestowed") and card.attached_to:
         type_operations.extend(
@@ -468,6 +524,12 @@ def evaluate_card_characteristics(
         result,
         overrides,
     )
+    has_all_creature_types_definition = (
+        _has_all_creature_types_characteristic_definition(
+            result,
+            overrides,
+        )
+    )
     layered = bool(
         overrides
         or added_types
@@ -477,6 +539,7 @@ def evaluate_card_characteristics(
         or card.annotations.get("granted_ability_fragments")
         or card.annotations.get("bestowed")
         or has_colorless_definition
+        or has_all_creature_types_definition
         or (
             card.face_down
             and not ignore_face_down
@@ -513,6 +576,9 @@ def evaluate_card_characteristics(
         overrides,
         added_types,
         added_subtypes,
+        has_all_creature_types_definition=(
+            has_all_creature_types_definition
+        ),
         has_colorless_definition=has_colorless_definition,
         ignore_face_down=ignore_face_down,
     )

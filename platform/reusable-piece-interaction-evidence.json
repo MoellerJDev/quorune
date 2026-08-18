@@ -3613,6 +3613,45 @@
       "capability_ids": ["zone.entry.tapped_state.fixed_condition"],
       "interaction_order": 2,
       "assertion": "Fire Nation Palace retains its exact fixed entry condition while its unsupported targeted Firebending activation keeps the complete CardProgram unresolved and unavailable to trusted runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_shared_creature_subtype_condition_includes_changeling",
+      "piece_ids": [
+        "capability.combat.declaration.typed_components",
+        "capability.continuous.characteristics.changeling"
+      ],
+      "capability_ids": [
+        "combat.declaration.typed_components",
+        "continuous.characteristics.changeling"
+      ],
+      "interaction_order": 2,
+      "assertion": "The shared effective layer-4 subtype result feeds multiplayer declaration-condition counts without a Changeling-specific combat branch, and the accepted block command revalidates the same typed condition."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_changeling_executes_while_replacement_siblings_fail_closed",
+      "piece_ids": [
+        "capability.continuous.characteristics.changeling",
+        "residual.replacement.replacement-applicability"
+      ],
+      "capability_ids": ["continuous.characteristics.changeling"],
+      "interaction_order": 2,
+      "assertion": "Bloodline Pretender retains its exact copied all-zone Changeling fragment while its unsupported choose-a-type entry replacement keeps the complete CardProgram unresolved and unavailable to strict runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_changeling_executes_while_replacement_siblings_fail_closed",
+      "piece_ids": [
+        "capability.continuous.characteristics.changeling",
+        "residual.replacement.self-replacement-and-prevention-ordering"
+      ],
+      "capability_ids": ["continuous.characteristics.changeling"],
+      "interaction_order": 2,
+      "assertion": "The trusted Changeling fragment can be promoted independently, but no sibling replacement program is admitted before its applicability and CR 616 ordering are typed."
     }
   ]
 }
