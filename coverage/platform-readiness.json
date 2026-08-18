@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "e5a3bd7b70c8044eeecc052fb831f192649209c3c6d7ee0398fef3cd59e1061e",
+    "evaluated_input_fingerprint": "bc96626825a48a7786cf4d2afea7bcd2c48cbbd6f6ebabeff0855309a69745d7",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -618,6 +618,12 @@
       "id": "typed_ordinary_changeling",
       "name": "Typed ordinary Changeling characteristics",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers all 41 ordinary fixed-mana Bestow forms among 42 Commander-legal Bestow cards into one complete-card-admitted typed descriptor consumed by the canonical casting owner. The completed database-backed census promotes 17 exact, trusted, capability-closed Commander cards, adds 41 ability programs, removes 41 material residuals, and leaves unresolved and failed status unchanged; the full corpus records the same 17-card, 41-program, and 41-residual gain. The server authors the alternate cost, Aura cast type, creature target, and bestow preparation; option-scoped cost calculation uses the Aura spell type, target loss resolves the spell as a creature, attachment loss restores ordinary enchantment-creature characteristics, and attached static modifiers remain independently compiled. Four-player casting, manual payment, target revalidation, partial-card withholding, Springheart override compatibility, projection, exact replay, malformed descriptor exclusion, and compiler mutation are explicit. All 183 applicable high-risk pairs remain covered with zero uncovered. CommanderEngine, direct writes, runtime Oracle prose, and identity dispatch remain flat. Variable and nonordinary costs, unsupported attached results, copies, grants, text changes, multiface cards, tokens, phasing-in unattached, and wider cast permissions or prohibitions that distinguish creature from Aura spells remain fail-closed.",
+      "id": "typed_fixed_mana_bestow",
+      "name": "Typed fixed-mana Bestow",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -657,10 +663,10 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 39434,
+      "material_residuals": 39393,
       "status_counts": {
-        "exact": 5369,
-        "partial": 11911,
+        "exact": 5386,
+        "partial": 11894,
         "unresolved": 14343
       },
       "total": 31623
@@ -671,28 +677,28 @@
     "mechanics": {
       "status_counts": {
         "partial": 66,
-        "tested": 41,
+        "tested": 42,
         "trusted": 8,
-        "unclassified": 310
+        "unclassified": 309
       },
       "total": 425,
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 46658,
+      "material_residuals": 46617,
       "status_counts": {
-        "exact": 8459,
-        "partial": 13031,
+        "exact": 8476,
+        "partial": 13014,
         "unresolved": 17133
       },
       "total": 38623
     },
     "rules": {
-      "blocked": 467,
-      "definition_only": 164,
-      "passing": 234,
+      "blocked": 471,
+      "definition_only": 165,
+      "passing": 237,
       "total": 3300,
-      "unreviewed": 2435
+      "unreviewed": 2427
     },
     "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b"
   },
@@ -720,7 +726,7 @@
     "generated_validation_modules": 29,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 292,
+    "primary_test_modules": 293,
     "primary_test_shards": 13,
     "schema_files": 18,
     "server_files": 5,
@@ -730,31 +736,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 39437,
+        "material_residuals": 39396,
         "status_counts": {
-          "residual": 26254,
-          "trusted": 5369
+          "residual": 26237,
+          "trusted": 5386
         },
         "trust_basis_counts": {
-          "capability_closed": 5353,
+          "capability_closed": 5370,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26254
+          "unresolved": 26237
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 46660,
+        "material_residuals": 46619,
         "status_counts": {
           "failed": 2248,
-          "residual": 30161,
-          "trusted": 6214
+          "residual": 30144,
+          "trusted": 6231
         },
         "trust_basis_counts": {
-          "capability_closed": 6198,
+          "capability_closed": 6215,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30161
+          "unresolved": 30144
         }
       }
     },

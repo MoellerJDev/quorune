@@ -105,6 +105,7 @@
       "test_activation_conditions",
       "test_activation_restrictions",
       "test_basic_land_type_mana",
+      "test_bestow_rules",
       "test_casting_activation_metadata",
       "test_casting_activation_proposal_equivalence",
       "test_casting_spells_rules",

@@ -232,6 +232,18 @@ and unrepresented face-down or copy values remain outside trust. The source-
 local definition performs no state-dependent count; subtype consumers read the
 ordinary effective type line instead of a Changeling-specific branch.
 
+`compiler/bestow_nodes.py` owns one ordinary fixed-mana Bestow production. It
+emits a complete-card-required all-zone descriptor rather than a cost-only
+spell program. The casting owner turns that descriptor into a server-authored
+alternate cost with Aura cast characteristics, one public creature target, and
+the existing `bestow_prepare` resolution effect. This preserves the ordinary
+permanent destination, resolves after target loss as a creature, and delegates
+attachment and attached modifiers to their existing owners. Variable and
+nonordinary costs, partial cards, unsupported attached results, copies, grants,
+text changes, multiface cards, tokens, phasing-in unattached, and wider cast
+permissions or prohibitions that distinguish creature from Aura spells remain
+source-spanned residuals or explicit trust exclusions.
+
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,
 then requires the source grammar, emitted effects, target relation, closed

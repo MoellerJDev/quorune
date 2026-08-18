@@ -1794,6 +1794,94 @@
       "applicability_note": "Replay the represented return payment to the identical authoritative hash."
     },
     {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_cost_modifiers_use_aura_spell_characteristics",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Evaluate option-scoped casting-cost modifiers and affordability using the server-authored Aura spell characteristics rather than the card's ordinary creature type."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_target_loss_resolves_as_creature",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Revalidate the exact creature target at resolution and resolve the bestowed spell as its ordinary creature card when every target is illegal."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_unattached_bestowed_aura_reverts_to_creature",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the Aura attachment when its creature leaves and restore the card's ordinary enchantment-creature characteristics through the shared layer evaluator."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_cast_attaches_and_applies_static_modifier",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Cast and resolve the public Aura alternative in a four-player Commander session while retaining ordinary priority, targeting, payment, and attachment authority."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowCompilerTests.test_bestow_compiler_mutation_is_killed",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the closed Bestow compiler node and prove the real fixed-mana witness returns to a material dependency residual."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowCompilerTests.test_variable_bestow_remains_source_spanned_residual",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep variable Bestow costs source-spanned and outside the fixed ordinary-mana cost schema."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_partial_bestow_card_withholds_alternate_cost",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Withhold the alternate cost from a variable and otherwise partial Bestow card rather than advertising a structural carrier."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowCompilerTests.test_fixed_mana_bestow_compiles_capability_closed",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile a real fixed-mana Bestow card into one capability-closed spell program with a server-authored alternate cost and target schema."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_cast_attaches_and_applies_static_modifier",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Pay the fixed alternate cost, enter attached as an Aura, and apply the card's independently compiled attached power, toughness, and Reach modifier."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_replay_and_projection_are_identity_safe",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project public attachment facts without internal object IDs, pending target annotations, or raw capability payloads."
+    },
+    {
+      "capability_id": "casting.bestow.fixed_mana",
+      "evidence_class": "replay",
+      "test_id": "tests.test_bestow_rules.FixedManaBestowRuntimeTests.test_bestow_replay_and_projection_are_identity_safe",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.103", "702.103a", "702.103b", "702.103c", "702.103d", "702.103e", "702.103f"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Pin the alternate-cost selection, target, attachment relation, and characteristic transition into an exact Game Record replay."
+    },
+    {
       "capability_id": "casting.kicker.fixed_mana",
       "evidence_class": "interaction",
       "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_counter_replacement_is_nested_and_replays",

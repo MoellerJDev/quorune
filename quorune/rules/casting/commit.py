@@ -765,7 +765,10 @@ def _create_spell_item(
                 {
                     "cast_option_effects": copy.deepcopy(
                         list(selected_option.get("effects", []))
-                    )
+                    ),
+                    "dynamic_effects": copy.deepcopy(
+                        list(selected_option.get("effects", []))
+                    ),
                 }
                 if "effects" in selected_option
                 else {}

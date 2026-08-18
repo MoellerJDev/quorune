@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "public_fixed_mana_bestow_card_data",
+  "source": "Scryfall Oracle subset for typed Bestow tests",
+  "cards": [
+    {
+      "oracle_id": "01914751-af8e-4aea-a254-6fa4f9fd3457",
+      "name": "Leafcrown Dryad",
+      "mana_cost": "{1}{G}",
+      "cmc": 2.0,
+      "type_line": "Enchantment Creature — Nymph Dryad",
+      "oracle_text": "Bestow {3}{G} (If you cast this card for its bestow cost, it's an Aura spell with enchant creature. It becomes a creature again if it's not attached.)\nReach\nEnchanted creature gets +2/+2 and has reach.",
+      "power": "2",
+      "toughness": "2",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["G"],
+      "color_identity": ["G"],
+      "keywords": ["Reach", "Bestow"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2013-09-27",
+      "legalities": {"commander": "legal", "duel": "legal"}
+    },
+    {
+      "oracle_id": "4d1b655f-05b8-4b82-9cb9-67660f570a9b",
+      "name": "Nyxborn Hydra",
+      "mana_cost": "{X}{G}",
+      "cmc": 1.0,
+      "type_line": "Enchantment Creature — Hydra",
+      "oracle_text": "Bestow {X}{G}{G} (If you cast this card for its bestow cost, it's an Aura spell with enchant creature. It becomes a creature again if it's not attached.)\nReach, trample\nThis permanent enters with X +1/+1 counters on it.\nEnchanted creature gets +1/+1 for each +1/+1 counter on this Aura and has reach and trample.",
+      "power": "0",
+      "toughness": "1",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["G"],
+      "color_identity": ["G"],
+      "keywords": ["Reach", "Trample", "Bestow"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2024-06-14",
+      "legalities": {"commander": "legal", "duel": "legal"}
+    }
+  ],
+  "rulings": []
+}
