@@ -16,7 +16,11 @@ from ..entry_counters import (
 from ..entry_keyword_grants import (
     EntryKeywordGrant,
 )
-from ..landwalk import BASIC_LAND_TYPES
+from ..entry_state_metrics import (
+    controller_basic_land_types,
+    entry_condition_metrics,
+)
+from ..entry_state_conditions import FIXED_ENTRY_CONDITION_HANDLER_ID
 from ..replacement_effects import (
     AffectedObject,
     CreateAffectedObjectCounter,
@@ -45,7 +49,11 @@ from .sunburst import SunburstEntryCounterHandler
 from .entry_choices import ReadAheadEntryChoiceHandler, RiotEntryChoiceHandler
 from .kicker import FixedKickedEntryHandler
 from ..read_ahead import READ_AHEAD_ENTRY_HANDLER_ID
-from .entry_state import ENTRY_STATE_HANDLER_ID, EntryStateReplacementHandler
+from .entry_state import (
+    ENTRY_STATE_HANDLER_ID,
+    EntryStateReplacementHandler,
+    FixedEntryConditionReplacementHandler,
+)
 from .zone_replacement_model import (
     PreparedZoneChange,
     SUPPORTED_ZONE_DESTINATIONS,
@@ -394,6 +402,7 @@ def default_zone_change_replacement_registry(
         (
             ConditionalSelfEntryCounterHandler(),
             EntryStateReplacementHandler(),
+            FixedEntryConditionReplacementHandler(),
             ReadAheadEntryChoiceHandler(),
             RiotEntryChoiceHandler(),
             FixedKickedEntryHandler(),
@@ -761,6 +770,43 @@ def _validated_zone_change_snapshot_inputs(
     )
 
 
+def _fixed_entry_condition_metrics(
+    host: ZoneReplacementHost,
+    *,
+    record: Any,
+    card: Any,
+    destination: str,
+    destination_controller: str | None,
+    prospective_name: str,
+    cache: dict[str | None, Mapping[str, int]],
+) -> Mapping[str, int]:
+    if destination != "battlefield" or record is None:
+        return {}
+    uses_fixed_condition = any(
+        descriptor.get("handler_id") == FIXED_ENTRY_CONDITION_HANDLER_ID
+        for program in _zone_change_programs_for_record(
+            host,
+            record,
+            active_zone="all",
+        )
+        if program_matches_face(
+            record,
+            program,
+            card,
+            prospective_name=prospective_name or None,
+        )
+        for descriptor in program.handlers
+    )
+    if not uses_fixed_condition:
+        return {}
+    if destination_controller not in cache:
+        cache[destination_controller] = entry_condition_metrics(
+            host,
+            destination_controller,
+        )
+    return cache[destination_controller]
+
+
 def _zone_change_snapshot_subjects(
     host: ZoneReplacementHost,
     changes: Sequence[tuple[str, str]],
@@ -774,6 +820,7 @@ def _zone_change_snapshot_subjects(
     error_type: type[Exception],
 ) -> tuple[ZoneChangeSubjectSnapshot, ...]:
     subjects: list[ZoneChangeSubjectSnapshot] = []
+    entry_metrics_by_controller: dict[str | None, Mapping[str, int]] = {}
     for object_id, destination in changes:
         card = host.state.cards.get(object_id)
         if card is None:
@@ -794,24 +841,10 @@ def _zone_change_snapshot_subjects(
                 if object_id in destination_controllers
                 else card.controller if card.zone == "stack" else card.owner
             )
-            controlled_basic_types: set[str] = set()
-            if destination_controller is not None:
-                for permanent_id in host.state.players[
-                    destination_controller
-                ].zones["battlefield"]:
-                    permanent = host.state.cards[permanent_id]
-                    if (
-                        permanent.controller != destination_controller
-                        or permanent.phased_out
-                    ):
-                        continue
-                    permanent_data = host._effective_card_data(permanent)
-                    _, permanent_subtypes, _ = host._type_parts(
-                        str(permanent_data.get("type_line") or "")
-                    )
-                    controlled_basic_types.update(
-                        permanent_subtypes.intersection(BASIC_LAND_TYPES)
-                    )
+            controlled_basic_types = controller_basic_land_types(
+                host,
+                destination_controller,
+            )
             record = host.card_record(card)
             prospective_name = str(characteristics.get("name") or "")
             read_ahead_supported = _read_ahead_entry_is_supported(
@@ -881,8 +914,15 @@ def _zone_change_snapshot_subjects(
                         if destination_controller is not None
                         else 0
                     ),
-                    controller_basic_land_types=tuple(
-                        sorted(controlled_basic_types)
+                    controller_basic_land_types=controlled_basic_types,
+                    entry_condition_metrics=_fixed_entry_condition_metrics(
+                        host,
+                        record=record,
+                        card=card,
+                        destination=destination,
+                        destination_controller=destination_controller,
+                        prospective_name=prospective_name,
+                        cache=entry_metrics_by_controller,
                     ),
                     object_types=tuple(
                         sorted({*card_types, *subtypes, *supertypes})

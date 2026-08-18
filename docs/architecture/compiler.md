@@ -88,6 +88,18 @@ runtime never reparses the printed instruction. Zero, dynamic, optional, cost,
 targeted, repeated, copied, granted, additional-look, linked-result, and
 unsupported Surveil-event trigger forms remain source-spanned residuals.
 
+`compiler/entry_state_templates.py` also owns one closed family of fixed public
+conditions that determine whether a land enters tapped. `FixedEntryCondition`
+uses a typed metric, integral bound, and tap polarity for controller land and
+basic-land counts, individual basic land subtypes, aggregate opponent lands,
+minimum active-player life, and represented controller permanent queries. The
+zone replacement snapshot evaluates only already-present phased-in battlefield
+permanents through the canonical effective-characteristic boundary, so neither
+the entering land nor another member of the same simultaneous entry batch can
+feed its condition. Turn-relative, variable, chosen, hidden, counter-qualified,
+history-sensitive, and unsupported same-layer characteristic predicates remain
+source-spanned residuals.
+
 `compiler/fixed_effect_clause_sequences.py` owns the general closed
 two-sentence composition boundary. It accepts exactly two top-level,
 period-separated, mandatory clauses when each clause independently lowers to

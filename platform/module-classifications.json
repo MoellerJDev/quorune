@@ -3155,6 +3155,34 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/entry_state_conditions.py",
+      "layer": "rules",
+      "owning_subsystem": "zones_and_object_identity",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/entry_state_metrics.py",
+      "layer": "rules",
+      "owning_subsystem": "zones_and_object_identity",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/errors.py",
       "layer": "rules",
       "owning_subsystem": "legacy_rules",
@@ -7180,5 +7208,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "7f9c33476a0d3eac0458d8542e1cdc80555aff3094a9971b8a5fff60670e9a8e"
+  "fingerprint": "6648931451c3543168338267482b32f0608684413936b64d65964b3bdca23a99"
 }

@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "c0d13b08b807d8754496cfe2656d90ed1d062d73e1fd1c8e640cc0fd2a6e9a5c"
+verified: "096d6189628635f5a934374ddc834d0188c87c9f20d3b7c85b2e16390b5cf01e"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -14,21 +14,21 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 ## Snapshot
 
 - Cards considered: 31,623
-- Oracle states: `{"exact":5306,"partial":11972,"unresolved":14345}`
-- CardProgram states: `{"residual":26317,"trusted":5306}`
+- Oracle states: `{"exact":5352,"partial":11928,"unresolved":14343}`
+- CardProgram states: `{"residual":26271,"trusted":5352}`
 - Hard construction failures: 0
-- Frontier fingerprint: `c0d13b08b807d8754496cfe2656d90ed1d062d73e1fd1c8e640cc0fd2a6e9a5c`
+- Frontier fingerprint: `096d6189628635f5a934374ddc834d0188c87c9f20d3b7c85b2e16390b5cf01e`
 
 ## Highest-leverage single families
 
 | Family | Occurrences | Cards | Sole-blocker cards | Exact abilities | Readiness | Risk |
 |---|---:|---:|---:|---:|---|---|
-| `continuous_layer:continuous-effect-layers-and-dependencies` | 8,884 | 7,169 | 3,790 | 8,884 | missing_lowering | very_high |
+| `continuous_layer:continuous-effect-layers-and-dependencies` | 8,811 | 7,098 | 3,744 | 8,811 | missing_lowering | very_high |
+| `activated_effect:create-token` | 329 | 322 | 22 | 66 | missing_lowering | high |
 | `replacement:damage-prevention` | 168 | 165 | 21 | 40 | missing_lowering | very_high |
 | `effect_clause:draw` | 492 | 485 | 17 | 62 | missing_lowering | high |
 | `keyword_dependency:changeling` | 62 | 62 | 17 | 62 | missing_contract | medium |
 | `keyword_dependency:bestow` | 42 | 42 | 17 | 42 | missing_contract | medium |
-| `activated_effect:create-token` | 329 | 322 | 16 | 66 | missing_lowering | high |
 | `effect_clause:life-change` | 557 | 554 | 16 | 44 | missing_lowering | high |
 | `mechanic_dependency:affinity-unsupported-wording` | 36 | 36 | 16 | 36 | missing_contract | high |
 | `effect_clause:return` | 637 | 612 | 16 | 28 | missing_lowering | high |
@@ -53,26 +53,26 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 
 | Families | Exact cards | Exact abilities | Residuals |
 |---|---:|---:|---:|
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, activated_effect:create-token` | 3,848 | 8,992 | 9,006 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:changeling, keyword_dependency:bestow` | 3,845 | 8,988 | 8,988 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, keyword_dependency:start-your-engines` | 3,843 | 8,966 | 8,966 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, replacement:damage-prevention, keyword_dependency:bestow` | 3,843 | 8,966 | 8,972 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:changeling, activated_effect:create-token` | 3,841 | 9,012 | 9,026 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, activated_effect:exile` | 3,840 | 8,967 | 8,976 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, activated_effect:create-token, keyword_dependency:start-your-engines` | 3,839 | 8,990 | 9,004 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, replacement:damage-prevention, activated_effect:create-token` | 3,839 | 8,990 | 9,010 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, keyword_dependency:equip` | 3,839 | 8,951 | 8,951 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, activated_effect:unparsed-this-creature-can` | 3,839 | 8,949 | 8,958 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, effect_clause:draw, keyword_dependency:bestow` | 3,838 | 8,988 | 8,988 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, mechanic_dependency:affinity-unsupported-wording` | 3,838 | 8,962 | 8,962 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, effect_clause:life-change` | 3,837 | 8,970 | 8,970 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, keyword_dependency:storm` | 3,837 | 8,959 | 8,959 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, activated_effect:put-onto-battlefield` | 3,837 | 8,958 | 8,959 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, effect_clause:return` | 3,837 | 8,954 | 8,954 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, mechanic_dependency:cr-400-general` | 3,837 | 8,952 | 8,952 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, effect_clause:typed-spell-additional-cost-clause` | 3,837 | 8,942 | 9,032 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, effect_clause:exile` | 3,836 | 9,022 | 9,022 |
-| `continuous_layer:continuous-effect-layers-and-dependencies, activated_effect:create-token, activated_effect:exile` | 3,836 | 8,991 | 9,014 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, activated_effect:create-token, keyword_dependency:bestow` | 3,802 | 8,919 | 8,933 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:changeling, keyword_dependency:bestow` | 3,799 | 8,915 | 8,915 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, keyword_dependency:start-your-engines` | 3,797 | 8,893 | 8,893 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, replacement:damage-prevention, keyword_dependency:bestow` | 3,797 | 8,893 | 8,899 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, activated_effect:create-token, keyword_dependency:changeling` | 3,795 | 8,939 | 8,953 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, activated_effect:exile` | 3,794 | 8,894 | 8,903 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, activated_effect:create-token, keyword_dependency:start-your-engines` | 3,793 | 8,917 | 8,931 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, activated_effect:create-token, replacement:damage-prevention` | 3,793 | 8,917 | 8,937 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, keyword_dependency:equip` | 3,793 | 8,878 | 8,878 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, activated_effect:unparsed-this-creature-can` | 3,793 | 8,876 | 8,885 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, effect_clause:draw, keyword_dependency:bestow` | 3,792 | 8,915 | 8,915 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, mechanic_dependency:affinity-unsupported-wording` | 3,792 | 8,889 | 8,889 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, effect_clause:life-change` | 3,791 | 8,897 | 8,897 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, keyword_dependency:storm` | 3,791 | 8,886 | 8,886 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, activated_effect:put-onto-battlefield` | 3,791 | 8,885 | 8,886 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, effect_clause:return` | 3,791 | 8,881 | 8,881 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, mechanic_dependency:cr-400-general` | 3,791 | 8,879 | 8,879 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, effect_clause:typed-spell-additional-cost-clause` | 3,791 | 8,869 | 8,959 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, keyword_dependency:bestow, effect_clause:exile` | 3,790 | 8,949 | 8,949 |
+| `continuous_layer:continuous-effect-layers-and-dependencies, activated_effect:create-token, activated_effect:exile` | 3,790 | 8,918 | 8,941 |
 
 ## Hard construction failures
 
