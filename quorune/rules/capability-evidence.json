@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "2d771ca8c0aef092b3f34af91d1e6c4f1c0836b153042658833dccf59353d3a1",
-  "declaration_source_fingerprint": "2dcb96335c0c5635820939337c1caa2a942e0d91befa5024a500a6c0a47805db",
+  "registry_fingerprint": "263cc7875d89461a64b68fb0bff530552102cef6d489da4d07c625d7d98b905a",
+  "declaration_source_fingerprint": "b8b0a762a255f4dc48399cc43e85afe1deb5ea61ef6271a0909f8fd770aac2c6",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -35331,6 +35331,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35355,6 +35356,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35379,6 +35381,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35397,12 +35400,38 @@
     {
       "capability_id": "target.permanent.characteristic_predicate",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_mana_value_target_predicates.FixedManaValueTargetRuntimeTests.test_current_copy_derived_mana_value_governs_offer_command_and_resolution",
+      "official_rule_ids": [
+        "105.2",
+        "115.1",
+        "115.2",
+        "115.6",
+        "202.3",
+        "205.3",
+        "205.3g",
+        "205.3m",
+        "608.2b",
+        "613.1d",
+        "613.1f",
+        "702.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Evaluate a fixed mana-value bound from the same current public characteristic snapshot used for target offer, validation, and resolution, including a represented copy-derived mana value."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "interaction",
       "test_id": "tests.test_targeted_destruction_effect_clauses.TargetedDestructionRuntimeTests.test_compiled_union_destruction_offer_command_resolution_and_replay",
       "official_rule_ids": [
         "105.2",
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35427,6 +35456,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35451,6 +35481,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35475,6 +35506,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35499,6 +35531,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35516,6 +35549,56 @@
     },
     {
       "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_mana_value_target_predicates.FixedManaValueTargetCompilerTests.test_adjacent_numeric_target_grammar_remains_material_residual",
+      "official_rule_ids": [
+        "105.2",
+        "115.1",
+        "115.2",
+        "115.6",
+        "202.3",
+        "205.3",
+        "205.3g",
+        "205.3m",
+        "608.2b",
+        "613.1d",
+        "613.1f",
+        "702.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Leave variable, total, conditional, public-state-combined, power, toughness, and hidden-zone numeric target grammar as explicit residuals."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_mana_value_target_predicates.FixedManaValueTargetCompilerTests.test_mana_value_target_model_roundtrips_and_rejects_competing_bounds",
+      "official_rule_ids": [
+        "105.2",
+        "115.1",
+        "115.2",
+        "115.6",
+        "202.3",
+        "205.3",
+        "205.3g",
+        "205.3m",
+        "608.2b",
+        "613.1d",
+        "613.1f",
+        "702.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject negative, nonintegral, boolean, and competing exact/minimum/maximum mana-value fields before target execution."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
       "evidence_class": "positive",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateCompilerTests.test_closed_direct_target_grammar_compiles_typed_predicates",
       "official_rule_ids": [
@@ -35523,6 +35606,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35547,6 +35631,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35571,6 +35656,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35588,6 +35674,31 @@
     },
     {
       "capability_id": "target.permanent.characteristic_predicate",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_mana_value_target_predicates.FixedManaValueTargetCompilerTests.test_fixed_mana_value_targets_compile_across_effect_contexts",
+      "official_rule_ids": [
+        "105.2",
+        "115.1",
+        "115.2",
+        "115.6",
+        "202.3",
+        "205.3",
+        "205.3g",
+        "205.3m",
+        "608.2b",
+        "613.1d",
+        "613.1f",
+        "702.9"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower one fixed exact, maximum, or minimum mana-value qualifier through the shared direct-permanent target descriptor across spell, trigger, activated, and modal contexts."
+    },
+    {
+      "capability_id": "target.permanent.characteristic_predicate",
       "evidence_class": "privacy",
       "test_id": "tests.test_counter_target_predicates.CounterTargetPredicateRuntimeTests.test_four_player_target_predicate_privacy_rollback_and_replay",
       "official_rule_ids": [
@@ -35595,6 +35706,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -35619,6 +35731,7 @@
         "115.1",
         "115.2",
         "115.6",
+        "202.3",
         "205.3",
         "205.3g",
         "205.3m",
@@ -41932,5 +42045,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "937ffa8f05c86274d634448592301b39c61221d170e7fbea199e742e0cc08833"
+  "fingerprint": "0853f41b5da6092d2f901ce586035f7a05acdf0f2d6a0cc5d14fba71442be9db"
 }
