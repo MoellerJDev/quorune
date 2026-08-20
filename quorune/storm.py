@@ -74,7 +74,9 @@ def compiled_storm_specs(
     return tuple(result)
 
 
-def _prior_spell_count(host: StormHost) -> int:
+def prior_storm_spell_count(host: StormHost) -> int:
+    """Snapshot spells cast before the current cast becomes observable."""
+
     if host.state.turn_history is not None:
         return len(host._current_turn_history("spell_cast"))
     return sum(
@@ -90,13 +92,15 @@ def storm_trigger_items(
     spell: StackItem,
     card: CardInstance,
     program: Any,
+    prior_spell_count: int,
 ) -> tuple[StackItem, ...]:
     """Create one APNAP-placeable occurrence per typed Storm instance."""
 
+    if type(prior_spell_count) is not int or prior_spell_count < 0:
+        raise StateInvariantError("Storm prior-spell count is malformed")
     specs = compiled_storm_specs(host, card)
     if not specs:
         return ()
-    prior_spells = _prior_spell_count(host)
     target_groups = copy.deepcopy(dict(spell.context.get("target_groups") or {}))
     target_snapshots = copy.deepcopy(
         dict(spell.context.get("target_snapshots") or {})
@@ -131,7 +135,7 @@ def storm_trigger_items(
                 semantic_key=STORM_SEMANTIC_KEY,
                 visibility=list(host.seats),
                 context={
-                    "copy_count": prior_spells,
+                    "copy_count": prior_spell_count,
                     "copy_template": copy.deepcopy(template),
                     "storm_instance": index,
                     "storm_spec": spec.to_dict(),
@@ -179,6 +183,7 @@ def validated_storm_trigger(
 __all__ = [
     "STORM_SEMANTIC_KEY",
     "compiled_storm_specs",
+    "prior_storm_spell_count",
     "storm_trigger_items",
     "validated_storm_trigger",
 ]

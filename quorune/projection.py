@@ -175,7 +175,7 @@ class StateProjector:
                 return True
             seats = self._view_seats_for(principal)
             return any(
-                seat in {card.owner, card.controller}
+                seat == card.controller
                 or seat in card.known_to
                 or seat in card.revealed_to
                 for seat in seats

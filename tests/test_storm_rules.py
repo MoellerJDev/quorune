@@ -428,6 +428,64 @@ class StormRuntimeTests(unittest.TestCase):
             any(item.card_object_id == source.object_id for item in engine.state.stack)
         )
 
+    def test_legacy_zero_prior_spells_excludes_the_current_cast(self):
+        session = self.session(7024011)
+        engine = session.engine
+        engine.state.turn_history = None
+
+        self.cast_storm(
+            engine,
+            "Weather the Storm",
+            ref="legacy-zero-storm-source",
+        )
+        trigger = engine.state.stack[-1]
+
+        self.assertEqual(0, trigger.context["copy_count"])
+        self.assertEqual(
+            1,
+            sum(
+                event.code == "stack.cast"
+                and event.turn_sequence == engine.state.turn_sequence
+                for event in engine.state.events
+            ),
+        )
+
+    def test_legacy_prior_spells_are_snapshotted_and_replay_exactly(self):
+        session = self.session(7024012)
+        engine = session.engine
+        engine.state.turn_history = None
+        self.record_prior_spell(engine, "B", 1)
+        self.record_prior_spell(engine, "C", 2)
+
+        self.cast_storm(
+            engine,
+            "Weather the Storm",
+            ref="legacy-two-storm-source",
+        )
+        trigger = engine.state.stack[-1]
+
+        self.assertEqual(2, trigger.context["copy_count"])
+        self.assertEqual(
+            3,
+            sum(
+                event.code == "stack.cast"
+                and event.turn_sequence == engine.state.turn_sequence
+                for event in engine.state.events
+            ),
+        )
+        self.assertIsNone(engine.state.turn_history)
+
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        expected_hash = authoritative_state_hash(engine.state)
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "legacy-storm-record"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
     def test_source_departure_does_not_erase_locked_storm_trigger(self):
         session = self.session(7024003)
         engine = session.engine

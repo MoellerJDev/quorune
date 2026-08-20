@@ -28,7 +28,7 @@ def fixed_next_turn_upkeep_draw_effect() -> dict[str, Any]:
         "condition": {
             "phase": "beginning",
             "step": "upkeep",
-            "after_turn_sequence": "$turn_sequence",
+            "next_turn_after_sequence": "$turn_sequence",
         },
         "stack": {
             "label": _LABEL,

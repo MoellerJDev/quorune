@@ -141,6 +141,14 @@ class FixedNextTurnDrawCompilerTests(unittest.TestCase):
 
         self.assertEqual(FIXED_NEXT_TURN_DRAW_TEMPLATE, template_id)
         self.assertEqual((fixed_next_turn_upkeep_draw_effect(),), effects)
+        self.assertEqual(
+            "$turn_sequence",
+            effects[0]["condition"]["next_turn_after_sequence"],
+        )
+        self.assertNotIn(
+            "after_turn_sequence",
+            effects[0]["condition"],
+        )
         self.assertIsNone(target_schema)
         self.assertIn(FIXED_NEXT_TURN_DRAW_MECHANIC, mechanics)
         self.assertEqual(
@@ -563,6 +571,33 @@ class FixedNextTurnDrawRuntimeTests(unittest.TestCase):
             replay = replay_record(record_dir, self.db, verify=True)
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
+
+    def test_next_turn_draw_expires_when_that_turn_has_no_upkeep(self):
+        session = self.session(6037003)
+        engine = session.engine
+        _spell, trigger = self.cast_and_schedule(session)
+        hand_before = len(engine.state.players["A"].zones["hand"])
+
+        advance_fixture_turn(engine, 2)
+        engine.state.active_player = "C"
+        matches = engine._matching_delayed_triggers(
+            "step.begin",
+            {"phase": "beginning", "step": "upkeep", "player": "C"},
+        )
+
+        self.assertEqual([], matches)
+        self.assertFalse(trigger.active)
+        self.assertEqual(
+            hand_before,
+            len(engine.state.players["A"].zones["hand"]),
+        )
+        self.assertFalse(
+            any(
+                item.label
+                == "Draw at the beginning of the next turn's upkeep"
+                for item in engine.state.stack
+            )
+        )
 
 
 if __name__ == "__main__":

@@ -137,6 +137,14 @@ class TriggerProcessingOwner:
                 if self.host.state.turn_sequence <= int(expected):
                     return False
                 continue
+            if key == "next_turn_after_sequence":
+                expected_turn_sequence = int(expected) + 1
+                if self.host.state.turn_sequence > expected_turn_sequence:
+                    trigger.active = False
+                    return False
+                if self.host.state.turn_sequence != expected_turn_sequence:
+                    return False
+                continue
             if key == "player" and expected in {"controller", "$controller"}:
                 expected = trigger.controller
             if isinstance(expected, (list, tuple, set)):

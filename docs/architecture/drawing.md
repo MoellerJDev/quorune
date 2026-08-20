@@ -95,8 +95,9 @@ other each-player producers.
 One closed delayed-draw producer also converges here. A resolving typed
 instruction may create exactly one controller-frozen trigger for the beginning
 of the next chronological turn's upkeep. The trigger stores the creation turn
-sequence, waits for a later upkeep, enters the ordinary APNAP batch once, and
-then requests one private draw from this same coordinator. It does not inspect
+sequence, matches only the immediately following turn sequence, expires if that
+turn has no upkeep event, enters the ordinary APNAP batch once, and then
+requests one private draw from this same coordinator. It does not inspect
 Oracle text at runtime or bypass draw replacement, prohibition, event, privacy,
 or replay ownership. Other delayed times, controller- or player-relative
 upkeeps, optional or variable counts, and unresolved enclosing spell
