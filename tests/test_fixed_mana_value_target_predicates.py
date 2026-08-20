@@ -202,9 +202,8 @@ class FixedManaValueTargetCompilerTests(unittest.TestCase):
         self.assertNotEqual("exact", self.compile(fixture, registry=registry).status)
 
         with patch(
-            "quorune.compiler.destruction_templates."
-            "direct_permanent_target_spec",
-            return_value=None,
+            "quorune.compiler.direct_target._strip_mana_value_predicate",
+            side_effect=lambda phrase: (phrase, {}),
         ):
             mutated = self.compile(fixture)
         self.assertNotEqual("exact", mutated.status)
