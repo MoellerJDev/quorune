@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 1,
+  "contract_version": 2,
   "mechanic_id": "sacrifice",
   "official_name": "Sacrifice",
   "effective_date": "2026-08-07",
@@ -8,6 +8,10 @@
   "rule_references": [
     "601.2f",
     "601.2h",
+    "101.4",
+    "115.1",
+    "608.2b",
+    "608.2c",
     "701.21",
     "701.21a"
   ],
@@ -25,71 +29,99 @@
     "zones": [
       "battlefield",
       "owner graveyard or replacement destination",
-      "stack for the spell whose cost is paid"
+      "stack for the spell whose cost is paid or effect resolves"
     ],
     "objects": [
-      "one phased-in permanent controlled by the caster",
-      "the stable physical object selected for the cost"
+      "one phased-in permanent controlled by the caster or affected player",
+      "one or two stable public objects selected for a cost or effect",
+      "one targeted player or opponent, each active player, or each active opponent"
     ],
     "events": [
       "one casting-cost battlefield departure",
+      "one simultaneous affected-player sacrifice batch",
       "normalized zone-change and represented dies occurrences",
       "cast occurrence only after the cost is paid"
     ],
     "state_reads": [
       "current controller",
       "current effective permanent card types",
+      "current effective token status and Flying ability where represented",
+      "APNAP seat order and affected-player relation",
       "owner graveyard",
       "applicable destination replacements"
     ],
     "state_writes": [
       "one replacement-aware permanent zone change",
+      "one replacement-aware simultaneous zone-change batch",
       "spell stack placement after successful payment"
     ],
     "costs": [
-      "exactly one mandatory additional casting-cost sacrifice"
+      "exactly one mandatory additional casting-cost sacrifice",
+      "effect sacrifices are not costs and do not pay another instruction"
     ],
     "timing": [
-      "during CR 601 casting-cost payment before the spell becomes cast"
+      "during CR 601 casting-cost payment before the spell becomes cast",
+      "during resolution after every affected-player choice is collected"
     ],
-    "targets": [],
+    "targets": [
+      "target-player and target-opponent effects revalidate the player before issuing a sacrifice choice",
+      "the permanent chosen to sacrifice is not targeted"
+    ],
     "choices": [
       "one currently legal controlled permanent",
+      "one or two currently legal permanents chosen by the affected player",
+      "affected-player choices are collected in APNAP order",
       "affected-player ordering for competing destination replacements"
     ],
     "hidden_information": [
       "all represented sacrifice candidates are public battlefield objects",
+      "only the current chooser receives the decision capability",
+      "projected choices contain public refs but no physical or logical IDs",
       "a suspended replacement continuation remains seat-scoped"
     ],
     "apnap": [
       "ordinary one-player cost choice has no APNAP batch",
-      "four-player replacement ordering uses the affected caster"
+      "targeted effect choices contain only the target player",
+      "each-player and each-opponent choices begin with the active player and continue in turn order without early mutation",
+      "the selected permanents move simultaneously after every choice",
+      "four-player replacement ordering uses the affected player"
     ],
     "layers": [
-      "candidate legality consumes current effective card types and controller"
+      "candidate legality consumes current effective card types, abilities, token status, and controller"
     ],
     "replacement_effects": [
       "destination replacements may replace the graveyard move",
+      "simultaneous choices suspend as one typed move intent until all destination replacements are selected",
       "destruction replacement and Indestructible do not prevent sacrifice"
     ],
     "copy": [
-      "copied-spell and alternate-casting sacrifice costs remain blocked"
+      "copied-spell and alternate-casting sacrifice costs remain blocked",
+      "a copied represented effect repeats its own affected-player choice at resolution"
     ],
     "control_change": [
       "only the current controller may sacrifice the permanent",
+      "an affected player chooses only permanents they currently control",
       "the permanent still moves toward its owner's graveyard"
     ],
     "zone_change": [
-      "the chosen physical object must remain a legal battlefield permanent through payment"
+      "the chosen physical object must remain a legal battlefield permanent through payment or effect commit",
+      "leaving and returning before a stale submission creates a different legal choice state"
     ],
     "source_leaves": [
-      "the spell remains in its casting origin until the complete cost transaction succeeds"
+      "the spell remains in its casting origin until the complete cost transaction succeeds",
+      "source departure after an effect reaches resolution does not change the frozen affected players or selected permanents"
     ]
   },
   "variants": [
     "one permanent",
     "one permanent of one canonical permanent card type",
-    "one permanent matching either of two canonical permanent card types"
+    "one permanent matching either of two canonical permanent card types",
+    "one nontoken permanent or creature token",
+    "one nonartifact creature or creature with Flying",
+    "two permanents of one canonical permanent card type",
+    "target player or opponent",
+    "each active player or each active opponent",
+    "fixed Choose one mode and activated-ability result"
   ],
   "witness_cards": [
     {
@@ -99,6 +131,18 @@
     {
       "name": "Costly Plunder",
       "oracle_id": "8cdfd9df-4783-4138-a286-828a97f516aa"
+    },
+    {
+      "name": "Diabolic Edict",
+      "oracle_id": "058917c1-21ab-488a-9f9c-591c55f3c596"
+    },
+    {
+      "name": "Innocent Blood",
+      "oracle_id": "6791ec3c-c397-4087-8c8c-84d3797df415"
+    },
+    {
+      "name": "Sheoldred's Edict",
+      "oracle_id": "217062f5-96f1-454c-9507-17f34ef37070"
     }
   ],
   "rulings": [],
@@ -112,21 +156,30 @@
     "test_offer_and_submission_share_effective_type_legality",
     "test_fixed_sacrifice_cost_commits_and_replays",
     "test_sacrifice_is_not_destruction_and_uses_owner_graveyard",
-    "test_zone_replacement_suspends_cost_before_mutation_and_replays"
+    "test_zone_replacement_suspends_cost_before_mutation_and_replays",
+    "test_fixed_affected_player_sacrifices_compile_across_contexts_and_modes",
+    "test_unsupported_sacrifice_choices_and_shape_mutations_fail_closed",
+    "test_affected_player_sacrifice_dependencies_fail_closed",
+    "test_affected_player_sacrifice_compiler_mutant_is_killed",
+    "test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously",
+    "test_fixed_count_sacrifices_available_objects_and_skips_empty_player",
+    "test_target_player_choice_revalidates_and_rolls_back_stale_submission",
+    "test_affected_player_sacrifice_uses_zone_replacement_and_replays"
   ],
   "implementation": {
-    "component": "FixedSacrificeAdditionalCostTemplate, FixedSacrificeAdditionalCost, typed additional-cost spell lowering, and replacement-aware casting commit",
-    "version": "typed-fixed-sacrifice-casting-cost-v1",
+    "component": "FixedSacrificeAdditionalCostTemplate, FixedAffectedPlayerSacrificeTemplate, typed casting and effect lowering, APNAP public-object choice collection, MoveObjectsSimultaneouslyIntent, and replacement-aware zone transition",
+    "version": "typed-fixed-sacrifice-v2",
     "capability_ids": [
-      "casting.additional_cost.fixed_sacrifice"
+      "casting.additional_cost.fixed_sacrifice",
+      "choice.affected_player.fixed_sacrifice"
     ],
-    "supported_slice": "One mandatory additional casting-cost sacrifice of one controlled phased-in permanent matching zero, one, or two canonical permanent card types."
+    "supported_slice": "One mandatory additional casting-cost sacrifice, plus one mandatory fixed affected-player effect selecting one or two controlled battlefield permanents through closed type, type-union, token, nonartifact-creature, or Flying-creature predicates."
   },
   "known_blockers": [
     "optional, variable, repeated, multiple, qualified, subtype, color, and historical-quality sacrifice costs remain residual",
     "alternative and composite sacrifice costs remain residual",
-    "sacrifice effects, activated costs, triggered costs, and rule-generated sacrifices are separate producers",
-    "simultaneous multi-player sacrifice selection and commit require an APNAP batch",
+    "self-selected sacrifice effects, delayed sacrifices, activated or triggered costs, and rule-generated sacrifices are separate producers",
+    "optional, variable, all, half, greatest, least, dynamic-count, mana-value, power, toughness, combat-state, subtype, color, historic, and player-chosen-for-another-player sacrifice effects remain residual",
     "Casualty, Exploit, Forage, Offering, Emerge, and other keyword-specific sacrifice structures require separate capability closure",
     "regeneration mechanics remain unsupported even though represented sacrifice does not invoke destruction"
   ],

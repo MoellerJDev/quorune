@@ -122,6 +122,17 @@ activated contexts. Optional, modal, conditional, linked-result, pronoun,
 variable, repeated, multi-target, quoted-boundary, parenthetical-boundary, and
 larger sequences remain source-spanned residuals.
 
+`compiler/affected_player_sacrifice_templates.py` owns one mandatory fixed
+affected-player sacrifice leaf shared by spell, triggered, activated, and
+fixed Choose one modal contexts. Target-player, target-opponent, each-player,
+and each-opponent relations select one or two public battlefield permanents
+through a closed `ObjectQuerySpec`. The existing APNAP selection owner collects
+the affected players' choices without early mutation, then a typed simultaneous
+move intent enters the canonical zone-destination replacement coordinator.
+Optional, variable, all, half, greatest/least, dynamic-characteristic,
+combat-state, subtype, color, linked-result, cost, delayed, and rule-generated
+sacrifice forms remain source-spanned residuals.
+
 `compiler/cumulative_upkeep_nodes.py` owns the closed printed
 cumulative-upkeep grammar. It lowers one fixed positive ordinary-mana cost or
 one em-dash-delimited fixed positive life cost to a source-spanned upkeep

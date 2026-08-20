@@ -401,6 +401,20 @@
       "regressions": ["four-player.spec.ts @browser-rules @mana-action Bowmasters journey"],
       "impact_edge_status": "not_applicable",
       "resolution": "The existing @mana-action impact edge already selected the journey. The driver now uses the bounded progress-aware multi-page pass loop before asserting the Bowmasters target choice and shares the 600-second hosted durability budget used by adjacent long serial journeys."
+    },
+    {
+      "id": "ci-20260820-28",
+      "run_id": 32401690028,
+      "head_sha": "13ad0c28850c6582c81bbd4a1219b4496e7ee4c4",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "The affected-player sacrifice capability declarations cited only the rules individually exercised by several evidence rows and were inserted out of canonical evidence-class order, so the cloud capability-evidence owner rejected the source before generation.",
+      "failed_surfaces": ["generated-artifacts"],
+      "regressions": [
+        "test_capability_evidence.CapabilityEvidenceTests.test_default_registry_is_bound_to_current_generated_evidence"
+      ],
+      "impact_edge_status": "not_applicable",
+      "resolution": "Every declaration now cites the capability's complete official-rule set and the source block follows canonical evidence-class order. The existing quick-gate impact already selects capability evidence; source-checkpoint preparation now runs update_capability_evidence.py --check and accepts only the expected stale-output result before cloud generation."
     }
   ],
   "recent_pull_requests": [

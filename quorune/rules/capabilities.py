@@ -23,6 +23,9 @@ from .counter_removal_capabilities import (
     all_counter_removal_node_capabilities,
     fixed_counter_removal_node_capabilities,
 )
+from .affected_player_sacrifice_capability_shapes import (
+    fixed_affected_player_sacrifice_node_capabilities,
+)
 from .node_capability_shapes import (
     fixed_alternative_additional_cost_node_capabilities,
     fixed_counter_additional_cost_node_capabilities,
@@ -75,6 +78,10 @@ from .modal_capability_shapes import fixed_choose_one_modal_branches
 from ..compiler.modal_templates import (
     FIXED_CHOOSE_ONE_MODAL_CAPABILITY,
     FIXED_CHOOSE_ONE_MODAL_MECHANIC,
+)
+from ..compiler.affected_player_sacrifice_templates import (
+    FIXED_AFFECTED_PLAYER_SACRIFICE_CAPABILITY,
+    FIXED_AFFECTED_PLAYER_SACRIFICE_MECHANIC,
 )
 from ..compiler.delayed_draw_templates import (
     FIXED_NEXT_TURN_DRAW_CAPABILITY,
@@ -923,6 +930,7 @@ def _targeted_effect_capabilities(
         mass_destruction_node_capabilities,
         fixed_next_turn_draw_node_capabilities,
         fixed_draw_node_capabilities,
+        fixed_affected_player_sacrifice_node_capabilities,
         fixed_mill_node_capabilities,
         fixed_life_node_capabilities,
         fixed_controller_effect_sequence_node_capabilities,
@@ -1211,6 +1219,10 @@ def capability_covered_mechanics(
         )
     if FIXED_CHOOSE_ONE_MODAL_CAPABILITY in supplied:
         covered.add(FIXED_CHOOSE_ONE_MODAL_MECHANIC)
+    if FIXED_AFFECTED_PLAYER_SACRIFICE_CAPABILITY in supplied:
+        covered.update(
+            {FIXED_AFFECTED_PLAYER_SACRIFICE_MECHANIC, "sacrifice"}
+        )
     if "attachment.aura.simple_object" in supplied:
         covered.add("enchant")
     if "protection.typed.debt" in supplied:

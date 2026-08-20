@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Any, Mapping, Protocol, Sequence
 
 from ..errors import GameRuleError
+from ..object_predicate import ObjectQueryError, ObjectQuerySpec
+from ..object_query import object_matches_query, object_query_result
 from ..replacement.immutable import FrozenMap, thaw_value
+from ..semantic_choices.apnap_commit import APNAP_OBJECT_COMMIT_OPERATION
 from .model import (
     SelectionContract,
     SelectionContinuation,
@@ -21,6 +25,12 @@ class ApnapChoiceHost(Protocol):
     permissions: Any
 
     def apnap_order(self) -> list[str]: ...
+
+    def _effective_card_data(self, card: Any) -> Mapping[str, Any]: ...
+
+    def _type_parts(
+        self, type_line: str
+    ) -> tuple[set[str], set[str], set[str]]: ...
 
 
 class ApnapChoiceOwnerMixin:
@@ -63,6 +73,30 @@ class ApnapChoiceOwnerMixin:
 
     def _choice_options(self, seat: str, effect: Mapping[str, Any]) -> list[str]:
         zone = str(effect.get("zone") or "battlefield")
+        raw_predicate = effect.get("predicate")
+        predicate: ObjectQuerySpec | None = None
+        if raw_predicate is not None:
+            try:
+                predicate = ObjectQuerySpec.from_dict(raw_predicate)
+            except (ObjectQueryError, TypeError) as exc:
+                raise GameRuleError(str(exc)) from exc
+            if (
+                predicate.zones not in {(), (zone,)}
+                or predicate.owner is not None
+                or predicate.controller is not None
+                or predicate.known_to_actor is not None
+                or predicate.exclude_ref is not None
+                or predicate.include_phased_out
+            ):
+                raise GameRuleError(
+                    "APNAP object choices require a controller-bound public "
+                    "zone predicate"
+                )
+            predicate = replace(
+                predicate,
+                zones=(zone,),
+                controller=seat,
+            )
         card_type = str((effect.get("filter") or {}).get("type") or "").casefold()
         controller_only = bool((effect.get("filter") or {}).get("controlled", True))
         candidates: list[str] = []
@@ -72,6 +106,30 @@ class ApnapChoiceOwnerMixin:
                 continue
             if card_type and card_type not in str(self._effective_card_data(card).get("type_line") or "").casefold():
                 continue
+            if predicate is not None:
+                effective = self._effective_card_data(card)
+                types, subtypes, supertypes = self._type_parts(
+                    str(effective.get("type_line") or "")
+                )
+                row = object_query_result(
+                    card,
+                    effective,
+                    type_parts=(types, subtypes, supertypes),
+                    known_to_actor=True,
+                    attached_to_ref=(
+                        self.state.cards[card.attached_to].ref
+                        if card.attached_to in self.state.cards
+                        else None
+                    ),
+                    entered_this_turn=(
+                        card.zone == "battlefield"
+                        and card.entered_battlefield_turn_sequence > 0
+                        and card.entered_battlefield_turn_sequence
+                        == self.state.turn_sequence
+                    ),
+                )
+                if not object_matches_query(row, predicate):
+                    continue
             candidates.append(card.ref)
         return candidates
 
@@ -81,11 +139,70 @@ class ApnapChoiceOwnerMixin:
             queue = self.apnap_order()
         elif players_spec == "opponents":
             actor = str(effect.get("actor") or self.state.stack[-1].controller)
+            if actor not in self.active_seats:
+                raise GameRuleError("APNAP opponent choice actor is unavailable")
             queue = [seat for seat in self.apnap_order() if seat != actor]
         else:
-            queue = [seat for seat in players_spec if seat in self.active_seats]
+            if (
+                not isinstance(players_spec, (list, tuple))
+                or not players_spec
+                or any(
+                    type(seat) is not str or seat not in self.active_seats
+                    for seat in players_spec
+                )
+                or len(players_spec) != len(set(players_spec))
+            ):
+                raise GameRuleError("APNAP choice players are malformed")
+            selected_players = set(players_spec)
+            queue = [
+                seat
+                for seat in self.apnap_order()
+                if seat in selected_players
+            ]
+        count = effect.get("count", 1)
+        if type(count) is not int or count <= 0:
+            raise GameRuleError("APNAP choice count must be positive")
+        if effect.get("predicate") is not None:
+            allowed_fields = {
+                "op",
+                "actor",
+                "players",
+                "zone",
+                "predicate",
+                "count",
+                "then",
+                "prompt",
+                *(('target',) if "target" in effect else ()),
+            }
+            stack_ref = str(continuation.get("stack_ref") or "")
+            item = next(
+                (
+                    candidate
+                    for candidate in self.state.stack
+                    if candidate.ref == stack_ref
+                ),
+                None,
+            )
+            if (
+                set(effect) != allowed_fields
+                or effect.get("op") != "choose_cards_apnap"
+                or effect.get("zone") != "battlefield"
+                or effect.get("then") != "sacrifice"
+                or type(effect.get("actor")) is not str
+                or effect.get("actor") not in self.active_seats
+                or item is None
+                or effect.get("actor") != item.controller
+                or (
+                    "target" in effect
+                    and effect.get("players") != [effect.get("target")]
+                )
+                or type(effect.get("prompt")) is not str
+                or not str(effect.get("prompt")).strip()
+            ):
+                raise GameRuleError("Typed APNAP choice effect is malformed")
         choice_state = {
             "queue": queue,
+            "player_order": list(queue),
             "selected": {},
             "effect": dict(effect),
             "resume": dict(continuation),
@@ -101,6 +218,13 @@ class ApnapChoiceOwnerMixin:
         effect = state["effect"]
         options = self._choice_options(seat, effect)
         count = min(int(effect.get("count", 1)), len(options))
+        if count == 0:
+            selected = dict(state["selected"])
+            selected[seat] = []
+            state["selected"] = selected
+            state["queue"] = queue[1:]
+            self._issue_next_apnap_choice(state)
+            return
         self.permissions.issue(
             kind="choice.apnap",
             role="pilot",
@@ -225,13 +349,16 @@ class ApnapChoiceOwnerMixin:
     def _apply_apnap_choices(self, state: dict[str, Any]) -> None:
         effect = state["effect"]
         then = str(effect.get("then") or "sacrifice")
-        # Choices were made in APNAP order, but the actions happen simultaneously.
-        selected_objects: list[str] = []
-        for refs in state["selected"].values():
+        selected_refs: list[str] = []
+        player_order = list(
+            state.get("player_order") or state["selected"].keys()
+        )
+        for seat in player_order:
+            refs = state["selected"].get(seat, ())
             for ref in refs:
-                card = next(card for card in self.state.cards.values() if card.ref == ref)
-                selected_objects.append(card.object_id)
-        origins = {oid: self.state.cards[oid].zone for oid in selected_objects}
+                if ref in selected_refs:
+                    raise GameRuleError("APNAP choices contain a duplicate object")
+                selected_refs.append(ref)
         destination = {
             "sacrifice": "graveyard",
             "discard": "graveyard",
@@ -239,20 +366,47 @@ class ApnapChoiceOwnerMixin:
         }.get(then)
         if destination is None:
             raise GameRuleError(f"Unsupported APNAP continuation {then}")
-        self._move_cards_simultaneously(
-            [(object_id, destination) for object_id in selected_objects],
-            reason=(
-                f"simultaneous APNAP {then}"
-                if then != "exile"
-                else "simultaneous APNAP choice"
-            ),
-            log=False,
-        )
-        self._log(None, f"choice.{then}", f"Applied simultaneous {then} choices.", {"objects": [self.state.cards[oid].ref for oid in selected_objects], "origins": origins}, importance=2, changed_objects=selected_objects)
         resume = state["resume"]
+        stack_ref = str(resume.get("stack_ref") or "")
+        item = next(
+            (
+                candidate
+                for candidate in self.state.stack
+                if candidate.ref == stack_ref
+            ),
+            None,
+        )
+        actor = str(effect.get("actor") or "") or (
+            item.controller if item is not None else ""
+        )
+        if not actor:
+            raise GameRuleError("APNAP choice commit has no controller")
+        semantic_frame = dict(resume.get("semantic_frame") or {})
+        instruction_pointer = int(
+            semantic_frame.get("instruction_pointer", 0)
+        )
         self._continue_resolution(
-            stack_ref=str(resume["stack_ref"]),
-            effects=[dict(item) for item in resume.get("effects", [])],
+            stack_ref=stack_ref,
+            effects=[
+                {
+                    "op": APNAP_OBJECT_COMMIT_OPERATION,
+                    "actor": actor,
+                    "object_refs": selected_refs,
+                    "expected_zones": [
+                        str(effect.get("zone") or "battlefield")
+                    ],
+                    "destination": destination,
+                    "reason": (
+                        f"simultaneous APNAP {then}"
+                        if then != "exile"
+                        else "simultaneous APNAP choice"
+                    ),
+                    "event_code": f"choice.{then}",
+                    "message": f"Applied simultaneous {then} choices.",
+                },
+                *(dict(item) for item in resume.get("effects", [])),
+            ],
             destination=resume.get("destination"),
             note=str(resume.get("note") or ""),
+            instruction_pointer=instruction_pointer,
         )

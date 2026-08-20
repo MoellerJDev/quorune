@@ -2418,6 +2418,70 @@
       "applicability_note": "Replay the accepted typed graveyard cast through the ordinary command journal to the same final state."
     },
     {
+      "capability_id": "choice.affected_player.fixed_sacrifice",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeRuntimeTests.test_affected_player_sacrifice_uses_zone_replacement_and_replays",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Collect three opponent choices, suspend their simultaneous sacrifice for the canonical destination-replacement tree, and commit the replaced exile results once."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_sacrifice",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeRuntimeTests.test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Collect four public controlled-creature choices from the active player onward and mutate no permanent until every seat has chosen."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_sacrifice",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeCompilerTests.test_affected_player_sacrifice_compiler_mutant_is_killed",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the shared production and prove direct, activated, triggered, and modal witnesses return to precise material residuals."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_sacrifice",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeCompilerTests.test_unsupported_sacrifice_choices_and_shape_mutations_fail_closed",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject variable, all, greatest-value, combat-state, optional, malformed predicate, changed actor, changed continuation, and unsupported player-relation shapes."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_sacrifice",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeCompilerTests.test_fixed_affected_player_sacrifices_compile_across_contexts_and_modes",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile direct spell, triggered, activated, and complete fixed Choose one modal contexts through one affected-player sacrifice descriptor."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_sacrifice",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeRuntimeTests.test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project each public sacrifice task only to its current chooser and expose public refs without physical object identities."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_sacrifice",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeRuntimeTests.test_affected_player_sacrifice_uses_zone_replacement_and_replays",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Save and exactly replay APNAP choice collection, replacement suspension, simultaneous zone movement, and replacement-created counters."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_sacrifice",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeRuntimeTests.test_target_player_choice_revalidates_and_rolls_back_stale_submission",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a stale issued candidate and a malformed typed predicate while preserving the exact authoritative state hash."
+    },
+    {
       "capability_id": "choice.modal.fixed_one",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_choose_one_modal_spells.FixedChooseOneModalRuntimeTests.test_compiled_modal_choice_resolves_only_selected_mode_and_replays",

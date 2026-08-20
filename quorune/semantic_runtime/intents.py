@@ -517,6 +517,40 @@ class MoveObjectsSimultaneouslyIntent:
     reason: str
     owned_only: bool = False
     controlled_only: bool = False
+    replacement_selections: tuple[str | FrozenMap, ...] = ()
+
+    def __post_init__(self) -> None:
+        if (
+            type(self.actor) is not str
+            or not self.actor
+            or not isinstance(self.object_refs, (list, tuple))
+            or any(type(value) is not str or not value for value in self.object_refs)
+            or len(self.object_refs) != len(set(self.object_refs))
+            or not isinstance(self.expected_zones, (list, tuple))
+            or not self.expected_zones
+            or any(
+                type(value) is not str or not value
+                for value in self.expected_zones
+            )
+            or len(self.expected_zones) != len(set(self.expected_zones))
+            or type(self.destination) is not str
+            or not self.destination
+            or type(self.reason) is not str
+            or not self.reason
+            or type(self.owned_only) is not bool
+            or type(self.controlled_only) is not bool
+        ):
+            raise ValueError("Simultaneous object-move intent is malformed")
+        object.__setattr__(self, "object_refs", tuple(self.object_refs))
+        object.__setattr__(self, "expected_zones", tuple(self.expected_zones))
+        object.__setattr__(
+            self,
+            "replacement_selections",
+            _freeze_replacement_selections(
+                tuple(self.replacement_selections),
+                family="Simultaneous object move",
+            ),
+        )
 
 
 @dataclass(frozen=True, slots=True)

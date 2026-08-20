@@ -3,6 +3,9 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from ..attachment_references import AttachmentReferenceKind
+from .affected_player_sacrifice_templates import (
+    fixed_affected_player_sacrifice_effect_template,
+)
 from .amass_templates import fixed_amass_effect_template
 from .bolster_templates import fixed_bolster_effect_template
 from .counter_placement_group_templates import (
@@ -97,6 +100,11 @@ def typed_resolution_effect_template(
     )
     if fixed_player_counter_placement is not None:
         return fixed_player_counter_placement.compiled()
+    affected_player_sacrifice = (
+        fixed_affected_player_sacrifice_effect_template(text)
+    )
+    if affected_player_sacrifice is not None:
+        return affected_player_sacrifice.compiled()
     fixed_counter_placement_target_set = (
         fixed_counter_placement_target_set_effect_template(text)
     )
