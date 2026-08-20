@@ -618,7 +618,8 @@ class CiPipelineTests(unittest.TestCase):
         self.assertIn("--owner reusable-pieces", cloud)
         self.assertIn("actions/download-artifact@v4", cloud)
         self.assertIn("merge-multiple: true", cloud)
-        self.assertIn("scripts/finalize_generated.py --check", cloud)
+        self.assertIn("scripts/finalize_generated.py --write", cloud)
+        self.assertNotIn("scripts/finalize_generated.py --check", cloud)
         self.assertIn("cloud-generated-${{ needs.plan.outputs.source_sha }}", cloud)
         self.assertIn("git diff --exit-code --", cloud)
 

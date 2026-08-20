@@ -376,10 +376,10 @@ jobs:
           pattern: cloud-owner-*-${{ github.run_id }}
           path: .
           merge-multiple: true
-      - id: verify
-        name: Verify assembled generated fixed point
+      - id: finalize
+        name: Finalize assembled generated fixed point
         continue-on-error: true
-        run: python scripts/finalize_generated.py --check
+        run: python scripts/finalize_generated.py --write
       - name: Stage complete downloadable bundle
         if: always()
         run: >-
@@ -397,5 +397,5 @@ jobs:
         if: github.event_name == 'push'
         run: git diff --exit-code --
       - name: Fail an incoherent assembled bundle
-        if: steps.verify.outcome != 'success'
+        if: steps.finalize.outcome != 'success'
         run: exit 1
