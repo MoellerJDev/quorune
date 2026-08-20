@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "8b5cb631db0e6e28e91c292290933c3b3c6e094c962701f924889e646ac0a578"
+verified: "18a650d8cc60f6b7145eb665a67cbe4bcc5da70eb0d97b1aefd1fea57ccf234b"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `a7b84e972707f414286e87f57f197a9a01d002d1b0d1106521ebf1d361b1342f`
+Source fingerprint: `7827eb05dd21f8e1ab6a99fb12c566f0c484291a601c0aec619f4ec433515656`
 
 ## Current top-level state
 
@@ -33,14 +33,13 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 |---:|---|---|---|---:|---:|---:|---:|
 | 1 | selected | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 271 | 0 | 0 |
 | 2 | deferred | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 16 | 106 | 0 | 0 |
-| 3 | deferred | `frontier:keyword_dependency:enchant` | `card_family` | 0 | 139 | 0 | 0 |
-| 4 | deferred | `frontier:target_or_choice:typed-enchant-restriction` | `rules_foundation` | 0 | 139 | 0 | 0 |
-| 5 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 6 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 54 |
-| 7 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
-| 8 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
-| 9 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
-| 10 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
+| 3 | deferred | `frontier:target_or_choice:typed-enchant-restriction` | `rules_foundation` | 5 | 111 | 0 | 0 |
+| 4 | deferred | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 5 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 54 |
+| 6 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
+| 7 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
+| 8 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
+| 9 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
 
 Selected reason: Meets a post-stabilization card, exact-ability, or material-residual harvest threshold but remains behind higher-priority correctness gates.
 

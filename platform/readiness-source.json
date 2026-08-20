@@ -617,6 +617,12 @@
       "name": "Pinned August 2026 Comprehensive Rules snapshot",
       "status": "implemented_on_current_source_tree",
       "evidence": "The current source tree pins the official Comprehensive Rules effective 2026-08-07 and upgrades the derived parser to preserve multi-letter subrules such as CR 704.5aa. The governed delta indexes 18 added, nine removed, and 13 changed rule IDs, with 22 prior IDs invalidated and eight text-identical Battle subrules plus two other text-identical Battle rules retargeted to current numbering. Every added or changed ID is explicitly reviewed: new Hone, Recruit, Storied, non-Siege Battle, protector-change combat, Role, Speed, and Prepare behavior is definition-only, passing, or blocked rather than inheriting the June snapshot's trust. CR 605.1a remains broadly blocked, but the chosen-name nonmana activation capability advances to v2 with a conservative library-movement classifier, and closed fixed-output and intrinsic mana families remain trusted because their typed grammars exclude library-moving costs and effects. Existing Game Record v3 semantics retain their creation-time rules identity."
+    },
+    {
+      "id": "typed_qualified_object_enchant",
+      "name": "Typed qualified-object Enchant restrictions",
+      "status": "implemented_on_current_source_tree",
+      "evidence": "The current source tree extends the shared Aura target and attachment owner with three bounded live predicates: artifact or creature, red or green creature, and tapped creature. A pinned 139-card family probe promotes seven exact, trusted, capability-closed Commander cards, adds 28 ability programs, and removes 167 material residuals by eliminating the redundant generic Enchant blocker while retaining one precise residual for every unsupported restriction. Seven real Oracle cards compile residual-free; cast offers, resolution, and state-based legality consume the same typed schema, including detachment when a tapped-creature predicate stops holding. Existing target revalidation, attachment, replay, privacy, and multiplayer evidence remains authoritative, and uncovered high-risk interaction debt remains zero. Players, nonbattlefield cards, subtypes, mixed type/subtype alternatives, keyword presence or absence, power bounds, attachment-qualified objects, and other unrepresented color or state predicates remain fail-closed."
     }
   ],
   "platform": {

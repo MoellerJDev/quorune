@@ -1,6 +1,7 @@
 """Typed targeting, entry, and legality rules for bounded Aura grammar."""
 
 from .grammar import (
+    is_enchant_keyword_line,
     is_aura_type_line,
     parse_simple_enchant_line,
     simple_enchant_spec_from_oracle,
@@ -52,6 +53,7 @@ __all__ = [
     "enchant_spec_to_dict",
     "aura_resolution_move_kwargs",
     "is_aura_type_line",
+    "is_enchant_keyword_line",
     "legal_aura_target_refs",
     "keyword_target_schema",
     "parse_simple_enchant_line",

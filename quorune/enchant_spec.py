@@ -28,6 +28,9 @@ _OBJECT_KINDS = frozenset(
         "planeswalker",
         "permanent",
         "nonland permanent",
+        "artifact or creature",
+        "red or green creature",
+        "tapped creature",
     }
 )
 
@@ -65,7 +68,15 @@ class SimpleEnchantSpec:
             "count": 1,
             "source_exclusion": True,
         }
-        if self.object_kind == "permanent":
+        if self.object_kind == "artifact or creature":
+            schema["types_any"] = ["artifact", "creature"]
+        elif self.object_kind == "red or green creature":
+            schema.update(
+                {"types_all": ["creature"], "colors_any": ["R", "G"]}
+            )
+        elif self.object_kind == "tapped creature":
+            schema.update({"types_all": ["creature"], "tapped": True})
+        elif self.object_kind == "permanent":
             schema["permanent"] = True
         elif self.object_kind == "nonland permanent":
             schema.update({"permanent": True, "land": False})

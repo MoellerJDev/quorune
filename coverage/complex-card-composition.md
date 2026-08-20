@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "fac8426050856ae34f0a8e0ba2fdc750ec7359157bf9824559e1d9134310670d"
+verified: "32edb061ab8640c32a7f57f25d372ad8ddb4a0fc9a817dc48db26d1cc9e00a5f"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -63,4 +63,4 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Aethersphere Harvester | 161 | 16 | 5 | 4 | 6 | 22 | `blocked` |
 | Covetous Castaway // Ghostly Castigator | 161 | 20 | 6 | 5 | 6 | 7 | `blocked` |
 | Invasion of Gobakhan // Lightshield Array | 161 | 13 | 5 | 4 | 9 | 19 | `blocked` |
-| Animate Dead | 108 | 14 | 4 | 3 | 4 | 5 | `blocked` |
+| Animate Dead | 103 | 13 | 4 | 3 | 3 | 5 | `blocked` |

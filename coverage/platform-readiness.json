@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "862e36a36c0228bc2286d7b0e6d371b5709a08eaff71f4d62f6539f08eec8c5d",
+    "evaluated_input_fingerprint": "616da1e8a48001a7bb5cba83fa48ebfea7483642fc181e3bf8b620e926ff8944",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -630,6 +630,12 @@
       "id": "rules_snapshot_2026_08_07",
       "name": "Pinned August 2026 Comprehensive Rules snapshot",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree extends the shared Aura target and attachment owner with three bounded live predicates: artifact or creature, red or green creature, and tapped creature. A pinned 139-card family probe promotes seven exact, trusted, capability-closed Commander cards, adds 28 ability programs, and removes 167 material residuals by eliminating the redundant generic Enchant blocker while retaining one precise residual for every unsupported restriction. Seven real Oracle cards compile residual-free; cast offers, resolution, and state-based legality consume the same typed schema, including detachment when a tapped-creature predicate stops holding. Existing target revalidation, attachment, replay, privacy, and multiplayer evidence remains authoritative, and uncovered high-risk interaction debt remains zero. Players, nonbattlefield cards, subtypes, mixed type/subtype alternatives, keyword presence or absence, power bounds, attachment-qualified objects, and other unrepresented color or state predicates remain fail-closed.",
+      "id": "typed_qualified_object_enchant",
+      "name": "Typed qualified-object Enchant restrictions",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -669,10 +675,10 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 39393,
+      "material_residuals": 39226,
       "status_counts": {
-        "exact": 5386,
-        "partial": 11894,
+        "exact": 5393,
+        "partial": 11887,
         "unresolved": 14343
       },
       "total": 31623
@@ -691,10 +697,10 @@
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 46617,
+      "material_residuals": 46439,
       "status_counts": {
-        "exact": 8476,
-        "partial": 13014,
+        "exact": 8483,
+        "partial": 13007,
         "unresolved": 17133
       },
       "total": 38623
@@ -742,31 +748,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 39396,
+        "material_residuals": 39229,
         "status_counts": {
-          "residual": 26237,
-          "trusted": 5386
+          "residual": 26230,
+          "trusted": 5393
         },
         "trust_basis_counts": {
-          "capability_closed": 5370,
+          "capability_closed": 5377,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26237
+          "unresolved": 26230
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 46619,
+        "material_residuals": 46441,
         "status_counts": {
           "failed": 2248,
-          "residual": 30144,
-          "trusted": 6231
+          "residual": 30137,
+          "trusted": 6238
         },
         "trust_basis_counts": {
-          "capability_closed": 6215,
+          "capability_closed": 6222,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30144
+          "unresolved": 30137
         }
       }
     },

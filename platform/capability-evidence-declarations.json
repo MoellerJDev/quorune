@@ -948,6 +948,14 @@
     {
       "capability_id": "attachment.aura.simple_object",
       "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_tapped_creature_enchant_rechecks_live_attachment_state",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Advertise only a currently tapped creature, attach on legal resolution, and detach through the shared state action when the live tapped predicate stops holding."
+    },
+    {
+      "capability_id": "attachment.aura.simple_object",
+      "evidence_class": "interaction",
       "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_tapped_reanimation_and_aura_return_use_zone_owners",
       "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -1016,6 +1024,22 @@
       "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Revalidate the exact target, attach on legal resolution, and counter the spell when its only target is illegal."
+    },
+    {
+      "capability_id": "attachment.aura.simple_object",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.QualifiedEnchantCorpusTests.test_real_qualified_enchant_family_is_capability_closed",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile all seven real cards in the bounded artifact-or-creature, red-or-green creature, and tapped-creature family to residual-free capability-closed CardPrograms."
+    },
+    {
+      "capability_id": "attachment.aura.simple_object",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_compiler_lowers_only_closed_enchant_grammar_to_trusted_capability",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower single object, artifact-or-creature, red-or-green creature, and tapped-creature restrictions to exact typed target schemas."
     },
     {
       "capability_id": "attachment.aura.simple_object",

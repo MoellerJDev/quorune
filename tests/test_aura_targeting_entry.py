@@ -9,7 +9,7 @@ import unittest
 import uuid
 from unittest.mock import patch
 
-from common import keep_all, load_assets, make_session, set_fixture_turn
+from common import ROOT, keep_all, load_assets, make_session, set_fixture_turn
 from quorune.aura import (
     AuraControllerRelation,
     AuraEntryChoiceRequired,
@@ -24,7 +24,8 @@ from quorune.ability_fragments import (
     ProtectionSpec,
     ability_fragment_to_dict,
 )
-from quorune.carddb import CardRecord
+from quorune.card_programs import compile_card_program
+from quorune.carddb import CardDatabase, CardRecord
 from quorune.compiler.program_generation import (
     register_generated_programs,
 )
@@ -37,6 +38,7 @@ from quorune.rules.capabilities import (
 from quorune.semantics import SemanticProgram
 from quorune.errors import GameRuleError
 from quorune.model import StackItem
+from scripts.build_test_database import build_fixture_database
 
 
 def aura_record(oracle_id: str, *, restriction: str = "creature") -> CardRecord:
@@ -117,6 +119,15 @@ class SimpleEnchantModelTests(unittest.TestCase):
                 "nonland permanent",
                 "any",
             ),
+            "Enchant artifact or creature": (
+                "artifact or creature",
+                "any",
+            ),
+            "Enchant red or green creature": (
+                "red or green creature",
+                "any",
+            ),
+            "Enchant tapped creature": ("tapped creature", "any"),
             (
                 "Enchant creature (Target a creature as you cast this. "
                 "This card enters attached to that creature.)"
@@ -135,7 +146,7 @@ class SimpleEnchantModelTests(unittest.TestCase):
             "Enchant player",
             "Enchant creature card in a graveyard",
             "Enchant creature with flying",
-            "Enchant artifact or creature",
+            "Enchant creature or Vehicle",
             "Enchant basic land you control",
             "Enchant creature you own",
         ):
@@ -145,6 +156,22 @@ class SimpleEnchantModelTests(unittest.TestCase):
             simple_enchant_spec_from_oracle(
                 "Enchant creature\nEnchant land"
             )
+        )
+
+        self.assertEqual(
+            ["artifact", "creature"],
+            SimpleEnchantSpec("artifact or creature").target_schema()[
+                "types_any"
+            ],
+        )
+        self.assertEqual(
+            ["R", "G"],
+            SimpleEnchantSpec("red or green creature").target_schema()[
+                "colors_any"
+            ],
+        )
+        self.assertTrue(
+            SimpleEnchantSpec("tapped creature").target_schema()["tapped"]
         )
 
     def test_continuation_rejects_malformed_entries(self):
@@ -207,20 +234,107 @@ class SimpleEnchantModelTests(unittest.TestCase):
         )
         self.assertFalse(exact.faces[0].residuals)
 
-        unsupported = compile_oracle_card(
-            aura_record(
-                "fixture:unsupported-aura",
-                restriction="creature with flying",
-            ),
-            capability_registry=registry,
-            capability_profile="commander_review",
+        for restriction, field, expected in (
+            ("artifact or creature", "types_any", ["artifact", "creature"]),
+            ("red or green creature", "colors_any", ["R", "G"]),
+            ("tapped creature", "tapped", True),
+        ):
+            with self.subTest(restriction=restriction):
+                qualified = compile_oracle_card(
+                    aura_record(
+                        f"fixture:qualified-aura:{restriction}",
+                        restriction=restriction,
+                    ),
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                qualified_keyword = qualified.faces[0].nodes[0]
+                self.assertTrue(qualified_keyword.exact)
+                self.assertEqual(
+                    ("attachment.aura.simple_object",),
+                    qualified_keyword.capability_dependencies,
+                )
+                self.assertEqual(expected, qualified_keyword.target_schema[field])
+                self.assertFalse(qualified.faces[0].residuals)
+
+        for restriction in (
+            "creature or Vehicle",
+            "creature without flying",
+            "creature with power 3 or less",
+            "creature with another Aura attached to it",
+        ):
+            with self.subTest(unsupported=restriction):
+                unsupported = compile_oracle_card(
+                    aura_record(
+                        f"fixture:unsupported-aura:{restriction}",
+                        restriction=restriction,
+                    ),
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                unsupported_keyword = unsupported.faces[0].nodes[0]
+                self.assertFalse(unsupported_keyword.exact)
+                self.assertEqual(
+                    ["unsupported_enchant_restriction"],
+                    [value.kind for value in unsupported.faces[0].residuals],
+                )
+
+
+class QualifiedEnchantCorpusTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.temporary = tempfile.TemporaryDirectory()
+        path = Path(cls.temporary.name) / "qualified-enchant.sqlite3"
+        build_fixture_database(
+            ROOT / "tests" / "fixtures" / "qualified-enchant-cards.json",
+            path,
         )
-        unsupported_keyword = unsupported.faces[0].nodes[0]
-        self.assertFalse(unsupported_keyword.exact)
-        self.assertIn(
-            "mechanic:enchant",
-            unsupported.faces[0].residuals[0].blockers,
-        )
+        cls.db = CardDatabase(path)
+        cls.capabilities = load_default_capability_registry()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.db.close()
+        cls.temporary.cleanup()
+
+    def test_real_qualified_enchant_family_is_capability_closed(self):
+        expected = {
+            "Coma Veil": ("types_any", ["artifact", "creature"]),
+            "Controlled Instincts": ("colors_any", ["R", "G"]),
+            "Encase in Ice": ("colors_any", ["R", "G"]),
+            "Entangling Vines": ("tapped", True),
+            "Glimmerdust Nap": ("tapped", True),
+            "Ice Over": ("types_any", ["artifact", "creature"]),
+            "Malfunction": ("types_any", ["artifact", "creature"]),
+        }
+        for name, (field, value) in expected.items():
+            with self.subTest(card=name):
+                record = self.db.lookup(name)
+                ir = compile_oracle_card(
+                    record,
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                self.assertEqual("exact", ir.status)
+                enchant = next(
+                    node
+                    for node in ir.faces[0].nodes
+                    if "attachment.aura.simple_object"
+                    in node.capability_dependencies
+                )
+                self.assertEqual(value, enchant.target_schema[field])
+                program = compile_card_program(
+                    self.db,
+                    record,
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                    trust_level="trusted",
+                )
+                self.assertEqual((), program.residuals)
+                self.assertEqual(
+                    "capability_closed",
+                    program.trust_closure["trust_basis"],
+                )
 
 
 class AuraTargetingEntryEngineTests(unittest.TestCase):
@@ -423,6 +537,51 @@ class AuraTargetingEntryEngineTests(unittest.TestCase):
                         },
                     )
             self.assertEqual(before, engine.state.to_dict())
+
+    def test_tapped_creature_enchant_rechecks_live_attachment_state(self):
+        session, aura, target, records = self.fixture(
+            restriction="tapped creature"
+        )
+        engine = session.engine
+        engine.state.players["A"].mana_pool["U"] = 1
+        with records:
+            self.assertNotIn(
+                aura.ref,
+                {
+                    action.get("card")
+                    for action in engine._priority_action_hints("A")["actions"]
+                },
+            )
+            target.tapped = True
+            action = next(
+                action
+                for action in engine._priority_action_hints("A")["actions"]
+                if action.get("card") == aura.ref
+            )
+            self.assertEqual(
+                [target.ref], action["target_schema"]["legal_refs"]
+            )
+            engine._cast(
+                "A",
+                {
+                    "card": aura.ref,
+                    "targets": [target.ref],
+                    "pay": "manual",
+                    "payment": {"U": 1},
+                },
+            )
+            engine.permissions.invalidate_current()
+            engine.state.pending_decision = None
+            engine.state.priority_player = None
+            engine._prepare_stack_resolution()
+            self.assertEqual(target.object_id, aura.attached_to)
+
+            target.tapped = False
+            self.assertFalse(
+                engine._attachment_is_legal(aura, subtypes={"aura"})
+            )
+            self.assertFalse(engine._stabilize())
+            self.assertEqual("graveyard", aura.zone)
 
     def test_spell_resolution_attaches_and_illegal_target_counters_by_rule(self):
         session, aura, target, records = self.fixture()
