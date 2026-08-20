@@ -5245,6 +5245,33 @@
       "status": "trusted"
     },
     {
+      "id": "choice.affected_player.fixed_sacrifice",
+      "version": 1,
+      "official_rules": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one mandatory fixed affected-player sacrifice by collecting public controlled-permanent choices in APNAP order and committing every chosen object through one replacement-aware simultaneous zone transaction.",
+        "inputs": ["one source-spanned target-player, target-opponent, each-player, or each-opponent sacrifice instruction", "one fixed count of one or two", "one closed public battlefield ObjectQuerySpec", "current effective permanent characteristics and controller", "stable public object refs", "applicable zone-destination replacements"],
+        "outputs": ["one affected-seat-scoped public choice at a time", "APNAP-ordered collection without early mutation", "one simultaneous replacement-aware sacrifice commit", "normalized zone-change and sacrifice events", "exact continuation replay"],
+        "exclusions": ["optional, variable, all, half, greatest, least, historic, dynamic, chosen-quality, subtype, color-count, mana-value, power, toughness, or arbitrary-number sacrifices", "attacking or blocking predicates", "effects where another player chooses the sacrificed object", "linked sacrifice results and conditional follow-ups outside independently closed sequence grammar", "sacrifice costs, delayed sacrifices, state-based sacrifices, and keyword-specific sacrifice procedures"]
+      },
+      "dependencies": ["zone.change.destination_replacement"],
+      "implementation_components": ["quorune.compiler.affected_player_sacrifice_templates.FixedAffectedPlayerSacrificeTemplate", "quorune.compiler.affected_player_sacrifice_templates.fixed_affected_player_sacrifice_effect_template", "quorune.rules.node_capability_shapes.fixed_affected_player_sacrifice_node_capabilities", "quorune.selection.apnap.ApnapChoiceOwnerMixin", "quorune.semantic_choices.apnap_commit.ApnapObjectCommitHandler", "quorune.semantic_runtime.intents.MoveObjectsSimultaneouslyIntent", "quorune.semantic_choices.preparation_coordination.continue_semantic_preparation", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
+      "positive_tests": ["test_fixed_affected_player_sacrifices_compile_across_contexts_and_modes"],
+      "negative_tests": ["test_unsupported_sacrifice_choices_and_shape_mutations_fail_closed"],
+      "interaction_tests": ["test_affected_player_sacrifice_uses_zone_replacement_and_replays"],
+      "multiplayer_tests": ["test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously"],
+      "privacy_tests": ["test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously"],
+      "replay_tests": ["test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously", "test_affected_player_sacrifice_uses_zone_replacement_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking canonical zone-destination replacement removes capability closure from direct and modal affected-player sacrifice nodes; a stale or malformed target, predicate, selection continuation, simultaneous-move identity, or replacement resume rejects before mutation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_affected_player_sacrifice_compiler_mutant_is_killed removes the shared production and proves direct, activated, triggered, and modal witnesses return to precise residuals.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "choice.modal.fixed_one",
       "version": 1,
       "official_rules": ["601.2b", "601.2c", "700.2", "700.2a"],

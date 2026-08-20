@@ -16,6 +16,7 @@ from ..counter_placement import (
 from ..semantic_runtime import (
     IntentPlan,
     LifeChangeIntent,
+    MoveObjectsSimultaneouslyIntent,
     PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
@@ -131,6 +132,7 @@ def _issue_semantic_intent_replacement_choice(
         | PlaceCountersOnTargetsIntent
         | PlacePlayerCountersIntent
         | ProliferateIntent
+        | MoveObjectsSimultaneouslyIntent
         | ZoneMoveIntent
     ),
     intent_index: int,
@@ -254,6 +256,7 @@ def continue_semantic_completion(
                     PlaceCountersOnTargetsIntent,
                     PlacePlayerCountersIntent,
                     ProliferateIntent,
+                    MoveObjectsSimultaneouslyIntent,
                     SurveilLibraryIntent,
                     ZoneMoveIntent,
                 ),

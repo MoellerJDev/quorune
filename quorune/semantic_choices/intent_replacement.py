@@ -13,6 +13,7 @@ from ..semantic_runtime import (
     CounterPlacementAmount,
     CreateTokenIntent,
     LifeChangeIntent,
+    MoveObjectsSimultaneouslyIntent,
     PlaceCounterBatchIntent,
     PlaceCountersIntent,
     PlaceCountersOnSetIntent,
@@ -90,6 +91,15 @@ _ZONE_MOVE_FIELDS = {
 _ZONE_MOVE_EFFECT_ENTRY_FIELDS = _ZONE_MOVE_FIELDS | {
     "expected_zone_change_counter",
     "effect_entry_counters",
+}
+_SIMULTANEOUS_MOVE_FIELDS = {
+    "actor",
+    "object_refs",
+    "expected_zones",
+    "destination",
+    _REASON_FIELD,
+    "owned_only",
+    "controlled_only",
 }
 _PROLIFERATE_FIELDS = {
     "actor",
@@ -360,6 +370,19 @@ def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
             "zone_move",
             identity,
         )
+    if isinstance(intent, MoveObjectsSimultaneouslyIntent):
+        return (
+            "move_objects_simultaneously",
+            {
+                "actor": intent.actor,
+                "object_refs": list(intent.object_refs),
+                "expected_zones": list(intent.expected_zones),
+                "destination": intent.destination,
+                _REASON_FIELD: intent.reason,
+                "owned_only": intent.owned_only,
+                "controlled_only": intent.controlled_only,
+            },
+        )
     if isinstance(intent, SurveilLibraryIntent):
         return _surveil_intent_identity(intent)
     raise SemanticChoiceError(
@@ -598,6 +621,8 @@ def validate_semantic_intent_identity(
         return _validate_create_token_intent_identity(value)
     if kind == "surveil_library":
         return _validate_surveil_intent_identity(value)
+    if kind == "move_objects_simultaneously":
+        return _validate_simultaneous_move_intent_identity(value)
     if kind != "zone_move":
         raise SemanticChoiceError("Unknown semantic intent continuation kind")
     if not isinstance(value, Mapping):
@@ -707,6 +732,30 @@ def validate_semantic_intent_identity(
             }
         )
     return result
+
+
+def _validate_simultaneous_move_intent_identity(
+    value: Mapping[str, Any],
+) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or set(value) != _SIMULTANEOUS_MOVE_FIELDS:
+        raise SemanticChoiceError(
+            "Simultaneous-move intent identity fields are malformed"
+        )
+    try:
+        intent = MoveObjectsSimultaneouslyIntent(
+            actor=value["actor"],
+            object_refs=tuple(value["object_refs"]),
+            expected_zones=tuple(value["expected_zones"]),
+            destination=value["destination"],
+            reason=value[_REASON_FIELD],
+            owned_only=value["owned_only"],
+            controlled_only=value["controlled_only"],
+        )
+    except (TypeError, ValueError) as exc:
+        raise SemanticChoiceError(
+            "Simultaneous-move intent identity is malformed"
+        ) from exc
+    return semantic_intent_identity(intent)[1]
 
 
 def _validate_life_change_intent_identity(
@@ -928,6 +977,7 @@ def with_replacement_selections(
     | CreateTokenIntent
     | SurveilLibraryIntent
     | ZoneMoveIntent
+    | MoveObjectsSimultaneouslyIntent
 ):
     if not isinstance(
         intent,
@@ -942,6 +992,7 @@ def with_replacement_selections(
             CreateTokenIntent,
             SurveilLibraryIntent,
             ZoneMoveIntent,
+            MoveObjectsSimultaneouslyIntent,
         ),
     ):
         raise SemanticChoiceError(

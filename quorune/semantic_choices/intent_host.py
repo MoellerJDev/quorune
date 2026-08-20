@@ -464,6 +464,7 @@ class SemanticChoiceIntentHostMixin:
             ],
             reason=intent.reason,
             log=False,
+            replacement_selections=intent.replacement_selections,
         )
         return tuple(card.ref for card in cards)
 

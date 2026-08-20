@@ -299,6 +299,7 @@ def _activated_effect_dependency_gate(
             "create_damage_prevention_shield",
             "create_token",
             "choose_damage_source",
+            "choose_cards_apnap",
             "choose_option",
             "damage",
             "damage_each_opponent",

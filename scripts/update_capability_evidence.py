@@ -38,6 +38,11 @@ LEGACY_EVIDENCE_FIELDS = {
     "replay": "replay_tests",
 }
 MUTATION_TESTS = {
+    "choice.affected_player.fixed_sacrifice": (
+        "tests.test_fixed_affected_player_sacrifices."
+        "FixedAffectedPlayerSacrificeCompilerTests."
+        "test_affected_player_sacrifice_compiler_mutant_is_killed"
+    ),
     "choice.modal.fixed_one": (
         "tests.test_fixed_choose_one_modal_spells."
         "FixedChooseOneModalCompilerTests."
