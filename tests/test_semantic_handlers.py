@@ -129,7 +129,7 @@ class TypedSemanticHandlerTests(unittest.TestCase):
             )
         )
         self.assertEqual(
-            {"122.1d", "701.26", "701.26a", "701.26b"},
+            {"122.1d", "202.3", "701.26", "701.26a", "701.26b"},
             set(contract["rule_references"]),
         )
 

@@ -415,6 +415,20 @@
       ],
       "impact_edge_status": "not_applicable",
       "resolution": "Every declaration now cites the capability's complete official-rule set and the source block follows canonical evidence-class order. The existing quick-gate impact already selects capability evidence; source-checkpoint preparation now runs update_capability_evidence.py --check and accepts only the expected stale-output result before cloud generation."
+    },
+    {
+      "id": "ci-20260820-29",
+      "run_id": 32421690874,
+      "head_sha": "d4f2b321acda51a245feb8710c433c3a351cfc89",
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "summary": "The fixed mana-value target harvest added CR 202.3 to the tap-and-untap mechanic contract, but its focused local set omitted the contract's exact rule-reference trace assertion.",
+      "failed_surfaces": ["targets-choices-continuations"],
+      "regressions": [
+        "test_semantic_handlers.TypedSemanticHandlerTests.test_contract_traces_tap_and_untap_rules"
+      ],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The exact contract trace now includes CR 202.3. The existing quick-gate policy already selects test_semantic_handlers for mechanic-contract changes; focused preparation for future contract rule-reference edits now runs the named trace method rather than relying on the full affected shard."
     }
   ],
   "recent_pull_requests": [
