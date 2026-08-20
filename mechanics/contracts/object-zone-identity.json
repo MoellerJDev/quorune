@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 5,
+  "contract_version": 6,
   "mechanic_id": "cr-400-general",
   "official_name": "Zones and New Object Identity",
   "effective_date": "2026-08-07",
@@ -113,7 +113,8 @@
     ],
     "hidden_information": [
       "logical incarnation metadata remains authoritative and is not projected as hidden-zone identity",
-      "moving a hidden card outside the game does not reveal it to opponents"
+      "moving a hidden card outside the game does not reveal it to opponents",
+      "a face-down public-zone object is visible to its controller and explicitly informed seats, but ownership alone does not reveal it"
     ],
     "apnap": [
       "represented simultaneous zone-change replacement choices are collected in multiplayer APNAP order before mutation"

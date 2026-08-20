@@ -41,6 +41,9 @@ promote a spectator, select another seat, or request an analyst view.
 - Reconnect begins with a full projection and independent connection cursor.
 - A delta applies only to its exact projected base hash.
 - Private choice candidates appear only in the chooser's decision form.
+- A face-down public-zone object's controller can see its identity. Ownership
+  alone grants no visibility; other seats need explicit known or revealed
+  state.
 - Public fields such as battlefield objects, commander damage, terminal result,
   and lifecycle status are consistent across permitted principals.
 

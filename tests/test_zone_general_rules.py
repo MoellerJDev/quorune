@@ -10,6 +10,7 @@ from quorune.engine import (
     PUBLIC_ZONES,
     GameRuleError,
 )
+from quorune.model import GameState
 from quorune.projection import StateProjector
 from quorune.record import authoritative_state_hash
 
@@ -136,7 +137,7 @@ class ZoneGeneralRuleTests(unittest.TestCase):
                 ].zones["graveyard"],
             )
 
-        card = self.card(engine, "B", "Elves of Deep Shadow")
+        card = self.card(engine, "A", "Sol Ring")
         engine.move_card(
             card.object_id,
             "battlefield",
@@ -144,14 +145,43 @@ class ZoneGeneralRuleTests(unittest.TestCase):
             log=False,
         )
         card.face_down = True
-        card.known_to = ["B"]
+        card.known_to = []
         card.revealed_to = []
 
-        self.assertEqual("?", projector._obj(card, "pilot:A")["n"])
+        for seat in ("A", "C", "D"):
+            hidden = projector._obj(card, f"pilot:{seat}")
+            self.assertEqual(card.ref, hidden["id"])
+            self.assertEqual("?", hidden["n"])
+            self.assertEqual(1, hidden["fd"])
+            self.assertNotIn("cid", hidden)
+            self.assertNotIn("object_id", hidden)
+            self.assertNotIn("logical_object_id", hidden)
+
+        controller_view = projector._obj(card, "pilot:B")
         self.assertEqual(
-            "Elves of Deep Shadow",
-            projector._obj(card, "pilot:B")["n"],
+            "Sol Ring",
+            controller_view["n"],
         )
+        self.assertEqual(card.oracle_id[:8], controller_view["cid"])
+
+        restored_state = GameState.from_dict(engine.state.to_dict())
+        restored_card = restored_state.cards[card.object_id]
+        restored_projector = StateProjector(self.db, restored_state)
+        self.assertEqual(
+            "?",
+            restored_projector._obj(restored_card, "pilot:A")["n"],
+        )
+        self.assertEqual(
+            "Sol Ring",
+            restored_projector._obj(restored_card, "pilot:B")["n"],
+        )
+
+        restored_card.known_to.append("A")
+        known_owner_view = restored_projector._obj(
+            restored_card, "pilot:A"
+        )
+        self.assertEqual("Sol Ring", known_owner_view["n"])
+        self.assertEqual(restored_card.oracle_id[:8], known_owner_view["cid"])
 
     def test_nonbattlefield_destination_uses_the_owners_zone(self):
         session = self.make_session(40003)

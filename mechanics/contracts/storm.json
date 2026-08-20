@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 1,
+  "contract_version": 2,
   "mechanic_id": "storm",
   "official_name": "Storm",
   "effective_date": "2026-08-07",
@@ -14,7 +14,7 @@
     "zones": ["stack"],
     "objects": ["one selected-face spell with an ordinary printed Storm descriptor", "one Storm trigger per printed instance", "zero or more independent spell-copy objects"],
     "events": ["normalized completed spell cast", "ordinary APNAP trigger placement", "public target reassignment", "spell-copy creation and resolution"],
-    "state_reads": ["canonical spell-cast history for the current turn", "source spell modes and X value", "source spell target groups and snapshots", "current legal replacement targets", "trusted source spell program"],
+    "state_reads": ["canonical spell-cast history for the current turn or preserved cast events in a legacy checkpoint", "source spell modes and X value", "source spell target groups and snapshots", "current legal replacement targets", "trusted source spell program"],
     "state_writes": ["ordinary APNAP trigger batch", "controller-only target-choice continuation", "canonical stack-copy objects", "ordinary stack resolution and copy cessation"],
     "costs": ["copies are not cast and do not repeat any original cost"],
     "timing": ["the count is locked when each Storm trigger is created and includes only other spells cast before the Storm spell that turn"],
@@ -29,14 +29,14 @@
     "zone_change": ["the source spell or card may leave before the Storm trigger resolves without erasing the locked trigger"],
     "source_leaves": ["the trigger's immutable copy template survives source departure"]
   },
-  "variants": ["zero prior spells", "multiple prior spells cast by multiple players", "targeted and nontargeted spells", "multiple printed instances", "source spell departure", "stale target", "four-player projection and exact replay"],
+  "variants": ["zero prior spells", "multiple prior spells cast by multiple players", "legacy checkpoints without turn history", "targeted and nontargeted spells", "multiple printed instances", "source spell departure", "stale target", "four-player projection and exact replay"],
   "witness_cards": [
     {"name": "Weather the Storm", "oracle_id": "3a091f7b-efc9-4aaa-9da8-157ef8099a36"},
     {"name": "Grapeshot", "oracle_id": "ebd2d760-5ad8-4027-b124-171822f3edfe"},
     {"name": "Empty the Warrens", "oracle_id": "3a59c882-8bb8-49ba-862f-125020dd5bec"}
   ],
   "rulings": [],
-  "test_ids": ["test_all_real_storm_cards_lower_typed_stack_trigger", "test_multiple_storm_instances_compile_separately", "test_unsupported_storm_wording_remains_material_residual", "test_storm_dependency_and_compiler_mutations_fail_closed", "test_nontargeted_storm_copies_prior_casts_without_extra_choice", "test_zero_prior_spells_resolves_without_copies", "test_source_departure_does_not_erase_locked_storm_trigger", "test_targeted_storm_copies_retarget_and_revalidate_independently", "test_storm_and_prowess_share_one_trigger_order_batch", "test_spell_copies_do_not_increase_the_next_storm_count", "test_runtime_requires_typed_storm_descriptor", "test_stale_or_malformed_storm_choice_rolls_back", "test_four_player_storm_choice_is_public_and_replays_exactly"],
+  "test_ids": ["test_all_real_storm_cards_lower_typed_stack_trigger", "test_multiple_storm_instances_compile_separately", "test_unsupported_storm_wording_remains_material_residual", "test_storm_dependency_and_compiler_mutations_fail_closed", "test_nontargeted_storm_copies_prior_casts_without_extra_choice", "test_zero_prior_spells_resolves_without_copies", "test_legacy_zero_prior_spells_excludes_the_current_cast", "test_legacy_prior_spells_are_snapshotted_and_replay_exactly", "test_source_departure_does_not_erase_locked_storm_trigger", "test_targeted_storm_copies_retarget_and_revalidate_independently", "test_storm_and_prowess_share_one_trigger_order_batch", "test_spell_copies_do_not_increase_the_next_storm_count", "test_runtime_requires_typed_storm_descriptor", "test_stale_or_malformed_storm_choice_rolls_back", "test_four_player_storm_choice_is_public_and_replays_exactly"],
   "implementation": {
     "component": "quorune.compiler.storm_nodes.storm_keyword_node, quorune.semantic_runtime.ability_fragments.StormAbilityFragmentHandler, quorune.storm.storm_trigger_items, quorune.trigger_processing.enqueue_trigger_batch, and quorune.selection.storm.StormTargetChoiceOwnerMixin",
     "version": "typed-ordinary-storm-v1",

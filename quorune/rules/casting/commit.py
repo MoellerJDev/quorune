@@ -7,7 +7,7 @@ from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
 from ...cascade import cascade_trigger_items
-from ...storm import storm_trigger_items
+from ...storm import prior_storm_spell_count, storm_trigger_items
 from ...convoke import ConvokeError
 from ...counter_placement import (
     CounterPlacementError,
@@ -832,6 +832,8 @@ def _dispatch_cast_events(
     item: StackItem,
     program: Any,
     costs: _AdditionalCostCommit,
+    *,
+    prior_spell_count: int,
 ) -> None:
     trigger_batch = list(
         cascade_trigger_items(host, spell=item, card=card)
@@ -842,6 +844,7 @@ def _dispatch_cast_events(
             spell=item,
             card=card,
             program=program,
+            prior_spell_count=prior_spell_count,
         )
     )
     for (
@@ -981,6 +984,7 @@ def commit_cast(
     )
     item.x_value = response.get("x")
     item.notes = str(response.get("note") or "")
+    prior_spell_count = prior_storm_spell_count(host)
     host.state.stack.append(item)
     if proposal.origin == "command" and card.is_commander:
         player = host.state.players[proposal.seat]
@@ -990,7 +994,15 @@ def commit_cast(
     _record_cast(
         host, proposal, card, item, spent, activations, selected_option, costs
     )
-    _dispatch_cast_events(host, proposal, card, item, program, costs)
+    _dispatch_cast_events(
+        host,
+        proposal,
+        card,
+        item,
+        program,
+        costs,
+        prior_spell_count=prior_spell_count,
+    )
     collect_ward_occurrences(host, item)
     host.state.players[proposal.seat].yield_policy = YieldPolicy()
     if bool(details.get("during_resolution")):
