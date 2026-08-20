@@ -162,6 +162,7 @@
     "test_affected_player_sacrifice_dependencies_fail_closed",
     "test_affected_player_sacrifice_compiler_mutant_is_killed",
     "test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously",
+    "test_fixed_count_sacrifices_available_objects_and_skips_empty_player",
     "test_target_player_choice_revalidates_and_rolls_back_stale_submission",
     "test_affected_player_sacrifice_uses_zone_replacement_and_replays"
   ],

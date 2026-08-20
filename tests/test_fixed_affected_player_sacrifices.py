@@ -521,6 +521,53 @@ class FixedAffectedPlayerSacrificeRuntimeTests(unittest.TestCase):
             )
         self.assertEqual(before, authoritative_state_hash(engine.state))
 
+    def test_fixed_count_sacrifices_available_objects_and_skips_empty_player(
+        self,
+    ):
+        session = self.session(70102104)
+        engine = session.engine
+        permanents: dict[str, list[CardInstance]] = {
+            seat: [
+                self.permanent(
+                    engine,
+                    seat=seat,
+                    name="Birds of Paradise",
+                    ref=f"{seat}-fixed-count-{index}",
+                    token=False,
+                )
+                for index in range(quantity)
+            ]
+            for seat, quantity in {"A": 2, "B": 1, "C": 0, "D": 2}.items()
+        }
+        self.stage(engine, "Each player sacrifices two creatures.")
+
+        for seat in "ABD":
+            self.assertEqual(f"pilot:{seat}", session.pending_principals()[0])
+            result = session.act(
+                f"pilot:{seat}",
+                {
+                    "action_id": "choose",
+                    "cards": [card.ref for card in permanents[seat]],
+                },
+            )
+            self.assertTrue(result.ok, result.summary)
+            if seat != "D":
+                self.assertTrue(
+                    all(
+                        card.zone == "battlefield"
+                        for cards in permanents.values()
+                        for card in cards
+                    )
+                )
+
+        self.assertTrue(
+            all(
+                card.zone == "graveyard"
+                for cards in permanents.values()
+                for card in cards
+            )
+        )
+
     def test_affected_player_sacrifice_uses_zone_replacement_and_replays(self):
         session = self.session(70102103)
         engine = session.engine

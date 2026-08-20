@@ -5257,7 +5257,7 @@
       },
       "dependencies": ["zone.change.destination_replacement"],
       "implementation_components": ["quorune.compiler.affected_player_sacrifice_templates.FixedAffectedPlayerSacrificeTemplate", "quorune.compiler.affected_player_sacrifice_templates.fixed_affected_player_sacrifice_effect_template", "quorune.rules.node_capability_shapes.fixed_affected_player_sacrifice_node_capabilities", "quorune.selection.apnap.ApnapChoiceOwnerMixin", "quorune.semantic_choices.apnap_commit.ApnapObjectCommitHandler", "quorune.semantic_runtime.intents.MoveObjectsSimultaneouslyIntent", "quorune.semantic_choices.preparation_coordination.continue_semantic_preparation", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
-      "positive_tests": ["test_fixed_affected_player_sacrifices_compile_across_contexts_and_modes"],
+      "positive_tests": ["test_fixed_affected_player_sacrifices_compile_across_contexts_and_modes", "test_fixed_count_sacrifices_available_objects_and_skips_empty_player"],
       "negative_tests": ["test_unsupported_sacrifice_choices_and_shape_mutations_fail_closed"],
       "interaction_tests": ["test_affected_player_sacrifice_uses_zone_replacement_and_replays"],
       "multiplayer_tests": ["test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously"],
