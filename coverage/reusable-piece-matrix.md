@@ -2,7 +2,7 @@
 title: "Reusable rules piece matrix"
 status: "generated"
 authoritative_source: "coverage/reusable-piece-matrix.json.gz"
-verified: "c9fc48ac32074e92058ada84912603a34f62d9c3f17983aaa5c6f423a5a00724"
+verified: "c9b138be09eb76baff74eb3d57a613587538effab1645d9f47939bf6b6c98ee3"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -17,12 +17,12 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 - Profile: `commander_review`
 - Ontology: `reusable-pieces-v1`
-- Pieces: 1,667
+- Pieces: 1,666
 - Cards indexed: 31,623
 - Material abilities classified: 59,572
 - Unclassified material spans: 0
 - Mapped pinned rules: 887 / 3,309
-- Applicable piece pairs: 40,336
+- Applicable piece pairs: 40,237
 - Covered piece pairs: 698
 
 ## Ontology classes
@@ -37,7 +37,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 | `continuous_effects` — Static abilities and continuous effects | 38 |
 | `costs_mana` — Costs and mana | 8 |
 | `events_mutations` — Typed events and mutations | 108 |
-| `keyword_mechanics` — Keyword actions and keyword abilities | 538 |
+| `keyword_mechanics` — Keyword actions and keyword abilities | 537 |
 | `multiplayer_commander` — Multiplayer, Commander, and profile pieces | 1 |
 | `object_identity` — Object identity and lifetime | 29 |
 | `one_shot_effects` — One-shot semantic effects | 152 |
@@ -67,7 +67,7 @@ Counts official ruling presence by Oracle ID. Ruling prose is not yet behavioral
 
 | Piece | Class | Residuals | Sole blockers | Expected cards | Runtime | Assurance |
 |---|---|---:|---:|---:|---|---|
-| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 8,811 | 3,764 | 3,764 | `absent` | `untested` |
+| `residual.continuous_layer.continuous-effect-layers-and-dependencies` | `continuous_effects` | 8,811 | 3,775 | 3,775 | `absent` | `untested` |
 | `residual.effect_clause.unparsed-clause-grammar` | `one_shot_effects` | 2,870 | 289 | 289 | `absent` | `untested` |
 | `residual.activated_effect.unparsed-clause-grammar` | `one_shot_effects` | 2,052 | 141 | 141 | `absent` | `untested` |
 | `residual.activated_effect.create-token` | `one_shot_effects` | 329 | 22 | 22 | `absent` | `untested` |
