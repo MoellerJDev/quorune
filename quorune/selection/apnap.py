@@ -89,7 +89,7 @@ class ApnapChoiceOwnerMixin:
                 or predicate.include_phased_out
             ):
                 raise GameRuleError(
-                    "APNAP object choices require a controller-bound public "
+                    "APNAP object choices require a controller-bound "
                     "zone predicate"
                 )
             predicate = replace(
@@ -163,6 +163,10 @@ class ApnapChoiceOwnerMixin:
         if type(count) is not int or count <= 0:
             raise GameRuleError("APNAP choice count must be positive")
         if effect.get("predicate") is not None:
+            private_discard = (
+                effect.get("zone") == "hand"
+                and effect.get("then") == "discard"
+            )
             allowed_fields = {
                 "op",
                 "actor",
@@ -172,6 +176,7 @@ class ApnapChoiceOwnerMixin:
                 "count",
                 "then",
                 "prompt",
+                *(("hidden",) if private_discard else ()),
                 *(('target',) if "target" in effect else ()),
             }
             stack_ref = str(continuation.get("stack_ref") or "")
@@ -186,8 +191,15 @@ class ApnapChoiceOwnerMixin:
             if (
                 set(effect) != allowed_fields
                 or effect.get("op") != "choose_cards_apnap"
-                or effect.get("zone") != "battlefield"
-                or effect.get("then") != "sacrifice"
+                or (
+                    effect.get("zone"),
+                    effect.get("then"),
+                    effect.get("hidden", False),
+                )
+                not in {
+                    ("battlefield", "sacrifice", False),
+                    ("hand", "discard", True),
+                }
                 or type(effect.get("actor")) is not str
                 or effect.get("actor") not in self.active_seats
                 or item is None

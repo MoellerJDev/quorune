@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-"""Typed commit bridge for collected APNAP public-object choices."""
+"""Typed commit bridge for collected APNAP object choices."""
 
 from dataclasses import dataclass
 from typing import Any, Mapping
@@ -103,13 +103,16 @@ class ApnapObjectCommitHandler:
     rule_references: tuple[str, ...] = (
         "CR 101.4",
         "CR 608.2c",
+        "CR 701.9",
+        "CR 701.9a",
+        "CR 701.9c",
         "CR 701.21",
     )
     capability_dependencies: tuple[str, ...] = (
         "zone.change.destination_replacement",
     )
     continuation_fields: tuple[str, ...] = tuple(sorted(_FIELDS))
-    private_data: tuple[str, ...] = ()
+    private_data: tuple[str, ...] = ("object_refs",)
     projected_fields: tuple[str, ...] = ()
     mutation_path: tuple[str, ...] = (
         "MoveObjectsSimultaneouslyIntent",
@@ -117,6 +120,7 @@ class ApnapObjectCommitHandler:
     )
     replay_fixture: str = "apnap-object-choice-commit"
     test_modules: tuple[str, ...] = (
+        "tests.test_fixed_affected_player_discards",
         "tests.test_fixed_affected_player_sacrifices",
     )
 

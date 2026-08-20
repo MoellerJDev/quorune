@@ -2418,6 +2418,86 @@
       "applicability_note": "Replay the accepted typed graveyard cast through the ordinary command journal to the same final state."
     },
     {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Collect private opponent hand choices, suspend their simultaneous discard for destination replacement, and commit only the replaced public exile results."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Collect three opponent choices from the active player onward without mutating any hand before all affected seats have chosen."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardCompilerTests.test_affected_player_discard_compiler_mutant_is_killed",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the shared production and prove direct, activated, triggered, and modal witnesses return to precise material residuals."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardCompilerTests.test_target_discard_dependency_fails_closed",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Block destination replacement and prove the source-spanned targeted discard program loses exact capability closure."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardCompilerTests.test_unsupported_discard_choices_and_shape_mutations_fail_closed",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject random, variable, all-hand, optional, linked-result, changed-zone, changed-privacy, malformed-predicate, and unsupported-count forms."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardCompilerTests.test_fixed_affected_player_discards_compile_across_contexts_and_modes",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compile direct spell, triggered, activated, and complete fixed Choose one modal contexts through one affected-player discard descriptor."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_fixed_count_discard_uses_available_cards_and_skips_empty_hand",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Discard the available number up to a fixed count from each hand, skip an empty hand, and delay every move until the last nonempty player chooses."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project only the current chooser's hand refs, withhold physical IDs and every other seat's selected identity, and reveal results only after commitment."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Save and exactly replay private APNAP selection, replacement suspension, simultaneous movement, public exile, and replacement-created counters."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_stale_and_malformed_private_discard_reject_before_mutation",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject a stale issued private candidate and a changed hidden flag while preserving the exact authoritative state hash."
+    },
+    {
       "capability_id": "choice.affected_player.fixed_sacrifice",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_affected_player_sacrifices.FixedAffectedPlayerSacrificeRuntimeTests.test_affected_player_sacrifice_uses_zone_replacement_and_replays",

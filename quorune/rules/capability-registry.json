@@ -5245,6 +5245,33 @@
       "status": "trusted"
     },
     {
+      "id": "choice.affected_player.fixed_discard",
+      "version": 1,
+      "official_rules": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve one mandatory fixed affected-player discard by collecting private hand choices in APNAP order and committing every chosen card through one replacement-aware simultaneous zone transaction.",
+        "inputs": ["one source-spanned target-player, target-opponent, each-player, or each-opponent discard instruction", "one fixed count from one through three", "one closed hand-zone ObjectQuerySpec", "affected players' private current hands", "stable actor-private card refs", "applicable zone-destination replacements"],
+        "outputs": ["one affected-seat-scoped private choice at a time", "APNAP-ordered collection without early mutation or prior-choice disclosure", "one simultaneous replacement-aware discard commit", "normalized public post-move zone-change and discard events", "exact continuation replay"],
+        "exclusions": ["random, optional, variable, all-hand, half-hand, named-card, type-qualified, revealed-card, or arbitrary-number discards", "effects where another player chooses or observes the discarded cards", "linked discard results and conditional follow-ups outside independently closed sequence grammar", "discard costs, cleanup discards, Ward and Equip costs, Madness, Cycling, and other keyword-specific discard procedures"]
+      },
+      "dependencies": ["zone.change.destination_replacement"],
+      "implementation_components": ["quorune.compiler.affected_player_discard_templates.FixedAffectedPlayerDiscardTemplate", "quorune.compiler.affected_player_discard_templates.fixed_affected_player_discard_effect_template", "quorune.rules.affected_player_discard_capability_shapes.fixed_affected_player_discard_node_capabilities", "quorune.selection.apnap.ApnapChoiceOwnerMixin", "quorune.semantic_choices.apnap_commit.ApnapObjectCommitHandler", "quorune.semantic_runtime.intents.MoveObjectsSimultaneouslyIntent", "quorune.semantic_choices.preparation_coordination.continue_semantic_preparation", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
+      "positive_tests": ["test_fixed_affected_player_discards_compile_across_contexts_and_modes", "test_fixed_count_discard_uses_available_cards_and_skips_empty_hand"],
+      "negative_tests": ["test_unsupported_discard_choices_and_shape_mutations_fail_closed", "test_target_discard_dependency_fails_closed"],
+      "interaction_tests": ["test_private_apnap_discard_uses_zone_replacement_and_replays"],
+      "multiplayer_tests": ["test_private_apnap_discard_uses_zone_replacement_and_replays"],
+      "privacy_tests": ["test_private_apnap_discard_uses_zone_replacement_and_replays"],
+      "replay_tests": ["test_private_apnap_discard_uses_zone_replacement_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking canonical zone-destination replacement removes capability closure from direct and modal discard nodes; a stale or malformed target, hidden-choice continuation, simultaneous-move identity, or replacement resume rejects before mutation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_affected_player_discard_compiler_mutant_is_killed removes the shared production and proves direct, activated, triggered, and modal witnesses return to precise residuals.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "choice.affected_player.fixed_sacrifice",
       "version": 1,
       "official_rules": ["101.4", "115.1", "608.2b", "608.2c", "701.21", "701.21a"],

@@ -133,6 +133,16 @@ Optional, variable, all, half, greatest/least, dynamic-characteristic,
 combat-state, subtype, color, linked-result, cost, delayed, and rule-generated
 sacrifice forms remain source-spanned residuals.
 
+`compiler/affected_player_discard_templates.py` owns the parallel mandatory
+fixed affected-player discard leaf for one, two, or three cards. The same
+target-player, target-opponent, each-player, and each-opponent relations feed
+the existing APNAP selection owner, but hand candidates and prior selections
+remain actor-private until one simultaneous replacement-aware move publishes
+the actual destinations. Spell, triggered, activated, and fixed Choose one
+modal bodies share the descriptor. Random, optional, variable, all-hand,
+revealed or qualified, linked-result, cost, cleanup, and keyword-specific
+discard forms remain source-spanned residuals.
+
 `compiler/cumulative_upkeep_nodes.py` owns the closed printed
 cumulative-upkeep grammar. It lowers one fixed positive ordinary-mana cost or
 one em-dash-delimited fixed positive life cost to a source-spanned upkeep
