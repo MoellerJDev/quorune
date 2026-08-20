@@ -474,6 +474,11 @@
         "candidate_id": "compiler:fixed-affected-player-sacrifice",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "After Storm, the generated Choose one leader still represented 271 nonexecuting structural headers with zero sole-blocker cards. Classifying every sibling found one coherent shared choice and zone-transition prerequisite across direct spell, triggered, activated, and modal contexts: target-player, target-opponent, each-player, and each-opponent fixed sacrifices. A bounded 436-card probe measures 20 newly exact Commander cards, 32 exact abilities, and 45 removed residuals while replacing the legacy APNAP collector's direct commit with one replacement-resumable simultaneous move intent. The family immediately harvests modal bodies without treating the header as authority and excludes variable, dynamic, combat-state, linked, delayed, cost, and rule-generated sacrifice forms."
+      },
+      {
+        "candidate_id": "compiler:fixed-mana-value-direct-targets",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "After fixed affected-player sacrifices, the generated Choose one leader still has zero sole blockers and its 266 cards require unrelated sibling owners. The 147-card modal target-predicate cohort and a broader pinned-corpus classification expose 165 cards with mana-value-qualified targets. A bounded direct battlefield slice measures 14 newly exact Commander cards, 18 exact abilities, and 20 removable residuals across destruction, exile, and tap in spell, trigger, activated, and modal contexts. Although its immediate card gain is below the normal harvest threshold, extending the existing shared direct-target characteristic descriptor is the major reusable prerequisite for that broader cohort. The slice explicitly excludes power, toughness, variable and total mana values, public-state combinations, and hidden-zone movement so it does not cross the cycle-sensitive dynamic-characteristic boundary."
       }
     ]
   },

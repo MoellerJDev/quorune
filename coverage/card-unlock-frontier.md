@@ -2,7 +2,7 @@
 title: "Commander card-unlock frontier"
 status: "generated"
 authoritative_source: "coverage/card-unlock-frontier.json.gz"
-verified: "e6db38f0e0b9afa07498800b567d44462ff8cd0818f52d46c07ec43cbf2e3a26"
+verified: "23d433a22b8ea05e740d773ff01b9432517b85bfad302d2a8f1cce2e97172c95"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -14,10 +14,10 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 ## Snapshot
 
 - Cards considered: 31,623
-- Oracle states: `{"exact":5453,"partial":11894,"unresolved":14276}`
-- CardProgram states: `{"residual":26170,"trusted":5453}`
+- Oracle states: `{"exact":5467,"partial":11894,"unresolved":14262}`
+- CardProgram states: `{"residual":26156,"trusted":5467}`
 - Hard construction failures: 0
-- Frontier fingerprint: `e6db38f0e0b9afa07498800b567d44462ff8cd0818f52d46c07ec43cbf2e3a26`
+- Frontier fingerprint: `23d433a22b8ea05e740d773ff01b9432517b85bfad302d2a8f1cce2e97172c95`
 
 ## Highest-leverage single families
 
@@ -26,14 +26,14 @@ This generated report ranks minimum known compiler and rules blockers for the pi
 | `continuous_layer:continuous-effect-layers-and-dependencies` | 8,811 | 7,098 | 3,781 | 8,811 | missing_lowering | very_high |
 | `activated_effect:create-token` | 329 | 322 | 22 | 66 | missing_lowering | high |
 | `replacement:damage-prevention` | 168 | 165 | 21 | 40 | missing_lowering | very_high |
-| `effect_clause:exile` | 628 | 608 | 16 | 96 | missing_lowering | high |
-| `effect_clause:life-change` | 556 | 553 | 16 | 44 | missing_lowering | high |
+| `effect_clause:exile` | 623 | 603 | 16 | 96 | missing_lowering | high |
+| `effect_clause:life-change` | 555 | 552 | 16 | 44 | missing_lowering | high |
 | `mechanic_dependency:affinity-unsupported-wording` | 36 | 36 | 16 | 36 | missing_contract | high |
-| `effect_clause:return` | 637 | 612 | 16 | 28 | missing_lowering | high |
+| `effect_clause:return` | 636 | 611 | 16 | 28 | missing_lowering | high |
 | `mechanic_dependency:cr-400-general` | 26 | 26 | 16 | 26 | partial | high |
 | `activated_effect:unparsed-this-creature-can` | 39 | 39 | 16 | 23 | missing_lowering | high |
 | `effect_clause:typed-spell-additional-cost-clause` | 106 | 106 | 16 | 16 | missing_lowering | high |
-| `activated_effect:exile` | 377 | 350 | 14 | 41 | missing_lowering | high |
+| `activated_effect:exile` | 376 | 350 | 14 | 41 | missing_lowering | high |
 | `activated_effect:put-onto-battlefield` | 288 | 286 | 14 | 32 | missing_lowering | high |
 | `effect_clause:create-token` | 580 | 564 | 12 | 87 | missing_lowering | high |
 | `effect_clause:sacrifice` | 114 | 114 | 12 | 37 | missing_lowering | high |

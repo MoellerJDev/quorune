@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
-  "contract_version": 3,
+  "contract_version": 4,
   "mechanic_id": "destroy",
   "official_name": "Destroy",
   "effective_date": "2026-08-07",
   "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "rule_references": [
     "122.1c",
+    "202.3",
     "701.8",
     "701.8a",
     "701.8b",
@@ -62,7 +63,7 @@
     ],
     "targets": [
       "the bounded compiler accepts one canonical disjunction of up to four artifact, battle, creature, enchantment, land, or planeswalker types through the shared direct-permanent target owner",
-      "the same owner accepts represented controller, source-exclusion, color, public-state, and up-to-four negative creature-subtype qualifiers",
+      "the same owner accepts represented controller, source-exclusion, color, fixed mana-value, public-state, and up-to-four negative creature-subtype qualifiers",
       "resolution-time target legality is revalidated before preparation"
     ],
     "choices": [
@@ -109,7 +110,8 @@
     "simultaneous multiplayer destruction",
     "transaction rollback",
     "exact command replay",
-    "closed direct-target grammar shared by spell, trigger, and activated contexts"
+    "closed direct-target grammar shared by spell, trigger, activated, and modal contexts",
+    "one fixed exact, minimum, or maximum target mana-value qualifier"
   ],
   "witness_cards": [
     {
@@ -146,11 +148,13 @@
     "test_targeted_destruction_shape_mutants_fail_closed",
     "test_targeted_destruction_parser_mutation_is_killed",
     "test_compiled_union_destruction_offer_command_resolution_and_replay",
-    "test_compiled_union_destruction_respects_indestructible"
+    "test_compiled_union_destruction_respects_indestructible",
+    "test_fixed_mana_value_targets_compile_across_effect_contexts",
+    "test_current_copy_derived_mana_value_governs_offer_command_and_resolution"
   ],
   "implementation": {
     "component": "typed direct-target compiler, strict destruction semantic handler, canonical destruction transaction, counter owner, and zone-transition owner",
-    "version": "destruction-v3"
+    "version": "destruction-v4"
   },
   "known_blockers": [
     "effects that say a permanent cannot be regenerated are not represented",

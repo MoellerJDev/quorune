@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "4cb724e34875056e53551c96c51753e8ce545291f3c146beb0b8dea28e3079cc"
+verified: "e85ab5d2f7c5826c651c8256b61c75070a13f0210c854f5e9042b88c1ca71805"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 28
-- Deterministic escapes: 23
+- Escapes: 29
+- Deterministic escapes: 24
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -54,6 +54,7 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260817-26` | [32040255059](https://github.com/NullPriority/quorune/actions/runs/32040255059) | `source_correctness` | `added` | Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Empty and ambiguous selections remain fail-closed. |
 | `ci-20260820-27` | [32379387144](https://github.com/NullPriority/quorune/actions/runs/32379387144) | `browser_integration` | `not_applicable` | The existing @mana-action impact edge already selected the journey. The driver now uses the bounded progress-aware multi-page pass loop before asserting the Bowmasters target choice and shares the 600-second hosted durability budget used by adjacent long serial journeys. |
 | `ci-20260820-28` | [32401690028](https://github.com/NullPriority/quorune/actions/runs/32401690028) | `source_correctness` | `not_applicable` | Every declaration now cites the capability's complete official-rule set and the source block follows canonical evidence-class order. The existing quick-gate impact already selects capability evidence; source-checkpoint preparation now runs update_capability_evidence.py --check and accepts only the expected stale-output result before cloud generation. |
+| `ci-20260820-29` | [32421690874](https://github.com/NullPriority/quorune/actions/runs/32421690874) | `missing_affected_test` | `not_applicable` | The exact contract trace now includes CR 202.3. The existing quick-gate policy already selects test_semantic_handlers for mechanic-contract changes; focused preparation for future contract rule-reference edits now runs the named trace method rather than relying on the full affected shard. |
 
 ## Measurement limitations
 

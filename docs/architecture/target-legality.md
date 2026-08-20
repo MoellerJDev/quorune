@@ -30,9 +30,13 @@ revalidation all consume that same immutable descriptor. Effective type,
 subtype, and color qualifiers remain in the characteristic snapshot, so the
 represented type disjunctions, negative creature subtypes, nonblack, and
 colorless creature forms respond to continuous characteristic changes without
-parsing Oracle text at runtime. The compiler's `DirectPermanentTargetSpec`
-owner supplies this one schema vocabulary to both fixed counter placement and
-targeted destruction; neither effect family adds a private legality predicate.
+parsing Oracle text at runtime. The same snapshot supplies one fixed exact,
+minimum, or maximum mana-value qualifier. That qualifier observes represented
+copy-derived characteristics and the public mana value of a face-down object;
+it does not open power, toughness, variable, total, or combined public-state
+numeric grammar. The compiler's `DirectPermanentTargetSpec` owner supplies
+this one schema vocabulary to counter placement, destruction, exile, and tap
+or untap effects; no effect family adds a private legality predicate.
 
 ## Typed protection boundary
 
@@ -92,7 +96,8 @@ or another seat's decision. The pure verdict is constant in the number of game
 objects; candidate enumeration remains owned by the surrounding target query.
 
 Primary evidence is in `test_hexproof_targeting.py`,
-`test_shroud_targeting.py`, `test_oracle_ir.py`, and
+`test_shroud_targeting.py`, `test_fixed_mana_value_target_predicates.py`,
+`test_oracle_ir.py`, and
 `test_capability_implementation_mutations.py`. Broader player Hexproof, player
 Shroud, Hexproof-from-quality, effects that ignore either ability, hidden-zone
 targets, and unsupported ability-changing, copying, face-down, or merged-object
