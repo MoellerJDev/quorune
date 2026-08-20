@@ -50,6 +50,7 @@ TRAINING_FRAGMENT_HANDLER_ID = "ability.trigger.training.v1"
 RENOWN_FRAGMENT_HANDLER_ID = "ability.trigger.renown.v1"
 CASCADE_FRAGMENT_HANDLER_ID = "ability.trigger.cascade.v1"
 PROWESS_FRAGMENT_HANDLER_ID = "ability.trigger.prowess.v1"
+STORM_FRAGMENT_HANDLER_ID = "ability.trigger.storm.v1"
 TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID = (
     "ability.static.trigger-multiplier.v1"
 )
@@ -655,6 +656,46 @@ class CascadeAbilityFragmentHandler:
 
 
 @dataclass(frozen=True, slots=True)
+class StormAbilityFragmentHandler:
+    handler_id: str = STORM_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.trigger.storm"
+    event: str = "spell.cast"
+    rule_references: tuple[str, ...] = (
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.40",
+        "702.40a",
+        "702.40b",
+    )
+    capability_dependencies: tuple[str, ...] = ("trigger.keyword.storm",)
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> SpellCastKeywordTriggerSpec:
+        fragment = _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=SpellCastKeywordTriggerSpec,
+        )
+        if fragment.kind is not SpellCastKeywordTriggerKind.STORM:
+            raise SemanticNodeError(
+                "The Storm runtime handler requires a Storm fragment"
+            )
+        return fragment
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
 class ProwessAbilityFragmentHandler:
     handler_id: str = PROWESS_FRAGMENT_HANDLER_ID
     schema_version: int = 1
@@ -979,6 +1020,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             ProtectionAbilityFragmentHandler(),
             ProwessAbilityFragmentHandler(),
             RenownAbilityFragmentHandler(),
+            StormAbilityFragmentHandler(),
             TrainingAbilityFragmentHandler(),
             TriggerMultiplierAbilityFragmentHandler(),
             ToxicAbilityFragmentHandler(),
@@ -1026,6 +1068,7 @@ __all__ = [
     "TRAINING_FRAGMENT_HANDLER_ID",
     "RENOWN_FRAGMENT_HANDLER_ID",
     "PROWESS_FRAGMENT_HANDLER_ID",
+    "STORM_FRAGMENT_HANDLER_ID",
     "TRIGGER_MULTIPLIER_FRAGMENT_HANDLER_ID",
     "WARD_FRAGMENT_HANDLER_ID",
     "TOXIC_FRAGMENT_HANDLER_ID",
@@ -1050,6 +1093,7 @@ __all__ = [
     "TrainingAbilityFragmentHandler",
     "RenownAbilityFragmentHandler",
     "ProwessAbilityFragmentHandler",
+    "StormAbilityFragmentHandler",
     "TriggerMultiplierAbilityFragmentHandler",
     "ToxicAbilityFragmentHandler",
     "WardAbilityFragmentHandler",

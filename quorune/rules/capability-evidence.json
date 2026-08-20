@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "3367f3dcd1102b3f480969e6404978562a43befff82056c6de5bff6254da05de",
-  "declaration_source_fingerprint": "be7ca061bcc5ff1a44462f62ea749a99d0d66733b23b6343ffeb74bc23ddb1fb",
+  "registry_fingerprint": "aed861dbd62f4177e0fa085bbabe2b3095ccf3e9c799e18c8ed715f64d59d7e9",
+  "declaration_source_fingerprint": "28c9e345cb007825ddb647f0b02d8baeca0259af0135a3df12b6b37d14f0b45d",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -38654,6 +38654,139 @@
       "applicability_note": "Replay trigger placement and the identity-locked until-end-of-turn characteristic result to the same final hash."
     },
     {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_targeted_storm_copies_retarget_and_revalidate_independently",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.40",
+        "702.40a",
+        "702.40b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Create independent Grapeshot copies through the canonical spell-copy owner, assign distinct public targets, and revalidate each target only for its own resolution."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_four_player_storm_choice_is_public_and_replays_exactly",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.40",
+        "702.40a",
+        "702.40b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Expose one controller-authorized public target choice in a four-player game while preserving ordinary priority and opponent projections."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_storm_rules.StormCompilerTests.test_storm_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.40",
+        "702.40a",
+        "702.40b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the dedicated Storm descriptor or block each dependency and prove no generic coverage-string fallback retains runtime trust."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "negative",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_stale_or_malformed_storm_choice_rolls_back",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.40",
+        "702.40a",
+        "702.40b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject stale targets, mismatched copy counts, and malformed typed Storm continuations before changing the authoritative hash."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "positive",
+      "test_id": "tests.test_storm_rules.StormCompilerTests.test_all_real_storm_cards_lower_typed_stack_trigger",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.40",
+        "702.40a",
+        "702.40b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower every ordinary Storm instance in the pinned 33-card Commander family to a source-spanned trusted stack-zone trigger descriptor."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_four_player_storm_choice_is_public_and_replays_exactly",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.40",
+        "702.40a",
+        "702.40b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project public spell and target references without physical object IDs, logical incarnation IDs, or hidden-zone identities."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "replay",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_four_player_storm_choice_is_public_and_replays_exactly",
+      "official_rule_ids": [
+        "601.2i",
+        "603.2",
+        "603.3",
+        "702.40",
+        "702.40a",
+        "702.40b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay cast history, APNAP placement, copy target choice, independent copy objects, and final authoritative state exactly."
+    },
+    {
       "capability_id": "trigger.keyword.ward.fixed_generic",
       "evidence_class": "interaction",
       "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiple_ward_instances_and_control_change_use_current_state",
@@ -41647,5 +41780,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "c7d8a0511987132e9902747f8d23e5ef60f06c8661c69865a380261df48abad6"
+  "fingerprint": "ad7c38b3c24319ba217f194ed85b63a22c1c0b3a4b6bee898520875f9c7dd2bc"
 }

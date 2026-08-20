@@ -155,6 +155,7 @@ _CREW_MECHANIC = "crew"
 _STATION_MECHANIC = "station"
 _EVOLVE_MECHANIC = "evolve"
 _PROWESS_MECHANIC = "prowess"
+_STORM_MECHANIC = "storm"
 _PERSIST_MECHANIC = "persist"
 _UNDYING_MECHANIC = "undying"
 _UNLEASH_MECHANIC = "unleash"
@@ -189,6 +190,7 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     _STATION_MECHANIC: ("counter.producer.station",),
     _EVOLVE_MECHANIC: ("counter.producer.evolve",),
     _PROWESS_MECHANIC: ("trigger.keyword.prowess",),
+    _STORM_MECHANIC: ("trigger.keyword.storm",),
     _PERSIST_MECHANIC: ("counter.producer.persist",),
     _UNDYING_MECHANIC: ("counter.producer.undying",),
     _UNLEASH_MECHANIC: (

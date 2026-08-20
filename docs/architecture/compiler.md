@@ -167,6 +167,18 @@ a deterministic random order. CR 702.85b action windows, replacement-choice
 suspension during the sequential exile loop, and granted, copied,
 text-changed, conditional, or face-down Cascade remain fail-closed.
 
+`compiler/storm_nodes.py` owns ordinary printed Storm as one independently
+source-spanned stack-zone trigger per instance. The casting transaction reads
+only the canonical current-turn spell-cast history before recording the Storm
+spell itself, then places Storm and other completed-cast triggers through one
+ordinary APNAP batch. The immutable trigger copies represented modes, X,
+targets, and the trusted source-program identity. Nontargeted copies are
+created without an invented choice; targeted copies use the existing public
+Storm target-selection owner, which revalidates each changed target and
+commits independent spell-copy objects. Copies are not casts and never add to
+a later Storm count. Gravestorm, granted, copied, removed, text-changed,
+conditional, face-down, and wider copy-choice forms remain fail-closed.
+
 `compiler/unearth_nodes.py` owns one closed ordinary fixed-mana Unearth
 production. It lowers the graveyard-only sorcery-speed activation to a typed
 fixed mana descriptor and one `unearth` semantic operation. The descriptor

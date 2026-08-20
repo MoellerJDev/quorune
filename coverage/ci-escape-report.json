@@ -453,6 +453,22 @@
       "resolution": "Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Empty and ambiguous selections remain fail-closed.",
       "run_id": 32040255059,
       "summary": "The next squash merge repeated the empty commit-associated PR response and failed Main smoke before dependency installation, confirming the prior receipt lookup was deterministically incomplete."
+    },
+    {
+      "category": "browser_integration",
+      "deterministic": true,
+      "failed_surfaces": [
+        "browser-smoke"
+      ],
+      "head_sha": "68a2e4fa1bcad4acdb1259de0561a29532da10b4",
+      "id": "ci-20260820-27",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "four-player.spec.ts @browser-rules @mana-action Bowmasters journey"
+      ],
+      "resolution": "The existing @mana-action impact edge already selected the journey. The driver now uses the bounded progress-aware multi-page pass loop before asserting the Bowmasters target choice and shares the 600-second hosted durability budget used by adjacent long serial journeys.",
+      "run_id": 32379387144,
+      "summary": "The focused Bowmasters mana-action journey exhausted its 180-second whole-test budget twice while waiting for an opponent priority response to advance to the already-correct Semantic.Target choice; the first timeout also truncated Playwright's trace archive during cleanup."
     }
   ],
   "known_flaky_tests": [],
@@ -460,7 +476,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-17T14:48:02Z",
+  "observed_at": "2026-08-20T14:45:07Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -505,13 +521,13 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "851958ee9c290fb709a325e8181601bdc069018dea38e98493c2474eea158bef",
+  "source_fingerprint": "81247a5d19f8d70e880e83b89f5190a95faab3c52729354480631b87854842c2",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
     "average_slot_b_inactive_seconds": null,
     "category_counts": {
-      "browser_integration": 1,
+      "browser_integration": 2,
       "flaky_test": 6,
       "generated_artifact_drift": 2,
       "infrastructure": 1,
@@ -519,11 +535,12 @@
       "source_correctness": 9
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 21,
-    "escape_count": 26,
+    "deterministic_escape_count": 22,
+    "escape_count": 27,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [
+      "browser_integration",
       "flaky_test",
       "generated_artifact_drift",
       "missing_affected_test",

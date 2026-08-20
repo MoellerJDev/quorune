@@ -9,6 +9,7 @@ from typing import Any, Mapping, Protocol
 from ..errors import GameRuleError
 from ..model import StackItem
 from ..replacement.immutable import FrozenMap, thaw_value
+from ..storm import STORM_SEMANTIC_KEY, validated_storm_trigger
 from .model import (
     SelectionContinuation,
     SelectionContract,
@@ -63,8 +64,7 @@ class StormTargetChoiceOwnerMixin:
         )
 
     def _prepare_storm_resolution(self, item: StackItem) -> None:
-        count = max(0, int(item.context.get("copy_count", 0)))
-        template = dict(item.context.get("copy_template") or {})
+        count, template = validated_storm_trigger(item)
         if count == 0:
             self.state.stack.remove(item)
             self._log(
@@ -77,6 +77,17 @@ class StormTargetChoiceOwnerMixin:
             self._grant_priority(self.state.active_player)
             return
         target_schema = template.get("target_schema")
+        if not isinstance(target_schema, Mapping):
+            context = StormCompletionContext(
+                seat=item.controller,
+                response={"copy_targets": [[] for _ in range(count)]},
+                trigger=item,
+                count=count,
+                template=template,
+            )
+            copies = self._build_storm_copies(context)
+            self._commit_storm_copies(context, copies)
+            return
         public_schema = (
             self._public_target_schema(
                 item.controller,
@@ -147,11 +158,14 @@ class StormTargetChoiceOwnerMixin:
                     candidate
                     for candidate in self.state.stack
                     if candidate.ref == legacy_stack_ref
-                    and candidate.semantic_key == "builtin:storm"
+                    and candidate.semantic_key == STORM_SEMANTIC_KEY
                 ),
                 None,
             )
             if legacy_trigger is not None:
+                legacy_count, legacy_template = validated_storm_trigger(
+                    legacy_trigger
+                )
                 legacy = SelectionContinuation(
                     contract=SelectionContract.TARGETING,
                     operation_id=STORM_OPERATION_ID,
@@ -162,20 +176,8 @@ class StormTargetChoiceOwnerMixin:
                     visibility="public",
                     payload=FrozenMap(
                         {
-                            "copy_count": max(
-                                0,
-                                int(
-                                    legacy_trigger.context.get(
-                                        "copy_count", 0
-                                    )
-                                ),
-                            ),
-                            "copy_template": dict(
-                                legacy_trigger.context.get(
-                                    "copy_template"
-                                )
-                                or {}
-                            ),
+                            "copy_count": legacy_count,
+                            "copy_template": legacy_template,
                         }
                     ),
                 )
@@ -199,7 +201,7 @@ class StormTargetChoiceOwnerMixin:
                 candidate
                 for candidate in self.state.stack
                 if candidate.ref == selection.stack_ref
-                and candidate.semantic_key == "builtin:storm"
+                and candidate.semantic_key == STORM_SEMANTIC_KEY
             ),
             None,
         )
@@ -207,8 +209,7 @@ class StormTargetChoiceOwnerMixin:
             raise GameRuleError("The storm trigger is no longer on the stack")
         if trigger.controller != seat:
             raise GameRuleError("Storm choice controller changed")
-        count = max(0, int(trigger.context.get("copy_count", 0)))
-        template = dict(trigger.context.get("copy_template") or {})
+        count, template = validated_storm_trigger(trigger)
         if "selection" in raw_continuation:
             payload = thaw_value(selection.payload)
             if selection.source_ref != self._stack_source_ref(trigger):

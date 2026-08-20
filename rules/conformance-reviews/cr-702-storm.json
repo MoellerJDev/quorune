@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
+  "family": "CR 702.40 — Ordinary printed Storm",
+  "cases": [
+    {
+      "rule_id": "702.40",
+      "rule_text_sha256": "5870f9bfd157bd7ef0571f07b16a533d02bfac9265afd50380265cb75d3cac58",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["quorune.rules.capabilities.CapabilityRegistry"],
+      "executable_test_ids": ["tests.test_storm_rules.StormCompilerTests.test_all_real_storm_cards_lower_typed_stack_trigger"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Keyword heading; the bounded ordinary printed family is owned by trigger.keyword.storm."]
+    },
+    {
+      "rule_id": "702.40a",
+      "rule_text_sha256": "1faf337fc102dca30705efd61d5cfa6f55b0f9743f1993a14f80afec1c3ab89e",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.storm_nodes.storm_keyword_node", "quorune.storm.compiled_storm_specs", "quorune.storm.storm_trigger_items", "quorune.trigger_processing.enqueue_trigger_batch", "quorune.selection.storm.StormTargetChoiceOwnerMixin"],
+      "executable_test_ids": ["tests.test_storm_rules.StormCompilerTests.test_all_real_storm_cards_lower_typed_stack_trigger", "tests.test_storm_rules.StormCompilerTests.test_unsupported_storm_wording_remains_material_residual", "tests.test_storm_rules.StormRuntimeTests.test_nontargeted_storm_copies_prior_casts_without_extra_choice", "tests.test_storm_rules.StormRuntimeTests.test_targeted_storm_copies_retarget_and_revalidate_independently", "tests.test_storm_rules.StormRuntimeTests.test_storm_and_prowess_share_one_trigger_order_batch", "tests.test_storm_rules.StormRuntimeTests.test_spell_copies_do_not_increase_the_next_storm_count", "tests.test_storm_rules.StormRuntimeTests.test_stale_or_malformed_storm_choice_rolls_back", "tests.test_storm_rules.StormRuntimeTests.test_four_player_storm_choice_is_public_and_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay", "hidden_information"],
+      "blockers": ["Gravestorm remains a distinct untrusted keyword", "granted, copied, text-changed, conditional, and face-down Storm remain outside trusted typed stack-ability propagation", "copyable choices outside represented modes, X, and public targets remain unsupported"],
+      "notes": ["Each represented printed instance locks the count of other spells already cast that turn, enters the ordinary APNAP cast-trigger batch, and delegates independent copy objects and target reassignment to the existing Storm selection owner.", "The fine-grained capability is trusted while the aggregate rule remains blocked at the stated exclusions."]
+    },
+    {
+      "rule_id": "702.40b",
+      "rule_text_sha256": "92d0851520bfeaa41b4c05b21147b505e8f32ab5e874726863ad0c35cf5cc500",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["quorune.compiler.keyword_nodes.keyword_node_plans", "quorune.compiler.program_generation._generated_ability_id", "quorune.storm.storm_trigger_items", "quorune.trigger_processing.enqueue_trigger_batch"],
+      "executable_test_ids": ["tests.test_storm_rules.StormCompilerTests.test_all_real_storm_cards_lower_typed_stack_trigger", "tests.test_storm_rules.StormCompilerTests.test_multiple_storm_instances_compile_separately"],
+      "required_scenarios": ["positive", "replay"],
+      "covered_scenarios": ["positive", "replay"],
+      "blockers": ["multiple granted, copied, or text-changed Storm instances are not yet propagated through every typed stack-ability path"],
+      "notes": ["Repeated printed instances retain distinct source spans, generated ability identities, ordinary trigger occurrences, and controller ordering."]
+    }
+  ]
+}

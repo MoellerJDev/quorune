@@ -118,6 +118,36 @@ def _lower_cascade_fragment(
     )
 
 
+def _lower_storm_fragment(
+    material_line: str,
+    mechanics: tuple[str, ...],
+) -> AbilityKeywordFragmentLowering | None:
+    if mechanics != ("storm",):
+        return None
+    if material_line.strip().rstrip(".").casefold() != "storm":
+        return AbilityKeywordFragmentLowering(
+            residual_kind="unsupported_storm_variant",
+            residual_reason=(
+                "Storm wording is outside the closed printed keyword grammar"
+            ),
+            residual_blockers=("ordinary printed Storm",),
+        )
+    return AbilityKeywordFragmentLowering(
+        handlers=(
+            {
+                "handler_id": "ability.trigger.storm.v1",
+                "schema_version": 1,
+                "event": "spell.cast",
+                "fragment": ability_fragment_to_dict(
+                    SpellCastKeywordTriggerSpec(
+                        kind=SpellCastKeywordTriggerKind.STORM,
+                    )
+                ),
+            },
+        )
+    )
+
+
 def lower_ability_keyword_fragments(
     material_line: str,
     mechanics: tuple[str, ...],
@@ -162,6 +192,9 @@ def lower_ability_keyword_fragments(
     cascade = _lower_cascade_fragment(material_line, mechanics)
     if cascade is not None:
         return cascade
+    storm = _lower_storm_fragment(material_line, mechanics)
+    if storm is not None:
+        return storm
     if mechanics == ("prowess",):
         matching_parts = tuple(
             part

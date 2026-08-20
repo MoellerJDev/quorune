@@ -218,6 +218,17 @@ owner. Removing abilities suppresses future triggers but does not erase a
 trigger already on the stack. Rules-text equivalents, qualified variants,
 unsupported grants or copies, and trigger multiplication remain fail closed.
 
+Ordinary printed Storm is also a typed stack-zone spell-cast trigger rather
+than a generic keyword-coverage switch. It snapshots the count of other spells
+already cast that turn before the current cast is recorded, shares the normal
+APNAP cast-trigger batch, and delegates target reassignment plus copy-object
+commit to `selection/storm.py`. Each copy retains represented modes and X,
+revalidates only its own changed targets, resolves as an ordinary counterable
+spell copy, and does not emit another cast event. The source spell may leave
+without erasing the locked trigger. Unsupported grants, text changes,
+Gravestorm, face-down propagation, and unrepresented copied choices remain
+outside trust.
+
 Ordinary printed fixed-mana Echo uses one source-spanned trigger descriptor.
 `control_history.py` owns the public acquisition timestamp and per-player upkeep
 boundary used by its intervening condition; ordinary summoning-sickness turn

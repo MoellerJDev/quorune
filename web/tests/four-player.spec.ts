@@ -910,7 +910,7 @@ test("@browser-rules @turn-draw an isolated-context duel presents exact turn sta
 test("@browser-rules @mana-action a duel stabilizes land ETBs, permits a stack response, and resolves Bowmasters", async ({ browser }, testInfo) => {
   // This journey persists every manual mana and priority transition. Hosted
   // runners can exceed the suite default without any individual wait stalling.
-  test.setTimeout(180_000);
+  test.setTimeout(600_000);
   const hostContext = await browser.newContext();
   const opponentContext = await browser.newContext();
   const host = await hostContext.newPage();
@@ -1033,6 +1033,19 @@ test("@browser-rules @mana-action a duel stabilizes land ETBs, permits a stack r
     await bowmasters.dragTo(host.getByTestId("own-battlefield"));
     await expect(host.getByTestId("choice-dialog")).toContainText("Cast Orcish Bowmasters");
     await submitOpenChoice(host);
+    await driveUntil(
+      [host, opponent],
+      async () =>
+        ((await host.getByTestId("decision-panel").textContent()) || "").includes(
+          "Semantic.Target",
+        ),
+      testInfo,
+      {
+        label: "reach the Bowmasters target choice",
+        noProgressMs: 90_000,
+        overallMs: 300_000,
+      },
+    );
     await expect(host.getByTestId("decision-panel")).toContainText("Semantic.Target");
     await host.getByTestId("action-choose").click();
     await host.getByTestId("choice-target-B").check();

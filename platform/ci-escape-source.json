@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-17T14:48:02Z",
+  "observed_at": "2026-08-20T14:45:07Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -389,6 +389,18 @@
       ],
       "impact_edge_status": "added",
       "resolution": "Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Empty and ambiguous selections remain fail-closed."
+    },
+    {
+      "id": "ci-20260820-27",
+      "run_id": 32379387144,
+      "head_sha": "68a2e4fa1bcad4acdb1259de0561a29532da10b4",
+      "category": "browser_integration",
+      "deterministic": true,
+      "summary": "The focused Bowmasters mana-action journey exhausted its 180-second whole-test budget twice while waiting for an opponent priority response to advance to the already-correct Semantic.Target choice; the first timeout also truncated Playwright's trace archive during cleanup.",
+      "failed_surfaces": ["browser-smoke"],
+      "regressions": ["four-player.spec.ts @browser-rules @mana-action Bowmasters journey"],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The existing @mana-action impact edge already selected the journey. The driver now uses the bounded progress-aware multi-page pass loop before asserting the Bowmasters target choice and shares the 600-second hosted durability budget used by adjacent long serial journeys."
     }
   ],
   "recent_pull_requests": [

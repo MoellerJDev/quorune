@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 120,
+  "registry_version": 121,
   "effective_date": "2026-08-07",
   "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "profiles": [
@@ -4296,6 +4296,33 @@
       "dependency_fail_closed_rationale": "The keyword gate fails closed if the one-shot exile-cast owner, normalized cast event, or ordinary trigger placement capability is blocked.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "The compiler mutation removes the typed stack trigger and the runtime tests require one independently resolving occurrence per printed instance, exact exile identity, cast revalidation, random-bottom cleanup, and replay.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "trigger.keyword.storm",
+      "version": 1,
+      "official_rules": ["601.2i", "603.2", "603.3", "702.40", "702.40a", "702.40b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile each ordinary printed Storm instance as an independent stack-zone cast trigger, snapshot the number of other spells cast that turn, place it through ordinary APNAP ordering, and create independent retargetable spell-copy objects through the canonical Storm selection owner.",
+        "inputs": ["one ordinary printed Storm keyword instance", "the completed cast spell and selected face", "canonical current-turn spell-cast history", "the original spell's copied modes, X value, target groups, target snapshots, and trusted semantic key"],
+        "outputs": ["one ordinary trigger per printed Storm instance", "one immutable prior-spell count", "zero or more independent spell-copy objects", "optional public target reassignment for each targeted copy", "ordinary copy resolution, cessation, projection, rollback, and exact replay"],
+        "exclusions": ["Gravestorm and Oracle-equivalent nonkeyword wording", "granted, copied, text-changed, conditional, or face-down Storm outside trusted typed stack-ability propagation", "copying a spell as a cast event", "copying choices other than modes, X, and represented targets", "untrusted source spell programs or target schemas"]
+      },
+      "dependencies": ["target.revalidate_resolution", "trigger.event.normalized_spell_cast", "trigger.placement.apnap"],
+      "implementation_components": ["quorune.ability_fragments.SpellCastKeywordTriggerSpec", "quorune.semantic_runtime.ability_fragments.StormAbilityFragmentHandler", "quorune.compiler.storm_nodes.storm_keyword_node", "quorune.storm.storm_trigger_items", "quorune.selection.storm.StormTargetChoiceOwnerMixin", "quorune.engine.CommanderEngine._create_copy_object"],
+      "positive_tests": ["test_all_real_storm_cards_lower_typed_stack_trigger", "test_nontargeted_storm_copies_prior_casts_without_extra_choice", "test_multiple_storm_instances_compile_separately"],
+      "negative_tests": ["test_unsupported_storm_wording_remains_material_residual", "test_zero_prior_spells_resolves_without_copies", "test_stale_or_malformed_storm_choice_rolls_back"],
+      "interaction_tests": ["test_targeted_storm_copies_retarget_and_revalidate_independently", "test_storm_and_prowess_share_one_trigger_order_batch", "test_spell_copies_do_not_increase_the_next_storm_count"],
+      "multiplayer_tests": ["test_four_player_storm_choice_is_public_and_replays_exactly"],
+      "privacy_tests": ["test_four_player_storm_choice_is_public_and_replays_exactly"],
+      "replay_tests": ["test_four_player_storm_choice_is_public_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The dedicated compiler node retains a material dependency residual if target revalidation, normalized completed-cast facts, ordinary APNAP placement, or the Storm capability is blocked.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler mutation removes the typed Storm descriptor, while test_runtime_requires_typed_storm_descriptor rejects direct coverage-string dispatch and the runtime suite rejects current-spell overcounting, copy-as-cast counting, missing APNAP batching, shared target state, stale target acceptance, and malformed continuation commitment.",
       "blockers": [],
       "status": "trusted"
     },
