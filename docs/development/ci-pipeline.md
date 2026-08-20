@@ -353,6 +353,9 @@ check suite, fingerprint algorithm, and tracked source-tree fingerprint. It
 does not contain or predict the eventual merge SHA. An unchanged-head metadata
 run may reissue a receipt only after downloading and validating the earlier
 live receipt; its provenance continues to name the original matrix run.
+Metadata edits do not cancel an in-progress source-changing run for the same
+pull request. They wait behind it, then validate and reuse its exact-head
+receipt instead of restarting the regression matrix.
 
 The pre-sharding public baseline is run `31025126367`: its single Windows
 discovery process executed the complete test allocation in 2,265.245 seconds

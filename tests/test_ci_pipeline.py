@@ -485,7 +485,10 @@ class CiPipelineTests(unittest.TestCase):
         nightly = (ROOT / ".github/workflows/nightly.yml").read_text(
             encoding="utf-8"
         )
-        self.assertIn("cancel-in-progress: true", pr)
+        self.assertIn(
+            "cancel-in-progress: ${{ github.event.action != 'edited' }}",
+            pr,
+        )
         self.assertIn("PR / Certification", pr)
         self.assertIn("opened, synchronize, reopened, edited", pr)
         self.assertNotIn("ready_for_review", pr)
