@@ -3956,36 +3956,36 @@
           "classification": "rules_value",
           "file": "quorune/rules/casting/commit.py",
           "flow_id": "card-identity-flow:f4cd65ddc063f9eb2703",
-          "line": 869,
+          "line": 872,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "printed_name",
           "source_kind": "attribute",
-          "source_line": 869,
+          "source_line": 872,
           "symbol": "_dispatch_cast_events"
         },
         {
           "classification": "rules_value",
           "file": "quorune/rules/casting/commit.py",
           "flow_id": "card-identity-flow:dcac747951dda894d976",
-          "line": 987,
+          "line": 991,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 987,
+          "source_line": 991,
           "symbol": "commit_cast"
         },
         {
           "classification": "rules_value",
           "file": "quorune/rules/casting/commit.py",
           "flow_id": "card-identity-flow:cd61a5f10d32e6f540f7",
-          "line": 988,
+          "line": 992,
           "selector": null,
           "sink_kind": "identity_as_data",
           "source_field": "oracle_id",
           "source_kind": "attribute",
-          "source_line": 988,
+          "source_line": 992,
           "symbol": "commit_cast"
         },
         {
@@ -5939,7 +5939,7 @@
           "expression": "self.state.pending_trigger_batches.clear()",
           "file": "quorune/trigger_processing.py",
           "kind": "mutating_call:clear",
-          "line": 275,
+          "line": 283,
           "state_path": "pending_trigger_batches",
           "symbol": "clear_pending_batches"
         },
@@ -7619,7 +7619,7 @@
             "symbol": "clear_pending_batches"
           },
           "kind": "mutating_call:clear",
-          "line": 275,
+          "line": 283,
           "owner_rationale": "typed CR 603.3 occurrence batching, APNAP placement, stack commit, and historical continuation owner behind CommanderEngine",
           "state_path": "pending_trigger_batches",
           "subsystems": [
@@ -10716,7 +10716,7 @@
       "covered_high_risk_pairs": 184,
       "covered_piece_pairs": 699,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "6991c179025985b617d7c4e53babedb3136fed007b0d2c3c1d239486bc934551",
+      "source_fingerprint": "f5fcce7323d2dfe457c56a8ee330c390fef1e600190f02e15e032da0962d2659",
       "uncovered_high_risk_pairs": 0
     },
     "migration_queue": [],
@@ -11105,7 +11105,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 167624,
+      "logical_lines": 167648,
       "methods": {
         "dunder": 470,
         "private": 808,
@@ -11348,8 +11348,8 @@
           "file": "quorune/rules/casting/commit.py",
           "functions_and_methods": 32,
           "language": "python",
-          "logical_lines": 951,
-          "physical_lines": 1004
+          "logical_lines": 963,
+          "physical_lines": 1016
         },
         {
           "file": "quorune/selection/searching.py",
@@ -11572,8 +11572,8 @@
           "file": "quorune/trigger_processing.py",
           "functions_and_methods": 42,
           "language": "python",
-          "logical_lines": 704,
-          "physical_lines": 785
+          "logical_lines": 712,
+          "physical_lines": 793
         },
         {
           "file": "quorune/semantic_choices/model.py",
@@ -13032,6 +13032,13 @@
           "physical_lines": 196
         },
         {
+          "file": "quorune/storm.py",
+          "functions_and_methods": 11,
+          "language": "python",
+          "logical_lines": 159,
+          "physical_lines": 189
+        },
+        {
           "file": "quorune/compiler/counter_templates.py",
           "functions_and_methods": 8,
           "language": "python",
@@ -13100,13 +13107,6 @@
           "language": "python",
           "logical_lines": 156,
           "physical_lines": 182
-        },
-        {
-          "file": "quorune/storm.py",
-          "functions_and_methods": 11,
-          "language": "python",
-          "logical_lines": 155,
-          "physical_lines": 184
         },
         {
           "file": "quorune/zone_object_state.py",
@@ -15109,7 +15109,7 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 183901,
+      "physical_lines": 183926,
       "python_file_count": 509,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -25171,7 +25171,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 150,
+        "primary_test_count": 151,
         "primary_tests": [
           "test_aerial_blocking",
           "test_amass_rules",
@@ -26371,7 +26371,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "5a8c26867331823d723be4c67fc21fba8cb5abd463884a01e621a0b36e4f8bc0",
+      "fingerprint": "bb0b06f87d41d43787f5b59fee4332b1c1df228f5cdd4ba676edb1f679b64780",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -27229,14 +27229,14 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 3197,
-      "discovered_total": 6506,
+      "conventional_ast_cases": 3200,
+      "discovered_total": 6509,
       "generated_rule_conformance_cases": 3309,
       "named_cross_cutting_counts": {
         "compiler_named": 164,
         "fuzz_named": 1,
         "privacy_or_projection_named": 40,
-        "replay_named": 232,
+        "replay_named": 233,
         "server_named": 27
       },
       "reconciles": true,

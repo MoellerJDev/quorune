@@ -490,8 +490,8 @@
     {
       "mechanic_id": "cr-400-general",
       "path": "mechanics/contracts/object-zone-identity.json",
-      "sha256": "8e706c4f75040656dd15e2abd19128ac9cbafe0837f6c1cde63155471343ac3d",
-      "version": 5
+      "sha256": "192432ebee1481c331922aa32a80b21e6dc79018a98d6f507a67333e58010d36",
+      "version": 6
     },
     {
       "mechanic_id": "persist",
@@ -616,8 +616,8 @@
     {
       "mechanic_id": "storm",
       "path": "mechanics/contracts/storm.json",
-      "sha256": "c888b525aeeb77a54789129fcf6807ef0af2414df7b5fac3acb67e5736046177",
-      "version": 1
+      "sha256": "db6c1e470035ced3e90df1da492e846e5ea64bd950017dac7dd7721ad88031d2",
+      "version": 2
     },
     {
       "mechanic_id": "sunburst",
@@ -4664,8 +4664,8 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/storm.json",
-      "contract_sha256": "c888b525aeeb77a54789129fcf6807ef0af2414df7b5fac3acb67e5736046177",
-      "contract_version": 1,
+      "contract_sha256": "db6c1e470035ced3e90df1da492e846e5ea64bd950017dac7dd7721ad88031d2",
+      "contract_version": 2,
       "coverage_status": "tested",
       "dependencies": [
         "702"
@@ -4691,6 +4691,8 @@
         "test_storm_dependency_and_compiler_mutations_fail_closed",
         "test_nontargeted_storm_copies_prior_casts_without_extra_choice",
         "test_zero_prior_spells_resolves_without_copies",
+        "test_legacy_zero_prior_spells_excludes_the_current_cast",
+        "test_legacy_prior_spells_are_snapshotted_and_replay_exactly",
         "test_source_departure_does_not_erase_locked_storm_trigger",
         "test_targeted_storm_copies_retarget_and_revalidate_independently",
         "test_storm_and_prowess_share_one_trigger_order_batch",
@@ -7977,8 +7979,8 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/object-zone-identity.json",
-      "contract_sha256": "8e706c4f75040656dd15e2abd19128ac9cbafe0837f6c1cde63155471343ac3d",
-      "contract_version": 5,
+      "contract_sha256": "192432ebee1481c331922aa32a80b21e6dc79018a98d6f507a67333e58010d36",
+      "contract_version": 6,
       "coverage_status": "partial",
       "dependencies": [],
       "implementation_component": "CardInstance zone identity, the immutable ZoneChangeReplacementSnapshot, CommanderEngine.move_card, target revalidation, and identity-guarded semantic moves",
