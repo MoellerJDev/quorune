@@ -32,7 +32,7 @@ from .rules_scheduler import (
 )
 
 RULES_CORPUS_SCHEMA_VERSION = 1
-RULES_PARSER_VERSION = "cr-index-v1"
+RULES_PARSER_VERSION = "cr-index-v2"
 OFFICIAL_RULES_PAGE = "https://magic.wizards.com/en/rules"
 TRUSTED_RULES_HOSTS = {"magic.wizards.com", "media.wizards.com"}
 COVERAGE_STATUSES = {
@@ -59,7 +59,7 @@ CORPUS_OPERATIONS = {
 }
 
 _RULE_LINE = re.compile(
-    r"^(?P<id>\d{3}(?:\.\d+[a-z]?)?)\.?\s+(?P<body>.+?)\s*$"
+    r"^(?P<id>\d{3}(?:\.\d+[a-z]*)?)\.?\s+(?P<body>.+?)\s*$"
 )
 _MAJOR_SECTION = re.compile(r"^(?P<id>[1-9])\.\s+(?P<title>.+?)\s*$")
 _EFFECTIVE_DATE = re.compile(
@@ -229,7 +229,7 @@ def _effective_date(text: str) -> str:
 
 
 def _parent_rule_id(rule_id: str) -> str | None:
-    letter = re.match(r"^(?P<parent>\d{3}\.\d+)[a-z]$", rule_id)
+    letter = re.match(r"^(?P<parent>\d{3}\.\d+)[a-z]+$", rule_id)
     if letter:
         return letter.group("parent")
     if "." in rule_id:

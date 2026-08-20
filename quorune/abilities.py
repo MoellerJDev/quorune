@@ -53,6 +53,11 @@ _LIBRARY_LAND_SEARCH = re.compile(
     r"put (?:it|that card) onto the battlefield",
     re.IGNORECASE,
 )
+_LIBRARY_MOVEMENT_SIGNAL = re.compile(
+    r"\b(?:draw|draws|mill|mills|surveil|explore|discover|cascade|manifest|"
+    r"cloak|recruit|connive|learn|ripple|hideaway|seek)\b",
+    re.IGNORECASE,
+)
 _SUPPORTED_LIBRARY_LAND_SEARCH_TYPES = frozenset(
     {
         "basic land",
@@ -1038,6 +1043,24 @@ def _mana_spend_restriction(effect_text: str) -> str | None:
     return None
 
 
+def _may_move_card_to_or_from_library(
+    cost_text: str,
+    effect_text: str,
+) -> bool:
+    """Conservatively reject CR 605.1a library-movement candidates.
+
+    The generic activated-ability parser does not prove arbitrary movement
+    prose.  A direct library reference or a keyword/action that can remove a
+    card from a library therefore makes the ability nonmana until a narrower
+    typed compiler proves otherwise.
+    """
+
+    normalized = " ".join(f"{cost_text} {effect_text}".casefold().split())
+    return "library" in normalized or bool(
+        _LIBRARY_MOVEMENT_SIGNAL.search(normalized)
+    )
+
+
 def _parse_activated_line(
     raw_line: str,
     line_index: int,
@@ -1073,6 +1096,7 @@ def _parse_activated_line(
         cost.loyalty_delta is None
         and "target" not in effect_lower
         and (effect_lower.startswith("add ") or "add one mana" in effect_lower)
+        and not _may_move_card_to_or_from_library(actual_cost, effect_text)
     )
     builtin_semantic_key, target_schema = _builtin_effect_descriptor(effect_text)
     if (keyword_override or keyword_prefix or "").casefold() == "equip":

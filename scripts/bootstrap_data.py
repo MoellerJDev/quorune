@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from quorune.bulk import refresh_scryfall_database
+from quorune.bulk import build_pinned_scryfall_database, refresh_scryfall_database
 
 
 def main() -> int:
@@ -29,10 +29,21 @@ def main() -> int:
         help="Destination SQLite file",
     )
     parser.add_argument("--force", action="store_true")
-    parser.add_argument(
+    source_group = parser.add_mutually_exclusive_group()
+    source_group.add_argument(
         "--refresh-from-scryfall",
         action="store_true",
         help="Discover current Oracle/rulings JSONL archives via GET /bulk-data and rebuild",
+    )
+    source_group.add_argument(
+        "--from-rules-manifest",
+        action="store_true",
+        help="Rebuild from the exact Oracle/rulings archives pinned by rules/manifest.json",
+    )
+    parser.add_argument(
+        "--rules-manifest",
+        default="rules/manifest.json",
+        help="Pinned rules manifest used by --from-rules-manifest",
     )
     parser.add_argument(
         "--download-dir",
@@ -49,6 +60,19 @@ def main() -> int:
             output,
             download_dir=args.download_dir,
             manifest_url=args.manifest_url,
+            timeout=args.timeout,
+            force_download=args.force,
+        )
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
+    if args.from_rules_manifest:
+        manifest = json.loads(
+            Path(args.rules_manifest).read_text(encoding="utf-8")
+        )
+        result = build_pinned_scryfall_database(
+            manifest.get("card_data_snapshot") or {},
+            output,
+            download_dir=args.download_dir,
             timeout=args.timeout,
             force_download=args.force,
         )

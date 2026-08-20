@@ -6905,7 +6905,7 @@ class CommanderEngine(
         return [(seat, name, ids) for (seat, name), ids in groups.items() if len(ids) > 1]
 
     def _repair_battle_protectors(self) -> str | None:
-        """Apply or request the represented CR 704.5w-x protector repair."""
+        """Apply or request the represented CR 704.5x-y protector repair."""
 
         attacked_targets = set(self.state.combat.attackers.values())
         for seat in self.active_seats:
@@ -6961,8 +6961,8 @@ class CommanderEngine(
                     battle.battle_protector != battle.controller
                     and battle.ref in attacked_targets
                 ):
-                    # CR 704.5w waits until no creature is attacking this
-                    # Battle. CR 704.5x has no such exception when a Siege's
+                    # CR 704.5x waits until no creature is attacking this
+                    # Battle. CR 704.5y has no such exception when a Siege's
                     # controller is also its protector.
                     continue
                 candidates = [

@@ -122,7 +122,7 @@ class OneShotExileCastChoiceOwnerMixin:
         self._grant_priority(self.state.active_player)
 
     def _begin_siege_defeated_resolution(self, item: StackItem) -> None:
-        """Resolve the intrinsic CR 310.11b Siege ability natively."""
+        """Resolve the intrinsic CR 310.12b Siege ability natively."""
 
         card = self.state.cards.get(item.source_object_id or "")
         expected_logical_object_id = str(

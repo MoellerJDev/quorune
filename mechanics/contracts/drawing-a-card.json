@@ -3,8 +3,8 @@
   "contract_version": 6,
   "mechanic_id": "cr-121-drawing-a-card",
   "official_name": "Drawing a Card",
-  "effective_date": "2026-06-19",
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "rule_references": [
     "121", "121.1", "121.2", "121.2a", "121.2b", "121.2c",
     "121.2d", "121.3", "121.3a", "121.4", "121.5", "121.6",

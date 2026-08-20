@@ -134,6 +134,20 @@ class FixedManaModelTests(unittest.TestCase):
 
 
 class FixedManaCompilerTests(unittest.TestCase):
+    def test_fixed_output_compiler_rejects_library_movement_costs_and_effects(self):
+        for text in (
+            "Mill a card, {T}: Add {C}.",
+            "{T}: Add {C}, then draw a card.",
+            "{T}: Add {C}, then put a card from your graveyard on the "
+            "bottom of your library.",
+        ):
+            with self.subTest(text=text):
+                ability = parse_activated_abilities(
+                    card_name="Library Mana Relic",
+                    oracle_text=text,
+                )[0]
+                self.assertIsNone(compile_fixed_activated_mana_ability(ability))
+
     def test_fixed_output_compiler_lowers_source_spanned_cardprogram(self):
         first_line = "{T}: Add {C}{C}."
         second_line = "{1}, {T}: Add {U} or {B}."

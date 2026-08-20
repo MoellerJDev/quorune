@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "effective_date": "2026-06-19",
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "family": "CR 310 — Battles",
   "cases": [
     {
@@ -303,43 +303,7 @@
       ]
     },
     {
-      "rule_id": "310.7",
-      "rule_text_sha256": "ef56c635847ec6306b1eece29d50b32b392e103f310915ec49be28f39ab6a5f4",
-      "classification": "behavioral",
-      "status": "passing",
-      "assertion_kind": "executable_engine",
-      "reviewed": true,
-      "implementation_components": [
-        "evaluate_permanent_state_based_actions",
-        "CommanderEngine._battle_trigger_pending",
-        "CommanderEngine._stabilize"
-      ],
-      "executable_test_ids": [
-        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_zero_defense_battle_waits_for_its_pending_trigger",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_trigger_from_same_incarnation_defers_state_action",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_old_incarnation_trigger_does_not_defer_battle_state_action",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_damage_and_state_action_replay_exactly"
-      ],
-      "required_scenarios": [
-        "positive",
-        "negative",
-        "interaction",
-        "replay"
-      ],
-      "covered_scenarios": [
-        "positive",
-        "negative",
-        "interaction",
-        "replay"
-      ],
-      "blockers": [],
-      "notes": [
-        "The zero-defense state action uses an immutable snapshot and defers only for a pending trigger from the same object incarnation.",
-        "A trigger from a pre-zone-change incarnation does not protect the new object."
-      ]
-    },
-    {
-      "rule_id": "310.8",
+      "rule_id": "310.9",
       "rule_text_sha256": "3bd393ab381e81cad9923a7a3a0c96cae9445d17c7bc0976fe0f77659378a816",
       "classification": "definition_only",
       "status": "definition_only",
@@ -360,43 +324,7 @@
       ]
     },
     {
-      "rule_id": "310.8a",
-      "rule_text_sha256": "281b3dcdac12123d9e86b25709e096d692fb1a2adccf2e3138b10d1755e46350",
-      "classification": "behavioral",
-      "status": "blocked",
-      "assertion_kind": "unsupported_fail_closed",
-      "reviewed": true,
-      "implementation_components": [
-        "CommanderEngine._begin_battle_entry_protector_choice",
-        "CommanderEngine._complete_battle_entry_protector_choice",
-        "CommanderEngine._initialize_battle_entry_protector"
-      ],
-      "executable_test_ids": [
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_typeless_battle_controller_is_its_protector",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_protector_is_chosen_as_the_spell_resolves"
-      ],
-      "required_scenarios": [
-        "positive",
-        "negative",
-        "multiplayer",
-        "interaction",
-        "replay"
-      ],
-      "covered_scenarios": [
-        "positive",
-        "negative",
-        "multiplayer"
-      ],
-      "blockers": [
-        "nonspell and token Battle entry paths cannot always suspend for an as-enters choice without a trusted caller supplying the protector",
-        "future Battle-type protector predicates are intentionally unsupported until present in the pinned rules snapshot"
-      ],
-      "notes": [
-        "A Battle with no Battle subtype designates its controller; a represented Siege spell requests an opponent choice as it resolves."
-      ]
-    },
-    {
-      "rule_id": "310.8b",
+      "rule_id": "310.9b",
       "rule_text_sha256": "6adaa38c21611142a154e680e01be4f3e11e3f5e80220ff91cc97e72e9b0efb2",
       "classification": "behavioral",
       "status": "blocked",
@@ -429,7 +357,7 @@
       ]
     },
     {
-      "rule_id": "310.8c",
+      "rule_id": "310.9c",
       "rule_text_sha256": "f5e78b8af3397600575384ead29093bb73f9ec5f5fdaa3180c7499ce066a7f5c",
       "classification": "behavioral",
       "status": "blocked",
@@ -461,7 +389,7 @@
       ]
     },
     {
-      "rule_id": "310.8d",
+      "rule_id": "310.9d",
       "rule_text_sha256": "698befcb1774e0ccff0b1099b1835b36922f3f508b39749e563bc68dd0aa11e7",
       "classification": "behavioral",
       "status": "blocked",
@@ -490,7 +418,7 @@
       ]
     },
     {
-      "rule_id": "310.8e",
+      "rule_id": "310.9e",
       "rule_text_sha256": "6d0597dda6459b9f2de9f978d62cba91dc47dfe52633e52507031bd22645fbb2",
       "classification": "definition_only",
       "status": "definition_only",
@@ -511,7 +439,7 @@
       ]
     },
     {
-      "rule_id": "310.8f",
+      "rule_id": "310.9f",
       "rule_text_sha256": "4523f3deb9d4130fcf5490d65db83f4ffbd0175b8c0a73fd7287e06ab11b2c33",
       "classification": "behavioral",
       "status": "passing",
@@ -542,7 +470,7 @@
       ]
     },
     {
-      "rule_id": "310.8g",
+      "rule_id": "310.9g",
       "rule_text_sha256": "76cec5acddeef05bfa736a2563ad920e04872eb54aeae441e2250953089997e4",
       "classification": "behavioral",
       "status": "passing",
@@ -570,7 +498,7 @@
       ]
     },
     {
-      "rule_id": "310.9",
+      "rule_id": "310.10",
       "rule_text_sha256": "c6aa07d374b129925b51f6c2383924532905a18d01d3d0bea560f16be066cd35",
       "classification": "behavioral",
       "status": "blocked",
@@ -602,67 +530,7 @@
       ]
     },
     {
-      "rule_id": "310.10",
-      "rule_text_sha256": "a63b3632e31c48092f7f534e04045b15eab3774e20fe20f66da0bf091ce0111d",
-      "classification": "behavioral",
-      "status": "blocked",
-      "assertion_kind": "unsupported_fail_closed",
-      "reviewed": true,
-      "implementation_components": [
-        "CommanderEngine._repair_battle_protectors",
-        "CommanderEngine._complete_battle_protector_choice"
-      ],
-      "executable_test_ids": [
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_invalid_battle_protector_waits_while_it_is_attacked",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_controller_protector_is_repaired_even_while_attacked",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_without_legal_protector_goes_to_owner_graveyard",
-        "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_protector_choice_replays_exactly"
-      ],
-      "required_scenarios": [
-        "positive",
-        "negative",
-        "interaction",
-        "multiplayer",
-        "replay"
-      ],
-      "covered_scenarios": [
-        "positive",
-        "negative",
-        "interaction",
-        "multiplayer",
-        "replay"
-      ],
-      "blockers": [
-        "future Battle-type protector predicates and complete simultaneous APNAP state-based choices remain unsupported"
-      ],
-      "notes": [
-        "An absent protector waits while the Battle is attacked; a Siege controller who is its protector is repaired even while attacked under CR 704.5x.",
-        "If no legal opponent exists, the Battle goes to its owner's graveyard."
-      ]
-    },
-    {
-      "rule_id": "310.11",
-      "rule_text_sha256": "96b570195a0c0fc168a9fae55cd8760c434b835b2a5ddc2603457a8edacc3477",
-      "classification": "definition_only",
-      "status": "definition_only",
-      "assertion_kind": "static_traceability",
-      "reviewed": true,
-      "implementation_components": [
-        "mechanics/contracts/battles.json",
-        "CommanderEngine._type_parts"
-      ],
-      "executable_test_ids": [
-        "tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_battle_contract_traces_every_cr_310_rule"
-      ],
-      "required_scenarios": [],
-      "covered_scenarios": [],
-      "blockers": [],
-      "notes": [
-        "The pinned rules snapshot recognizes Siege as the only current Battle subtype; unknown future Battle types fail closed."
-      ]
-    },
-    {
-      "rule_id": "310.11a",
+      "rule_id": "310.12a",
       "rule_text_sha256": "a07451daeb5ad7f3e4a264057ab9ad3c21521a8239e06a345b92df4f431e3f2e",
       "classification": "behavioral",
       "status": "blocked",
@@ -698,7 +566,7 @@
       ]
     },
     {
-      "rule_id": "310.11b",
+      "rule_id": "310.12b",
       "rule_text_sha256": "5bc5c41d1f2fbdcc91b246e6beb1ec557a9482bf77e90acd27a6340ab4675470",
       "classification": "behavioral",
       "status": "blocked",
@@ -740,6 +608,76 @@
         "Tokens cease after exile and cannot be cast; a permanent that left and returned is not followed.",
         "Compiled target schemas are exposed to the pilot; unresolved mandatory target grammar stops for arbitration rather than advertising an illegal cast."
       ]
+    },
+    {
+      "rule_id": "310.7",
+      "rule_text_sha256": "aca6ca5a24bb8e78b0dcc06447ed0195314ab0154253ee7b5f7856713b56b199",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": ["evaluate_permanent_state_based_actions", "CommanderEngine._battle_trigger_pending", "CommanderEngine._stabilize"],
+      "executable_test_ids": ["tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_zero_defense_battle_waits_for_its_pending_trigger", "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_trigger_from_same_incarnation_defers_state_action", "tests.test_state_based_actions.StateBasedActionEngineTests.test_old_incarnation_trigger_does_not_defer_battle_state_action", "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_damage_and_state_action_replay_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "replay"],
+      "blockers": [],
+      "notes": ["The zero-defense pending-trigger exception is now explicitly Siege-only and remains represented with exact source incarnation and replay evidence."]
+    },
+    {
+      "rule_id": "310.8",
+      "rule_text_sha256": "9604a65f3dc77f058ed111febf60323621f90f7469352c1cedea5496dc52de0c",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/battles.json"],
+      "executable_test_ids": [],
+      "required_scenarios": ["positive", "negative", "interaction", "replay"],
+      "covered_scenarios": [],
+      "blockers": ["Non-Siege Battle zero-defense behavior is not represented or trusted"],
+      "notes": ["Existing Siege state actions are not widened to future Battle subtypes."]
+    },
+    {
+      "rule_id": "310.9a",
+      "rule_text_sha256": "8916ff8db3bdb79fc3b5489e5a39b1ddba97b0eec082452bea50c0a97c2e1864",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["CommanderEngine._begin_battle_entry_protector_choice", "CommanderEngine._complete_battle_entry_protector_choice", "CommanderEngine._initialize_battle_entry_protector"],
+      "executable_test_ids": ["tests.test_state_based_actions.StateBasedActionEngineTests.test_typeless_battle_controller_is_its_protector", "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_protector_is_chosen_as_the_spell_resolves"],
+      "required_scenarios": ["positive", "negative", "multiplayer", "interaction", "replay"],
+      "covered_scenarios": ["positive", "negative", "multiplayer"],
+      "blockers": ["Nonspell Battle entry cannot always suspend for a protector choice and non-Siege subtype predicates remain unsupported"],
+      "notes": ["Typeless Battles choose their controller and represented Sieges choose an opponent; the subtype-open current rule remains blocked."]
+    },
+    {
+      "rule_id": "310.11",
+      "rule_text_sha256": "bf2eb3ddfcaab3766c76fe375c0b05346350feca4da1cc3d8d240c152230f32e",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": ["CommanderEngine._repair_battle_protectors", "CommanderEngine._complete_battle_protector_choice"],
+      "executable_test_ids": ["tests.test_state_based_actions.StateBasedActionEngineTests.test_invalid_battle_protector_waits_while_it_is_attacked", "tests.test_state_based_actions.StateBasedActionEngineTests.test_controller_protector_is_repaired_even_while_attacked", "tests.test_state_based_actions.StateBasedActionEngineTests.test_siege_without_legal_protector_goes_to_owner_graveyard", "tests.test_state_based_actions.StateBasedActionEngineTests.test_battle_protector_choice_replays_exactly"],
+      "required_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "covered_scenarios": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "blockers": ["Protector predicates for non-Siege Battle subtypes and complete simultaneous APNAP repair choices remain unsupported"],
+      "notes": ["Represented typeless and Siege repair paths remain exact, while the generalized subtype-open rule is blocked."]
+    },
+    {
+      "rule_id": "310.12",
+      "rule_text_sha256": "03434ac522b3eb2e3fd90d66409ecb1f5595b5977f7b3eb2fd6cb95e3bffbb80",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": ["mechanics/contracts/battles.json", "CommanderEngine._type_parts"],
+      "executable_test_ids": ["tests.test_state_based_actions.StateBasedActionPrimitiveTests.test_battle_contract_traces_every_cr_310_rule"],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": ["Siege subsection heading; CR 310.12a-b own the behavior."]
     }
   ]
 }

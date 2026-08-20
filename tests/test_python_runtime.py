@@ -135,6 +135,34 @@ class PythonRuntimeTests(unittest.TestCase):
         self.assertEqual(1, len(failures))
         self.assertIn("nightly.yml must configure x64", failures[0])
 
+    def test_workflow_policy_ignores_architecture_job_key(self):
+        setup = (
+            "jobs:\n"
+            "  generated:\n"
+            "    steps:\n"
+            "      - uses: actions/setup-python@v5\n"
+            "        with:\n"
+            "          python-version: '3.12'\n"
+            "          architecture: x64\n"
+            "  architecture:\n"
+            "    runs-on: ubuntu-latest\n"
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            workflows = root / ".github" / "workflows"
+            workflows.mkdir(parents=True)
+            for name in (
+                "ci.yml",
+                "live-integration.yml",
+                "main-smoke.yml",
+                "nightly.yml",
+            ):
+                (workflows / name).write_text(setup, encoding="utf-8")
+
+            failures = workflow_policy_failures(root)
+
+        self.assertEqual([], failures)
+
     def test_wheel_requirement_accepts_canonicalized_order_only(self):
         self.assertTrue(_requires_python_matches("<3.13,>=3.12"))
         self.assertFalse(_requires_python_matches(">=3.11"))

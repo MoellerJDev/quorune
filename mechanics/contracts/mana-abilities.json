@@ -3,8 +3,8 @@
   "contract_version": 2,
   "mechanic_id": "cr-605-mana-abilities",
   "official_name": "Mana Abilities",
-  "effective_date": "2026-06-19",
-  "source_sha256": "e99cd70eb64ca854acb6420ebbf06e369e3f258e0cfba4f03f70bd881386f79b",
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "rule_references": [
     "605",
     "605.1",
@@ -128,6 +128,7 @@
     "test_recordless_mana_plan_ignores_submitted_side_effects",
     "test_fixed_output_compiler_lowers_source_spanned_cardprogram",
     "test_fixed_output_compiler_leaves_dynamic_and_restricted_variants_residual",
+    "test_fixed_output_compiler_rejects_library_movement_costs_and_effects",
     "test_parenthesized_basic_land_reminder_is_not_an_executable_program",
     "test_compiled_alternative_output_is_advertised_accepted_and_replayed",
     "test_compiled_fixed_output_offer_and_activation_share_modes",
@@ -156,6 +157,7 @@
     "supported_slice": "Target-free nonloyalty activated mana abilities with fully compiled fixed output modes and costs, plus CR 305.6 intrinsic abilities derived from current effective basic land types."
   },
   "known_blockers": [
+    "the CR 605.1a exclusion for costs or effects that move cards to or from a library is not yet a complete typed classifier outside the closed fixed-output families",
     "triggered mana abilities are not generically identified or dispatched outside the stack",
     "dynamic, conditional, restricted, and side-effecting mana-output grammar remains outside the fixed-output capability",
     "explicit mana activation during arbitrary rule/effect payment windows is not exposed as a general nested decision",

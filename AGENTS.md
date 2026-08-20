@@ -185,8 +185,9 @@ deterministic impact plan without executing the broad gate:
 The dry-run output is a required change-impact inventory, not proof that the
 identified work ran. Its `generated-finalization` step is the canonical
 generated-output obligation. After source, tests, and documentation form a
-coherent worktree—and **before the final commit**—run the automatic
-deterministic writers to a fixed point:
+coherent worktree—and **before the final commit**—satisfy the automatic
+deterministic writers through either the local finalizer or the exact-source
+cloud artifact workflow.
 
 When a user-authorized focused check covers a semantic-handler or runtime-
 component registration change, include
@@ -198,7 +199,28 @@ global inventory ratchet.
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write
 ```
 
-This is also the required focused architecture check before the final commit.
+For a database-backed change that should be offloaded, push an explicitly
+authorized source-checkpoint commit, dispatch `generated-artifacts.yml` with
+that exact ref, download `cloud-generated-<sha>`, and install it with:
+
+```powershell
+gh workflow run generated-artifacts.yml --ref main -f ref=<source-sha>
+gh run download <run-id> --name cloud-generated-<source-sha> `
+  --dir local\cloud-generated-download
+.\.venv\Scripts\python.exe scripts\cloud_generated_artifacts.py install-bundle `
+  --bundle-dir local\cloud-generated-download --expected-commit <source-sha>
+```
+
+The installer verifies the exact commit, source-tree fingerprint, manifest
+inventory, and every output hash, then records an ordinary worktree-local
+finalization receipt. Inspect and commit the installed outputs with their
+source. The cloud run executes the same final freshness and architecture
+checks; it does not authorize a source-only merge or a generated follow-up.
+`main` pushes also run this workflow automatically and publish a reusable
+exact-main bundle without write permissions.
+
+Either route is the required focused architecture check before the final
+commit.
 The finalizer runs `scripts/validate_architecture.py --check` after generation,
 so reviewed operation inventories, architecture exceptions, direct-write
 ratchets, and module boundaries cannot be deferred to CI. Do not make the final
@@ -207,7 +229,8 @@ receipt in Git metadata. The tracked pre-push hook verifies that receipt and
 falls back to the same complete finalizer when it is missing or stale.
 
 When compiler, capability, CardProgram, or card-support behavior changes, run
-the database-backed census in that same finalization step:
+the database-backed census in that same local finalization step or select the
+cloud route above:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\finalize_generated.py --write --db data\scryfall-current.sqlite3

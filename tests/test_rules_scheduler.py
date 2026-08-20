@@ -131,7 +131,10 @@ class RulesSchedulerTests(unittest.TestCase):
             self.rule_index["source_sha256"],
             self.queue["source_sha256"],
         )
-        self.assertEqual(3300, self.queue["summary"]["total_rules"])
+        self.assertEqual(
+            len(self.rule_index["rules"]),
+            self.queue["summary"]["total_rules"],
+        )
 
     def test_every_untrusted_or_unclassified_candidate_is_queued_once(self):
         expected = {

@@ -1,0 +1,401 @@
+name: Cloud generated artifacts
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit, branch, or tag to generate from
+        required: false
+        default: main
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: cloud-generated-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    name: Generated cloud / Resolve source
+    runs-on: ubuntu-latest
+    outputs:
+      source_sha: ${{ steps.source.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.sha }}
+          fetch-depth: 0
+      - id: source
+        name: Pin exact source commit
+        run: echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  database:
+    name: Generated cloud / Pinned card database
+    needs: plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - uses: actions/cache@v4
+        with:
+          path: local/cloud-generated/bulk
+          key: pinned-card-bulk-${{ hashFiles('rules/manifest.json') }}
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - name: Rebuild exact manifest-pinned database
+        run: >-
+          python scripts/bootstrap_data.py
+          --from-rules-manifest
+          --rules-manifest rules/manifest.json
+          --output data/cloud-pinned.sqlite3
+          --download-dir local/cloud-generated/bulk
+      - name: Stage database artifact with repository-relative path
+        run: |
+          mkdir -p local/cloud-database/data
+          cp data/cloud-pinned.sqlite3 local/cloud-database/data/cloud-pinned.sqlite3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloud-database-${{ github.run_id }}
+          path: local/cloud-database
+          if-no-files-found: error
+          retention-days: 7
+
+  foundations:
+    name: Generated cloud / Foundation / ${{ matrix.owner }}
+    needs: plan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        owner:
+          - capability-evidence
+          - rules-derived
+          - module-classifications
+          - ci-escape-report
+          - protocol-reference
+    env:
+      CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - name: Generate and stage one owned output set
+        run: >-
+          python scripts/cloud_generated_artifacts.py run-owner
+          --owner "${{ matrix.owner }}"
+          --stage-dir "local/cloud-stage/${{ matrix.owner }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloud-owner-foundation-${{ matrix.owner }}-${{ github.run_id }}
+          path: local/cloud-stage/${{ matrix.owner }}
+          if-no-files-found: error
+          retention-days: 7
+
+  corpus:
+    name: Generated cloud / Compiler corpus
+    needs: [plan, database, foundations]
+    runs-on: ubuntu-latest
+    env:
+      CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cloud-owner-foundation-*-${{ github.run_id }}
+          path: .
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: cloud-database-${{ github.run_id }}
+          path: .
+      - name: Generate compiler and CardProgram censuses
+        run: >-
+          python scripts/cloud_generated_artifacts.py run-owner
+          --owner compiler-corpus-coverage
+          --db data/cloud-pinned.sqlite3
+          --stage-dir local/cloud-stage/compiler-corpus-coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloud-owner-corpus-${{ github.run_id }}
+          path: local/cloud-stage/compiler-corpus-coverage
+          if-no-files-found: error
+          retention-days: 7
+
+  fanout:
+    name: Generated cloud / Fan-out / ${{ matrix.owner }}
+    needs: [plan, database, foundations, corpus]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        owner: [card-unlock-frontier, platform-status]
+    env:
+      CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cloud-owner-foundation-*-${{ github.run_id }}
+          path: .
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: cloud-owner-corpus-${{ github.run_id }}
+          path: .
+      - uses: actions/download-artifact@v4
+        with:
+          name: cloud-database-${{ github.run_id }}
+          path: .
+      - name: Generate independent post-corpus owner
+        run: >-
+          python scripts/cloud_generated_artifacts.py run-owner
+          --owner "${{ matrix.owner }}"
+          --db data/cloud-pinned.sqlite3
+          --stage-dir "local/cloud-stage/${{ matrix.owner }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloud-owner-fanout-${{ matrix.owner }}-${{ github.run_id }}
+          path: local/cloud-stage/${{ matrix.owner }}
+          if-no-files-found: error
+          retention-days: 7
+
+  architecture:
+    name: Generated cloud / Architecture
+    needs: [plan, foundations, corpus, fanout]
+    runs-on: ubuntu-latest
+    env:
+      CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cloud-owner-*-${{ github.run_id }}
+          path: .
+          merge-multiple: true
+      - name: Generate architecture owner
+        run: >-
+          python scripts/cloud_generated_artifacts.py run-owner
+          --owner architecture-audit
+          --stage-dir local/cloud-stage/architecture-audit
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloud-owner-architecture-${{ github.run_id }}
+          path: local/cloud-stage/architecture-audit
+          if-no-files-found: error
+          retention-days: 7
+
+  reusable:
+    name: Generated cloud / Reusable pieces
+    needs: [plan, database, foundations, corpus, fanout, architecture]
+    runs-on: ubuntu-latest
+    env:
+      CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cloud-owner-*-${{ github.run_id }}
+          path: .
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: cloud-database-${{ github.run_id }}
+          path: .
+      - name: Generate reusable-piece corpus and interactions
+        run: >-
+          python scripts/cloud_generated_artifacts.py run-owner
+          --owner reusable-pieces
+          --db data/cloud-pinned.sqlite3
+          --stage-dir local/cloud-stage/reusable-pieces
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloud-owner-reusable-${{ github.run_id }}
+          path: local/cloud-stage/reusable-pieces
+          if-no-files-found: error
+          retention-days: 7
+
+  compact:
+    name: Generated cloud / Compact dependencies
+    needs: [plan, foundations, corpus, fanout, architecture, reusable]
+    runs-on: ubuntu-latest
+    env:
+      CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cloud-owner-*-${{ github.run_id }}
+          path: .
+          merge-multiple: true
+      - name: Generate compact dependency closure
+        run: >-
+          python scripts/cloud_generated_artifacts.py run-owner
+          --owner compact-ci-card-dependencies
+          --stage-dir local/cloud-stage/compact-ci-card-dependencies
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloud-owner-compact-${{ github.run_id }}
+          path: local/cloud-stage/compact-ci-card-dependencies
+          if-no-files-found: error
+          retention-days: 7
+
+  scheduler:
+    name: Generated cloud / Rules scheduler
+    needs: [plan, foundations, corpus, fanout, architecture, reusable, compact]
+    runs-on: ubuntu-latest
+    env:
+      CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cloud-owner-*-${{ github.run_id }}
+          path: .
+          merge-multiple: true
+      - name: Generate cross-program rules queue
+        run: >-
+          python scripts/cloud_generated_artifacts.py run-owner
+          --owner rules-scheduler
+          --stage-dir local/cloud-stage/rules-scheduler
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cloud-owner-scheduler-${{ github.run_id }}
+          path: local/cloud-stage/rules-scheduler
+          if-no-files-found: error
+          retention-days: 7
+
+  bundle:
+    name: Generated cloud / Verify and bundle
+    needs:
+      - plan
+      - foundations
+      - corpus
+      - fanout
+      - architecture
+      - reusable
+      - compact
+      - scheduler
+    runs-on: ubuntu-latest
+    env:
+      CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install generation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cloud-owner-*-${{ github.run_id }}
+          path: .
+          merge-multiple: true
+      - id: verify
+        name: Verify assembled generated fixed point
+        continue-on-error: true
+        run: python scripts/finalize_generated.py --check
+      - name: Stage complete downloadable bundle
+        if: always()
+        run: >-
+          python scripts/cloud_generated_artifacts.py stage-bundle
+          --stage-dir local/cloud-stage/bundle
+      - name: Upload complete generated artifact bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloud-generated-${{ needs.plan.outputs.source_sha }}
+          path: local/cloud-stage/bundle
+          if-no-files-found: error
+          retention-days: 14
+      - name: Require committed main artifacts to be byte-identical
+        if: github.event_name == 'push'
+        run: git diff --exit-code --
+      - name: Fail an incoherent assembled bundle
+        if: steps.verify.outcome != 'success'
+        run: exit 1
