@@ -8008,18 +8008,18 @@
     "imports": {
       "highest_fan_in": [
         {
-          "fan_in": 88,
+          "fan_in": 89,
           "fan_out": 0,
           "module": "quorune.util"
         },
         {
-          "fan_in": 84,
+          "fan_in": 85,
           "fan_out": 1,
           "module": "quorune.replacement.immutable"
         },
         {
           "fan_in": 66,
-          "fan_out": 19,
+          "fan_out": 21,
           "module": "quorune.rules.capabilities"
         },
         {
@@ -8048,7 +8048,7 @@
           "module": "quorune.semantic_runtime.component_registry"
         },
         {
-          "fan_in": 35,
+          "fan_in": 36,
           "fan_out": 10,
           "module": "quorune.semantic_runtime.intents"
         },
@@ -8063,24 +8063,24 @@
           "module": "quorune.carddb"
         },
         {
+          "fan_in": 28,
+          "fan_out": 2,
+          "module": "quorune.object_predicate"
+        },
+        {
+          "fan_in": 27,
+          "fan_out": 1,
+          "module": "quorune.semantic_choices.model"
+        },
+        {
           "fan_in": 26,
           "fan_out": 0,
           "module": "quorune.compiler.ir_model"
         },
         {
-          "fan_in": 26,
-          "fan_out": 2,
-          "module": "quorune.object_predicate"
-        },
-        {
-          "fan_in": 26,
-          "fan_out": 1,
-          "module": "quorune.semantic_choices.model"
-        },
-        {
-          "fan_in": 23,
-          "fan_out": 1,
-          "module": "quorune.replacement_effects"
+          "fan_in": 24,
+          "fan_out": 3,
+          "module": "quorune.semantic_choices.context"
         }
       ],
       "highest_fan_out": [
@@ -8127,7 +8127,17 @@
         {
           "fan_in": 5,
           "fan_out": 22,
+          "module": "quorune.semantic_choices.defaults"
+        },
+        {
+          "fan_in": 5,
+          "fan_out": 22,
           "module": "quorune.semantic_runtime.zone_replacements"
+        },
+        {
+          "fan_in": 66,
+          "fan_out": 21,
+          "module": "quorune.rules.capabilities"
         },
         {
           "fan_in": 1,
@@ -8135,19 +8145,9 @@
           "module": "quorune.rules.casting.commit"
         },
         {
-          "fan_in": 5,
-          "fan_out": 21,
-          "module": "quorune.semantic_choices.defaults"
-        },
-        {
           "fan_in": 8,
           "fan_out": 19,
           "module": "quorune.damage"
-        },
-        {
-          "fan_in": 66,
-          "fan_out": 19,
-          "module": "quorune.rules.capabilities"
         },
         {
           "fan_in": 4,
@@ -8160,7 +8160,7 @@
           "module": "quorune.cli"
         }
       ],
-      "internal_edges": 2140,
+      "internal_edges": 2154,
       "modules": [
         {
           "fan_in": 2,
@@ -8583,6 +8583,11 @@
           "module": "quorune.compiler.activation_restriction_templates"
         },
         {
+          "fan_in": 3,
+          "fan_out": 2,
+          "module": "quorune.compiler.affected_player_sacrifice_templates"
+        },
+        {
           "fan_in": 1,
           "fan_out": 2,
           "module": "quorune.compiler.amass_templates"
@@ -8864,7 +8869,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 16,
+          "fan_out": 17,
           "module": "quorune.compiler.resolution_effect_templates"
         },
         {
@@ -9443,12 +9448,12 @@
           "module": "quorune.morph"
         },
         {
-          "fan_in": 26,
+          "fan_in": 28,
           "fan_out": 2,
           "module": "quorune.object_predicate"
         },
         {
-          "fan_in": 22,
+          "fan_in": 23,
           "fan_out": 2,
           "module": "quorune.object_query"
         },
@@ -9588,7 +9593,7 @@
           "module": "quorune.replacement.application"
         },
         {
-          "fan_in": 84,
+          "fan_in": 85,
           "fan_out": 1,
           "module": "quorune.replacement.immutable"
         },
@@ -9730,11 +9735,16 @@
         {
           "fan_in": 1,
           "fan_out": 1,
+          "module": "quorune.rules.affected_player_sacrifice_capability_shapes"
+        },
+        {
+          "fan_in": 1,
+          "fan_out": 1,
           "module": "quorune.rules.amass_capability_shapes"
         },
         {
           "fan_in": 66,
-          "fan_out": 19,
+          "fan_out": 21,
           "module": "quorune.rules.capabilities"
         },
         {
@@ -9944,7 +9954,7 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 3,
+          "fan_out": 6,
           "module": "quorune.selection.apnap"
         },
         {
@@ -9998,6 +10008,11 @@
           "module": "quorune.semantic_choices.amass"
         },
         {
+          "fan_in": 2,
+          "fan_out": 4,
+          "module": "quorune.semantic_choices.apnap_commit"
+        },
+        {
           "fan_in": 1,
           "fan_out": 4,
           "module": "quorune.semantic_choices.artifact_exchange"
@@ -10013,7 +10028,7 @@
           "module": "quorune.semantic_choices.conditional_draw"
         },
         {
-          "fan_in": 23,
+          "fan_in": 24,
           "fan_out": 3,
           "module": "quorune.semantic_choices.context"
         },
@@ -10034,7 +10049,7 @@
         },
         {
           "fan_in": 5,
-          "fan_out": 21,
+          "fan_out": 22,
           "module": "quorune.semantic_choices.defaults"
         },
         {
@@ -10058,7 +10073,7 @@
           "module": "quorune.semantic_choices.library_and_hand"
         },
         {
-          "fan_in": 26,
+          "fan_in": 27,
           "fan_out": 1,
           "module": "quorune.semantic_choices.model"
         },
@@ -10333,7 +10348,7 @@
           "module": "quorune.semantic_runtime.handlers"
         },
         {
-          "fan_in": 35,
+          "fan_in": 36,
           "fan_out": 10,
           "module": "quorune.semantic_runtime.intents"
         },
@@ -10618,7 +10633,7 @@
           "module": "quorune.untap_step_coordination"
         },
         {
-          "fan_in": 88,
+          "fan_in": 89,
           "fan_out": 0,
           "module": "quorune.util"
         },
@@ -10711,12 +10726,12 @@
     },
     "interaction_assurance_baseline": {
       "applicable_high_risk_pairs": 184,
-      "applicable_piece_pairs": 40568,
+      "applicable_piece_pairs": 41108,
       "available": true,
       "covered_high_risk_pairs": 184,
       "covered_piece_pairs": 699,
       "source": "coverage/reusable-piece-interactions.json.gz",
-      "source_fingerprint": "f5fcce7323d2dfe457c56a8ee330c390fef1e600190f02e15e032da0962d2659",
+      "source_fingerprint": "48d55eace79cf176450a330b07cb438757d4e3e521bb11cf7d91a65013bc0796",
       "uncovered_high_risk_pairs": 0
     },
     "migration_queue": [],
@@ -10772,7 +10787,7 @@
       ]
     },
     "production": {
-      "file_count": 525,
+      "file_count": 528,
       "largest_functions_and_methods": [
         {
           "end_line": 1619,
@@ -11017,10 +11032,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 775,
+          "end_line": 776,
           "file": "quorune/compiler/activated_mana_nodes.py",
           "kind": "function",
-          "line": 616,
+          "line": 617,
           "logical_lines": 159,
           "name": "activated_oracle_node",
           "physical_lines": 160,
@@ -11105,12 +11120,12 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 167648,
+      "logical_lines": 168378,
       "methods": {
-        "dunder": 470,
-        "private": 808,
-        "public": 1808,
-        "total": 3086
+        "dunder": 472,
+        "private": 810,
+        "public": 1817,
+        "total": 3099
       },
       "modules": [
         {
@@ -11229,22 +11244,22 @@
           "file": "quorune/semantic_choices/intent_host.py",
           "functions_and_methods": 48,
           "language": "python",
-          "logical_lines": 1337,
-          "physical_lines": 1390
+          "logical_lines": 1338,
+          "physical_lines": 1391
         },
         {
           "file": "quorune/semantic_runtime/intents.py",
-          "functions_and_methods": 40,
+          "functions_and_methods": 41,
           "language": "python",
-          "logical_lines": 1239,
-          "physical_lines": 1390
+          "logical_lines": 1272,
+          "physical_lines": 1424
         },
         {
           "file": "quorune/rules/capabilities.py",
           "functions_and_methods": 29,
           "language": "python",
-          "logical_lines": 1236,
-          "physical_lines": 1311
+          "logical_lines": 1248,
+          "physical_lines": 1323
         },
         {
           "file": "server/app.py",
@@ -11331,6 +11346,13 @@
           "physical_lines": 1060
         },
         {
+          "file": "quorune/semantic_choices/intent_replacement.py",
+          "functions_and_methods": 18,
+          "language": "python",
+          "logical_lines": 975,
+          "physical_lines": 1016
+        },
+        {
           "file": "quorune/effect_runtime/objects_stack_and_tokens.py",
           "functions_and_methods": 23,
           "language": "python",
@@ -11378,13 +11400,6 @@
           "language": "python",
           "logical_lines": 924,
           "physical_lines": 986
-        },
-        {
-          "file": "quorune/semantic_choices/intent_replacement.py",
-          "functions_and_methods": 16,
-          "language": "python",
-          "logical_lines": 922,
-          "physical_lines": 959
         },
         {
           "file": "quorune/preflight.py",
@@ -11520,18 +11535,18 @@
           "physical_lines": 781
         },
         {
+          "file": "quorune/compiler/activated_mana_nodes.py",
+          "functions_and_methods": 11,
+          "language": "python",
+          "logical_lines": 751,
+          "physical_lines": 783
+        },
+        {
           "file": "quorune/damage_prevention_creation.py",
           "functions_and_methods": 20,
           "language": "python",
           "logical_lines": 751,
           "physical_lines": 815
-        },
-        {
-          "file": "quorune/compiler/activated_mana_nodes.py",
-          "functions_and_methods": 11,
-          "language": "python",
-          "logical_lines": 750,
-          "physical_lines": 782
         },
         {
           "file": "quorune/replacement/application.py",
@@ -12052,18 +12067,25 @@
           "physical_lines": 462
         },
         {
-          "file": "quorune/semantic_runtime/zone_replacement_model.py",
-          "functions_and_methods": 8,
+          "file": "quorune/selection/apnap.py",
+          "functions_and_methods": 9,
           "language": "python",
-          "logical_lines": 391,
-          "physical_lines": 418
+          "logical_lines": 395,
+          "physical_lines": 412
         },
         {
           "file": "quorune/semantic_choices/counter_coordination.py",
           "functions_and_methods": 10,
           "language": "python",
-          "logical_lines": 390,
-          "physical_lines": 414
+          "logical_lines": 393,
+          "physical_lines": 417
+        },
+        {
+          "file": "quorune/semantic_runtime/zone_replacement_model.py",
+          "functions_and_methods": 8,
+          "language": "python",
+          "logical_lines": 391,
+          "physical_lines": 418
         },
         {
           "file": "quorune/convoke.py",
@@ -12500,18 +12522,18 @@
           "physical_lines": 278
         },
         {
+          "file": "quorune/compiler/affected_player_sacrifice_templates.py",
+          "functions_and_methods": 11,
+          "language": "python",
+          "logical_lines": 242,
+          "physical_lines": 272
+        },
+        {
           "file": "quorune/compiler/corpus_reporting.py",
           "functions_and_methods": 3,
           "language": "python",
           "logical_lines": 242,
           "physical_lines": 256
-        },
-        {
-          "file": "quorune/selection/apnap.py",
-          "functions_and_methods": 7,
-          "language": "python",
-          "logical_lines": 242,
-          "physical_lines": 258
         },
         {
           "file": "quorune/commander.py",
@@ -12906,6 +12928,13 @@
           "physical_lines": 202
         },
         {
+          "file": "quorune/compiler/resolution_effect_templates.py",
+          "functions_and_methods": 1,
+          "language": "python",
+          "logical_lines": 177,
+          "physical_lines": 186
+        },
+        {
           "file": "quorune/semantic_runtime/sunburst.py",
           "functions_and_methods": 7,
           "language": "python",
@@ -12939,13 +12968,6 @@
           "language": "python",
           "logical_lines": 172,
           "physical_lines": 182
-        },
-        {
-          "file": "quorune/compiler/resolution_effect_templates.py",
-          "functions_and_methods": 1,
-          "language": "python",
-          "logical_lines": 169,
-          "physical_lines": 178
         },
         {
           "file": "quorune/rules/temporary_declaration_restrictions.py",
@@ -13240,6 +13262,13 @@
           "language": "python",
           "logical_lines": 141,
           "physical_lines": 168
+        },
+        {
+          "file": "quorune/semantic_choices/apnap_commit.py",
+          "functions_and_methods": 3,
+          "language": "python",
+          "logical_lines": 140,
+          "physical_lines": 155
         },
         {
           "file": "quorune/bestow.py",
@@ -13900,6 +13929,13 @@
           "physical_lines": 117
         },
         {
+          "file": "quorune/rules/affected_player_sacrifice_capability_shapes.py",
+          "functions_and_methods": 1,
+          "language": "python",
+          "logical_lines": 82,
+          "physical_lines": 90
+        },
+        {
           "file": "quorune/rules/station_capability_shapes.py",
           "functions_and_methods": 1,
           "language": "python",
@@ -14222,6 +14258,13 @@
           "physical_lines": 64
         },
         {
+          "file": "quorune/semantic_choices/defaults.py",
+          "functions_and_methods": 1,
+          "language": "python",
+          "logical_lines": 55,
+          "physical_lines": 59
+        },
+        {
           "file": "quorune/keyword_counters.py",
           "functions_and_methods": 2,
           "language": "python",
@@ -14241,13 +14284,6 @@
           "language": "python",
           "logical_lines": 53,
           "physical_lines": 71
-        },
-        {
-          "file": "quorune/semantic_choices/defaults.py",
-          "functions_and_methods": 1,
-          "language": "python",
-          "logical_lines": 53,
-          "physical_lines": 57
         },
         {
           "file": "quorune/card_program_faces.py",
@@ -15034,10 +15070,10 @@
           "visibility": "public"
         },
         {
-          "end_line": 775,
+          "end_line": 776,
           "file": "quorune/compiler/activated_mana_nodes.py",
           "kind": "function",
-          "line": 616,
+          "line": 617,
           "logical_lines": 159,
           "name": "activated_oracle_node",
           "physical_lines": 160,
@@ -15109,8 +15145,8 @@
           "physical_lines": 1697
         }
       ],
-      "physical_lines": 183926,
-      "python_file_count": 509,
+      "physical_lines": 184715,
+      "python_file_count": 512,
       "review_thresholds": {
         "function_logical_lines_review": 150,
         "module_logical_lines_review": 1500
@@ -15127,7 +15163,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 2355,
+      "top_level_functions": 2362,
       "web_file_count": 16
     },
     "runtime_oracle_text_access": {
@@ -18607,7 +18643,7 @@
       "card_specific_operation_branch_occurrences": {
         "remora_tax": 1
       },
-      "count": 296,
+      "count": 299,
       "limitations": "AST heuristic covers if/match conditions whose source names op or operation.",
       "locations": [
         {
@@ -19966,6 +20002,25 @@
           "symbol": "execute_reusable_piece_operation"
         },
         {
+          "condition": "set(effect) != expected_fields or effect.get(\"op\") != \"choose_cards_apnap\" or effect.get(\"actor\") != \"$controller\" or effect.get(\"zone\") != \"battlefield\" or effect.get(\"count\") not in {1, 2} or effect.get(\"then\") != \"sacrifice\" or type(effe",
+          "file": "quorune/rules/affected_player_sacrifice_capability_shapes.py",
+          "line": 41,
+          "string_literals": [
+            "$controller",
+            "actor",
+            "battlefield",
+            "choose_cards_apnap",
+            "count",
+            "op",
+            "predicate",
+            "prompt",
+            "sacrifice",
+            "then",
+            "zone"
+          ],
+          "symbol": "fixed_affected_player_sacrifice_node_capabilities"
+        },
+        {
           "condition": "set(effect) != {\"op\", \"subtype\", \"amount\"} or effect.get(\"op\") != \"amass\"",
           "file": "quorune/rules/amass_capability_shapes.py",
           "line": 30,
@@ -19980,7 +20035,7 @@
         {
           "condition": "isinstance(operation, str) and operation",
           "file": "quorune/rules/capabilities.py",
-          "line": 990,
+          "line": 998,
           "string_literals": [],
           "symbol": "_nested_effect_operations"
         },
@@ -21005,6 +21060,24 @@
           "symbol": "execute_rules_corpus_operation"
         },
         {
+          "condition": "set(effect) != allowed_fields or effect.get(\"op\") != \"choose_cards_apnap\" or effect.get(\"zone\") != \"battlefield\" or effect.get(\"then\") != \"sacrifice\" or type(effect.get(\"actor\")) is not str or effect.get(\"actor\") not in self.active_seats or",
+          "file": "quorune/selection/apnap.py",
+          "line": 186,
+          "string_literals": [
+            "actor",
+            "battlefield",
+            "choose_cards_apnap",
+            "op",
+            "players",
+            "prompt",
+            "sacrifice",
+            "target",
+            "then",
+            "zone"
+          ],
+          "symbol": "_issue_apnap_choice"
+        },
+        {
           "condition": "set(effect) != expected or effect.get(\"op\") != \"amass\"",
           "file": "quorune/semantic_choices/amass.py",
           "line": 53,
@@ -21013,6 +21086,15 @@
             "op"
           ],
           "symbol": "_spec"
+        },
+        {
+          "condition": "effect[\"op\"] != APNAP_OBJECT_COMMIT_OPERATION",
+          "file": "quorune/semantic_choices/apnap_commit.py",
+          "line": 40,
+          "string_literals": [
+            "op"
+          ],
+          "symbol": "_intents"
         },
         {
           "condition": "effect.get(\"op\") != \"fixed_bolster\" or type(player) is not str or not player or type(amount) is not int or amount <= 0",
@@ -21516,7 +21598,7 @@
       "operation_literal_counts": {
         "": 8,
         " ": 1,
-        "$controller": 13,
+        "$controller": 14,
         "$source": 20,
         "$source.zone_object": 2,
         "$station.power": 1,
@@ -21529,6 +21611,7 @@
         "Tap, untap, or leave the target unchanged.": 1,
         "Untap": 1,
         "action": 1,
+        "actor": 2,
         "add": 4,
         "add_ability": 2,
         "add_ability_fragment": 2,
@@ -21543,6 +21626,7 @@
         "animate_dead_reanimate": 1,
         "append": 1,
         "audit": 2,
+        "battlefield": 2,
         "blockers": 2,
         "bounce": 1,
         "cap_result_life_loss": 1,
@@ -21550,7 +21634,7 @@
         "cards": 4,
         "changed": 1,
         "choose_card_name": 1,
-        "choose_cards_apnap": 1,
+        "choose_cards_apnap": 3,
         "choose_mana": 1,
         "choose_objects": 1,
         "choose_option": 1,
@@ -21564,7 +21648,7 @@
         "cost": 1,
         "cost_per_counter": 1,
         "cost_position": 1,
-        "count": 10,
+        "count": 11,
         "counter": 9,
         "counter_stack_target": 1,
         "counter_unless_pay": 1,
@@ -21647,7 +21731,7 @@
         "offer_draw": 2,
         "offer_modular_counter_transfer": 2,
         "offer_optional_counter_placement": 1,
-        "op": 93,
+        "op": 96,
         "operation": 6,
         "options": 1,
         "origin": 1,
@@ -21664,14 +21748,16 @@
         "place_player_counters": 1,
         "placements": 1,
         "player": 18,
+        "players": 1,
         "post_draw_actions": 1,
         "power": 3,
+        "predicate": 1,
         "prevent": 1,
         "prevent_draw": 1,
         "prevent_using_shield": 1,
         "private": 2,
         "proliferate": 2,
-        "prompt": 2,
+        "prompt": 4,
         "queue": 1,
         "reason": 1,
         "redirect_damage": 1,
@@ -21696,6 +21782,7 @@
         "return_graveyard_card_to_owner_hand": 1,
         "runtime-components": 1,
         "runtime-text": 1,
+        "sacrifice": 2,
         "scry": 3,
         "scute_swarm_token": 1,
         "search": 1,
@@ -21719,7 +21806,8 @@
         "sync": 1,
         "tap": 1,
         "tapped": 1,
-        "target": 3,
+        "target": 4,
+        "then": 2,
         "then_by_choice": 1,
         "tokens": 1,
         "toughness": 3,
@@ -21734,7 +21822,8 @@
         "value": 2,
         "verify": 1,
         "welder_exchange": 1,
-        "writes": 1
+        "writes": 1,
+        "zone": 2
       }
     },
     "subsystem_capsules": [
@@ -21959,7 +22048,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 200,
+        "primary_test_count": 201,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_activating_abilities_rules",
@@ -22038,6 +22127,7 @@
           "test_ending_phase_rules",
           "test_evolve_counter_placement",
           "test_explore_rules",
+          "test_fixed_affected_player_sacrifices",
           "test_fixed_alternative_additional_costs",
           "test_fixed_choose_one_modal_spells",
           "test_fixed_controller_effect_sequences",
@@ -22059,8 +22149,7 @@
           "test_fixed_multikind_counter_batches",
           "test_fixed_player_counter_placement_effects",
           "test_fixed_player_life_effects",
-          "test_fixed_query_keyword_grants",
-          "test_fixed_sacrifice_additional_costs"
+          "test_fixed_query_keyword_grants"
         ],
         "privacy_sensitivity": "not explicitly declared",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -23043,6 +23132,7 @@
           "casting.kicker.fixed_mana",
           "casting.morph.fixed_mana",
           "casting.zone.self_graveyard.controlled_subtype",
+          "choice.affected_player.fixed_sacrifice",
           "choice.modal.fixed_one",
           "combat.declaration.typed_components",
           "combat.goad.prohibition.controller_creatures",
@@ -23122,10 +23212,9 @@
           "trigger.keyword.echo.fixed_mana",
           "trigger.keyword.prowess",
           "trigger.keyword.storm",
-          "trigger.keyword.ward.fixed_generic",
-          "trigger.multiplier.another_creature_of_chosen_type"
+          "trigger.keyword.ward.fixed_generic"
         ],
-        "capability_count": 111,
+        "capability_count": 112,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -23149,6 +23238,7 @@
           "quorune/compiler/activated_costs.py",
           "quorune/compiler/activated_mana_nodes.py",
           "quorune/compiler/activation_restriction_templates.py",
+          "quorune/compiler/affected_player_sacrifice_templates.py",
           "quorune/compiler/amass_templates.py",
           "quorune/compiler/bestow_nodes.py",
           "quorune/compiler/bolster_templates.py",
@@ -23242,10 +23332,10 @@
             "visibility": "private"
           },
           {
-            "end_line": 775,
+            "end_line": 776,
             "file": "quorune/compiler/activated_mana_nodes.py",
             "kind": "function",
-            "line": 616,
+            "line": 617,
             "logical_lines": 159,
             "name": "activated_oracle_node",
             "physical_lines": 160,
@@ -23253,7 +23343,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 129,
+        "primary_test_count": 130,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_activation_restrictions",
@@ -23294,6 +23384,7 @@
           "test_evolve_counter_placement",
           "test_explore_compiler",
           "test_fabricate_compiler",
+          "test_fixed_affected_player_sacrifices",
           "test_fixed_alternative_additional_costs",
           "test_fixed_choose_one_modal_spells",
           "test_fixed_controller_effect_sequences",
@@ -23353,8 +23444,7 @@
           "test_riot_rules",
           "test_rule_capabilities",
           "test_saga_counter_progression",
-          "test_scry_rules",
-          "test_self_counter_keyword_actions"
+          "test_scry_rules"
         ],
         "privacy_sensitivity": "not explicitly declared",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -23362,7 +23452,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Oracle compiler.",
-        "reusable_piece_count": 117,
+        "reusable_piece_count": 118,
         "reusable_pieces": [
           "capability.activation.counter_keyword.fixed",
           "capability.activation.crew.fixed_power",
@@ -23383,6 +23473,7 @@
           "capability.casting.kicker.fixed_mana",
           "capability.casting.morph.fixed_mana",
           "capability.casting.zone.self_graveyard.controlled_subtype",
+          "capability.choice.affected_player.fixed_sacrifice",
           "capability.choice.modal.fixed_one",
           "capability.combat.declaration.typed_components",
           "capability.combat.goad.prohibition.controller_creatures",
@@ -23462,13 +23553,12 @@
           "capability.trigger.keyword.echo.fixed_mana",
           "capability.trigger.keyword.prowess",
           "capability.trigger.keyword.storm",
-          "capability.trigger.keyword.ward.fixed_generic",
-          "capability.trigger.multiplier.another_creature_of_chosen_type"
+          "capability.trigger.keyword.ward.fixed_generic"
         ],
         "runtime_oracle_text_accesses": 12,
         "state_authority": {
           "classified_module_access": {
-            "none": 86
+            "none": 87
           },
           "direct_write_count": 0,
           "engine_direct_write_count": 0
@@ -23509,7 +23599,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 72,
+        "primary_test_count": 73,
         "primary_tests": [
           "test_amass_rules",
           "test_attached_counter_placement",
@@ -23532,6 +23622,7 @@
           "test_exact_zimone_closure",
           "test_explore_rules",
           "test_fabricate_compiler",
+          "test_fixed_affected_player_sacrifices",
           "test_fixed_alternative_additional_costs",
           "test_fixed_counter_additional_costs",
           "test_fixed_counter_controller_effect_sequences",
@@ -23649,7 +23740,7 @@
             "visibility": "public"
           }
         ],
-        "primary_test_count": 177,
+        "primary_test_count": 178,
         "primary_tests": [
           "test_activated_draw_abilities",
           "test_activating_abilities_rules",
@@ -23717,6 +23808,7 @@
           "test_ending_phase_rules",
           "test_evolve_counter_placement",
           "test_explore_rules",
+          "test_fixed_affected_player_sacrifices",
           "test_fixed_alternative_additional_costs",
           "test_fixed_choose_one_modal_spells",
           "test_fixed_controller_effect_sequences",
@@ -23749,8 +23841,7 @@
           "test_goad_rules",
           "test_graveyard_return_rules",
           "test_graveyard_rules",
-          "test_hexproof_targeting",
-          "test_indestructible_rules"
+          "test_hexproof_targeting"
         ],
         "privacy_sensitivity": "not explicitly declared",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -23967,6 +24058,7 @@
         "capabilities": [
           "casting.bestow.fixed_mana",
           "casting.permission.one_shot_exile_without_mana",
+          "choice.affected_player.fixed_sacrifice",
           "choice.modal.fixed_one",
           "counter.producer.bolster",
           "counter.producer.cumulative_upkeep_fixed_life",
@@ -24007,7 +24099,7 @@
           "trigger.keyword.storm",
           "zone.draw.library_to_hand"
         ],
-        "capability_count": 41,
+        "capability_count": 42,
         "compiler_cardprogram_representations": [
           "typed target schemas and object predicates"
         ],
@@ -24067,6 +24159,7 @@
           "quorune/selection/targeting.py",
           "quorune/semantic_choices/__init__.py",
           "quorune/semantic_choices/amass.py",
+          "quorune/semantic_choices/apnap_commit.py",
           "quorune/semantic_choices/artifact_exchange.py",
           "quorune/semantic_choices/bolster.py",
           "quorune/semantic_choices/conditional_draw.py",
@@ -24153,10 +24246,11 @@
         "removal_condition": "No missing-owner condition remains. Historical Game Record v3 adapters may be removed only after supported records no longer require their prior continuation shapes; future choices must use a typed contract and immutable operation payload without restoring engine-local begin/complete execution.",
         "replay_behavior": "Choice actor, legal references, revision, source/stack identity, and completion are replay-critical.",
         "responsibility": "Own targeting, nontarget public choices, hidden-zone searches, cost selections, ordering, distributions, and versioned continuations without conflating their rules contracts.",
-        "reusable_piece_count": 43,
+        "reusable_piece_count": 44,
         "reusable_pieces": [
           "capability.casting.bestow.fixed_mana",
           "capability.casting.permission.one_shot_exile_without_mana",
+          "capability.choice.affected_player.fixed_sacrifice",
           "capability.choice.modal.fixed_one",
           "capability.counter.producer.bolster",
           "capability.counter.producer.cumulative_upkeep_fixed_life",
@@ -24203,7 +24297,7 @@
         "state_authority": {
           "classified_module_access": {
             "mutable_owner": 7,
-            "none": 31,
+            "none": 32,
             "read_only": 7
           },
           "direct_write_count": 3,
@@ -24240,6 +24334,7 @@
           "casting.payment.affinity_artifacts",
           "casting.payment.convoke",
           "casting.zone.self_graveyard.controlled_subtype",
+          "choice.affected_player.fixed_sacrifice",
           "combat.attack.vigilance",
           "combat.block.self_counter_prohibition",
           "combat.declaration.typed_components",
@@ -24323,10 +24418,9 @@
           "permanent.untap.all_creatures",
           "permanent.untap.effect",
           "protection.typed.debt",
-          "replacement.kicker.fixed_entry",
-          "resolution.effect_sequence.fixed_counter_controller"
+          "replacement.kicker.fixed_entry"
         ],
-        "capability_count": 122,
+        "capability_count": 123,
         "compiler_cardprogram_representations": [],
         "continuations": [],
         "current_debt": "No missing-owner flag is set.",
@@ -24514,7 +24608,7 @@
         "removal_condition": "No missing-owner removal condition applies.",
         "replay_behavior": "not explicitly declared",
         "responsibility": "Semantic effect execution.",
-        "reusable_piece_count": 123,
+        "reusable_piece_count": 124,
         "reusable_pieces": [
           "capability.activation.counter_keyword.fixed",
           "capability.activation.crew.fixed_power",
@@ -24531,6 +24625,7 @@
           "capability.casting.payment.affinity_artifacts",
           "capability.casting.payment.convoke",
           "capability.casting.zone.self_graveyard.controlled_subtype",
+          "capability.choice.affected_player.fixed_sacrifice",
           "capability.combat.attack.vigilance",
           "capability.combat.block.self_counter_prohibition",
           "capability.combat.declaration.typed_components",
@@ -24614,8 +24709,7 @@
           "capability.permanent.untap.all_creatures",
           "capability.permanent.untap.effect",
           "capability.protection.typed.debt",
-          "capability.replacement.kicker.fixed_entry",
-          "capability.resolution.effect_sequence.fixed_counter_controller"
+          "capability.replacement.kicker.fixed_entry"
         ],
         "runtime_oracle_text_accesses": 0,
         "state_authority": {
@@ -25092,6 +25186,7 @@
           "casting.bestow.fixed_mana",
           "casting.kicker.fixed_mana",
           "casting.permission.one_shot_exile_without_mana",
+          "choice.affected_player.fixed_sacrifice",
           "counter.producer.fixed_event_trigger",
           "counter.producer.station",
           "counter.producer.sunburst",
@@ -25106,7 +25201,7 @@
           "zone.mill.fixed",
           "zone.self_move.activated"
         ],
-        "capability_count": 17,
+        "capability_count": 18,
         "compiler_cardprogram_representations": [
           "typed zone-transition semantic intents"
         ],
@@ -25171,7 +25266,7 @@
         ],
         "oversized_symbol_count": 0,
         "oversized_symbols": [],
-        "primary_test_count": 151,
+        "primary_test_count": 152,
         "primary_tests": [
           "test_aerial_blocking",
           "test_amass_rules",
@@ -25233,6 +25328,7 @@
           "test_exact_zimone_closure",
           "test_exile_rules",
           "test_explore_rules",
+          "test_fixed_affected_player_sacrifices",
           "test_fixed_controller_effect_sequences",
           "test_fixed_counter_additional_costs",
           "test_fixed_counter_controller_effect_sequences",
@@ -25271,8 +25367,7 @@
           "test_mentor_rules",
           "test_mill_rules",
           "test_modular_rules",
-          "test_monarch_rules",
-          "test_morph_rules"
+          "test_monarch_rules"
         ],
         "privacy_sensitivity": "Hand and library destinations require owner-scoped projection while public references preserve only legal continuity.",
         "prohibited_runtime_oracle_text_accesses": 0,
@@ -25282,12 +25377,13 @@
         "removal_condition": "No missing-owner condition remains. Compatibility facades may be removed only after historical callers use the typed transition port and exact Game Record v3 replay remains unchanged; future move producers must not restore direct engine zone-list mutation.",
         "replay_behavior": "Physical identity and logical incarnation transitions are serialized in Game Record v3 state and event journals.",
         "responsibility": "Own physical identity, logical incarnations, zone membership, destination replacement, LKI, attachment cleanup, and normalized zone events.",
-        "reusable_piece_count": 18,
+        "reusable_piece_count": 19,
         "reusable_pieces": [
           "capability.activation.unearth.fixed_mana",
           "capability.casting.bestow.fixed_mana",
           "capability.casting.kicker.fixed_mana",
           "capability.casting.permission.one_shot_exile_without_mana",
+          "capability.choice.affected_player.fixed_sacrifice",
           "capability.counter.producer.fixed_event_trigger",
           "capability.counter.producer.station",
           "capability.counter.producer.sunburst",
@@ -25752,22 +25848,22 @@
     "card_program_v2_present": true,
     "commander_legal_oracle": {
       "current_snapshot_complete": false,
-      "exact_fraction": 0.171521,
-      "material_residuals": 39147,
+      "exact_fraction": 0.172438,
+      "material_residuals": 39086,
       "residual_kinds": {
         "cost": 1756,
         "declaration_cost": 10,
         "declaration_restriction": 154,
-        "dependency_contract": 1118,
-        "effect": 5114,
+        "dependency_contract": 1120,
+        "effect": 5109,
         "keyword_grammar": 63,
         "keyword_lifecycle": 48,
         "mana_ability": 550,
         "replacement_effect": 1285,
         "spell_additional_cost": 120,
-        "spell_effect": 7905,
+        "spell_effect": 7864,
         "static_ability": 8811,
-        "trigger": 12012,
+        "trigger": 11995,
         "unsupported_crew_cost": 1,
         "unsupported_cumulative_upkeep_cost": 20,
         "unsupported_cycling_cost": 11,
@@ -25785,37 +25881,37 @@
         "scryfall_rulings_updated_at": "2026-08-06T09:00:37.813+00:00"
       },
       "status_counts": {
-        "exact": 5424,
-        "partial": 11882,
-        "unresolved": 14317
+        "exact": 5453,
+        "partial": 11894,
+        "unresolved": 14276
       },
-      "template_count": 650,
+      "template_count": 675,
       "total_faces": 32431,
       "total_oracle_ids": 31623
     },
     "compiler_module": "quorune/oracle_ir.py",
     "compiler_module_logical_lines": 1402,
     "compiler_module_physical_lines": 1462,
-    "compiler_version": "oracle-ir-v103",
+    "compiler_version": "oracle-ir-v104",
     "current_ir": "OracleCardIR lowered to canonical CardProgram V2 with a derived SemanticProgram compatibility index",
     "full_oracle": {
       "current_snapshot_complete": false,
-      "exact_fraction": 0.22049,
-      "material_residuals": 46353,
+      "exact_fraction": 0.221267,
+      "material_residuals": 46290,
       "residual_kinds": {
         "cost": 1988,
         "declaration_cost": 11,
         "declaration_restriction": 170,
-        "dependency_contract": 1249,
-        "effect": 5784,
+        "dependency_contract": 1251,
+        "effect": 5779,
         "keyword_grammar": 67,
         "keyword_lifecycle": 50,
         "mana_ability": 637,
         "replacement_effect": 1507,
         "spell_additional_cost": 126,
-        "spell_effect": 10021,
+        "spell_effect": 9979,
         "static_ability": 10265,
-        "trigger": 14252,
+        "trigger": 14234,
         "unsupported_crew_cost": 1,
         "unsupported_cumulative_upkeep_cost": 21,
         "unsupported_cycling_cost": 11,
@@ -25833,11 +25929,11 @@
         "scryfall_rulings_updated_at": "2026-08-06T09:00:37.813+00:00"
       },
       "status_counts": {
-        "exact": 8516,
-        "partial": 13000,
-        "unresolved": 17107
+        "exact": 8546,
+        "partial": 13012,
+        "unresolved": 17065
       },
-      "template_count": 666,
+      "template_count": 691,
       "total_faces": 41840,
       "total_oracle_ids": 38623
     },
@@ -26029,29 +26125,29 @@
       "dependency_fail_closed_status_counts": {
         "not_applicable": 65,
         "not_run": 3,
-        "passed": 128
+        "passed": 129
       },
       "effective_date": "2026-08-07",
       "evidence": {
         "class_counts": {
-          "interaction": 395,
-          "multiplayer": 199,
-          "mutation": 226,
-          "negative": 387,
-          "positive": 380,
-          "privacy": 169,
+          "interaction": 396,
+          "multiplayer": 200,
+          "mutation": 227,
+          "negative": 388,
+          "positive": 381,
+          "privacy": 170,
           "property": 15,
-          "replay": 241,
-          "rollback": 52
+          "replay": 242,
+          "rollback": 53
         },
-        "declaration_count": 2064,
-        "declaration_source_fingerprint": "28c9e345cb007825ddb647f0b02d8baeca0259af0135a3df12b6b37d14f0b45d",
-        "fingerprint": "ad7c38b3c24319ba217f194ed85b63a22c1c0b3a4b6bee898520875f9c7dd2bc",
-        "registry_fingerprint": "aed861dbd62f4177e0fa085bbabe2b3095ccf3e9c799e18c8ed715f64d59d7e9"
+        "declaration_count": 2072,
+        "declaration_source_fingerprint": "2dcb96335c0c5635820939337c1caa2a942e0d91befa5024a500a6c0a47805db",
+        "fingerprint": "937ffa8f05c86274d634448592301b39c61221d170e7fbea199e742e0cc08833",
+        "registry_fingerprint": "2d771ca8c0aef092b3f34af91d1e6c4f1c0836b153042658833dccf59353d3a1"
       },
-      "fingerprint": "aed861dbd62f4177e0fa085bbabe2b3095ccf3e9c799e18c8ed715f64d59d7e9",
+      "fingerprint": "2d771ca8c0aef092b3f34af91d1e6c4f1c0836b153042658833dccf59353d3a1",
       "implementation_mutation_status_counts": {
-        "killed": 191,
+        "killed": 192,
         "not_run": 5
       },
       "profiles": [
@@ -26059,15 +26155,15 @@
         "commander_duel",
         "commander_review"
       ],
-      "registry_version": 121,
+      "registry_version": 122,
       "schema_version": 1,
       "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
       "status_counts": {
         "blocked": 4,
         "tested": 2,
-        "trusted": 190
+        "trusted": 191
       },
-      "total": 196
+      "total": 197
     },
     "stages": [
       {
@@ -26252,7 +26348,7 @@
             "quorune/oracle_ir.py:102",
             "quorune/preflight.py:29",
             "quorune/rules/__init__.py:3",
-            "quorune/rules/capabilities.py:500"
+            "quorune/rules/capabilities.py:507"
           ],
           "explicit_capability_gate": [
             "quorune/compiler/bestow_nodes.py:11",
@@ -26340,7 +26436,7 @@
         "contract_fingerprint": "416a79ebc71f9edf21580bbe301d218a02922965142f908500937be92b32b88e",
         "exact_cards_with_template": 354,
         "exact_nodes": 538,
-        "fingerprint": "825be83c4e33d8225cf3e5971120a366e13f0e1c027485578731da26f1333595",
+        "fingerprint": "83d8e34cc7489e3c57d51fd4698742906a8f8eb0ad3487bc05d44014aa61a12d",
         "grammar_source_fingerprint": "ea8baf3010de548078786ff747d9bb96db8f6c62554bee75d6b325ba9e01c7d2",
         "identity_fingerprint": "d322886c42dae133d4f0d0c5b11f0efc794c4bc888c7563e064f9696b8cfcbb3",
         "present": true,
@@ -26352,7 +26448,7 @@
         "contract_fingerprint": "416a79ebc71f9edf21580bbe301d218a02922965142f908500937be92b32b88e",
         "exact_cards_with_template": 368,
         "exact_nodes": 560,
-        "fingerprint": "55847860487b22e25a1bce159b83734777a647a1a0e59f35408d43cc78b0cef4",
+        "fingerprint": "e594ed970ba7c98098b6eb53cf217654b36411f8d7feaf3f9bbd9d4f2f5b37e2",
         "grammar_source_fingerprint": "ea8baf3010de548078786ff747d9bb96db8f6c62554bee75d6b325ba9e01c7d2",
         "identity_fingerprint": "54a5e2e177938b28a67bf87d9625fc9a519cb5317bddd8cfc6d843ff49a6868e",
         "present": true,
@@ -26371,7 +26467,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "bb0b06f87d41d43787f5b59fee4332b1c1df228f5cdd4ba676edb1f679b64780",
+      "fingerprint": "7b747a46e5ffb7ff020e57b28d915d3b156a098dc02898c249c5f8d3d10474e9",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -27201,7 +27297,7 @@
       "playwright_e2e_journeys": 10
     },
     "mutation_testing": {
-      "capability_mutation_declarations": 226,
+      "capability_mutation_declarations": 227,
       "configured_tools": [],
       "focused_executable_suite": true,
       "mutation_score": null
@@ -27229,18 +27325,18 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 3200,
-      "discovered_total": 6509,
+      "conventional_ast_cases": 3208,
+      "discovered_total": 6517,
       "generated_rule_conformance_cases": 3309,
       "named_cross_cutting_counts": {
-        "compiler_named": 164,
+        "compiler_named": 165,
         "fuzz_named": 1,
         "privacy_or_projection_named": 40,
-        "replay_named": 233,
+        "replay_named": 234,
         "server_named": 27
       },
       "reconciles": true,
-      "test_files": 294
+      "test_files": 295
     }
   }
 }

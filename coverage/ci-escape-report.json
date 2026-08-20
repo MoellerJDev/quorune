@@ -469,6 +469,22 @@
       "resolution": "The existing @mana-action impact edge already selected the journey. The driver now uses the bounded progress-aware multi-page pass loop before asserting the Bowmasters target choice and shares the 600-second hosted durability budget used by adjacent long serial journeys.",
       "run_id": 32379387144,
       "summary": "The focused Bowmasters mana-action journey exhausted its 180-second whole-test budget twice while waiting for an opponent priority response to advance to the already-correct Semantic.Target choice; the first timeout also truncated Playwright's trace archive during cleanup."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "generated-artifacts"
+      ],
+      "head_sha": "13ad0c28850c6582c81bbd4a1219b4496e7ee4c4",
+      "id": "ci-20260820-28",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_capability_evidence.CapabilityEvidenceTests.test_default_registry_is_bound_to_current_generated_evidence"
+      ],
+      "resolution": "Every declaration now cites the capability's complete official-rule set and the source block follows canonical evidence-class order. The existing quick-gate impact already selects capability evidence; source-checkpoint preparation now runs update_capability_evidence.py --check and accepts only the expected stale-output result before cloud generation.",
+      "run_id": 32401690028,
+      "summary": "The affected-player sacrifice capability declarations cited only the rules individually exercised by several evidence rows and were inserted out of canonical evidence-class order, so the cloud capability-evidence owner rejected the source before generation."
     }
   ],
   "known_flaky_tests": [],
@@ -521,7 +537,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "81247a5d19f8d70e880e83b89f5190a95faab3c52729354480631b87854842c2",
+  "source_fingerprint": "4cb724e34875056e53551c96c51753e8ce545291f3c146beb0b8dea28e3079cc",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -532,11 +548,11 @@
       "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 7,
-      "source_correctness": 9
+      "source_correctness": 10
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 22,
-    "escape_count": 27,
+    "deterministic_escape_count": 23,
+    "escape_count": 28,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

@@ -562,8 +562,8 @@
     {
       "mechanic_id": "sacrifice",
       "path": "mechanics/contracts/sacrifice.json",
-      "sha256": "9df74a35966de9062cb37bdd15c15f0cd1a0d3839e94cb20d22b437a4d7d6da3",
-      "version": 1
+      "sha256": "4e2c55b30546847ef6802dd07808ed7708b9635736ad2c3d292a48c105494c14",
+      "version": 2
     },
     {
       "mechanic_id": "scry",
@@ -6407,20 +6407,20 @@
     {
       "category": "additional_rules",
       "contract_path": "mechanics/contracts/sacrifice.json",
-      "contract_sha256": "9df74a35966de9062cb37bdd15c15f0cd1a0d3839e94cb20d22b437a4d7d6da3",
-      "contract_version": 1,
+      "contract_sha256": "4e2c55b30546847ef6802dd07808ed7708b9635736ad2c3d292a48c105494c14",
+      "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [
         "701"
       ],
-      "implementation_component": "FixedSacrificeAdditionalCostTemplate, FixedSacrificeAdditionalCost, typed additional-cost spell lowering, and replacement-aware casting commit",
-      "implementation_version": "typed-fixed-sacrifice-casting-cost-v1",
+      "implementation_component": "FixedSacrificeAdditionalCostTemplate, FixedAffectedPlayerSacrificeTemplate, typed casting and effect lowering, APNAP public-object choice collection, MoveObjectsSimultaneouslyIntent, and replacement-aware zone transition",
+      "implementation_version": "typed-fixed-sacrifice-v2",
       "kind": "keyword_action",
       "known_blockers": [
         "optional, variable, repeated, multiple, qualified, subtype, color, and historical-quality sacrifice costs remain residual",
         "alternative and composite sacrifice costs remain residual",
-        "sacrifice effects, activated costs, triggered costs, and rule-generated sacrifices are separate producers",
-        "simultaneous multi-player sacrifice selection and commit require an APNAP batch",
+        "self-selected sacrifice effects, delayed sacrifices, activated or triggered costs, and rule-generated sacrifices are separate producers",
+        "optional, variable, all, half, greatest, least, dynamic-count, mana-value, power, toughness, combat-state, subtype, color, historic, and player-chosen-for-another-player sacrifice effects remain residual",
         "Casualty, Exploit, Forage, Offering, Emerge, and other keyword-specific sacrifice structures require separate capability closure",
         "regeneration mechanics remain unsupported even though represented sacrifice does not invoke destruction"
       ],
@@ -6439,7 +6439,15 @@
         "test_offer_and_submission_share_effective_type_legality",
         "test_fixed_sacrifice_cost_commits_and_replays",
         "test_sacrifice_is_not_destruction_and_uses_owner_graveyard",
-        "test_zone_replacement_suspends_cost_before_mutation_and_replays"
+        "test_zone_replacement_suspends_cost_before_mutation_and_replays",
+        "test_fixed_affected_player_sacrifices_compile_across_contexts_and_modes",
+        "test_unsupported_sacrifice_choices_and_shape_mutations_fail_closed",
+        "test_affected_player_sacrifice_dependencies_fail_closed",
+        "test_affected_player_sacrifice_compiler_mutant_is_killed",
+        "test_each_player_sacrifices_in_apnap_order_and_commits_simultaneously",
+        "test_fixed_count_sacrifices_available_objects_and_skips_empty_player",
+        "test_target_player_choice_revalidates_and_rolls_back_stale_submission",
+        "test_affected_player_sacrifice_uses_zone_replacement_and_replays"
       ],
       "trust_level": "untrusted"
     },
