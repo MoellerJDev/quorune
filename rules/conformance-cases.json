@@ -65498,23 +65498,27 @@
       "status": "unreviewed"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.40",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_storm_rules.StormCompilerTests.test_all_real_storm_cards_lower_typed_stack_trigger"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword heading; the bounded ordinary printed family is owned by trigger.keyword.storm."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.40",
       "rule_text_sha256": "5870f9bfd157bd7ef0571f07b16a533d02bfac9265afd50380265cb75d3cac58",
       "schema_version": 1,
@@ -65523,26 +65527,60 @@
         "end_line": 4319,
         "start_line": 4318
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Gravestorm remains a distinct untrusted keyword",
+        "granted, copied, text-changed, conditional, and face-down Storm remain outside trusted typed stack-ability propagation",
+        "copyable choices outside represented modes, X, and public targets remain unsupported"
       ],
       "case_id": "cr-702.40a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
       "dependency_rule_ids": [
         "702.40"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_storm_rules.StormCompilerTests.test_all_real_storm_cards_lower_typed_stack_trigger",
+        "tests.test_storm_rules.StormCompilerTests.test_unsupported_storm_wording_remains_material_residual",
+        "tests.test_storm_rules.StormRuntimeTests.test_nontargeted_storm_copies_prior_casts_without_extra_choice",
+        "tests.test_storm_rules.StormRuntimeTests.test_targeted_storm_copies_retarget_and_revalidate_independently",
+        "tests.test_storm_rules.StormRuntimeTests.test_storm_and_prowess_share_one_trigger_order_batch",
+        "tests.test_storm_rules.StormRuntimeTests.test_spell_copies_do_not_increase_the_next_storm_count",
+        "tests.test_storm_rules.StormRuntimeTests.test_stale_or_malformed_storm_choice_rolls_back",
+        "tests.test_storm_rules.StormRuntimeTests.test_four_player_storm_choice_is_public_and_replays_exactly"
+      ],
+      "implementation_components": [
+        "quorune.compiler.storm_nodes.storm_keyword_node",
+        "quorune.storm.compiled_storm_specs",
+        "quorune.storm.storm_trigger_items",
+        "quorune.trigger_processing.enqueue_trigger_batch",
+        "quorune.selection.storm.StormTargetChoiceOwnerMixin"
+      ],
+      "notes": [
+        "Each represented printed instance locks the count of other spells already cast that turn, enters the ordinary APNAP cast-trigger batch, and delegates independent copy objects and target reassignment to the existing Storm selection owner.",
+        "The fine-grained capability is trusted while the aggregate rule remains blocked at the stated exclusions."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay",
+        "hidden_information"
+      ],
+      "reviewed": true,
       "rule_id": "702.40a",
       "rule_text_sha256": "1faf337fc102dca30705efd61d5cfa6f55b0f9743f1993a14f80afec1c3ab89e",
       "schema_version": 1,
@@ -65551,26 +65589,42 @@
         "end_line": 4321,
         "start_line": 4320
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "multiple granted, copied, or text-changed Storm instances are not yet propagated through every typed stack-ability path"
       ],
       "case_id": "cr-702.40b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.40"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_storm_rules.StormCompilerTests.test_all_real_storm_cards_lower_typed_stack_trigger",
+        "tests.test_storm_rules.StormCompilerTests.test_multiple_storm_instances_compile_separately"
+      ],
+      "implementation_components": [
+        "quorune.compiler.keyword_nodes.keyword_node_plans",
+        "quorune.compiler.program_generation._generated_ability_id",
+        "quorune.storm.storm_trigger_items",
+        "quorune.trigger_processing.enqueue_trigger_batch"
+      ],
+      "notes": [
+        "Repeated printed instances retain distinct source spans, generated ability identities, ordinary trigger occurrences, and controller ordering."
+      ],
+      "required_scenarios": [
+        "positive",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.40b",
       "rule_text_sha256": "92d0851520bfeaa41b4c05b21147b505e8f32ab5e874726863ad0c35cf5cc500",
       "schema_version": 1,
@@ -65579,7 +65633,7 @@
         "end_line": 4323,
         "start_line": 4322
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",

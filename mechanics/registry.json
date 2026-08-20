@@ -1,5 +1,5 @@
 {
-  "contract_count": 116,
+  "contract_count": 117,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -611,6 +611,12 @@
       "mechanic_id": "station",
       "path": "mechanics/contracts/station.json",
       "sha256": "5f9e4d282009c8dc463edcf2644251474166c86903e3a3aaa15707f004730c82",
+      "version": 1
+    },
+    {
+      "mechanic_id": "storm",
+      "path": "mechanics/contracts/storm.json",
+      "sha256": "c888b525aeeb77a54789129fcf6807ef0af2414df7b5fac3acb67e5736046177",
       "version": 1
     },
     {
@@ -4657,19 +4663,42 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/storm.json",
+      "contract_sha256": "c888b525aeeb77a54789129fcf6807ef0af2414df7b5fac3acb67e5736046177",
+      "contract_version": 1,
+      "coverage_status": "tested",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.compiler.storm_nodes.storm_keyword_node, quorune.semantic_runtime.ability_fragments.StormAbilityFragmentHandler, quorune.storm.storm_trigger_items, quorune.trigger_processing.enqueue_trigger_batch, and quorune.selection.storm.StormTargetChoiceOwnerMixin",
+      "implementation_version": "typed-ordinary-storm-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Gravestorm remains a separate untrusted keyword",
+        "granted, copied, removed, conditional, text-changed, and face-down Storm need trusted typed stack-ability propagation",
+        "copyable choices outside represented modes, X, and targets remain unsupported",
+        "aggregate casting, copy, trigger, and effect coverage remains incomplete"
+      ],
       "mechanic_id": "storm",
       "official_name": "Storm",
       "rule_references": [
         "702.40"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_all_real_storm_cards_lower_typed_stack_trigger",
+        "test_multiple_storm_instances_compile_separately",
+        "test_unsupported_storm_wording_remains_material_residual",
+        "test_storm_dependency_and_compiler_mutations_fail_closed",
+        "test_nontargeted_storm_copies_prior_casts_without_extra_choice",
+        "test_zero_prior_spells_resolves_without_copies",
+        "test_source_departure_does_not_erase_locked_storm_trigger",
+        "test_targeted_storm_copies_retarget_and_revalidate_independently",
+        "test_storm_and_prowess_share_one_trigger_order_batch",
+        "test_spell_copies_do_not_increase_the_next_storm_count",
+        "test_runtime_requires_typed_storm_descriptor",
+        "test_stale_or_malformed_storm_choice_rolls_back",
+        "test_four_player_storm_choice_is_public_and_replays_exactly"
+      ],
       "trust_level": "untrusted"
     },
     {

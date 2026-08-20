@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "342835835d4f84c8ad0e4c821a0554a64b0953776201fd8a13c0a90be8c9f66a",
+    "evaluated_input_fingerprint": "77a05e0116d57788f5bf82717238cbe940cf16d4e8010deb26d533f24cb0605c",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -642,6 +642,12 @@
       "id": "typed_fixed_next_turn_upkeep_draw",
       "name": "Typed fixed next-turn upkeep draw",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers all 33 ordinary printed Storm instances in the pinned Commander family to one typed stack-zone cast-trigger descriptor. The completed census promotes 13 exact, trusted, capability-closed Commander cards, adds 33 ability programs, removes 33 Oracle and CardProgram material residuals, moves 13 partial cards to exact, and leaves unresolved cards and failures flat. The full corpus gains 15 exact, trusted, capability-closed cards and 39 programs, removes 40 residuals, and leaves 2,248 failures unchanged. Each instance locks the canonical count of other spells cast that turn, enters the ordinary APNAP cast-trigger batch, and delegates independent spell-copy objects plus represented target reassignment to the existing Storm selection owner. Copies preserve represented modes, X, and targets, are not cast, and do not increase a later Storm count. All 33 real cards, zero and multiple prior spells, nontargeted auto-copy, Prowess ordering, source departure, independent target revalidation, stale and malformed rollback, four-player projection, exact replay, and compiler/runtime mutations have focused evidence. High-risk assurance remains 184/184 with zero uncovered debt; CommanderEngine, direct writes, runtime prose, and identity dispatch remain flat. Gravestorm, granted, copied, removed, conditional, text-changed, face-down, and wider copy-choice forms remain fail-closed.",
+      "id": "typed_ordinary_storm",
+      "name": "Typed ordinary printed Storm",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -665,7 +671,7 @@
     "reusable_piece_inventory": "implemented_versioned_generated_matrix_card_index_interaction_index_complex_card_benchmark_durable_baseline_delta_and_cli_with_zero_unclassified_material_spans",
     "rooms_and_lobbies": "implemented_invite_only_two_or_four_seat_remove_leave_replace_and_watch",
     "security": "guest_hash_csrf_origin_capability_and_projection_baseline",
-    "semantic_handlers": "implemented_registered read-only typed-intent handlers plus bounded runtime components and closed effect-runtime families with strict binding and focused tap token counter fixed_counter_placement fixed_counter_placement_set fixed_counter_placement_target_set fixed_player_counter_placement fixed_counter_removal entry_counter optional_self_entry_counter rule_generated_counter_removal permanent_designation zone_object_state stack_counter destruction permanent_exile return_to_hand damage fixed_damage_set combat_damage_snapshot combat_damage_assignment combat_damage_sequence damage_result life player_counter continuous_effect attachment aura_entry draw mill scry surveil typed_ability_fragment haste_eligibility aerial_block_legality defender_attack_restriction menace_block_restriction landwalk_restriction combat_evasion_restriction self_counter_block_restriction block_transition_keyword_trigger attack_transition_keyword_trigger fixed_mana_ability color_set_mana_ability ordinary_cycling_ability cast_permission one_shot_exile_cast and cascade owners",
+    "semantic_handlers": "implemented_registered read-only typed-intent handlers plus bounded runtime components and closed effect-runtime families with strict binding and focused tap token counter fixed_counter_placement fixed_counter_placement_set fixed_counter_placement_target_set fixed_player_counter_placement fixed_counter_removal entry_counter optional_self_entry_counter rule_generated_counter_removal permanent_designation zone_object_state stack_counter destruction permanent_exile return_to_hand damage fixed_damage_set combat_damage_snapshot combat_damage_assignment combat_damage_sequence damage_result life player_counter continuous_effect attachment aura_entry draw mill scry surveil typed_ability_fragment haste_eligibility aerial_block_legality defender_attack_restriction menace_block_restriction landwalk_restriction combat_evasion_restriction self_counter_block_restriction block_transition_keyword_trigger attack_transition_keyword_trigger fixed_mana_ability color_set_mana_ability ordinary_cycling_ability cast_permission one_shot_exile_cast cascade and storm owners",
     "single_writer_game_actor": "implemented_single_process",
     "transport_neutral_service": "implemented_strict_protocol_3"
   },
@@ -681,10 +687,10 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 39180,
+      "material_residuals": 39147,
       "status_counts": {
-        "exact": 5411,
-        "partial": 11895,
+        "exact": 5424,
+        "partial": 11882,
         "unresolved": 14317
       },
       "total": 31623
@@ -695,28 +701,28 @@
     "mechanics": {
       "status_counts": {
         "partial": 66,
-        "tested": 42,
+        "tested": 43,
         "trusted": 8,
-        "unclassified": 311
+        "unclassified": 310
       },
       "total": 427,
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 46393,
+      "material_residuals": 46353,
       "status_counts": {
-        "exact": 8501,
-        "partial": 13015,
+        "exact": 8516,
+        "partial": 13000,
         "unresolved": 17107
       },
       "total": 38623
     },
     "rules": {
-      "blocked": 483,
-      "definition_only": 167,
+      "blocked": 485,
+      "definition_only": 168,
       "passing": 238,
       "total": 3309,
-      "unreviewed": 2421
+      "unreviewed": 2418
     },
     "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769"
   },
@@ -744,7 +750,7 @@
     "generated_validation_modules": 29,
     "migration_files": 1,
     "overlay_test_suites": 3,
-    "primary_test_modules": 293,
+    "primary_test_modules": 294,
     "primary_test_shards": 13,
     "schema_files": 18,
     "server_files": 5,
@@ -754,31 +760,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 39183,
+        "material_residuals": 39150,
         "status_counts": {
-          "residual": 26212,
-          "trusted": 5411
+          "residual": 26199,
+          "trusted": 5424
         },
         "trust_basis_counts": {
-          "capability_closed": 5395,
+          "capability_closed": 5408,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26212
+          "unresolved": 26199
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 46395,
+        "material_residuals": 46355,
         "status_counts": {
           "failed": 2248,
-          "residual": 30119,
-          "trusted": 6256
+          "residual": 30104,
+          "trusted": 6271
         },
         "trust_basis_counts": {
-          "capability_closed": 6240,
+          "capability_closed": 6255,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30119
+          "unresolved": 30104
         }
       }
     },
