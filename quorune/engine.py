@@ -162,7 +162,7 @@ from .turn_step_owner import TURN_STEPS, TurnStepOwner
 from .selection.targeting import TargetSelectionOwnerMixin
 from .selection.searching import HiddenSearchOwnerMixin
 from .selection.apnap import ApnapChoiceOwnerMixin
-from .selection.storm import StormTargetChoiceOwnerMixin
+from .selection.storm import STORM_SEMANTIC_KEY, StormTargetChoiceOwnerMixin
 from .selection.exile_cast import OneShotExileCastChoiceOwnerMixin
 from .selection.public_choice import PublicChoiceOwnerMixin
 from . import turn_counter_coordination
@@ -3577,7 +3577,7 @@ class CommanderEngine(
             item.semantic_key
         ) or item.semantic_key in {
             "builtin:sacrifice-source",
-            "builtin:storm",
+            STORM_SEMANTIC_KEY,
         }:
             return True
         program = self.semantics.get(item.semantic_key)
@@ -3654,7 +3654,7 @@ class CommanderEngine(
             return
         if self._begin_intrinsic_exile_cast_resolution(item):
             return
-        if item.semantic_key == "builtin:storm":
+        if item.semantic_key == STORM_SEMANTIC_KEY:
             self._prepare_storm_resolution(item)
             return
         if item.context.get("builtin") == "fetch_land":

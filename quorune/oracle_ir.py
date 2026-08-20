@@ -88,6 +88,7 @@ from .compiler.resolution_effect_templates import (
     typed_resolution_effect_template,
 )
 from .compiler.scry_templates import fixed_scry_effect_template
+from .compiler.storm_nodes import STORM_MECHANIC_ID
 from .compiler.surveil_templates import fixed_surveil_effect_template
 from .compiler.static_runtime_nodes import (
     runtime_handler_node,
@@ -108,7 +109,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v102"
+ORACLE_COMPILER_VERSION = "oracle-ir-v103"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -644,6 +645,15 @@ def _keyword_nodes(
         and re.match(r"^Cascade\b", material_line, re.IGNORECASE)
     ):
         mechanics = ("cascade",)
+    if (
+        mechanics is None
+        and any(
+            str(keyword).casefold() == STORM_MECHANIC_ID
+            for keyword in keywords
+        )
+        and re.match(r"^Storm\b", material_line, re.IGNORECASE)
+    ):
+        mechanics = (STORM_MECHANIC_ID,)
     if mechanics is None:
         return ()
 

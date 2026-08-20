@@ -62,6 +62,7 @@ class SpellCastKeywordTriggerKind(str, Enum):
 
     CASCADE = "cascade"
     PROWESS = "prowess"
+    STORM = "storm"
 
 
 class DamageKeywordTriggerKind(str, Enum):

@@ -7,6 +7,7 @@ from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
 from ...cascade import cascade_trigger_items
+from ...storm import storm_trigger_items
 from ...convoke import ConvokeError
 from ...counter_placement import (
     CounterPlacementError,
@@ -777,62 +778,6 @@ def _create_spell_item(
     )
 
 
-def _queue_storm(host: CastCommitHost, proposal: CastProposal, item: StackItem, card: Any, program: Any) -> None:
-    if not program or "storm" not in program.coverage:
-        return
-    prior_spells = (
-        len(host._current_turn_history("spell_cast"))
-        if host.state.turn_history is not None
-        else sum(
-            event.code == "stack.cast"
-            and event.turn_sequence == host.state.turn_sequence
-            for event in host.state.events
-        )
-    )
-    ref = host._next_ref("S")
-    target_groups = thaw_json(proposal.target_groups)
-    target_snapshots = thaw_json(proposal.target_snapshots)
-    storm = StackItem(
-        stack_id=host._stable_runtime_id("stack", ref),
-        ref=ref,
-        kind="triggered_ability",
-        controller=proposal.seat,
-        label=f"{item.label} — Storm",
-        source_object_id=card.object_id,
-        semantic_key="builtin:storm",
-        visibility=list(host.seats),
-        context={
-            "copy_count": prior_spells,
-            "copy_template": {
-                "label": item.label,
-                "controller": item.controller,
-                "card_object_id": item.card_object_id,
-                "semantic_key": item.semantic_key,
-                "targets": copy.deepcopy(item.targets),
-                "modes": copy.deepcopy(item.modes),
-                "x_value": item.x_value,
-                "default_destination": item.default_destination,
-                "referred_object_ids": copy.deepcopy(
-                    item.referred_object_ids
-                ),
-                "target_groups": copy.deepcopy(target_groups),
-                "target_snapshots": copy.deepcopy(target_snapshots),
-                "target_schema": copy.deepcopy(
-                    host._stack_target_schema(item, program)
-                ),
-            },
-        },
-    )
-    host.state.stack.append(storm)
-    host._log(
-        proposal.seat,
-        "stack.trigger",
-        f"Queued {storm.ref}: {storm.label}.",
-        {"stack": storm.ref, "source_stack": item.ref, "copy_count": prior_spells},
-        importance=2,
-    )
-
-
 def _record_cast(
     host: CastCommitHost,
     proposal: CastProposal,
@@ -885,10 +830,19 @@ def _dispatch_cast_events(
     proposal: CastProposal,
     card: Any,
     item: StackItem,
+    program: Any,
     costs: _AdditionalCostCommit,
 ) -> None:
     trigger_batch = list(
         cascade_trigger_items(host, spell=item, card=card)
+    )
+    trigger_batch.extend(
+        storm_trigger_items(
+            host,
+            spell=item,
+            card=card,
+            program=program,
+        )
     )
     for (
         paid,
@@ -1028,7 +982,6 @@ def commit_cast(
     item.x_value = response.get("x")
     item.notes = str(response.get("note") or "")
     host.state.stack.append(item)
-    _queue_storm(host, proposal, item, card, program)
     if proposal.origin == "command" and card.is_commander:
         player = host.state.players[proposal.seat]
         player.commander_casts[card.oracle_id] = (
@@ -1037,7 +990,7 @@ def commit_cast(
     _record_cast(
         host, proposal, card, item, spent, activations, selected_option, costs
     )
-    _dispatch_cast_events(host, proposal, card, item, costs)
+    _dispatch_cast_events(host, proposal, card, item, program, costs)
     collect_ward_occurrences(host, item)
     host.state.players[proposal.seat].yield_policy = YieldPolicy()
     if bool(details.get("during_resolution")):

@@ -43,6 +43,7 @@ from .cumulative_upkeep_nodes import (
     fixed_mana_cumulative_upkeep_node,
 )
 from .cascade_nodes import CASCADE_MECHANIC_ID, cascade_keyword_node
+from .storm_nodes import STORM_MECHANIC_ID, storm_keyword_node
 from .bestow_nodes import fixed_mana_bestow_keyword_node
 from .echo_nodes import fixed_mana_echo_node
 from .crew_nodes import ordinary_crew_keyword_node
@@ -82,6 +83,7 @@ _UNLEASH_MECHANIC = UNLEASH_MECHANIC
 _RIOT_MECHANIC = RIOT_MECHANIC
 _MENTOR_MECHANIC = "mentor"
 _CASCADE_MECHANIC = CASCADE_MECHANIC_ID
+_STORM_MECHANIC = STORM_MECHANIC_ID
 _PROWESS_MECHANIC = "prowess"
 _CONVOKE_MECHANIC = "convoke"
 _AFFINITY_MECHANIC = "affinity"
@@ -124,6 +126,7 @@ _INSTANCE_PART_MECHANICS = (
     _UNLEASH_MECHANIC,
     _MENTOR_MECHANIC,
     _CASCADE_MECHANIC,
+    _STORM_MECHANIC,
     _PROWESS_MECHANIC,
     _RENOWN_MECHANIC,
     _MODULAR_MECHANIC,
@@ -188,6 +191,7 @@ def keyword_node_plans(
             _UNLEASH_MECHANIC,
             _MENTOR_MECHANIC,
             _CASCADE_MECHANIC,
+            _STORM_MECHANIC,
             _PROWESS_MECHANIC,
             _RENOWN_MECHANIC,
             _MODULAR_MECHANIC,
@@ -324,6 +328,7 @@ def closed_special_keyword_node(
         return renown
     for lower in (
         cascade_keyword_node,
+        storm_keyword_node,
         ordinary_convoke_keyword_node,
         ordinary_affinity_keyword_node,
         ordinary_crew_keyword_node,
@@ -1475,5 +1480,6 @@ __all__ = [
     "prowess_keyword_node",
     "renown_keyword_node",
     "riot_keyword_node",
+    "storm_keyword_node",
     "unleash_keyword_nodes",
 ]
