@@ -19,6 +19,7 @@ from scripts.finalize_generated import (
 from scripts.cloud_generated_artifacts import (
     CloudGeneratedArtifactError,
     install_bundle,
+    run_owner,
     stage_bundle,
 )
 from scripts.update_compiler_corpus_coverage import (
@@ -55,6 +56,57 @@ from quorune.rules.capabilities import load_default_capability_registry
 
 
 class GeneratedArtifactFinalizationTests(unittest.TestCase):
+    def test_cloud_owner_relies_on_dag_without_broad_dependency_checks(self):
+        dependency = GeneratorSpec(
+            id="manual-upstream",
+            depends_on=(),
+            outputs=("upstream.txt",),
+            check=("upstream.py", "--check"),
+            write=None,
+            write_with_database=None,
+            write_policy="manual",
+        )
+        selected = GeneratorSpec(
+            id="selected-owner",
+            depends_on=("manual-upstream",),
+            outputs=("selected.txt",),
+            check=("selected.py", "--check"),
+            write=("selected.py", "--write"),
+            write_with_database=None,
+            write_policy="automatic",
+        )
+        local = ROOT / "local"
+        local.mkdir(exist_ok=True)
+        with TemporaryDirectory(dir=local) as raw, mock.patch(
+            "scripts.cloud_generated_artifacts.load_manifest",
+            return_value=(dependency, selected),
+        ), mock.patch(
+            "scripts.cloud_generated_artifacts._run"
+        ) as runner, mock.patch(
+            "scripts.cloud_generated_artifacts._copy_outputs",
+            return_value={"selected.txt": "hash"},
+        ), mock.patch(
+            "scripts.cloud_generated_artifacts._source_commit",
+            return_value="a" * 40,
+        ), mock.patch(
+            "scripts.cloud_generated_artifacts.tracked_worktree_source_fingerprint",
+            return_value="source-fingerprint",
+        ), mock.patch(
+            "scripts.cloud_generated_artifacts._snapshot_metadata",
+            return_value={},
+        ):
+            receipt = run_owner(
+                "selected-owner",
+                str(Path(raw) / "selected"),
+                None,
+            )
+
+        self.assertEqual(
+            ["selected-owner", "check:selected-owner"],
+            [call.args[0] for call in runner.call_args_list],
+        )
+        self.assertEqual("selected-owner", receipt["owner"])
+
     def test_cloud_bundle_round_trip_is_hash_and_commit_bound(self):
         local = ROOT / "local"
         local.mkdir(exist_ok=True)

@@ -150,6 +150,12 @@ order, verifies the assembled fixed point, and uploads
 and never commits or opens a pull request. On `main`, regenerated outputs must
 be byte-identical to the merge.
 
+Each owner checks only its own completed output. Workflow `needs` edges and
+downloaded owner artifacts supply upstream state; the final bundle check is the
+single fail-closed validation of the complete dependency graph. This keeps a
+manual upstream verifier from rejecting intentionally stale downstream files
+before their owning cloud jobs can regenerate them.
+
 For a feature branch, first create and push an authorized source-checkpoint
 commit. Dispatch the workflow definition from `main` while selecting that
 exact commit as its input:

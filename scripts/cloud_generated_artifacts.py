@@ -20,7 +20,6 @@ from scripts.generated_artifacts import (
     all_outputs,
     check_command,
     load_manifest,
-    topological_order,
     write_command,
 )
 from scripts.generated_finalization_receipt import write_finalization_receipt
@@ -140,9 +139,6 @@ def _write_json(path: Path, value: Any) -> None:
 def run_owner(owner: str, stage_dir: str, database: str | None) -> dict[str, Any]:
     specs = load_manifest()
     selected = _spec(specs, owner)
-    by_id = {spec.id: spec for spec in specs}
-    for dependency in selected.depends_on:
-        _run(f"dependency:{dependency}", check_command(by_id[dependency]))
     database_path = Path(database).resolve() if database else None
     command = write_command(
         selected,
