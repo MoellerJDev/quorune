@@ -614,6 +614,29 @@ def _keyword_node_for_mechanics(
     )
 
 
+def _fallback_keyword_mechanics(
+    material_line: str,
+    keywords: Sequence[str],
+) -> tuple[str, ...] | None:
+    """Recover parameterized keyword families without trusting their grammar."""
+
+    if re.match(
+        r"^Cycling(?:\s+\{|[\-\u2013\u2014])",
+        material_line,
+        re.IGNORECASE,
+    ):
+        return (CYCLING_MECHANIC_ID,)
+    keyword_values = {str(keyword).casefold() for keyword in keywords}
+    for mechanic in ("cascade", STORM_MECHANIC_ID):
+        if mechanic in keyword_values and re.match(
+            rf"^{mechanic}\b",
+            material_line,
+            re.IGNORECASE,
+        ):
+            return (mechanic,)
+    return None
+
+
 def _keyword_nodes(
     *,
     node_id: str,
@@ -632,28 +655,10 @@ def _keyword_nodes(
 ) -> tuple[OracleNode, ...]:
     """Compile one keyword line without conflating Flash's active zone."""
 
-    mechanics = keyword_mechanics(material_line, keywords)
-    if mechanics is None and re.match(
-        r"^Cycling(?:\s+\{|[\-\u2013\u2014])",
+    mechanics = keyword_mechanics(
         material_line,
-        re.IGNORECASE,
-    ):
-        mechanics = (CYCLING_MECHANIC_ID,)
-    if (
-        mechanics is None
-        and any(str(keyword).casefold() == "cascade" for keyword in keywords)
-        and re.match(r"^Cascade\b", material_line, re.IGNORECASE)
-    ):
-        mechanics = ("cascade",)
-    if (
-        mechanics is None
-        and any(
-            str(keyword).casefold() == STORM_MECHANIC_ID
-            for keyword in keywords
-        )
-        and re.match(r"^Storm\b", material_line, re.IGNORECASE)
-    ):
-        mechanics = (STORM_MECHANIC_ID,)
+        keywords,
+    ) or _fallback_keyword_mechanics(material_line, keywords)
     if mechanics is None:
         return ()
 
