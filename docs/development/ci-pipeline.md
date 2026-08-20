@@ -178,6 +178,9 @@ gh run download <run-id> --name cloud-generated-<source-sha> `
 The installer accepts only the current `HEAD`, validates the bundle receipt,
 the canonical manifest output set, the source-tree fingerprint, and each file
 hash, then writes a local ordinary finalization receipt for the pre-push hook.
+Before copying an output, it compares the downloaded and working-tree files
+through Git's path-specific clean filters. Equivalent LF/CRLF representations
+therefore preserve the local checkout bytes and do not dirty a Windows index.
 Inspect and stage the generated changes with the authoritative source before
 the final commit. Exact-head PR CI remains mandatory. A cloud bundle is not
 permission to merge stale sources, defer generated changes to a later PR, or

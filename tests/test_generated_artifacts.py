@@ -18,6 +18,7 @@ from scripts.finalize_generated import (
 )
 from scripts.cloud_generated_artifacts import (
     CloudGeneratedArtifactError,
+    _git_blob_oid,
     install_bundle,
     run_owner,
     stage_bundle,
@@ -56,6 +57,22 @@ from quorune.rules.capabilities import load_default_capability_registry
 
 
 class GeneratedArtifactFinalizationTests(unittest.TestCase):
+    def test_cloud_installer_compares_git_normalized_line_endings(self):
+        local = ROOT / "local"
+        local.mkdir(exist_ok=True)
+        with TemporaryDirectory(dir=local) as raw:
+            directory = Path(raw)
+            lf = directory / "lf.json"
+            crlf = directory / "crlf.json"
+            lf.write_bytes(b'{"ok":true}\n')
+            crlf.write_bytes(b'{"ok":true}\r\n')
+
+            self.assertNotEqual(lf.read_bytes(), crlf.read_bytes())
+            self.assertEqual(
+                _git_blob_oid(lf, "coverage/mechanics-coverage.json"),
+                _git_blob_oid(crlf, "coverage/mechanics-coverage.json"),
+            )
+
     def test_cloud_owner_relies_on_dag_without_broad_dependency_checks(self):
         dependency = GeneratorSpec(
             id="manual-upstream",

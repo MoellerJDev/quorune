@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -41,6 +42,26 @@ def _sha256(path: Path) -> str:
         while chunk := handle.read(1024 * 1024):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _git_blob_oid(path: Path, repository_path: str) -> str:
+    """Hash a file through the repository's attributes and clean filters."""
+
+    result = subprocess.run(
+        ["git", "hash-object", f"--path={repository_path}", str(path)],
+        cwd=ROOT,
+        check=False,
+        text=True,
+        encoding="utf-8",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    value = result.stdout.strip()
+    if result.returncode or not re.fullmatch(r"[0-9a-f]{40}", value):
+        raise CloudGeneratedArtifactError(
+            f"Could not compute Git-normalized content for {repository_path}"
+        )
+    return value
 
 
 def _safe_stage_directory(raw: str | Path) -> Path:
@@ -231,7 +252,9 @@ def install_bundle(
                 f"Downloaded cloud output is missing or corrupt: {relative}"
             )
         destination = ROOT / relative
-        if not destination.is_file() or destination.read_bytes() != source.read_bytes():
+        if not destination.is_file() or _git_blob_oid(
+            destination, relative
+        ) != _git_blob_oid(source, relative):
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, destination)
             changed.append(relative)
