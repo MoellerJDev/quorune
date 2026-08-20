@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Iterable, Mapping, Sequence
 
+from .affected_player_discard_capability_shapes import (
+    fixed_affected_player_discard_node_capabilities,
+)
 from .counter_capability_shapes import (
     fixed_counter_placement_group_node_capabilities,
 )
@@ -51,6 +54,7 @@ FIXED_EFFECT_CLAUSE_SEQUENCE_CAPABILITY = (
 
 _COMPONENT_RESOLVERS = (
     all_counter_removal_node_capabilities,
+    fixed_affected_player_discard_node_capabilities,
     fixed_counter_placement_batch_node_capabilities,
     fixed_counter_placement_group_node_capabilities,
     fixed_counter_placement_node_capabilities,

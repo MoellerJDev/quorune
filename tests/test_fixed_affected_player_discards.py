@@ -100,6 +100,10 @@ class FixedAffectedPlayerDiscardCompilerTests(unittest.TestCase):
                 "• Each opponent discards a card.",
                 "Sorcery",
             ),
+            (
+                "Target player discards two cards. You draw a card.",
+                "Sorcery",
+            ),
         )
         for text, type_line in fixtures:
             with self.subTest(text=text):
@@ -302,6 +306,7 @@ class FixedAffectedPlayerDiscardRuntimeTests(unittest.TestCase):
         text: str,
         *,
         targets: tuple[str, ...] = (),
+        following_effects: tuple[dict[str, object], ...] = (),
     ) -> StackItem:
         template = fixed_affected_player_discard_effect_template(text)
         self.assertIsNotNone(template)
@@ -319,7 +324,7 @@ class FixedAffectedPlayerDiscardRuntimeTests(unittest.TestCase):
         engine.state.stack.append(item)
         engine._begin_resolve_item(
             item,
-            template.effects,
+            (*template.effects, *following_effects),
             None,
             note="Affected-player discard fixture",
         )
@@ -457,6 +462,34 @@ class FixedAffectedPlayerDiscardRuntimeTests(unittest.TestCase):
                 for cards in retained.values()
                 for card in cards
             )
+        )
+
+    def test_discard_choice_resumes_following_typed_effect(self):
+        session = self.session(70109104)
+        engine = session.engine
+        discarded = self.hand_cards(engine, "B")[0]
+        controller_hand_before = len(engine.state.players["A"].zones["hand"])
+        self.stage(
+            engine,
+            "Target player discards a card.",
+            targets=("B",),
+            following_effects=(
+                {
+                    "op": "draw",
+                    "player": "$controller",
+                    "count": 1,
+                    "private": True,
+                },
+            ),
+        )
+
+        result = self.choose(session, "B", [discarded.ref])
+
+        self.assertTrue(result.ok, result.summary)
+        self.assertEqual("graveyard", discarded.zone)
+        self.assertEqual(
+            controller_hand_before + 1,
+            len(engine.state.players["A"].zones["hand"]),
         )
 
     def test_stale_and_malformed_private_discard_reject_before_mutation(self):

@@ -2420,6 +2420,14 @@
     {
       "capability_id": "choice.affected_player.fixed_discard",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_discard_choice_resumes_following_typed_effect",
+      "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Resume the next independently typed effect only after the affected player completes the private discard and its simultaneous move commits."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "interaction",
       "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
       "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],

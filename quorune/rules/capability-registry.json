@@ -5259,7 +5259,7 @@
       "implementation_components": ["quorune.compiler.affected_player_discard_templates.FixedAffectedPlayerDiscardTemplate", "quorune.compiler.affected_player_discard_templates.fixed_affected_player_discard_effect_template", "quorune.rules.affected_player_discard_capability_shapes.fixed_affected_player_discard_node_capabilities", "quorune.selection.apnap.ApnapChoiceOwnerMixin", "quorune.semantic_choices.apnap_commit.ApnapObjectCommitHandler", "quorune.semantic_runtime.intents.MoveObjectsSimultaneouslyIntent", "quorune.semantic_choices.preparation_coordination.continue_semantic_preparation", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
       "positive_tests": ["test_fixed_affected_player_discards_compile_across_contexts_and_modes", "test_fixed_count_discard_uses_available_cards_and_skips_empty_hand"],
       "negative_tests": ["test_unsupported_discard_choices_and_shape_mutations_fail_closed", "test_target_discard_dependency_fails_closed"],
-      "interaction_tests": ["test_private_apnap_discard_uses_zone_replacement_and_replays"],
+      "interaction_tests": ["test_discard_choice_resumes_following_typed_effect", "test_private_apnap_discard_uses_zone_replacement_and_replays"],
       "multiplayer_tests": ["test_private_apnap_discard_uses_zone_replacement_and_replays"],
       "privacy_tests": ["test_private_apnap_discard_uses_zone_replacement_and_replays"],
       "replay_tests": ["test_private_apnap_discard_uses_zone_replacement_and_replays"],

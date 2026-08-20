@@ -179,6 +179,7 @@
     "test_mindslaver_routes_controlled_turn_to_controller_pilot",
     "test_fixed_affected_player_discards_compile_across_contexts_and_modes",
     "test_fixed_count_discard_uses_available_cards_and_skips_empty_hand",
+    "test_discard_choice_resumes_following_typed_effect",
     "test_private_apnap_discard_uses_zone_replacement_and_replays",
     "test_stale_and_malformed_private_discard_reject_before_mutation"
   ],
