@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "851958ee9c290fb709a325e8181601bdc069018dea38e98493c2474eea158bef"
+verified: "81247a5d19f8d70e880e83b89f5190a95faab3c52729354480631b87854842c2"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 26
-- Deterministic escapes: 21
+- Escapes: 27
+- Deterministic escapes: 22
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -52,6 +52,7 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260816-24` | [31924413599](https://github.com/NullPriority/quorune/actions/runs/31924413599) | `missing_affected_test` | `added` | The Devoid-focused compiler witness now verifies the exact registered family, handler, capability dependency, and trusted closure, while the global closed inventory includes that family. The existing impact policy already selected compiler-cardprogram; the focused module now makes the registration obligation executable in the locally permitted Devoid check. |
 | `ci-20260817-25` | [32037282014](https://github.com/NullPriority/quorune/actions/runs/32037282014) | `source_correctness` | `added` | Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Focused unit coverage and a real PR 274 receipt verification exercise the fallback. |
 | `ci-20260817-26` | [32040255059](https://github.com/NullPriority/quorune/actions/runs/32040255059) | `source_correctness` | `added` | Main certification now combines commit-associated and recent closed pull-request payloads, deduplicates the same PR by number, and still requires exactly one matching merge SHA. Empty and ambiguous selections remain fail-closed. |
+| `ci-20260820-27` | [32379387144](https://github.com/NullPriority/quorune/actions/runs/32379387144) | `browser_integration` | `not_applicable` | The existing @mana-action impact edge already selected the journey. The driver now uses the bounded progress-aware multi-page pass loop before asserting the Bowmasters target choice and shares the 600-second hosted durability budget used by adjacent long serial journeys. |
 
 ## Measurement limitations
 
