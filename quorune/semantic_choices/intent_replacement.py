@@ -229,6 +229,23 @@ def _surveil_intent_identity(
     )
 
 
+def _simultaneous_move_intent_identity(
+    intent: MoveObjectsSimultaneouslyIntent,
+) -> tuple[str, dict[str, Any]]:
+    return (
+        "move_objects_simultaneously",
+        {
+            "actor": intent.actor,
+            "object_refs": list(intent.object_refs),
+            "expected_zones": list(intent.expected_zones),
+            "destination": intent.destination,
+            _REASON_FIELD: intent.reason,
+            "owned_only": intent.owned_only,
+            "controlled_only": intent.controlled_only,
+        },
+    )
+
+
 def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
     """Return the closed identity of a replacement-capable typed intent."""
 
@@ -371,18 +388,7 @@ def semantic_intent_identity(intent: Any) -> tuple[str, dict[str, Any]]:
             identity,
         )
     if isinstance(intent, MoveObjectsSimultaneouslyIntent):
-        return (
-            "move_objects_simultaneously",
-            {
-                "actor": intent.actor,
-                "object_refs": list(intent.object_refs),
-                "expected_zones": list(intent.expected_zones),
-                "destination": intent.destination,
-                _REASON_FIELD: intent.reason,
-                "owned_only": intent.owned_only,
-                "controlled_only": intent.controlled_only,
-            },
-        )
+        return _simultaneous_move_intent_identity(intent)
     if isinstance(intent, SurveilLibraryIntent):
         return _surveil_intent_identity(intent)
     raise SemanticChoiceError(

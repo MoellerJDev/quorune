@@ -23,6 +23,9 @@ from .counter_removal_capabilities import (
     all_counter_removal_node_capabilities,
     fixed_counter_removal_node_capabilities,
 )
+from .affected_player_sacrifice_capability_shapes import (
+    fixed_affected_player_sacrifice_node_capabilities,
+)
 from .node_capability_shapes import (
     fixed_alternative_additional_cost_node_capabilities,
     fixed_counter_additional_cost_node_capabilities,
@@ -41,7 +44,6 @@ from .node_capability_shapes import (
     fixed_damage_node_capabilities,
     mass_destruction_node_capabilities,
     fixed_draw_node_capabilities,
-    fixed_affected_player_sacrifice_node_capabilities,
     fixed_scry_node_capabilities,
     single_explore_node_capabilities,
     single_proliferate_node_capabilities,
