@@ -21,6 +21,12 @@ def is_aura_type_line(type_line: str) -> bool:
     return "aura" in type_parts(str(type_line))[1]
 
 
+def is_enchant_keyword_line(line: str) -> bool:
+    """Recognize one complete Enchant keyword line without trusting its predicate."""
+
+    return _ENCHANT.fullmatch(_material_line(line)) is not None
+
+
 def _material_line(value: str) -> str:
     line = value.strip()
     while True:
@@ -78,6 +84,7 @@ def simple_enchant_spec_from_oracle(
 
 
 __all__ = [
+    "is_enchant_keyword_line",
     "is_aura_type_line",
     "parse_simple_enchant_line",
     "simple_enchant_spec_from_oracle",

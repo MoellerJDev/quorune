@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 118,
+  "registry_version": 119,
   "effective_date": "2026-08-07",
   "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "profiles": [
@@ -602,20 +602,20 @@
     },
     {
       "id": "attachment.aura.simple_object",
-      "version": 1,
+      "version": 2,
       "official_rules": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
-        "summary": "Cast, resolve, enter, and continuously validate an Aura with exactly one closed battlefield-object Enchant restriction and an optional you-control or opponent-controls relation.",
-        "inputs": ["Aura card with one simple Enchant keyword line", "one public battlefield object target", "exact physical and logical source identity", "optional controller relation", "nonspell Aura entry choice"],
+        "summary": "Cast, resolve, enter, and continuously validate an Aura with exactly one closed battlefield-object Enchant restriction, including bounded type alternatives, red-or-green color qualification, tapped-creature state, and optional controller relation.",
+        "inputs": ["Aura card with one closed Enchant keyword line", "one public battlefield object target", "exact physical and logical source identity", "bounded type, color, tapped-state, or controller predicate", "nonspell Aura entry choice"],
         "outputs": ["mandatory cast target", "resolution-time target revalidation", "reciprocal live attachment", "seat-scoped nonspell entry choice", "no-target remain-or-graveyard result", "Aura-token preflight and no-creation result", "state-based illegal-Aura result"],
-        "exclusions": ["Auras enchanting players", "Auras enchanting cards outside the battlefield", "multiple Enchant abilities", "quality, color, subtype, state, and compound Enchant restrictions", "bestow, reconfigure, and face-up attachment", "protection qualities beyond represented everything, Aura, enchantment, and color protection"]
+        "exclusions": ["Auras enchanting players", "Auras enchanting cards outside the battlefield", "multiple Enchant abilities", "power, keyword-exclusion, subtype, attachment-qualified, mixed type/subtype, and unrepresented color or state restrictions", "bestow, reconfigure, and face-up attachment", "protection qualities beyond represented everything, Aura, enchantment, and color protection"]
       },
       "dependencies": ["target.revalidate_resolution"],
-      "implementation_components": ["quorune.aura.grammar.parse_simple_enchant_line", "quorune.aura.runtime.prepare_aura_entry", "quorune.aura.runtime.simple_aura_attachment_is_legal", "quorune.rules.casting.proposal._aura_spell_target_schema", "quorune.token_creation._preflight_aura_token_specs", "quorune.attachments.attach_objects"],
-      "positive_tests": ["test_aura_offer_requires_and_projects_one_legal_spell_target", "test_spell_resolution_attaches_and_illegal_target_counters_by_rule", "test_aura_tokens_preflight_attachment_and_no_legal_object_is_not_created"],
+      "implementation_components": ["quorune.aura.grammar.is_enchant_keyword_line", "quorune.aura.grammar.parse_simple_enchant_line", "quorune.enchant_spec.SimpleEnchantSpec", "quorune.aura.runtime.prepare_aura_entry", "quorune.aura.runtime.simple_aura_attachment_is_legal", "quorune.rules.casting.proposal._aura_spell_target_schema", "quorune.token_creation._preflight_aura_token_specs", "quorune.attachments.attach_objects"],
+      "positive_tests": ["test_compiler_lowers_only_closed_enchant_grammar_to_trusted_capability", "test_real_qualified_enchant_family_is_capability_closed", "test_aura_offer_requires_and_projects_one_legal_spell_target", "test_spell_resolution_attaches_and_illegal_target_counters_by_rule", "test_aura_tokens_preflight_attachment_and_no_legal_object_is_not_created"],
       "negative_tests": ["test_unsupported_enchant_grammar_fails_before_mutation", "test_nonspell_entry_with_no_legal_object_stays_in_origin_zone"],
-      "interaction_tests": ["test_nonspell_entry_pauses_for_choice_and_resumes_exact_effect", "test_control_relation_and_protection_are_live_attachment_legality", "test_glasswing_faces_compose_aura_attachment_with_tapped_entry", "test_aura_equipment_anthem_temporary_effect_and_draw_compose", "test_tapped_reanimation_and_aura_return_use_zone_owners"],
+      "interaction_tests": ["test_nonspell_entry_pauses_for_choice_and_resumes_exact_effect", "test_control_relation_and_protection_are_live_attachment_legality", "test_tapped_creature_enchant_rechecks_live_attachment_state", "test_glasswing_faces_compose_aura_attachment_with_tapped_entry", "test_aura_equipment_anthem_temporary_effect_and_draw_compose", "test_tapped_reanimation_and_aura_return_use_zone_owners"],
       "multiplayer_tests": ["test_four_player_aura_targets_and_relations_are_seat_correct"],
       "privacy_tests": ["test_aura_entry_choice_projection_and_replay_are_exact"],
       "replay_tests": ["test_aura_entry_choice_projection_and_replay_are_exact"],

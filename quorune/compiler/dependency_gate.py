@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import re
 from typing import Any, Iterable, Mapping, Sequence
 
-from ..aura import parse_simple_enchant_line
+from ..aura import is_enchant_keyword_line, parse_simple_enchant_line
 from ..ability_fragments import parse_protection_line
 from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..rules.capabilities import (
@@ -274,14 +274,17 @@ def keyword_dependency_gate(
             blockers=(f"mechanic:{mechanic}-unsupported-wording",),
             capabilities=(f"counter.producer.{mechanic}",),
         )
-    if mechanics == ("enchant",) and parse_simple_enchant_line(
-        material_line
-    ) is not None:
-        return explicit_capability_gate(
-            "attachment.aura.simple_object",
-            capability_registry=capability_registry,
-            capability_profile=capability_profile,
-        )
+    if mechanics == ("enchant",):
+        if parse_simple_enchant_line(material_line) is not None:
+            return explicit_capability_gate(
+                "attachment.aura.simple_object",
+                capability_registry=capability_registry,
+                capability_profile=capability_profile,
+            )
+        if is_enchant_keyword_line(material_line):
+            # The keyword is structurally represented; its exact restriction
+            # remains one source-spanned residual from the Enchant compiler.
+            return DependencyGate(blockers=())
     protection_parts = tuple(
         part.strip()
         for part in material_line.rstrip(".").split(",")

@@ -244,6 +244,17 @@ text changes, multiface cards, tokens, phasing-in unattached, and wider cast
 permissions or prohibitions that distinguish creature from Aura spells remain
 source-spanned residuals or explicit trust exclusions.
 
+The shared Aura grammar also accepts three qualified battlefield-object
+restrictions through the same `SimpleEnchantSpec` and target-query boundary:
+artifact or creature, red or green creature, and tapped creature. Cast offers,
+resolution revalidation, nonspell entry, and state-based attachment legality
+all consume the compiled type, color, or live tapped-state predicate. A
+syntactically complete but unsupported Enchant line produces one precise
+restriction residual instead of a second generic mechanic blocker. Mixed
+type/subtype alternatives, keyword presence or absence, power bounds,
+attachment-qualified objects, players, nonbattlefield cards, subtypes, and
+other unrepresented color or state predicates remain source-spanned residuals.
+
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,
 then requires the source grammar, emitted effects, target relation, closed

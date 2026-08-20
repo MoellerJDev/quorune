@@ -454,6 +454,11 @@
         "candidate_id": "compiler:ordinary-fixed-mana-bestow",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "After Changeling, the generated continuous-layer and unparsed-clause leaders remained heterogeneous, while the 322-card activated token candidate still mixed dynamic copies, loyalty and sacrifice costs, linked results, delayed effects, and conditional activations. Bestow is one closed 42-card grammar with 41 fixed ordinary-mana forms and 17 sole-blocker Commander cards. It reuses the existing reviewed casting, Aura attachment, target-loss, and characteristic-transition owners and is the measured prerequisite for the broader 139-card Enchant frontier. The landed census gains 17 exact, trusted, capability-closed Commander cards and 41 ability programs, removes 41 material residuals, and keeps uncovered high-risk interaction debt at zero; variable Bestow, unsupported attached results, spell copies, phasing, and wider characteristic-sensitive cast restrictions remain residual or explicit trust exclusions."
+      },
+      {
+        "candidate_id": "compiler:qualified-object-enchant",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "After Bestow established the attachment prerequisite, the generated Choose one header remained a heterogeneous nonexecuting carrier with zero sole blockers. The 139-card Enchant frontier decomposes into distinct player, nonbattlefield, subtype, numeric, attachment, and mixed-predicate families; a bounded pinned-corpus probe selected the existing target-query shapes for artifact or creature, red or green creature, and tapped creature. The slice measures seven complete Commander cards, 28 additional ability programs, and 167 removable material residuals while replacing every redundant generic Enchant blocker with one precise restriction residual and leaving unsupported predicates fail-closed."
       }
     ]
   },
