@@ -485,6 +485,22 @@
       "resolution": "Every declaration now cites the capability's complete official-rule set and the source block follows canonical evidence-class order. The existing quick-gate impact already selects capability evidence; source-checkpoint preparation now runs update_capability_evidence.py --check and accepts only the expected stale-output result before cloud generation.",
       "run_id": 32401690028,
       "summary": "The affected-player sacrifice capability declarations cited only the rules individually exercised by several evidence rows and were inserted out of canonical evidence-class order, so the cloud capability-evidence owner rejected the source before generation."
+    },
+    {
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "failed_surfaces": [
+        "targets-choices-continuations"
+      ],
+      "head_sha": "d4f2b321acda51a245feb8710c433c3a351cfc89",
+      "id": "ci-20260820-29",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_semantic_handlers.TypedSemanticHandlerTests.test_contract_traces_tap_and_untap_rules"
+      ],
+      "resolution": "The exact contract trace now includes CR 202.3. The existing quick-gate policy already selects test_semantic_handlers for mechanic-contract changes; focused preparation for future contract rule-reference edits now runs the named trace method rather than relying on the full affected shard.",
+      "run_id": 32421690874,
+      "summary": "The fixed mana-value target harvest added CR 202.3 to the tap-and-untap mechanic contract, but its focused local set omitted the contract's exact rule-reference trace assertion."
     }
   ],
   "known_flaky_tests": [],
@@ -537,7 +553,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "4cb724e34875056e53551c96c51753e8ce545291f3c146beb0b8dea28e3079cc",
+  "source_fingerprint": "e85ab5d2f7c5826c651c8256b61c75070a13f0210c854f5e9042b88c1ca71805",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -547,12 +563,12 @@
       "flaky_test": 6,
       "generated_artifact_drift": 2,
       "infrastructure": 1,
-      "missing_affected_test": 7,
+      "missing_affected_test": 8,
       "source_correctness": 10
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 23,
-    "escape_count": 28,
+    "deterministic_escape_count": 24,
+    "escape_count": 29,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [
