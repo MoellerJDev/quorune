@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "b09415b5bcc42fe342f24058db18cde1344c638d1fd913113a17b15f6c71a579",
-  "declaration_source_fingerprint": "d0e598fa83a691a9f90afd250a6596b97f27d76e750dfbf6cf9b997ddcbe3932",
+  "registry_fingerprint": "3367f3dcd1102b3f480969e6404978562a43befff82056c6de5bff6254da05de",
+  "declaration_source_fingerprint": "be7ca061bcc5ff1a44462f62ea749a99d0d66733b23b6343ffeb74bc23ddb1fb",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -37239,6 +37239,28 @@
     },
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "negative",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_residual_enchant_card_withholds_delayed_draw_runtime",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Withhold Krovikan Plague's delayed draw because its unsupported Enchant restriction prevents authoritative Aura entry and trigger creation."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
       "evidence_class": "positive",
       "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawCompilerTests.test_fixed_next_turn_draw_template_is_exact_shape",
       "official_rule_ids": [
@@ -41625,5 +41647,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "5e725831a87af4f9d1cc897e4dd0eb43efb59ff2386ff1bf55953e79decf16a1"
+  "fingerprint": "c7d8a0511987132e9902747f8d23e5ef60f06c8661c69865a380261df48abad6"
 }

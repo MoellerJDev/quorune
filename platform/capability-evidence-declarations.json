@@ -16765,6 +16765,14 @@
     },
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "negative",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_residual_enchant_card_withholds_delayed_draw_runtime",
+      "official_rule_ids": ["121.1", "503.1", "503.1a", "603.3", "603.3b", "603.7", "603.7a", "603.7b", "603.7g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Withhold Krovikan Plague's delayed draw because its unsupported Enchant restriction prevents authoritative Aura entry and trigger creation."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
       "evidence_class": "positive",
       "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawCompilerTests.test_fixed_next_turn_draw_template_is_exact_shape",
       "official_rule_ids": ["121.1", "503.1", "503.1a", "603.3", "603.3b", "603.7", "603.7a", "603.7b", "603.7g"],

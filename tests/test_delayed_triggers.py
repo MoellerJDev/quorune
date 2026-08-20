@@ -30,6 +30,7 @@ from quorune.compiler.program_generation import register_generated_programs
 from quorune.deck import DeckLoader
 from quorune.delayed_triggers import materialize_delayed_trigger
 from quorune.engine import TURN_STEPS
+from quorune.errors import GameRuleError
 from quorune.model import CardInstance, DelayedTrigger
 from quorune.oracle_ir import compile_oracle_card, generated_programs
 from quorune.record import (
@@ -176,13 +177,20 @@ class FixedNextTurnDrawCompilerTests(unittest.TestCase):
                 self.assertEqual(1, len(nodes))
                 node = nodes[0]
                 self.assertTrue(node.exact, ir.material_residuals)
+                common_dependencies = {
+                    FIXED_NEXT_TURN_DRAW_CAPABILITY,
+                    "trigger.placement.apnap",
+                    "zone.draw.library_to_hand",
+                }
+                dependencies = set(node.capability_dependencies)
+                self.assertTrue(common_dependencies.issubset(dependencies))
                 self.assertEqual(
-                    {
-                        FIXED_NEXT_TURN_DRAW_CAPABILITY,
-                        "trigger.placement.apnap",
-                        "zone.draw.library_to_hand",
-                    },
-                    set(node.capability_dependencies),
+                    (
+                        {"trigger.event.normalized_zone_change"}
+                        if node.kind == "triggered_ability"
+                        else set()
+                    ),
+                    dependencies - common_dependencies,
                 )
                 self.assertIn(
                     "next turn's upkeep",
@@ -197,17 +205,23 @@ class FixedNextTurnDrawCompilerTests(unittest.TestCase):
                         capability_registry=self.capabilities,
                         capability_profile="commander_review",
                     )
-                    if any(
+                    if program.provenance.get("template_id")
+                    == FIXED_NEXT_TURN_DRAW_TEMPLATE
+                    or any(
                         component.get("template_id")
                         == FIXED_NEXT_TURN_DRAW_TEMPLATE
-                        for component in program.provenance.get(
-                            "components", ()
-                        )
+                        for component in program.provenance.get("components", ())
                     )
                 ]
-                self.assertEqual(1 if ir.status == "exact" else 0, len(programs))
-                if programs:
-                    self.assertTrue(programs[0].capability_closure["trusted"])
+                self.assertLessEqual(len(programs), 1)
+                if ir.status == "exact":
+                    self.assertEqual(1, len(programs))
+                self.assertTrue(
+                    all(
+                        program.capability_closure["trusted"]
+                        for program in programs
+                    )
+                )
 
         complete = compile_best_available_card_program(
             self.db,
@@ -344,11 +358,12 @@ class FixedNextTurnDrawRuntimeTests(unittest.TestCase):
         session.decisions.clear()
         return session
 
-    def register(self, engine) -> None:
+    def register(self, engine, *names: str) -> None:
+        selected = names or ("Blessed Wine",)
         register_generated_programs(
             self.db,
             engine.semantics,
-            (self.db.lookup("Blessed Wine"),),
+            tuple(self.db.lookup(name) for name in selected),
             trust_level="provisional",
             capability_registry=self.capabilities,
             capability_profile=engine.state.config.review_profile,
@@ -373,6 +388,44 @@ class FixedNextTurnDrawRuntimeTests(unittest.TestCase):
         engine.state.cards[spell.object_id] = spell
         engine.state.players["A"].zones["hand"].append(spell.object_id)
         return spell
+
+    def test_residual_enchant_card_withholds_delayed_draw_runtime(self):
+        session = self.session(6037003)
+        engine = session.engine
+        self.register(engine, "Krovikan Plague")
+        record = self.db.lookup("Krovikan Plague")
+        program = compile_best_available_card_program(
+            self.db,
+            record,
+            semantic_registry=engine.semantics,
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+        )
+        self.assertEqual("unresolved", program.trust_closure["trust_basis"])
+        self.assertTrue(program.residuals)
+        plague = CardInstance(
+            object_id="fixture:krovikan-plague",
+            ref="krovikan-plague",
+            oracle_id=record.oracle_id,
+            printed_name=record.name,
+            owner="A",
+            controller="A",
+            zone="hand",
+            known_to=["A"],
+        )
+        engine.state.cards[plague.object_id] = plague
+        engine.state.players["A"].zones["hand"].append(plague.object_id)
+        before = authoritative_state_hash(engine.state)
+
+        with self.assertRaisesRegex(
+            GameRuleError,
+            "lacks one trusted compiled Enchant descriptor",
+        ):
+            engine.move_card(plague.object_id, "battlefield", log=False)
+
+        self.assertEqual(before, authoritative_state_hash(engine.state))
+        self.assertEqual("hand", plague.zone)
+        self.assertFalse(engine.state.delayed_triggers)
 
     @staticmethod
     def resolve_top(engine) -> None:

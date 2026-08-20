@@ -4097,7 +4097,7 @@
       "dependencies": ["trigger.placement.apnap", "zone.draw.library_to_hand"],
       "implementation_components": ["quorune.compiler.delayed_draw_templates.fixed_next_turn_upkeep_draw_effect_template", "quorune.rules.delayed_draw_capability_shapes.fixed_next_turn_draw_node_capabilities", "quorune.compiler.program_generation._is_closed_fixed_next_turn_draw_program", "quorune.effect_runtime.objects_stack_and_tokens._apply_delayed_trigger", "quorune.trigger_processing.schedule_delayed_trigger", "quorune.delayed_triggers.materialize_delayed_trigger", "quorune.drawing.coordinator.begin_draw_sequence"],
       "positive_tests": ["test_fixed_next_turn_draw_template_is_exact_shape", "test_real_next_turn_draw_family_compiles_and_closes_complete_cards", "test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner"],
-      "negative_tests": ["test_adjacent_delayed_draw_grammar_remains_residual", "test_blocked_delayed_draw_dependencies_and_compiler_mutation_fail_closed"],
+      "negative_tests": ["test_adjacent_delayed_draw_grammar_remains_residual", "test_blocked_delayed_draw_dependencies_and_compiler_mutation_fail_closed", "test_residual_enchant_card_withholds_delayed_draw_runtime"],
       "interaction_tests": ["test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner"],
       "multiplayer_tests": ["test_four_player_next_turn_draw_is_private_and_replays_exactly"],
       "privacy_tests": ["test_four_player_next_turn_draw_is_private_and_replays_exactly"],
