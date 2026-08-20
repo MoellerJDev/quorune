@@ -39,6 +39,9 @@ from .compiler.draw_templates import (
     draw_reveal_or_trigger_nodes,
     fixed_draw_effect_template,
 )
+from .compiler.delayed_draw_templates import (
+    fixed_next_turn_upkeep_draw_effect_template,
+)
 from .compiler.fixed_controller_effect_sequences import (
     fixed_controller_effect_sequence_template,
 )
@@ -105,7 +108,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v101"
+ORACLE_COMPILER_VERSION = "oracle-ir-v102"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -274,6 +277,9 @@ def _effect_template(
             None,
             ("cr-725-the-monarch",),
         )
+    delayed_draw = fixed_next_turn_upkeep_draw_effect_template(normalized)
+    if delayed_draw is not None:
+        return delayed_draw.compiled()
     draw_template = fixed_draw_effect_template(normalized)
     if draw_template is not None:
         return draw_template

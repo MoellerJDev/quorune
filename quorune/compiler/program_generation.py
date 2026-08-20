@@ -24,6 +24,9 @@ from .modal_templates import FIXED_CHOOSE_ONE_MODAL_MECHANIC
 from ..rules.counter_capability_shapes import (
     fixed_counter_placement_group_node_capabilities,
 )
+from ..rules.delayed_draw_capability_shapes import (
+    fixed_next_turn_draw_node_capabilities,
+)
 from ..rules.graveyard_card_targets import (
     targeted_own_graveyard_return_node_capabilities,
 )
@@ -478,6 +481,23 @@ def _is_closed_fixed_draw_program(program: SemanticProgram) -> bool:
                 for value in program.coverage
                 if value.startswith("cr-")
             ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_next_turn_draw_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize only the canonical single-use delayed controller draw."""
+
+    required = set(
+        fixed_next_turn_draw_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
         )
     )
     return bool(required) and required.issubset(
@@ -1211,6 +1231,7 @@ def _closed_effect_recognizers():
     return (
         _is_closed_fixed_choose_one_modal_program,
         _is_closed_fixed_damage_program,
+        _is_closed_fixed_next_turn_draw_program,
         _is_closed_fixed_draw_program,
         _is_closed_fixed_mill_program,
         _is_closed_fixed_life_program,

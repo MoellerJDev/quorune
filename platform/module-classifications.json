@@ -1593,6 +1593,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/delayed_draw_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/dependency_gate.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -4669,6 +4684,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/rules/delayed_draw_capability_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/rules/echo_capability_shapes.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
@@ -7297,5 +7326,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "5b8ac6a4db0517912b20a87278d876225d281816cea4955d7922268647d4ec96"
+  "fingerprint": "ff8cb5c7ff9f01c64c0bcf4d9e212005e34e460555c2a25c0a81031ff0b2d5b4"
 }

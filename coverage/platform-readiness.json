@@ -36,7 +36,7 @@
     "ordinary printed Exhaust now uses one typed per-ability, per-object once-only activation owner shared by advertised actions and accepted commands; control changes and phasing preserve the consumed use, while a zone change creates a new object and resets it. One closed source-threaded fixed counter-then-until-end-of-turn characteristic sequence is shared by activated and triggered contexts, preserves printed order, suspends for replacement choices, revalidates source identity, and commits atomically. Effects that grant another Exhaust use, copied, granted, removed, or face-down Exhaust abilities, reverse-order or broader source sequences, usage-limited mana auto-payment, and independently unsupported costs or results remain explicit blockers, so aggregate Exhaust is not trusted"
   ],
   "generated": {
-    "evaluated_input_fingerprint": "616da1e8a48001a7bb5cba83fa48ebfea7483642fc181e3bf8b620e926ff8944",
+    "evaluated_input_fingerprint": "342835835d4f84c8ad0e4c821a0554a64b0953776201fd8a13c0a90be8c9f66a",
     "generator": "scripts/update_platform_status.py",
     "input_fingerprint_algorithm": "platform-readiness-derived-inputs-sha256-v1",
     "source": "platform/readiness-source.json",
@@ -636,6 +636,12 @@
       "id": "typed_qualified_object_enchant",
       "name": "Typed qualified-object Enchant restrictions",
       "status": "implemented_on_current_source_tree"
+    },
+    {
+      "evidence": "The current source tree lowers 46 represented mandatory instructions to draw one card at the beginning of the next chronological turn's upkeep across standalone and triggered contexts. The completed pinned census makes all 46 delayed-draw leaves exact, promotes 18 exact, trusted, capability-closed Commander cards and executable programs, and removes 46 material residuals. One immutable compiler payload captures the resolution controller and current turn sequence, schedules one delayed trigger, waits past the same turn, joins ordinary APNAP placement, and resolves one private replacement-aware draw through the canonical coordinator. Real-card compilation, sibling life composition, same-turn suppression, competing delayed-trigger ordering, four-player projection, dependency failure, exact replay, a killed compiler mutation, and Krovikan Plague fail-closed Aura admission are explicit. Optional, multi-card, variable, controller-next-upkeep, named-player, other-time, conditional, repeated, linked, targeted, and unresolved enclosing-cost variants remain fail-closed; Renewal is retained as a whole-spell residual because its additional cost is not represented.",
+      "id": "typed_fixed_next_turn_upkeep_draw",
+      "name": "Typed fixed next-turn upkeep draw",
+      "status": "implemented_on_current_source_tree"
     }
   ],
   "package": {
@@ -675,11 +681,11 @@
   },
   "rules_coverage": {
     "commander_oracle": {
-      "material_residuals": 39226,
+      "material_residuals": 39180,
       "status_counts": {
-        "exact": 5393,
-        "partial": 11887,
-        "unresolved": 14343
+        "exact": 5411,
+        "partial": 11895,
+        "unresolved": 14317
       },
       "total": 31623
     },
@@ -697,11 +703,11 @@
       "trusted": 8
     },
     "oracle": {
-      "material_residuals": 46439,
+      "material_residuals": 46393,
       "status_counts": {
-        "exact": 8483,
-        "partial": 13007,
-        "unresolved": 17133
+        "exact": 8501,
+        "partial": 13015,
+        "unresolved": 17107
       },
       "total": 38623
     },
@@ -748,31 +754,31 @@
     "card_program_census": {
       "commander": {
         "cards_considered": 31623,
-        "material_residuals": 39229,
+        "material_residuals": 39183,
         "status_counts": {
-          "residual": 26230,
-          "trusted": 5393
+          "residual": 26212,
+          "trusted": 5411
         },
         "trust_basis_counts": {
-          "capability_closed": 5377,
+          "capability_closed": 5395,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 26230
+          "unresolved": 26212
         }
       },
       "full": {
         "cards_considered": 38623,
-        "material_residuals": 46441,
+        "material_residuals": 46395,
         "status_counts": {
           "failed": 2248,
-          "residual": 30137,
-          "trusted": 6238
+          "residual": 30119,
+          "trusted": 6256
         },
         "trust_basis_counts": {
-          "capability_closed": 6222,
+          "capability_closed": 6240,
           "legacy_reviewed": 8,
           "mixed": 8,
-          "unresolved": 30137
+          "unresolved": 30119
         }
       }
     },

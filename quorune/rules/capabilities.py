@@ -11,6 +11,9 @@ from .component_resolution import implementation_component_resolves
 from .counter_capability_shapes import (
     fixed_counter_placement_group_node_capabilities,
 )
+from .delayed_draw_capability_shapes import (
+    fixed_next_turn_draw_node_capabilities,
+)
 from .crew_capability_shapes import ordinary_crew_node_capabilities
 from .station_capability_shapes import ordinary_station_node_capabilities
 from .graveyard_card_targets import (
@@ -72,6 +75,10 @@ from .modal_capability_shapes import fixed_choose_one_modal_branches
 from ..compiler.modal_templates import (
     FIXED_CHOOSE_ONE_MODAL_CAPABILITY,
     FIXED_CHOOSE_ONE_MODAL_MECHANIC,
+)
+from ..compiler.delayed_draw_templates import (
+    FIXED_NEXT_TURN_DRAW_CAPABILITY,
+    FIXED_NEXT_TURN_DRAW_MECHANIC,
 )
 
 from ..util import stable_json
@@ -297,6 +304,9 @@ MECHANIC_CAPABILITY_DEPENDENCIES: dict[str, tuple[str, ...]] = {
     FIXED_EFFECT_CLAUSE_SEQUENCE_MECHANIC: (
         "resolution.effect_sequence.fixed_clauses",
     ),
+    FIXED_NEXT_TURN_DRAW_MECHANIC: (
+        FIXED_NEXT_TURN_DRAW_CAPABILITY,
+    ),
 }
 _SHAPE_GATED_MECHANICS = frozenset(
     {
@@ -315,6 +325,7 @@ _SHAPE_GATED_MECHANICS = frozenset(
         _FIXED_COUNTER_CONTROLLER_SEQUENCE_MECHANIC,
         FIXED_EFFECT_CLAUSE_SEQUENCE_MECHANIC,
         FIXED_CHOOSE_ONE_MODAL_MECHANIC,
+        FIXED_NEXT_TURN_DRAW_MECHANIC,
         "adapt",
         "monstrosity",
         "bolster",
@@ -908,6 +919,7 @@ def _targeted_effect_capabilities(
         fixed_source_effect_sequence_node_capabilities,
         fixed_damage_node_capabilities,
         mass_destruction_node_capabilities,
+        fixed_next_turn_draw_node_capabilities,
         fixed_draw_node_capabilities,
         fixed_mill_node_capabilities,
         fixed_life_node_capabilities,

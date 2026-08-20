@@ -58,6 +58,18 @@ order. Each clause reuses its existing typed owner; the sequence adds only the
 immutable ordering and continuation boundary. Optional, modal, conditional,
 variable, linked, repeated, and larger instruction families remain residual.
 
+`compiler/delayed_draw_templates.py` owns one mandatory delayed controller
+draw instruction: draw one card at the beginning of the next chronological
+turn's upkeep. The compiler emits one immutable single-use delayed-trigger
+payload containing the current turn sequence and one private controller draw.
+The ordinary delayed-trigger scheduler, APNAP placement owner, and draw
+transaction retain runtime authority. The same leaf is available to spell,
+triggered, and activated composition, but it is withheld when an unresolved
+additional cost or other whole-ability owner encloses the sentence. Optional,
+multi-card, variable, controller-next-upkeep, named-player, other-time,
+conditional, repeated, linked, and targeted variants remain source-spanned
+residuals.
+
 `compiler/life_templates.py` owns fixed life changes shared by spell and
 activated contexts. In addition to controller gain/loss, it lowers one direct
 player gain or loss, one opponent-only loss or equal drain, and one equal
