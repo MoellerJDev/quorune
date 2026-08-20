@@ -17560,6 +17560,62 @@
       "applicability_note": "Replay trigger placement and the identity-locked until-end-of-turn characteristic result to the same final hash."
     },
     {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_targeted_storm_copies_retarget_and_revalidate_independently",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.40", "702.40a", "702.40b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Create independent Grapeshot copies through the canonical spell-copy owner, assign distinct public targets, and revalidate each target only for its own resolution."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_four_player_storm_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.40", "702.40a", "702.40b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Expose one controller-authorized public target choice in a four-player game while preserving ordinary priority and opponent projections."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_storm_rules.StormCompilerTests.test_storm_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.40", "702.40a", "702.40b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove the dedicated Storm descriptor or block each dependency and prove no generic coverage-string fallback retains runtime trust."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "negative",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_stale_or_malformed_storm_choice_rolls_back",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.40", "702.40a", "702.40b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject stale targets, mismatched copy counts, and malformed typed Storm continuations before changing the authoritative hash."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "positive",
+      "test_id": "tests.test_storm_rules.StormCompilerTests.test_all_real_storm_cards_lower_typed_stack_trigger",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.40", "702.40a", "702.40b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower every ordinary Storm instance in the pinned 33-card Commander family to a source-spanned trusted stack-zone trigger descriptor."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_four_player_storm_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.40", "702.40a", "702.40b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project public spell and target references without physical object IDs, logical incarnation IDs, or hidden-zone identities."
+    },
+    {
+      "capability_id": "trigger.keyword.storm",
+      "evidence_class": "replay",
+      "test_id": "tests.test_storm_rules.StormRuntimeTests.test_four_player_storm_choice_is_public_and_replays_exactly",
+      "official_rule_ids": ["601.2i", "603.2", "603.3", "702.40", "702.40a", "702.40b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay cast history, APNAP placement, copy target choice, independent copy objects, and final authoritative state exactly."
+    },
+    {
       "capability_id": "trigger.keyword.ward.fixed_generic",
       "evidence_class": "interaction",
       "test_id": "tests.test_trigger_processing_owner.TriggerProcessingOwnerIntegrationTests.test_multiple_ward_instances_and_control_change_use_current_state",

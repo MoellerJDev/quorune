@@ -216,6 +216,7 @@ class CardProgramTrustTests(unittest.TestCase):
                 "ability.trigger.mentor",
                 "ability.trigger.prowess",
                 "ability.trigger.renown",
+                "ability.trigger.storm",
                 "ability.trigger.training",
                 "ability.trigger.ward",
                 "casting.bestow.fixed_mana",
