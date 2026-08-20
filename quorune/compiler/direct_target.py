@@ -68,6 +68,73 @@ def _canonical_colors(
     return normalized
 
 
+def _validate_mana_value_predicate(
+    spec: "DirectPermanentTargetSpec",
+) -> None:
+    values = (
+        spec.mana_value_min,
+        spec.mana_value_max,
+        spec.mana_value_equal,
+    )
+    if sum(value is not None for value in values) > 1 or any(
+        value is not None and (type(value) is not int or value < 0)
+        for value in values
+    ):
+        raise ValueError("Direct permanent mana-value predicate is unsupported")
+    if any(value is not None for value in values) and spec.state_predicate is not None:
+        raise ValueError(
+            "Direct permanent mana-value predicates cannot mix public "
+            "state predicates"
+        )
+
+
+def _validate_public_state_predicate(
+    spec: "DirectPermanentTargetSpec",
+) -> None:
+    state = spec.state_predicate
+    if state is None:
+        return
+    if not isinstance(state, PermanentStatePredicateSpec):
+        raise ValueError("Direct permanent public-state predicate must be typed")
+    state_kinds = sum(
+        (
+            state.entered_this_turn,
+            state.tapped is not None,
+            state.counter_name is not None,
+        )
+    )
+    invalid_creature_state = (
+        state.entered_this_turn or state.tapped is not None
+    ) and spec.types_any != ("creature",)
+    invalid_counter_state = (
+        state.counter_name is not None
+        and spec.types_any not in {(), ("creature",)}
+    )
+    if state_kinds != 1 or invalid_creature_state or invalid_counter_state:
+        raise ValueError("Direct permanent public-state predicate is unsupported")
+
+
+def _strip_mana_value_predicate(
+    phrase: str,
+) -> tuple[str, dict[str, int]]:
+    match = re.fullmatch(
+        r"(?P<body>.+) with mana value (?P<value>\d+)"
+        r"(?: or (?P<direction>less|greater))?",
+        phrase,
+    )
+    if match is None:
+        return phrase, {}
+    direction = match.group("direction")
+    field = (
+        "mana_value_max"
+        if direction == "less"
+        else "mana_value_min"
+        if direction == "greater"
+        else "mana_value_equal"
+    )
+    return match.group("body"), {field: int(match.group("value"))}
+
+
 @dataclass(frozen=True, slots=True)
 class DirectPermanentTargetSpec:
     """One closed, immutable direct-permanent target predicate.
@@ -85,6 +152,9 @@ class DirectPermanentTargetSpec:
     keywords_all: tuple[str, ...] = ()
     colors_none: tuple[str, ...] = ()
     colorless: bool | None = None
+    mana_value_min: int | None = None
+    mana_value_max: int | None = None
+    mana_value_equal: int | None = None
     state_predicate: PermanentStatePredicateSpec | None = None
     controller_relation: str = "any"
     source_exclusion: bool = False
@@ -207,29 +277,8 @@ class DirectPermanentTargetSpec:
             raise ValueError(
                 "Direct permanent colorless predicates require a creature target"
             )
-        if self.state_predicate is not None:
-            state = self.state_predicate
-            if not isinstance(state, PermanentStatePredicateSpec):
-                raise ValueError(
-                    "Direct permanent public-state predicate must be typed"
-                )
-            state_kinds = sum(
-                (
-                    state.entered_this_turn,
-                    state.tapped is not None,
-                    state.counter_name is not None,
-                )
-            )
-            if state_kinds != 1 or (
-                (state.entered_this_turn or state.tapped is not None)
-                and self.types_any != ("creature",)
-            ) or (
-                state.counter_name is not None
-                and self.types_any not in {(), ("creature",)}
-            ):
-                raise ValueError(
-                    "Direct permanent public-state predicate is unsupported"
-                )
+        _validate_mana_value_predicate(self)
+        _validate_public_state_predicate(self)
         if self.controller_relation not in {"any", "you", "opponent"}:
             raise ValueError("Direct permanent target controller relation is unsupported")
         if type(self.source_exclusion) is not bool:
@@ -267,6 +316,12 @@ class DirectPermanentTargetSpec:
             predicate += "-colorless"
         if self.commander:
             predicate = f"commander-{predicate}"
+        if self.mana_value_equal is not None:
+            predicate += f"-mana-value-{self.mana_value_equal}"
+        elif self.mana_value_min is not None:
+            predicate += f"-mana-value-{self.mana_value_min}-or-greater"
+        elif self.mana_value_max is not None:
+            predicate += f"-mana-value-{self.mana_value_max}-or-less"
         return predicate
 
     @property
@@ -302,6 +357,9 @@ class DirectPermanentTargetSpec:
             or self.subtypes_none
             or self.colors_none
             or self.colorless is not None
+            or self.mana_value_min is not None
+            or self.mana_value_max is not None
+            or self.mana_value_equal is not None
         )
 
     @property
@@ -328,6 +386,12 @@ class DirectPermanentTargetSpec:
                 schema[field_name] = list(values)
         if self.colorless is not None:
             schema["colorless"] = self.colorless
+        if self.mana_value_min is not None:
+            schema["mana_value_min"] = self.mana_value_min
+        if self.mana_value_max is not None:
+            schema["mana_value_max"] = self.mana_value_max
+        if self.mana_value_equal is not None:
+            schema["mana_value"] = self.mana_value_equal
         if self.state_predicate is not None:
             schema["state_predicate"] = self.state_predicate.to_dict()
         if self.controller_relation != "any":
@@ -360,6 +424,9 @@ class DirectPermanentTargetSpec:
             "keywords_all",
             "colors_none",
             "colorless",
+            "mana_value_min",
+            "mana_value_max",
+            "mana_value",
             "state_predicate",
             "controller_relation",
             "source_exclusion",
@@ -395,6 +462,9 @@ class DirectPermanentTargetSpec:
             keywords_all=tuple(schema.get("keywords_all", ())),
             colors_none=tuple(schema.get("colors_none", ())),
             colorless=schema.get("colorless"),
+            mana_value_min=schema.get("mana_value_min"),
+            mana_value_max=schema.get("mana_value_max"),
+            mana_value_equal=schema.get("mana_value"),
             state_predicate=state_predicate,
             controller_relation=schema.get("controller_relation", "any"),
             source_exclusion=source_exclusion,
@@ -427,6 +497,7 @@ def direct_permanent_target_spec(
         return None
 
     state_predicate: PermanentStatePredicateSpec | None = None
+    phrase, mana_value_fields = _strip_mana_value_predicate(phrase)
     counter_state = re.fullmatch(
         r"(?P<body>.+) with (?:a|an) "
         r"(?P<counter>[+-]\d+/[+-]\d+|[a-z][a-z'-]*(?: [a-z][a-z'-]*){0,2}) "
@@ -469,8 +540,11 @@ def direct_permanent_target_spec(
         "controller_relation": relation,
         "source_exclusion": exclude_source,
         "state_predicate": state_predicate,
+        **mana_value_fields,
     }
-    if phrase == "tapped creature":
+    if phrase == "nonland permanent" and mana_value_fields:
+        kwargs["types_none"] = ("land",)
+    elif phrase == "tapped creature":
         if state_predicate is not None:
             return None
         kwargs["types_any"] = ("creature",)

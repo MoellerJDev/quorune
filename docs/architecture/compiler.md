@@ -309,13 +309,19 @@ fixed counter-placement grammar. Direct targets lower once to
 represented type conjunctions and canonical disjunctions of up to four
 permanent card types, pinned creature-subtype disjunctions, reviewed Vehicle
 subtype, Flying predicate, controller relation, source exclusion, closed
-negative subtype and color forms, and one shared typed public-state predicate
-for tapped state, named-counter presence, or current-turn battlefield entry.
+negative subtype and color forms, one fixed exact/minimum/maximum mana-value
+qualifier, and one shared typed public-state predicate for tapped state,
+named-counter presence, or current-turn battlefield entry. The mana-value form
+uses the existing current public characteristic snapshot and remains separate
+from power, toughness, variable, total, and public-state-combined numeric
+grammar so this harvest does not cross the cycle-sensitive characteristic
+boundary.
 Arbitrary adjectives are never inferred as creature subtypes. Targeted
-destruction delegates its whole-clause subject to this same owner, so spells,
-triggers, and activations share the exact typed target grammar without a
-destruction-specific predicate vocabulary. Mixed type/subtype disjunctions and
-unrepresented qualifiers remain residual. The counter owner preserves two or
+destruction, exile, tap, and untap delegate their whole-clause subjects to this
+same owner, so spells, triggers, activations, and modal bodies share the exact
+typed target grammar without an effect-specific predicate vocabulary. Mixed
+type/subtype disjunctions and unrepresented qualifiers remain residual. The
+counter owner preserves two or
 three printed fixed placements on one shared source or direct permanent target
 as one typed batch node; runtime code receives the typed node and never
 reparses Oracle text.
