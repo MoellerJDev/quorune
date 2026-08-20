@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "1d94d6bcb8c85597f39b59d5723365a1ce80802b9ca8b8ca172d304156d44042",
-  "declaration_source_fingerprint": "93e40548c9ed283d36498e3316025b157f5fc6e0cc181a00af4cd665bc0e19c2",
+  "registry_fingerprint": "b09415b5bcc42fe342f24058db18cde1344c638d1fd913113a17b15f6c71a579",
+  "declaration_source_fingerprint": "d0e598fa83a691a9f90afd250a6596b97f27d76e750dfbf6cf9b997ddcbe3932",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -37128,6 +37128,226 @@
       "applicability_note": "Reject a replacement identifier outside the issued schema without changing the authoritative state hash or committing any token."
     },
     {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Schedule the compiled draw and a competing active-player delayed trigger, reject the same-turn upkeep, place both in APNAP order, and resolve through the canonical draw owner."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_four_player_next_turn_draw_is_private_and_replays_exactly",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve the delayed draw in a four-player game with controller-frozen ownership and ordinary public trigger placement."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawCompilerTests.test_blocked_delayed_draw_dependencies_and_compiler_mutation_fail_closed",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the exact delayed-draw template and require the complete source span to remain material rather than executable."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "negative",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawCompilerTests.test_adjacent_delayed_draw_grammar_remains_residual",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep optional, variable, multi-card, controller-next-upkeep, end-step, and compound delayed draws source-spanned and residual."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "negative",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawCompilerTests.test_blocked_delayed_draw_dependencies_and_compiler_mutation_fail_closed",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Block APNAP placement or the draw owner and require dependency residuals before any delayed trigger can be scheduled."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "positive",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawCompilerTests.test_fixed_next_turn_draw_template_is_exact_shape",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower the complete sentence to one immutable single-use next-turn upkeep trigger carrying one private controller draw."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "positive",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawCompilerTests.test_real_next_turn_draw_family_compiles_and_closes_complete_cards",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile every real Commander card in the bounded family with exact source spans and capability-close the complete-card members."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "positive",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve Blessed Wine, preserve its immediate sibling life result, wait for the next turn, then perform exactly one draw."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_four_player_next_turn_draw_is_private_and_replays_exactly",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep the current and drawn top-library identity absent from every opponent projection before and after the delayed draw."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "replay",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_four_player_next_turn_draw_is_private_and_replays_exactly",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Round-trip the waiting delayed trigger and replay its ordinary stack resolution to the exact final authoritative hash."
+    },
+    {
       "capability_id": "trigger.event.normalized_card_draw",
       "evidence_class": "interaction",
       "test_id": "tests.test_fixed_counter_event_triggers.FixedCounterEventTriggerRuntimeTests.test_draw_and_second_draw_counter_triggers_share_one_batch",
@@ -41405,5 +41625,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "04c10e0e68547ba905769266e4fa1c723a199b77807a7767ed7e0514cec4bdc0"
+  "fingerprint": "5e725831a87af4f9d1cc897e4dd0eb43efb59ff2386ff1bf55953e79decf16a1"
 }

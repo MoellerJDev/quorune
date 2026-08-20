@@ -623,6 +623,12 @@
       "name": "Typed qualified-object Enchant restrictions",
       "status": "implemented_on_current_source_tree",
       "evidence": "The current source tree extends the shared Aura target and attachment owner with three bounded live predicates: artifact or creature, red or green creature, and tapped creature. A pinned 139-card family probe promotes seven exact, trusted, capability-closed Commander cards, adds 28 ability programs, and removes 167 material residuals by eliminating the redundant generic Enchant blocker while retaining one precise residual for every unsupported restriction. Seven real Oracle cards compile residual-free; cast offers, resolution, and state-based legality consume the same typed schema, including detachment when a tapped-creature predicate stops holding. Existing target revalidation, attachment, replay, privacy, and multiplayer evidence remains authoritative, and uncovered high-risk interaction debt remains zero. Players, nonbattlefield cards, subtypes, mixed type/subtype alternatives, keyword presence or absence, power bounds, attachment-qualified objects, and other unrepresented color or state predicates remain fail-closed."
+    },
+    {
+      "id": "typed_fixed_next_turn_upkeep_draw",
+      "name": "Typed fixed next-turn upkeep draw",
+      "status": "implemented_on_current_source_tree",
+      "evidence": "The current source tree lowers 39 independently parsed mandatory instructions to draw one card at the beginning of the next chronological turn's upkeep. A pinned bounded probe makes all 39 delayed-draw leaves exact, promotes 14 exact, trusted, capability-closed Commander cards and executable programs, and removes 39 material residuals. One immutable compiler payload captures the resolution controller and current turn sequence, schedules one delayed trigger, waits past the same turn, joins ordinary APNAP placement, and resolves one private replacement-aware draw through the canonical coordinator. Real-card compilation, sibling life composition, same-turn suppression, competing delayed-trigger ordering, four-player projection, dependency failure, exact replay, and a killed compiler mutation are explicit. Optional, multi-card, variable, controller-next-upkeep, named-player, other-time, conditional, repeated, linked, targeted, and unresolved enclosing-cost variants remain fail-closed; Renewal is retained as a whole-spell residual because its additional cost is not represented."
     }
   ],
   "platform": {

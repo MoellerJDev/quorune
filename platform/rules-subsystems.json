@@ -459,6 +459,11 @@
         "candidate_id": "compiler:qualified-object-enchant",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "After Bestow established the attachment prerequisite, the generated Choose one header remained a heterogeneous nonexecuting carrier with zero sole blockers. The 139-card Enchant frontier decomposes into distinct player, nonbattlefield, subtype, numeric, attachment, and mixed-predicate families; a bounded pinned-corpus probe selected the existing target-query shapes for artifact or creature, red or green creature, and tapped creature. The slice measures seven complete Commander cards, 28 additional ability programs, and 167 removable material residuals while replacing every redundant generic Enchant blocker with one precise restriction residual and leaving unsupported predicates fail-closed."
+      },
+      {
+        "candidate_id": "compiler:fixed-next-turn-upkeep-draw",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "After qualified Enchant, the generated Choose one leader still had zero sole blockers and represented a nonexecuting header whose 271 cards require unrelated branch grammar. The 106-card additional-cost and 322-card activated-token candidates likewise split across random, variable, named-mechanic, linked, conditional, token-ability, delayed-sacrifice, and unsupported-cost families. A pinned bounded probe instead found 39 independently parsed identical next-turn upkeep draw clauses. One shape-gated compiler leaf reuses the existing delayed-trigger, APNAP, and draw owners across effect contexts; the probe gains 14 exact, trusted, capability-closed Commander cards and executable programs, makes all 39 leaf nodes exact, and removes 39 material residuals while withholding Renewal behind its unresolved additional cost."
       }
     ]
   },

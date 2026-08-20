@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 119,
+  "registry_version": 120,
   "effective_date": "2026-08-07",
   "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "profiles": [
@@ -4080,6 +4080,33 @@
       "dependency_fail_closed_rationale": "Ordinary Saga card-form programs declare this capability together with lore progression, and trusted promotion fails when final-chapter state actions, destination replacement, or APNAP trigger placement are unavailable.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "The focused mutation disables the typed final-chapter predicate; the completed Saga then remains on the battlefield and the lifecycle assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "trigger.delayed.fixed_next_turn_draw",
+      "version": 1,
+      "official_rules": ["121.1", "503.1", "503.1a", "603.3", "603.3b", "603.7", "603.7a", "603.7b", "603.7g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile one mandatory instruction to draw one card at the beginning of the next chronological turn's upkeep into a single-use delayed trigger that resolves through the canonical draw transaction.",
+        "inputs": ["one complete source-spanned delayed-draw sentence", "resolving spell, triggered, or activated ability controller", "current turn sequence", "ordinary next-turn upkeep event"],
+        "outputs": ["one controller-frozen delayed trigger", "strict next-turn upkeep condition", "ordinary APNAP trigger placement", "one private replacement-aware controller draw", "exact replay"],
+        "exclusions": ["the source controller's next upkeep", "a named player's next upkeep", "end-step or other delayed times", "optional, fixed-count greater than one, variable, repeated, conditional, linked, or targeted delayed draws", "draws without a delayed trigger", "a delayed sentence enclosed by an unresolved additional-cost or other whole-spell composition", "copied delayed abilities outside ordinary stack-copy rules"]
+      },
+      "dependencies": ["trigger.placement.apnap", "zone.draw.library_to_hand"],
+      "implementation_components": ["quorune.compiler.delayed_draw_templates.fixed_next_turn_upkeep_draw_effect_template", "quorune.rules.delayed_draw_capability_shapes.fixed_next_turn_draw_node_capabilities", "quorune.compiler.program_generation._is_closed_fixed_next_turn_draw_program", "quorune.effect_runtime.objects_stack_and_tokens._apply_delayed_trigger", "quorune.trigger_processing.schedule_delayed_trigger", "quorune.delayed_triggers.materialize_delayed_trigger", "quorune.drawing.coordinator.begin_draw_sequence"],
+      "positive_tests": ["test_fixed_next_turn_draw_template_is_exact_shape", "test_real_next_turn_draw_family_compiles_and_closes_complete_cards", "test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner"],
+      "negative_tests": ["test_adjacent_delayed_draw_grammar_remains_residual", "test_blocked_delayed_draw_dependencies_and_compiler_mutation_fail_closed"],
+      "interaction_tests": ["test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner"],
+      "multiplayer_tests": ["test_four_player_next_turn_draw_is_private_and_replays_exactly"],
+      "privacy_tests": ["test_four_player_next_turn_draw_is_private_and_replays_exactly"],
+      "replay_tests": ["test_four_player_next_turn_draw_is_private_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The compiler shape declares both ordinary APNAP placement and the canonical draw transaction; blocking either dependency leaves the delayed sentence material before runtime mutation.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_blocked_delayed_draw_dependencies_and_compiler_mutation_fail_closed removes the exact compiler template and verifies that the sentence remains source-spanned residual rather than executable.",
       "blockers": [],
       "status": "trusted"
     },
