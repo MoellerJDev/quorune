@@ -71,10 +71,11 @@ def workflow_policy_failures(root: Path = ROOT) -> list[str]:
     for path in sorted(workflow_root.glob("*.yml")):
         relative = path.relative_to(root).as_posix()
         text = path.read_text(encoding="utf-8")
-        setup_count = len(re.findall(r"uses:\s*actions/setup-python@", text))
+        setup_inputs = _setup_python_inputs(text)
+        setup_count = len(setup_inputs)
         if setup_count == 0:
             continue
-        versions = re.findall(r"python-version:\s*[\"']?([0-9.]+)", text)
+        versions = [inputs.get("python-version") for inputs in setup_inputs]
         if len(versions) != setup_count or any(
             version != SUPPORTED_PYTHON_TEXT for version in versions
         ):
@@ -82,7 +83,7 @@ def workflow_policy_failures(root: Path = ROOT) -> list[str]:
                 f"{relative} must configure exactly {SUPPORTED_PYTHON_TEXT} "
                 f"for all {setup_count} Python setups; found {versions!r}"
             )
-        architectures = re.findall(r"architecture:\s*[\"']?([A-Za-z0-9_-]+)", text)
+        architectures = [inputs.get("architecture") for inputs in setup_inputs]
         if len(architectures) != setup_count or any(
             architecture != "x64" for architecture in architectures
         ):
@@ -93,6 +94,30 @@ def workflow_policy_failures(root: Path = ROOT) -> list[str]:
         if "matrix.python-version" in text:
             failures.append(f"{relative} must not use a Python-version matrix")
     return failures
+
+
+def _setup_python_inputs(text: str) -> list[dict[str, str]]:
+    """Return inputs owned by each setup-python step, excluding sibling YAML keys."""
+
+    lines = text.splitlines()
+    setups: list[dict[str, str]] = []
+    for index, line in enumerate(lines):
+        match = re.match(r"^(?P<indent>\s*)-\s+uses:\s*actions/setup-python@", line)
+        if match is None:
+            continue
+        step_indent = len(match.group("indent"))
+        inputs: dict[str, str] = {}
+        for candidate in lines[index + 1 :]:
+            if candidate.strip() and len(candidate) - len(candidate.lstrip()) <= step_indent:
+                break
+            input_match = re.match(
+                r'^\s+(python-version|architecture):\s*["\']?([^"\'\s#]+)',
+                candidate,
+            )
+            if input_match is not None:
+                inputs[input_match.group(1)] = input_match.group(2)
+        setups.append(inputs)
+    return setups
 
 
 def validate(root: Path = ROOT) -> dict[str, object]:
