@@ -200,11 +200,17 @@ global inventory ratchet.
 ```
 
 For a database-backed change that should be offloaded, push an explicitly
-authorized source-checkpoint commit, dispatch `generated-artifacts.yml` with
-that exact ref, download `cloud-generated-<sha>`, and install it with:
+authorized source-checkpoint commit. The pull-request
+`generated-artifacts.yml` run starts on source-changing events, executes the
+pre-corpus sentinels, and publishes `cloud-generated-<sha>` for that exact ref.
+It deliberately does not subscribe to `ready_for_review`; do not manually
+restart it for a draft-to-review metadata transition. Download and install the
+bundle with:
 
 ```powershell
-gh workflow run generated-artifacts.yml --ref main -f ref=<source-sha>
+$env:QUORUNE_CLOUD_SOURCE_CHECKPOINT_REASON = "seed exact-source cloud generation"
+git push -u origin <branch>
+Remove-Item Env:QUORUNE_CLOUD_SOURCE_CHECKPOINT_REASON
 gh run download <run-id> --name cloud-generated-<source-sha> `
   --dir local\cloud-generated-download
 .\.venv\Scripts\python.exe scripts\cloud_generated_artifacts.py install-bundle `
@@ -216,8 +222,14 @@ inventory, and every output hash, then records an ordinary worktree-local
 finalization receipt. Inspect and commit the installed outputs with their
 source. The cloud run executes the same final freshness and architecture
 checks; it does not authorize a source-only merge or a generated follow-up.
-`main` pushes also run this workflow automatically and publish a reusable
-exact-main bundle without write permissions.
+Owner artifacts are keyed by declared content inputs rather than commit SHA,
+so a content-identical merge commit reuses the PR census and downstream work.
+`main` pushes still publish a separately exact-main bundle without write
+permissions. Use manual `workflow_dispatch` only for recovery or diagnosis.
+The checkpoint environment variable is permitted only for this intermediate
+feature-branch push; it fails on `main`, still runs shard/dependency and
+compiler-identity sentinels, and is never used for the final generated-output
+push.
 
 Either route is the required focused architecture check before the final
 commit.
@@ -238,6 +250,10 @@ cloud route above:
 
 `platform/generated-artifacts.json` owns the complete tracked generated-artifact
 inventory, deterministic report commands, write policies, and dependency order.
+Reusable owners also declare their direct input groups, implementation entry
+points, execution class, database identity, and cache policy. Treat these as
+correctness boundaries: update an owner declaration whenever its generator
+starts reading another source or helper.
 Its discovery policy recognizes the repository's generated path conventions,
 generated-document metadata, pinned rules indexes, and embedded third-party
 generator markers. Validation fails when a discovered artifact has no owner,

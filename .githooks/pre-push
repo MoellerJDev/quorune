@@ -19,6 +19,23 @@ fi
 "$PYTHON" "$ROOT/scripts/test_shards.py" validate
 "$PYTHON" "$ROOT/scripts/build_test_database.py" validate-ci-dependencies
 
+# A deliberately named feature-branch checkpoint may be pushed before the
+# generated bundle exists so GitHub can perform the expensive writers. This is
+# not final publication authority: the next push must carry an exact receipt.
+if [ -n "${QUORUNE_CLOUD_SOURCE_CHECKPOINT_REASON:-}" ]; then
+    BRANCH=$(git branch --show-current)
+    if [ -z "$BRANCH" ] || [ "$BRANCH" = "main" ]; then
+        echo "Quorune pre-push: cloud source checkpoints are forbidden on main or detached HEAD." >&2
+        exit 1
+    fi
+    "$PYTHON" "$ROOT/scripts/cloud_generated_artifacts.py" \
+        plan --base-ref origin/main
+    "$PYTHON" "$ROOT/scripts/cloud_generated_artifacts.py" \
+        verify-compiler-identity --base-ref origin/main
+    echo "Quorune pre-push: authorized cloud source checkpoint: $QUORUNE_CLOUD_SOURCE_CHECKPOINT_REASON"
+    exit 0
+fi
+
 run_finalizer() {
     if "$PYTHON" "$ROOT/scripts/finalize_generated.py" \
         --verify-receipt "$@"; then

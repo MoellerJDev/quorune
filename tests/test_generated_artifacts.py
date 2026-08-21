@@ -12,6 +12,7 @@ from unittest import mock
 from scripts.finalize_generated import (
     POST_CHECKS,
     check_all,
+    check_assembled,
     changed_generated_outputs,
     stabilization_ids,
     write_until_stable,
@@ -847,6 +848,9 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         self.assertIn(".venv/Scripts/python.exe", hook)
         self.assertIn("data/scryfall-current.sqlite3", hook)
         self.assertIn('"$ROOT/scripts/test_shards.py" validate', hook)
+        self.assertIn("QUORUNE_CLOUD_SOURCE_CHECKPOINT_REASON", hook)
+        self.assertIn("verify-compiler-identity --base-ref origin/main", hook)
+        self.assertIn('if [ -z "$BRANCH" ] || [ "$BRANCH" = "main" ]', hook)
         self.assertIn("--verify-receipt", hook)
         self.assertIn("--write --fail-on-change", hook)
         self.assertIn(
@@ -883,6 +887,42 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         self.assertEqual(
             ["architecture-policy"],
             [str(row["check"]) for row in failures],
+        )
+
+    def test_assembled_finalizer_skips_receipted_owner_checks(self):
+        cacheable = GeneratorSpec(
+            id="cacheable",
+            depends_on=(),
+            outputs=("cacheable.txt",),
+            check=("cacheable.py", "--check"),
+            write=("cacheable.py", "--write"),
+            write_with_database=None,
+            write_policy="automatic",
+            reuse_policy="safe",
+        )
+        manual = GeneratorSpec(
+            id="manual",
+            depends_on=("cacheable",),
+            outputs=("manual.txt",),
+            check=("manual.py", "--check"),
+            write=None,
+            write_with_database=None,
+            write_policy="manual",
+            reuse_policy="noncacheable",
+        )
+        observed: list[str] = []
+
+        failures = check_assembled(
+            (cacheable, manual),
+            runner=lambda check_id, _command: observed.append(check_id) or 0,
+        )
+
+        self.assertEqual((), failures)
+        self.assertNotIn("cacheable", observed)
+        self.assertIn("manual", observed)
+        self.assertTrue(
+            {check_id for check_id, _command in POST_CHECKS}
+            <= set(observed)
         )
 
     def test_generated_hook_installer_is_idempotent_and_preserves_foreign_policy(self):

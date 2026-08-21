@@ -54,7 +54,11 @@ def build_plan(
     paths: Sequence[str],
     *,
     changed_symbols: Sequence[str] = (),
+    phase: str = "normal",
+    base_ref: str = "origin/main",
 ) -> dict:
+    if phase not in {"normal", "pre-corpus"}:
+        raise ValueError(f"unsupported quick-gate phase: {phase}")
     impact = classify_changes(paths, changed_symbols=changed_symbols)
     manifest = load_manifest()
     validate_partition(manifest)
@@ -81,7 +85,32 @@ def build_plan(
             ),
         ),
     ]
-    if "compact-ci-dependencies" in impact.checks:
+    if phase == "pre-corpus":
+        steps.extend(
+            (
+                QuickStep(
+                    "generated-owner-plan",
+                    (
+                        python,
+                        "scripts/cloud_generated_artifacts.py",
+                        "plan",
+                        "--base-ref",
+                        base_ref,
+                    ),
+                ),
+                QuickStep(
+                    "compiler-identity",
+                    (
+                        python,
+                        "scripts/cloud_generated_artifacts.py",
+                        "verify-compiler-identity",
+                        "--base-ref",
+                        base_ref,
+                    ),
+                ),
+            )
+        )
+    if phase == "normal" and "compact-ci-dependencies" in impact.checks:
         steps.append(
             QuickStep(
                 "compact-ci-dependencies",
@@ -92,7 +121,7 @@ def build_plan(
                 ),
             )
         )
-    if selected_modules:
+    if phase == "normal" and selected_modules:
         steps.extend(
             (
                 QuickStep(
@@ -165,6 +194,8 @@ def build_plan(
     }
     finalizer_selected = "generated-finalization" in impact.checks
     for check in impact.checks:
+        if phase == "pre-corpus":
+            continue
         if check == "compact-ci-dependencies":
             continue
         if finalizer_selected and check in _GENERATED_CHECK_ALIASES:
@@ -172,7 +203,7 @@ def build_plan(
         command = check_commands.get(check)
         if command is not None:
             steps.append(QuickStep(check, command))
-    if "browser-build" in impact.checks:
+    if phase == "normal" and "browser-build" in impact.checks:
         npm = shutil.which("npm.cmd" if sys.platform == "win32" else "npm")
         if npm is None:
             raise RuntimeError("npm is required for the affected browser build")
@@ -192,8 +223,12 @@ def build_plan(
         )
     return {
         "impact": impact.to_dict(),
-        "test_modules": selected_modules,
+        "test_modules": selected_modules if phase == "normal" else (),
+        "deferred_test_modules": (
+            selected_modules if phase == "pre-corpus" else ()
+        ),
         "database": str(database),
+        "phase": phase,
         "steps": tuple(steps),
     }
 
@@ -246,6 +281,11 @@ def main() -> int:
     )
     parser.add_argument("--base", default="origin/main")
     parser.add_argument("--changed-file", action="append", default=[])
+    parser.add_argument(
+        "--phase",
+        choices=("normal", "pre-corpus"),
+        default="normal",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     paths = (
@@ -255,6 +295,8 @@ def main() -> int:
     )
     plan = build_plan(
         paths,
+        phase=args.phase,
+        base_ref=args.base,
         changed_symbols=(
             ()
             if args.changed_file
@@ -269,7 +311,9 @@ def main() -> int:
             json.dumps(
                 {
                     "impact": plan["impact"],
+                    "phase": plan["phase"],
                     "test_modules": plan["test_modules"],
+                    "deferred_test_modules": plan["deferred_test_modules"],
                     "steps": [asdict(step) for step in plan["steps"]],
                 },
                 indent=2,

@@ -2,7 +2,7 @@
 title: "CI pipeline and two-slot development"
 status: "current"
 authoritative_source: "GitHub workflows, platform/test-shards.json, and local gate scripts"
-verified: "2026-08-12"
+verified: "2026-08-21"
 audience: "contributors and maintainers"
 maintenance: "hand-maintained"
 ---
@@ -118,7 +118,10 @@ snapshots, browser protocol bindings, durable baseline history, and the public
 protocol demo remain deliberate manual or separately generated assets, while
 their paths and checks still have one manifest owner. Deterministic Python
 reports declare their writer and checker and whether writing is automatic,
-database-backed, or a deliberate manual baseline operation. CI and the local
+database-backed, or a deliberate manual baseline operation. Reusable owners
+also declare direct input groups, implementation entry points, database
+identity, execution class, and reuse policy; adding a new source read requires
+updating that closure. CI and the local
 impact plan invoke the same interface. Adding a file below `coverage/` or
 `demo/`, a top-level `rules/*.json` file, a generated-status Markdown document,
 or a file with a registered generator marker requires adding that output to its
@@ -142,13 +145,29 @@ database census in the same finalization run:
 ### Cloud-generated artifact bundles
 
 `.github/workflows/generated-artifacts.yml` offloads the same governed writers
-to GitHub-hosted runners. Every `main` push automatically rebuilds the exact
-database pinned by `rules/manifest.json`, fans independent foundation and
-post-corpus owners out in parallel, follows the remaining manifest dependency
-order, verifies the assembled fixed point, and uploads
-`cloud-generated-<commit>`. The workflow has read-only repository permissions
-and never commits or opens a pull request. On `main`, regenerated outputs must
-be byte-identical to the merge.
+to GitHub-hosted runners. Source-changing pull-request events and every `main`
+push first derive an affected-owner plan from schema-3 input declarations. A
+pre-corpus quick-gate phase records the affected tests for the ordinary PR
+matrix, but executes only runtime/compile validation, the generated manifest
+plan, and the compiler-identity sentinel before any census. The workflow is not
+subscribed to `ready_for_review`, so moving an unchanged draft into review does
+not restart cloud generation.
+
+Each reusable owner is keyed by its Git-clean implementation and direct-source
+closure, dependency-output fingerprints, canonical manifest row, and governed
+pinned-database identity where applicable. The key deliberately excludes the
+commit SHA. A PR owner artifact can therefore be reused by a content-identical
+merge commit, while its staged envelope and the complete
+`cloud-generated-<commit>` bundle remain exact-commit and exact-source bound.
+Cross-run lookup accepts artifacts only from a completed execution of this
+workflow whose head repository is Quorune itself. A successfully checked owner
+receipt remains reusable when a later downstream job fails or the workflow is
+cancelled; a failed/cancelled owner that published no receipt is a cache miss
+and retries. Fork artifacts cannot seed `main` reuse.
+The pinned database is also cached from its snapshot and builder inputs, then
+validated by SQLite integrity, schema, and row cardinalities before use. The
+workflow has read-only repository permissions and never commits or opens a pull
+request. On `main`, assembled output bytes must match the merge.
 
 Each owner checks only its own completed output. Workflow `needs` edges and
 downloaded owner artifacts supply upstream state; the final bundle check is the
@@ -157,22 +176,37 @@ manual upstream verifier from rejecting intentionally stale downstream files
 before their owning cloud jobs can regenerate them.
 
 After the parallel and dependency-ordered owners are assembled, the bundle job
-runs the ordinary automatic finalizer in write mode to its bounded fixed point.
-The database-backed census is not rebuilt in this tail pass; its downloaded
-outputs are checked while architecture, reusable, compact, and scheduler owners
-may converge. A main run then requires the converged bytes to match the commit.
+requires one strict reusable receipt for every automatic owner, runs every
+noncacheable/manual check and cross-cutting policy check in `--assemble` mode,
+and writes the local exact-head finalization receipt. The validated reusable
+receipts replace duplicate automatic-owner checks in this tail; assembly never
+reruns an owner. A main run then requires the assembled bytes to match the
+commit.
 
-For a feature branch, first create and push an authorized source-checkpoint
-commit. Dispatch the workflow definition from `main` while selecting that
-exact commit as its input:
+Ordinary feature branches run this workflow automatically when opened,
+reopened, or synchronized:
 
 ```powershell
-gh workflow run generated-artifacts.yml --ref main -f ref=<source-sha>
+$env:QUORUNE_CLOUD_SOURCE_CHECKPOINT_REASON = "seed exact-source cloud generation"
+git push -u origin <branch>
+Remove-Item Env:QUORUNE_CLOUD_SOURCE_CHECKPOINT_REASON
 gh run list --workflow generated-artifacts.yml --limit 10
 gh run download <run-id> --name cloud-generated-<source-sha> `
   --dir local\cloud-generated-download
 .\.venv\Scripts\python.exe scripts\cloud_generated_artifacts.py install-bundle `
   --bundle-dir local\cloud-generated-download --expected-commit <source-sha>
+```
+
+The named checkpoint mode is restricted to non-`main` branches. It still runs
+test-shard/dependency validation and the compiler-identity sentinel, but allows
+the intermediate push before the expensive generated bundle and final receipt
+exist. Never use it for the subsequent generated-output push or as merge
+evidence.
+
+For recovery or diagnosis only, a manual exact-ref dispatch remains available:
+
+```powershell
+gh workflow run generated-artifacts.yml --ref main -f ref=<source-sha>
 ```
 
 The installer accepts only the current `HEAD`, validates the bundle receipt,

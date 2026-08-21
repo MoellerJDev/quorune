@@ -52,6 +52,24 @@ class QuickGatePlanTests(unittest.TestCase):
         self.assertNotIn("card-unlock-frontier", names)
         self.assertNotIn("reusable-pieces", names)
 
+    def test_pre_corpus_plan_runs_identity_sentinels_without_generators(self):
+        plan = build_plan(
+            ("quorune/compiler/oracle_parser.py",),
+            phase="pre-corpus",
+            base_ref="origin/main",
+        )
+        names = [step.name for step in plan["steps"]]
+
+        self.assertEqual("pre-corpus", plan["phase"])
+        self.assertIn("generated-owner-plan", names)
+        self.assertIn("compiler-identity", names)
+        self.assertNotIn("generated-finalization", names)
+        self.assertNotIn("compact-ci-dependencies", names)
+        self.assertNotIn("build-test-database", names)
+        self.assertNotIn("affected-tests", names)
+        self.assertEqual((), plan["test_modules"])
+        self.assertTrue(plan["deferred_test_modules"])
+
     def test_reusable_piece_change_checks_inventory(self):
         plan = build_plan(("quorune/reusable_pieces/generation.py",))
         names = [step.name for step in plan["steps"]]

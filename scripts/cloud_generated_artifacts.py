@@ -9,7 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
-from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,16 +20,32 @@ from scripts.generated_artifacts import (
     GeneratorSpec,
     all_outputs,
     check_command,
+    load_input_groups,
     load_manifest,
     write_command,
 )
 from scripts.generated_finalization_receipt import write_finalization_receipt
+from scripts.generated_owner_cache import (
+    GeneratedOwnerCacheError,
+    OwnerArtifactReceipt,
+    affected_owner_plan,
+    build_owner_receipt,
+    compiler_identity_status,
+    database_builder_input_fingerprint,
+    owner_cache_directory,
+    owner_input_identity,
+    pinned_database_identity,
+    read_owner_receipt,
+    restore_owner_artifact,
+    store_owner_artifact,
+)
 from scripts.source_tree_fingerprint import tracked_worktree_source_fingerprint
 from scripts.validate_python_runtime import require_supported_python
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 _LOCAL_ROOT = (ROOT / "local").resolve()
+_DEFAULT_CACHE_ROOT = _LOCAL_ROOT / "generated-owner-cache"
 
 
 class CloudGeneratedArtifactError(RuntimeError):
@@ -157,7 +173,68 @@ def _write_json(path: Path, value: Any) -> None:
     )
 
 
-def run_owner(owner: str, stage_dir: str, database: str | None) -> dict[str, Any]:
+def _cache_root(raw: str | None) -> Path:
+    if raw is None:
+        return _DEFAULT_CACHE_ROOT
+    return _safe_stage_directory(raw)
+
+
+def _owner_identity(
+    selected: GeneratorSpec,
+    specs: Sequence[GeneratorSpec],
+    database: str | None,
+):
+    database_path = Path(database).resolve() if database else None
+    return owner_input_identity(
+        selected,
+        specs=specs,
+        input_groups=load_input_groups(),
+        root=ROOT,
+        database=database_path,
+    )
+
+
+def owner_key(
+    owner: str,
+    database: str | None,
+    cache_root: str | None,
+) -> dict[str, Any]:
+    specs = load_manifest()
+    selected = _spec(specs, owner)
+    if selected.reuse_policy != "safe":
+        raise CloudGeneratedArtifactError(
+            f"Generated owner {owner} is explicitly noncacheable"
+        )
+    identity = _owner_identity(selected, specs, database)
+    path = owner_cache_directory(_cache_root(cache_root), identity)
+    result = {
+        "owner": owner,
+        "owner_fingerprint": identity.fingerprint,
+        "cache_path": str(path.relative_to(ROOT)).replace("\\", "/"),
+        "database_fingerprint": identity.database_fingerprint,
+    }
+    _write_github_outputs(result)
+    return result
+
+
+def _write_github_outputs(values: Mapping[str, object]) -> None:
+    destination = os.environ.get("GITHUB_OUTPUT")
+    if not destination:
+        return
+    with Path(destination).open("a", encoding="utf-8") as handle:
+        for key, value in values.items():
+            if value is not None and isinstance(value, (str, int, bool)):
+                handle.write(f"{key}={str(value).lower() if isinstance(value, bool) else value}\n")
+
+
+def run_owner(
+    owner: str,
+    stage_dir: str,
+    database: str | None,
+    cache_root: str | None = None,
+    affected_owners_json: str | None = None,
+    force_reason: str | None = None,
+) -> dict[str, Any]:
     specs = load_manifest()
     selected = _spec(specs, owner)
     database_path = Path(database).resolve() if database else None
@@ -170,8 +247,70 @@ def run_owner(owner: str, stage_dir: str, database: str | None) -> dict[str, Any
         raise CloudGeneratedArtifactError(
             f"Generated owner {owner} has no cloud-safe write command"
         )
-    _run(owner, command)
-    _run(f"check:{owner}", check_command(selected))
+    if force_reason is not None and selected.reuse_policy != "safe":
+        raise CloudGeneratedArtifactError(
+            f"Generated owner {owner} is noncacheable and cannot be force-recomputed"
+        )
+    cache_hit = False
+    inherited = False
+    artifact_receipt = None
+    identity = None
+    if selected.reuse_policy == "safe":
+        identity = _owner_identity(selected, specs, database)
+        artifact_dir = owner_cache_directory(_cache_root(cache_root), identity)
+        if force_reason is not None and not force_reason.strip():
+            raise CloudGeneratedArtifactError(
+                "Forced owner recomputation requires a nonempty reason"
+            )
+        if artifact_dir.exists() and force_reason is None:
+            artifact_receipt = restore_owner_artifact(
+                selected,
+                identity,
+                artifact_dir=artifact_dir,
+                root=ROOT,
+            )
+            cache_hit = True
+        else:
+            if affected_owners_json is not None:
+                try:
+                    affected = json.loads(affected_owners_json)
+                except json.JSONDecodeError as exc:
+                    raise CloudGeneratedArtifactError(
+                        "Affected-owner plan is not valid JSON"
+                    ) from exc
+                if not isinstance(affected, list) or not all(
+                    isinstance(item, str) for item in affected
+                ):
+                    raise CloudGeneratedArtifactError(
+                        "Affected-owner plan must be a JSON string list"
+                    )
+                inherited = owner not in affected
+            if force_reason is not None:
+                inherited = False
+            if not inherited:
+                _run(owner, command)
+            _run(f"check:{owner}", check_command(selected))
+            if artifact_dir.exists():
+                cached = read_owner_receipt(artifact_dir / "_owner_receipt.json")
+                regenerated = build_owner_receipt(selected, identity, root=ROOT)
+                if cached != regenerated:
+                    raise CloudGeneratedArtifactError(
+                        f"Forced owner recomputation contradicted immutable cache: {owner}"
+                    )
+                artifact_receipt = cached
+            else:
+                artifact_receipt = store_owner_artifact(
+                    selected,
+                    identity,
+                    artifact_dir=artifact_dir,
+                    root=ROOT,
+                )
+    else:
+        _run(owner, command)
+        _run(f"check:{owner}", check_command(selected))
+
+    if cache_hit:
+        _run(f"check:{owner}", check_command(selected))
 
     stage = _safe_stage_directory(stage_dir)
     _reset_stage_directory(stage)
@@ -180,17 +319,134 @@ def run_owner(owner: str, stage_dir: str, database: str | None) -> dict[str, Any
         "schema_version": SCHEMA_VERSION,
         "kind": "generated_owner",
         "owner": owner,
+        "cache_hit": cache_hit,
+        "execution": (
+            "forced"
+            if force_reason is not None
+            else "cache"
+            if cache_hit
+            else "inherited"
+            if inherited
+            else "generated"
+        ),
+        "force_reason": force_reason,
         "source_commit": _source_commit(),
         "source_tree_fingerprint": tracked_worktree_source_fingerprint(ROOT),
         "outputs": hashes,
+        "artifact_receipt": (
+            artifact_receipt.to_dict() if artifact_receipt is not None else None
+        ),
         **_snapshot_metadata(),
     }
     _write_json(stage / "_cloud" / "owners" / f"{owner}.json", receipt)
     return receipt
 
 
-def stage_bundle(stage_dir: str) -> dict[str, Any]:
+def plan(base_ref: str) -> dict[str, Any]:
+    result = affected_owner_plan(base_ref=base_ref, root=ROOT)
+    compact = {
+        "affected_owners": json.dumps(result["owners"], separators=(",", ":")),
+        "database_required": result["database_required"],
+        "earliest_owner": result["earliest_owner"] or "",
+    }
+    _write_github_outputs(compact)
+    return result
+
+
+def database_key() -> dict[str, Any]:
+    result = {
+        "database_fingerprint": database_builder_input_fingerprint(root=ROOT),
+    }
+    _write_github_outputs(result)
+    return result
+
+
+def validate_database(database: str) -> dict[str, Any]:
+    fingerprint = pinned_database_identity(Path(database), root=ROOT)
+    result = {"database_fingerprint": fingerprint}
+    _write_github_outputs(result)
+    return result
+
+
+def verify_compiler_identity(base_ref: str) -> dict[str, Any]:
+    result = compiler_identity_status(base_ref=base_ref, root=ROOT)
+    if not result["ok"]:
+        raise CloudGeneratedArtifactError(
+            "Semantic compiler inputs changed without a compiler or schema identity bump"
+        )
+    return result
+
+
+def _owner_receipt_inventory(
+    specs: Sequence[GeneratorSpec],
+    *,
+    required: bool,
+) -> dict[str, str]:
+    inventory: dict[str, str] = {}
+    receipt_root = ROOT / "_cloud" / "owners"
+    source_commit = _source_commit()
+    for spec in specs:
+        if spec.reuse_policy != "safe":
+            continue
+        path = receipt_root / f"{spec.id}.json"
+        if not path.is_file():
+            if required:
+                raise CloudGeneratedArtifactError(
+                    f"Assembled bundle is missing owner receipt: {spec.id}"
+                )
+            continue
+        try:
+            envelope = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise CloudGeneratedArtifactError(
+                f"Assembled bundle owner receipt is malformed: {spec.id}"
+            ) from exc
+        if (
+            not isinstance(envelope, Mapping)
+            or envelope.get("schema_version") != SCHEMA_VERSION
+            or envelope.get("kind") != "generated_owner"
+            or envelope.get("owner") != spec.id
+            or envelope.get("source_commit") != source_commit
+        ):
+            raise CloudGeneratedArtifactError(
+                f"Assembled bundle owner receipt is stale: {spec.id}"
+            )
+        raw_artifact = envelope.get("artifact_receipt")
+        if not isinstance(raw_artifact, Mapping):
+            raise CloudGeneratedArtifactError(
+                f"Assembled bundle has no reusable artifact receipt: {spec.id}"
+            )
+        artifact = OwnerArtifactReceipt.from_dict(raw_artifact)
+        if artifact.owner != spec.id or {
+            relative for relative, _raw, _blob in artifact.outputs
+        } != set(spec.outputs):
+            raise CloudGeneratedArtifactError(
+                f"Assembled bundle owner receipt has the wrong outputs: {spec.id}"
+            )
+        for relative, raw_hash, blob_oid in artifact.outputs:
+            output = ROOT / relative
+            if (
+                not output.is_file()
+                or _sha256(output) != raw_hash
+                or _git_blob_oid(output, relative) != blob_oid
+            ):
+                raise CloudGeneratedArtifactError(
+                    f"Assembled bundle output contradicts its owner receipt: {relative}"
+                )
+        inventory[spec.id] = artifact.input_fingerprint
+    return inventory
+
+
+def stage_bundle(
+    stage_dir: str,
+    *,
+    require_owner_receipts: bool = False,
+) -> dict[str, Any]:
     specs = load_manifest()
+    owner_fingerprints = _owner_receipt_inventory(
+        specs,
+        required=require_owner_receipts,
+    )
     stage = _safe_stage_directory(stage_dir)
     _reset_stage_directory(stage)
     hashes = _copy_outputs(all_outputs(specs), stage)
@@ -201,6 +457,7 @@ def stage_bundle(stage_dir: str) -> dict[str, Any]:
         "source_tree_fingerprint": tracked_worktree_source_fingerprint(ROOT),
         "generator_count": len(specs),
         "output_count": len(hashes),
+        "owner_input_fingerprints": owner_fingerprints,
         "outputs": hashes,
         **_snapshot_metadata(),
     }
@@ -290,9 +547,29 @@ def main() -> int:
     owner.add_argument("--owner", required=True)
     owner.add_argument("--stage-dir", required=True)
     owner.add_argument("--db")
+    owner.add_argument("--cache-root")
+    owner.add_argument("--affected-owners-json")
+    owner.add_argument("--force-reason")
+
+    key = subparsers.add_parser("owner-key")
+    key.add_argument("--owner", required=True)
+    key.add_argument("--db")
+    key.add_argument("--cache-root")
+
+    plan_parser = subparsers.add_parser("plan")
+    plan_parser.add_argument("--base-ref", required=True)
+
+    subparsers.add_parser("database-key")
+
+    validate_database_parser = subparsers.add_parser("validate-database")
+    validate_database_parser.add_argument("--db", required=True)
+
+    compiler_identity = subparsers.add_parser("verify-compiler-identity")
+    compiler_identity.add_argument("--base-ref", required=True)
 
     bundle = subparsers.add_parser("stage-bundle")
     bundle.add_argument("--stage-dir", required=True)
+    bundle.add_argument("--require-owner-receipts", action="store_true")
 
     install = subparsers.add_parser("install-bundle")
     install.add_argument("--bundle-dir", required=True)
@@ -301,12 +578,37 @@ def main() -> int:
     args = parser.parse_args()
     try:
         if args.command == "run-owner":
-            result = run_owner(args.owner, args.stage_dir, args.db)
+            result = run_owner(
+                args.owner,
+                args.stage_dir,
+                args.db,
+                args.cache_root,
+                args.affected_owners_json,
+                args.force_reason,
+            )
+        elif args.command == "owner-key":
+            result = owner_key(args.owner, args.db, args.cache_root)
+        elif args.command == "plan":
+            result = plan(args.base_ref)
+        elif args.command == "database-key":
+            result = database_key()
+        elif args.command == "validate-database":
+            result = validate_database(args.db)
+        elif args.command == "verify-compiler-identity":
+            result = verify_compiler_identity(args.base_ref)
         elif args.command == "stage-bundle":
-            result = stage_bundle(args.stage_dir)
+            result = stage_bundle(
+                args.stage_dir,
+                require_owner_receipts=args.require_owner_receipts,
+            )
         else:
             result = install_bundle(args.bundle_dir, args.expected_commit)
-    except (CloudGeneratedArtifactError, OSError, ValueError) as exc:
+    except (
+        CloudGeneratedArtifactError,
+        GeneratedOwnerCacheError,
+        OSError,
+        ValueError,
+    ) as exc:
         print(json.dumps({"ok": False, "error": str(exc)}, indent=2))
         return 1
     print(json.dumps(result, indent=2, sort_keys=True))

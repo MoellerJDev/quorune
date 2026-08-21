@@ -1,6 +1,9 @@
 name: Cloud generated artifacts
 
 on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened]
   push:
     branches: ["main"]
   workflow_dispatch:
@@ -25,14 +28,45 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       source_sha: ${{ steps.source.outputs.source_sha }}
+      base_sha: ${{ steps.source.outputs.base_sha }}
+      affected_owners: ${{ steps.owners.outputs.affected_owners }}
+      database_required: ${{ steps.owners.outputs.database_required }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.sha }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - id: source
         name: Pin exact source commit
-        run: echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BASE_SHA: ${{ github.event.before }}
+        run: |
+          echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "base_sha=$PR_BASE_SHA" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "push" && -n "$PUSH_BASE_SHA" ]]; then
+            echo "base_sha=$PUSH_BASE_SHA" >> "$GITHUB_OUTPUT"
+          else
+            echo "base_sha=$(git rev-parse HEAD^)" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+          cache: pip
+      - name: Install pre-corpus validation dependencies
+        run: python -m pip install -e . -r requirements-dev.txt
+      - id: owners
+        name: Resolve affected generated owners
+        run: >-
+          python scripts/cloud_generated_artifacts.py plan
+          --base-ref "${{ steps.source.outputs.base_sha }}"
+      - name: Require cheap sentinels before any corpus census
+        run: >-
+          python scripts/quick_gate.py
+          --phase pre-corpus
+          --base "${{ steps.source.outputs.base_sha }}"
 
   database:
     name: Generated cloud / Pinned card database
@@ -47,19 +81,53 @@ jobs:
           python-version: "3.12"
           architecture: x64
           cache: pip
-      - uses: actions/cache@v4
-        with:
-          path: local/cloud-generated/bulk
-          key: pinned-card-bulk-${{ hashFiles('rules/manifest.json') }}
       - name: Install generation dependencies
         run: python -m pip install -e . -r requirements-dev.txt
+      - id: database-key
+        name: Resolve governed database input identity
+        run: python scripts/cloud_generated_artifacts.py database-key
+      - id: database-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/cloud-pinned.sqlite3
+            local/cloud-generated/bulk
+          key: pinned-card-database-v1-${{ steps.database-key.outputs.database_fingerprint }}
+      - id: remote-database
+        if: steps.database-cache.outputs.cache-hit != 'true'
+        name: Find cross-commit pinned database artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: pinned-card-database-v1-${{ steps.database-key.outputs.database_fingerprint }}
+        run: |
+          run_id=$(python scripts/find_reusable_workflow_artifact.py --name "$ARTIFACT_NAME")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - if: steps.remote-database.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: pinned-card-database-v1-${{ steps.database-key.outputs.database_fingerprint }}
+          path: data
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.remote-database.outputs.run_id }}
       - name: Rebuild exact manifest-pinned database
+        if: steps.database-cache.outputs.cache-hit != 'true' && steps.remote-database.outputs.run_id == ''
         run: >-
           python scripts/bootstrap_data.py
           --from-rules-manifest
           --rules-manifest rules/manifest.json
           --output data/cloud-pinned.sqlite3
           --download-dir local/cloud-generated/bulk
+      - name: Validate cached or rebuilt database provenance
+        run: >-
+          python scripts/cloud_generated_artifacts.py validate-database
+          --db data/cloud-pinned.sqlite3
+      - if: steps.database-cache.outputs.cache-hit != 'true' && steps.remote-database.outputs.run_id == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinned-card-database-v1-${{ steps.database-key.outputs.database_fingerprint }}
+          path: data/cloud-pinned.sqlite3
+          if-no-files-found: error
+          retention-days: 30
       - name: Stage database artifact with repository-relative path
         run: |
           mkdir -p local/cloud-database/data
@@ -99,11 +167,45 @@ jobs:
           cache: pip
       - name: Install generation dependencies
         run: python -m pip install -e . -r requirements-dev.txt
+      - id: owner-key
+        name: Resolve owner input fingerprint
+        run: >-
+          python scripts/cloud_generated_artifacts.py owner-key
+          --owner "${{ matrix.owner }}"
+      - id: owner-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          key: generated-owner-v1-${{ matrix.owner }}-${{ steps.owner-key.outputs.owner_fingerprint }}
+      - id: remote-cache
+        if: steps.owner-cache.outputs.cache-hit != 'true'
+        name: Find cross-commit owner artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: generated-owner-cache-v1-${{ matrix.owner }}-${{ steps.owner-key.outputs.owner_fingerprint }}
+        run: |
+          run_id=$(python scripts/find_reusable_workflow_artifact.py --name "$ARTIFACT_NAME")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - if: steps.remote-cache.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-owner-cache-v1-${{ matrix.owner }}-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.remote-cache.outputs.run_id }}
       - name: Generate and stage one owned output set
         run: >-
           python scripts/cloud_generated_artifacts.py run-owner
           --owner "${{ matrix.owner }}"
           --stage-dir "local/cloud-stage/${{ matrix.owner }}"
+          --affected-owners-json '${{ needs.plan.outputs.affected_owners }}'
+      - if: steps.owner-cache.outputs.cache-hit != 'true' && steps.remote-cache.outputs.run_id == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-owner-cache-v1-${{ matrix.owner }}-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-owner-foundation-${{ matrix.owner }}-${{ github.run_id }}
@@ -138,12 +240,47 @@ jobs:
         with:
           name: cloud-database-${{ github.run_id }}
           path: .
+      - id: owner-key
+        name: Resolve corpus input fingerprint
+        run: >-
+          python scripts/cloud_generated_artifacts.py owner-key
+          --owner compiler-corpus-coverage
+          --db data/cloud-pinned.sqlite3
+      - id: owner-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          key: generated-owner-v1-compiler-corpus-coverage-${{ steps.owner-key.outputs.owner_fingerprint }}
+      - id: remote-cache
+        if: steps.owner-cache.outputs.cache-hit != 'true'
+        name: Find cross-commit corpus artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: generated-owner-cache-v1-compiler-corpus-coverage-${{ steps.owner-key.outputs.owner_fingerprint }}
+        run: |
+          run_id=$(python scripts/find_reusable_workflow_artifact.py --name "$ARTIFACT_NAME")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - if: steps.remote-cache.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-owner-cache-v1-compiler-corpus-coverage-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.remote-cache.outputs.run_id }}
       - name: Generate compiler and CardProgram censuses
         run: >-
           python scripts/cloud_generated_artifacts.py run-owner
           --owner compiler-corpus-coverage
           --db data/cloud-pinned.sqlite3
           --stage-dir local/cloud-stage/compiler-corpus-coverage
+          --affected-owners-json '${{ needs.plan.outputs.affected_owners }}'
+      - if: steps.owner-cache.outputs.cache-hit != 'true' && steps.remote-cache.outputs.run_id == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-owner-cache-v1-compiler-corpus-coverage-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-owner-corpus-${{ github.run_id }}
@@ -187,12 +324,48 @@ jobs:
         with:
           name: cloud-database-${{ github.run_id }}
           path: .
+      - id: owner-key
+        name: Resolve fan-out owner input fingerprint
+        run: >-
+          python scripts/cloud_generated_artifacts.py owner-key
+          --owner "${{ matrix.owner }}"
+          --db "${{ matrix.owner == 'card-unlock-frontier' && 'data/cloud-pinned.sqlite3' || '' }}"
+      - id: owner-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          key: generated-owner-v1-${{ matrix.owner }}-${{ steps.owner-key.outputs.owner_fingerprint }}
+      - id: remote-cache
+        if: steps.owner-cache.outputs.cache-hit != 'true'
+        name: Find cross-commit owner artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: generated-owner-cache-v1-${{ matrix.owner }}-${{ steps.owner-key.outputs.owner_fingerprint }}
+        run: |
+          run_id=$(python scripts/find_reusable_workflow_artifact.py --name "$ARTIFACT_NAME")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - if: steps.remote-cache.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-owner-cache-v1-${{ matrix.owner }}-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.remote-cache.outputs.run_id }}
       - name: Generate independent post-corpus owner
+        id: generate-owner
         run: >-
           python scripts/cloud_generated_artifacts.py run-owner
           --owner "${{ matrix.owner }}"
-          --db data/cloud-pinned.sqlite3
+          --db "${{ matrix.owner == 'card-unlock-frontier' && 'data/cloud-pinned.sqlite3' || '' }}"
           --stage-dir "local/cloud-stage/${{ matrix.owner }}"
+          --affected-owners-json '${{ needs.plan.outputs.affected_owners }}'
+      - if: steps.owner-cache.outputs.cache-hit != 'true' && steps.remote-cache.outputs.run_id == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-owner-cache-v1-${{ matrix.owner }}-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-owner-fanout-${{ matrix.owner }}-${{ github.run_id }}
@@ -223,11 +396,45 @@ jobs:
           pattern: cloud-owner-*-${{ github.run_id }}
           path: .
           merge-multiple: true
+      - id: owner-key
+        name: Resolve architecture owner input fingerprint
+        run: >-
+          python scripts/cloud_generated_artifacts.py owner-key
+          --owner architecture-audit
+      - id: owner-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          key: generated-owner-v1-architecture-audit-${{ steps.owner-key.outputs.owner_fingerprint }}
+      - id: remote-cache
+        if: steps.owner-cache.outputs.cache-hit != 'true'
+        name: Find cross-commit architecture artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: generated-owner-cache-v1-architecture-audit-${{ steps.owner-key.outputs.owner_fingerprint }}
+        run: |
+          run_id=$(python scripts/find_reusable_workflow_artifact.py --name "$ARTIFACT_NAME")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - if: steps.remote-cache.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-owner-cache-v1-architecture-audit-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.remote-cache.outputs.run_id }}
       - name: Generate architecture owner
         run: >-
           python scripts/cloud_generated_artifacts.py run-owner
           --owner architecture-audit
           --stage-dir local/cloud-stage/architecture-audit
+          --affected-owners-json '${{ needs.plan.outputs.affected_owners }}'
+      - if: steps.owner-cache.outputs.cache-hit != 'true' && steps.remote-cache.outputs.run_id == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-owner-cache-v1-architecture-audit-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-owner-architecture-${{ github.run_id }}
@@ -262,12 +469,47 @@ jobs:
         with:
           name: cloud-database-${{ github.run_id }}
           path: .
+      - id: owner-key
+        name: Resolve reusable owner input fingerprint
+        run: >-
+          python scripts/cloud_generated_artifacts.py owner-key
+          --owner reusable-pieces
+          --db data/cloud-pinned.sqlite3
+      - id: owner-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          key: generated-owner-v1-reusable-pieces-${{ steps.owner-key.outputs.owner_fingerprint }}
+      - id: remote-cache
+        if: steps.owner-cache.outputs.cache-hit != 'true'
+        name: Find cross-commit reusable artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: generated-owner-cache-v1-reusable-pieces-${{ steps.owner-key.outputs.owner_fingerprint }}
+        run: |
+          run_id=$(python scripts/find_reusable_workflow_artifact.py --name "$ARTIFACT_NAME")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - if: steps.remote-cache.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-owner-cache-v1-reusable-pieces-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.remote-cache.outputs.run_id }}
       - name: Generate reusable-piece corpus and interactions
         run: >-
           python scripts/cloud_generated_artifacts.py run-owner
           --owner reusable-pieces
           --db data/cloud-pinned.sqlite3
           --stage-dir local/cloud-stage/reusable-pieces
+          --affected-owners-json '${{ needs.plan.outputs.affected_owners }}'
+      - if: steps.owner-cache.outputs.cache-hit != 'true' && steps.remote-cache.outputs.run_id == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-owner-cache-v1-reusable-pieces-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-owner-reusable-${{ github.run_id }}
@@ -298,11 +540,45 @@ jobs:
           pattern: cloud-owner-*-${{ github.run_id }}
           path: .
           merge-multiple: true
+      - id: owner-key
+        name: Resolve compact owner input fingerprint
+        run: >-
+          python scripts/cloud_generated_artifacts.py owner-key
+          --owner compact-ci-card-dependencies
+      - id: owner-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          key: generated-owner-v1-compact-ci-card-dependencies-${{ steps.owner-key.outputs.owner_fingerprint }}
+      - id: remote-cache
+        if: steps.owner-cache.outputs.cache-hit != 'true'
+        name: Find cross-commit compact artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: generated-owner-cache-v1-compact-ci-card-dependencies-${{ steps.owner-key.outputs.owner_fingerprint }}
+        run: |
+          run_id=$(python scripts/find_reusable_workflow_artifact.py --name "$ARTIFACT_NAME")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - if: steps.remote-cache.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-owner-cache-v1-compact-ci-card-dependencies-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.remote-cache.outputs.run_id }}
       - name: Generate compact dependency closure
         run: >-
           python scripts/cloud_generated_artifacts.py run-owner
           --owner compact-ci-card-dependencies
           --stage-dir local/cloud-stage/compact-ci-card-dependencies
+          --affected-owners-json '${{ needs.plan.outputs.affected_owners }}'
+      - if: steps.owner-cache.outputs.cache-hit != 'true' && steps.remote-cache.outputs.run_id == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-owner-cache-v1-compact-ci-card-dependencies-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-owner-compact-${{ github.run_id }}
@@ -333,11 +609,45 @@ jobs:
           pattern: cloud-owner-*-${{ github.run_id }}
           path: .
           merge-multiple: true
+      - id: owner-key
+        name: Resolve scheduler owner input fingerprint
+        run: >-
+          python scripts/cloud_generated_artifacts.py owner-key
+          --owner rules-scheduler
+      - id: owner-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          key: generated-owner-v1-rules-scheduler-${{ steps.owner-key.outputs.owner_fingerprint }}
+      - id: remote-cache
+        if: steps.owner-cache.outputs.cache-hit != 'true'
+        name: Find cross-commit scheduler artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: generated-owner-cache-v1-rules-scheduler-${{ steps.owner-key.outputs.owner_fingerprint }}
+        run: |
+          run_id=$(python scripts/find_reusable_workflow_artifact.py --name "$ARTIFACT_NAME")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - if: steps.remote-cache.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-owner-cache-v1-rules-scheduler-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.remote-cache.outputs.run_id }}
       - name: Generate cross-program rules queue
         run: >-
           python scripts/cloud_generated_artifacts.py run-owner
           --owner rules-scheduler
           --stage-dir local/cloud-stage/rules-scheduler
+          --affected-owners-json '${{ needs.plan.outputs.affected_owners }}'
+      - if: steps.owner-cache.outputs.cache-hit != 'true' && steps.remote-cache.outputs.run_id == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-owner-cache-v1-rules-scheduler-${{ steps.owner-key.outputs.owner_fingerprint }}
+          path: ${{ steps.owner-key.outputs.cache_path }}
+          if-no-files-found: error
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-owner-scheduler-${{ github.run_id }}
@@ -379,12 +689,13 @@ jobs:
       - id: finalize
         name: Finalize assembled generated fixed point
         continue-on-error: true
-        run: python scripts/finalize_generated.py --write
+        run: python scripts/finalize_generated.py --assemble
       - name: Stage complete downloadable bundle
         if: always()
         run: >-
           python scripts/cloud_generated_artifacts.py stage-bundle
           --stage-dir local/cloud-stage/bundle
+          --require-owner-receipts
       - name: Upload complete generated artifact bundle
         if: always()
         uses: actions/upload-artifact@v4
