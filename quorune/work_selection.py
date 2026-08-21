@@ -250,7 +250,7 @@ def _validated_reviewed_history(
 
 
 def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
-    if int(policy.get("policy_version") or 0) != 2:
+    if int(policy.get("policy_version") or 0) != 3:
         raise WorkSelectionError("Unsupported work-selection policy")
     priority_classes, starting_uncovered = _validated_priority_policy(policy)
     coverage = _mapping(policy.get("coverage_family"), "coverage_family")
@@ -266,7 +266,7 @@ def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
         minimum_gain=int(validated_coverage["minimum_complete_card_gain"]),
     )
     return {
-        "policy_version": 2,
+        "policy_version": 3,
         "priority_classes": priority_classes,
         "starting_uncovered_high_risk_pairs": starting_uncovered,
         **validated_coverage,
@@ -563,8 +563,12 @@ def _architecture_candidates(
             universal_subsystem="commander_engine_compatibility_facade",
             compiler_readiness=_readiness("not_applicable", "architecture migration"),
             runtime_readiness=_readiness(
-                "partial" if grandfathered or card_named_count or card_specific_count else "complete",
-                "typed owners exist but legacy engine authority remains",
+                (
+                    "rolling_nonblocking"
+                    if grandfathered or card_named_count or card_specific_count
+                    else "complete"
+                ),
+                "typed owners exist; ordinary architecture debt is a rolling ratchet",
             ),
             assurance_readiness=_readiness(
                 "required",
@@ -573,9 +577,10 @@ def _architecture_candidates(
             estimated_effort="large",
             reranking_reason=(
                 f"{grandfathered} grandfathered engine writes, {card_named_count} card-named "
-                f"helpers, and {card_specific_count} card-specific operation branches remain."
+                f"helpers, and {card_specific_count} card-specific operation branches remain, "
+                "but no current correctness defect makes this foreground work."
             ),
-            eligible=bool(grandfathered or card_named_count or card_specific_count),
+            eligible=False,
             architecture_debt_removed={
                 "grandfathered_engine_writes": grandfathered,
                 "card_named_helpers": card_named_count,
@@ -812,11 +817,11 @@ def _fail_closed_foundation_candidates(
                 reranking_reason=(
                     f"{pair_count} applicable high-risk pairs touching up to "
                     f"{affected_cards} corpus cards are currently safe only because at "
-                    f"least one side, including {residual_id}, is rejected. Implement "
-                    "this shared boundary and replace eligible fail-closed edges with "
-                    "real behavioral tests."
+                    f"least one side, including {residual_id}, is rejected. Preserve this "
+                    "as implementation pressure, but covered fail-closed evidence alone "
+                    "does not block a measured broad harvest."
                 ),
-                eligible=True,
+                eligible=False,
                 priority_within_class=(
                     pair_count * 1_000_000
                     + affected_cards * 1_000
@@ -839,14 +844,24 @@ def _frontier_decision(
     *,
     candidate_id: str,
     complete_gain: int,
+    ability_gain: int,
+    lowerable_untrusted_abilities: int,
     sole_blockers: int,
     prerequisites: Sequence[str],
     effort: str,
     policy: Mapping[str, Any],
 ) -> tuple[str, bool, str]:
     excluded = effort in policy["excluded_efforts"]
-    structural = complete_gain == 0 or sole_blockers == 0
     broad = complete_gain >= int(policy["minimum_complete_card_gain"])
+    major_ability_harvest = bool(
+        ability_gain >= int(policy["minimum_exact_ability_gain"])
+        and lowerable_untrusted_abilities
+        >= int(policy["minimum_exact_ability_gain"])
+    )
+    structural = bool(
+        (complete_gain == 0 or sole_blockers == 0)
+        and not major_ability_harvest
+    )
     exceptions = {
         str(row["candidate_id"])
         for row in policy["approved_prerequisite_exceptions"]
@@ -883,6 +898,13 @@ def _frontier_decision(
             "Meets the normal measured complete-card harvest floor and remains "
             "behind higher-priority correctness gates.",
         )
+    if major_ability_harvest:
+        return (
+            "major_exact_ability_harvest",
+            True,
+            "Meets the measured major exact-ability floor with already lowered "
+            "untrusted nodes, so capability closure harvests one reusable boundary.",
+        )
     if exception_allowed:
         return (
             "approved_prerequisite_exception",
@@ -906,12 +928,17 @@ def _frontier_candidate(
     prerequisites = [str(value) for value in row.get("prerequisites", [])]
     complete_gain = int(row.get("expected_exact_card_gain") or 0)
     ability_gain = int(row.get("expected_exact_ability_gain") or 0)
+    lowerable_untrusted_abilities = int(
+        row.get("lowerable_untrusted_abilities") or 0
+    )
     residual_gain = int(row.get("expected_material_residual_gain") or 0)
     sole_blockers = int(row.get("sole_blocker_cards") or 0)
     effort = str(row.get("estimated_effort") or "unknown")
     readiness, eligible, reason = _frontier_decision(
         candidate_id=candidate_id,
         complete_gain=complete_gain,
+        ability_gain=ability_gain,
+        lowerable_untrusted_abilities=lowerable_untrusted_abilities,
         sole_blockers=sole_blockers,
         prerequisites=prerequisites,
         effort=effort,
@@ -1105,6 +1132,57 @@ def _rank_candidates(
     return selected
 
 
+def selected_work_candidate(
+    work_selection: Mapping[str, Any],
+) -> Mapping[str, Any] | None:
+    """Validate and return the selected candidate, including explicit none."""
+
+    if not isinstance(work_selection, Mapping):
+        raise WorkSelectionError("Work selection must be an object")
+    candidates = work_selection.get("candidates")
+    if not isinstance(candidates, list) or any(
+        not isinstance(candidate, Mapping) for candidate in candidates
+    ):
+        raise WorkSelectionError("Work-selection candidates must be objects")
+    eligible = [candidate for candidate in candidates if candidate.get("eligible") is True]
+    declared_count = work_selection.get("eligible_candidate_count")
+    if type(declared_count) is not int or declared_count != len(eligible):
+        raise WorkSelectionError(
+            "Work-selection eligible candidate count does not match candidates"
+        )
+    selected_id = work_selection.get("selected_candidate_id")
+    selected_rows = [
+        candidate
+        for candidate in candidates
+        if candidate.get("selection_state") == "selected"
+    ]
+    if selected_id is None:
+        if eligible or selected_rows:
+            raise WorkSelectionError(
+                "No selected candidate is valid only when none are eligible"
+            )
+        return None
+    if type(selected_id) is not str or not selected_id:
+        raise WorkSelectionError(
+            "Selected work candidate ID must be nonempty or null"
+        )
+    matches = [
+        candidate
+        for candidate in candidates
+        if candidate.get("candidate_id") == selected_id
+    ]
+    if (
+        len(matches) != 1
+        or matches[0].get("eligible") is not True
+        or matches[0].get("selection_state") != "selected"
+        or selected_rows != matches
+    ):
+        raise WorkSelectionError(
+            "Selected work candidate must name one eligible selected row"
+        )
+    return matches[0]
+
+
 def _source_fingerprints(inputs: Mapping[str, Any]) -> dict[str, str]:
     return {
         "architecture_audit": _hash(inputs["architecture_audit"]),
@@ -1198,4 +1276,5 @@ __all__ = [
     "WorkSelectionError",
     "build_work_selection",
     "load_work_selection_inputs",
+    "selected_work_candidate",
 ]

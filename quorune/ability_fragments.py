@@ -10,6 +10,7 @@ from .enchant_spec import (
     EnchantSpec,
     LinkedGraveyardCreatureEnchantSpec,
     SimpleEnchantSpec,
+    TypedEnchantSpec,
 )
 from .counter_maximums import (
     CounterMaximumError,
@@ -601,6 +602,7 @@ class ToxicSpec:
 
 StaticAbilityFragment: TypeAlias = (
     SimpleEnchantSpec
+    | TypedEnchantSpec
     | LinkedGraveyardCreatureEnchantSpec
     | ProtectionSpec
     | GrantedActivatedAbilitySpec
@@ -627,6 +629,8 @@ def ability_fragment_to_dict(
 ) -> dict[str, Any]:
     if isinstance(fragment, SimpleEnchantSpec):
         kind = "enchant"
+    elif isinstance(fragment, TypedEnchantSpec):
+        kind = "enchant_typed"
     elif isinstance(fragment, LinkedGraveyardCreatureEnchantSpec):
         kind = "enchant_linked_graveyard_creature"
     elif isinstance(fragment, ProtectionSpec):
@@ -686,6 +690,8 @@ def ability_fragment_from_dict(
         )
     if value["kind"] == "enchant":
         return SimpleEnchantSpec.from_dict(value["value"])
+    if value["kind"] == "enchant_typed":
+        return TypedEnchantSpec.from_dict(value["value"])
     if value["kind"] == "enchant_linked_graveyard_creature":
         return LinkedGraveyardCreatureEnchantSpec.from_dict(value["value"])
     if value["kind"] == "protection":
@@ -764,6 +770,7 @@ def canonical_ability_fragments(
             value,
             (
                 SimpleEnchantSpec,
+                TypedEnchantSpec,
                 LinkedGraveyardCreatureEnchantSpec,
                 ProtectionSpec,
                 GrantedActivatedAbilitySpec,
@@ -850,7 +857,11 @@ def enchant_specs(
         for fragment in fragments
         if isinstance(
             fragment,
-            (SimpleEnchantSpec, LinkedGraveyardCreatureEnchantSpec),
+            (
+                SimpleEnchantSpec,
+                TypedEnchantSpec,
+                LinkedGraveyardCreatureEnchantSpec,
+            ),
         )
     )
 

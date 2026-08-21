@@ -559,6 +559,11 @@ def attached_fixed_characteristics_handler(
     match = _ATTACHED_FIXED_CHARACTERISTICS.fullmatch(oracle_line.strip())
     if match is None:
         return None
+    subject_types_all = (
+        ["land"]
+        if match.group("subject").casefold() == "fortified land"
+        else ["creature"]
+    )
     body = match.group("body")
     type_operations: list[dict[str, Any]] = []
     add_abilities: tuple[str, ...] = ()
@@ -635,7 +640,10 @@ def attached_fixed_characteristics_handler(
             "handler_id": "continuous.attached.fixed-characteristics.v1",
             "schema_version": 1,
             "event": "characteristics.evaluate",
-            "condition": {"relation": "source_attached_object"},
+            "condition": {
+                "relation": "source_attached_object",
+                "types_all": subject_types_all,
+            },
             "modifier": {
                 "type_operations": type_operations,
                 "add_abilities": list(add_abilities),

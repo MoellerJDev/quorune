@@ -73,20 +73,6 @@
     },
     {
       "evidence_class": "interaction",
-      "assurance_kind": "fail_closed_runtime_admission",
-      "test_id": "test_residual_enchant_card_withholds_delayed_draw_runtime",
-      "piece_ids": [
-        "capability.zone.draw.library_to_hand",
-        "residual.target_or_choice.typed-enchant-restriction"
-      ],
-      "capability_ids": [
-        "zone.draw.library_to_hand"
-      ],
-      "interaction_order": 2,
-      "assertion": "Krovikan Plague may expose an independently exact delayed-draw leaf for analysis, but its unsupported Enchant restriction blocks Aura entry before mutation, trigger creation, or any private draw can occur."
-    },
-    {
-      "evidence_class": "interaction",
       "assurance_kind": "pair_derived",
       "test_id": "test_all_represented_restrictions_are_cumulative",
       "piece_ids": [
@@ -2069,6 +2055,120 @@
         ],
         "interaction_order": 2,
         "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_live_mixed_characteristic_legality_uses_effective_types",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "capability.continuous.attached.fixed_characteristics"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction",
+        "continuous.attached.fixed_characteristics"
+      ],
+      "interaction_order": 2,
+      "assertion": "The typed mixed-characteristic Aura attaches through its closed restriction while the shared attached-characteristic owner applies the exact +1/+1 result, then live effective type changes independently preserve or invalidate the relation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_typed_aura_and_delayed_draw_compose",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "capability.zone.draw.library_to_hand"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction",
+        "zone.draw.library_to_hand"
+      ],
+      "interaction_order": 2,
+      "assertion": "A typed non-Wall Aura remains reciprocally attached while its exact enter trigger schedules and resolves one next-turn private draw through the canonical draw owner."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_typed_enchant_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "residual.continuous_layer.affected-player-ordering"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction"
+      ],
+      "interaction_order": 2,
+      "assertion": "A typed Enchant restriction compiles exactly while the same witness retains unresolved continuous-layer semantics, so complete-card runtime admission remains incompatible before mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_typed_enchant_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "residual.continuous_layer.continuous-effect-layers-and-dependencies"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction"
+      ],
+      "interaction_order": 2,
+      "assertion": "A typed Enchant restriction compiles exactly while the same witness retains unresolved continuous-layer semantics, so complete-card runtime admission remains incompatible before mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_typed_enchant_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "residual.duration.until-end-of-turn"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction"
+      ],
+      "interaction_order": 2,
+      "assertion": "A typed Enchant restriction compiles exactly while the same witness retains an unresolved duration sibling, so complete-card runtime admission remains incompatible before mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_typed_enchant_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "residual.static_clause.broader-evasion-and-group-constraints"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction"
+      ],
+      "interaction_order": 2,
+      "assertion": "A typed Enchant restriction compiles exactly while the same witness retains an unresolved declaration sibling, so complete-card runtime admission remains incompatible before mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_typed_enchant_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "residual.static_clause.conditional-declaration-predicates"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction"
+      ],
+      "interaction_order": 2,
+      "assertion": "A typed Enchant restriction compiles exactly while the same witness retains an unresolved declaration sibling, so complete-card runtime admission remains incompatible before mutation."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_typed_enchant_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "residual.static_clause.temporary-declaration-restrictions"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction"
+      ],
+      "interaction_order": 2,
+      "assertion": "A typed Enchant restriction compiles exactly while the same witness retains an unresolved declaration sibling, so complete-card runtime admission remains incompatible before mutation."
     },
     {
         "evidence_class": "interaction",

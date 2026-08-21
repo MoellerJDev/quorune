@@ -6677,13 +6677,13 @@ class CommanderEngine(
     ) -> bool | None:
         if attachment.attached_to is None:
             return False
+        if "aura" in subtypes:
+            return simple_aura_attachment_is_legal(self, attachment)
         target = self.state.cards.get(attachment.attached_to)
         if target is None or target.zone == "outside":
             return False
 
         schema: dict[str, Any] | None
-        if "aura" in subtypes:
-            return simple_aura_attachment_is_legal(self, attachment)
         if "equipment" in subtypes:
             schema = {
                 "zones": ["battlefield"],
@@ -6887,7 +6887,11 @@ class CommanderEngine(
         ]
 
     def _detach_permanent(self, card: CardInstance) -> None:
-        detach_object(self.state.cards, card)
+        detach_object(
+            self.state.cards,
+            card,
+            players=self.state.players,
+        )
 
     def _legend_groups(self) -> list[tuple[str, str, list[str]]]:
         groups: dict[tuple[str, str], list[str]] = {}

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping, Sequence
 
-from .grammar import parse_simple_enchant_line
+from .grammar import parse_enchant_line
 
 
 def keyword_target_schema(
@@ -13,7 +13,7 @@ def keyword_target_schema(
 
     if tuple(mechanics) != ("enchant",):
         return None
-    spec = parse_simple_enchant_line(material_line)
+    spec = parse_enchant_line(material_line)
     return spec.target_schema() if spec is not None else None
 
 

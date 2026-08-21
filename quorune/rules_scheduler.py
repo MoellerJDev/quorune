@@ -14,6 +14,7 @@ from .work_selection import (
     WorkSelectionError,
     build_work_selection,
     load_work_selection_inputs,
+    selected_work_candidate,
 )
 
 
@@ -712,12 +713,14 @@ def load_rules_dependency_queue(root: str | Path) -> dict[str, Any]:
     if int(value.get("schema_version") or 0) != RULES_SCHEDULER_SCHEMA_VERSION:
         raise RulesSchedulerError("Unsupported generated rules scheduler schema")
     work_selection = value.get("work_selection")
-    if not isinstance(work_selection, Mapping) or not work_selection.get(
-        "selected_candidate_id"
-    ):
+    if not isinstance(work_selection, Mapping):
         raise RulesSchedulerError(
             "Generated rules queue lacks cross-program work selection"
         )
+    try:
+        selected_work_candidate(work_selection)
+    except WorkSelectionError as exc:
+        raise RulesSchedulerError(str(exc)) from exc
     fingerprint = str(value.get("fingerprint") or "")
     unsigned = dict(value)
     unsigned.pop("fingerprint", None)

@@ -19,6 +19,7 @@ from .ability_fragments import (
     DECLARATION_REQUIREMENT_FRAGMENT_HANDLER_ID,
     DECLARATION_RESTRICTION_FRAGMENT_HANDLER_ID,
     ENCHANT_FRAGMENT_HANDLER_ID,
+    TYPED_ENCHANT_FRAGMENT_HANDLER_ID,
     EXALTED_FRAGMENT_HANDLER_ID,
     FLANKING_FRAGMENT_HANDLER_ID,
     MELEE_FRAGMENT_HANDLER_ID,
@@ -31,6 +32,7 @@ from .ability_fragments import (
     ExaltedAbilityFragmentHandler,
     FlankingAbilityFragmentHandler,
     MeleeAbilityFragmentHandler,
+    TypedEnchantAbilityFragmentHandler,
     default_ability_fragment_registry,
     fragments_from_descriptors,
 )
@@ -616,6 +618,7 @@ __all__ = [
     "runtime_component_registry_fingerprint",
     "validate_runtime_handler_descriptors",
     "ENCHANT_FRAGMENT_HANDLER_ID",
+    "TYPED_ENCHANT_FRAGMENT_HANDLER_ID",
     "BATTLE_CRY_FRAGMENT_HANDLER_ID",
     "BUSHIDO_FRAGMENT_HANDLER_ID",
     "DECLARATION_COST_FRAGMENT_HANDLER_ID",
@@ -633,5 +636,6 @@ __all__ = [
     "ExaltedAbilityFragmentHandler",
     "FlankingAbilityFragmentHandler",
     "MeleeAbilityFragmentHandler",
+    "TypedEnchantAbilityFragmentHandler",
     "fragments_from_descriptors",
 ]

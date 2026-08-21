@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-20T14:45:07Z",
+  "observed_at": "2026-08-21T09:13:04Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -429,6 +429,54 @@
       ],
       "impact_edge_status": "not_applicable",
       "resolution": "The exact contract trace now includes CR 202.3. The existing quick-gate policy already selects test_semantic_handlers for mechanic-contract changes; focused preparation for future contract rule-reference edits now runs the named trace method rather than relying on the full affected shard."
+    },
+    {
+      "id": "ci-20260821-30",
+      "run_id": 32455588984,
+      "head_sha": "ca8696a88b84ae0906ebde57fee9d2579e7ee958",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "The recalibrated selector correctly produced no eligible candidate after typed Enchant assurance returned to zero, but the generated Markdown writer assumed selected_candidate_id always named a candidate and raised StopIteration.",
+      "failed_surfaces": ["generated-artifacts:rules-scheduler"],
+      "regressions": ["test_rules_scheduler.RulesSchedulerTests.test_scheduler_markdown_represents_no_eligible_candidate"],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The rules-queue writer now renders an explicit no-selection state and explanation when every serious candidate is deferred or complete. The cloud workflow already selected and failed in the exact rules-scheduler owner, so the correction adds a direct formatter regression rather than a new impact edge."
+    },
+    {
+      "id": "ci-20260821-31",
+      "run_id": 32457286832,
+      "head_sha": "94eebe51d89e7845bd8e1f41ebf38c957688ace9",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "After the Markdown writer accepted an explicit empty selection, final rules verification independently treated the same selected_candidate_id null value as a missing cross-program work-selection payload.",
+      "failed_surfaces": ["generated-artifacts:verify-and-bundle"],
+      "regressions": ["test_rules_scheduler.RulesSchedulerTests.test_work_selection_selected_candidate_contract_handles_none"],
+      "impact_edge_status": "not_applicable",
+      "resolution": "One shared work-selection validator now owns selected-row integrity for the loader, rules verifier, next-work query, and Markdown writer. It accepts null only when the declared and observed eligible counts are zero and rejects missing, ineligible, multiply selected, or inconsistent rows, preventing a third consumer-specific assumption."
+    },
+    {
+      "id": "ci-20260821-32",
+      "run_id": 32462525986,
+      "head_sha": "af39dc4942463b158025c768f232b3cd9598eb67",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "The generated queue, Markdown writer, rules verifier, and next-work API all accepted the explicit empty selection, but an older governance assertion still unconditionally subscripted the API's selected_work null result.",
+      "failed_surfaces": ["generated-validation"],
+      "regressions": ["test_rules_scheduler.RulesSchedulerTests.test_selected_batch_is_dependency_ready_and_cli_next_uses_it"],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The governance regression now branches on the shared selector contract: zero eligible candidates require selected_work null, while a selected ID must match the compact selected row and reusable-piece count. A repository-wide selected_work and selected_candidate_id audit found no other unconditional production or test consumer; generated validation was already selected on the exact head."
+    },
+    {
+      "id": "ci-20260821-33",
+      "run_id": 32466017485,
+      "head_sha": "877555edf4df915b7be0dbf9f6356dd5e73ffaed",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "Typed graveyard-card Enchant promotion shadowed Animate Dead's specialized linked transition descriptor after reanimation, while the delayed-draw suite still asserted that Krovikan Plague's formerly unsupported Enchant restriction blocked Aura entry.",
+      "failed_surfaces": ["triggers-turns-exact-decks"],
+      "regressions": ["test_exact_zimone_closure.ExactZimoneClosureTests.test_animate_dead_reanimates_attaches_modifies_power_and_sacrifices_on_leave", "test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_partial_enchant_card_keeps_cardprogram_admission_fail_closed", "test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose"],
+      "impact_edge_status": "not_applicable",
+      "resolution": "A trusted specialized linked graveyard-Aura descriptor now takes precedence over the ordinary printed target restriction when both exist, preserving the cast target and post-reanimation legal domain. Krovikan Plague now proves complete CardProgram admission remains fail-closed because of its activated residuals, while the obsolete typed-Enchant residual pair declaration is removed and positive Aura/delayed-draw composition owns that promoted edge. The existing compiler and trigger impact paths already selected the failing shard."
     }
   ],
   "recent_pull_requests": [

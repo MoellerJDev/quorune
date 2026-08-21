@@ -8,6 +8,7 @@ from typing import Any, Callable, Iterable, Mapping
 from .carddb import CardDatabase
 from .characteristic_evaluation import evaluate_card_characteristics
 from .choice_forms import build_action_form
+from .attachments import attachment_target_ref
 from .commander import commander_damage_source
 from .continuous_effect_state import active_resolution_effects
 from .counter_state import player_counter_snapshot
@@ -369,8 +370,14 @@ class StateProjector:
         if card.controller != card.owner:
             obj["ctl"] = card.controller
         if card.attached_to:
-            attached = self.state.cards.get(card.attached_to)
-            obj["at"] = attached.ref if attached else card.attached_to
+            obj["at"] = (
+                attachment_target_ref(
+                    self.state.cards,
+                    self.state.players,
+                    card,
+                )
+                or card.attached_to
+            )
         if card.attacking:
             obj["atk"] = card.attacking
         if card.goaded_by:

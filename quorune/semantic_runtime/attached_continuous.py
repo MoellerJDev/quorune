@@ -26,6 +26,7 @@ _TYPE_FIELDS = frozenset({"supertypes", "card_types", "subtypes"})
 
 @dataclass(frozen=True, slots=True)
 class AttachedFixedCharacteristicsNode:
+    subject_types_all: tuple[str, ...]
     type_operations: tuple[ContinuousOperation, ...]
     add_abilities: tuple[str, ...]
     remove_abilities: tuple[str, ...]
@@ -162,10 +163,33 @@ class AttachedFixedCharacteristicsHandler:
         condition = descriptor["condition"]
         if not isinstance(condition, Mapping):
             raise SemanticNodeError("runtime handler condition must be an object")
-        exact_fields(condition, {"relation"}, field="runtime handler condition")
+        if set(condition) not in (
+            {"relation"},
+            {"relation", "types_all"},
+        ):
+            raise SemanticNodeError(
+                "runtime handler condition has missing or unknown fields"
+            )
         if condition["relation"] != "source_attached_object":
             raise SemanticNodeError(
                 "attached characteristics require source_attached_object"
+            )
+
+        raw_subject_types = condition.get("types_all", [])
+        if not isinstance(raw_subject_types, list) or any(
+            type(value) is not str
+            or value.casefold() not in {"creature", "land"}
+            for value in raw_subject_types
+        ):
+            raise SemanticNodeError(
+                "attached characteristic subject types must be creature or land"
+            )
+        subject_types_all = tuple(
+            sorted(value.casefold() for value in raw_subject_types)
+        )
+        if len(subject_types_all) != len(set(subject_types_all)):
+            raise SemanticNodeError(
+                "attached characteristic subject types must be unique"
             )
 
         modifier = descriptor["modifier"]
@@ -191,6 +215,7 @@ class AttachedFixedCharacteristicsHandler:
                 "attached power/toughness modifiers must be integers"
             )
         node = AttachedFixedCharacteristicsNode(
+            subject_types_all=subject_types_all,
             type_operations=_type_operations(modifier["type_operations"]),
             add_abilities=_ability_values(
                 modifier["add_abilities"], field="modifier.add_abilities"
@@ -233,7 +258,10 @@ class AttachedFixedCharacteristicsHandler:
             "origin": ContinuousEffectOrigin.STATIC_ABILITY,
             "relation": ContinuousEffectRelation.SOURCE_ATTACHED_TO_OBJECT,
             "related_object": context.attached_object,
-            "applies": ObjectQuerySpec(zones=("battlefield",)),
+            "applies": ObjectQuerySpec(
+                zones=("battlefield",),
+                types_all=node.subject_types_all,
+            ),
         }
         effects: list[ContinuousEffect] = []
         if node.type_operations:

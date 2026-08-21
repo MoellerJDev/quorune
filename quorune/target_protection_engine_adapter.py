@@ -85,7 +85,23 @@ def target_protection_verdict_for_row(
     return target_protection_verdict(snapshot)
 
 
+def player_protection_allows_attachment(
+    host: TargetProtectionEngineQuery,
+    seat: str,
+) -> bool:
+    """Apply represented player Protection to live attachment legality."""
+
+    player = host.state.players.get(seat)
+    return bool(
+        player is not None
+        and not player.stats.get(
+            "protection_from_everything_until_next_turn"
+        )
+    )
+
+
 __all__ = [
     "TargetProtectionEngineQuery",
+    "player_protection_allows_attachment",
     "target_protection_verdict_for_row",
 ]

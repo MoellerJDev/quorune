@@ -13,7 +13,12 @@ import random
 from typing import Any, Iterable, Mapping, Sequence
 
 from . import control_history
-from .attachments import attach_objects, clear_object_attachment_relations, take_pending_attachment
+from .attachments import (
+    attach_objects,
+    attachment_target_ref,
+    clear_object_attachment_relations,
+    take_pending_attachment,
+)
 from .aura import commit_aura_zone_move, preflight_aura_zone_move
 from .entry_counters import (
     capture_prospective_entry_characteristics,
@@ -153,7 +158,11 @@ class ZoneTransitionOwner:
         card.world_supertype_timestamp = None
         if card.is_token and origin == "battlefield" and destination != "battlefield":
             card.has_left_battlefield = True
-        clear_object_attachment_relations(self.state.cards, card)
+        clear_object_attachment_relations(
+            self.state.cards,
+            card,
+            players=self.state.players,
+        )
         reset_card_after_zone_change(
             card,
             destination=destination,
@@ -383,10 +392,10 @@ class ZoneTransitionOwner:
             for attachment_id in card.attachments
             if attachment_id in self.state.cards
         )
-        attached_to = (
-            self.state.cards[card.attached_to].ref
-            if card.attached_to in self.state.cards
-            else None
+        attached_to = attachment_target_ref(
+            self.state.cards,
+            self.state.players,
+            card,
         )
         characteristics = (
             copy.deepcopy(self.host._effective_card_data(card))
@@ -518,6 +527,7 @@ class ZoneTransitionOwner:
                     card,
                     target,
                     source_timestamp=self.next_timestamp(),
+                    players=self.state.players,
                 )
         if card.face_down:
             card.known_to = sorted({*card.known_to, card.controller})
@@ -866,10 +876,10 @@ class ZoneTransitionOwner:
                     for attachment_id in card.attachments
                     if attachment_id in self.state.cards
                 ),
-                attached_to=(
-                    self.state.cards[card.attached_to].ref
-                    if card.attached_to in self.state.cards
-                    else None
+                attached_to=attachment_target_ref(
+                    self.state.cards,
+                    self.state.players,
+                    card,
                 ),
                 trigger_sources=source_snapshot,
             ),

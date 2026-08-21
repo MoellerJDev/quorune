@@ -28,10 +28,20 @@ def keyword_mechanics(
 ) -> tuple[str, ...] | None:
     """Recognize a complete Oracle line made only of printed keywords."""
 
-    parts = [part.strip() for part in text.rstrip(".").split(",")]
+    known = {keyword.casefold() for keyword in card_keywords}
+    material = text.rstrip(".").strip()
+    if "enchant" in known and re.fullmatch(
+        r"enchant\s+.+",
+        material,
+        re.IGNORECASE,
+    ):
+        # Commas inside an Enchant restriction separate target alternatives,
+        # not sibling printed keyword abilities. The typed Aura grammar owns
+        # the complete restriction after this structural classification.
+        return ("enchant",)
+    parts = [part.strip() for part in material.split(",")]
     if not parts:
         return None
-    known = {keyword.casefold() for keyword in card_keywords}
     mechanics: list[str] = []
     for part in parts:
         lower = part.casefold()

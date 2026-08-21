@@ -3,12 +3,15 @@
 from .grammar import (
     is_enchant_keyword_line,
     is_aura_type_line,
+    enchant_spec_from_oracle,
+    parse_enchant_line,
     parse_simple_enchant_line,
     simple_enchant_spec_from_oracle,
 )
 from .compiler import keyword_target_schema
 from .model import (
     AuraControllerRelation,
+    AuraEnchantSubject,
     AuraEntryChoiceRequired,
     AuraEntryOutcome,
     AuraEntryPlan,
@@ -17,6 +20,7 @@ from .model import (
     EnchantSpec,
     LinkedGraveyardCreatureEnchantSpec,
     SimpleEnchantSpec,
+    TypedEnchantSpec,
     enchant_spec_from_dict,
     enchant_spec_to_dict,
 )
@@ -37,6 +41,7 @@ from .decisions import (
 
 __all__ = [
     "AuraControllerRelation",
+    "AuraEnchantSubject",
     "AuraEntryChoiceRequired",
     "AuraEntryOutcome",
     "AuraEntryPlan",
@@ -46,10 +51,12 @@ __all__ = [
     "EnchantSpec",
     "LinkedGraveyardCreatureEnchantSpec",
     "SimpleEnchantSpec",
+    "TypedEnchantSpec",
     "commit_aura_entry_attachment",
     "commit_aura_zone_move",
     "complete_aura_entry_choice",
     "enchant_spec_from_dict",
+    "enchant_spec_from_oracle",
     "enchant_spec_to_dict",
     "aura_resolution_move_kwargs",
     "is_aura_type_line",
@@ -57,6 +64,7 @@ __all__ = [
     "legal_aura_target_refs",
     "keyword_target_schema",
     "parse_simple_enchant_line",
+    "parse_enchant_line",
     "prepare_aura_entry",
     "preflight_aura_zone_move",
     "issue_aura_entry_choice",

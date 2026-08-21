@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "206e42be47dfcdc6011d3dde4c52c9184b9c5e0725d21ca522d802ba1129585e",
-  "declaration_source_fingerprint": "d86be07226732f9032fb7af5c45ddf1e1cffb53f1148f47f745c8db83b90ff6e",
+  "registry_fingerprint": "17e71b5f0e78238f05685a0c5bd2784ed74230b8195a35c383824b82194ff0e9",
+  "declaration_source_fingerprint": "180c53bd57c2a889049695d569a29cb4698b97fd00abee19f021ac07052de6c9",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -2573,6 +2573,314 @@
         "commander_review"
       ],
       "applicability_note": "Replay the seat-scoped entry selection and exact reciprocal attachment."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_live_mixed_characteristic_legality_uses_effective_types",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Recheck the shared current effective type/subtype snapshot as one attached target changes from creature to Vehicle and then to an illegal Food."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_departure_makes_attached_aura_illegal",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Make a formerly active player ineligible, move the attached Aura by state-based action, and clear the reciprocal player relation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_protection_makes_attached_aura_illegal",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Re-evaluate represented player Protection from everything, move the now-illegal Aura by state-based action, and clear the reciprocal relation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Attach one typed non-Wall Aura, schedule and resolve its exact next-turn private draw, and preserve the reciprocal relation through the draw transaction."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_opponent_player_aura_is_four_player_seat_scoped",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Enumerate exactly the three active opposing seats for an Enchant opponent Aura in four-player Commander."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_typed_enchant_target_form_mutant_is_killed",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Kill removal of mixed type/subtype alternative matching from the canonical target-characteristic query."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "negative",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_dynamic_and_malformed_typed_enchant_forms_fail_closed",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject numeric, modified, attached, keyword-negative, nonbasic, unknown-subject, conflicting, and malformed restriction values before runtime mutation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_graveyard_card_aura_attachment_clears_on_zone_change",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Target and enchant a public creature card in a graveyard, then clear both halves of the relation when that card changes zones."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_nonspell_player_aura_entry_uses_seat_choice",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suspend nonspell Aura entry on one server-issued seat choice, restore the typed continuation, revalidate the selected player, and commit the reciprocal relation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_aura_cast_attachment_projection_and_replay",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Cast and resolve a player Aura through the ordinary target and stack path, then retain one reciprocal player attachment."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_typed_enchant_compiler_closes_representative_family",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower representative restrictions from every supported subject and predicate category to one exact source-spanned typed handler and capability dependency."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_typed_enchant_grammar_and_fragments_are_closed",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Normalize, serialize, restore, and match the closed player, graveyard-card, type, subtype, supertype, color, commander, controller, and mixed characteristic restriction forms."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_aura_cast_attachment_projection_and_replay",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project the public attached seat to both principals without exposing authoritative object IDs or the internal player-target encoding."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "replay",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_aura_cast_attachment_projection_and_replay",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Checkpoint and replay the reciprocal player attachment and principal-safe public projection exactly."
     },
     {
       "capability_id": "attachment.equip.fixed_mana",
@@ -11310,6 +11618,29 @@
         "commander_review"
       ],
       "applicability_note": "Pin the widened continuous-component registry with a typed characteristic checkpoint and replay the following command exactly."
+    },
+    {
+      "capability_id": "continuous.attached.fixed_characteristics",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attached_static_characteristics.AttachedContinuousModelTests.test_attached_subject_type_is_rechecked_before_modifier_layers",
+      "official_rule_ids": [
+        "301.5",
+        "303.4",
+        "604.1",
+        "611.3a",
+        "611.3b",
+        "613.1d",
+        "613.1f",
+        "613.1g",
+        "613.6",
+        "701.3c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Re-evaluate the printed enchanted-creature or fortified-land subject after type layers and before applying layer-6 or layer-7 modifiers; retain the source-pinned legacy descriptor path for replay."
     },
     {
       "capability_id": "continuous.attached.fixed_characteristics",
@@ -37745,6 +38076,28 @@
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
       "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Attach one typed non-Wall Aura, schedule and resolve its exact next-turn private draw, and preserve the reciprocal relation through the draw transaction."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "interaction",
       "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner",
       "official_rule_ids": [
         "121.1",
@@ -37855,7 +38208,7 @@
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
       "evidence_class": "negative",
-      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_residual_enchant_card_withholds_delayed_draw_runtime",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_partial_enchant_card_keeps_cardprogram_admission_fail_closed",
       "official_rule_ids": [
         "121.1",
         "503.1",
@@ -37872,7 +38225,7 @@
         "commander_duel",
         "commander_review"
       ],
-      "applicability_note": "Withhold Krovikan Plague's delayed draw because its unsupported Enchant restriction prevents authoritative Aura entry and trigger creation."
+      "applicability_note": "Keep Krovikan Plague's complete CardProgram unresolved and incompatible at runtime admission while its typed Enchant and delayed-draw leaves are independently exact."
     },
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
@@ -42415,5 +42768,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "ab82b3397478c0adedd2b4bf7038149fbe3a8c4af58d589ce2f13bf92772e482"
+  "fingerprint": "8805b55b64079c313cc6f3a8303ff48eb94e1a63051934b2673ce6f04cea1089"
 }

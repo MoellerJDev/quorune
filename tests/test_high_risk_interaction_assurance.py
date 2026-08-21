@@ -7,6 +7,7 @@ from high_risk_interaction_support import (
     ALL_HIGH_RISK_BOUNDARY_PAIRS,
     DESTROY_DAMAGE_PREVENTION_PAIR,
     TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS,
+    TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS,
     assert_high_risk_boundary_pairs,
 )
 from quorune.carddb import CardDatabase
@@ -24,10 +25,20 @@ class HighRiskInteractionAssuranceTests(unittest.TestCase):
     def test_all_declared_residual_pairs_fail_closed_at_runtime_boundary(
         self,
     ) -> None:
-        self.assertEqual(99, len(ALL_HIGH_RISK_BOUNDARY_PAIRS))
+        self.assertEqual(105, len(ALL_HIGH_RISK_BOUNDARY_PAIRS))
         assert_high_risk_boundary_pairs(
             self,
             ALL_HIGH_RISK_BOUNDARY_PAIRS,
+            database=self.db,
+        )
+
+    def test_typed_enchant_residual_pairs_fail_closed_at_runtime_boundary(
+        self,
+    ) -> None:
+        self.assertEqual(6, len(TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS))
+        assert_high_risk_boundary_pairs(
+            self,
+            TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS,
             database=self.db,
         )
 

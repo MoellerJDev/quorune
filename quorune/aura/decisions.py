@@ -5,7 +5,15 @@ from dataclasses import dataclass
 from typing import Any, Mapping, Protocol, Sequence
 
 from ..replacement.immutable import FrozenMap, freeze_value, thaw_value
-from .model import AuraEntryChoiceRequired, AuraRuleError
+from .model import (
+    AuraEnchantSubject,
+    AuraEntryChoiceRequired,
+    AuraRuleError,
+    SimpleEnchantSpec,
+    TypedEnchantSpec,
+    enchant_spec_from_dict,
+    enchant_spec_to_dict,
+)
 from .runtime import legal_aura_target_refs
 
 
@@ -184,6 +192,10 @@ def issue_aura_entry_choice(
     required: AuraEntryChoiceRequired,
 ) -> None:
     plan = required.plan
+    player_subject = bool(
+        isinstance(plan.spec, TypedEnchantSpec)
+        and plan.spec.subject is AuraEnchantSubject.PLAYER
+    )
     frame = host._semantic_frame(
         item,
         instruction_pointer=instruction_pointer,
@@ -198,7 +210,7 @@ def issue_aura_entry_choice(
             plan.controller: {
                 "stack": item.ref,
                 "aura": host.state.cards[plan.source_object_id].ref,
-                "prompt": "Choose a legal object for this Aura to enchant.",
+                "prompt": "Choose a legal subject for this Aura to enchant.",
                 "target_schema": {
                     **plan.spec.target_schema(),
                     "legal_refs": list(plan.legal_target_refs),
@@ -209,10 +221,20 @@ def issue_aura_entry_choice(
                         "action": "choose",
                         "choice_schema": {
                             "aura_target": {
-                                "type": "object_ref",
+                                "type": "seat" if player_subject else "object_ref",
                                 "required": True,
-                                "legal_refs": list(
-                                    plan.legal_target_refs
+                                **(
+                                    {
+                                        "legal_seats": list(
+                                            plan.legal_target_refs
+                                        )
+                                    }
+                                    if player_subject
+                                    else {
+                                        "legal_refs": list(
+                                            plan.legal_target_refs
+                                        )
+                                    }
                                 ),
                             }
                         },
@@ -234,7 +256,11 @@ def issue_aura_entry_choice(
             "note": note,
             "instruction_pointer": instruction_pointer,
             "semantic_frame": frame,
-            "spec": plan.spec.to_dict(),
+            "spec": (
+                plan.spec.to_dict()
+                if isinstance(plan.spec, SimpleEnchantSpec)
+                else enchant_spec_to_dict(plan.spec)
+            ),
             "advertised_targets": list(plan.legal_target_refs),
         },
     )
@@ -249,13 +275,16 @@ def complete_aura_entry_choice(
     *,
     error_type: type[Exception],
 ) -> None:
-    from .model import SimpleEnchantSpec
-
     try:
         restored = AuraEntryContinuation.from_dict(
             decision.continuation
         )
-        spec = SimpleEnchantSpec.from_dict(thaw_value(restored.spec))
+        raw_spec = thaw_value(restored.spec)
+        spec = (
+            enchant_spec_from_dict(raw_spec)
+            if set(raw_spec) == {"kind", "value"}
+            else SimpleEnchantSpec.from_dict(raw_spec)
+        )
     except AuraRuleError as exc:
         raise error_type(str(exc)) from exc
     item = next(

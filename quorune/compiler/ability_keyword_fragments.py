@@ -13,7 +13,7 @@ from ..ability_fragments import (
     ability_fragment_to_dict,
     parse_protection_line,
 )
-from ..aura import parse_simple_enchant_line
+from ..aura import parse_enchant_line
 from ..cast_timing import CastTimingPermission, PRINTED_FLASH_MECHANIC
 from ..renown import RENOWN_MECHANIC_ID, RenownSpec
 from ..trigger_participation import WardSpec
@@ -148,6 +148,34 @@ def _lower_storm_fragment(
     )
 
 
+def _lower_enchant_fragment(
+    material_line: str,
+) -> AbilityKeywordFragmentLowering:
+    enchant_spec = parse_enchant_line(material_line)
+    if enchant_spec is None:
+        return AbilityKeywordFragmentLowering(
+            residual_kind="unsupported_enchant_restriction",
+            residual_reason=(
+                "Enchant restriction is outside the closed typed grammar"
+            ),
+            residual_blockers=("typed Enchant restriction",),
+        )
+    return AbilityKeywordFragmentLowering(
+        handlers=(
+            {
+                "handler_id": (
+                    "ability.static.enchant.typed.v2"
+                    if enchant_spec.schema_version == 2
+                    else "ability.static.enchant.v1"
+                ),
+                "schema_version": 1,
+                "event": "continuous",
+                "fragment": ability_fragment_to_dict(enchant_spec),
+            },
+        )
+    )
+
+
 def lower_ability_keyword_fragments(
     material_line: str,
     mechanics: tuple[str, ...],
@@ -167,26 +195,7 @@ def lower_ability_keyword_fragments(
         )
 
     if mechanics == ("enchant",):
-        enchant_spec = parse_simple_enchant_line(material_line)
-        if enchant_spec is None:
-            return AbilityKeywordFragmentLowering(
-                residual_kind="unsupported_enchant_restriction",
-                residual_reason=(
-                    "Enchant restriction is outside the closed typed "
-                    "battlefield-object grammar"
-                ),
-                residual_blockers=("typed Enchant restriction",),
-            )
-        return AbilityKeywordFragmentLowering(
-            handlers=(
-                {
-                    "handler_id": "ability.static.enchant.v1",
-                    "schema_version": 1,
-                    "event": "continuous",
-                    "fragment": ability_fragment_to_dict(enchant_spec),
-                },
-            )
-        )
+        return _lower_enchant_fragment(material_line)
     if mechanics == (TOXIC_ABILITY_FRAGMENT_KIND,):
         return _lower_toxic_fragment(material_line)
     cascade = _lower_cascade_fragment(material_line, mechanics)

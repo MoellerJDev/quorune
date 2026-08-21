@@ -21,7 +21,9 @@ from quorune.work_selection import (
     WorkSelectionError,
     build_work_selection,
     load_work_selection_inputs,
+    selected_work_candidate,
 )
+from scripts.update_rules_scheduler import _compact_markdown
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -260,23 +262,32 @@ class RulesSchedulerTests(unittest.TestCase):
             selected["rule_ids"],
             [rule["rule_id"] for rule in next_batch["next"]],
         )
-        self.assertEqual(
-            self.queue["work_selection"]["selected_candidate_id"],
-            next_batch["selected_work"]["candidate_id"],
-        )
-        self.assertNotIn(
-            "reusable_piece_ids", next_batch["selected_work"]
-        )
-        selected_work = next(
-            candidate
-            for candidate in self.queue["work_selection"]["candidates"]
-            if candidate["candidate_id"]
-            == self.queue["work_selection"]["selected_candidate_id"]
-        )
-        self.assertEqual(
-            len(selected_work["reusable_piece_ids"]),
-            next_batch["selected_work"]["reusable_piece_count"],
-        )
+        selected_work_id = self.queue["work_selection"][
+            "selected_candidate_id"
+        ]
+        if selected_work_id is None:
+            self.assertEqual(
+                0,
+                self.queue["work_selection"]["eligible_candidate_count"],
+            )
+            self.assertIsNone(next_batch["selected_work"])
+        else:
+            self.assertEqual(
+                selected_work_id,
+                next_batch["selected_work"]["candidate_id"],
+            )
+            self.assertNotIn(
+                "reusable_piece_ids", next_batch["selected_work"]
+            )
+            selected_work = next(
+                candidate
+                for candidate in self.queue["work_selection"]["candidates"]
+                if candidate["candidate_id"] == selected_work_id
+            )
+            self.assertEqual(
+                len(selected_work["reusable_piece_ids"]),
+                next_batch["selected_work"]["reusable_piece_count"],
+            )
         self.assertIn("queue", CORPUS_OPERATIONS)
         self.assertEqual(
             self.queue["fingerprint"],
@@ -621,11 +632,32 @@ class RulesSchedulerTests(unittest.TestCase):
         self.assertEqual(0, calibration["observed_card_gain_absolute_error"])
         self.assertEqual(0, calibration["consecutive_subthreshold_harvests"])
 
-    def test_fail_closed_high_risk_pairs_create_implementation_pressure(self):
+    def test_covered_fail_closed_pressure_does_not_block_major_ability_harvest(self):
+        inputs = deepcopy(self.work_inputs)
+        reviewed_comparisons = _reviewed_frontier_comparisons(inputs)
+        inputs["card_unlock_frontier"]["family_candidates"] = [
+            {
+                "family_id": "effect_clause:major-ability-fixture",
+                "base_family": "effect_clause:major-ability-fixture",
+                "expected_exact_card_gain": 0,
+                "estimated_effort": "large",
+                "prerequisites": [],
+                "runtime_compiler_readiness": "missing_lowering",
+                "affected_cards": 108,
+                "sole_blocker_cards": 0,
+                "one_additional_blocker_cards": 20,
+                "two_additional_blocker_cards": 40,
+                "expected_exact_ability_gain": 108,
+                "expected_material_residual_gain": 108,
+                "lowerable_untrusted_abilities": 108,
+                "interaction_risk": "medium",
+            },
+            *reviewed_comparisons,
+        ]
         work = build_work_selection(
             selected_batch=self.queue["selected_batch"],
             policy=self.catalog["work_selection"],
-            inputs=self.work_inputs,
+            inputs=inputs,
         )
         candidates = [
             candidate
@@ -639,36 +671,53 @@ class RulesSchedulerTests(unittest.TestCase):
             for candidate in work["candidates"]
             if candidate["candidate_id"] == work["selected_candidate_id"]
         )
-
-        self.assertEqual(21, len(candidates))
-        self.assertEqual(
-            137,
-            sum(
-                row.get("high_risk") is True
-                and "fail_closed_runtime_admission"
-                in row.get("evidence_assurance_kinds", [])
-                for row in self.work_inputs[
-                    "reusable_piece_interactions"
-                ]["pairs"]
-            ),
-        )
-        self.assertEqual(
-            "interaction-implementation:residual.replacement."
-            "replacement-applicability",
-            selected["candidate_id"],
-        )
-        self.assertEqual("rules_foundation", selected["candidate_class"])
-        self.assertEqual(
-            "safe_but_unimplemented",
-            selected["runtime_readiness"]["status"],
-        )
-        self.assertEqual(
-            41,
-            selected["interaction_debt_introduced"][
+        pressure = max(
+            candidates,
+            key=lambda candidate: candidate["interaction_debt_introduced"][
                 "high_risk_fail_closed_pair_incidence"
             ],
         )
-        self.assertIn("real behavioral tests", selected["reranking_reason"])
+
+        self.assertTrue(candidates)
+        self.assertEqual(
+            "frontier:effect_clause:major-ability-fixture",
+            selected["candidate_id"],
+        )
+        self.assertEqual("compiler_harvest", selected["candidate_class"])
+        self.assertEqual(
+            "major_exact_ability_harvest",
+            selected["runtime_readiness"]["status"],
+        )
+        self.assertEqual(108, selected["expected_exact_ability_gain"])
+        self.assertGreaterEqual(
+            selected["expected_exact_ability_gain"],
+            self.catalog["work_selection"]["coverage_family"][
+                "minimum_exact_ability_gain"
+            ],
+        )
+        self.assertFalse(pressure["eligible"])
+        self.assertEqual(
+            "safe_but_unimplemented",
+            pressure["runtime_readiness"]["status"],
+        )
+        self.assertGreater(
+            pressure["interaction_debt_introduced"][
+                "high_risk_fail_closed_pair_incidence"
+            ],
+            0,
+        )
+        self.assertIn("does not block", pressure["reranking_reason"])
+        architecture = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"]
+            == "architecture:engine-mutation-and-specificity-debt"
+        )
+        self.assertFalse(architecture["eligible"])
+        self.assertEqual(
+            "rolling_nonblocking",
+            architecture["runtime_readiness"]["status"],
+        )
 
     def test_structural_frontier_volume_cannot_become_foreground(self):
         inputs = _with_dependency_ready_compiler_harvest(self.work_inputs)
@@ -711,6 +760,47 @@ class RulesSchedulerTests(unittest.TestCase):
             "frontier:effect_clause:fixture-harvest",
             work["selected_candidate_id"],
         )
+
+    def test_scheduler_markdown_represents_no_eligible_candidate(self):
+        queue = deepcopy(self.queue)
+        work = queue["work_selection"]
+        work["selected_candidate_id"] = None
+        work["eligible_candidate_count"] = 0
+        for candidate in work["candidates"]:
+            candidate["eligible"] = False
+            if candidate["selection_state"] == "selected":
+                candidate["selection_state"] = "blocked"
+        markdown = _compact_markdown(queue)
+        self.assertIn("Selected cross-program work: `none`", markdown)
+        self.assertIn("Selected work class: `none`", markdown)
+        self.assertIn("No serious candidate currently meets", markdown)
+
+    def test_work_selection_selected_candidate_contract_handles_none(self):
+        work = deepcopy(self.queue["work_selection"])
+        work["selected_candidate_id"] = None
+        for candidate in work["candidates"]:
+            candidate["eligible"] = False
+            if candidate["selection_state"] == "selected":
+                candidate["selection_state"] = "blocked"
+        work["eligible_candidate_count"] = 0
+        self.assertIsNone(selected_work_candidate(work))
+
+        eligible = deepcopy(work)
+        eligible["candidates"][0]["eligible"] = True
+        eligible["eligible_candidate_count"] = 1
+        with self.assertRaisesRegex(
+            WorkSelectionError,
+            "none are eligible",
+        ):
+            selected_work_candidate(eligible)
+
+        missing = deepcopy(self.queue["work_selection"])
+        missing["selected_candidate_id"] = "fixture:missing"
+        with self.assertRaisesRegex(
+            WorkSelectionError,
+            "one eligible selected row",
+        ):
+            selected_work_candidate(missing)
 
     def test_runtime_text_candidates_are_split_by_declared_subsystem(self):
         work = self.queue["work_selection"]

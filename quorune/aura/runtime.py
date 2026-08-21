@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Iterable, Mapping, Protocol
 
-from ..attachments import attach_objects
+from ..attachments import (
+    attach_objects,
+    attach_to_player,
+    attachment_target_ref,
+)
 from ..model import CardInstance
 from ..protection import (
     ProtectionSource,
@@ -10,6 +14,9 @@ from ..protection import (
     protection_verdict,
 )
 from ..targets import TargetGroup
+from ..target_protection_engine_adapter import (
+    player_protection_allows_attachment,
+)
 from ..util import unique_preserving_order
 from .grammar import is_aura_type_line
 from .model import (
@@ -20,6 +27,7 @@ from .model import (
     EnchantSpec,
     LinkedGraveyardCreatureEnchantSpec,
     SimpleEnchantSpec,
+    TypedEnchantSpec,
     AuraZoneMovePreflight,
     enchant_spec_from_dict,
 )
@@ -97,11 +105,20 @@ def legal_aura_target_refs(
     refs: list[str] = []
     for row in host._target_candidate_rows(controller, group):
         target = row.get("card")
-        if not isinstance(target, CardInstance):
+        if isinstance(target, CardInstance):
+            if target.object_id == aura.object_id or target.phased_out:
+                continue
+            if (
+                linked_target_id is not None
+                and target.object_id != linked_target_id
+            ):
+                continue
+        elif row.get("category") != "player":
             continue
-        if target.object_id == aura.object_id or target.phased_out:
-            continue
-        if linked_target_id is not None and target.object_id != linked_target_id:
+        elif not player_protection_allows_attachment(
+            host,
+            str(row["ref"]),
+        ):
             continue
         if not host._target_row_matches(
             controller,
@@ -111,9 +128,11 @@ def legal_aura_target_refs(
             as_target=as_target,
         ):
             continue
-        if not _protection_allows_attachment(host, aura, target):
+        if isinstance(target, CardInstance) and not _protection_allows_attachment(
+            host, aura, target
+        ):
             continue
-        refs.append(target.ref)
+        refs.append(str(row["ref"]))
     return tuple(unique_preserving_order(refs))
 
 
@@ -126,10 +145,14 @@ def simple_aura_attachment_is_legal(
     spec = host._compiled_enchant_spec(aura)
     if spec is None:
         return None
-    target = host.state.cards.get(aura.attached_to)
-    if target is None:
+    target_ref = attachment_target_ref(
+        host.state.cards,
+        host.state.players,
+        aura,
+    )
+    if target_ref is None:
         return False
-    return target.ref in legal_aura_target_refs(
+    return target_ref in legal_aura_target_refs(
         host,
         aura,
         spec,
@@ -149,7 +172,11 @@ def prepare_aura_entry(
 ) -> AuraEntryPlan:
     if not isinstance(
         spec,
-        (SimpleEnchantSpec, LinkedGraveyardCreatureEnchantSpec),
+        (
+            SimpleEnchantSpec,
+            TypedEnchantSpec,
+            LinkedGraveyardCreatureEnchantSpec,
+        ),
     ):
         raise AuraRuleError(
             "Aura entry requires one trusted compiled Enchant descriptor"
@@ -330,14 +357,28 @@ def commit_aura_entry_attachment(
         ),
         None,
     )
-    if target is None or target.ref not in plan.legal_target_refs:
-        raise AuraRuleError("Aura entry target left before attachment")
-    attach_objects(
-        host.state.cards,
-        aura,
-        target,
-        source_timestamp=host._next_zone_timestamp(),
-    )
+    if target is not None and target.ref in plan.legal_target_refs:
+        attach_objects(
+            host.state.cards,
+            aura,
+            target,
+            source_timestamp=host._next_zone_timestamp(),
+            players=host.state.players,
+        )
+        return
+    if (
+        plan.target_ref in host.state.players
+        and plan.target_ref in plan.legal_target_refs
+    ):
+        attach_to_player(
+            host.state.cards,
+            host.state.players,
+            aura,
+            plan.target_ref,
+            source_timestamp=host._next_zone_timestamp(),
+        )
+        return
+    raise AuraRuleError("Aura entry target left before attachment")
 
 
 __all__ = [

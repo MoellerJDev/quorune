@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "010770135bf2283af0f570489837911d52af79aa04bb05f11fbaa289dc56bcfc"
+verified: "3d3b9f917250b060e6f91fb0b4eacf35386b7ce0d1182ef49320c59e0d387309"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `d118f6683a0280a4aebde045c5709b9f3421f7bb0b86f12daa2c0989977c4e98`
+Source fingerprint: `d6656d48cdda02f6a79d692c1a5089aa92b220a35ae2ca152108e05567c82f5d`
 
 ## Current top-level state
 
@@ -20,8 +20,8 @@ Source fingerprint: `d118f6683a0280a4aebde045c5709b9f3421f7bb0b86f12daa2c0989977
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
-- Selected cross-program work: `interaction-implementation:residual.replacement.replacement-applicability`
-- Selected work class: `rules_foundation`
+- Selected cross-program work: `none`
+- Selected work class: `none`
 
 ## Cross-program work selection
 
@@ -31,38 +31,36 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 
 | Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |
 |---:|---|---|---|---:|---:|---:|---:|
-| 1 | selected | `interaction-implementation:residual.replacement.replacement-applicability` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 2 | deferred | `interaction-implementation:residual.replacement.self-replacement-and-prevention-ordering` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 3 | deferred | `interaction-implementation:residual.replacement.damage-prevention` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 4 | deferred | `interaction-implementation:residual.replacement.regeneration` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 5 | deferred | `interaction-implementation:residual.continuous_layer.affected-player-ordering` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 6 | deferred | `interaction-implementation:residual.continuous_layer.continuous-effect-layers-and-dependencies` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 7 | deferred | `interaction-implementation:residual.duration.until-end-of-turn` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 8 | deferred | `interaction-implementation:residual.target_or_choice.target-predicate` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 9 | deferred | `interaction-implementation:residual.target_or_choice.conditional-effect` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 10 | deferred | `interaction-implementation:residual.event_binding.intervening-if-and-reflexive-trigger-grammar` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 11 | deferred | `interaction-implementation:residual.event_binding.normalized-event-binding` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 12 | deferred | `interaction-implementation:residual.activated_cost.complete-alternate-additional-cost-grammar` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 13 | deferred | `interaction-implementation:residual.activated_cost.restricted-payment-predicates` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 14 | deferred | `interaction-implementation:residual.static_clause.broader-evasion-and-group-constraints` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 15 | deferred | `interaction-implementation:residual.static_clause.conditional-declaration-predicates` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 16 | deferred | `interaction-implementation:residual.static_clause.temporary-declaration-restrictions` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 17 | deferred | `interaction-implementation:residual.target_or_choice.multiple-targets` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 18 | deferred | `interaction-implementation:residual.target_or_choice.divided-damage-allocation` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 19 | deferred | `interaction-implementation:residual.target_or_choice.multiple-damage-recipients` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 20 | deferred | `interaction-implementation:residual.target_or_choice.random-outcome` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 21 | deferred | `interaction-implementation:residual.target_or_choice.typed-enchant-restriction` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 22 | deferred | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 54 |
-| 23 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
-| 24 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
-| 25 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
-| 26 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
-| 27 | blocked | `frontier:target_or_choice:typed-enchant-restriction` | `rules_foundation` | 5 | 111 | 0 | 0 |
-| 28 | blocked | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 29 | blocked | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 16 | 106 | 0 | 0 |
-| 30 | blocked | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 263 | 0 | 0 |
+| 1 | complete | `ci:compact-card-dependency-closure` | `ci_correctness` | 0 | 0 | 0 | 0 |
+| 2 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 0 | 0 | 0 | 0 |
+| 3 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 0 | 0 | 0 | 0 |
+| 4 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 0 | 0 | 0 | 0 |
+| 5 | blocked | `interaction-implementation:residual.replacement.replacement-applicability` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 6 | blocked | `interaction-implementation:residual.replacement.self-replacement-and-prevention-ordering` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 7 | blocked | `interaction-implementation:residual.replacement.damage-prevention` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 8 | blocked | `interaction-implementation:residual.continuous_layer.affected-player-ordering` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 9 | blocked | `interaction-implementation:residual.replacement.regeneration` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 10 | blocked | `interaction-implementation:residual.continuous_layer.continuous-effect-layers-and-dependencies` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 11 | blocked | `interaction-implementation:residual.duration.until-end-of-turn` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 12 | blocked | `interaction-implementation:residual.target_or_choice.target-predicate` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 13 | blocked | `interaction-implementation:residual.target_or_choice.conditional-effect` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 14 | blocked | `interaction-implementation:residual.event_binding.intervening-if-and-reflexive-trigger-grammar` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 15 | blocked | `interaction-implementation:residual.event_binding.normalized-event-binding` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 16 | blocked | `interaction-implementation:residual.static_clause.broader-evasion-and-group-constraints` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 17 | blocked | `interaction-implementation:residual.static_clause.conditional-declaration-predicates` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 18 | blocked | `interaction-implementation:residual.static_clause.temporary-declaration-restrictions` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 19 | blocked | `interaction-implementation:residual.activated_cost.complete-alternate-additional-cost-grammar` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 20 | blocked | `interaction-implementation:residual.activated_cost.restricted-payment-predicates` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 21 | blocked | `interaction-implementation:residual.target_or_choice.multiple-targets` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 22 | blocked | `interaction-implementation:residual.target_or_choice.divided-damage-allocation` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 23 | blocked | `interaction-implementation:residual.target_or_choice.multiple-damage-recipients` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 24 | blocked | `interaction-implementation:residual.target_or_choice.random-outcome` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 25 | blocked | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 26 | blocked | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 16 | 106 | 0 | 0 |
+| 27 | blocked | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 263 | 0 | 0 |
+| 28 | blocked | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 54 |
 
-Selected reason: 41 applicable high-risk pairs touching up to 1247 corpus cards are currently safe only because at least one side, including residual.replacement.replacement-applicability, is rejected. Implement this shared boundary and replace eligible fail-closed edges with real behavioral tests.
+Selected reason: No serious candidate currently meets the generated eligibility policy; retain visible deferred pressure and recompute after the next measured frontier classification.
 
 ## Top blockers
 

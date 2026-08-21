@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "ce951fba296d04209312c4d3f53b3f592c48ac02339e4820d2bdda12851e2929"
+verified: "68c5928b47648e70013cd003e41c40be017b38fb823a552eb5cfec28e4c3293f"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -62,5 +62,5 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Path of Mettle // Metzali, Tower of Triumph | 162 | 19 | 5 | 6 | 6 | 10 | `blocked` |
 | Aethersphere Harvester | 161 | 16 | 5 | 4 | 6 | 22 | `blocked` |
 | Covetous Castaway // Ghostly Castigator | 161 | 20 | 6 | 5 | 6 | 7 | `blocked` |
-| Invasion of Gobakhan // Lightshield Array | 161 | 13 | 5 | 4 | 9 | 19 | `blocked` |
-| Animate Dead | 103 | 13 | 4 | 3 | 3 | 5 | `blocked` |
+| Faithbound Judge // Sinner's Judgment | 161 | 20 | 5 | 7 | 6 | 1 | `blocked` |
+| Animate Dead | 110 | 13 | 4 | 3 | 2 | 5 | `blocked` |

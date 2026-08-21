@@ -351,6 +351,9 @@ class PlayerState:
             "outside": [],
         }
     )
+    # CR 303.4c/701.3 reciprocal player-attachment sources. Empty is omitted
+    # from Game Record v3 checkpoints for historical compatibility.
+    attachments: list[str] = field(default_factory=list)
     commander_casts: dict[str, int] = field(default_factory=dict)
     commander_damage_received: dict[str, int] = field(default_factory=dict)
     turns_begun: int = 0
@@ -396,6 +399,13 @@ class PlayerState:
                     )
                 normalized[name] = raw_amount
         self.counters = normalized
+        if any(
+            type(object_id) is not str or not object_id
+            for object_id in self.attachments
+        ) or len(self.attachments) != len(set(self.attachments)):
+            raise ValueError(
+                "Player attachment sources must be unique nonempty object IDs"
+            )
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
@@ -408,6 +418,8 @@ class PlayerState:
             # Preserve historical records until an upkeep boundary with a
             # nonzero timestamp has been observed.
             payload.pop("last_upkeep_timestamp")
+        if not self.attachments:
+            payload.pop("attachments")
         return payload
 
     @classmethod

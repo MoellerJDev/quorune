@@ -4,7 +4,8 @@ from dataclasses import dataclass
 import re
 from typing import Any, Iterable, Mapping, Sequence
 
-from ..aura import is_enchant_keyword_line, parse_simple_enchant_line
+from ..aura import is_enchant_keyword_line, parse_enchant_line
+from ..enchant_spec import TypedEnchantSpec
 from ..ability_fragments import parse_protection_line
 from ..death_return import PERSIST_KEYWORD, UNDYING_KEYWORD
 from ..rules.capabilities import (
@@ -177,6 +178,30 @@ def _spell_cast_trigger_dependency_gate(
     )
 
 
+def _enchant_dependency_gate(
+    material_line: str,
+    *,
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+) -> DependencyGate | None:
+    enchant_spec = parse_enchant_line(material_line)
+    if enchant_spec is not None:
+        return explicit_capability_gate(
+            (
+                "attachment.aura.typed_restriction"
+                if isinstance(enchant_spec, TypedEnchantSpec)
+                else "attachment.aura.simple_object"
+            ),
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+        )
+    if is_enchant_keyword_line(material_line):
+        # The keyword is structurally represented; its exact restriction
+        # remains one source-spanned residual from the Enchant compiler.
+        return DependencyGate(blockers=())
+    return None
+
+
 def keyword_dependency_gate(
     *,
     material_line: str,
@@ -275,16 +300,13 @@ def keyword_dependency_gate(
             capabilities=(f"counter.producer.{mechanic}",),
         )
     if mechanics == ("enchant",):
-        if parse_simple_enchant_line(material_line) is not None:
-            return explicit_capability_gate(
-                "attachment.aura.simple_object",
-                capability_registry=capability_registry,
-                capability_profile=capability_profile,
-            )
-        if is_enchant_keyword_line(material_line):
-            # The keyword is structurally represented; its exact restriction
-            # remains one source-spanned residual from the Enchant compiler.
-            return DependencyGate(blockers=())
+        enchant_gate = _enchant_dependency_gate(
+            material_line,
+            capability_registry=capability_registry,
+            capability_profile=capability_profile,
+        )
+        if enchant_gate is not None:
+            return enchant_gate
     protection_parts = tuple(
         part.strip()
         for part in material_line.rstrip(".").split(",")

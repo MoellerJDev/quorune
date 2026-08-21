@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "e85ab5d2f7c5826c651c8256b61c75070a13f0210c854f5e9042b88c1ca71805"
+verified: "c18f5826e158356bec3ece981cc97c25bd05110ce46d0618895fba72ac3c1c0d"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 29
-- Deterministic escapes: 24
+- Escapes: 33
+- Deterministic escapes: 28
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -55,6 +55,10 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260820-27` | [32379387144](https://github.com/NullPriority/quorune/actions/runs/32379387144) | `browser_integration` | `not_applicable` | The existing @mana-action impact edge already selected the journey. The driver now uses the bounded progress-aware multi-page pass loop before asserting the Bowmasters target choice and shares the 600-second hosted durability budget used by adjacent long serial journeys. |
 | `ci-20260820-28` | [32401690028](https://github.com/NullPriority/quorune/actions/runs/32401690028) | `source_correctness` | `not_applicable` | Every declaration now cites the capability's complete official-rule set and the source block follows canonical evidence-class order. The existing quick-gate impact already selects capability evidence; source-checkpoint preparation now runs update_capability_evidence.py --check and accepts only the expected stale-output result before cloud generation. |
 | `ci-20260820-29` | [32421690874](https://github.com/NullPriority/quorune/actions/runs/32421690874) | `missing_affected_test` | `not_applicable` | The exact contract trace now includes CR 202.3. The existing quick-gate policy already selects test_semantic_handlers for mechanic-contract changes; focused preparation for future contract rule-reference edits now runs the named trace method rather than relying on the full affected shard. |
+| `ci-20260821-30` | [32455588984](https://github.com/NullPriority/quorune/actions/runs/32455588984) | `source_correctness` | `not_applicable` | The rules-queue writer now renders an explicit no-selection state and explanation when every serious candidate is deferred or complete. The cloud workflow already selected and failed in the exact rules-scheduler owner, so the correction adds a direct formatter regression rather than a new impact edge. |
+| `ci-20260821-31` | [32457286832](https://github.com/NullPriority/quorune/actions/runs/32457286832) | `source_correctness` | `not_applicable` | One shared work-selection validator now owns selected-row integrity for the loader, rules verifier, next-work query, and Markdown writer. It accepts null only when the declared and observed eligible counts are zero and rejects missing, ineligible, multiply selected, or inconsistent rows, preventing a third consumer-specific assumption. |
+| `ci-20260821-32` | [32462525986](https://github.com/NullPriority/quorune/actions/runs/32462525986) | `source_correctness` | `not_applicable` | The governance regression now branches on the shared selector contract: zero eligible candidates require selected_work null, while a selected ID must match the compact selected row and reusable-piece count. A repository-wide selected_work and selected_candidate_id audit found no other unconditional production or test consumer; generated validation was already selected on the exact head. |
+| `ci-20260821-33` | [32466017485](https://github.com/NullPriority/quorune/actions/runs/32466017485) | `source_correctness` | `not_applicable` | A trusted specialized linked graveyard-Aura descriptor now takes precedence over the ordinary printed target restriction when both exist, preserving the cast target and post-reanimation legal domain. Krovikan Plague now proves complete CardProgram admission remains fail-closed because of its activated residuals, while the obsolete typed-Enchant residual pair declaration is removed and positive Aura/delayed-draw composition owns that promoted edge. The existing compiler and trigger impact paths already selected the failing shard. |
 
 ## Measurement limitations
 
