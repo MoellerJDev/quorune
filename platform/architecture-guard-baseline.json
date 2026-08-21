@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "414f7846fd57f8617bc6079d28e2866e3cc130be",
+  "baseline_commit": "c86e71e5f437a8bbcb7585b2b8e1a7d29dcfc5b4",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -1657,7 +1657,7 @@
   },
   "exception_binding": {
     "adr": "docs/adr/0079-typed-fixed-public-zone-moves.md",
-    "allowance_fingerprint": "1f8f51faa07f868982c62a8a49e46a6e9d0b1bababcadda4450a56d880ee8539",
+    "allowance_fingerprint": "537c013123026d88e05bd4d9be224286aff73059cf4588e202befe2e3aa6be4e",
     "exception_id": "ARCH-EXC-0041"
   },
   "legacy_card_specific_operations": [
@@ -1947,6 +1947,7 @@
     "exile_graveyard",
     "exile_opponent_graveyards",
     "exile_permanent",
+    "exile_public_graveyard_card",
     "explore",
     "extra_turn",
     "fabricate",
@@ -1974,6 +1975,7 @@
     "modify_stats_until_end_of_turn",
     "move",
     "move_if_in_zone",
+    "move_public_zone_set",
     "next_spell_improvise",
     "next_spell_uncounterable",
     "note",

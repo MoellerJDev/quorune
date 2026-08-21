@@ -939,7 +939,7 @@
       "exception_id": "ARCH-EXC-0041",
       "adr": "docs/adr/0079-typed-fixed-public-zone-moves.md",
       "artifact": "platform/architecture-guard-baseline.json",
-      "allowance_fingerprint": "1f8f51faa07f868982c62a8a49e46a6e9d0b1bababcadda4450a56d880ee8539",
+      "allowance_fingerprint": "537c013123026d88e05bd4d9be224286aff73059cf4588e202befe2e3aa6be4e",
       "exact_allowance": "Only the schema-4 structural state-write identities, owner classifications, zero prohibited runtime Oracle-text and card-identity dispatch counts, engine methods, size ceilings, Oracle-ID literals, legacy helpers, module classifications, and reviewed public-zone/Commander ownership serialized after typed fixed public-zone movement.",
       "rationale": "The measured major prerequisite adds strict public-graveyard target and fixed public-set operations plus CR 903.9 owner choices while retaining canonical zone-transition, replacement, trigger, projection, rollback, and replay owners. Direct and unowned GameState writes, Oracle-ID literals, runtime Oracle prose, and prohibited identity dispatch remain flat. The reviewed engine and existing integration-symbol growth is limited to routing typed Commander state choices and replacement snapshots.",
       "owner": "rules architecture maintainers",
