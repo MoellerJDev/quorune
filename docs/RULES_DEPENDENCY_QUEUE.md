@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "0328336543fbb840898ef42aa967e90a4da724670586fa60659c22b08af8655b"
+verified: "3d3b9f917250b060e6f91fb0b4eacf35386b7ce0d1182ef49320c59e0d387309"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `75a477f2f03df293bd6eb1e5578f66e1fc44f31f84baefa360f8b75c1920872e`
+Source fingerprint: `d6656d48cdda02f6a79d692c1a5089aa92b220a35ae2ca152108e05567c82f5d`
 
 ## Current top-level state
 
@@ -55,11 +55,10 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 22 | blocked | `interaction-implementation:residual.target_or_choice.divided-damage-allocation` | `rules_foundation` | unknown | unknown | 0 | 0 |
 | 23 | blocked | `interaction-implementation:residual.target_or_choice.multiple-damage-recipients` | `rules_foundation` | unknown | unknown | 0 | 0 |
 | 24 | blocked | `interaction-implementation:residual.target_or_choice.random-outcome` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 25 | blocked | `interaction-implementation:residual.target_or_choice.typed-enchant-restriction` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 26 | blocked | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
-| 27 | blocked | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 16 | 106 | 0 | 0 |
-| 28 | blocked | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 263 | 0 | 0 |
-| 29 | blocked | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 54 |
+| 25 | blocked | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
+| 26 | blocked | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 16 | 106 | 0 | 0 |
+| 27 | blocked | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 263 | 0 | 0 |
+| 28 | blocked | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 54 |
 
 Selected reason: No serious candidate currently meets the generated eligibility policy; retain visible deferred pressure and recompute after the next measured frontier classification.
 
