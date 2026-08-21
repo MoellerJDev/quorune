@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import replace
 import json
 from pathlib import Path
 import tempfile
@@ -85,6 +86,28 @@ class FixedManaFlashbackModelTests(unittest.TestCase):
         with self.assertRaisesRegex(FlashbackError, "closed schema"):
             FixedManaFlashbackSpec.from_dict(malformed)
 
+        life_spec = compile_fixed_mana_flashback(
+            material_line="Flashback—{1}{U}, Pay 3 life",
+            oracle_line=(
+                "Flashback—{1}{U}, Pay 3 life. (You may cast this card from "
+                "your graveyard for its flashback cost. Then exile it.)"
+            ),
+            line_index=1,
+        )
+        self.assertIsNotNone(life_spec)
+        assert life_spec is not None
+        self.assertEqual(3, life_spec.life_payment)
+        self.assertEqual(
+            [
+                {
+                    "schema_version": 1,
+                    "kind": "fixed_life_payment",
+                    "amount": 3,
+                }
+            ],
+            life_spec.cast_cost_option()["_additional_option_costs"],
+        )
+
 
 class FixedManaFlashbackCompilerTests(unittest.TestCase):
     @classmethod
@@ -156,14 +179,41 @@ class FixedManaFlashbackCompilerTests(unittest.TestCase):
         )
 
     def test_nonordinary_flashback_costs_remain_residual(self):
-        for name in ("Deep Analysis", "Devil's Play"):
-            with self.subTest(name=name):
-                ir = self.compile(self.db.lookup(name))
+        unsupported = (
+            self.db.lookup("Devil's Play"),
+            replace(
+                self.record,
+                oracle_text=(
+                    "Draw a card.\n"
+                    "Flashback—Sacrifice a creature. (You may cast this card "
+                    "from your graveyard for its flashback cost. Then exile it.)"
+                ),
+            ),
+        )
+        for record in unsupported:
+            with self.subTest(name=record.name):
+                ir = self.compile(record)
                 node = self.flashback_node(ir)
                 self.assertFalse(node.exact)
                 self.assertFalse(node.lowerable)
                 self.assertEqual("ordinary-flashback-residual-v1", node.template_id)
                 self.assertTrue(ir.material_residuals)
+
+    def test_fixed_life_flashback_adds_the_existing_payment_capability(self):
+        ir = self.compile(self.db.lookup("Deep Analysis"))
+        node = self.flashback_node(ir)
+        self.assertTrue(node.exact, ir.material_residuals)
+        self.assertEqual(
+            (
+                "casting.additional_cost.fixed_life_payment",
+                FLASHBACK_CAPABILITY_ID,
+            ),
+            node.capability_dependencies,
+        )
+        spec = FixedManaFlashbackSpec.from_dict(
+            node.handlers[0]["flashback"]
+        )
+        self.assertEqual(3, spec.life_payment)
 
     def test_flashback_dependency_and_compiler_mutations_fail_closed(self):
         capability = next(
@@ -184,6 +234,23 @@ class FixedManaFlashbackCompilerTests(unittest.TestCase):
                 )
                 self.assertFalse(node.exact)
                 self.assertTrue(node.residual_ids)
+
+        value = deepcopy(self.registry_value)
+        life_payment = next(
+            item
+            for item in value["capabilities"]
+            if item["id"] == "casting.additional_cost.fixed_life_payment"
+        )
+        life_payment["status"] = "blocked"
+        life_payment["blockers"] = ["focused Flashback life-payment mutation"]
+        life_node = self.flashback_node(
+            self.compile(
+                self.db.lookup("Deep Analysis"),
+                capabilities=CapabilityRegistry(value),
+            )
+        )
+        self.assertFalse(life_node.exact)
+        self.assertTrue(life_node.residual_ids)
 
         def assert_exact() -> None:
             node = self.flashback_node(self.compile())
@@ -415,6 +482,34 @@ class FixedManaFlashbackRuntimeTests(unittest.TestCase):
         self.assertEqual(
             {"normal", FLASHBACK_CAST_OPTION_ID},
             {row["id"] for row in action["cost_options"]},
+        )
+
+    def test_fixed_life_flashback_pays_life_and_exiles(self):
+        session = self.session(70234007, players=2)
+        engine = session.engine
+        card = self.add_card(session, name="Deep Analysis", ref="FLASH7")
+        engine.state.players["B"].mana_pool["U"] = 2
+        self.prepare_main(session)
+        starting_life = engine.state.players["B"].life
+        starting_hand = len(engine.state.players["B"].zones["hand"])
+        engine.permissions.invalidate_current()
+        engine._cast(
+            "B",
+            {
+                "card": card.ref,
+                "from": "graveyard",
+                "cost_option": FLASHBACK_CAST_OPTION_ID,
+                "targets": ["B"],
+                "pay": "auto",
+            },
+        )
+        self.assertEqual(starting_life - 3, engine.state.players["B"].life)
+        engine.state.priority_player = None
+        engine._prepare_stack_resolution()
+        self.assertEqual("exile", card.zone)
+        self.assertEqual(
+            starting_hand + 2,
+            len(engine.state.players["B"].zones["hand"]),
         )
 
     def test_normal_cast_does_not_apply_flashback_departure(self):

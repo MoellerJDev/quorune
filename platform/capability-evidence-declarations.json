@@ -2052,6 +2052,14 @@
     {
       "capability_id": "casting.flashback.fixed_mana",
       "evidence_class": "interaction",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_fixed_life_flashback_pays_life_and_exiles",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose the Flashback alternative with the existing fixed-life payment owner before the resulting stack incarnation resolves and leaves through the mandatory exile replacement."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "interaction",
       "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_flashback_and_independent_graveyard_permission_offer_distinct_costs",
       "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -2100,10 +2108,26 @@
     {
       "capability_id": "casting.flashback.fixed_mana",
       "evidence_class": "positive",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackCompilerTests.test_fixed_life_flashback_adds_the_existing_payment_capability",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower fixed-mana-plus-life Flashback to the same typed descriptor while declaring the existing fixed-life payment capability on that exact node."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "positive",
       "test_id": "tests.test_flashback_rules.FixedManaFlashbackCompilerTests.test_fixed_mana_flashback_compiles_source_spanned_typed_program",
       "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Lower one complete printed line to a fixed mana vector, registered handler, complete-card certificate, and capability-closed CardProgram."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_fixed_life_flashback_pays_life_and_exiles",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Pay fixed mana and fixed life, resolve a real target-player draw, and exile the current stack incarnation through the Flashback self-replacement."
     },
     {
       "capability_id": "casting.flashback.fixed_mana",

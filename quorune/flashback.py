@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-"""Typed ordinary fixed-mana Flashback casting and stack departure."""
+"""Typed ordinary fixed Flashback casting and stack departure."""
 
 from dataclasses import dataclass
 import hashlib
@@ -12,6 +12,7 @@ from .model import CardInstance
 from .replacement.immutable import FrozenMap, thaw_value
 from .replacement.model import ReplacementClass, ReplacementEffect
 from .replacement.operations import SetField
+from .rules.casting_additional_cost_groups import FixedLifePaymentAdditionalCost
 from .util import mana_cost_to_vector, stable_json
 
 
@@ -23,8 +24,11 @@ FLASHBACK_MECHANIC_ID = "flashback"
 FLASHBACK_RUNTIME_EVENT = "cast.cost"
 _ABILITY_ID = re.compile(r"^ab[1-9][0-9]*$")
 _ORDINARY_COST = r"(?:\{(?:0|[1-9]\d*|[WUBRGC])\})+"
-_ORDINARY_FLASHBACK = re.compile(
-    rf"^Flashback\s+(?P<cost>{_ORDINARY_COST})(?:\s+\(.*\))?\.?$",
+_FIXED_FLASHBACK = re.compile(
+    rf"^Flashback(?:\s+(?P<mana_only>{_ORDINARY_COST})|"
+    rf"[—–]\s*(?P<mana_life>{_ORDINARY_COST}),\s*"
+    r"Pay (?P<life>[1-9]\d*) life)"
+    r"\.?(?:\s+\(.*\))?\.?$",
     re.IGNORECASE,
 )
 _MANA_FIELDS = ("GENERIC", "W", "U", "B", "R", "G", "C")
@@ -41,6 +45,7 @@ class FixedManaFlashbackSpec:
     oracle_line: str
     cost_text: str
     mana_cost: FrozenMap
+    life_payment: int | None = None
     schema_version: int = 1
 
     def __post_init__(self) -> None:
@@ -57,7 +62,7 @@ class FixedManaFlashbackSpec:
             raise FlashbackError("Flashback ability ID does not match its source line")
         if type(self.oracle_line) is not str or not self.oracle_line:
             raise FlashbackError("Flashback Oracle line is required")
-        oracle_match = _ORDINARY_FLASHBACK.fullmatch(self.oracle_line.strip())
+        oracle_match = _FIXED_FLASHBACK.fullmatch(self.oracle_line.strip())
         if oracle_match is None:
             raise FlashbackError("Flashback Oracle line is outside the closed grammar")
         if (
@@ -65,8 +70,19 @@ class FixedManaFlashbackSpec:
             or re.fullmatch(_ORDINARY_COST, self.cost_text) is None
         ):
             raise FlashbackError("Flashback cost must use fixed ordinary mana")
-        if oracle_match.group("cost").upper() != self.cost_text:
+        matched_cost = oracle_match.group("mana_only") or oracle_match.group(
+            "mana_life"
+        )
+        if matched_cost.upper() != self.cost_text:
             raise FlashbackError("Flashback cost does not match its Oracle line")
+        matched_life = (
+            int(oracle_match.group("life")) if oracle_match.group("life") else None
+        )
+        if self.life_payment != matched_life or (
+            self.life_payment is not None
+            and (type(self.life_payment) is not int or self.life_payment <= 0)
+        ):
+            raise FlashbackError("Flashback life payment does not match its Oracle line")
         if not isinstance(self.mana_cost, FrozenMap):
             if not isinstance(self.mana_cost, Mapping):
                 raise FlashbackError("Flashback mana cost must be an object")
@@ -94,6 +110,7 @@ class FixedManaFlashbackSpec:
             "oracle_line",
             "cost_text",
             "mana_cost",
+            "life_payment",
         }
         if not isinstance(value, Mapping) or set(value) != expected:
             raise FlashbackError("Fixed-mana Flashback descriptors have a closed schema")
@@ -106,6 +123,7 @@ class FixedManaFlashbackSpec:
             oracle_line=value["oracle_line"],
             cost_text=value["cost_text"],
             mana_cost=FrozenMap(mana_cost),
+            life_payment=value["life_payment"],
             schema_version=value["schema_version"],
         )
 
@@ -117,18 +135,30 @@ class FixedManaFlashbackSpec:
             "oracle_line": self.oracle_line,
             "cost_text": self.cost_text,
             "mana_cost": thaw_value(self.mana_cost),
+            "life_payment": self.life_payment,
         }
 
     def cast_cost_option(self) -> dict[str, Any]:
-        return {
+        option = {
             "id": FLASHBACK_CAST_OPTION_ID,
             "kind": "alternate",
-            "label": f"Flashback {self.cost_text}",
+            "label": (
+                f"Flashback {self.cost_text}"
+                if self.life_payment is None
+                else f"Flashback—{self.cost_text}, Pay {self.life_payment} life"
+            ),
             "requirements": thaw_value(self.mana_cost),
             "flashback_fingerprint": self.fingerprint,
             "source_zone": "graveyard",
             "x_value_policy": "zero",
         }
+        if self.life_payment is not None:
+            option["_additional_option_costs"] = [
+                FixedLifePaymentAdditionalCost(
+                    self.life_payment
+                ).to_descriptor()
+            ]
+        return option
 
 
 def compile_fixed_mana_flashback(
@@ -137,10 +167,10 @@ def compile_fixed_mana_flashback(
     oracle_line: str,
     line_index: int,
 ) -> FixedManaFlashbackSpec | None:
-    match = _ORDINARY_FLASHBACK.fullmatch(material_line.strip())
+    match = _FIXED_FLASHBACK.fullmatch(material_line.strip())
     if match is None:
         return None
-    cost_text = match.group("cost").upper()
+    cost_text = (match.group("mana_only") or match.group("mana_life")).upper()
     mana, complex_symbols = mana_cost_to_vector(cost_text)
     if complex_symbols:
         return None
@@ -150,6 +180,7 @@ def compile_fixed_mana_flashback(
         oracle_line=oracle_line,
         cost_text=cost_text,
         mana_cost=FrozenMap(mana),
+        life_payment=(int(match.group("life")) if match.group("life") else None),
     )
 
 

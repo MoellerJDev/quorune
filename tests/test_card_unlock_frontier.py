@@ -57,8 +57,21 @@ class ResidualClassifierTests(unittest.TestCase):
             )
             for cost in ("{U}", "{2}{R}", "{6}{G}{G}", "{R}{W}")
         }
+        families.add(
+            canonical_residual_families(
+                {
+                    "kind": "spell_effect",
+                    "reason": "spell effect has no exact generic template",
+                    "blockers": [],
+                    "text": (
+                        "Flashback—{1}{U}, Pay 3 life. (You may cast this card "
+                        "from your graveyard for its flashback cost. Then exile it.)"
+                    ),
+                }
+            )
+        )
         self.assertEqual(
-            {("effect_clause:unparsed-flashback-fixed-ordinary-mana",)},
+            {("effect_clause:unparsed-flashback-fixed-cost",)},
             families,
         )
 

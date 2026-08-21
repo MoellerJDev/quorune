@@ -1073,6 +1073,9 @@ def _finalize_option(
     )
     if selected_additional_costs is not None:
         mandatory_costs = list(selected_additional_costs)
+    option_additional_costs = option.pop("_additional_option_costs", ())
+    if option_additional_costs:
+        mandatory_costs = [*mandatory_costs, *option_additional_costs]
     option["base_requirements"] = host._mana_vector(option["requirements"])
     _apply_static_reductions(
         host,

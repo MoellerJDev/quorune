@@ -210,8 +210,9 @@ trigger behavior to their existing typed owners. Variable and nonmana costs,
 copied or granted instances, multiface cards, and cards with other material
 residuals remain source-spanned residuals or fail-closed runtime exclusions.
 
-`compiler/flashback_nodes.py` owns one closed ordinary fixed-mana Flashback
-production. It requires complete current CardProgram admission before granting
+`compiler/flashback_nodes.py` owns ordinary fixed-mana and fixed-mana-plus-
+fixed-life Flashback productions. It requires complete current CardProgram
+admission before granting
 the owner a graveyard cast offer, contributes only the server-authored
 Flashback alternative unless another typed permission independently authorizes
 the printed cost, and otherwise reuses ordinary timing, targets, additional
@@ -219,9 +220,9 @@ costs, mana payment, stack resolution, and countering. Cast commit records one
 incarnation-local designation; the zone-replacement owner applies its mandatory
 stack-leave self-replacement before competing destination replacements and
 clears the designation in the new zone. The unlock frontier normalizes literal
-fixed mana costs into one reusable Flashback grammar family rather than one
-candidate per cost. Variable and nonmana costs, Flashback-specific cost
-modifiers, partial cards, copies, grants, text changes, and unsupported
+fixed cost parameters into one reusable Flashback grammar family rather than
+one candidate per literal. Variable and wider nonmana costs, Flashback-specific
+cost modifiers, partial cards, copies, grants, text changes, and unsupported
 graveyard permissions remain source-spanned residuals or fail closed.
 
 `compiler/kicker_nodes.py` owns one single fixed ordinary-mana Kicker cost and

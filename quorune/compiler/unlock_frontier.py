@@ -252,12 +252,14 @@ def _capability_id(blocker: str) -> str:
 def _clause_signature(text: str, *, kind: str, reason: str) -> str:
     material = _material_clause_text(text)
     if re.fullmatch(
-        r"flashback\s+(?:\{(?:0|[1-9]\d*|[wubrgc])\})+\.?",
+        r"flashback(?:\s+(?:\{(?:0|[1-9]\d*|[wubrgc])\})+|"
+        r"[—–]\s*(?:\{(?:0|[1-9]\d*|[wubrgc])\})+,\s*"
+        r"pay [1-9]\d* life)\.?",
         material,
     ):
         # Cost literals are parameters of one reusable Flashback grammar, not
         # independent implementation families.
-        return "unparsed-flashback-fixed-ordinary-mana"
+        return "unparsed-flashback-fixed-cost"
     counter_signatures = _counter_clause_signatures(material)
     if "remove-counter" in counter_signatures:
         return "remove-counter"

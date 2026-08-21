@@ -10,7 +10,7 @@ from ..flashback import (
     FLASHBACK_RUNTIME_EVENT,
 )
 from ..rules.capabilities import CapabilityRegistry
-from .dependency_gate import explicit_capability_gate
+from .dependency_gate import explicit_capabilities_gate
 from .ir_model import OracleNode, OracleResidual, SourceSpan, append_residual
 
 
@@ -29,7 +29,7 @@ def ordinary_fixed_mana_flashback_keyword_node(
     residuals: list[OracleResidual],
     **_unused: Any,
 ) -> OracleNode | None:
-    """Lower one ordinary fixed-mana Flashback ability or fail closed."""
+    """Lower one ordinary fixed Flashback ability or fail closed."""
 
     if mechanics != (FLASHBACK_MECHANIC_ID,):
         return None
@@ -44,10 +44,10 @@ def ordinary_fixed_mana_flashback_keyword_node(
             kind="keyword_grammar",
             text=line,
             span=span,
-            reason="Flashback cost is outside the fixed ordinary-mana grammar",
+            reason="Flashback cost is outside the fixed grammar",
             blockers=(
-                "fixed ordinary-mana Flashback",
-                "variable, hybrid, Phyrexian, snow, nonmana, and modified Flashback costs",
+                "fixed ordinary-mana or fixed-mana-plus-life Flashback",
+                "variable, hybrid, Phyrexian, snow, wider nonmana, and modified Flashback costs",
             ),
         )
         return OracleNode(
@@ -63,8 +63,11 @@ def ordinary_fixed_mana_flashback_keyword_node(
             mechanics=mechanics,
             residual_ids=(residual_id,),
         )
-    gate = explicit_capability_gate(
-        FLASHBACK_CAPABILITY_ID,
+    gate = explicit_capabilities_gate(
+        (
+            FLASHBACK_CAPABILITY_ID,
+            *(("casting.additional_cost.fixed_life_payment",) if spec.life_payment is not None else ()),
+        ),
         capability_registry=capability_registry,
         capability_profile=capability_profile,
     )
@@ -75,7 +78,7 @@ def ordinary_fixed_mana_flashback_keyword_node(
                 kind="dependency_contract",
                 text=line,
                 span=span,
-                reason="fixed-mana Flashback lacks trusted capability closure",
+                reason="fixed Flashback lacks trusted capability closure",
                 blockers=gate.blockers,
             ),
         )
@@ -96,6 +99,7 @@ def ordinary_fixed_mana_flashback_keyword_node(
         runtime_coverage=(
             "owner_graveyard_cast_permission",
             "fixed_mana_alternate_cost",
+            *(('fixed_life_payment',) if spec.life_payment is not None else ()),
             "flashback_stack_leave_replacement",
         ),
         mechanics=mechanics,

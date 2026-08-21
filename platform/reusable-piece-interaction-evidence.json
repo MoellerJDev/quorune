@@ -3870,6 +3870,21 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_fixed_life_flashback_pays_life_and_exiles",
+      "piece_ids": [
+        "capability.casting.additional_cost.fixed_life_payment",
+        "capability.casting.flashback.fixed_mana"
+      ],
+      "capability_ids": [
+        "casting.additional_cost.fixed_life_payment",
+        "casting.flashback.fixed_mana"
+      ],
+      "interaction_order": 2,
+      "assertion": "A fixed-mana-plus-life Flashback option reuses the canonical fixed-life casting payment before creating the flashed-back stack designation and mandatory exile replacement."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_countered_flashback_uses_self_replacement_before_competing_destination",
       "piece_ids": [
         "capability.casting.flashback.fixed_mana",

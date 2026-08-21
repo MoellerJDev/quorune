@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "830ff3cd5bc5a0ef944ed866db8b89fb67d85e547bdd075be8d72fd15b11b5bb",
-  "declaration_source_fingerprint": "fb193c7a946ecc8962bf49104929becde5cac45dc347100726f023d1cfcc399b",
+  "registry_fingerprint": "d1719f0fed953c072acf2f38fd842017e0fd8eccda313dddfc921db4d49c45de",
+  "declaration_source_fingerprint": "66e236dacf6612bbc23ea91e466a14048a0aea013c41cac21555b7e49aac4bc0",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -5176,6 +5176,24 @@
     {
       "capability_id": "casting.flashback.fixed_mana",
       "evidence_class": "interaction",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_fixed_life_flashback_pays_life_and_exiles",
+      "official_rule_ids": [
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.34",
+        "702.34a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose the Flashback alternative with the existing fixed-life payment owner before the resulting stack incarnation resolves and leaves through the mandatory exile replacement."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "interaction",
       "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_flashback_and_independent_graveyard_permission_offer_distinct_costs",
       "official_rule_ids": [
         "601.2b",
@@ -5284,6 +5302,24 @@
     {
       "capability_id": "casting.flashback.fixed_mana",
       "evidence_class": "positive",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackCompilerTests.test_fixed_life_flashback_adds_the_existing_payment_capability",
+      "official_rule_ids": [
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.34",
+        "702.34a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower fixed-mana-plus-life Flashback to the same typed descriptor while declaring the existing fixed-life payment capability on that exact node."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "positive",
       "test_id": "tests.test_flashback_rules.FixedManaFlashbackCompilerTests.test_fixed_mana_flashback_compiles_source_spanned_typed_program",
       "official_rule_ids": [
         "601.2b",
@@ -5298,6 +5334,24 @@
         "commander_review"
       ],
       "applicability_note": "Lower one complete printed line to a fixed mana vector, registered handler, complete-card certificate, and capability-closed CardProgram."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_fixed_life_flashback_pays_life_and_exiles",
+      "official_rule_ids": [
+        "601.2b",
+        "601.2f",
+        "601.2h",
+        "702.34",
+        "702.34a"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Pay fixed mana and fixed life, resolve a real target-player draw, and exile the current stack incarnation through the Flashback self-replacement."
     },
     {
       "capability_id": "casting.flashback.fixed_mana",
@@ -42966,5 +43020,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "189271ca7d3b9e9364f58765583f21dcefa7cd9941c60c1d34347fec2544dd5f"
+  "fingerprint": "0df18f3e46506dd30ea9e1b988541a613392de072313440e725036d6dea811e3"
 }
