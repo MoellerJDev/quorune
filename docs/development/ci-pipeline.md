@@ -159,9 +159,11 @@ pinned-database identity where applicable. The key deliberately excludes the
 commit SHA. A PR owner artifact can therefore be reused by a content-identical
 merge commit, while its staged envelope and the complete
 `cloud-generated-<commit>` bundle remain exact-commit and exact-source bound.
-Cross-run lookup accepts artifacts only from a successful execution of this
-workflow whose head repository is Quorune itself; fork or failed-run artifacts
-cannot seed `main` reuse.
+Cross-run lookup accepts artifacts only from a completed execution of this
+workflow whose head repository is Quorune itself. A successfully checked owner
+receipt remains reusable when a later downstream job fails or the workflow is
+cancelled; a failed/cancelled owner that published no receipt is a cache miss
+and retries. Fork artifacts cannot seed `main` reuse.
 The pinned database is also cached from its snapshot and builder inputs, then
 validated by SQLite integrity, schema, and row cardinalities before use. The
 workflow has read-only repository permissions and never commits or opens a pull

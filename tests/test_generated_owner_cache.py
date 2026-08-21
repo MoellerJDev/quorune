@@ -233,7 +233,7 @@ class GeneratedOwnerCacheTests(unittest.TestCase):
         self.assertIn("compiler-corpus-coverage", plan["owners"])
         self.assertTrue(sentinel["ok"], json.dumps(sentinel, sort_keys=True))
 
-    def test_remote_reuse_requires_successful_same_repository_workflow(self):
+    def test_remote_reuse_requires_completed_same_repository_workflow(self):
         responses = {
             "repos/acme/quorune/actions/artifacts?name=owner-key&per_page=100": {
                 "artifacts": [
@@ -255,17 +255,20 @@ class GeneratedOwnerCacheTests(unittest.TestCase):
                 ]
             },
             "repos/acme/quorune/actions/runs/30": {
-                "conclusion": "failure",
+                "status": "in_progress",
+                "conclusion": None,
                 "path": ".github/workflows/generated-artifacts.yml",
                 "head_repository": {"full_name": "acme/quorune"},
             },
             "repos/acme/quorune/actions/runs/20": {
+                "status": "completed",
                 "conclusion": "success",
                 "path": ".github/workflows/generated-artifacts.yml",
                 "head_repository": {"full_name": "fork/quorune"},
             },
             "repos/acme/quorune/actions/runs/10": {
-                "conclusion": "success",
+                "status": "completed",
+                "conclusion": "failure",
                 "path": ".github/workflows/generated-artifacts.yml",
                 "head_repository": {"full_name": "acme/quorune"},
             },

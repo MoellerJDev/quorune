@@ -60,7 +60,8 @@ def find_reusable_run(
         if not isinstance(head_repository, Mapping):
             continue
         if (
-            run.get("conclusion") == "success"
+            run.get("status") == "completed"
+            and run.get("conclusion") in {"success", "failure", "cancelled"}
             and run.get("path") == WORKFLOW_PATH
             and head_repository.get("full_name") == repository
         ):

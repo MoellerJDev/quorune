@@ -329,7 +329,7 @@ jobs:
         run: >-
           python scripts/cloud_generated_artifacts.py owner-key
           --owner "${{ matrix.owner }}"
-          --db data/cloud-pinned.sqlite3
+          --db "${{ matrix.owner == 'card-unlock-frontier' && 'data/cloud-pinned.sqlite3' || '' }}"
       - id: owner-cache
         uses: actions/cache@v4
         with:
@@ -356,7 +356,7 @@ jobs:
         run: >-
           python scripts/cloud_generated_artifacts.py run-owner
           --owner "${{ matrix.owner }}"
-          --db data/cloud-pinned.sqlite3
+          --db "${{ matrix.owner == 'card-unlock-frontier' && 'data/cloud-pinned.sqlite3' || '' }}"
           --stage-dir "local/cloud-stage/${{ matrix.owner }}"
           --affected-owners-json '${{ needs.plan.outputs.affected_owners }}'
       - if: steps.owner-cache.outputs.cache-hit != 'true' && steps.remote-cache.outputs.run_id == ''

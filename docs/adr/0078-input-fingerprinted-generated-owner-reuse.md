@@ -65,9 +65,10 @@ are reusable by a content-identical merge commit, while every staged owner
 envelope and the complete downloadable bundle remain bound to the exact checked
 out commit and source-tree fingerprint. The bundle job verifies the assembled
 DAG and writes a finalization receipt without rerunning any owner.
-Cross-run lookup accepts only successful executions of this workflow whose head
-repository is Quorune itself; failed and fork-run artifacts are never reuse
-sources for `main`.
+Cross-run lookup accepts only completed executions of this workflow whose head
+repository is Quorune itself. A successfully checked owner receipt survives a
+later downstream workflow failure or cancellation; an owner that published no
+receipt retries. Fork-run artifacts are never reuse sources for `main`.
 
 This decision supersedes ADR 0042 only for generated-owner scheduling and
 intermediate reuse. ADR 0042 remains authoritative for single ownership,
