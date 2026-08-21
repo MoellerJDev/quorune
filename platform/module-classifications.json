@@ -4379,6 +4379,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/reusable_pieces/architecture_metrics.py",
+      "layer": "semantics",
+      "owning_subsystem": "reusable_piece_inventory",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/reusable_pieces/generation.py",
       "layer": "semantics",
       "owning_subsystem": "reusable_piece_inventory",
@@ -7585,5 +7600,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "5078bf4c0d605c1b33e86da3e9ef5e86570b2b1d550575eb82da9b458b5ef399"
+  "fingerprint": "3644ca215f73a073244155277219f18c6873523a4135c463b7c14d93d0126edc"
 }

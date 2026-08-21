@@ -19,6 +19,9 @@ from quorune.reusable_pieces import (
     validate_reusable_piece_matrix,
     validate_reusable_piece_policy,
 )
+from quorune.reusable_pieces.architecture_metrics import (
+    project_architecture_metrics,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -270,6 +273,40 @@ def _artifacts() -> dict:
 
 
 class ReusablePieceInventoryTests(unittest.TestCase):
+    def test_architecture_projection_accepts_baseline_and_audit_schemas(self) -> None:
+        expected = {
+            "card_named_helpers": 1,
+            "direct_game_state_writes": 5,
+            "engine_logical_lines": 10,
+            "legacy_card_specific_operations": 2,
+            "oracle_id_literals": 1,
+            "oversized_functions_and_methods": 1,
+            "oversized_modules": 1,
+            "prohibited_identity_dispatch_count": 0,
+        }
+        baseline = {
+            "card_named_helpers": [{}],
+            "direct_game_state_writes_by_file": {"a.py": 2, "b.py": 3},
+            "engine": {"logical_lines": 10},
+            "legacy_card_specific_operations": ["a", "b"],
+            "oracle_id_literals": [{}],
+            "oversized_functions_and_methods": [{}],
+            "oversized_modules": [{}],
+        }
+        audit = {
+            "architecture": {
+                "debt_trend": {
+                    "dimensions": {
+                        key: {"current": value}
+                        for key, value in expected.items()
+                    }
+                }
+            }
+        }
+
+        self.assertEqual(expected, project_architecture_metrics(baseline))
+        self.assertEqual(expected, project_architecture_metrics(audit))
+
     def test_interaction_evidence_has_closed_explicit_semantics(self) -> None:
         evidence = _inputs()["interaction_evidence"]
         validate_interaction_evidence(evidence)
