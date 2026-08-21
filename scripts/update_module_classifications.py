@@ -71,6 +71,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/renown.py",
         "quorune/model.py",
         "quorune/object_predicate.py",
+        "quorune/target_forms.py",
         "quorune/prevention_triggers.py",
         "quorune/read_ahead.py",
         "quorune/replacement/immutable.py",
@@ -538,6 +539,7 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/target_protection.py",
         "quorune/target_protection_engine_adapter.py",
         "quorune/target_characteristics.py",
+        "quorune/target_forms.py",
         "quorune/target_predicates.py",
         "quorune/targets.py",
     }:
@@ -626,6 +628,7 @@ def build_classifications() -> dict[str, Any]:
                             "aura/",
                             "engine.py",
                             "enchant_spec.py",
+                            "target_forms.py",
                             "session.py",
                             "semantics.py",
                             "card_programs/",

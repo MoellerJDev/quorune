@@ -5,6 +5,7 @@ from enum import Enum
 import hashlib
 from typing import Any, Mapping, TypeAlias
 
+from .target_forms import TargetCharacteristicForm
 from .util import stable_json
 
 
@@ -16,6 +17,14 @@ class AuraControllerRelation(str, Enum):
     ANY = "any"
     YOU = "you"
     OPPONENT = "opponent"
+
+
+class AuraEnchantSubject(str, Enum):
+    """The public rules domain constrained by one Enchant ability."""
+
+    PERMANENT = "permanent"
+    PLAYER = "player"
+    GRAVEYARD_CARD = "graveyard_card"
 
 
 _OBJECT_KINDS = frozenset(
@@ -148,6 +157,284 @@ class SimpleEnchantSpec:
         ).hexdigest()
 
 
+def _normalized_predicate_values(
+    values: tuple[str, ...],
+    *,
+    field_name: str,
+    uppercase: bool = False,
+) -> tuple[str, ...]:
+    if not isinstance(values, (list, tuple)) or any(
+        type(value) is not str or not value.strip() for value in values
+    ):
+        raise AuraRuleError(
+            f"Typed Enchant {field_name} must be an array of nonempty strings"
+        )
+    normalized = tuple(
+        sorted(
+            value.strip().upper() if uppercase else value.strip().casefold()
+            for value in values
+        )
+    )
+    if len(normalized) != len(set(normalized)):
+        raise AuraRuleError(
+            f"Typed Enchant {field_name} must contain unique values"
+        )
+    return normalized
+
+
+@dataclass(frozen=True, slots=True)
+class TypedEnchantSpec:
+    """Closed typed CR 702.5 restriction over one public target domain."""
+
+    subject: AuraEnchantSubject
+    controller_relation: AuraControllerRelation = AuraControllerRelation.ANY
+    player_relation: AuraControllerRelation = AuraControllerRelation.ANY
+    types_any: tuple[str, ...] = ()
+    types_all: tuple[str, ...] = ()
+    types_none: tuple[str, ...] = ()
+    subtypes_any: tuple[str, ...] = ()
+    subtypes_none: tuple[str, ...] = ()
+    supertypes_any: tuple[str, ...] = ()
+    colors_any: tuple[str, ...] = ()
+    colors_none: tuple[str, ...] = ()
+    commander: bool | None = None
+    characteristic_forms_any: tuple[TargetCharacteristicForm, ...] = ()
+    schema_version: int = 2
+
+    def __post_init__(self) -> None:
+        if type(self.schema_version) is not int or self.schema_version != 2:
+            raise AuraRuleError("Unsupported typed Enchant schema version")
+        if not isinstance(self.subject, AuraEnchantSubject):
+            raise AuraRuleError("Unsupported typed Enchant subject")
+        if not isinstance(self.controller_relation, AuraControllerRelation):
+            raise AuraRuleError("Unsupported Enchant controller relation")
+        if not isinstance(self.player_relation, AuraControllerRelation):
+            raise AuraRuleError("Unsupported Enchant player relation")
+        for field_name in (
+            "types_any",
+            "types_all",
+            "types_none",
+            "subtypes_any",
+            "subtypes_none",
+            "supertypes_any",
+        ):
+            object.__setattr__(
+                self,
+                field_name,
+                _normalized_predicate_values(
+                    getattr(self, field_name),
+                    field_name=field_name,
+                ),
+            )
+        for field_name in ("colors_any", "colors_none"):
+            values = _normalized_predicate_values(
+                getattr(self, field_name),
+                field_name=field_name,
+                uppercase=True,
+            )
+            if set(values) - {"W", "U", "B", "R", "G"}:
+                raise AuraRuleError(
+                    f"Typed Enchant {field_name} contains an unsupported color"
+                )
+            object.__setattr__(self, field_name, values)
+        if self.commander is not None and type(self.commander) is not bool:
+            raise AuraRuleError(
+                "Typed Enchant commander predicate must be boolean or null"
+            )
+        if not isinstance(self.characteristic_forms_any, (list, tuple)) or any(
+            not isinstance(value, TargetCharacteristicForm)
+            for value in self.characteristic_forms_any
+        ):
+            raise AuraRuleError(
+                "Typed Enchant characteristic alternatives must be typed forms"
+            )
+        forms = tuple(self.characteristic_forms_any)
+        if len(forms) != len(set(forms)):
+            raise AuraRuleError(
+                "Typed Enchant characteristic alternatives must be unique"
+            )
+        object.__setattr__(self, "characteristic_forms_any", forms)
+        if set(self.types_all).intersection(self.types_none):
+            raise AuraRuleError("Typed Enchant type predicates conflict")
+        if set(self.subtypes_any).intersection(self.subtypes_none):
+            raise AuraRuleError("Typed Enchant subtype predicates conflict")
+        if set(self.colors_any).intersection(self.colors_none):
+            raise AuraRuleError("Typed Enchant color predicates conflict")
+        characteristic_fields = (
+            self.types_any,
+            self.types_all,
+            self.types_none,
+            self.subtypes_any,
+            self.subtypes_none,
+            self.supertypes_any,
+            self.colors_any,
+            self.colors_none,
+            self.characteristic_forms_any,
+        )
+        if self.subject is AuraEnchantSubject.PLAYER:
+            if any(characteristic_fields) or self.commander is not None:
+                raise AuraRuleError(
+                    "Player Enchant restrictions cannot carry object predicates"
+                )
+            if self.controller_relation is not AuraControllerRelation.ANY:
+                raise AuraRuleError(
+                    "Player Enchant restrictions use player_relation"
+                )
+        elif self.player_relation is not AuraControllerRelation.ANY:
+            raise AuraRuleError(
+                "Object Enchant restrictions cannot carry a player relation"
+            )
+        if (
+            self.subject is AuraEnchantSubject.GRAVEYARD_CARD
+            and self.controller_relation is not AuraControllerRelation.ANY
+        ):
+            raise AuraRuleError(
+                "Graveyard-card Enchant restrictions do not use controller relation"
+            )
+
+    def linked_target_object_id(self, source: Any) -> str | None:
+        del source
+        return None
+
+    def target_schema(self, source: Any | None = None) -> dict[str, Any]:
+        del source
+        if self.subject is AuraEnchantSubject.PLAYER:
+            return {
+                "zones": ["player"],
+                "categories": ["player"],
+                "player_relation": self.player_relation.value,
+                "count": 1,
+            }
+        schema: dict[str, Any] = {
+            "zones": [
+                "graveyard"
+                if self.subject is AuraEnchantSubject.GRAVEYARD_CARD
+                else "battlefield"
+            ],
+            "categories": [
+                "card"
+                if self.subject is AuraEnchantSubject.GRAVEYARD_CARD
+                else "permanent"
+            ],
+            "controller": self.controller_relation.value,
+            "count": 1,
+            "source_exclusion": True,
+        }
+        for field_name in (
+            "types_any",
+            "types_all",
+            "types_none",
+            "subtypes_any",
+            "subtypes_none",
+            "supertypes_any",
+            "colors_any",
+            "colors_none",
+        ):
+            values = getattr(self, field_name)
+            if values:
+                schema[field_name] = list(values)
+        if self.commander is not None:
+            schema["commander"] = self.commander
+        if self.characteristic_forms_any:
+            schema["characteristic_forms_any"] = [
+                form.to_dict() for form in self.characteristic_forms_any
+            ]
+        return schema
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "subject": self.subject.value,
+            "controller_relation": self.controller_relation.value,
+            "player_relation": self.player_relation.value,
+            "types_any": list(self.types_any),
+            "types_all": list(self.types_all),
+            "types_none": list(self.types_none),
+            "subtypes_any": list(self.subtypes_any),
+            "subtypes_none": list(self.subtypes_none),
+            "supertypes_any": list(self.supertypes_any),
+            "colors_any": list(self.colors_any),
+            "colors_none": list(self.colors_none),
+            "commander": self.commander,
+            "characteristic_forms_any": [
+                form.to_dict() for form in self.characteristic_forms_any
+            ],
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "TypedEnchantSpec":
+        expected = {
+            "schema_version",
+            "subject",
+            "controller_relation",
+            "player_relation",
+            "types_any",
+            "types_all",
+            "types_none",
+            "subtypes_any",
+            "subtypes_none",
+            "supertypes_any",
+            "colors_any",
+            "colors_none",
+            "commander",
+            "characteristic_forms_any",
+        }
+        if not isinstance(value, Mapping) or set(value) != expected:
+            raise AuraRuleError("Typed Enchant values have a closed schema")
+        array_fields = (
+            "types_any",
+            "types_all",
+            "types_none",
+            "subtypes_any",
+            "subtypes_none",
+            "supertypes_any",
+            "colors_any",
+            "colors_none",
+            "characteristic_forms_any",
+        )
+        if any(
+            not isinstance(value[field_name], (list, tuple))
+            for field_name in array_fields
+        ):
+            raise AuraRuleError(
+                "Typed Enchant predicate fields must be arrays"
+            )
+        try:
+            subject = AuraEnchantSubject(value["subject"])
+            controller_relation = AuraControllerRelation(
+                value["controller_relation"]
+            )
+            player_relation = AuraControllerRelation(value["player_relation"])
+            forms = tuple(
+                TargetCharacteristicForm.from_mapping(form)
+                for form in value["characteristic_forms_any"]
+            )
+        except (TypeError, ValueError) as exc:
+            raise AuraRuleError("Malformed typed Enchant value") from exc
+        return cls(
+            schema_version=value["schema_version"],
+            subject=subject,
+            controller_relation=controller_relation,
+            player_relation=player_relation,
+            types_any=tuple(value["types_any"]),
+            types_all=tuple(value["types_all"]),
+            types_none=tuple(value["types_none"]),
+            subtypes_any=tuple(value["subtypes_any"]),
+            subtypes_none=tuple(value["subtypes_none"]),
+            supertypes_any=tuple(value["supertypes_any"]),
+            colors_any=tuple(value["colors_any"]),
+            colors_none=tuple(value["colors_none"]),
+            commander=value["commander"],
+            characteristic_forms_any=forms,
+        )
+
+    @property
+    def fingerprint(self) -> str:
+        return hashlib.sha256(
+            stable_json(self.to_dict()).encode("utf-8")
+        ).hexdigest()
+
+
 @dataclass(frozen=True, slots=True)
 class LinkedGraveyardCreatureEnchantSpec:
     """Closed linked Enchant restriction used by reanimating Auras.
@@ -263,13 +550,15 @@ class LinkedGraveyardCreatureEnchantSpec:
 
 
 EnchantSpec: TypeAlias = (
-    SimpleEnchantSpec | LinkedGraveyardCreatureEnchantSpec
+    SimpleEnchantSpec | TypedEnchantSpec | LinkedGraveyardCreatureEnchantSpec
 )
 
 
 def enchant_spec_to_dict(spec: EnchantSpec) -> dict[str, Any]:
     if isinstance(spec, SimpleEnchantSpec):
         kind = "simple_object"
+    elif isinstance(spec, TypedEnchantSpec):
+        kind = "typed_restriction"
     elif isinstance(spec, LinkedGraveyardCreatureEnchantSpec):
         kind = "linked_graveyard_creature"
     else:
@@ -290,6 +579,8 @@ def enchant_spec_from_dict(value: Mapping[str, Any]) -> EnchantSpec:
         )
     if kind == "simple_object":
         return SimpleEnchantSpec.from_dict(raw)
+    if kind == "typed_restriction":
+        return TypedEnchantSpec.from_dict(raw)
     if kind == "linked_graveyard_creature":
         return LinkedGraveyardCreatureEnchantSpec.from_dict(raw)
     raise AuraRuleError(f"Unsupported Enchant spec kind {kind!r}")
@@ -297,10 +588,12 @@ def enchant_spec_from_dict(value: Mapping[str, Any]) -> EnchantSpec:
 
 __all__ = [
     "AuraControllerRelation",
+    "AuraEnchantSubject",
     "AuraRuleError",
     "EnchantSpec",
     "LinkedGraveyardCreatureEnchantSpec",
     "SimpleEnchantSpec",
+    "TypedEnchantSpec",
     "enchant_spec_from_dict",
     "enchant_spec_to_dict",
 ]

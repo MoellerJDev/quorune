@@ -4,10 +4,12 @@ from dataclasses import dataclass
 from enum import Enum
 from ..enchant_spec import (
     AuraControllerRelation,
+    AuraEnchantSubject,
     AuraRuleError,
     EnchantSpec,
     LinkedGraveyardCreatureEnchantSpec,
     SimpleEnchantSpec,
+    TypedEnchantSpec,
     enchant_spec_from_dict,
     enchant_spec_to_dict,
 )
@@ -33,7 +35,11 @@ class AuraEntryPlan:
     def __post_init__(self) -> None:
         if not isinstance(
             self.spec,
-            (SimpleEnchantSpec, LinkedGraveyardCreatureEnchantSpec),
+            (
+                SimpleEnchantSpec,
+                TypedEnchantSpec,
+                LinkedGraveyardCreatureEnchantSpec,
+            ),
         ):
             raise AuraRuleError("Aura entry plan requires an Enchant spec")
         if not isinstance(self.outcome, AuraEntryOutcome):
@@ -100,6 +106,7 @@ class AuraEntryChoiceRequired(AuraRuleError):
 
 __all__ = [
     "AuraControllerRelation",
+    "AuraEnchantSubject",
     "AuraEntryChoiceRequired",
     "AuraEntryOutcome",
     "AuraEntryPlan",
@@ -108,6 +115,7 @@ __all__ = [
     "EnchantSpec",
     "LinkedGraveyardCreatureEnchantSpec",
     "SimpleEnchantSpec",
+    "TypedEnchantSpec",
     "enchant_spec_from_dict",
     "enchant_spec_to_dict",
 ]

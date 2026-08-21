@@ -11,6 +11,7 @@ from .relative_power_target import (
     RelativePowerTargetCondition,
     RelativePowerTargetError,
 )
+from .target_forms import TargetCharacteristicForm
 
 
 PUBLIC_TARGET_ZONES = {
@@ -59,6 +60,17 @@ def _optional_bool(value: Any) -> bool | None:
     if type(value) is not bool:
         raise ValueError("Target boolean predicates must be boolean or null")
     return value
+
+
+def _characteristic_forms(value: Any) -> tuple[TargetCharacteristicForm, ...]:
+    if not isinstance(value, (list, tuple)):
+        raise ValueError("Target characteristic_forms_any must be an array")
+    forms = tuple(
+        TargetCharacteristicForm.from_mapping(form) for form in value
+    )
+    if len(forms) != len(set(forms)):
+        raise ValueError("Target characteristic forms must be unique")
+    return forms
 
 
 _TARGET_GROUP_FIELDS = frozenset(
@@ -117,6 +129,7 @@ _TARGET_GROUP_FIELDS = frozenset(
         "predicate",
         "resolution_condition",
         "state_predicate",
+        "characteristic_forms_any",
         "id",
         "group",
         # Validated by the owning compiler/capability shape rather than by
@@ -184,6 +197,7 @@ class TargetGroup:
     predicate: str = ""
     resolution_condition: dict[str, Any] = field(default_factory=dict)
     state_predicate: PermanentStatePredicateSpec | None = None
+    characteristic_forms_any: tuple[TargetCharacteristicForm, ...] = ()
 
     def matches_type_characteristics(
         self,
@@ -200,6 +214,15 @@ class TargetGroup:
         types_any = {value.casefold() for value in self.types_any}
         types_all = {value.casefold() for value in self.types_all}
         types_none = {value.casefold() for value in self.types_none}
+        if self.characteristic_forms_any and not any(
+            form.matches(
+                types=actual_types,
+                subtypes=actual_subtypes,
+                supertypes=actual_supertypes,
+            )
+            for form in self.characteristic_forms_any
+        ):
+            return False
         return not (
             (types_any and not actual_types.intersection(types_any))
             or (types_all and not types_all.issubset(actual_types))
@@ -305,6 +328,9 @@ class TargetGroup:
             )
         except ObjectQueryError as exc:
             raise ValueError(str(exc)) from exc
+        characteristic_forms = _characteristic_forms(
+            raw.get("characteristic_forms_any", [])
+        )
         return cls(
             group_id=str(raw.get("id") or raw.get("group") or default_id),
             zones=zones,
@@ -374,6 +400,7 @@ class TargetGroup:
             predicate=predicate,
             resolution_condition=resolution_condition,
             state_predicate=state_predicate,
+            characteristic_forms_any=characteristic_forms,
         )
 
     def public_dict(self, legal_refs: Sequence[str]) -> dict[str, Any]:

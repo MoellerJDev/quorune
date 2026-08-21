@@ -289,16 +289,26 @@ text changes, multiface cards, tokens, phasing-in unattached, and wider cast
 permissions or prohibitions that distinguish creature from Aura spells remain
 source-spanned residuals or explicit trust exclusions.
 
-The shared Aura grammar also accepts three qualified battlefield-object
-restrictions through the same `SimpleEnchantSpec` and target-query boundary:
-artifact or creature, red or green creature, and tapped creature. Cast offers,
-resolution revalidation, nonspell entry, and state-based attachment legality
-all consume the compiled type, color, or live tapped-state predicate. A
-syntactically complete but unsupported Enchant line produces one precise
-restriction residual instead of a second generic mechanic blocker. Mixed
-type/subtype alternatives, keyword presence or absence, power bounds,
-attachment-qualified objects, players, nonbattlefield cards, subtypes, and
-other unrepresented color or state predicates remain source-spanned residuals.
+The shared Aura grammar accepts qualified battlefield-object restrictions
+through `SimpleEnchantSpec` and a second closed `TypedEnchantSpec`, both of
+which lower to the same target-query and attachment owners. The typed form
+represents players and opponents, public creature or instant cards in a
+graveyard, effective type and subtype alternatives, supertypes, colors,
+commander status, and controller relations. Cross-axis alternatives such as
+creature or Vehicle use `TargetCharacteristicForm`; they do not introduce an
+Aura-specific characteristic evaluator. Cast offers, resolution revalidation,
+nonspell entry, and state-based attachment legality all consume the current
+effective source-pinned characteristic snapshot. Player Auras use the same
+reciprocal attachment owner with an internal typed player identity and project
+only the public seat.
+
+A syntactically complete but unsupported Enchant line produces one precise
+restriction residual instead of a second generic mechanic blocker. Numeric
+power, toughness, and mana-value predicates, dynamic characteristic counts,
+modified or attachment-qualified objects, keyword-negative predicates,
+nonbasic predicates, open-ended variants, text-changing or untrusted face-down
+characteristics, and multiple Enchant abilities remain source-spanned
+residuals.
 
 `compiler/target_effect_corpus_assurance.py` independently reconstructs the
 resolution body for every promoted standalone or sequenced fixed-target node,

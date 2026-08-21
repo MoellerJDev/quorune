@@ -52,6 +52,26 @@ _WITNESSES = {
         "{1}{U}",
         ("Enchant",),
     ),
+    "typed-floating-shield": _Witness(
+        "Typed Floating Shield Fixture",
+        "Enchantment — Aura",
+        "Enchant creature or Vehicle\n"
+        "As this Aura enters, choose a color.\n"
+        "Enchanted creature has protection from the chosen color. This "
+        "effect doesn't remove this Aura.\n"
+        "Sacrifice this Aura: Target creature gains protection from the "
+        "chosen color until end of turn.",
+        "{2}{W}",
+        ("Enchant",),
+    ),
+    "typed-aether-tunnel": _Witness(
+        "Typed Aether Tunnel Fixture",
+        "Enchantment — Aura",
+        "Enchant creature or Vehicle\n"
+        "Enchanted creature gets +1/+0 and can't be blocked.",
+        "{1}{U}",
+        ("Enchant",),
+    ),
     "starforged-sword": _Witness(
         "Starforged Sword",
         "Artifact — Equipment",
@@ -568,6 +588,18 @@ ATTACHMENT_AND_CONTINUOUS_PAIRS = (
     _pair("capability.continuous.resolution.fixed_characteristics_until_end_of_turn", "residual.replacement.damage-prevention"),
 )
 
+TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS = tuple(
+    _pair("capability.attachment.aura.typed_restriction", residual)
+    for residual in (
+        "residual.continuous_layer.affected-player-ordering",
+        "residual.continuous_layer.continuous-effect-layers-and-dependencies",
+        "residual.duration.until-end-of-turn",
+        "residual.static_clause.broader-evasion-and-group-constraints",
+        "residual.static_clause.conditional-declaration-predicates",
+        "residual.static_clause.temporary-declaration-restrictions",
+    )
+)
+
 EFFECT_AND_REPLACEMENT_PAIRS = (
     _pair("capability.counter.producer.cumulative_upkeep_fixed_mana", "residual.replacement.damage-prevention"),
     _pair("capability.counter.producer.cumulative_upkeep_fixed_mana", "residual.replacement.replacement-applicability"),
@@ -679,6 +711,7 @@ ALL_HIGH_RISK_BOUNDARY_PAIRS = tuple(
     sorted(
         {
             *ATTACHMENT_AND_CONTINUOUS_PAIRS,
+            *TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS,
             *EFFECT_AND_REPLACEMENT_PAIRS,
             *ZONE_AND_CHOICE_PAIRS,
             *COST_AND_REPLACEMENT_PAIRS,
@@ -704,6 +737,14 @@ def _bind(witness: str, *pairs: Pair) -> None:
 
 _bind("floating-shield", *ATTACHMENT_AND_CONTINUOUS_PAIRS[:3])
 _bind("aether-tunnel", *ATTACHMENT_AND_CONTINUOUS_PAIRS[3:6])
+_bind(
+    "typed-floating-shield",
+    *TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS[:3],
+)
+_bind(
+    "typed-aether-tunnel",
+    *TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS[3:],
+)
 _bind("starforged-sword", *ATTACHMENT_AND_CONTINUOUS_PAIRS[6:8])
 _bind("junk-jet", ATTACHMENT_AND_CONTINUOUS_PAIRS[8])
 _bind("soratami-cloud-chariot", ATTACHMENT_AND_CONTINUOUS_PAIRS[9])
@@ -943,6 +984,7 @@ __all__ = [
     "PREVENTION_AND_REPLACEMENT_PAIRS",
     "TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS",
     "TRIGGER_AND_REPLACEMENT_PAIRS",
+    "TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS",
     "ZONE_AND_CHOICE_PAIRS",
     "assert_high_risk_boundary_pairs",
 ]

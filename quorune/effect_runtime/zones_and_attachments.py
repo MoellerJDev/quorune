@@ -302,6 +302,7 @@ def _apply_reanimate_attached_creature_aura(
         aura,
         creature,
         source_timestamp=host._next_zone_timestamp(),
+        players=host.state.players,
     )
     link_annotation = str(
         effect.get("link_annotation") or "reanimated_creature"
@@ -420,6 +421,7 @@ def _apply_attach(
             if equipment.attached_to == creature.object_id
             else host._next_zone_timestamp()
         ),
+        players=host.state.players,
     )
     host._log(
         actor,

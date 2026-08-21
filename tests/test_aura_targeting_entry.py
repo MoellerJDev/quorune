@@ -12,18 +12,26 @@ from unittest.mock import patch
 from common import ROOT, keep_all, load_assets, make_session, set_fixture_turn
 from quorune.aura import (
     AuraControllerRelation,
+    AuraEnchantSubject,
     AuraEntryChoiceRequired,
     AuraEntryContinuation,
     SimpleEnchantSpec,
+    TypedEnchantSpec,
+    enchant_spec_from_dict,
+    enchant_spec_to_dict,
     legal_aura_target_refs,
+    parse_enchant_line,
     parse_simple_enchant_line,
     simple_enchant_spec_from_oracle,
 )
 from quorune.ability_fragments import (
     ProtectionQualityKind,
     ProtectionSpec,
+    ability_fragment_from_dict,
     ability_fragment_to_dict,
 )
+from quorune.target_forms import TargetCharacteristicForm
+from quorune.targets import TargetGroup
 from quorune.card_programs import compile_card_program
 from quorune.carddb import CardDatabase, CardRecord
 from quorune.compiler.program_generation import (
@@ -174,6 +182,175 @@ class SimpleEnchantModelTests(unittest.TestCase):
             SimpleEnchantSpec("tapped creature").target_schema()["tapped"]
         )
 
+    def test_typed_enchant_grammar_and_fragments_are_closed(self):
+        expected = {
+            "Enchant player": ("player", "any", "player_relation"),
+            "Enchant opponent": ("player", "opponent", "player_relation"),
+            "Enchant creature or Vehicle": (
+                "permanent",
+                "any",
+                "characteristic_forms_any",
+            ),
+            "Enchant creature, planeswalker, or Clue": (
+                "permanent",
+                "any",
+                "characteristic_forms_any",
+            ),
+            "Enchant basic land you control": (
+                "permanent",
+                "you",
+                "supertypes_any",
+            ),
+            "Enchant non-Wall creature": (
+                "permanent",
+                "any",
+                "subtypes_none",
+            ),
+            "Enchant nonblack creature": (
+                "permanent",
+                "any",
+                "colors_none",
+            ),
+            "Enchant noncommander creature": (
+                "permanent",
+                "any",
+                "commander",
+            ),
+            "Enchant creature card in a graveyard": (
+                "graveyard_card",
+                "any",
+                "types_all",
+            ),
+        }
+        for line, (subject, relation, field) in expected.items():
+            with self.subTest(line=line):
+                spec = parse_enchant_line(line)
+                self.assertIsInstance(spec, TypedEnchantSpec)
+                assert isinstance(spec, TypedEnchantSpec)
+                self.assertEqual(subject, spec.subject.value)
+                self.assertEqual(
+                    relation,
+                    (
+                        spec.player_relation.value
+                        if spec.subject is AuraEnchantSubject.PLAYER
+                        else spec.controller_relation.value
+                    ),
+                )
+                self.assertIn(field, spec.target_schema())
+                serialized = enchant_spec_to_dict(spec)
+                self.assertEqual(spec, enchant_spec_from_dict(serialized))
+                fragment = ability_fragment_to_dict(spec)
+                self.assertEqual(spec, ability_fragment_from_dict(fragment))
+
+        group = TargetGroup.from_mapping(
+            parse_enchant_line("Enchant creature or Vehicle").target_schema()
+        )
+        self.assertTrue(
+            group.matches_type_characteristics(
+                types={"artifact"},
+                subtypes={"vehicle"},
+                supertypes=set(),
+            )
+        )
+        self.assertFalse(
+            group.matches_type_characteristics(
+                types={"artifact"},
+                subtypes={"food"},
+                supertypes=set(),
+            )
+        )
+
+    def test_dynamic_and_malformed_typed_enchant_forms_fail_closed(self):
+        for line in (
+            "Enchant creature without flying",
+            "Enchant creature with another Aura attached to it",
+            "Enchant nonbasic land",
+            "Enchant modified creature",
+            "Enchant creature with power 3 or less",
+            "Enchant creature with mana value 2 or less",
+        ):
+            with self.subTest(line=line):
+                self.assertIsNone(parse_enchant_line(line))
+        spec = TypedEnchantSpec(
+            subject=AuraEnchantSubject.PERMANENT,
+            characteristic_forms_any=(
+                TargetCharacteristicForm(types_all=("creature",)),
+                TargetCharacteristicForm(subtypes_any=("vehicle",)),
+            ),
+        )
+        for malformed in (
+            {**spec.to_dict(), "unexpected": True},
+            {**spec.to_dict(), "subject": "stack"},
+            {**spec.to_dict(), "types_all": "land"},
+            {
+                **spec.to_dict(),
+                "characteristic_forms_any": [
+                    {
+                        "types_all": [],
+                        "subtypes_any": [],
+                        "supertypes_any": [],
+                    }
+                ],
+            },
+        ):
+            with self.subTest(malformed=malformed):
+                with self.assertRaises(ValueError):
+                    TypedEnchantSpec.from_dict(malformed)
+
+    def test_typed_enchant_target_form_mutant_is_killed(self):
+        group = TargetGroup.from_mapping(
+            parse_enchant_line("Enchant creature or Vehicle").target_schema()
+        )
+
+        def assert_vehicle_matches() -> None:
+            self.assertTrue(
+                group.matches_type_characteristics(
+                    types={"artifact"},
+                    subtypes={"vehicle"},
+                    supertypes=set(),
+                )
+            )
+
+        assert_vehicle_matches()
+        with patch.object(
+            TargetCharacteristicForm,
+            "matches",
+            return_value=False,
+        ):
+            with self.assertRaises(AssertionError):
+                assert_vehicle_matches()
+
+    def test_typed_enchant_compiler_closes_representative_family(self):
+        registry = load_default_capability_registry()
+        for restriction in (
+            "player",
+            "opponent",
+            "creature or Vehicle",
+            "creature, planeswalker, or Clue",
+            "basic land you control",
+            "non-Wall creature",
+            "creature card in a graveyard",
+        ):
+            with self.subTest(restriction=restriction):
+                ir = compile_oracle_card(
+                    aura_record(
+                        f"fixture:typed-aura:{restriction}",
+                        restriction=restriction,
+                    ),
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                enchant = ir.faces[0].nodes[0]
+                self.assertTrue(enchant.exact)
+                self.assertEqual(
+                    ("attachment.aura.typed_restriction",),
+                    enchant.capability_dependencies,
+                )
+                self.assertEqual(
+                    "ability.static.enchant.typed.v2",
+                    enchant.handlers[0]["handler_id"],
+                )
+
     def test_continuation_rejects_malformed_entries(self):
         effect = {"op": "move", "nested": {"values": [1]}}
         value = {
@@ -258,7 +435,6 @@ class SimpleEnchantModelTests(unittest.TestCase):
                 self.assertFalse(qualified.faces[0].residuals)
 
         for restriction in (
-            "creature or Vehicle",
             "creature without flying",
             "creature with power 3 or less",
             "creature with another Aura attached to it",
@@ -633,6 +809,296 @@ class AuraTargetingEntryEngineTests(unittest.TestCase):
             self.assertEqual("graveyard", aura.zone)
             self.assertFalse(engine.state.stack)
 
+    def test_player_aura_cast_attachment_projection_and_replay(self):
+        session, aura, _target, records = self.fixture(
+            restriction="player"
+        )
+        engine = session.engine
+        engine.state.players["A"].mana_pool["U"] = 1
+        with records:
+            action = next(
+                action
+                for action in engine._priority_action_hints("A")["actions"]
+                if action.get("card") == aura.ref
+            )
+            self.assertEqual(
+                {"A", "B"},
+                set(action["target_schema"]["legal_refs"]),
+            )
+            engine._cast(
+                "A",
+                {
+                    "card": aura.ref,
+                    "targets": ["B"],
+                    "pay": "manual",
+                    "payment": {"U": 1},
+                },
+            )
+            engine.permissions.invalidate_current()
+            engine.state.pending_decision = None
+            engine.state.priority_player = None
+            engine._prepare_stack_resolution()
+            self.assertEqual("player:B", aura.attached_to)
+            self.assertIn(aura.object_id, engine.state.players["B"].attachments)
+            self.assertTrue(
+                engine._attachment_is_legal(aura, subtypes={"aura"})
+            )
+            for principal in ("pilot:A", "pilot:B"):
+                rendered = json.dumps(
+                    session.projector._snapshot(principal),
+                    sort_keys=True,
+                )
+                self.assertIn('"at": "B"', rendered)
+                self.assertNotIn("player:B", rendered)
+                self.assertNotIn(aura.object_id, rendered)
+
+            engine.state.pending_decision = None
+            engine.state.priority_player = None
+            engine.state.priority_passes = []
+            engine._grant_priority("A")
+            engine.pump()
+            session.initial_checkpoint = checkpoint_envelope(engine.state)
+            session.commands.clear()
+            session.decisions.clear()
+            result = session.act("pilot:A", {"action_id": "pass"})
+            self.assertTrue(result.ok, result.summary)
+            with tempfile.TemporaryDirectory() as temporary:
+                record_dir = Path(temporary) / "player-aura-replay"
+                session.save(record_dir)
+                replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+
+    def test_nonspell_player_aura_entry_uses_seat_choice(self):
+        session, aura, _target, records = self.fixture(
+            restriction="player"
+        )
+        engine = session.engine
+        engine.move_card(aura.object_id, "graveyard", log=False)
+        item = StackItem(
+            stack_id="test-player-aura-entry",
+            ref="S-player-aura-entry",
+            kind="spell",
+            controller="A",
+            label="Return a player Aura",
+            semantic_key="test:player-aura-entry",
+            visibility=["A", "B"],
+        )
+        engine.state.stack.append(item)
+        with records:
+            engine._continue_resolution(
+                stack_ref=item.ref,
+                effects=[
+                    {
+                        "op": "move",
+                        "card": aura.ref,
+                        "destination": "battlefield",
+                        "controller": "A",
+                    }
+                ],
+                destination=None,
+                note="Player Aura nonspell entry",
+            )
+            decision = engine.state.pending_decision
+            self.assertEqual("aura.entry", decision.kind)
+            choice = decision.payload_by_actor["A"]["legal_actions"][0][
+                "choice_schema"
+            ]["aura_target"]
+            self.assertEqual("seat", choice["type"])
+            self.assertEqual({"A", "B"}, set(choice["legal_seats"]))
+            capability = engine.permissions.capability_for("pilot:A")
+            self.assertIsNotNone(capability)
+            result = engine.submit(
+                token=capability.token,
+                principal="pilot:A",
+                action="choose",
+                payload={"aura_target": "B"},
+            )
+            self.assertTrue(result.ok)
+        self.assertEqual("battlefield", aura.zone)
+        self.assertEqual("player:B", aura.attached_to)
+        self.assertIn(aura.object_id, engine.state.players["B"].attachments)
+
+    def test_live_mixed_characteristic_legality_uses_effective_types(self):
+        session, aura, target, records = self.fixture(
+            restriction="creature or Vehicle"
+        )
+        engine = session.engine
+        base_power = engine._numeric_stat(target.object_id, "power")
+        with records:
+            engine.move_card(
+                aura.object_id,
+                "battlefield",
+                controller="A",
+                aura_target_ref=target.ref,
+                log=False,
+            )
+            self.assertTrue(
+                engine._attachment_is_legal(aura, subtypes={"aura"})
+            )
+            self.assertEqual(
+                base_power + 1,
+                engine._numeric_stat(target.object_id, "power"),
+            )
+            target.annotations["copy_overrides"] = {
+                "type_line": "Artifact — Vehicle"
+            }
+            self.assertTrue(
+                engine._attachment_is_legal(aura, subtypes={"aura"})
+            )
+            target.annotations["copy_overrides"] = {
+                "type_line": "Artifact — Food"
+            }
+            self.assertFalse(
+                engine._attachment_is_legal(aura, subtypes={"aura"})
+            )
+            self.assertFalse(engine._stabilize())
+        self.assertEqual("graveyard", aura.zone)
+
+    def test_opponent_player_aura_is_four_player_seat_scoped(self):
+        session = make_session(
+            self.db,
+            self.mishra,
+            self.zimone,
+            players=4,
+            seed=303406,
+            auto_pass_empty=False,
+        )
+        keep_all(session)
+        engine = session.engine
+        aura = self.add_fixture_aura(engine, "A", "hand")
+        spec = parse_enchant_line("Enchant opponent")
+        self.assertIsInstance(spec, TypedEnchantSpec)
+        assert isinstance(spec, TypedEnchantSpec)
+        with self.fixture_aura_records(engine):
+            self.assertEqual(
+                {"B", "C", "D"},
+                set(
+                    legal_aura_target_refs(
+                        engine,
+                        aura,
+                        spec,
+                        controller="A",
+                        as_target=True,
+                    )
+                ),
+            )
+
+    def test_player_departure_makes_attached_aura_illegal(self):
+        session = make_session(
+            self.db,
+            self.mishra,
+            self.zimone,
+            players=4,
+            seed=303407,
+            auto_pass_empty=False,
+        )
+        keep_all(session)
+        engine = session.engine
+        created = engine.create_token(
+            "A",
+            name="Player Aura",
+            characteristics={
+                "type_line": "Token Enchantment — Aura",
+                "oracle_text": "Enchant player",
+                "colors": ["U"],
+                "ability_fragments": [
+                    ability_fragment_to_dict(
+                        TypedEnchantSpec(
+                            subject=AuraEnchantSubject.PLAYER
+                        )
+                    )
+                ],
+            },
+            aura_target_ref="B",
+        )
+        self.assertEqual(1, len(created))
+        aura = engine._resolve_object(
+            "A", created[0], zones={"battlefield"}
+        )
+        self.assertEqual("player:B", aura.attached_to)
+        engine.state.players["B"].in_game = False
+        self.assertFalse(
+            engine._attachment_is_legal(aura, subtypes={"aura"})
+        )
+        self.assertFalse(engine._stabilize())
+        self.assertEqual("outside", aura.zone)
+        self.assertNotIn(
+            aura.object_id,
+            engine.state.players["B"].attachments,
+        )
+
+    def test_player_protection_makes_attached_aura_illegal(self):
+        session = make_session(
+            self.db,
+            self.mishra,
+            self.zimone,
+            players=4,
+            seed=303408,
+            auto_pass_empty=False,
+        )
+        keep_all(session)
+        engine = session.engine
+        created = engine.create_token(
+            "A",
+            name="Protected Player Aura",
+            characteristics={
+                "type_line": "Token Enchantment — Aura",
+                "oracle_text": "Enchant player",
+                "colors": ["U"],
+                "ability_fragments": [
+                    ability_fragment_to_dict(
+                        TypedEnchantSpec(
+                            subject=AuraEnchantSubject.PLAYER
+                        )
+                    )
+                ],
+            },
+            aura_target_ref="B",
+        )
+        aura = engine._resolve_object(
+            "A", created[0], zones={"battlefield"}
+        )
+        engine.state.players["B"].stats[
+            "protection_from_everything_until_next_turn"
+        ] = True
+        self.assertFalse(
+            engine._attachment_is_legal(aura, subtypes={"aura"})
+        )
+        self.assertFalse(engine._stabilize())
+        self.assertEqual("outside", aura.zone)
+        self.assertNotIn(
+            aura.object_id,
+            engine.state.players["B"].attachments,
+        )
+
+    def test_graveyard_card_aura_attachment_clears_on_zone_change(self):
+        session, aura, target, records = self.fixture(
+            restriction="creature card in a graveyard"
+        )
+        engine = session.engine
+        engine.move_card(target.object_id, "graveyard", log=False)
+        engine.state.players["A"].mana_pool["U"] = 1
+        with records:
+            engine._cast(
+                "A",
+                {
+                    "card": aura.ref,
+                    "targets": [target.ref],
+                    "pay": "manual",
+                    "payment": {"U": 1},
+                },
+            )
+            engine.permissions.invalidate_current()
+            engine.state.pending_decision = None
+            engine.state.priority_player = None
+            engine._prepare_stack_resolution()
+            self.assertEqual(target.object_id, aura.attached_to)
+            self.assertIn(aura.object_id, target.attachments)
+            engine.move_card(target.object_id, "hand", log=False)
+            self.assertIsNone(aura.attached_to)
+            self.assertFalse(engine._stabilize())
+        self.assertEqual("graveyard", aura.zone)
+
     def test_live_aura_paths_never_recompile_oracle_text(self):
         session, aura, target, records = self.fixture()
         engine = session.engine
@@ -1000,3 +1466,5 @@ class AuraTargetingEntryEngineTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    parse_enchant_line,
+    ability_fragment_from_dict,

@@ -214,6 +214,58 @@ class AttachedContinuousModelTests(unittest.TestCase):
         self.assertEqual(1, returned.characteristics["power"])
         self.assertFalse(returned.applied_effects)
 
+    def test_attached_subject_type_is_rechecked_before_modifier_layers(self):
+        descriptor_value = descriptor(
+            "Enchanted creature gets -4/-0."
+        )
+        self.assertEqual(
+            ["creature"],
+            descriptor_value["condition"]["types_all"],
+        )
+        effects = AttachedFixedCharacteristicsHandler().lower(
+            descriptor_value,
+            self.context(),
+        )
+        vehicle = CharacteristicState(
+            name="Vehicle",
+            controller="B",
+            card_types={"Artifact"},
+            subtypes={"Vehicle"},
+            abilities=[],
+            power=4,
+            toughness=4,
+        )
+        result = evaluate_continuous_effects(
+            vehicle,
+            effects,
+            context={
+                "object_id": "target",
+                "logical_object_id": "target@0",
+                "zone": "battlefield",
+                "owner": "B",
+            },
+        )
+        self.assertEqual(4, result.characteristics["power"])
+        self.assertFalse(result.applied_effects)
+
+        legacy = copy.deepcopy(descriptor_value)
+        legacy["condition"].pop("types_all")
+        legacy_effects = AttachedFixedCharacteristicsHandler().lower(
+            legacy,
+            self.context(),
+        )
+        legacy_result = evaluate_continuous_effects(
+            vehicle,
+            legacy_effects,
+            context={
+                "object_id": "target",
+                "logical_object_id": "target@0",
+                "zone": "battlefield",
+                "owner": "B",
+            },
+        )
+        self.assertEqual(0, legacy_result.characteristics["power"])
+
     def test_type_and_ability_removal_use_their_canonical_layers(self):
         type_effect = AttachedFixedCharacteristicsHandler().lower(
             descriptor(

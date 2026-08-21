@@ -1066,6 +1066,110 @@
       "applicability_note": "Replay the seat-scoped entry selection and exact reciprocal attachment."
     },
     {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_live_mixed_characteristic_legality_uses_effective_types",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Recheck the shared current effective type/subtype snapshot as one attached target changes from creature to Vehicle and then to an illegal Food."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_departure_makes_attached_aura_illegal",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Make a formerly active player ineligible, move the attached Aura by state-based action, and clear the reciprocal player relation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_protection_makes_attached_aura_illegal",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Re-evaluate represented player Protection from everything, move the now-illegal Aura by state-based action, and clear the reciprocal relation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_opponent_player_aura_is_four_player_seat_scoped",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Enumerate exactly the three active opposing seats for an Enchant opponent Aura in four-player Commander."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_typed_enchant_target_form_mutant_is_killed",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of mixed type/subtype alternative matching from the canonical target-characteristic query."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "negative",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_dynamic_and_malformed_typed_enchant_forms_fail_closed",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Reject numeric, modified, attached, keyword-negative, nonbasic, unknown-subject, conflicting, and malformed restriction values before runtime mutation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_graveyard_card_aura_attachment_clears_on_zone_change",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Target and enchant a public creature card in a graveyard, then clear both halves of the relation when that card changes zones."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_nonspell_player_aura_entry_uses_seat_choice",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend nonspell Aura entry on one server-issued seat choice, restore the typed continuation, revalidate the selected player, and commit the reciprocal relation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_aura_cast_attachment_projection_and_replay",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Cast and resolve a player Aura through the ordinary target and stack path, then retain one reciprocal player attachment."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_typed_enchant_compiler_closes_representative_family",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower representative restrictions from every supported subject and predicate category to one exact source-spanned typed handler and capability dependency."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "positive",
+      "test_id": "tests.test_aura_targeting_entry.SimpleEnchantModelTests.test_typed_enchant_grammar_and_fragments_are_closed",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Normalize, serialize, restore, and match the closed player, graveyard-card, type, subtype, supertype, color, commander, controller, and mixed characteristic restriction forms."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_aura_cast_attachment_projection_and_replay",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Project the public attached seat to both principals without exposing authoritative object IDs or the internal player-target encoding."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "replay",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_player_aura_cast_attachment_projection_and_replay",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Checkpoint and replay the reciprocal player attachment and principal-safe public projection exactly."
+    },
+    {
       "capability_id": "attachment.equip.fixed_mana",
       "evidence_class": "interaction",
       "test_id": "tests.test_attached_static_characteristics.AttachedStaticEngineTests.test_aura_equipment_anthem_temporary_effect_and_draw_compose",
@@ -4608,6 +4712,14 @@
       "official_rule_ids": ["604.1", "611.3a", "611.3b", "611.3c", "613.1f", "613.6"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Pin the widened continuous-component registry with a typed characteristic checkpoint and replay the following command exactly."
+    },
+    {
+      "capability_id": "continuous.attached.fixed_characteristics",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_attached_static_characteristics.AttachedContinuousModelTests.test_attached_subject_type_is_rechecked_before_modifier_layers",
+      "official_rule_ids": ["301.5", "303.4", "604.1", "611.3a", "611.3b", "613.1d", "613.1f", "613.1g", "613.6", "701.3c"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Re-evaluate the printed enchanted-creature or fortified-land subject after type layers and before applying layer-6 or layer-7 modifiers; retain the source-pinned legacy descriptor path for replay."
     },
     {
       "capability_id": "continuous.attached.fixed_characteristics",

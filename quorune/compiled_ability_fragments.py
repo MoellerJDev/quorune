@@ -12,6 +12,7 @@ from .enchant_spec import (
     EnchantSpec,
     LinkedGraveyardCreatureEnchantSpec,
     SimpleEnchantSpec,
+    TypedEnchantSpec,
 )
 from .semantic_runtime.ability_fragments import fragments_from_descriptors
 
@@ -126,7 +127,11 @@ def compiled_enchant_spec(
         for fragment in fragments
         if isinstance(
             fragment,
-            (SimpleEnchantSpec, LinkedGraveyardCreatureEnchantSpec),
+            (
+                SimpleEnchantSpec,
+                TypedEnchantSpec,
+                LinkedGraveyardCreatureEnchantSpec,
+            ),
         )
     )
     if len(specs) == 1:

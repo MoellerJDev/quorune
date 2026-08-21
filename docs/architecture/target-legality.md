@@ -65,6 +65,14 @@ player/controller restriction remain cumulative in the same typed decision
 boundary. Non-target selection and attachment legality deliberately bypass
 targeting prohibitions and use their own rules owners.
 
+Compiled Aura restrictions still reuse `TargetGroup` for candidate generation
+and current characteristic matching. Cast and resolution checks apply ordinary
+targeting protection; live attachment checks set the non-target mode and apply
+only attachment-specific Protection. The attachment owner records reciprocal
+object, public graveyard-card, or player-seat relations, while state-based
+actions re-evaluate the same compiled restriction after characteristic,
+controller, zone, or active-player changes.
+
 ## Compiler, capabilities, and reusable pieces
 
 A source-spanned bare `Hexproof` or `Shroud` keyword lowers through CardProgram

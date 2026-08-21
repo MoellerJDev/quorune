@@ -1191,6 +1191,17 @@ def _affected_player_choice_covered_mechanics(
     return covered
 
 
+def _has_aura_attachment_capability(supplied: set[str]) -> bool:
+    return bool(
+        supplied.intersection(
+            {
+                "attachment.aura.simple_object",
+                "attachment.aura.typed_restriction",
+            }
+        )
+    )
+
+
 def capability_covered_mechanics(
     dependencies: Iterable[str],
 ) -> tuple[str, ...]:
@@ -1243,7 +1254,7 @@ def capability_covered_mechanics(
     if FIXED_CHOOSE_ONE_MODAL_CAPABILITY in supplied:
         covered.add(FIXED_CHOOSE_ONE_MODAL_MECHANIC)
     covered.update(_affected_player_choice_covered_mechanics(supplied))
-    if "attachment.aura.simple_object" in supplied:
+    if _has_aura_attachment_capability(supplied):
         covered.add("enchant")
     if "protection.typed.debt" in supplied:
         covered.add("protection")

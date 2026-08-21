@@ -25,7 +25,7 @@ from ..ability_fragments import (
     ToxicSpec,
     ability_fragment_from_dict,
 )
-from ..enchant_spec import SimpleEnchantSpec
+from ..enchant_spec import SimpleEnchantSpec, TypedEnchantSpec
 from ..enchant_spec import LinkedGraveyardCreatureEnchantSpec
 from ..declaration_fragments import DECLARATION_COMPONENT_CAPABILITY_ID
 from ..rules.capabilities import load_default_capability_registry
@@ -35,6 +35,7 @@ from .context import SemanticNodeError
 
 
 ENCHANT_FRAGMENT_HANDLER_ID = "ability.static.enchant.v1"
+TYPED_ENCHANT_FRAGMENT_HANDLER_ID = "ability.static.enchant.typed.v2"
 LINKED_GRAVEYARD_ENCHANT_HANDLER_ID = (
     "ability.enchant.linked_graveyard_creature.v1"
 )
@@ -139,6 +140,36 @@ class EnchantAbilityFragmentHandler:
             handler_id=self.handler_id,
             event=self.event,
             expected_type=SimpleEnchantSpec,
+        )
+
+    def lower(
+        self,
+        descriptor: Mapping[str, Any],
+        context: object,
+    ) -> tuple[StaticAbilityFragment, ...]:
+        del context
+        return (self.validate(descriptor),)
+
+
+@dataclass(frozen=True, slots=True)
+class TypedEnchantAbilityFragmentHandler:
+    handler_id: str = TYPED_ENCHANT_FRAGMENT_HANDLER_ID
+    schema_version: int = 1
+    family: str = "ability.static.enchant.typed"
+    event: str = "continuous"
+    rule_references: tuple[str, ...] = ("303.4", "702.5a")
+    capability_dependencies: tuple[str, ...] = (
+        "attachment.aura.typed_restriction",
+    )
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> TypedEnchantSpec:
+        return _fragment(
+            descriptor,
+            handler_id=self.handler_id,
+            event=self.event,
+            expected_type=TypedEnchantSpec,
         )
 
     def lower(
@@ -1012,6 +1043,7 @@ def default_ability_fragment_registry() -> AbilityFragmentRegistry:
             DethroneAbilityFragmentHandler(),
             DynamicPowerToughnessAbilityFragmentHandler(),
             EnchantAbilityFragmentHandler(),
+            TypedEnchantAbilityFragmentHandler(),
             ExaltedAbilityFragmentHandler(),
             FlankingAbilityFragmentHandler(),
             LinkedGraveyardEnchantFragmentHandler(),
@@ -1048,6 +1080,7 @@ def fragments_from_descriptors(
 __all__ = [
     "ALL_CREATURE_TYPES_CHARACTERISTIC_DEFINITION_FRAGMENT_HANDLER_ID",
     "ENCHANT_FRAGMENT_HANDLER_ID",
+    "TYPED_ENCHANT_FRAGMENT_HANDLER_ID",
     "BUSHIDO_FRAGMENT_HANDLER_ID",
     "BATTLE_CRY_FRAGMENT_HANDLER_ID",
     "CASCADE_FRAGMENT_HANDLER_ID",
@@ -1073,6 +1106,7 @@ __all__ = [
     "WARD_FRAGMENT_HANDLER_ID",
     "TOXIC_FRAGMENT_HANDLER_ID",
     "EnchantAbilityFragmentHandler",
+    "TypedEnchantAbilityFragmentHandler",
     "BushidoAbilityFragmentHandler",
     "BattleCryAbilityFragmentHandler",
     "CascadeAbilityFragmentHandler",
