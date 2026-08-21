@@ -262,23 +262,32 @@ class RulesSchedulerTests(unittest.TestCase):
             selected["rule_ids"],
             [rule["rule_id"] for rule in next_batch["next"]],
         )
-        self.assertEqual(
-            self.queue["work_selection"]["selected_candidate_id"],
-            next_batch["selected_work"]["candidate_id"],
-        )
-        self.assertNotIn(
-            "reusable_piece_ids", next_batch["selected_work"]
-        )
-        selected_work = next(
-            candidate
-            for candidate in self.queue["work_selection"]["candidates"]
-            if candidate["candidate_id"]
-            == self.queue["work_selection"]["selected_candidate_id"]
-        )
-        self.assertEqual(
-            len(selected_work["reusable_piece_ids"]),
-            next_batch["selected_work"]["reusable_piece_count"],
-        )
+        selected_work_id = self.queue["work_selection"][
+            "selected_candidate_id"
+        ]
+        if selected_work_id is None:
+            self.assertEqual(
+                0,
+                self.queue["work_selection"]["eligible_candidate_count"],
+            )
+            self.assertIsNone(next_batch["selected_work"])
+        else:
+            self.assertEqual(
+                selected_work_id,
+                next_batch["selected_work"]["candidate_id"],
+            )
+            self.assertNotIn(
+                "reusable_piece_ids", next_batch["selected_work"]
+            )
+            selected_work = next(
+                candidate
+                for candidate in self.queue["work_selection"]["candidates"]
+                if candidate["candidate_id"] == selected_work_id
+            )
+            self.assertEqual(
+                len(selected_work["reusable_piece_ids"]),
+                next_batch["selected_work"]["reusable_piece_count"],
+            )
         self.assertIn("queue", CORPUS_OPERATIONS)
         self.assertEqual(
             self.queue["fingerprint"],
