@@ -335,16 +335,16 @@
     }
   ],
   "work_selection": {
-    "policy_version": 1,
+    "policy_version": 2,
     "priority_classes": [
       "ci_correctness",
       "replay_privacy_defect",
       "architecture_owner_extraction",
       "runtime_oracle_removal",
       "interaction_assurance",
+      "rules_foundation",
       "compiler_harvest",
       "card_family",
-      "rules_foundation",
       "architecture_debt"
     ],
     "interaction_assurance": {
@@ -354,16 +354,106 @@
       "minimum_complete_card_gain": 50,
       "minimum_exact_ability_gain": 100,
       "minimum_material_residual_reduction": 100,
+      "minimum_prerequisite_complete_card_gain": 10,
+      "minimum_prerequisite_downstream_card_gain": 100,
+      "maximum_consecutive_prerequisite_exceptions": 1,
       "candidate_limit": 5,
       "rank_order": [
+        "expected_complete_card_gain",
         "expected_exact_ability_gain",
-        "expected_material_residual_reduction",
-        "expected_complete_card_gain"
+        "expected_material_residual_reduction"
       ],
       "excluded_efforts": [
         "very_large"
-      ]
+      ],
+      "approved_prerequisite_exceptions": []
     },
+    "harvest_outcome_history": [
+      {
+        "candidate_id": "compiler:typed-combat-prevention",
+        "expected_complete_card_gain": 90,
+        "actual_complete_card_gain": 90,
+        "actual_exact_ability_gain": 110,
+        "actual_material_residual_reduction": 116
+      },
+      {
+        "candidate_id": "compiler:ordinary-cascade",
+        "expected_complete_card_gain": 19,
+        "actual_complete_card_gain": 19,
+        "actual_exact_ability_gain": 42,
+        "actual_material_residual_reduction": 37
+      },
+      {
+        "candidate_id": "compiler:fixed-mill-instructions",
+        "expected_complete_card_gain": 44,
+        "actual_complete_card_gain": 44,
+        "actual_exact_ability_gain": 62,
+        "actual_material_residual_reduction": 105
+      },
+      {
+        "candidate_id": "compiler:fixed-surveil-instructions",
+        "expected_complete_card_gain": 62,
+        "actual_complete_card_gain": 62,
+        "actual_exact_ability_gain": 63,
+        "actual_material_residual_reduction": 103
+      },
+      {
+        "candidate_id": "compiler:fixed-entry-state-conditions",
+        "expected_complete_card_gain": 46,
+        "actual_complete_card_gain": 46,
+        "actual_exact_ability_gain": 73,
+        "actual_material_residual_reduction": 73
+      },
+      {
+        "candidate_id": "compiler:ordinary-fixed-mana-bestow",
+        "expected_complete_card_gain": 17,
+        "actual_complete_card_gain": 17,
+        "actual_exact_ability_gain": 41,
+        "actual_material_residual_reduction": 41
+      },
+      {
+        "candidate_id": "compiler:qualified-object-enchant",
+        "expected_complete_card_gain": 7,
+        "actual_complete_card_gain": 7,
+        "actual_exact_ability_gain": 28,
+        "actual_material_residual_reduction": 167
+      },
+      {
+        "candidate_id": "compiler:fixed-next-turn-upkeep-draw",
+        "expected_complete_card_gain": 18,
+        "actual_complete_card_gain": 18,
+        "actual_exact_ability_gain": 46,
+        "actual_material_residual_reduction": 46
+      },
+      {
+        "candidate_id": "compiler:ordinary-storm",
+        "expected_complete_card_gain": 13,
+        "actual_complete_card_gain": 13,
+        "actual_exact_ability_gain": 33,
+        "actual_material_residual_reduction": 33
+      },
+      {
+        "candidate_id": "compiler:fixed-affected-player-sacrifice",
+        "expected_complete_card_gain": 20,
+        "actual_complete_card_gain": 20,
+        "actual_exact_ability_gain": 32,
+        "actual_material_residual_reduction": 45
+      },
+      {
+        "candidate_id": "compiler:fixed-mana-value-direct-targets",
+        "expected_complete_card_gain": 14,
+        "actual_complete_card_gain": 14,
+        "actual_exact_ability_gain": 18,
+        "actual_material_residual_reduction": 21
+      },
+      {
+        "candidate_id": "compiler:fixed-affected-player-discards",
+        "expected_complete_card_gain": 51,
+        "actual_complete_card_gain": 51,
+        "actual_exact_ability_gain": 54,
+        "actual_material_residual_reduction": 93
+      }
+    ],
     "reviewed_rerank_history": [
       {
         "candidate_id": "rules:ordinary-shroud-target-legality",
