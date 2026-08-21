@@ -902,7 +902,7 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
         )
         manual = GeneratorSpec(
             id="manual",
-            depends_on=(),
+            depends_on=("cacheable",),
             outputs=("manual.txt",),
             check=("manual.py", "--check"),
             write=None,

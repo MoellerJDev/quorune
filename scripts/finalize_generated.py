@@ -227,13 +227,10 @@ def check_assembled(
 ) -> tuple[dict[str, object], ...]:
     """Check only boundaries not already certified by reusable receipts."""
 
-    noncacheable = tuple(
-        spec
-        for spec in specs
-        if spec.reuse_policy != "safe"
-    )
     failures: list[dict[str, object]] = []
-    for spec in topological_order(noncacheable):
+    for spec in topological_order(specs):
+        if spec.reuse_policy == "safe":
+            continue
         command = check_command(spec)
         returncode = runner(spec.id, command)
         if returncode:
