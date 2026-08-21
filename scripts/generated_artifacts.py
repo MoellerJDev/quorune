@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 import json
 from pathlib import Path, PurePosixPath, PureWindowsPath
 import re
@@ -12,6 +13,18 @@ from typing import Any, Mapping, Sequence
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "platform" / "generated-artifacts.json"
 _WRITE_POLICIES = {"automatic", "database", "manual"}
+_DATABASE_IDENTITIES = {"none", "pinned-card-database"}
+_EXECUTION_CLASSES = {
+    "manual",
+    "foundation",
+    "corpus",
+    "fanout",
+    "architecture",
+    "reusable",
+    "compact",
+    "scheduler",
+}
+_REUSE_POLICIES = {"safe", "noncacheable"}
 
 
 class GeneratedArtifactManifestError(ValueError):
@@ -27,6 +40,12 @@ class GeneratorSpec:
     write: tuple[str, ...] | None
     write_with_database: tuple[str, ...] | None
     write_policy: str
+    input_groups: tuple[str, ...] = ()
+    input_paths: tuple[str, ...] = ()
+    implementation_inputs: tuple[str, ...] = ()
+    database_identity: str = "none"
+    execution_class: str = "foundation"
+    reuse_policy: str = "noncacheable"
 
 
 @dataclass(frozen=True)
@@ -44,6 +63,20 @@ class GeneratedArtifactDiscoverySpec:
 class GeneratedArtifactOwnershipReport:
     discovered: tuple[str, ...]
     owners: tuple[tuple[str, str], ...]
+
+
+@dataclass(frozen=True)
+class GeneratedArtifactInputGroups:
+    """Canonical reusable source-pattern groups declared by the manifest."""
+
+    groups: tuple[tuple[str, tuple[str, ...]], ...]
+
+    def patterns(self, group_id: str) -> tuple[str, ...]:
+        return dict(self.groups).get(group_id, ())
+
+    @property
+    def ids(self) -> tuple[str, ...]:
+        return tuple(group_id for group_id, _patterns in self.groups)
 
 
 def _string_list(value: object, *, field: str, allow_empty: bool = False) -> tuple[str, ...]:
@@ -77,6 +110,46 @@ def _canonical_relative_path(value: str, *, field: str) -> str:
             f"{field} must be a canonical repository-relative POSIX path: {value}"
         )
     return value
+
+
+def _canonical_input_pattern(value: str, *, field: str) -> str:
+    _canonical_relative_path(value, field=field)
+    if value.endswith("/"):
+        raise GeneratedArtifactManifestError(
+            f"{field} must name a file or file glob: {value}"
+        )
+    return value
+
+
+def parse_input_groups(value: Mapping[str, Any]) -> GeneratedArtifactInputGroups:
+    if not isinstance(value, Mapping) or not value:
+        raise GeneratedArtifactManifestError(
+            "generated-artifact input_groups must be a nonempty object"
+        )
+    rows: list[tuple[str, tuple[str, ...]]] = []
+    for group_id, raw_patterns in value.items():
+        if (
+            type(group_id) is not str
+            or not re.fullmatch(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*", group_id)
+        ):
+            raise GeneratedArtifactManifestError(
+                "generated-artifact input group IDs must be stable kebab-case"
+            )
+        patterns = _string_list(
+            raw_patterns,
+            field=f"generated-artifact input group {group_id}",
+        )
+        if len(patterns) != len(set(patterns)):
+            raise GeneratedArtifactManifestError(
+                f"generated-artifact input group {group_id} contains duplicates"
+            )
+        for pattern in patterns:
+            _canonical_input_pattern(
+                pattern,
+                field=f"generated-artifact input group {group_id}",
+            )
+        rows.append((group_id, patterns))
+    return GeneratedArtifactInputGroups(groups=tuple(sorted(rows)))
 
 
 def parse_discovery(
@@ -146,11 +219,16 @@ def parse_discovery(
 
 
 def parse_manifest(value: Mapping[str, Any]) -> tuple[GeneratorSpec, ...]:
-    if set(value) != {"schema_version", "discovery", "generators"}:
+    if set(value) != {
+        "schema_version",
+        "discovery",
+        "input_groups",
+        "generators",
+    }:
         raise GeneratedArtifactManifestError(
             "generated-artifact manifest has unknown or missing top-level fields"
         )
-    if value.get("schema_version") != 2:
+    if value.get("schema_version") != 3:
         raise GeneratedArtifactManifestError(
             "unsupported generated-artifact manifest schema_version"
         )
@@ -160,6 +238,12 @@ def parse_manifest(value: Mapping[str, Any]) -> tuple[GeneratorSpec, ...]:
             "generated-artifact discovery must contain a JSON object"
         )
     parse_discovery(discovery)
+    raw_input_groups = value.get("input_groups")
+    if not isinstance(raw_input_groups, Mapping):
+        raise GeneratedArtifactManifestError(
+            "generated-artifact input_groups must contain a JSON object"
+        )
+    input_groups = parse_input_groups(raw_input_groups)
     rows = value.get("generators")
     if not isinstance(rows, list) or not rows:
         raise GeneratedArtifactManifestError("generators must be a nonempty list")
@@ -172,6 +256,12 @@ def parse_manifest(value: Mapping[str, Any]) -> tuple[GeneratorSpec, ...]:
         "write",
         "write_with_database",
         "write_policy",
+        "input_groups",
+        "input_paths",
+        "implementation_inputs",
+        "database_identity",
+        "execution_class",
+        "reuse_policy",
     }
     specs: list[GeneratorSpec] = []
     seen_ids: set[str] = set()
@@ -243,6 +333,74 @@ def parse_manifest(value: Mapping[str, Any]) -> tuple[GeneratorSpec, ...]:
             raise GeneratedArtifactManifestError(
                 f"generator {generator_id} declares a duplicate dependency"
             )
+        declared_groups = _string_list(
+            row.get("input_groups"),
+            field=f"generator {generator_id} input_groups",
+            allow_empty=True,
+        )
+        if len(declared_groups) != len(set(declared_groups)):
+            raise GeneratedArtifactManifestError(
+                f"generator {generator_id} declares duplicate input groups"
+            )
+        unknown_groups = sorted(set(declared_groups) - set(input_groups.ids))
+        if unknown_groups:
+            raise GeneratedArtifactManifestError(
+                f"generator {generator_id} has unknown input groups: "
+                + ", ".join(unknown_groups)
+            )
+        input_paths = _string_list(
+            row.get("input_paths"),
+            field=f"generator {generator_id} input_paths",
+            allow_empty=True,
+        )
+        implementation_inputs = _string_list(
+            row.get("implementation_inputs"),
+            field=f"generator {generator_id} implementation_inputs",
+            allow_empty=True,
+        )
+        for field_name, patterns in (
+            ("input_paths", input_paths),
+            ("implementation_inputs", implementation_inputs),
+        ):
+            if len(patterns) != len(set(patterns)):
+                raise GeneratedArtifactManifestError(
+                    f"generator {generator_id} declares duplicate {field_name}"
+                )
+            for pattern in patterns:
+                _canonical_input_pattern(
+                    pattern,
+                    field=f"generator {generator_id} {field_name}",
+                )
+        database_identity = str(row.get("database_identity") or "")
+        if database_identity not in _DATABASE_IDENTITIES:
+            raise GeneratedArtifactManifestError(
+                f"generator {generator_id} has unsupported database_identity"
+            )
+        uses_database = write_with_database is not None
+        if uses_database is not (
+            database_identity == "pinned-card-database"
+        ):
+            raise GeneratedArtifactManifestError(
+                f"generator {generator_id} database identity contradicts its write command"
+            )
+        execution_class = str(row.get("execution_class") or "")
+        if execution_class not in _EXECUTION_CLASSES:
+            raise GeneratedArtifactManifestError(
+                f"generator {generator_id} has unsupported execution_class"
+            )
+        reuse_policy = str(row.get("reuse_policy") or "")
+        if reuse_policy not in _REUSE_POLICIES:
+            raise GeneratedArtifactManifestError(
+                f"generator {generator_id} has unsupported reuse_policy"
+            )
+        if reuse_policy == "safe" and (
+            policy == "manual"
+            or not implementation_inputs
+            or not (declared_groups or input_paths)
+        ):
+            raise GeneratedArtifactManifestError(
+                f"cacheable generator {generator_id} requires complete source and implementation inputs"
+            )
         specs.append(
             GeneratorSpec(
                 id=generator_id,
@@ -254,6 +412,12 @@ def parse_manifest(value: Mapping[str, Any]) -> tuple[GeneratorSpec, ...]:
                 write=write,
                 write_with_database=write_with_database,
                 write_policy=str(policy),
+                input_groups=declared_groups,
+                input_paths=input_paths,
+                implementation_inputs=implementation_inputs,
+                database_identity=database_identity,
+                execution_class=execution_class,
+                reuse_policy=reuse_policy,
             )
         )
 
@@ -451,6 +615,43 @@ def load_manifest(
     return specs
 
 
+def load_input_groups(
+    path: Path = MANIFEST_PATH,
+) -> GeneratedArtifactInputGroups:
+    value = _load_manifest_value(path)
+    raw = value.get("input_groups")
+    if not isinstance(raw, Mapping):
+        raise GeneratedArtifactManifestError(
+            "generated-artifact input_groups must contain a JSON object"
+        )
+    return parse_input_groups(raw)
+
+
+def generator_manifest_fingerprint(spec: GeneratorSpec) -> str:
+    payload = {
+        "id": spec.id,
+        "depends_on": list(spec.depends_on),
+        "outputs": list(spec.outputs),
+        "check": list(spec.check),
+        "write": list(spec.write) if spec.write is not None else None,
+        "write_with_database": (
+            list(spec.write_with_database)
+            if spec.write_with_database is not None
+            else None
+        ),
+        "write_policy": spec.write_policy,
+        "input_groups": list(spec.input_groups),
+        "input_paths": list(spec.input_paths),
+        "implementation_inputs": list(spec.implementation_inputs),
+        "database_identity": spec.database_identity,
+        "execution_class": spec.execution_class,
+        "reuse_policy": spec.reuse_policy,
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
 def topological_order(
     specs: Sequence[GeneratorSpec],
 ) -> tuple[GeneratorSpec, ...]:
@@ -512,12 +713,16 @@ __all__ = [
     "GeneratedArtifactManifestError",
     "GeneratedArtifactOwnershipReport",
     "GeneratorSpec",
+    "GeneratedArtifactInputGroups",
     "MANIFEST_PATH",
     "ROOT",
     "all_outputs",
     "check_command",
     "discover_tracked_generated_artifacts",
     "load_manifest",
+    "load_input_groups",
+    "generator_manifest_fingerprint",
+    "parse_input_groups",
     "parse_discovery",
     "parse_manifest",
     "topological_order",

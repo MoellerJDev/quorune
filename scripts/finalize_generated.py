@@ -280,6 +280,14 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    mode.add_argument(
+        "--assemble",
+        action="store_true",
+        help=(
+            "Verify an already assembled dependency-ordered owner bundle and "
+            "write its exact-head finalization receipt without rerunning owners"
+        ),
+    )
     mode.add_argument("--verify-receipt", action="store_true")
     parser.add_argument("--db")
     parser.add_argument("--include-manual", action="store_true")
@@ -306,6 +314,8 @@ def main() -> int:
     database = _database(args.db)
     if args.write:
         mode_name = "write"
+    elif args.assemble:
+        mode_name = "assemble"
     elif args.verify_receipt:
         mode_name = "receipt"
     else:
@@ -340,7 +350,7 @@ def main() -> int:
             print(json.dumps(result, indent=2, sort_keys=True))
             return 0
         initial_database_identity = (
-            database_identity(database) if args.write else None
+            database_identity(database) if (args.write or args.assemble) else None
         )
         selected_ids: frozenset[str] | None = None
         if args.resume_from:
@@ -377,7 +387,7 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
-        if args.write:
+        if args.write or args.assemble:
             receipt_path, receipt = write_finalization_receipt(
                 specs,
                 database=database,

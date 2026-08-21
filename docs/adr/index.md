@@ -92,3 +92,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0075 — typed fixed-mana Kicker entry](0075-typed-fixed-mana-kicker-entry.md)
 - [ADR 0076 — typed self-zone-move activations](0076-typed-self-zone-move-activations.md)
 - [ADR 0077 — typed fixed Surveil resolution](0077-typed-fixed-surveil-resolution.md)
+- [ADR 0078 — input-fingerprinted generated-owner reuse](0078-input-fingerprinted-generated-owner-reuse.md)

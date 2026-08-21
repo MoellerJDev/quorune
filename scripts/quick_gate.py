@@ -54,7 +54,11 @@ def build_plan(
     paths: Sequence[str],
     *,
     changed_symbols: Sequence[str] = (),
+    phase: str = "normal",
+    base_ref: str = "origin/main",
 ) -> dict:
+    if phase not in {"normal", "pre-corpus"}:
+        raise ValueError(f"unsupported quick-gate phase: {phase}")
     impact = classify_changes(paths, changed_symbols=changed_symbols)
     manifest = load_manifest()
     validate_partition(manifest)
@@ -81,7 +85,32 @@ def build_plan(
             ),
         ),
     ]
-    if "compact-ci-dependencies" in impact.checks:
+    if phase == "pre-corpus":
+        steps.extend(
+            (
+                QuickStep(
+                    "generated-owner-plan",
+                    (
+                        python,
+                        "scripts/cloud_generated_artifacts.py",
+                        "plan",
+                        "--base-ref",
+                        base_ref,
+                    ),
+                ),
+                QuickStep(
+                    "compiler-identity",
+                    (
+                        python,
+                        "scripts/cloud_generated_artifacts.py",
+                        "verify-compiler-identity",
+                        "--base-ref",
+                        base_ref,
+                    ),
+                ),
+            )
+        )
+    if phase == "normal" and "compact-ci-dependencies" in impact.checks:
         steps.append(
             QuickStep(
                 "compact-ci-dependencies",
@@ -167,6 +196,11 @@ def build_plan(
     for check in impact.checks:
         if check == "compact-ci-dependencies":
             continue
+        if phase == "pre-corpus" and (
+            check == "generated-finalization"
+            or check in (_GENERATED_CHECK_ALIASES - {"documentation"})
+        ):
+            continue
         if finalizer_selected and check in _GENERATED_CHECK_ALIASES:
             continue
         command = check_commands.get(check)
@@ -194,6 +228,7 @@ def build_plan(
         "impact": impact.to_dict(),
         "test_modules": selected_modules,
         "database": str(database),
+        "phase": phase,
         "steps": tuple(steps),
     }
 
@@ -246,6 +281,11 @@ def main() -> int:
     )
     parser.add_argument("--base", default="origin/main")
     parser.add_argument("--changed-file", action="append", default=[])
+    parser.add_argument(
+        "--phase",
+        choices=("normal", "pre-corpus"),
+        default="normal",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     paths = (
@@ -255,6 +295,8 @@ def main() -> int:
     )
     plan = build_plan(
         paths,
+        phase=args.phase,
+        base_ref=args.base,
         changed_symbols=(
             ()
             if args.changed_file
@@ -269,6 +311,7 @@ def main() -> int:
             json.dumps(
                 {
                     "impact": plan["impact"],
+                    "phase": plan["phase"],
                     "test_modules": plan["test_modules"],
                     "steps": [asdict(step) for step in plan["steps"]],
                 },
