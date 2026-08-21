@@ -934,6 +934,31 @@
         "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
         "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
       ]
+    },
+    {
+      "exception_id": "ARCH-EXC-0041",
+      "adr": "docs/adr/0079-typed-fixed-public-zone-moves.md",
+      "artifact": "platform/architecture-guard-baseline.json",
+      "allowance_fingerprint": "1f8f51faa07f868982c62a8a49e46a6e9d0b1bababcadda4450a56d880ee8539",
+      "exact_allowance": "Only the schema-4 structural state-write identities, owner classifications, zero prohibited runtime Oracle-text and card-identity dispatch counts, engine methods, size ceilings, Oracle-ID literals, legacy helpers, module classifications, and reviewed public-zone/Commander ownership serialized after typed fixed public-zone movement.",
+      "rationale": "The measured major prerequisite adds strict public-graveyard target and fixed public-set operations plus CR 903.9 owner choices while retaining canonical zone-transition, replacement, trigger, projection, rollback, and replay owners. Direct and unowned GameState writes, Oracle-ID literals, runtime Oracle prose, and prohibited identity dispatch remain flat. The reviewed engine and existing integration-symbol growth is limited to routing typed Commander state choices and replacement snapshots.",
+      "owner": "rules architecture maintainers",
+      "maximum_scope": "The exact residual identities and counts in the rebound schema-4 baseline plus exile_public_graveyard_card, move_public_zone_set, the effect.public-zone-move handlers, Commander CR 903.9 state/replacement choices, and modules described by ADR 0079; new runtime Oracle interpretation, card-identity dispatch, unowned mutation, arbitrary callbacks, dynamic characteristic counts, hidden-origin movement, reanimation, linked or delayed results, CR 903.9c merge/meld behavior, or additional unreviewed operations remain forbidden.",
+      "removal_condition": "Remove the exception when the registered universal-operation and size inventories no longer require baseline review; retain the public-zone and Commander owners only while exact grammar, APNAP selection, replacement ordering, rollback, privacy, mutation, and replay evidence remain enforced.",
+      "target_milestone": "typed public-zone prerequisite for later broad zone-movement harvests",
+      "replay_implications": "CardPrograms record only typed target/set descriptors; Game Record v3 preserves Commander designation and optional per-incarnation decline state, replacement selections, public decisions, canonical zone journals, and final hashes without consulting Oracle prose.",
+      "privacy_implications": "Public graveyard and battlefield candidates remain public; owner-hand results follow existing known-information projection, Commander choices are owner scoped, and physical/logical identities remain outside principal packets.",
+      "security_implications": "Only capability-closed source-spanned programs can emit the strict operations; malformed descriptors, stale identities, unsupported predicates, tampered replacement selections, and wrong-seat Commander responses fail before mutation.",
+      "tests": [
+        "tests.test_fixed_public_zone_moves.FixedPublicZoneMoveCompilerTests.test_type_qualified_public_graveyard_targets_compile_exact",
+        "tests.test_fixed_public_zone_moves.FixedPublicZoneMoveCompilerTests.test_public_zone_move_dependencies_and_shape_mutations_fail_closed",
+        "tests.test_fixed_public_zone_moves.FixedPublicZoneMoveRuntimeTests.test_typed_graveyard_exile_advertises_and_replays",
+        "tests.test_fixed_public_zone_moves.FixedPublicZoneMoveRuntimeTests.test_mass_zone_moves_use_apnap_replacements_and_replay",
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveRuntimeTests.test_commander_hand_and_library_replacement_uses_owner_choice_and_replays",
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveRuntimeTests.test_commander_graveyard_and_exile_state_choice_replays",
+        "tests.test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound",
+        "tests.test_architecture_governance.ArchitectureGovernanceTests.test_exception_is_bound_to_exact_allowance_fingerprint"
+      ]
     }
   ]
 }
