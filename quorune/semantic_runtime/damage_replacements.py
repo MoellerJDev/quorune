@@ -15,6 +15,7 @@ from .context import SemanticNodeError
 
 
 _QUANTITY_HANDLER_ID = "replacement.damage.quantity.v1"
+_QUANTITY_V2_HANDLER_ID = "replacement.damage.quantity.v2"
 _FIXED_PREVENTION_HANDLER_ID = "prevention.damage.fixed.v1"
 _STATIC_REDIRECTION_HANDLER_ID = "replacement.damage.redirect-to-source.v1"
 _RELATIONS = {"any", "source_controller", "opponent"}
@@ -40,6 +41,9 @@ class DamageReplacementCondition:
     source_types_all: tuple[str, ...]
     target_types_all: tuple[str, ...]
     combat: bool | None
+    source_types_any: tuple[str, ...] = ()
+    source_colors_all: tuple[str, ...] = ()
+    exclude_source_ref: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -146,6 +150,72 @@ def _condition(value: Any) -> DamageReplacementCondition:
     )
 
 
+def _condition_v2(value: Any) -> DamageReplacementCondition:
+    if not isinstance(value, Mapping):
+        raise SemanticNodeError(
+            "Damage replacement condition must be an object"
+        )
+    exact_fields(
+        value,
+        {
+            "source_controller_relation",
+            "target_controller_relation",
+            "target_kinds",
+            "source_types_all",
+            "source_types_any",
+            "source_colors_all",
+            "target_types_all",
+            "combat",
+            "exclude_source_ref",
+        },
+        field="damage replacement condition",
+    )
+    base = _condition(
+        {
+            field: value[field]
+            for field in (
+                "source_controller_relation",
+                "target_controller_relation",
+                "target_kinds",
+                "source_types_all",
+                "target_types_all",
+                "combat",
+            )
+        }
+    )
+    source_types_any = _normalized_strings(
+        value["source_types_any"], field="condition.source_types_any"
+    )
+    source_colors_all = tuple(
+        color.upper()
+        for color in _normalized_strings(
+            value["source_colors_all"],
+            field="condition.source_colors_all",
+            allowed=set("wubrgc"),
+        )
+    )
+    exclude_source_ref = value["exclude_source_ref"]
+    if type(exclude_source_ref) is not bool:
+        raise SemanticNodeError(
+            "Damage replacement exclude_source_ref must be a boolean"
+        )
+    if base.source_types_all and source_types_any:
+        raise SemanticNodeError(
+            "Damage replacement cannot combine all and any source types"
+        )
+    return DamageReplacementCondition(
+        source_controller_relation=base.source_controller_relation,
+        target_controller_relation=base.target_controller_relation,
+        target_kinds=base.target_kinds,
+        source_types_all=base.source_types_all,
+        target_types_all=base.target_types_all,
+        combat=base.combat,
+        source_types_any=source_types_any,
+        source_colors_all=source_colors_all,
+        exclude_source_ref=exclude_source_ref,
+    )
+
+
 def _relation_predicate(
     relation: str,
     source_controller: str,
@@ -184,6 +254,16 @@ def _event_conditions(
         result["source_characteristics"] = {
             "contains_all": list(condition.source_types_all)
         }
+    if condition.source_types_any:
+        result["source_characteristics"] = {
+            "contains_any": list(condition.source_types_any)
+        }
+    if condition.source_colors_all:
+        result["source_colors"] = {
+            "contains_all": list(condition.source_colors_all)
+        }
+    if condition.exclude_source_ref:
+        result["source"] = {"not_in": [context.source_ref]}
     if condition.target_types_all:
         result["target_characteristics"] = {
             "contains_all": list(condition.target_types_all)
@@ -197,6 +277,7 @@ def _validate_envelope(
     descriptor: Mapping[str, Any],
     *,
     handler_id: str,
+    schema_version: int = 1,
 ) -> None:
     exact_fields(
         descriptor,
@@ -211,7 +292,7 @@ def _validate_envelope(
     )
     if descriptor["handler_id"] != handler_id:
         raise SemanticNodeError("Runtime handler ID does not match registry")
-    if descriptor["schema_version"] != 1:
+    if descriptor["schema_version"] != schema_version:
         raise SemanticNodeError(f"Unsupported {handler_id} schema version")
     if descriptor["event"] != "damage":
         raise SemanticNodeError(f"{handler_id} must handle damage")
@@ -312,6 +393,48 @@ class DamageQuantityReplacementHandler:
         context: DamageReplacementSourceContext,
     ) -> tuple[ReplacementEffect, ...]:
         return (self.replacement_effect(descriptor, context),)
+
+
+@dataclass(frozen=True, slots=True)
+class DamageQuantityReplacementV2Handler(DamageQuantityReplacementHandler):
+    """Fixed additive damage with typed color, OR-type, and self exclusions."""
+
+    handler_id: str = _QUANTITY_V2_HANDLER_ID
+    schema_version: int = 2
+
+    def validate(
+        self, descriptor: Mapping[str, Any]
+    ) -> DamageQuantityReplacementNode:
+        _validate_envelope(
+            descriptor,
+            handler_id=self.handler_id,
+            schema_version=self.schema_version,
+        )
+        modification = descriptor["modification"]
+        if not isinstance(modification, Mapping):
+            raise SemanticNodeError(
+                "Damage quantity modification must be an object"
+            )
+        exact_fields(
+            modification,
+            {"multiplier", "additional"},
+            field="damage quantity modification",
+        )
+        multiplier = modification["multiplier"]
+        additional = modification["additional"]
+        if type(multiplier) is not int or multiplier < 1:
+            raise SemanticNodeError(
+                "Damage multiplier must be a positive integer"
+            )
+        if type(additional) is not int or additional < 1:
+            raise SemanticNodeError(
+                "V2 additive damage must be a positive integer"
+            )
+        return DamageQuantityReplacementNode(
+            condition=_condition_v2(descriptor["condition"]),
+            multiplier=multiplier,
+            additional=additional,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -492,6 +615,7 @@ def default_damage_replacement_registry() -> DamageReplacementRegistry:
     registry = DamageReplacementRegistry(
         (
             DamageQuantityReplacementHandler(),
+            DamageQuantityReplacementV2Handler(),
             FixedDamagePreventionHandler(),
             StaticDamageRedirectionHandler(),
         )

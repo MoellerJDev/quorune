@@ -18,6 +18,7 @@ from quorune import (
     GameConfig,
 )
 from quorune.cli import main
+from quorune.carddb import CardRecord
 from quorune.deck import DeckDefinition, DeckEntry
 from quorune.damage import (
     commit_prepared_damage_batch,
@@ -1444,6 +1445,120 @@ class OracleIRTests(unittest.TestCase):
         )
         self.assertNotEqual("exact", unsupported.status)
         self.assertTrue(unsupported.material_residuals)
+
+    def test_fixed_additive_damage_replacements_lower_with_typed_scope(self):
+        records = (
+            CardRecord(
+                oracle_id="00000000-0000-4000-8000-000000009901",
+                name="Jaya, Venerated Firemage",
+                mana_cost="{4}{R}",
+                mana_value=5.0,
+                type_line="Legendary Planeswalker — Jaya",
+                oracle_text=(
+                    "If another red source you control would deal damage to a "
+                    "permanent or player, it deals that much damage plus 1 to "
+                    "that permanent or player instead.\n"
+                    "−2: Jaya deals 2 damage to any target."
+                ),
+                power=None,
+                toughness=None,
+                loyalty="5",
+                defense=None,
+                colors=("R",),
+                color_identity=("R",),
+                keywords=(),
+                produced_mana=(),
+                layout="normal",
+                released_at="2019-05-03",
+                legalities={"commander": "legal"},
+                faces=(),
+                raw={},
+            ),
+            CardRecord(
+                oracle_id="00000000-0000-4000-8000-000000009902",
+                name="Torbran, Thane of Red Fell",
+                mana_cost="{1}{R}{R}{R}",
+                mana_value=4.0,
+                type_line="Legendary Creature — Dwarf Noble",
+                oracle_text=(
+                    "If a red source you control would deal damage to an "
+                    "opponent or a permanent an opponent controls, it deals "
+                    "that much damage plus 2 instead."
+                ),
+                power="2",
+                toughness="4",
+                loyalty=None,
+                defense=None,
+                colors=("R",),
+                color_identity=("R",),
+                keywords=(),
+                produced_mana=(),
+                layout="normal",
+                released_at="2019-10-04",
+                legalities={"commander": "legal"},
+                faces=(),
+                raw={},
+            ),
+        )
+        registry = load_default_capability_registry()
+        expected = ((1, True), (2, False))
+        for record, (additional, exclude_source) in zip(records, expected):
+            with self.subTest(card_name=record.name):
+                ir = compile_oracle_card(
+                    record,
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                self.assertEqual("exact", ir.status)
+                node = ir.faces[0].nodes[0]
+                self.assertEqual(
+                    "replacement.damage.quantity.v2",
+                    node.handlers[0]["handler_id"],
+                )
+                self.assertEqual(
+                    {"multiplier": 1, "additional": additional},
+                    node.handlers[0]["modification"],
+                )
+                self.assertEqual(
+                    ["R"], node.handlers[0]["condition"]["source_colors_all"]
+                )
+                self.assertEqual(
+                    exclude_source,
+                    node.handlers[0]["condition"]["exclude_source_ref"],
+                )
+        level_gated = replace(
+            records[1],
+            oracle_id="00000000-0000-4000-8000-000000009903",
+            name="Additive Damage Class Fixture",
+            type_line="Enchantment — Class",
+            oracle_text=(
+                "If a red source you control would deal damage to an opponent, "
+                "it deals that much damage plus 2 instead."
+            ),
+        )
+        spell_scoped = replace(
+            level_gated,
+            oracle_id="00000000-0000-4000-8000-000000009904",
+            name="Additive Damage Spell Fixture",
+            type_line="Instant",
+        )
+        for unsupported in (level_gated, spell_scoped):
+            with self.subTest(unsupported=unsupported.name):
+                gated_ir = compile_oracle_card(
+                    unsupported,
+                    capability_registry=registry,
+                    capability_profile="commander_review",
+                )
+                self.assertNotEqual("exact", gated_ir.status)
+                self.assertFalse(
+                    any(
+                        handler.get("handler_id")
+                        == "replacement.damage.quantity.v2"
+                        for face in gated_ir.faces
+                        for node in face.nodes
+                        for handler in node.handlers
+                    )
+                )
 
     def test_static_life_gain_multiplier_lowers_generically(self):
         capabilities = load_default_capability_registry()

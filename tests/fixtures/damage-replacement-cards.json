@@ -126,6 +126,100 @@
         "premodern": "not_legal",
         "vintage": "legal"
       }
+    },
+    {
+      "cmc": 5.0,
+      "color_identity": [
+        "R"
+      ],
+      "colors": [
+        "R"
+      ],
+      "defense": null,
+      "keywords": [],
+      "layout": "normal",
+      "legalities": {
+        "alchemy": "not_legal",
+        "brawl": "legal",
+        "commander": "legal",
+        "competitivebrawl": "legal",
+        "duel": "legal",
+        "future": "not_legal",
+        "gladiator": "legal",
+        "historic": "legal",
+        "legacy": "legal",
+        "modern": "legal",
+        "oathbreaker": "legal",
+        "oldschool": "not_legal",
+        "pauper": "not_legal",
+        "paupercommander": "not_legal",
+        "penny": "not_legal",
+        "pioneer": "legal",
+        "predh": "not_legal",
+        "premodern": "not_legal",
+        "standard": "not_legal",
+        "standardbrawl": "not_legal",
+        "timeless": "legal",
+        "tlr": "not_legal",
+        "vintage": "legal"
+      },
+      "loyalty": "5",
+      "mana_cost": "{4}{R}",
+      "name": "Jaya, Venerated Firemage",
+      "oracle_id": "10a87c58-2d8b-4658-b7d6-8dcbb44a2d2f",
+      "oracle_text": "If another red source you control would deal damage to a permanent or player, it deals that much damage plus 1 to that permanent or player instead.\n\u22122: Jaya deals 2 damage to any target.",
+      "power": null,
+      "produced_mana": [],
+      "released_at": "2019-05-03",
+      "toughness": null,
+      "type_line": "Legendary Planeswalker \u2014 Jaya"
+    },
+    {
+      "cmc": 4.0,
+      "color_identity": [
+        "R"
+      ],
+      "colors": [
+        "R"
+      ],
+      "defense": null,
+      "keywords": [],
+      "layout": "normal",
+      "legalities": {
+        "alchemy": "not_legal",
+        "brawl": "legal",
+        "commander": "legal",
+        "competitivebrawl": "legal",
+        "duel": "legal",
+        "future": "not_legal",
+        "gladiator": "legal",
+        "historic": "legal",
+        "legacy": "legal",
+        "modern": "legal",
+        "oathbreaker": "legal",
+        "oldschool": "not_legal",
+        "pauper": "not_legal",
+        "paupercommander": "not_legal",
+        "penny": "legal",
+        "pioneer": "legal",
+        "predh": "not_legal",
+        "premodern": "not_legal",
+        "standard": "not_legal",
+        "standardbrawl": "not_legal",
+        "timeless": "legal",
+        "tlr": "not_legal",
+        "vintage": "legal"
+      },
+      "loyalty": null,
+      "mana_cost": "{1}{R}{R}{R}",
+      "name": "Torbran, Thane of Red Fell",
+      "oracle_id": "8c3495bf-02e7-4ad9-949d-92eb3d2b662a",
+      "oracle_text": "If a red source you control would deal damage to an opponent or a permanent an opponent controls, it deals that much damage plus 2 instead.",
+      "power": "2",
+      "produced_mana": [],
+      "released_at": "2019-10-04",
+      "toughness": "4",
+      "type_line": "Legendary Creature \u2014 Dwarf Noble"
     }
   ],
   "rulings": [
@@ -158,6 +252,42 @@
       "published_at": "2005-08-01",
       "source": "wotc",
       "comment": "If multiple effects modify how damage will be dealt, the player who would be dealt damage or the controller of the creature that would be dealt damage chooses the order to apply the effects. For example, Mending Hands says, “Prevent the next 4 damage that would be dealt to any target this turn.” Suppose a spell would deal 5 damage to a player who has cast Mending Hands targeting themselves. That player can either (a) prevent 4 damage first and then let Furnace of Rath double the remaining 1 damage, taking 2 damage, or (b) double the damage to 10 and then prevent 4 damage, taking 6 damage."
+    },
+    {
+      "comment": "If another effect modifies how much damage your red source would deal, including preventing some of it, the player being dealt damage or the controller of the permanent being dealt damage chooses an order in which to apply those effects. If all of the damage is prevented, Jaya's effect no longer applies.",
+      "oracle_id": "10a87c58-2d8b-4658-b7d6-8dcbb44a2d2f",
+      "published_at": "2019-05-03",
+      "source": "wotc"
+    },
+    {
+      "comment": "If damage dealt by a source you control is being divided or assigned among multiple permanents an opponent controls or among an opponent and one or more permanents they control simultaneously, divide the original amount before adding 1. For example, if you attack with a 5/5 red creature with trample and your opponent blocks with a 2/2 creature, you can assign 2 damage to the blocker and 3 damage to the defending player. These amounts are then modified to 3 and 4, respectively.",
+      "oracle_id": "10a87c58-2d8b-4658-b7d6-8dcbb44a2d2f",
+      "published_at": "2019-05-03",
+      "source": "wotc"
+    },
+    {
+      "comment": "Jaya's first ability doesn't cause Jaya to deal damage; it affects the amount of damage dealt by the original red source.",
+      "oracle_id": "10a87c58-2d8b-4658-b7d6-8dcbb44a2d2f",
+      "published_at": "2019-05-03",
+      "source": "wotc"
+    },
+    {
+      "comment": "If another effect modifies how much damage your red source would deal, including preventing some of it, the player being dealt damage or the controller of the permanent being dealt damage chooses an order in which to apply those effects. If all of the damage is prevented, Torbran's effect no longer applies.",
+      "oracle_id": "8c3495bf-02e7-4ad9-949d-92eb3d2b662a",
+      "published_at": "2019-10-04",
+      "source": "wotc"
+    },
+    {
+      "comment": "If damage dealt by a source you control is being divided or assigned among multiple permanents an opponent controls or among an opponent and one or more permanents they control, divide the original amount before adding 2. For example, if you attack with a 5/5 red creature with trample and your opponent blocks with a 2/2 creature, you can assign 2 damage to the blocker and 3 damage to the defending player. These amounts are then modified to 4 and 5, respectively.",
+      "oracle_id": "8c3495bf-02e7-4ad9-949d-92eb3d2b662a",
+      "published_at": "2019-10-04",
+      "source": "wotc"
+    },
+    {
+      "comment": "The additional 2 damage is dealt by the same source as the original source of damage. The damage isn't dealt by Torbran unless Torbran is the original source of damage.",
+      "oracle_id": "8c3495bf-02e7-4ad9-949d-92eb3d2b662a",
+      "published_at": "2019-10-04",
+      "source": "wotc"
     }
   ]
 }

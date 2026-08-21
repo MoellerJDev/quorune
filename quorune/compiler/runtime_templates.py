@@ -404,6 +404,12 @@ def static_runtime_template(
     if static_damage is None:
         return None
     if (
+        (source_is_class or not source_permanent)
+        and static_damage[1]["handler_id"]
+        == "replacement.damage.quantity.v2"
+    ):
+        return None
+    if (
         static_damage[1]["handler_id"]
         == "replacement.damage.redirect-to-source.v1"
         and source_damageable is False

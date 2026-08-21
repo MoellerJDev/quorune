@@ -552,6 +552,226 @@ class DamageReplacementIntegrationTests(DamageReplacementPipelineBase):
         self.assertEqual(3, replay["commands"])
         self.assertEqual(expected_hash, replay["final_state_hash"])
 
+    def test_additive_and_double_damage_order_is_scoped_and_replays_exactly(self):
+        session = self.session(120461517)
+        engine = session.engine
+        furnace = self.add_permanent(
+            engine,
+            seat="A",
+            name="Furnace of Rath",
+            ref="a-furnace",
+        )
+        jaya = self.add_permanent(
+            engine,
+            seat="A",
+            name="Jaya, Venerated Firemage",
+            ref="a-jaya",
+        )
+        source = self.add_permanent(
+            engine,
+            seat="A",
+            name="Mishra, Eminent One",
+            ref="a-red-source",
+        )
+        self.assertTrue(furnace and jaya and source)
+        program = SemanticProgram(
+            key="test:additive-damage-replacement-replay",
+            label="Order additive and doubling damage replacements",
+            effects=[
+                {
+                    "op": "damage",
+                    "source": "$source",
+                    "target": "B",
+                    "amount": 2,
+                }
+            ],
+            trust_level="provisional",
+        )
+        engine.semantics.put(program)
+        engine.state.stack.append(
+            StackItem(
+                stack_id="additive-damage-replacement-replay",
+                ref="S-additive-damage-replacement-replay",
+                kind="triggered_ability",
+                controller="A",
+                label=program.label,
+                source_object_id=source.object_id,
+                semantic_key=program.key,
+                visibility=["A", "B"],
+            )
+        )
+        engine.state.active_player = "A"
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine._grant_priority("A")
+        engine._issue_priority("A")
+        life_before = engine.state.players["B"].life
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+
+        for principal in ("pilot:A", "pilot:B"):
+            result = session.act(principal, {"action_id": "pass"})
+            self.assertTrue(result.ok, result.summary)
+        self.assertEqual("replacement.order", engine.state.pending_decision.kind)
+        projected = StateProjector(self.db, engine.state)._decision("pilot:B")
+        additive = next(
+            option["id"]
+            for option in projected["ctx"]["options"]
+            if "quantity.v2" in option["id"]
+        )
+        hidden = StateProjector(self.db, engine.state)._decision("pilot:A")
+        self.assertIsNone(hidden)
+        chosen = session.act(
+            "pilot:B",
+            {
+                "action_id": "choose",
+                "choices": {"replacement": additive},
+            },
+        )
+        self.assertTrue(chosen.ok, chosen.summary)
+        self.assertEqual(life_before - 6, engine.state.players["B"].life)
+        expected_hash = authoritative_state_hash(engine.state)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            record_dir = Path(temporary) / "additive-damage-replacement-record"
+            session.save(record_dir)
+            replay = replay_record(record_dir, self.db, verify=True)
+        self.assertTrue(replay["ok"], replay)
+        self.assertEqual(3, replay["commands"])
+        self.assertEqual(expected_hash, replay["final_state_hash"])
+
+        own = self.session(120461518)
+        own_engine = own.engine
+        self.add_permanent(
+            own_engine,
+            seat="A",
+            name="Furnace of Rath",
+            ref="a-own-furnace",
+        )
+        own_jaya = self.add_permanent(
+            own_engine,
+            seat="A",
+            name="Jaya, Venerated Firemage",
+            ref="a-own-jaya",
+        )
+        prepared = prepare_damage_batch(
+            own_engine,
+            (
+                self.proposal(
+                    own_engine,
+                    source=own_jaya,
+                    target="B",
+                    amount=2,
+                    event_id="damage:jaya-own-source",
+                ),
+            ),
+        )
+        committed = commit_prepared_damage_batch(own_engine, prepared)
+        self.assertEqual(4, committed.events[0].dealt_amount)
+
+    def test_torbran_adds_only_to_red_sources_hitting_opposing_subjects(self):
+        session = self.session(120461519)
+        engine = session.engine
+        self.add_permanent(
+            engine,
+            seat="A",
+            name="Torbran, Thane of Red Fell",
+            ref="a-torbran",
+        )
+        red = self.add_permanent(
+            engine,
+            seat="A",
+            name="Mishra, Eminent One",
+            ref="a-torbran-red-source",
+        )
+        white = self.add_permanent(
+            engine,
+            seat="A",
+            name="White Knight",
+            ref="a-torbran-white-source",
+        )
+        multitype_ref = engine.create_token(
+            "B",
+            name="Additive Damage Multitype",
+            characteristics={
+                "type_line": "Token Creature Planeswalker — Test",
+                "power": "10",
+                "toughness": "10",
+                "loyalty": "10",
+                "colors": ["U"],
+            },
+        )[0]
+        multitype = engine._resolve_object(
+            "B", multitype_ref, zones={"battlefield"}
+        )
+        opposing = commit_prepared_damage_batch(
+            engine,
+            prepare_damage_batch(
+                engine,
+                (
+                    self.proposal(
+                        engine,
+                        source=red,
+                        target="B",
+                        amount=2,
+                        event_id="damage:torbran-opponent",
+                    ),
+                ),
+            ),
+        )
+        own = commit_prepared_damage_batch(
+            engine,
+            prepare_damage_batch(
+                engine,
+                (
+                    self.proposal(
+                        engine,
+                        source=red,
+                        target="A",
+                        amount=2,
+                        event_id="damage:torbran-controller",
+                    ),
+                ),
+            ),
+        )
+        nonred = commit_prepared_damage_batch(
+            engine,
+            prepare_damage_batch(
+                engine,
+                (
+                    self.proposal(
+                        engine,
+                        source=white,
+                        target="B",
+                        amount=2,
+                        event_id="damage:torbran-nonred",
+                    ),
+                ),
+            ),
+        )
+        permanent = commit_prepared_damage_batch(
+            engine,
+            prepare_damage_batch(
+                engine,
+                (
+                    self.proposal(
+                        engine,
+                        source=red,
+                        target=multitype,
+                        amount=2,
+                        event_id="damage:torbran-multitype",
+                    ),
+                ),
+            ),
+        )
+        self.assertEqual(4, opposing.events[0].dealt_amount)
+        self.assertEqual(2, own.events[0].dealt_amount)
+        self.assertEqual(2, nonred.events[0].dealt_amount)
+        self.assertEqual(4, permanent.events[0].dealt_amount)
+        self.assertEqual(4, multitype.marked_damage)
+        self.assertEqual(6, multitype.counters["loyalty"])
+
 
 
 if __name__ == "__main__":

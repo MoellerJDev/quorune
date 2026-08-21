@@ -83,6 +83,38 @@ def quantity_descriptor(
     }
 
 
+def additive_quantity_descriptor(
+    *,
+    additional: int = 1,
+    source_controller_relation: str = "source_controller",
+    target_controller_relation: str = "opponent",
+    target_kinds: list[str] | None = None,
+    source_types_all: list[str] | None = None,
+    source_types_any: list[str] | None = None,
+    source_colors_all: list[str] | None = None,
+    target_types_all: list[str] | None = None,
+    combat: bool | None = None,
+    exclude_source_ref: bool = False,
+) -> dict:
+    return {
+        "handler_id": "replacement.damage.quantity.v2",
+        "schema_version": 2,
+        "event": "damage",
+        "condition": {
+            "source_controller_relation": source_controller_relation,
+            "target_controller_relation": target_controller_relation,
+            "target_kinds": list(target_kinds or []),
+            "source_types_all": list(source_types_all or []),
+            "source_types_any": list(source_types_any or []),
+            "source_colors_all": list(source_colors_all or []),
+            "target_types_all": list(target_types_all or []),
+            "combat": combat,
+            "exclude_source_ref": exclude_source_ref,
+        },
+        "modification": {"multiplier": 1, "additional": additional},
+    }
+
+
 def prevention_descriptor(
     *,
     amount: int = 1,
