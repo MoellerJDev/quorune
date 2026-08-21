@@ -334,8 +334,8 @@
     {
       "mechanic_id": "cr-402-hand",
       "path": "mechanics/contracts/hand.json",
-      "sha256": "b63b2ec385fe1d8f9d00dee196d62bf6bbd699723cdfb5ed1848a31708eb6ab2",
-      "version": 1
+      "sha256": "e24ef43d7d7f3c9ec5d52737c5f8ce55f015684bd9b2ba73b4d1eaa496c7d939",
+      "version": 2
     },
     {
       "mechanic_id": "cr-604-handling-static-abilities",
@@ -8083,16 +8083,17 @@
     {
       "category": "zones",
       "contract_path": "mechanics/contracts/hand.json",
-      "contract_sha256": "b63b2ec385fe1d8f9d00dee196d62bf6bbd699723cdfb5ed1848a31708eb6ab2",
-      "contract_version": 1,
+      "contract_sha256": "e24ef43d7d7f3c9ec5d52737c5f8ce55f015684bd9b2ba73b4d1eaa496c7d939",
+      "contract_version": 2,
       "coverage_status": "partial",
       "dependencies": [],
-      "implementation_component": "CommanderEngine.create/draw/move_card/cleanup discard, PlayerState hand and maximum size, and StateProjector multi-seat hand knowledge projection",
-      "implementation_version": "hand-foundation-v1",
+      "implementation_component": "CommanderEngine.create/draw/move_card/cleanup discard, PlayerState hand and maximum size, StateProjector multi-seat hand knowledge projection, and the typed private APNAP discard compiler and simultaneous zone-transition owner",
+      "implementation_version": "hand-foundation-v2",
       "kind": "rules_section",
       "known_blockers": [
         "continuous maximum-hand-size modifiers and no-maximum effects are not compiled through CR 613.11",
-        "complete Oracle grammar for arbitrary reveal, look-at-hand, and private simultaneous hand-choice effects remains incomplete",
+        "random, optional, variable, all-hand, named, revealed, type-qualified, linked-result, cost, cleanup, and keyword-specific discard grammar remains incomplete",
+        "complete Oracle grammar for arbitrary reveal, look-at-hand, and other private simultaneous hand-choice effects remains incomplete",
         "complete draw and zone-change replacement ordering remains incomplete",
         "browser-local hand arrangement controls are not yet implemented, although authoritative hand order is rules-insignificant"
       ],
@@ -8111,7 +8112,15 @@
         "test_owner_hand_remains_visible_while_controlling_a_player",
         "test_hand_order_is_private_and_owner_projection_is_always_available",
         "test_cleanup_discard_is_exact_simultaneous_private_and_replayable",
-        "test_mindslaver_routes_controlled_turn_to_controller_pilot"
+        "test_mindslaver_routes_controlled_turn_to_controller_pilot",
+        "test_fixed_affected_player_discards_compile_across_contexts_and_modes",
+        "test_unsupported_discard_choices_and_shape_mutations_fail_closed",
+        "test_target_discard_dependency_fails_closed",
+        "test_affected_player_discard_compiler_mutant_is_killed",
+        "test_fixed_count_discard_uses_available_cards_and_skips_empty_hand",
+        "test_discard_choice_resumes_following_typed_effect",
+        "test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+        "test_stale_and_malformed_private_discard_reject_before_mutation"
       ],
       "trust_level": "untrusted"
     },

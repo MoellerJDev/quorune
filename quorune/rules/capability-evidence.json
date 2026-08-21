@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "263cc7875d89461a64b68fb0bff530552102cef6d489da4d07c625d7d98b905a",
-  "declaration_source_fingerprint": "b8b0a762a255f4dc48399cc43e85afe1deb5ea61ef6271a0909f8fd770aac2c6",
+  "registry_fingerprint": "aef2f596ac8a22beeb3c21ea93f14d7b179c5e8b93617e470f71aba9b5d07a89",
+  "declaration_source_fingerprint": "158b3d7cb5525ded4b8259d64d7ce639e07024599b616a9d3654f8c63d7dacee",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -2265,6 +2265,28 @@
         "commander_review"
       ],
       "applicability_note": "Advertise only a currently tapped creature, attach on legal resolution, and detach through the shared state action when the live tapped predicate stops holding."
+    },
+    {
+      "capability_id": "attachment.aura.simple_object",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep a legal simple Aura attached while private APNAP discard choices suspend and a simultaneous destination replacement commits public exile results."
     },
     {
       "capability_id": "attachment.aura.simple_object",
@@ -6129,6 +6151,226 @@
         "commander_review"
       ],
       "applicability_note": "Replay the accepted typed graveyard cast through the ordinary command journal to the same final state."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_discard_choice_resumes_following_typed_effect",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resume the next independently typed effect only after the affected player completes the private discard and its simultaneous move commits."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Collect private opponent hand choices, suspend their simultaneous discard for destination replacement, and commit only the replaced public exile results."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Collect three opponent choices from the active player onward without mutating any hand before all affected seats have chosen."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardCompilerTests.test_affected_player_discard_compiler_mutant_is_killed",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the shared production and prove direct, activated, triggered, and modal witnesses return to precise material residuals."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardCompilerTests.test_target_discard_dependency_fails_closed",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Block destination replacement and prove the source-spanned targeted discard program loses exact capability closure."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardCompilerTests.test_unsupported_discard_choices_and_shape_mutations_fail_closed",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject random, variable, all-hand, optional, linked-result, changed-zone, changed-privacy, malformed-predicate, and unsupported-count forms."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardCompilerTests.test_fixed_affected_player_discards_compile_across_contexts_and_modes",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile direct spell, triggered, activated, and complete fixed Choose one modal contexts through one affected-player discard descriptor."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_fixed_count_discard_uses_available_cards_and_skips_empty_hand",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Discard the available number up to a fixed count from each hand, skip an empty hand, and delay every move until the last nonempty player chooses."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project only the current chooser's hand refs, withhold physical IDs and every other seat's selected identity, and reveal results only after commitment."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Save and exactly replay private APNAP selection, replacement suspension, simultaneous movement, public exile, and replacement-created counters."
+    },
+    {
+      "capability_id": "choice.affected_player.fixed_discard",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_stale_and_malformed_private_discard_reject_before_mutation",
+      "official_rule_ids": [
+        "101.4",
+        "115.1",
+        "608.2b",
+        "608.2c",
+        "701.9",
+        "701.9a",
+        "701.9c"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject a stale issued private candidate and a changed hidden flag while preserving the exact authoritative state hash."
     },
     {
       "capability_id": "choice.affected_player.fixed_sacrifice",
@@ -39737,6 +39979,26 @@
     {
       "capability_id": "zone.change.destination_replacement",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "official_rule_ids": [
+        "400.6",
+        "614.1",
+        "614.1a",
+        "614.5",
+        "616.1",
+        "616.1f",
+        "616.2"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Suspend one simultaneous private discard batch for Dauthi's destination replacement, then preserve the unrelated live Aura attachment through commit and exact replay."
+    },
+    {
+      "capability_id": "zone.change.destination_replacement",
+      "evidence_class": "interaction",
       "test_id": "tests.test_graveyard_rules.GraveyardRuleTests.test_competing_zone_replacements_suspend_resume_and_replay_exactly",
       "official_rule_ids": [
         "400.6",
@@ -42045,5 +42307,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "0853f41b5da6092d2f901ce586035f7a05acdf0f2d6a0cc5d14fba71442be9db"
+  "fingerprint": "f545604dd66b217fcf3a8340efbf41e517d3c38ab579e091fd05d0fc45d6830c"
 }
