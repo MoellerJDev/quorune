@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
+  "family": "CR 903.9 — Commander zone movement",
+  "cases": [
+    {
+      "rule_id": "903.9",
+      "rule_text_sha256": "8f37a49a00da035b63764181538849f1a02769a41c482d87bf716d0585dfb880",
+      "classification": "definition_only",
+      "status": "definition_only",
+      "assertion_kind": "static_traceability",
+      "reviewed": true,
+      "implementation_components": [
+        "quorune.commander_zones.commander_hand_library_replacement_effect",
+        "quorune.commander_zones.pending_commander_zone_state_choices"
+      ],
+      "executable_test_ids": [
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveModelTests.test_commander_zone_choice_model_mutations_fail_closed"
+      ],
+      "required_scenarios": [],
+      "covered_scenarios": [],
+      "blockers": [],
+      "notes": [
+        "Commander zone movement is split between the hand/library replacement in CR 903.9b and the graveyard/exile state-based action in CR 903.9a."
+      ]
+    },
+    {
+      "rule_id": "903.9a",
+      "rule_text_sha256": "7e8b046f9f82d5a053e254cbfce161ca8c12e70f28a3eb4de1ba681879a2a68a",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": [
+        "quorune.commander_zones.pending_commander_zone_state_choices",
+        "quorune.selection.public_choice.PublicChoiceOwnerMixin._begin_commander_zone_choice",
+        "quorune.selection.public_choice.PublicChoiceOwnerMixin._complete_commander_zone_choice",
+        "CommanderEngine._stabilize",
+        "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"
+      ],
+      "executable_test_ids": [
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveModelTests.test_commander_zone_choice_model_mutations_fail_closed",
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveRuntimeTests.test_commander_graveyard_and_exile_state_choice_replays",
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveRuntimeTests.test_commander_zone_choice_stale_identity_rolls_back"
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "privacy",
+        "replay",
+        "rollback"
+      ],
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "privacy",
+        "replay",
+        "rollback"
+      ],
+      "blockers": [],
+      "notes": [
+        "Each new physical commander's graveyard or exile logical incarnation receives one public owner choice. Declining marks only that incarnation; accepting delegates the new command-zone incarnation and normalized events to the canonical simultaneous zone owner."
+      ]
+    },
+    {
+      "rule_id": "903.9b",
+      "rule_text_sha256": "82c932654677ca07f945fe24235e2fdb5507ca678c3345a41c141b9c77590a2b",
+      "classification": "behavioral",
+      "status": "passing",
+      "assertion_kind": "executable_engine",
+      "reviewed": true,
+      "implementation_components": [
+        "quorune.commander_zones.commander_hand_library_replacement_effect",
+        "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot",
+        "quorune.replacement.ordering.advance_replacement_batch",
+        "quorune.zone_transitions.ZoneTransitionOwner"
+      ],
+      "executable_test_ids": [
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveModelTests.test_commander_zone_choice_model_mutations_fail_closed",
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveRuntimeTests.test_commander_hand_and_library_replacement_uses_owner_choice_and_replays",
+        "tests.test_fixed_public_zone_moves.FixedPublicZoneMoveRuntimeTests.test_mass_zone_moves_use_apnap_replacements_and_replay"
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "privacy",
+        "replay"
+      ],
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "privacy",
+        "replay"
+      ],
+      "blockers": [],
+      "notes": [
+        "Hand and library movements add one owner-optional command-zone replacement to the immutable zone event. A decline preserves the requested destination; acceptance changes the destination before any zone mutation."
+      ]
+    },
+    {
+      "rule_id": "903.9c",
+      "rule_text_sha256": "e995bec35991f35b3cdd2d8d9af60a9ded646301ccaf85c2d79b581d5cc63051",
+      "classification": "behavioral",
+      "status": "blocked",
+      "assertion_kind": "unsupported_fail_closed",
+      "reviewed": true,
+      "implementation_components": [
+        "quorune.commander_zones.commander_hand_library_replacement_effect",
+        "quorune.commander_zones.pending_commander_zone_state_choices"
+      ],
+      "executable_test_ids": [
+        "tests.test_fixed_public_zone_moves.CommanderZoneMoveModelTests.test_commander_zone_choice_model_mutations_fail_closed"
+      ],
+      "required_scenarios": [
+        "negative"
+      ],
+      "covered_scenarios": [
+        "negative"
+      ],
+      "blockers": [
+        "melded and merged permanent component movement is not represented by the current one-card physical commander boundary"
+      ],
+      "notes": [
+        "The current owner requires one physical designated commander object. Meld and merge component distribution must gain a typed multi-object owner before CR 903.9c can pass."
+      ]
+    }
+  ]
+}

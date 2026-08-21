@@ -152,6 +152,9 @@ class CardInstance:
     # identity or current logical incarnation. ``None`` is retained for
     # historical Game Record v3 checkpoints created before identity v2.
     commander_designation_id: str | None = None
+    # CR 903.9a offers one command-zone state action per graveyard/exile
+    # incarnation. ``None`` preserves historical Game Record v3 payloads.
+    commander_zone_choice_logical_id: str | None = None
     zone_change_counter: int = 0
     zone_timestamp: int = 0
     world_supertype_timestamp: int | None = None
@@ -215,6 +218,17 @@ class CardInstance:
             raise ValueError(
                 "Only a designated commander card may carry a commander ID"
             )
+        if self.commander_zone_choice_logical_id == "":
+            raise ValueError(
+                "Commander zone-choice logical IDs cannot be empty"
+            )
+        if (
+            self.commander_zone_choice_logical_id is not None
+            and not self.is_commander
+        ):
+            raise ValueError(
+                "Only a commander may carry zone-choice state"
+            )
         if type(self.deathtouch_damage) is not bool:
             raise ValueError("Deathtouch damage state must be a boolean")
         if (
@@ -267,6 +281,8 @@ class CardInstance:
             # Preserve byte-for-byte historical checkpoint payloads. The
             # GameState identity-version marker distinguishes new records.
             payload.pop("commander_designation_id")
+        if self.commander_zone_choice_logical_id is None:
+            payload.pop("commander_zone_choice_logical_id")
         if self.monstrous_value is None:
             # Keep historical Game Record v3 card payloads byte-compatible.
             payload.pop("monstrous_value")

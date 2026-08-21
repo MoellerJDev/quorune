@@ -84,6 +84,7 @@ from ..semantic_runtime import (
     ScryLibraryIntent,
     SurveilLibraryIntent,
     MoveObjectsSimultaneouslyIntent,
+    MovePublicZoneSetIntent,
     PayLifeIntent,
     PayManaCostIntent,
     PlaceCounterBatchIntent,
@@ -107,6 +108,10 @@ from ..semantic_runtime import (
 from ..zone_object_keyword_grants import (
     ZoneObjectKeywordGrantError,
     commit_zone_object_keyword_grant,
+)
+from ..public_zone_moves import (
+    PublicZoneMoveError,
+    resolve_public_zone_move_set,
 )
 from ..zone_object_subtype_grants import (
     ZoneObjectSubtypeGrantError,
@@ -132,6 +137,15 @@ class SemanticChoiceIntentHostMixin:
         return tuple(self.apnap_order())
 
     def affected_permanent_object_rows(self, actor: str):
+        return tuple(self._semantic_choice_object_rows(actor))
+
+    def public_zone_move_active_seats(self) -> tuple[str, ...]:
+        return tuple(self.active_seats)
+
+    def public_zone_move_apnap_order(self) -> tuple[str, ...]:
+        return tuple(self.apnap_order())
+
+    def public_zone_move_object_rows(self, actor: str):
         return tuple(self._semantic_choice_object_rows(actor))
 
     def counter_target_active_seats(self) -> tuple[str, ...]:
@@ -199,6 +213,25 @@ class SemanticChoiceIntentHostMixin:
                 ),
             )
         except DestructionSetError as exc:
+            raise GameRuleError(str(exc)) from exc
+
+    def move_public_zone_set_intent(
+        self,
+        intent: MovePublicZoneSetIntent,
+    ):
+        try:
+            return resolve_public_zone_move_set(
+                self,
+                actor=intent.actor,
+                spec=intent.spec,
+                reason=intent.reason,
+                source_ref=intent.source_ref,
+                replacement_selections=tuple(
+                    thaw_value(value)
+                    for value in intent.replacement_selections
+                ),
+            )
+        except PublicZoneMoveError as exc:
             raise GameRuleError(str(exc)) from exc
 
     def apply_domain_effect_intent(self, intent: DomainEffectIntent) -> Any:

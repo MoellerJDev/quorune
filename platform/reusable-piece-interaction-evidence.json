@@ -3911,6 +3911,78 @@
       ],
       "interaction_order": 2,
       "assertion": "Flashback's mandatory self-replacement moves the stack incarnation to exile before an opponent's competing graveyard-destination replacement can apply."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_typed_graveyard_exile_advertises_and_replays",
+      "piece_ids": [
+        "capability.card.exile.public_graveyard",
+        "capability.target.revalidate_resolution"
+      ],
+      "capability_ids": [
+        "card.exile.public_graveyard",
+        "target.revalidate_resolution"
+      ],
+      "interaction_order": 2,
+      "assertion": "A type-qualified public graveyard-card target is server-produced, excludes nonmatching public cards, revalidates at resolution, moves through the canonical new-incarnation transaction, and replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_typed_graveyard_exile_advertises_and_replays",
+      "piece_ids": [
+        "capability.card.exile.public_graveyard",
+        "mechanic.cr-406-exile"
+      ],
+      "capability_ids": [
+        "card.exile.public_graveyard"
+      ],
+      "interaction_order": 2,
+      "assertion": "The typed graveyard request creates one owner-indexed public exile incarnation without revealing unrelated private-zone state or retaining the former logical identity."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_mass_zone_moves_use_apnap_replacements_and_replay",
+      "piece_ids": [
+        "capability.variant.commander.zone_return",
+        "capability.zone.move.fixed_public_set"
+      ],
+      "capability_ids": [
+        "variant.commander.zone_return",
+        "zone.move.fixed_public_set"
+      ],
+      "interaction_order": 2,
+      "assertion": "One four-player fixed public-set return collects every commander's owner-optional replacement in APNAP order before the simultaneous batch commits, then replays all choices exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_mass_zone_moves_use_apnap_replacements_and_replay",
+      "piece_ids": [
+        "capability.zone.move.fixed_public_set",
+        "mechanic.cr-400-general"
+      ],
+      "capability_ids": [
+        "zone.move.fixed_public_set"
+      ],
+      "interaction_order": 2,
+      "assertion": "The APNAP-canonical fixed set enters one replacement-aware simultaneous zone batch, allocating one timestamp and new logical incarnation per committed public object."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_commander_graveyard_and_exile_state_choice_replays",
+      "piece_ids": [
+        "capability.variant.commander.zone_return",
+        "mechanic.cr-903-commander"
+      ],
+      "capability_ids": [
+        "variant.commander.zone_return"
+      ],
+      "interaction_order": 2,
+      "assertion": "Each new designated commander's graveyard or exile incarnation receives one owner-scoped public state choice whose decline or command-zone result replays exactly."
     }
   ]
 }

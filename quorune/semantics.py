@@ -171,9 +171,13 @@ VALID_EFFECT_OPERATIONS = {
 def _is_supported_effect_operation(operation: str) -> bool:
     if operation in VALID_EFFECT_OPERATIONS:
         return True
+    from .semantic_runtime import default_semantic_handler_registry
     from .semantic_choices.defaults import default_semantic_choice_registry
 
-    return operation in default_semantic_choice_registry().operations
+    return bool(
+        default_semantic_handler_registry().describe(operation)
+        or operation in default_semantic_choice_registry().operations
+    )
 
 
 @dataclass(slots=True)

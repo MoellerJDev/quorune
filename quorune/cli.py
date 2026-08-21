@@ -200,6 +200,20 @@ def _scripted_choice(
             "plan": "RECOVER",
             "reason": "Discard to the authoritative maximum-hand-size requirement.",
         }
+    if kind == "state.commander_zone":
+        command = next(
+            (
+                item
+                for item in actions
+                if item.get("id") == "command"
+            ),
+            actions[0] if actions else {"id": "command"},
+        )
+        return {
+            "action_id": command["id"],
+            "plan": "DEVELOP_ENGINE",
+            "reason": "Return the commander to the command zone.",
+        }
     if kind in {"state.legend", "choice.apnap", "trigger.order"}:
         options = (
             context.get("keep_one")

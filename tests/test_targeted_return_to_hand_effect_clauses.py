@@ -190,7 +190,6 @@ class TargetedReturnToHandCompilerTests(unittest.TestCase):
             "Return another target creature to its owner's hand.",
             "Return target tapped creature to its owner's hand.",
             "Return target creature card from a graveyard to its owner's hand.",
-            "Return all creatures to their owners' hands.",
         ):
             with self.subTest(text=text):
                 ir = self.compile(text)

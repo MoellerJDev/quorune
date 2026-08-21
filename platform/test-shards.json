@@ -52,6 +52,7 @@
       "test_echo_rules",
       "test_fixed_entry_conditions",
       "test_fixed_player_life_effects",
+      "test_fixed_public_zone_moves",
       "test_graveyard_return_rules",
       "test_life_change",
       "test_life_effect_runtime",

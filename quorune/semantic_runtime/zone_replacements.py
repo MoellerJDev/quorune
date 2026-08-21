@@ -6,6 +6,10 @@ import re
 from typing import Any, Mapping, Protocol, Sequence
 
 from ..card_program_faces import program_matches_face, selected_face_id
+from ..commander_zones import (
+    commander_hand_library_replacement_effect,
+    CommanderZoneError,
+)
 from ..entry_counters import (
     EntryCounterError,
     EffectEntryCounter,
@@ -929,6 +933,8 @@ def _zone_change_snapshot_subjects(
                         sorted({*card_types, *subtypes, *supertypes})
                     ),
                     is_card_object=card.is_card_object,
+                    is_commander=bool(card.is_commander),
+                    commander_designation_id=card.commander_designation_id,
                     cast_option=(
                         "kicked"
                         if card.annotations.get(KICKER_ANNOTATION) is True
@@ -1036,6 +1042,17 @@ def _zone_change_snapshot_effects(
                         component_id=f"{program.key}:{descriptor_index}",
                     )
                 )
+    try:
+        commander_effects = tuple(
+            effect
+            for subject in subjects
+            for effect in (
+                commander_hand_library_replacement_effect(subject),
+            )
+            if effect is not None
+        )
+    except CommanderZoneError as exc:
+        raise ZoneReplacementError(str(exc)) from exc
     return tuple(
         sorted(
             (
@@ -1044,6 +1061,7 @@ def _zone_change_snapshot_effects(
                 *intrinsic_effects,
                 *generated_effects,
                 *self_entry_effects,
+                *commander_effects,
             ),
             key=lambda effect: effect.effect_id,
         )
@@ -1133,9 +1151,14 @@ def _snapshot_event(
             object_id=subject.object_id,
             owner=subject.owner,
             controller=(
-                subject.destination_controller
-                if subject.destination == "battlefield"
-                else subject.controller
+                subject.owner
+                if subject.is_commander
+                and subject.destination in {"hand", "library"}
+                else (
+                    subject.destination_controller
+                    if subject.destination == "battlefield"
+                    else subject.controller
+                )
             ),
         ),
         payload={

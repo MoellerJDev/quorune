@@ -209,7 +209,6 @@ class TargetedExileCompilerTests(unittest.TestCase):
             "Exile target attacking creature.",
             "Exile target creature or Spacecraft.",
             "Exile target creature card from a graveyard.",
-            "Exile all creatures.",
             "Exile target creature, then return it to the battlefield.",
         ):
             with self.subTest(text=text):

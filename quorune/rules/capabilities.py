@@ -19,6 +19,10 @@ from .station_capability_shapes import ordinary_station_node_capabilities
 from .graveyard_card_targets import (
     targeted_own_graveyard_return_node_capabilities,
 )
+from .public_zone_move_capability_shapes import (
+    fixed_public_zone_move_set_node_capabilities,
+    public_graveyard_card_exile_node_capabilities,
+)
 from .counter_removal_capabilities import (
     all_counter_removal_node_capabilities,
     fixed_counter_removal_node_capabilities,
@@ -957,6 +961,8 @@ def _targeted_effect_capabilities(
         targeted_exile_node_capabilities,
         targeted_return_to_hand_node_capabilities,
         targeted_own_graveyard_return_node_capabilities,
+        public_graveyard_card_exile_node_capabilities,
+        fixed_public_zone_move_set_node_capabilities,
         targeted_tap_state_node_capabilities,
         fixed_token_creation_node_capabilities,
     ):
@@ -1229,6 +1235,17 @@ def capability_covered_mechanics(
         covered.add("destroy-fixed-set")
     if "permanent.exile.effect" in supplied:
         covered.add(_EXILE_MECHANIC)
+    if "card.exile.public_graveyard" in supplied:
+        covered.update({_EXILE_MECHANIC, "fixed-public-zone-move"})
+    if "zone.move.fixed_public_set" in supplied:
+        covered.update(
+            {
+                _EXILE_MECHANIC,
+                "return-to-owner-hand",
+                "fixed-public-zone-move",
+                "fixed-public-zone-move-set",
+            }
+        )
     if supplied.intersection(
         {
             "card.return.own_graveyard_to_owner_hand",
