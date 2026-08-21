@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "e85ab5d2f7c5826c651c8256b61c75070a13f0210c854f5e9042b88c1ca71805"
+verified: "cfa798107aba3d0997628e2b080c1bebfa082f59655611da840f6935e7027af2"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 29
-- Deterministic escapes: 24
+- Escapes: 30
+- Deterministic escapes: 25
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -55,6 +55,7 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260820-27` | [32379387144](https://github.com/NullPriority/quorune/actions/runs/32379387144) | `browser_integration` | `not_applicable` | The existing @mana-action impact edge already selected the journey. The driver now uses the bounded progress-aware multi-page pass loop before asserting the Bowmasters target choice and shares the 600-second hosted durability budget used by adjacent long serial journeys. |
 | `ci-20260820-28` | [32401690028](https://github.com/NullPriority/quorune/actions/runs/32401690028) | `source_correctness` | `not_applicable` | Every declaration now cites the capability's complete official-rule set and the source block follows canonical evidence-class order. The existing quick-gate impact already selects capability evidence; source-checkpoint preparation now runs update_capability_evidence.py --check and accepts only the expected stale-output result before cloud generation. |
 | `ci-20260820-29` | [32421690874](https://github.com/NullPriority/quorune/actions/runs/32421690874) | `missing_affected_test` | `not_applicable` | The exact contract trace now includes CR 202.3. The existing quick-gate policy already selects test_semantic_handlers for mechanic-contract changes; focused preparation for future contract rule-reference edits now runs the named trace method rather than relying on the full affected shard. |
+| `ci-20260821-30` | [32455588984](https://github.com/NullPriority/quorune/actions/runs/32455588984) | `source_correctness` | `not_applicable` | The rules-queue writer now renders an explicit no-selection state and explanation when every serious candidate is deferred or complete. The cloud workflow already selected and failed in the exact rules-scheduler owner, so the correction adds a direct formatter regression rather than a new impact edge. |
 
 ## Measurement limitations
 

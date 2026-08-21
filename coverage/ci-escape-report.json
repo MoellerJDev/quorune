@@ -501,6 +501,22 @@
       "resolution": "The exact contract trace now includes CR 202.3. The existing quick-gate policy already selects test_semantic_handlers for mechanic-contract changes; focused preparation for future contract rule-reference edits now runs the named trace method rather than relying on the full affected shard.",
       "run_id": 32421690874,
       "summary": "The fixed mana-value target harvest added CR 202.3 to the tap-and-untap mechanic contract, but its focused local set omitted the contract's exact rule-reference trace assertion."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "generated-artifacts:rules-scheduler"
+      ],
+      "head_sha": "ca8696a88b84ae0906ebde57fee9d2579e7ee958",
+      "id": "ci-20260821-30",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_rules_scheduler.RulesSchedulerTests.test_scheduler_markdown_represents_no_eligible_candidate"
+      ],
+      "resolution": "The rules-queue writer now renders an explicit no-selection state and explanation when every serious candidate is deferred or complete. The cloud workflow already selected and failed in the exact rules-scheduler owner, so the correction adds a direct formatter regression rather than a new impact edge.",
+      "run_id": 32455588984,
+      "summary": "The recalibrated selector correctly produced no eligible candidate after typed Enchant assurance returned to zero, but the generated Markdown writer assumed selected_candidate_id always named a candidate and raised StopIteration."
     }
   ],
   "known_flaky_tests": [],
@@ -508,7 +524,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-20T14:45:07Z",
+  "observed_at": "2026-08-21T07:04:25Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -553,7 +569,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "e85ab5d2f7c5826c651c8256b61c75070a13f0210c854f5e9042b88c1ca71805",
+  "source_fingerprint": "cfa798107aba3d0997628e2b080c1bebfa082f59655611da840f6935e7027af2",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -564,11 +580,11 @@
       "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 8,
-      "source_correctness": 10
+      "source_correctness": 11
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 24,
-    "escape_count": 29,
+    "deterministic_escape_count": 25,
+    "escape_count": 30,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

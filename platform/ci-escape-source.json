@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-20T14:45:07Z",
+  "observed_at": "2026-08-21T07:04:25Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -429,6 +429,18 @@
       ],
       "impact_edge_status": "not_applicable",
       "resolution": "The exact contract trace now includes CR 202.3. The existing quick-gate policy already selects test_semantic_handlers for mechanic-contract changes; focused preparation for future contract rule-reference edits now runs the named trace method rather than relying on the full affected shard."
+    },
+    {
+      "id": "ci-20260821-30",
+      "run_id": 32455588984,
+      "head_sha": "ca8696a88b84ae0906ebde57fee9d2579e7ee958",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "The recalibrated selector correctly produced no eligible candidate after typed Enchant assurance returned to zero, but the generated Markdown writer assumed selected_candidate_id always named a candidate and raised StopIteration.",
+      "failed_surfaces": ["generated-artifacts:rules-scheduler"],
+      "regressions": ["test_rules_scheduler.RulesSchedulerTests.test_scheduler_markdown_represents_no_eligible_candidate"],
+      "impact_edge_status": "not_applicable",
+      "resolution": "The rules-queue writer now renders an explicit no-selection state and explanation when every serious candidate is deferred or complete. The cloud workflow already selected and failed in the exact rules-scheduler owner, so the correction adds a direct formatter regression rather than a new impact edge."
     }
   ],
   "recent_pull_requests": [

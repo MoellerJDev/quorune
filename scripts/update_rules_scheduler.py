@@ -30,9 +30,31 @@ def _compact_markdown(value: Mapping[str, Any]) -> str:
     selected = value["selected_batch"]
     work = value["work_selection"]
     selected_work = next(
-        candidate
-        for candidate in work["candidates"]
-        if candidate["candidate_id"] == work["selected_candidate_id"]
+        (
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"] == work["selected_candidate_id"]
+        ),
+        None,
+    )
+    selected_work_id = (
+        str(selected_work["candidate_id"])
+        if selected_work is not None
+        else "none"
+    )
+    selected_work_class = (
+        str(selected_work["candidate_class"])
+        if selected_work is not None
+        else "none"
+    )
+    selected_reason = (
+        str(selected_work["reranking_reason"])
+        if selected_work is not None
+        else (
+            "No serious candidate currently meets the generated eligibility "
+            "policy; retain visible deferred pressure and recompute after the "
+            "next measured frontier classification."
+        )
     )
     command = r".\.venv\Scripts\python.exe scripts\update_rules_scheduler.py --write"
     fingerprint = hashlib.sha256(_json_text(value).encode("utf-8")).hexdigest()
@@ -62,8 +84,8 @@ def _compact_markdown(value: Mapping[str, Any]) -> str:
         f"- Subsystems: `{summary['subsystem_count']}`",
         f"- Selected subsystem: `{selected['subsystem_id']}`",
         f"- Selected batch: `{selected['batch_id']}`",
-        f"- Selected cross-program work: `{selected_work['candidate_id']}`",
-        f"- Selected work class: `{selected_work['candidate_class']}`",
+        f"- Selected cross-program work: `{selected_work_id}`",
+        f"- Selected work class: `{selected_work_class}`",
         "",
         "## Cross-program work selection",
         "",
@@ -119,7 +141,7 @@ def _compact_markdown(value: Mapping[str, Any]) -> str:
             for candidate in work["candidates"]
         ),
         "",
-        f"Selected reason: {selected_work['reranking_reason']}",
+        f"Selected reason: {selected_reason}",
         "",
         "## Top blockers",
         "",

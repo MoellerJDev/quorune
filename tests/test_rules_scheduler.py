@@ -22,6 +22,7 @@ from quorune.work_selection import (
     build_work_selection,
     load_work_selection_inputs,
 )
+from scripts.update_rules_scheduler import _compact_markdown
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -749,6 +750,20 @@ class RulesSchedulerTests(unittest.TestCase):
             "frontier:effect_clause:fixture-harvest",
             work["selected_candidate_id"],
         )
+
+    def test_scheduler_markdown_represents_no_eligible_candidate(self):
+        queue = deepcopy(self.queue)
+        work = queue["work_selection"]
+        work["selected_candidate_id"] = None
+        work["eligible_candidate_count"] = 0
+        for candidate in work["candidates"]:
+            candidate["eligible"] = False
+            if candidate["selection_state"] == "selected":
+                candidate["selection_state"] = "blocked"
+        markdown = _compact_markdown(queue)
+        self.assertIn("Selected cross-program work: `none`", markdown)
+        self.assertIn("Selected work class: `none`", markdown)
+        self.assertIn("No serious candidate currently meets", markdown)
 
     def test_runtime_text_candidates_are_split_by_declared_subsystem(self):
         work = self.queue["work_selection"]
