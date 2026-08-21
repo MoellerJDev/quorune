@@ -121,7 +121,7 @@ def build_plan(
                 ),
             )
         )
-    if selected_modules:
+    if phase == "normal" and selected_modules:
         steps.extend(
             (
                 QuickStep(
@@ -194,19 +194,16 @@ def build_plan(
     }
     finalizer_selected = "generated-finalization" in impact.checks
     for check in impact.checks:
-        if check == "compact-ci-dependencies":
+        if phase == "pre-corpus":
             continue
-        if phase == "pre-corpus" and (
-            check == "generated-finalization"
-            or check in (_GENERATED_CHECK_ALIASES - {"documentation"})
-        ):
+        if check == "compact-ci-dependencies":
             continue
         if finalizer_selected and check in _GENERATED_CHECK_ALIASES:
             continue
         command = check_commands.get(check)
         if command is not None:
             steps.append(QuickStep(check, command))
-    if "browser-build" in impact.checks:
+    if phase == "normal" and "browser-build" in impact.checks:
         npm = shutil.which("npm.cmd" if sys.platform == "win32" else "npm")
         if npm is None:
             raise RuntimeError("npm is required for the affected browser build")
@@ -226,7 +223,10 @@ def build_plan(
         )
     return {
         "impact": impact.to_dict(),
-        "test_modules": selected_modules,
+        "test_modules": selected_modules if phase == "normal" else (),
+        "deferred_test_modules": (
+            selected_modules if phase == "pre-corpus" else ()
+        ),
         "database": str(database),
         "phase": phase,
         "steps": tuple(steps),
@@ -313,6 +313,7 @@ def main() -> int:
                     "impact": plan["impact"],
                     "phase": plan["phase"],
                     "test_modules": plan["test_modules"],
+                    "deferred_test_modules": plan["deferred_test_modules"],
                     "steps": [asdict(step) for step in plan["steps"]],
                 },
                 indent=2,

@@ -147,7 +147,8 @@ database census in the same finalization run:
 `.github/workflows/generated-artifacts.yml` offloads the same governed writers
 to GitHub-hosted runners. Source-changing pull-request events and every `main`
 push first derive an affected-owner plan from schema-3 input declarations. A
-pre-corpus quick-gate phase runs focused impact checks, the generated manifest
+pre-corpus quick-gate phase records the affected tests for the ordinary PR
+matrix, but executes only runtime/compile validation, the generated manifest
 plan, and the compiler-identity sentinel before any census. The workflow is not
 subscribed to `ready_for_review`, so moving an unchanged draft into review does
 not restart cloud generation.

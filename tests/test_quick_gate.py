@@ -65,6 +65,10 @@ class QuickGatePlanTests(unittest.TestCase):
         self.assertIn("compiler-identity", names)
         self.assertNotIn("generated-finalization", names)
         self.assertNotIn("compact-ci-dependencies", names)
+        self.assertNotIn("build-test-database", names)
+        self.assertNotIn("affected-tests", names)
+        self.assertEqual((), plan["test_modules"])
+        self.assertTrue(plan["deferred_test_modules"])
 
     def test_reusable_piece_change_checks_inventory(self):
         plan = build_plan(("quorune/reusable_pieces/generation.py",))
