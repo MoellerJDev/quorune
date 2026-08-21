@@ -183,7 +183,7 @@
     "test_affected_player_discard_compiler_mutant_is_killed",
     "test_fixed_count_discard_uses_available_cards_and_skips_empty_hand",
     "test_discard_choice_resumes_following_typed_effect",
-    "test_private_apnap_discard_uses_zone_replacement_and_replays",
+    "test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
     "test_stale_and_malformed_private_discard_reject_before_mutation"
   ],
   "implementation": {

@@ -41,7 +41,10 @@ REGISTRY_PATH = ROOT / "quorune" / "rules" / "capability-registry.json"
 def focused_database(directory: str) -> CardDatabase:
     database = Path(directory) / "affected-player-discard.sqlite3"
     build_fixture_database(
-        [ROOT / "tests" / "fixtures" / "scryfall-exact-lists.json"],
+        [
+            ROOT / "tests" / "fixtures" / "scryfall-exact-lists.json",
+            ROOT / "tests" / "fixtures" / "qualified-enchant-cards.json",
+        ],
         database,
     )
     return CardDatabase(database)
@@ -376,11 +379,42 @@ class FixedAffectedPlayerDiscardRuntimeTests(unittest.TestCase):
         self.assertTrue(replay["ok"], replay)
         self.assertEqual(expected_hash, replay["final_state_hash"])
 
-    def test_private_apnap_discard_uses_zone_replacement_and_replays(self):
+    def test_private_apnap_discard_aura_attachment_zone_replacement_and_replay(
+        self,
+    ):
         session = self.session(70109101)
         engine = session.engine
         engine.state.active_player = "C"
-        self.register(engine, "Dauthi Voidwalker")
+        self.register(engine, "Dauthi Voidwalker", "Ice Over")
+        attachment_target = self.permanent(
+            engine,
+            seat="A",
+            name="Birds of Paradise",
+            ref="discard-aura-target",
+        )
+        aura_record = self.db.lookup("Ice Over")
+        aura = CardInstance(
+            object_id="fixture:discard-aura",
+            ref="discard-aura",
+            oracle_id=aura_record.oracle_id,
+            printed_name=aura_record.name,
+            owner="A",
+            controller="A",
+            zone="hand",
+            zone_timestamp=engine.state.event_sequence + 1,
+            known_to=["A"],
+            revealed_to=[],
+        )
+        engine.state.cards[aura.object_id] = aura
+        engine.state.players["A"].zones["hand"].append(aura.object_id)
+        engine.move_card(
+            aura.object_id,
+            "battlefield",
+            controller="A",
+            aura_target_ref=attachment_target.ref,
+            reason="focused discard aura attachment",
+        )
+        self.assertEqual(attachment_target.object_id, aura.attached_to)
         self.permanent(
             engine,
             seat="A",
@@ -421,6 +455,8 @@ class FixedAffectedPlayerDiscardRuntimeTests(unittest.TestCase):
         for card in chosen.values():
             self.assertEqual("exile", card.zone)
             self.assertEqual(1, card.counters["void"])
+        self.assertEqual("battlefield", aura.zone)
+        self.assertEqual(attachment_target.object_id, aura.attached_to)
         self.assert_replays(session, "fixed-private-apnap-discard")
 
     def test_fixed_count_discard_uses_available_cards_and_skips_empty_hand(self):

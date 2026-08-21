@@ -271,6 +271,13 @@ _WITNESSES = {
         "3",
         "2",
     ),
+    "heartless-pillage": _Witness(
+        "Heartless Pillage",
+        "Sorcery",
+        "Target opponent discards two cards.\n"
+        "Raid — If you attacked this turn, create a Treasure token.",
+        "{2}{B}",
+    ),
     "sphinxs-insight": _Witness(
         "Sphinx's Insight",
         "Instant",
@@ -600,6 +607,7 @@ ZONE_AND_CHOICE_PAIRS = (
     _pair("capability.zone.entry.tapped_state", "residual.target_or_choice.conditional-effect"),
     _pair("capability.zone.entry.tapped_state", "residual.target_or_choice.multiple-targets"),
     _pair("capability.zone.entry.tapped_state", "residual.target_or_choice.random-outcome"),
+    _pair("capability.zone.change.destination_replacement", "residual.target_or_choice.conditional-effect"),
 )
 
 COST_AND_REPLACEMENT_PAIRS = tuple(
@@ -720,6 +728,7 @@ _bind("blur", ZONE_AND_CHOICE_PAIRS[5])
 _bind("madblind-mountain", ZONE_AND_CHOICE_PAIRS[6])
 _bind("wintermoon-mesa", ZONE_AND_CHOICE_PAIRS[7])
 _bind("ebony-fly", ZONE_AND_CHOICE_PAIRS[8])
+_bind("heartless-pillage", ZONE_AND_CHOICE_PAIRS[-1])
 _bind(
     "rasputin",
     COST_AND_REPLACEMENT_PAIRS[0],

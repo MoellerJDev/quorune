@@ -956,6 +956,14 @@
     {
       "capability_id": "attachment.aura.simple_object",
       "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep a legal simple Aura attached while private APNAP discard choices suspend and a simultaneous destination replacement commits public exile results."
+    },
+    {
+      "capability_id": "attachment.aura.simple_object",
+      "evidence_class": "interaction",
       "test_id": "tests.test_self_zone_move_rules.SelfZoneMoveRuntimeTests.test_tapped_reanimation_and_aura_return_use_zone_owners",
       "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -2428,7 +2436,7 @@
     {
       "capability_id": "choice.affected_player.fixed_discard",
       "evidence_class": "interaction",
-      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
       "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Collect private opponent hand choices, suspend their simultaneous discard for destination replacement, and commit only the replaced public exile results."
@@ -2436,7 +2444,7 @@
     {
       "capability_id": "choice.affected_player.fixed_discard",
       "evidence_class": "multiplayer",
-      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
       "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Collect three opponent choices from the active player onward without mutating any hand before all affected seats have chosen."
@@ -2484,7 +2492,7 @@
     {
       "capability_id": "choice.affected_player.fixed_discard",
       "evidence_class": "privacy",
-      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
       "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Project only the current chooser's hand refs, withhold physical IDs and every other seat's selected identity, and reveal results only after commitment."
@@ -2492,7 +2500,7 @@
     {
       "capability_id": "choice.affected_player.fixed_discard",
       "evidence_class": "replay",
-      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_uses_zone_replacement_and_replays",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
       "official_rule_ids": ["101.4", "115.1", "608.2b", "608.2c", "701.9", "701.9a", "701.9c"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Save and exactly replay private APNAP selection, replacement suspension, simultaneous movement, public exile, and replacement-created counters."
@@ -18185,6 +18193,14 @@
         "commander_review"
       ],
       "applicability_note": "Designate one active player as monarch through the canonical unique public designation path."
+    },
+    {
+      "capability_id": "zone.change.destination_replacement",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_affected_player_discards.FixedAffectedPlayerDiscardRuntimeTests.test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "official_rule_ids": ["400.6", "614.1", "614.1a", "614.5", "616.1", "616.1f", "616.2"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Suspend one simultaneous private discard batch for Dauthi's destination replacement, then preserve the unrelated live Aura attachment through commit and exact replay."
     },
     {
       "capability_id": "zone.change.destination_replacement",
