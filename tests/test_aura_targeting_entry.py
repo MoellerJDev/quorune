@@ -572,6 +572,7 @@ class AuraTargetingEntryEngineTests(unittest.TestCase):
             card
             for card in engine.state.cards.values()
             if card.owner == "B"
+            and not card.is_commander
             and engine.card_record(card) is not None
             and "creature"
             in engine.card_record(card).type_line.casefold()

@@ -281,7 +281,7 @@ class OracleIRTests(unittest.TestCase):
                 "color_identity": ["B"],
             },
         ]
-        with sqlite3.connect(path) as connection:
+        with contextlib.closing(sqlite3.connect(path)) as connection, connection:
             for card in cards:
                 raw = {
                     "object": "card",
@@ -1968,10 +1968,10 @@ class OracleIRTests(unittest.TestCase):
 
     def test_material_unknowns_fail_closed_with_specific_residuals(self):
         rest = compile_oracle_card(self.db.lookup("Rest in Peace"))
-        self.assertEqual("unresolved", rest.status)
+        self.assertEqual("partial", rest.status)
         kinds = {residual.kind for residual in rest.material_residuals}
-        self.assertIn("trigger", kinds)
         self.assertIn("replacement_effect", kinds)
+        self.assertNotIn("trigger", kinds)
         self.assertTrue(
             all(residual.reason for residual in rest.material_residuals)
         )

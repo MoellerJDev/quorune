@@ -405,6 +405,7 @@ class ExploreEngineTests(unittest.TestCase):
             card
             for card in engine.state.cards.values()
             if card.owner == "B"
+            and not card.is_commander
             and not self.database.lookup(card.printed_name).is_land
             and card.object_id != explorer.object_id
         )
