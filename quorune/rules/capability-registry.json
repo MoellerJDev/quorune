@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 124,
+  "registry_version": 125,
   "effective_date": "2026-08-07",
   "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "profiles": [
@@ -4841,7 +4841,7 @@
     },
     {
       "id": "damage.replacement.static_quantity",
-      "version": 1,
+      "version": 2,
       "official_rules": ["120.4b", "614.1", "614.5", "616.1", "616.1f"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability": {
@@ -4851,13 +4851,13 @@
         "exclusions": ["replacement with a non-damage event", "persistent prevention shields", "damage-result replacement", "mana-result damage requiring an explicit replacement choice"]
       },
       "dependencies": ["damage.amount.positive"],
-      "implementation_components": ["quorune.damage.prepare_damage_batch", "quorune.semantic_runtime.damage_replacements.DamageQuantityReplacementHandler", "quorune.replacement.ordering.advance_replacement_batch", "quorune.oracle_ir._static_damage_handler"],
-      "positive_tests": ["test_furnace_and_daunting_order_changes_final_damage", "test_exact_generic_damage_handler_is_trusted_and_active_in_session"],
-      "negative_tests": ["test_validation_failure_is_atomic_before_any_damage_result", "test_static_damage_replacement_wording_lowers_to_generic_handlers"],
-      "interaction_tests": ["test_static_prevention_applies_to_each_simultaneous_event"],
+      "implementation_components": ["quorune.damage.prepare_damage_batch", "quorune.semantic_runtime.damage_replacements.DamageQuantityReplacementHandler", "quorune.semantic_runtime.damage_replacements.DamageQuantityReplacementV2Handler", "quorune.replacement.ordering.advance_replacement_batch", "quorune.compiler.damage_templates.static_damage_handler"],
+      "positive_tests": ["test_furnace_and_daunting_order_changes_final_damage", "test_exact_generic_damage_handler_is_trusted_and_active_in_session", "test_fixed_additive_damage_replacements_lower_with_typed_scope", "test_torbran_adds_only_to_red_sources_hitting_opposing_subjects"],
+      "negative_tests": ["test_validation_failure_is_atomic_before_any_damage_result", "test_static_damage_replacement_wording_lowers_to_generic_handlers", "test_additive_damage_v2_matches_color_or_type_and_excludes_self"],
+      "interaction_tests": ["test_static_prevention_applies_to_each_simultaneous_event", "test_additive_and_double_damage_order_is_scoped_and_replays_exactly"],
       "multiplayer_tests": ["test_four_player_each_opponent_damage_uses_one_typed_batch", "test_four_player_damage_replacement_choices_follow_apnap"],
-      "privacy_tests": ["test_combat_replacement_choice_is_seat_scoped_and_precommit"],
-      "replay_tests": ["test_semantic_damage_replacement_choice_replays_exactly"],
+      "privacy_tests": ["test_combat_replacement_choice_is_seat_scoped_and_precommit", "test_additive_and_double_damage_order_is_scoped_and_replays_exactly"],
+      "replay_tests": ["test_semantic_damage_replacement_choice_replays_exactly", "test_additive_and_double_damage_order_is_scoped_and_replays_exactly"],
       "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
       "dependency_fail_closed_status": "passed",
       "dependency_fail_closed_rationale": "",

@@ -207,6 +207,15 @@ _WITNESSES = {
         "{2}{B}",
         ("Void",),
     ),
+    "damage-result-and-coin-replacement": _Witness(
+        "Damage Result and Coin Replacement Fixture",
+        "Creature — Human Wizard",
+        "{T}: This creature deals 1 damage to any target.\n"
+        "If you would flip a coin, instead flip two coins and ignore one.",
+        "{1}{R}",
+        power="2",
+        toughness="2",
+    ),
     "alhammarrets-archive": _Witness(
         "Alhammarret's Archive",
         "Legendary Artifact",
@@ -702,7 +711,7 @@ _bind("prismatic-circle", *EFFECT_AND_REPLACEMENT_PAIRS[:3])
 _bind("serras-hymn", EFFECT_AND_REPLACEMENT_PAIRS[3])
 _bind("tekuthal", *EFFECT_AND_REPLACEMENT_PAIRS[4:6])
 _bind("zabaz", *EFFECT_AND_REPLACEMENT_PAIRS[6:8])
-_bind("jaya", *EFFECT_AND_REPLACEMENT_PAIRS[8:12])
+_bind("damage-result-and-coin-replacement", *EFFECT_AND_REPLACEMENT_PAIRS[8:12])
 _bind("decode-transmissions", *EFFECT_AND_REPLACEMENT_PAIRS[12:14])
 _bind("alhammarrets-archive", *EFFECT_AND_REPLACEMENT_PAIRS[14:16])
 _bind("kor-haven", EFFECT_AND_REPLACEMENT_PAIRS[16])

@@ -166,8 +166,8 @@
     {
       "mechanic_id": "cr-120-damage",
       "path": "mechanics/contracts/damage.json",
-      "sha256": "03a8ca9f9cea79ddc8b94fd4085594cd9e671ea43255c7e4b93fd12495fc138b",
-      "version": 4
+      "sha256": "8692cf2d5f12867086abd675c97db3847705fda0f99dfbc415fb205f59e744be",
+      "version": 5
     },
     {
       "mechanic_id": "deathtouch",
@@ -7141,15 +7141,15 @@
     {
       "category": "game_concepts",
       "contract_path": "mechanics/contracts/damage.json",
-      "contract_sha256": "03a8ca9f9cea79ddc8b94fd4085594cd9e671ea43255c7e4b93fd12495fc138b",
-      "contract_version": 4,
+      "contract_sha256": "8692cf2d5f12867086abd675c97db3847705fda0f99dfbc415fb205f59e744be",
+      "contract_version": 5,
       "coverage_status": "partial",
       "dependencies": [],
       "implementation_component": "quorune.damage coordinator plus quorune.damage_results prepare/plan/commit owner",
       "implementation_version": "damage-results-v5",
       "kind": "rules_section",
       "known_blockers": [
-        "excess-damage redirection, greatest-excess selection, persistent and divisible prevention shields, and uncompiled damage/result replacement families remain incomplete",
+        "dynamic additive damage amounts, open source characteristic alternatives, excess-damage redirection, greatest-excess selection, persistent and divisible prevention shields, and other uncompiled damage/result replacement families remain incomplete",
         "explicit replacement choices during mana-result damage are not resumable",
         "unrepresented source last-known information, dynamic toxic values, continuous ability grants, regeneration, and complete damage-source selection remain incomplete",
         "noncombat per-source trigger subsets and universal CR 120.4 event coverage are not complete"
@@ -7183,7 +7183,11 @@
         "test_prevented_infect_and_toxic_create_no_counter_results",
         "test_four_player_keyword_results_keep_source_attribution",
         "test_damage_result_replacement_choice_is_private_and_replays",
-        "test_keyword_damage_results_replay_from_combat_assignment"
+        "test_keyword_damage_results_replay_from_combat_assignment",
+        "test_additive_damage_v2_matches_color_or_type_and_excludes_self",
+        "test_fixed_additive_damage_replacements_lower_with_typed_scope",
+        "test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+        "test_torbran_adds_only_to_red_sources_hitting_opposing_subjects"
       ],
       "trust_level": "untrusted"
     },

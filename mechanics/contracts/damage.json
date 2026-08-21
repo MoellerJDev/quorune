@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract_version": 4,
+  "contract_version": 5,
   "mechanic_id": "cr-120-damage",
   "official_name": "Damage",
   "effective_date": "2026-08-07",
@@ -114,8 +114,9 @@
       "derived recipient card types and source colors or keywords are read before applying represented results"
     ],
     "replacement_effects": [
-      "represented fixed damage quantity, fixed prevention, life-gain multiplication, and whole-result life-floor replacements occur before atomic commit",
-      "persistent and divisible shields, redirection, and uncompiled damage-result families remain blocked"
+      "represented multiplicative and fixed additive damage quantity, fixed prevention, life-gain multiplication, and whole-result life-floor replacements occur before atomic commit",
+      "fixed additive damage applicability uses current source color/type/controller identity and can exclude the replacement source itself",
+      "dynamic additive amounts or open color/type alternatives, persistent and divisible shields, redirection, and uncompiled damage-result families remain blocked"
     ],
     "copy": [
       "copied card types and keywords participate through derived characteristics"
@@ -139,7 +140,8 @@
     "infect and wither counter results",
     "lifelink across several recipients",
     "fixed and cumulative toxic values",
-    "four-player APNAP result ordering"
+    "four-player APNAP result ordering",
+    "fixed additive damage ordered with multiplicative damage replacement"
   ],
   "witness_cards": [
     {
@@ -149,6 +151,14 @@
     {
       "name": "Invasion of Gobakhan // Lightshield Array",
       "oracle_id": "86c32a56-3272-4738-b0b3-a8aa49a17ce4"
+    },
+    {
+      "name": "Jaya, Venerated Firemage",
+      "oracle_id": "10a87c58-2d8b-4658-b7d6-8dcbb44a2d2f"
+    },
+    {
+      "name": "Torbran, Thane of Red Fell",
+      "oracle_id": "8c3495bf-02e7-4ad9-949d-92eb3d2b662a"
     }
   ],
   "rulings": [
@@ -178,14 +188,18 @@
     "test_prevented_infect_and_toxic_create_no_counter_results",
     "test_four_player_keyword_results_keep_source_attribution",
     "test_damage_result_replacement_choice_is_private_and_replays",
-    "test_keyword_damage_results_replay_from_combat_assignment"
+    "test_keyword_damage_results_replay_from_combat_assignment",
+    "test_additive_damage_v2_matches_color_or_type_and_excludes_self",
+    "test_fixed_additive_damage_replacements_lower_with_typed_scope",
+    "test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+    "test_torbran_adds_only_to_red_sources_hitting_opposing_subjects"
   ],
   "implementation": {
     "component": "quorune.damage coordinator plus quorune.damage_results prepare/plan/commit owner",
     "version": "damage-results-v5"
   },
   "known_blockers": [
-    "excess-damage redirection, greatest-excess selection, persistent and divisible prevention shields, and uncompiled damage/result replacement families remain incomplete",
+    "dynamic additive damage amounts, open source characteristic alternatives, excess-damage redirection, greatest-excess selection, persistent and divisible prevention shields, and other uncompiled damage/result replacement families remain incomplete",
     "explicit replacement choices during mana-result damage are not resumable",
     "unrepresented source last-known information, dynamic toxic values, continuous ability grants, regeneration, and complete damage-source selection remain incomplete",
     "noncombat per-source trigger subsets and universal CR 120.4 event coverage are not complete"

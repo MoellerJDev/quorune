@@ -461,6 +461,16 @@ accepted. Negative keyword or subtype predicates, divided or variable damage,
 multiple damage clauses, and linked result riders remain source-spanned
 residuals until their own typed families exist.
 
+Fixed additive damage replacement lowers `that much damage plus N` through the
+shared damage-quantity capability and the v2 runtime component. The descriptor
+contains only a positive fixed addition, controller relations, closed source
+color or OR-type predicates, target scope, combat scope, and whether the
+replacement source itself is excluded. Runtime applicability consumes the
+immutable current damage-source snapshot; Jaya and Torbran therefore share one
+generic owner without name dispatch. Dynamic additions, open characteristic
+alternatives, conditional duration, and source predicates outside the closed
+vocabulary remain source-spanned residuals.
+
 Source-self wording uses one immutable `SourceReferenceSpec` across represented
 counter, damage, prevention, trigger, entry, activation-cost, and declaration
 grammar. It accepts the full Oracle name and bounded complete leading forms

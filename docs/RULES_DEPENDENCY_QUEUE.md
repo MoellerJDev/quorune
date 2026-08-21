@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "5ac59e2bcc1e9808cdaa5a2e1eeea484c912244c2751ee81cbb0b94ae400c75e"
+verified: "010770135bf2283af0f570489837911d52af79aa04bb05f11fbaa289dc56bcfc"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `c3741dac0baecb5be1f405da779352278d3198e1f76b17dfadaedecda9ee05c8`
+Source fingerprint: `d118f6683a0280a4aebde045c5709b9f3421f7bb0b86f12daa2c0989977c4e98`
 
 ## Current top-level state
 
@@ -62,7 +62,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 29 | blocked | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 16 | 106 | 0 | 0 |
 | 30 | blocked | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 263 | 0 | 0 |
 
-Selected reason: 41 applicable high-risk pairs touching up to 1260 corpus cards are currently safe only because at least one side, including residual.replacement.replacement-applicability, is rejected. Implement this shared boundary and replace eligible fail-closed edges with real behavioral tests.
+Selected reason: 41 applicable high-risk pairs touching up to 1247 corpus cards are currently safe only because at least one side, including residual.replacement.replacement-applicability, is rejected. Implement this shared boundary and replace eligible fail-closed edges with real behavioral tests.
 
 ## Top blockers
 

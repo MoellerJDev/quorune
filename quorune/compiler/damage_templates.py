@@ -27,6 +27,15 @@ _DAMAGE_QUANTITY_REPLACEMENT = re.compile(
     r"instead\.?$",
     re.IGNORECASE,
 )
+_DAMAGE_ADDITIVE_REPLACEMENT = re.compile(
+    r"^If (?P<source>.+?) would deal "
+    r"(?:(?P<damage_kind>combat|noncombat) )?damage to (?P<target>.+?), "
+    r"(?:it|that source) deals that much damage plus "
+    r"(?P<additional>[1-9][0-9]*)"
+    r"(?: to (?:that permanent or player|that player|that player or permanent))? "
+    r"instead\.?$",
+    re.IGNORECASE,
+)
 _FIXED_DAMAGE_PREVENTION = re.compile(
     r"^If (?P<source>.+?) would deal "
     r"(?:(?P<damage_kind>combat|noncombat) )?damage to (?P<target>.+?), "
@@ -534,6 +543,62 @@ def _source_condition(phrase: str) -> tuple[str, list[str]] | None:
     return None
 
 
+def _additive_source_condition(
+    phrase: str,
+) -> tuple[str, list[str], list[str], list[str], bool] | None:
+    normalized = " ".join(phrase.casefold().split())
+    exact = {
+        "a source": ("any", [], [], [], False),
+        "a source you control": ("source_controller", [], [], [], False),
+        "another source you control": (
+            "source_controller",
+            [],
+            [],
+            [],
+            True,
+        ),
+        "a red source": ("any", [], [], ["R"], False),
+        "a red source you control": (
+            "source_controller",
+            [],
+            [],
+            ["R"],
+            False,
+        ),
+        "another red source you control": (
+            "source_controller",
+            [],
+            [],
+            ["R"],
+            True,
+        ),
+        "a spell": ("any", [], ["instant", "sorcery"], [], False),
+        "a red spell": ("any", [], ["instant", "sorcery"], ["R"], False),
+        "an instant or sorcery source you control": (
+            "source_controller",
+            [],
+            ["instant", "sorcery"],
+            [],
+            False,
+        ),
+        "a red instant or sorcery spell you control or a red planeswalker you control": (
+            "source_controller",
+            [],
+            ["instant", "planeswalker", "sorcery"],
+            ["R"],
+            False,
+        ),
+        "a lizard, mouse, otter, or raccoon you control": (
+            "source_controller",
+            [],
+            ["lizard", "mouse", "otter", "raccoon"],
+            [],
+            False,
+        ),
+    }
+    return exact.get(normalized)
+
+
 def _target_condition(
     phrase: str,
 ) -> tuple[str, list[str], list[str]] | None:
@@ -541,6 +606,7 @@ def _target_condition(
     exact = {
         "a permanent or player": ("any", [], []),
         "a player or permanent": ("any", [], []),
+        "a player": ("any", ["player"], []),
         "an opponent": ("opponent", ["player"], []),
         "you": ("source_controller", ["player"], []),
         "an opponent or a permanent an opponent controls": (
@@ -582,6 +648,57 @@ def _target_condition(
     return None
 
 
+def _additive_damage_handler(
+    text: str,
+) -> tuple[str, dict[str, Any], str] | None:
+    match = _DAMAGE_ADDITIVE_REPLACEMENT.fullmatch(text)
+    if match is None:
+        return None
+    source = _additive_source_condition(match.group("source"))
+    target = _target_condition(match.group("target"))
+    if source is None or target is None:
+        return None
+    (
+        source_relation,
+        source_types_all,
+        source_types_any,
+        source_colors_all,
+        exclude_source_ref,
+    ) = source
+    target_relation, target_kinds, target_types = target
+    damage_kind = match.group("damage_kind")
+    return (
+        "damage-quantity-additive-static-v2",
+        {
+            "handler_id": "replacement.damage.quantity.v2",
+            "schema_version": 2,
+            "event": "damage",
+            "condition": {
+                "source_controller_relation": source_relation,
+                "target_controller_relation": target_relation,
+                "target_kinds": target_kinds,
+                "source_types_all": source_types_all,
+                "source_types_any": source_types_any,
+                "source_colors_all": source_colors_all,
+                "target_types_all": target_types,
+                "combat": (
+                    True
+                    if damage_kind and damage_kind.casefold() == "combat"
+                    else False
+                    if damage_kind
+                    else None
+                ),
+                "exclude_source_ref": exclude_source_ref,
+            },
+            "modification": {
+                "multiplier": 1,
+                "additional": int(match.group("additional")),
+            },
+        },
+        "damage.replacement.static_quantity",
+    )
+
+
 def static_damage_handler(
     text: str,
 ) -> tuple[str, dict[str, Any], str] | None:
@@ -618,6 +735,9 @@ def static_damage_handler(
     modification: dict[str, int] = {"multiplier": 2, "additional": 0}
     template_id = "damage-quantity-double-static-v1"
     if match is None:
+        additive = _additive_damage_handler(normalized)
+        if additive is not None:
+            return additive
         match = _FIXED_DAMAGE_PREVENTION.fullmatch(normalized)
         handler_id = "prevention.damage.fixed.v1"
         capability = "damage.prevention.static_fixed"

@@ -35,6 +35,7 @@ from quorune.replacement_effects import (
 )
 from quorune.semantic_runtime import (
     DamageQuantityReplacementHandler,
+    DamageQuantityReplacementV2Handler,
     DamageReplacementSourceContext,
     FixedDamagePreventionHandler,
     StaticDamageRedirectionHandler,
@@ -45,6 +46,7 @@ from quorune.semantics import SemanticProgram
 
 
 from damage_replacement_support import (
+    additive_quantity_descriptor,
     DamageReplacementPipelineBase,
     damage_condition,
     prevention_descriptor,
@@ -126,10 +128,97 @@ class DamageReplacementModelTests(DamageReplacementPipelineBase):
             [
                 "prevention.damage.fixed.v1",
                 "replacement.damage.quantity.v1",
+                "replacement.damage.quantity.v2",
                 "replacement.damage.redirect-to-source.v1",
             ],
             sorted(item["handler_id"] for item in inventory),
         )
+
+    def test_additive_damage_v2_matches_color_or_type_and_excludes_self(self):
+        handler = DamageQuantityReplacementV2Handler()
+        descriptor = additive_quantity_descriptor(
+            additional=1,
+            target_controller_relation="any",
+            source_colors_all=["R"],
+            exclude_source_ref=True,
+        )
+        effect = handler.replacement_effect(
+            descriptor,
+            DamageReplacementSourceContext(
+                source_ref="jaya",
+                source_controller="A",
+            ),
+        )
+        self.assertEqual(
+            ({"op": "add", "field": "amount", "amount": 1},),
+            tuple(operation.to_dict() for operation in effect.operations),
+        )
+        self.assertEqual(
+            ("R",), effect.conditions["source_colors"]["contains_all"]
+        )
+        self.assertEqual(("jaya",), effect.conditions["source"]["not_in"])
+
+        other = replacement_effects.ReplaceableEvent(
+            event_id="damage:other-red",
+            kind="damage",
+            affected_player="B",
+            payload={
+                "source": "chandra",
+                "source_controller": "A",
+                "source_colors": ["R"],
+                "source_characteristics": ["planeswalker"],
+                "target_controller": "B",
+                "target_kind": "player",
+                "target_characteristics": [],
+                "combat": False,
+                "amount": 2,
+            },
+        )
+        own = replacement_effects.ReplaceableEvent(
+            event_id="damage:jaya",
+            kind="damage",
+            affected_player="B",
+            payload={**dict(other.payload), "source": "jaya"},
+        )
+        nonred = replacement_effects.ReplaceableEvent(
+            event_id="damage:blue",
+            kind="damage",
+            affected_player="B",
+            payload={
+                **dict(other.payload),
+                "source": "jace",
+                "source_colors": ["U"],
+            },
+        )
+        self.assertEqual(
+            3,
+            resolve_replacements(
+                other, (effect,), selections=(effect.effect_id,)
+            ).payload["amount"],
+        )
+        self.assertEqual(
+            2,
+            resolve_replacements(own, (effect,), selections=()).payload[
+                "amount"
+            ],
+        )
+        self.assertEqual(
+            2,
+            resolve_replacements(nonred, (effect,), selections=()).payload[
+                "amount"
+            ],
+        )
+
+        malformed = additive_quantity_descriptor()
+        malformed["condition"]["exclude_source_ref"] = "sometimes"
+        with self.assertRaisesRegex(SemanticNodeError, "must be a boolean"):
+            handler.validate(malformed)
+        competing = additive_quantity_descriptor(
+            source_types_all=["instant"],
+            source_types_any=["sorcery"],
+        )
+        with self.assertRaisesRegex(SemanticNodeError, "all and any"):
+            handler.validate(competing)
 
 
     def test_damage_value_objects_reject_unknown_recipient_kinds(self):

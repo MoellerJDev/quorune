@@ -3721,6 +3721,36 @@
       ],
       "interaction_order": 2,
       "assertion": "Resolution-time target revalidation recognizes an all-illegal Bestow target without countering the spell, allowing the physical card to resolve with its ordinary creature characteristics."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+      "piece_ids": [
+        "capability.damage.replacement.static_quantity",
+        "capability.damage.result.player_life"
+      ],
+      "capability_ids": [
+        "damage.replacement.static_quantity",
+        "damage.result.player_life"
+      ],
+      "interaction_order": 2,
+      "assertion": "The affected player orders Jaya's additive replacement with Furnace doubling before the resulting final damage reduces life, and the choice replays to the exact state hash."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_torbran_adds_only_to_red_sources_hitting_opposing_subjects",
+      "piece_ids": [
+        "capability.damage.replacement.static_quantity",
+        "capability.damage.result.multitype_permanent"
+      ],
+      "capability_ids": [
+        "damage.replacement.static_quantity",
+        "damage.result.multitype_permanent"
+      ],
+      "interaction_order": 2,
+      "assertion": "Torbran's typed red-source applicability changes the immutable amount before one multitype permanent receives both creature marked-damage and planeswalker loyalty results."
     }
   ]
 }

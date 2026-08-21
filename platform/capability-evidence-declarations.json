@@ -10186,6 +10186,24 @@
     {
       "capability_id": "damage.replacement.static_quantity",
       "evidence_class": "interaction",
+      "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Order Jaya's additive replacement with Furnace doubling through the affected player's immutable replacement batch."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "interaction",
       "test_id": "tests.test_damage_replacement_model.DamageReplacementModelTests.test_static_prevention_applies_to_each_simultaneous_event",
       "official_rule_ids": [
         "120.4b",
@@ -10276,6 +10294,24 @@
     {
       "capability_id": "damage.replacement.static_quantity",
       "evidence_class": "negative",
+      "test_id": "tests.test_damage_replacement_model.DamageReplacementModelTests.test_additive_damage_v2_matches_color_or_type_and_excludes_self",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed v2 predicates and exclude the replacement source itself before applying additive damage."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "negative",
       "test_id": "tests.test_oracle_ir.OracleIRTests.test_static_damage_replacement_wording_lowers_to_generic_handlers",
       "official_rule_ids": [
         "120.4b",
@@ -10290,6 +10326,24 @@
         "commander_review"
       ],
       "applicability_note": "Apply trusted generic or reviewed static damage-quantity replacements to every represented combat and noncombat damage proposal before any result."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "positive",
+      "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_torbran_adds_only_to_red_sources_hitting_opposing_subjects",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply Torbran's additive replacement only to red sources its controller owns when the affected subject is opposing."
     },
     {
       "capability_id": "damage.replacement.static_quantity",
@@ -10329,6 +10383,42 @@
     },
     {
       "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "positive",
+      "test_id": "tests.test_oracle_ir.OracleIRTests.test_fixed_additive_damage_replacements_lower_with_typed_scope",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile fixed additive damage replacements through the shared v2 quantity handler with typed color and source-exclusion predicates."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project competing additive and doubling replacements only to the affected player before damage commits."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
       "evidence_class": "privacy",
       "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_combat_replacement_choice_is_seat_scoped_and_precommit",
       "official_rule_ids": [
@@ -10344,6 +10434,24 @@
         "commander_review"
       ],
       "applicability_note": "Apply trusted generic or reviewed static damage-quantity replacements to every represented combat and noncombat damage proposal before any result."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "replay",
+      "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the affected player's additive-before-doubling choice to the exact authoritative state hash."
     },
     {
       "capability_id": "damage.replacement.static_quantity",
