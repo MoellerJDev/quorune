@@ -160,6 +160,10 @@ class GeneratedOwnerCacheTests(unittest.TestCase):
             self.assertTrue(spec.input_groups or spec.input_paths)
             self.assertTrue(spec.implementation_inputs)
             self.assertNotEqual("manual", spec.execution_class)
+        architecture = next(
+            spec for spec in specs if spec.id == "architecture-audit"
+        )
+        self.assertIn("tests-source", architecture.input_groups)
 
     def test_automatic_plan_inherits_unchanged_owner_without_generation(self):
         selected = GeneratorSpec(

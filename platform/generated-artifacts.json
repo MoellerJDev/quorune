@@ -523,7 +523,8 @@
       "input_groups": [
         "platform-source",
         "python-product",
-        "rules-source"
+        "rules-source",
+        "tests-source"
       ],
       "input_paths": [],
       "implementation_inputs": [
