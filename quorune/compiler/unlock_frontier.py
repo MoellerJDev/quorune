@@ -17,7 +17,7 @@ from .ir_model import OracleCardIR, OracleNode, OracleResidual
 
 
 CARD_UNLOCK_FRONTIER_SCHEMA_VERSION = 1
-CARD_UNLOCK_FRONTIER_ALGORITHM_VERSION = "card-unlock-frontier-v2"
+CARD_UNLOCK_FRONTIER_ALGORITHM_VERSION = "card-unlock-frontier-v3"
 MAX_BUNDLE_FAMILIES = 48
 BASE_RESIDUAL_FAMILIES = frozenset(
     {
@@ -123,7 +123,7 @@ _PRINTED_KEYWORD_MECHANICS = frozenset(
     "deathtouch defender double-strike first-strike flash flying haste "
     "hexproof indestructible infect lifelink menace reach shadow shroud "
     "trample vigilance wither ward equip enchant cycling crew dredge "
-    "kicker toxic cumulative-upkeep echo morph bestow evoke unearth "
+    "kicker toxic cumulative-upkeep echo morph bestow evoke flashback unearth "
     "protection".split()
 )
 _CLAUSE_SIGNATURES: tuple[tuple[str, tuple[str, ...]], ...] = (
@@ -251,6 +251,13 @@ def _capability_id(blocker: str) -> str:
 
 def _clause_signature(text: str, *, kind: str, reason: str) -> str:
     material = _material_clause_text(text)
+    if re.fullmatch(
+        r"flashback\s+(?:\{(?:0|[1-9]\d*|[wubrgc])\})+\.?",
+        material,
+    ):
+        # Cost literals are parameters of one reusable Flashback grammar, not
+        # independent implementation families.
+        return "unparsed-flashback-fixed-ordinary-mana"
     counter_signatures = _counter_clause_signatures(material)
     if "remove-counter" in counter_signatures:
         return "remove-counter"

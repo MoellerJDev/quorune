@@ -23,6 +23,7 @@
     "tests/fixtures/fixed-next-turn-draw-cards.json",
     "tests/fixtures/fixed-query-keyword-grant-cards.json",
     "tests/fixtures/fixed-token-creation-cards.json",
+    "tests/fixtures/flashback-cards.json",
     "tests/fixtures/intrinsic-basic-land-mana-cards.json",
     "tests/fixtures/prowess-cards.json",
     "tests/fixtures/qualified-enchant-cards.json",

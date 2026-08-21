@@ -2042,6 +2042,94 @@
       "applicability_note": "Pin the alternate-cost selection, target, attachment relation, and characteristic transition into an exact Game Record replay."
     },
     {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_countered_flashback_uses_self_replacement_before_competing_destination",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Apply the flashed-back stack object's mandatory self-replacement before an opponent's graveyard-destination replacement when the spell is countered."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_flashback_and_independent_graveyard_permission_offer_distinct_costs",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Compose Flashback with an independent graveyard-cast permission so the server offers the printed and Flashback costs as distinct authoritative branches."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_flashback_cast_resolves_to_exile_and_replays",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep the graveyard cast offer owner-scoped in a four-player game while every seat receives the public stack and exile results."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackCompilerTests.test_flashback_dependency_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Remove fixed Flashback production and independently block its dependencies so no graveyard permission or typed alternative cost retains exact trust."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackCompilerTests.test_nonordinary_flashback_costs_remain_residual",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep variable and nonmana Flashback costs as precise source-spanned residuals without a cast-permission fallback."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_partial_card_withholds_flashback_permission",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Withhold the graveyard offer when an independently material spell effect prevents complete CardProgram admission."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "negative",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_stale_flashback_contract_rolls_back",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Revalidate the source-pinned Flashback descriptor before payment or stack mutation when the advertised contract becomes stale."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackCompilerTests.test_fixed_mana_flashback_compiles_source_spanned_typed_program",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Lower one complete printed line to a fixed mana vector, registered handler, complete-card certificate, and capability-closed CardProgram."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "positive",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_flashback_cast_resolves_to_exile_and_replays",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Advertise, select, pay, stack, resolve, draw, and exile one real fixed-mana Flashback card through current casting and zone owners."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_flashback_cast_resolves_to_exile_and_replays",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Keep the server-issued graveyard offer exclusive to the owner and exclude authoritative physical object identity from every principal packet."
+    },
+    {
+      "capability_id": "casting.flashback.fixed_mana",
+      "evidence_class": "replay",
+      "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_flashback_cast_resolves_to_exile_and_replays",
+      "official_rule_ids": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Replay the owner-scoped offer, fixed alternate cost, stack designation, draw result, mandatory self-replacement, and final authoritative hash."
+    },
+    {
       "capability_id": "casting.kicker.fixed_mana",
       "evidence_class": "interaction",
       "test_id": "tests.test_kicker_rules.FixedKickerRuntimeTests.test_kicked_counter_replacement_is_nested_and_replays",
@@ -19933,5 +20021,6 @@
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
+
   ]
 }

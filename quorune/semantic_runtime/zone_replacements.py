@@ -36,6 +36,7 @@ from ..replacement_effects import (
 )
 from ..rules.capabilities import load_default_capability_registry
 from ..turn_history import opponent_was_dealt_damage_this_turn
+from ..flashback import flashed_back_subject_replacements
 from ..unearth import unearthed_leave_replacement
 from ..kicker import KICKER_ANNOTATION
 from .component_registry import RuntimeComponentRegistry, exact_fields
@@ -978,8 +979,7 @@ def _zone_change_snapshot_effects(
 ) -> tuple[ReplacementEffect, ...]:
     ambient_effects = collect_zone_change_replacement_effects(
         host,
-        sources=active_sources,
-        source_zones={source.object_id: "battlefield" for source in active_sources},
+        sources=active_sources, source_zones={source.object_id: "battlefield" for source in active_sources},
     )
     intrinsic_effects = tuple(
         effect
@@ -995,8 +995,7 @@ def _zone_change_snapshot_effects(
         effect
         for subject in subjects
         for effect in effect_entry_counter_effects(
-            object_ref=subject.object_ref,
-            counters=subject.effect_entry_counters,
+            object_ref=subject.object_ref, counters=subject.effect_entry_counters,
         )
     )
     registry = default_zone_change_replacement_registry()
@@ -1041,6 +1040,7 @@ def _zone_change_snapshot_effects(
         sorted(
             (
                 *ambient_effects,
+                *flashed_back_subject_replacements(host.state.cards, (subject.object_id for subject in subjects)),
                 *intrinsic_effects,
                 *generated_effects,
                 *self_entry_effects,

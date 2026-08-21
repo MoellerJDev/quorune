@@ -6,6 +6,7 @@ import copy
 
 from .model import CardInstance
 from .kicker import KICKER_ANNOTATION
+from .flashback import FLASHBACK_CAST_ANNOTATION
 from .morph import (
     FixedManaMorphSpec,
     MORPH_FACE_DOWN_ANNOTATION,
@@ -44,6 +45,19 @@ def mark_card_unearthed(card: CardInstance) -> None:
     ):
         raise ZoneObjectStateError("Unearthed designation is malformed")
     card.unearthed = True
+
+
+def mark_card_flashed_back(card: CardInstance) -> None:
+    """Record Flashback's noncopiable designation on one stack incarnation."""
+
+    if (
+        not isinstance(card, CardInstance)
+        or card.zone != "stack"
+        or card.object_kind != "card"
+        or card.annotations.get(FLASHBACK_CAST_ANNOTATION) is not None
+    ):
+        raise ZoneObjectStateError("Flashed-back spell state is malformed")
+    card.annotations[FLASHBACK_CAST_ANNOTATION] = True
 
 
 def mark_card_face_down_for_morph(
@@ -179,6 +193,7 @@ def reset_card_after_zone_change(
 
 __all__ = [
     "mark_card_face_down_for_morph",
+    "mark_card_flashed_back",
     "mark_card_kicked",
     "mark_card_unearthed",
     "ZoneObjectStateError",

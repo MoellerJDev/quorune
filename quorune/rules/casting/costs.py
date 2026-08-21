@@ -7,6 +7,10 @@ from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
 from ...compiled_cast_costs import compiled_affinity_specs, compiled_convoke_specs
+from ...compiled_flashback import (
+    compiled_fixed_mana_flashback_spec,
+    compiled_ordinary_zone_cast_permission,
+)
 from ...compiled_kicker import compiled_fixed_mana_kicker_spec
 from ...compiled_bestow import compiled_fixed_mana_bestow_spec
 from ...convoke import (
@@ -265,6 +269,35 @@ def _with_bestow_cost(
     return result
 
 
+def _flashback_base_options(
+    host: CastCostHost,
+    seat: str,
+    card: Any,
+    printed: Sequence[Mapping[str, Any]],
+    *,
+    cast_without_mana: bool,
+    force_without_mana_cost: bool,
+    suppress_source_costs: bool,
+) -> list[dict[str, Any]]:
+    """Add only the currently authorized Flashback casting-cost branch."""
+
+    result = [copy.deepcopy(dict(value)) for value in printed]
+    flashback = (
+        compiled_fixed_mana_flashback_spec(host, card)
+        if not suppress_source_costs and card.zone == "graveyard"
+        else None
+    )
+    if flashback is None:
+        return result
+    if not cast_without_mana and not compiled_ordinary_zone_cast_permission(
+        host, seat, card
+    ):
+        result.clear()
+    if not force_without_mana_cost:
+        result.append(flashback.cast_cost_option())
+    return result
+
+
 def _initial_options(
     host: CastCostHost,
     seat: str,
@@ -355,7 +388,15 @@ def _initial_options(
             requirements = host._mana_vector(option.get("requirements"))
             requirements["GENERIC"] += commander_tax
             option["requirements"] = requirements
-    base = list(printed)
+    base = _flashback_base_options(
+        host,
+        seat,
+        card,
+        printed,
+        cast_without_mana=cast_without_mana,
+        force_without_mana_cost=force_without_mana_cost,
+        suppress_source_costs=suppress_source_costs,
+    )
     for raw in [] if cast_without_mana else schema.get("alternate_costs", []):
         alternative = dict(raw)
         if not host._alternate_cost_condition_met(
@@ -1067,7 +1108,13 @@ def _finalize_option(
         return None
     if selected_cards:
         option["selected_tap_cost_cards"] = [card.ref for card in selected_cards]
-    if has_x:
+    x_value_policy = option.get("x_value_policy")
+    if x_value_policy == "zero":
+        if response.get("x") is not None and int(response["x"]) != 0:
+            return None
+    elif x_value_policy is not None:
+        return None
+    elif has_x:
         maximum = (
             _maximum_affordable_x_with_mechanics(
                 host,
