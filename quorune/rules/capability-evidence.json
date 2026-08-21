@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "aef2f596ac8a22beeb3c21ea93f14d7b179c5e8b93617e470f71aba9b5d07a89",
-  "declaration_source_fingerprint": "158b3d7cb5525ded4b8259d64d7ce639e07024599b616a9d3654f8c63d7dacee",
+  "registry_fingerprint": "206e42be47dfcdc6011d3dde4c52c9184b9c5e0725d21ca522d802ba1129585e",
+  "declaration_source_fingerprint": "d86be07226732f9032fb7af5c45ddf1e1cffb53f1148f47f745c8db83b90ff6e",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -25517,6 +25517,24 @@
     {
       "capability_id": "damage.replacement.static_quantity",
       "evidence_class": "interaction",
+      "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Order Jaya's additive replacement with Furnace doubling through the affected player's immutable replacement batch."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "interaction",
       "test_id": "tests.test_damage_replacement_model.DamageReplacementModelTests.test_static_prevention_applies_to_each_simultaneous_event",
       "official_rule_ids": [
         "120.4b",
@@ -25607,6 +25625,24 @@
     {
       "capability_id": "damage.replacement.static_quantity",
       "evidence_class": "negative",
+      "test_id": "tests.test_damage_replacement_model.DamageReplacementModelTests.test_additive_damage_v2_matches_color_or_type_and_excludes_self",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject malformed v2 predicates and exclude the replacement source itself before applying additive damage."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "negative",
       "test_id": "tests.test_oracle_ir.OracleIRTests.test_static_damage_replacement_wording_lowers_to_generic_handlers",
       "official_rule_ids": [
         "120.4b",
@@ -25621,6 +25657,24 @@
         "commander_review"
       ],
       "applicability_note": "Apply trusted generic or reviewed static damage-quantity replacements to every represented combat and noncombat damage proposal before any result."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "positive",
+      "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_torbran_adds_only_to_red_sources_hitting_opposing_subjects",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply Torbran's additive replacement only to red sources its controller owns when the affected subject is opposing."
     },
     {
       "capability_id": "damage.replacement.static_quantity",
@@ -25660,6 +25714,42 @@
     },
     {
       "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "positive",
+      "test_id": "tests.test_oracle_ir.OracleIRTests.test_fixed_additive_damage_replacements_lower_with_typed_scope",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile fixed additive damage replacements through the shared v2 quantity handler with typed color and source-exclusion predicates."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project competing additive and doubling replacements only to the affected player before damage commits."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
       "evidence_class": "privacy",
       "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_combat_replacement_choice_is_seat_scoped_and_precommit",
       "official_rule_ids": [
@@ -25675,6 +25765,24 @@
         "commander_review"
       ],
       "applicability_note": "Apply trusted generic or reviewed static damage-quantity replacements to every represented combat and noncombat damage proposal before any result."
+    },
+    {
+      "capability_id": "damage.replacement.static_quantity",
+      "evidence_class": "replay",
+      "test_id": "tests.test_damage_replacement_integration.DamageReplacementIntegrationTests.test_additive_and_double_damage_order_is_scoped_and_replays_exactly",
+      "official_rule_ids": [
+        "120.4b",
+        "614.1",
+        "614.5",
+        "616.1",
+        "616.1f"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the affected player's additive-before-doubling choice to the exact authoritative state hash."
     },
     {
       "capability_id": "damage.replacement.static_quantity",
@@ -42307,5 +42415,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "f545604dd66b217fcf3a8340efbf41e517d3c38ab579e091fd05d0fc45d6830c"
+  "fingerprint": "ab82b3397478c0adedd2b4bf7038149fbe3a8c4af58d589ce2f13bf92772e482"
 }
