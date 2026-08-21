@@ -11,7 +11,7 @@ _FIXED_ENTRY_MECHANICS = ("fading", "graft", "vanishing")
 
 _KEYWORD_WITH_VALUE = re.compile(
     rf"^(?P<name>{re.escape(_BLOODTHIRST_MECHANIC)}|{re.escape(_RENOWN_MECHANIC)}|{re.escape(_MODULAR_MECHANIC)}|{'|'.join(map(re.escape, _FIXED_ENTRY_MECHANICS))}|ward|equip|enchant|bushido|cycling|crew|dredge|kicker|toxic|"
-    r"cumulative upkeep|echo|evolve|fabricate|persist|undying|riot|sunburst|unleash|prowess|convoke|affinity|morph|bestow|evoke|unearth|level up|outlast|reinforce|scavenge)"
+    r"cumulative upkeep|echo|evolve|fabricate|persist|undying|riot|sunburst|unleash|prowess|convoke|affinity|morph|bestow|evoke|flashback|unearth|level up|outlast|reinforce|scavenge)"
     r"(?:\s+(?P<value>.+))?$",
     re.IGNORECASE,
 )
@@ -39,6 +39,15 @@ def keyword_mechanics(
         # not sibling printed keyword abilities. The typed Aura grammar owns
         # the complete restriction after this structural classification.
         return ("enchant",)
+    if "flashback" in known and re.match(
+        r"flashback(?:\s|[—–])",
+        material,
+        re.IGNORECASE,
+    ):
+        # Commas and dashes can be part of a nonmana Flashback cost. Preserve
+        # the whole printed ability for the typed Flashback grammar to accept
+        # or reject as one source-spanned node.
+        return ("flashback",)
     parts = [part.strip() for part in material.split(",")]
     if not parts:
         return None

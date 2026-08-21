@@ -2,7 +2,7 @@
 title: "CI escape report"
 status: "generated"
 authoritative_source: "platform/ci-escape-source.json"
-verified: "c18f5826e158356bec3ece981cc97c25bd05110ce46d0618895fba72ac3c1c0d"
+verified: "a15a722d75f61cca3ba624e52f666046c48271a07a2b2563fb66ad095bebcc2b"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -13,8 +13,8 @@ This report classifies observed deterministic failures that escaped the local qu
 
 ## Summary
 
-- Escapes: 33
-- Deterministic escapes: 28
+- Escapes: 35
+- Deterministic escapes: 30
 - Current missing impact edges: 0
 - Known flaky tests: 0
 - Average pushes per merged PR: None
@@ -59,6 +59,8 @@ This report classifies observed deterministic failures that escaped the local qu
 | `ci-20260821-31` | [32457286832](https://github.com/NullPriority/quorune/actions/runs/32457286832) | `source_correctness` | `not_applicable` | One shared work-selection validator now owns selected-row integrity for the loader, rules verifier, next-work query, and Markdown writer. It accepts null only when the declared and observed eligible counts are zero and rejects missing, ineligible, multiply selected, or inconsistent rows, preventing a third consumer-specific assumption. |
 | `ci-20260821-32` | [32462525986](https://github.com/NullPriority/quorune/actions/runs/32462525986) | `source_correctness` | `not_applicable` | The governance regression now branches on the shared selector contract: zero eligible candidates require selected_work null, while a selected ID must match the compact selected row and reusable-piece count. A repository-wide selected_work and selected_candidate_id audit found no other unconditional production or test consumer; generated validation was already selected on the exact head. |
 | `ci-20260821-33` | [32466017485](https://github.com/NullPriority/quorune/actions/runs/32466017485) | `source_correctness` | `not_applicable` | A trusted specialized linked graveyard-Aura descriptor now takes precedence over the ordinary printed target restriction when both exist, preserving the cast target and post-reanimation legal domain. Krovikan Plague now proves complete CardProgram admission remains fail-closed because of its activated residuals, while the obsolete typed-Enchant residual pair declaration is removed and positive Aura/delayed-draw composition owns that promoted edge. The existing compiler and trigger impact paths already selected the failing shard. |
+| `ci-20260821-34` | [32487783755](https://github.com/NullPriority/quorune/actions/runs/32487783755) | `source_correctness` | `not_applicable` | The calibration regression now derives observed count, subthreshold count, absolute prediction error, and trailing subthreshold count from the authoritative harvest history and configured card floor. Generated validation was already selected on the exact head, so no new impact edge is required. |
+| `ci-20260821-35` | [32487783755](https://github.com/NullPriority/quorune/actions/runs/32487783755) | `missing_affected_test` | `not_applicable` | The closed runtime-family inventory now includes the Flashback component. The existing compiler/CardProgram impact path already selected the failing shard; focused preparation for future runtime-registry additions must run the global inventory method in addition to the new component's own tests. |
 
 ## Measurement limitations
 

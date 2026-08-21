@@ -5434,6 +5434,33 @@
       "status": "trusted"
     },
     {
+      "id": "casting.flashback.fixed_mana",
+      "version": 1,
+      "official_rules": ["601.2b", "601.2f", "601.2h", "702.34", "702.34a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile one ordinary fixed-mana or fixed-mana-plus-life Flashback ability into an owner-scoped graveyard cast alternative whose current stack incarnation is exiled instead of moving anywhere else.",
+        "inputs": ["one physical instant or sorcery card", "one source-spanned ordinary fixed Flashback line", "fixed ordinary mana and optional positive fixed life", "complete current CardProgram admission", "the owner's graveyard incarnation", "one selected server-authored Flashback cost option", "ordinary timing, target, additional-cost, and mana-payment authority"],
+        "outputs": ["one owner-private graveyard cast offer", "one fixed alternate mana-cost option", "ordinary spell targets and additional costs", "one noncopiable flashed-back stack designation", "one mandatory stack-leave self-replacement", "replacement-aware public exile and exact replay"],
+        "exclusions": ["variable, hybrid, Phyrexian, snow, and wider nonmana Flashback costs", "Flashback-specific cost increases, reductions, and alternative nonmana payments beyond fixed life", "copied, granted, modified, text-changed, or multiple Flashback instances", "cards whose complete CardProgram remains residual", "spell copies, tokens, inactive faces, and non-instant or non-sorcery cards", "unrepresented graveyard casting prohibitions and permissions outside current typed owners"]
+      },
+      "dependencies": ["trigger.event.normalized_zone_change", "zone.change.destination_replacement"],
+      "implementation_components": ["quorune.flashback.FixedManaFlashbackSpec", "quorune.compiler.flashback_nodes.ordinary_fixed_mana_flashback_keyword_node", "quorune.semantic_runtime.flashback.FixedManaFlashbackHandler", "quorune.card_programs.admission.CompleteCardProgramAdmission", "quorune.compiled_flashback.compiled_fixed_mana_flashback_spec", "quorune.compiled_flashback.compiled_ordinary_zone_cast_permission", "CommanderEngine._compiled_zone_cast_permission", "quorune.rules.casting.costs.build_cast_cost_options", "quorune.rules.casting_additional_cost_groups.FixedLifePaymentAdditionalCost", "quorune.rules.casting.commit.commit_cast", "quorune.zone_object_state.mark_card_flashed_back", "quorune.flashback.flashed_back_leave_replacement", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot"],
+      "positive_tests": ["test_fixed_mana_flashback_compiles_source_spanned_typed_program", "test_fixed_life_flashback_adds_the_existing_payment_capability", "test_flashback_cast_resolves_to_exile_and_replays", "test_fixed_life_flashback_pays_life_and_exiles"],
+      "negative_tests": ["test_nonordinary_flashback_costs_remain_residual", "test_partial_card_withholds_flashback_permission", "test_stale_flashback_contract_rolls_back"],
+      "interaction_tests": ["test_countered_flashback_uses_self_replacement_before_competing_destination", "test_flashback_and_independent_graveyard_permission_offer_distinct_costs", "test_fixed_life_flashback_pays_life_and_exiles"],
+      "multiplayer_tests": ["test_flashback_cast_resolves_to_exile_and_replays"],
+      "privacy_tests": ["test_flashback_cast_resolves_to_exile_and_replays"],
+      "replay_tests": ["test_flashback_cast_resolves_to_exile_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking normalized zone-change events or destination replacement prevents the Flashback node from receiving trusted closure; complete-card admission, source identity, cost fingerprints, and the owner-scoped permission independently fail closed.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_flashback_dependency_and_compiler_mutations_fail_closed removes Flashback node production and proves the real fixed-mana witness returns to a material residual without a graveyard-cast fallback.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "casting.kicker.fixed_mana",
       "version": 1,
       "official_rules": ["601.2f", "601.2g", "601.2h", "601.2i", "702.33", "702.33a", "702.33b", "702.33c", "702.33f"],

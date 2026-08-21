@@ -624,13 +624,42 @@ class RulesSchedulerTests(unittest.TestCase):
             inputs=inputs,
         )
         calibration = work["selection_policy"]
-
-        self.assertEqual(12, calibration["observed_harvest_count"])
-        self.assertEqual(
-            9, calibration["observed_subthreshold_harvest_count"]
+        history = self.catalog["work_selection"]["harvest_outcome_history"]
+        minimum_gain = self.catalog["work_selection"]["coverage_family"][
+            "minimum_complete_card_gain"
+        ]
+        expected_subthreshold = sum(
+            row["actual_complete_card_gain"] < minimum_gain
+            for row in history
         )
-        self.assertEqual(0, calibration["observed_card_gain_absolute_error"])
-        self.assertEqual(0, calibration["consecutive_subthreshold_harvests"])
+        expected_error = sum(
+            abs(
+                row["expected_complete_card_gain"]
+                - row["actual_complete_card_gain"]
+            )
+            for row in history
+        )
+        expected_consecutive = 0
+        for row in reversed(history):
+            if row["actual_complete_card_gain"] >= minimum_gain:
+                break
+            expected_consecutive += 1
+
+        self.assertEqual(
+            len(history), calibration["observed_harvest_count"]
+        )
+        self.assertEqual(
+            expected_subthreshold,
+            calibration["observed_subthreshold_harvest_count"],
+        )
+        self.assertEqual(
+            expected_error,
+            calibration["observed_card_gain_absolute_error"],
+        )
+        self.assertEqual(
+            expected_consecutive,
+            calibration["consecutive_subthreshold_harvests"],
+        )
 
     def test_covered_fail_closed_pressure_does_not_block_major_ability_harvest(self):
         inputs = deepcopy(self.work_inputs)

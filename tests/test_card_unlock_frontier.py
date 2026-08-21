@@ -42,6 +42,39 @@ def _contracts() -> list[dict]:
 
 
 class ResidualClassifierTests(unittest.TestCase):
+    def test_fixed_mana_flashback_cost_literals_share_one_grammar_family(self):
+        families = {
+            canonical_residual_families(
+                {
+                    "kind": "spell_effect",
+                    "reason": "spell effect has no exact generic template",
+                    "blockers": [],
+                    "text": (
+                        f"Flashback {cost} (You may cast this card from your "
+                        "graveyard for its flashback cost. Then exile it.)"
+                    ),
+                }
+            )
+            for cost in ("{U}", "{2}{R}", "{6}{G}{G}", "{R}{W}")
+        }
+        families.add(
+            canonical_residual_families(
+                {
+                    "kind": "spell_effect",
+                    "reason": "spell effect has no exact generic template",
+                    "blockers": [],
+                    "text": (
+                        "Flashback—{1}{U}, Pay 3 life. (You may cast this card "
+                        "from your graveyard for its flashback cost. Then exile it.)"
+                    ),
+                }
+            )
+        )
+        self.assertEqual(
+            {("effect_clause:unparsed-flashback-fixed-cost",)},
+            families,
+        )
+
     def test_residual_classifier_uses_dependency_sized_canonical_families(self):
         keyword = canonical_residual_families(
             {

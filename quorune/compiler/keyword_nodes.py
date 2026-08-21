@@ -45,6 +45,7 @@ from .cumulative_upkeep_nodes import (
 from .cascade_nodes import CASCADE_MECHANIC_ID, cascade_keyword_node
 from .storm_nodes import STORM_MECHANIC_ID, storm_keyword_node
 from .bestow_nodes import fixed_mana_bestow_keyword_node
+from .flashback_nodes import ordinary_fixed_mana_flashback_keyword_node
 from .echo_nodes import fixed_mana_echo_node
 from .crew_nodes import ordinary_crew_keyword_node
 from .station_nodes import ordinary_station_keyword_node
@@ -305,6 +306,9 @@ def closed_special_keyword_node(
     bestow = fixed_mana_bestow_keyword_node(**values)
     if bestow is not None:
         return bestow
+    flashback = ordinary_fixed_mana_flashback_keyword_node(**values)
+    if flashback is not None:
+        return flashback
     counter_activation = fixed_counter_keyword_activation_node(
         **values,
         printed_power=printed_power,

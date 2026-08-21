@@ -112,6 +112,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/compiled_morph.py",
         "quorune/compiled_kicker.py",
         "quorune/compiled_bestow.py",
+        "quorune/compiled_flashback.py",
     }:
         return "semantics"
     if relative in {
@@ -217,6 +218,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/morph.py",
         "quorune/kicker.py",
         "quorune/bestow.py",
+        "quorune/flashback.py",
         "quorune/casting_cost_host.py",
         "quorune/permanent_exile.py",
         "quorune/permanent_designations.py",
@@ -314,6 +316,13 @@ def _owner(relative: str, layer: str) -> str:
         "quorune/semantic_runtime/bestow.py",
     }:
         return "casting_bestow"
+    if relative in {
+        "quorune/flashback.py",
+        "quorune/compiled_flashback.py",
+        "quorune/compiler/flashback_nodes.py",
+        "quorune/semantic_runtime/flashback.py",
+    }:
+        return "casting_flashback"
     if relative.startswith("quorune/rules/"):
         return "rules_capabilities"
     if relative.startswith("quorune/aura/"):

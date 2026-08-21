@@ -16,7 +16,9 @@ from ...counter_placement import (
     prepare_counter_placements,
 )
 from ...compiled_morph import compiled_fixed_mana_morph_spec
+from ...compiled_flashback import compiled_fixed_mana_flashback_spec
 from ...compiled_kicker import compiled_fixed_mana_kicker_spec
+from ...flashback import FLASHBACK_CAST_OPTION_ID
 from ...kicker import KICKER_MECHANIC_ID
 from ...life_state import LifeStateError, pay_life_cost
 from ...model import StackItem, YieldPolicy
@@ -27,7 +29,11 @@ from ...morph import (
     MorphError,
 )
 from ..spell_cast_events import SpellCastEvent
-from ...zone_object_state import mark_card_face_down_for_morph, mark_card_kicked
+from ...zone_object_state import (
+    mark_card_face_down_for_morph,
+    mark_card_flashed_back,
+    mark_card_kicked,
+)
 from ...stack_counter import oracle_has_intrinsic_counter_prohibition
 from ...tap_state import set_permanent_tapped
 from ...trigger_processing import collect_ward_occurrences, enqueue_trigger_batch
@@ -664,6 +670,8 @@ def _create_spell_item(
     card.active_face = proposal.face
     if str(selected_option.get("kind") or "").casefold() == KICKER_MECHANIC_ID:
         mark_card_kicked(card)
+    if selected_option.get("id") == FLASHBACK_CAST_OPTION_ID:
+        mark_card_flashed_back(card)
     morph_spec = None
     if details.get("cast_method") == MORPH_CAST_METHOD:
         try:
@@ -930,6 +938,19 @@ def commit_cast(
             raise CastProposalError(
                 "The fixed-mana Kicker contract changed before commit",
                 reason="stale_kicker_contract",
+            )
+    if selected_option.get("id") == FLASHBACK_CAST_OPTION_ID:
+        current_flashback = compiled_fixed_mana_flashback_spec(host, card)
+        if (
+            proposal.origin != "graveyard"
+            or current_flashback is None
+            or selected_option.get("flashback_fingerprint")
+            != current_flashback.fingerprint
+            or selected_option.get("source_zone") != "graveyard"
+        ):
+            raise CastProposalError(
+                "The fixed-mana Flashback contract changed before commit",
+                reason="stale_flashback_contract",
             )
     requirements = dict(thaw_json(proposal.requirements))
     try:

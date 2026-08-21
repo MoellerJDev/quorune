@@ -567,6 +567,38 @@
       "resolution": "A trusted specialized linked graveyard-Aura descriptor now takes precedence over the ordinary printed target restriction when both exist, preserving the cast target and post-reanimation legal domain. Krovikan Plague now proves complete CardProgram admission remains fail-closed because of its activated residuals, while the obsolete typed-Enchant residual pair declaration is removed and positive Aura/delayed-draw composition owns that promoted edge. The existing compiler and trigger impact paths already selected the failing shard.",
       "run_id": 32466017485,
       "summary": "Typed graveyard-card Enchant promotion shadowed Animate Dead's specialized linked transition descriptor after reanimation, while the delayed-draw suite still asserted that Krovikan Plague's formerly unsupported Enchant restriction blocked Aura entry."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "generated-validation"
+      ],
+      "head_sha": "c1783a33a058b889fb05bcaa636f2e38b09f7e36",
+      "id": "ci-20260821-34",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_rules_scheduler.RulesSchedulerTests.test_harvest_history_exposes_repeated_subthreshold_results"
+      ],
+      "resolution": "The calibration regression now derives observed count, subthreshold count, absolute prediction error, and trailing subthreshold count from the authoritative harvest history and configured card floor. Generated validation was already selected on the exact head, so no new impact edge is required.",
+      "run_id": 32487783755,
+      "summary": "The selector correctly recorded the fixed Flashback harvest as its thirteenth observed outcome, but one governance test pinned the prior total of twelve instead of deriving it from the authoritative history."
+    },
+    {
+      "category": "missing_affected_test",
+      "deterministic": true,
+      "failed_surfaces": [
+        "compiler-cardprogram"
+      ],
+      "head_sha": "c1783a33a058b889fb05bcaa636f2e38b09f7e36",
+      "id": "ci-20260821-35",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_card_program_trust.CardProgramTrustTests.test_global_handler_and_component_inventory_is_capability_bound"
+      ],
+      "resolution": "The closed runtime-family inventory now includes the Flashback component. The existing compiler/CardProgram impact path already selected the failing shard; focused preparation for future runtime-registry additions must run the global inventory method in addition to the new component's own tests.",
+      "run_id": 32487783755,
+      "summary": "The registered Flashback runtime component correctly declared its capability family, but the closed global runtime-family inventory test still omitted casting.flashback.fixed_mana."
     }
   ],
   "known_flaky_tests": [],
@@ -619,7 +651,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "c18f5826e158356bec3ece981cc97c25bd05110ce46d0618895fba72ac3c1c0d",
+  "source_fingerprint": "a15a722d75f61cca3ba624e52f666046c48271a07a2b2563fb66ad095bebcc2b",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -629,12 +661,12 @@
       "flaky_test": 6,
       "generated_artifact_drift": 2,
       "infrastructure": 1,
-      "missing_affected_test": 8,
-      "source_correctness": 14
+      "missing_affected_test": 9,
+      "source_correctness": 15
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 28,
-    "escape_count": 33,
+    "deterministic_escape_count": 30,
+    "escape_count": 35,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

@@ -27,6 +27,10 @@ from .attachments import (
 )
 from .carddb import CardDatabase, CardRecord
 from .casting_cost_host import CastingCostHostMixin
+from .compiled_flashback import (
+    compiled_fixed_mana_flashback_spec,
+    compiled_ordinary_zone_cast_permission,
+)
 from .carddb_characteristics import (
     separate_custom_display_text,
 )
@@ -263,7 +267,6 @@ from .semantic_runtime.action_permissions import (
 )
 from .semantic_runtime.casting_activation_metadata import (
     active_loyalty_cost_modifiers,
-    compiled_self_zone_cast_permission,
 )
 from .semantic_runtime.combat_metadata import active_goad_prohibitions
 from .semantic_runtime import (
@@ -2819,16 +2822,13 @@ class CommanderEngine(
     ) -> bool:
         """Return whether a trusted static permission allows this zone cast."""
 
-        permission = self._temporary_play_permission(seat, card)
-        if permission is not None and bool(
-            permission.get("allow_spell", True)
-        ):
+        if compiled_ordinary_zone_cast_permission(self, seat, card):
             return True
-        if card.owner != seat:
-            return False
-        if card.zone in set(card.annotations.get("cast_from") or []):
-            return True
-        return compiled_self_zone_cast_permission(self, seat, card)
+        return bool(
+            card.owner == seat
+            and card.zone == "graveyard"
+            and compiled_fixed_mana_flashback_spec(self, card) is not None
+        )
 
     def _cast(
         self,

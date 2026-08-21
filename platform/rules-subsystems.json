@@ -452,6 +452,13 @@
         "actual_complete_card_gain": 51,
         "actual_exact_ability_gain": 54,
         "actual_material_residual_reduction": 93
+      },
+      {
+        "candidate_id": "compiler:fixed-flashback-costs",
+        "expected_complete_card_gain": 50,
+        "actual_complete_card_gain": 50,
+        "actual_exact_ability_gain": 181,
+        "actual_material_residual_reduction": 181
       }
     ],
     "reviewed_rerank_history": [
@@ -574,6 +581,11 @@
         "candidate_id": "compiler:fixed-affected-player-discards",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "After fixed mana-value targets, the generated Choose one leader still represents 265 nonexecuting structural headers with zero sole-blocker cards, while the 106-card additional-cost candidate remains a heterogeneous cost aggregate. Classifying the shared discard grammar found 239 candidate cards and one closed target-player, target-opponent, each-player, and each-opponent family across spell, triggered, activated, modal, and two-clause sequence contexts. A bounded exact compiler probe measures 51 complete Commander cards, 83 direct typed discard nodes plus independently closed sequence compositions, and 93 removable material residuals. The family reuses the existing actor-private APNAP choice continuation and replacement-resumable simultaneous zone owner; random, optional, variable, all-hand, revealed or qualified, linked-result, cost, cleanup, and keyword-specific discards remain residual."
+      },
+      {
+        "candidate_id": "compiler:fixed-flashback-costs",
+        "selected_over": "frontier:effect_clause:typed-spell-additional-cost-clause",
+        "reason": "After selector calibration removed count-only fail-closed and residual-only work, no atomized frontier family met the measured harvest floor. A complete pinned classification showed that literal Flashback mana costs were fragmenting one reusable casting grammar; ordinary fixed-mana plus fixed-mana-and-life forms share owner-scoped graveyard permission, current casting payment, and one mandatory stack-leave self-replacement. The landed census gains 50 exact, trusted, capability-closed Commander cards, 181 exact abilities, and 181 removed material residuals while variable, wider nonmana, modified, copied, granted, and partial-card forms remain residual."
       }
     ]
   },

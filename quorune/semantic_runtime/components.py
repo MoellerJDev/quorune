@@ -40,6 +40,7 @@ from .color_set_mana_abilities import (
 from .mana_abilities import default_fixed_mana_ability_registry
 from .morph import default_fixed_mana_morph_registry
 from .bestow import default_fixed_mana_bestow_registry
+from .flashback import default_fixed_mana_flashback_registry
 from .kicker import default_fixed_mana_kicker_registry
 from .unearth import default_ordinary_unearth_ability_registry
 from .self_zone_move import default_self_zone_move_ability_registry
@@ -81,6 +82,7 @@ def runtime_component_registries() -> tuple[Any, ...]:
         default_fixed_mana_ability_registry(),
         default_fixed_mana_morph_registry(),
         default_fixed_mana_bestow_registry(),
+        default_fixed_mana_flashback_registry(),
         default_fixed_mana_kicker_registry(),
         default_ordinary_unearth_ability_registry(),
         default_self_zone_move_ability_registry(),
