@@ -122,6 +122,24 @@ def compiled_enchant_spec(
         card,
         face_name=face_name,
     )
+    record = host.card_record(card)
+    if record is not None and not (face_name and face_name != record.name):
+        program = host.semantics.get(f"{record.oracle_id}:spell:front")
+        if program is not None and host.semantic_program_is_current_trusted(
+            program
+        ):
+            linked_specs = tuple(
+                fragment
+                for fragment in fragments_from_descriptors(program.handlers)
+                if isinstance(fragment, LinkedGraveyardCreatureEnchantSpec)
+            )
+            if len(linked_specs) == 1:
+                # A reviewed linked transition owns the changing legal domain
+                # after reanimation; the printed graveyard-card restriction
+                # remains the ordinary cast target but cannot replace it.
+                return linked_specs[0]
+            if linked_specs:
+                return None
     specs: tuple[EnchantSpec, ...] = tuple(
         fragment
         for fragment in fragments
@@ -138,21 +156,7 @@ def compiled_enchant_spec(
         return specs[0]
     if specs:
         return None
-    record = host.card_record(card)
-    if record is None or (face_name and face_name != record.name):
-        return None
-    program = host.semantics.get(f"{record.oracle_id}:spell:front")
-    if (
-        program is None
-        or not host.semantic_program_is_current_trusted(program)
-    ):
-        return None
-    linked_specs = tuple(
-        fragment
-        for fragment in fragments_from_descriptors(program.handlers)
-        if isinstance(fragment, LinkedGraveyardCreatureEnchantSpec)
-    )
-    return linked_specs[0] if len(linked_specs) == 1 else None
+    return None
 
 
 def compiled_ability_fragment_dicts(

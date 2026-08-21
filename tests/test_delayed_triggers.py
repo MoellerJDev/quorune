@@ -15,6 +15,7 @@ from common import (
     pass_current,
     set_fixture_turn,
 )
+from quorune.card_programs import bind_card_program_runtime
 from quorune.card_programs.adapters import (
     compile_best_available_card_program,
 )
@@ -30,7 +31,6 @@ from quorune.compiler.program_generation import register_generated_programs
 from quorune.deck import DeckLoader
 from quorune.delayed_triggers import materialize_delayed_trigger
 from quorune.engine import TURN_STEPS
-from quorune.errors import GameRuleError
 from quorune.model import CardInstance, DelayedTrigger
 from quorune.oracle_ir import compile_oracle_card, generated_programs
 from quorune.record import (
@@ -397,7 +397,7 @@ class FixedNextTurnDrawRuntimeTests(unittest.TestCase):
         engine.state.players["A"].zones["hand"].append(spell.object_id)
         return spell
 
-    def test_residual_enchant_card_withholds_delayed_draw_runtime(self):
+    def test_partial_enchant_card_keeps_cardprogram_admission_fail_closed(self):
         session = self.session(6037003)
         engine = session.engine
         self.register(engine, "Krovikan Plague")
@@ -411,28 +411,14 @@ class FixedNextTurnDrawRuntimeTests(unittest.TestCase):
         )
         self.assertEqual("unresolved", program.trust_closure["trust_basis"])
         self.assertTrue(program.residuals)
-        plague = CardInstance(
-            object_id="fixture:krovikan-plague",
-            ref="krovikan-plague",
-            oracle_id=record.oracle_id,
-            printed_name=record.name,
-            owner="A",
-            controller="A",
-            zone="hand",
-            known_to=["A"],
+        binding = bind_card_program_runtime(
+            program,
+            capability_registry=self.capabilities,
+            profile="commander_review",
         )
-        engine.state.cards[plague.object_id] = plague
-        engine.state.players["A"].zones["hand"].append(plague.object_id)
-        before = authoritative_state_hash(engine.state)
-
-        with self.assertRaisesRegex(
-            GameRuleError,
-            "lacks one trusted compiled Enchant descriptor",
-        ):
-            engine.move_card(plague.object_id, "battlefield", log=False)
-
-        self.assertEqual(before, authoritative_state_hash(engine.state))
-        self.assertEqual("hand", plague.zone)
+        self.assertFalse(binding["strict_capability_ready"])
+        self.assertFalse(binding["compatible_ready"])
+        self.assertIn("trust_basis:unresolved", binding["blockers"])
         self.assertFalse(engine.state.delayed_triggers)
 
     @staticmethod

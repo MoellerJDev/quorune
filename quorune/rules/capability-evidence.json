@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "940c8094b62e99d8ff1378774879c3658b75eeb595292b9c9e4f8d8a8c0c42b0",
-  "declaration_source_fingerprint": "4d72d0af1f6e37c9852c25305c1d2d4f8c0df9137dd2e03fa004af205fbb380b",
+  "registry_fingerprint": "17e71b5f0e78238f05685a0c5bd2784ed74230b8195a35c383824b82194ff0e9",
+  "declaration_source_fingerprint": "180c53bd57c2a889049695d569a29cb4698b97fd00abee19f021ac07052de6c9",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -38076,6 +38076,28 @@
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
       "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose",
+      "official_rule_ids": [
+        "121.1",
+        "503.1",
+        "503.1a",
+        "603.3",
+        "603.3b",
+        "603.7",
+        "603.7a",
+        "603.7b",
+        "603.7g"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Attach one typed non-Wall Aura, schedule and resolve its exact next-turn private draw, and preserve the reciprocal relation through the draw transaction."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "interaction",
       "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner",
       "official_rule_ids": [
         "121.1",
@@ -38186,7 +38208,7 @@
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
       "evidence_class": "negative",
-      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_residual_enchant_card_withholds_delayed_draw_runtime",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_partial_enchant_card_keeps_cardprogram_admission_fail_closed",
       "official_rule_ids": [
         "121.1",
         "503.1",
@@ -38203,7 +38225,7 @@
         "commander_duel",
         "commander_review"
       ],
-      "applicability_note": "Withhold Krovikan Plague's delayed draw because its unsupported Enchant restriction prevents authoritative Aura entry and trigger creation."
+      "applicability_note": "Keep Krovikan Plague's complete CardProgram unresolved and incompatible at runtime admission while its typed Enchant and delayed-draw leaves are independently exact."
     },
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
@@ -42746,5 +42768,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "b6ea518a836c399aaa012f914e131cb2bd520a6b1f9b321eb384771b9669a553"
+  "fingerprint": "8805b55b64079c313cc6f3a8303ff48eb94e1a63051934b2673ce6f04cea1089"
 }

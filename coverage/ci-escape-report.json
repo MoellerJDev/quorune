@@ -549,6 +549,24 @@
       "resolution": "The governance regression now branches on the shared selector contract: zero eligible candidates require selected_work null, while a selected ID must match the compact selected row and reusable-piece count. A repository-wide selected_work and selected_candidate_id audit found no other unconditional production or test consumer; generated validation was already selected on the exact head.",
       "run_id": 32462525986,
       "summary": "The generated queue, Markdown writer, rules verifier, and next-work API all accepted the explicit empty selection, but an older governance assertion still unconditionally subscripted the API's selected_work null result."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "triggers-turns-exact-decks"
+      ],
+      "head_sha": "877555edf4df915b7be0dbf9f6356dd5e73ffaed",
+      "id": "ci-20260821-33",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_exact_zimone_closure.ExactZimoneClosureTests.test_animate_dead_reanimates_attaches_modifies_power_and_sacrifices_on_leave",
+        "test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_partial_enchant_card_keeps_cardprogram_admission_fail_closed",
+        "test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose"
+      ],
+      "resolution": "A trusted specialized linked graveyard-Aura descriptor now takes precedence over the ordinary printed target restriction when both exist, preserving the cast target and post-reanimation legal domain. Krovikan Plague now proves complete CardProgram admission remains fail-closed because of its activated residuals, while the obsolete typed-Enchant residual pair declaration is removed and positive Aura/delayed-draw composition owns that promoted edge. The existing compiler and trigger impact paths already selected the failing shard.",
+      "run_id": 32466017485,
+      "summary": "Typed graveyard-card Enchant promotion shadowed Animate Dead's specialized linked transition descriptor after reanimation, while the delayed-draw suite still asserted that Krovikan Plague's formerly unsupported Enchant restriction blocked Aura entry."
     }
   ],
   "known_flaky_tests": [],
@@ -556,7 +574,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-21T08:27:08Z",
+  "observed_at": "2026-08-21T09:13:04Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -601,7 +619,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "016306a28e65b3f41dc33038204275618acf956a3f599e72436505a06fb14893",
+  "source_fingerprint": "c18f5826e158356bec3ece981cc97c25bd05110ce46d0618895fba72ac3c1c0d",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -612,11 +630,11 @@
       "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 8,
-      "source_correctness": 13
+      "source_correctness": 14
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 27,
-    "escape_count": 32,
+    "deterministic_escape_count": 28,
+    "escape_count": 33,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

@@ -73,20 +73,6 @@
     },
     {
       "evidence_class": "interaction",
-      "assurance_kind": "fail_closed_runtime_admission",
-      "test_id": "test_residual_enchant_card_withholds_delayed_draw_runtime",
-      "piece_ids": [
-        "capability.zone.draw.library_to_hand",
-        "residual.target_or_choice.typed-enchant-restriction"
-      ],
-      "capability_ids": [
-        "zone.draw.library_to_hand"
-      ],
-      "interaction_order": 2,
-      "assertion": "Krovikan Plague may expose an independently exact delayed-draw leaf for analysis, but its unsupported Enchant restriction blocks Aura entry before mutation, trigger creation, or any private draw can occur."
-    },
-    {
-      "evidence_class": "interaction",
       "assurance_kind": "pair_derived",
       "test_id": "test_all_represented_restrictions_are_cumulative",
       "piece_ids": [

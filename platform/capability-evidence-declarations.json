@@ -17146,6 +17146,14 @@
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
       "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose",
+      "official_rule_ids": ["121.1", "503.1", "503.1a", "603.3", "603.3b", "603.7", "603.7a", "603.7b", "603.7g"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Attach one typed non-Wall Aura, schedule and resolve its exact next-turn private draw, and preserve the reciprocal relation through the draw transaction."
+    },
+    {
+      "capability_id": "trigger.delayed.fixed_next_turn_draw",
+      "evidence_class": "interaction",
       "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_next_turn_draw_waits_and_resolves_through_apnap_draw_owner",
       "official_rule_ids": ["121.1", "503.1", "503.1a", "603.3", "603.3b", "603.7", "603.7a", "603.7b", "603.7g"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
@@ -17186,10 +17194,10 @@
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",
       "evidence_class": "negative",
-      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_residual_enchant_card_withholds_delayed_draw_runtime",
+      "test_id": "tests.test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_partial_enchant_card_keeps_cardprogram_admission_fail_closed",
       "official_rule_ids": ["121.1", "503.1", "503.1a", "603.3", "603.3b", "603.7", "603.7a", "603.7b", "603.7g"],
       "supported_profiles": ["traditional", "commander_duel", "commander_review"],
-      "applicability_note": "Withhold Krovikan Plague's delayed draw because its unsupported Enchant restriction prevents authoritative Aura entry and trigger creation."
+      "applicability_note": "Keep Krovikan Plague's complete CardProgram unresolved and incompatible at runtime admission while its typed Enchant and delayed-draw leaves are independently exact."
     },
     {
       "capability_id": "trigger.delayed.fixed_next_turn_draw",

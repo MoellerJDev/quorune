@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-21T08:27:08Z",
+  "observed_at": "2026-08-21T09:13:04Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -465,6 +465,18 @@
       "regressions": ["test_rules_scheduler.RulesSchedulerTests.test_selected_batch_is_dependency_ready_and_cli_next_uses_it"],
       "impact_edge_status": "not_applicable",
       "resolution": "The governance regression now branches on the shared selector contract: zero eligible candidates require selected_work null, while a selected ID must match the compact selected row and reusable-piece count. A repository-wide selected_work and selected_candidate_id audit found no other unconditional production or test consumer; generated validation was already selected on the exact head."
+    },
+    {
+      "id": "ci-20260821-33",
+      "run_id": 32466017485,
+      "head_sha": "877555edf4df915b7be0dbf9f6356dd5e73ffaed",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "Typed graveyard-card Enchant promotion shadowed Animate Dead's specialized linked transition descriptor after reanimation, while the delayed-draw suite still asserted that Krovikan Plague's formerly unsupported Enchant restriction blocked Aura entry.",
+      "failed_surfaces": ["triggers-turns-exact-decks"],
+      "regressions": ["test_exact_zimone_closure.ExactZimoneClosureTests.test_animate_dead_reanimates_attaches_modifies_power_and_sacrifices_on_leave", "test_delayed_triggers.FixedNextTurnDrawRuntimeTests.test_partial_enchant_card_keeps_cardprogram_admission_fail_closed", "test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose"],
+      "impact_edge_status": "not_applicable",
+      "resolution": "A trusted specialized linked graveyard-Aura descriptor now takes precedence over the ordinary printed target restriction when both exist, preserving the cast target and post-reanimation legal domain. Krovikan Plague now proves complete CardProgram admission remains fail-closed because of its activated residuals, while the obsolete typed-Enchant residual pair declaration is removed and positive Aura/delayed-draw composition owns that promoted edge. The existing compiler and trigger impact paths already selected the failing shard."
     }
   ],
   "recent_pull_requests": [
