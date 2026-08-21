@@ -479,6 +479,11 @@
         "candidate_id": "compiler:fixed-mana-value-direct-targets",
         "selected_over": "frontier:effect_clause:unparsed-choose-one",
         "reason": "After fixed affected-player sacrifices, the generated Choose one leader still has zero sole blockers and its 266 cards require unrelated sibling owners. The 147-card modal target-predicate cohort and a broader pinned-corpus classification expose 165 cards with mana-value-qualified targets. A bounded direct battlefield slice measures 14 newly exact Commander cards, 18 exact abilities, and 20 removable residuals across destruction, exile, and tap in spell, trigger, activated, and modal contexts. Although its immediate card gain is below the normal harvest threshold, extending the existing shared direct-target characteristic descriptor is the major reusable prerequisite for that broader cohort. The slice explicitly excludes power, toughness, variable and total mana values, public-state combinations, and hidden-zone movement so it does not cross the cycle-sensitive dynamic-characteristic boundary."
+      },
+      {
+        "candidate_id": "compiler:fixed-affected-player-discards",
+        "selected_over": "frontier:effect_clause:unparsed-choose-one",
+        "reason": "After fixed mana-value targets, the generated Choose one leader still represents 265 nonexecuting structural headers with zero sole-blocker cards, while the 106-card additional-cost candidate remains a heterogeneous cost aggregate. Classifying the shared discard grammar found 239 candidate cards and one closed target-player, target-opponent, each-player, and each-opponent family across spell, triggered, activated, modal, and two-clause sequence contexts. A bounded exact compiler probe measures 51 complete Commander cards, 83 direct typed discard nodes plus independently closed sequence compositions, and 93 removable material residuals. The family reuses the existing actor-private APNAP choice continuation and replacement-resumable simultaneous zone owner; random, optional, variable, all-hand, revealed or qualified, linked-result, cost, cleanup, and keyword-specific discards remain residual."
       }
     ]
   },

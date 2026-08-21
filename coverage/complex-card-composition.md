@@ -2,7 +2,7 @@
 title: "Complex card composition benchmark"
 status: "generated"
 authoritative_source: "coverage/complex-card-composition.json"
-verified: "5528c0e51370497d5a969e2f15ed36847f1778fb24af9d0697780942ff48b7b0"
+verified: "831b8f3ebd59d46c9cbabf480e0449e62375db682e09075f92f1598dfbf3518b"
 audience: "compiler and rules contributors"
 maintenance: "generated"
 ---
@@ -34,11 +34,11 @@ Contains public card names, Oracle IDs, generated piece IDs, and aggregate count
 | Ojer Axonil, Deepest Might // Temple of Power | 183 | 23 | 7 | 6 | 9 | 6 | `blocked` |
 | Flamewar, Brash Veteran // Flamewar, Streetwise Operative | 181 | 21 | 6 | 6 | 9 | 15 | `blocked` |
 | Urabrask // The Great Work | 181 | 20 | 6 | 7 | 11 | 4 | `blocked` |
-| Nicol Bolas, the Ravager // Nicol Bolas, the Arisen | 179 | 26 | 6 | 7 | 7 | 11 | `blocked` |
 | Invasion of Zendikar // Awakened Skyclave | 178 | 20 | 5 | 5 | 6 | 18 | `blocked` |
 | Blaster, Combat DJ // Blaster, Morale Booster | 176 | 19 | 5 | 6 | 11 | 16 | `blocked` |
 | Ugin, Eye of the Storms | 176 | 26 | 6 | 5 | 13 | 3 | `blocked` |
 | Invasion of Fiora // Marchesa, Resolute Monarch | 175 | 17 | 5 | 7 | 6 | 17 | `blocked` |
+| Nicol Bolas, the Ravager // Nicol Bolas, the Arisen | 175 | 30 | 5 | 7 | 5 | 11 | `blocked` |
 | Ojer Taq, Deepest Foundation // Temple of Civilization | 175 | 23 | 7 | 6 | 9 | 2 | `blocked` |
 | Devoted Grafkeeper // Departed Soulkeeper | 174 | 23 | 6 | 6 | 6 | 7 | `blocked` |
 | Ral, Monsoon Mage // Ral, Leyline Prodigy | 174 | 17 | 5 | 6 | 12 | 17 | `blocked` |

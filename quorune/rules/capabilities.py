@@ -26,6 +26,9 @@ from .counter_removal_capabilities import (
 from .affected_player_sacrifice_capability_shapes import (
     fixed_affected_player_sacrifice_node_capabilities,
 )
+from .affected_player_discard_capability_shapes import (
+    fixed_affected_player_discard_node_capabilities,
+)
 from .node_capability_shapes import (
     fixed_alternative_additional_cost_node_capabilities,
     fixed_counter_additional_cost_node_capabilities,
@@ -82,6 +85,10 @@ from ..compiler.modal_templates import (
 from ..compiler.affected_player_sacrifice_templates import (
     FIXED_AFFECTED_PLAYER_SACRIFICE_CAPABILITY,
     FIXED_AFFECTED_PLAYER_SACRIFICE_MECHANIC,
+)
+from ..compiler.affected_player_discard_templates import (
+    FIXED_AFFECTED_PLAYER_DISCARD_CAPABILITY,
+    FIXED_AFFECTED_PLAYER_DISCARD_MECHANIC,
 )
 from ..compiler.delayed_draw_templates import (
     FIXED_NEXT_TURN_DRAW_CAPABILITY,
@@ -930,6 +937,7 @@ def _targeted_effect_capabilities(
         mass_destruction_node_capabilities,
         fixed_next_turn_draw_node_capabilities,
         fixed_draw_node_capabilities,
+        fixed_affected_player_discard_node_capabilities,
         fixed_affected_player_sacrifice_node_capabilities,
         fixed_mill_node_capabilities,
         fixed_life_node_capabilities,
@@ -1168,6 +1176,21 @@ def capability_dependencies_for_node(
     return tuple(sorted(dependencies))
 
 
+def _affected_player_choice_covered_mechanics(
+    supplied: set[str],
+) -> set[str]:
+    covered: set[str] = set()
+    if FIXED_AFFECTED_PLAYER_DISCARD_CAPABILITY in supplied:
+        covered.update(
+            {FIXED_AFFECTED_PLAYER_DISCARD_MECHANIC, "cr-402-hand"}
+        )
+    if FIXED_AFFECTED_PLAYER_SACRIFICE_CAPABILITY in supplied:
+        covered.update(
+            {FIXED_AFFECTED_PLAYER_SACRIFICE_MECHANIC, "sacrifice"}
+        )
+    return covered
+
+
 def capability_covered_mechanics(
     dependencies: Iterable[str],
 ) -> tuple[str, ...]:
@@ -1219,10 +1242,7 @@ def capability_covered_mechanics(
         )
     if FIXED_CHOOSE_ONE_MODAL_CAPABILITY in supplied:
         covered.add(FIXED_CHOOSE_ONE_MODAL_MECHANIC)
-    if FIXED_AFFECTED_PLAYER_SACRIFICE_CAPABILITY in supplied:
-        covered.update(
-            {FIXED_AFFECTED_PLAYER_SACRIFICE_MECHANIC, "sacrifice"}
-        )
+    covered.update(_affected_player_choice_covered_mechanics(supplied))
     if "attachment.aura.simple_object" in supplied:
         covered.add("enchant")
     if "protection.typed.debt" in supplied:

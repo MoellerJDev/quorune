@@ -1689,6 +1689,15 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_private_apnap_discard_aura_attachment_zone_replacement_and_replay",
+      "piece_ids": ["capability.attachment.aura.simple_object", "capability.zone.change.destination_replacement"],
+      "capability_ids": ["attachment.aura.simple_object", "zone.change.destination_replacement"],
+      "interaction_order": 2,
+      "assertion": "A legal simple Aura remains reciprocally attached while private APNAP discard choices suspend, Dauthi replaces the simultaneous graveyard moves with public exile, and the exact record replays to the same attachment and zone state."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_lotus_field_composes_tapped_entry_with_controller_relative_hexproof",
       "piece_ids": ["capability.target.protection.hexproof_permanent", "capability.zone.entry.tapped_state"],
       "capability_ids": ["target.protection.hexproof_permanent", "zone.entry.tapped_state"],
@@ -2652,6 +2661,20 @@
         ],
         "interaction_order": 2,
         "assertion": "The dedicated pair subtest compiles this exact residual boundary through the normal CardProgram path and proves runtime admission remains unresolved, non-strict, and incompatible until both represented pieces have trusted executable semantics."
+    },
+    {
+        "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+        "test_id": "test_all_declared_residual_pairs_fail_closed_at_runtime_boundary",
+        "piece_ids": [
+            "capability.zone.change.destination_replacement",
+            "residual.target_or_choice.conditional-effect"
+        ],
+        "capability_ids": [
+            "zone.change.destination_replacement"
+        ],
+        "interaction_order": 2,
+        "assertion": "The Heartless Pillage pair subtest compiles the fixed targeted discard through the canonical destination-replacement dependency while preserving the unresolved Raid condition, then proves the partial CardProgram is not runtime-admissible."
     },
     {
         "evidence_class": "interaction",
