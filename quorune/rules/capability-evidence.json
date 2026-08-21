@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "798a455b40d75615326df1f10d817291499d7ae9b328096284bbf8e6822a5c03",
-  "declaration_source_fingerprint": "a29e42b70952128cbb41487209b16b9b7cfc3f933b5ae86573a3d0ddb0e407d5",
+  "registry_fingerprint": "940c8094b62e99d8ff1378774879c3658b75eeb595292b9c9e4f8d8a8c0c42b0",
+  "declaration_source_fingerprint": "4d72d0af1f6e37c9852c25305c1d2d4f8c0df9137dd2e03fa004af205fbb380b",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -2639,6 +2639,28 @@
         "commander_review"
       ],
       "applicability_note": "Re-evaluate represented player Protection from everything, move the now-illegal Aura by state-based action, and clear the reciprocal relation."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose",
+      "official_rule_ids": [
+        "303.4",
+        "303.4a",
+        "303.4c",
+        "303.4f",
+        "303.4g",
+        "608.2b",
+        "701.3",
+        "702.5a",
+        "704.5m"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Attach one typed non-Wall Aura, schedule and resolve its exact next-turn private draw, and preserve the reciprocal relation through the draw transaction."
     },
     {
       "capability_id": "attachment.aura.typed_restriction",
@@ -42724,5 +42746,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "861570f14c9ab5b9b84b1395eff298f8c9d5d3c5ff663ad15ce5a94bb8f62983"
+  "fingerprint": "b6ea518a836c399aaa012f914e131cb2bd520a6b1f9b321eb384771b9669a553"
 }

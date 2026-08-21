@@ -2087,6 +2087,21 @@
     },
     {
       "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_typed_aura_and_delayed_draw_compose",
+      "piece_ids": [
+        "capability.attachment.aura.typed_restriction",
+        "capability.zone.draw.library_to_hand"
+      ],
+      "capability_ids": [
+        "attachment.aura.typed_restriction",
+        "zone.draw.library_to_hand"
+      ],
+      "interaction_order": 2,
+      "assertion": "A typed non-Wall Aura remains reciprocally attached while its exact enter trigger schedules and resolves one next-turn private draw through the canonical draw owner."
+    },
+    {
+      "evidence_class": "interaction",
       "assurance_kind": "fail_closed_runtime_admission",
       "test_id": "test_typed_enchant_residual_pairs_fail_closed_at_runtime_boundary",
       "piece_ids": [

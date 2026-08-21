@@ -1091,6 +1091,14 @@
     },
     {
       "capability_id": "attachment.aura.typed_restriction",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_typed_aura_and_delayed_draw_compose",
+      "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability_note": "Attach one typed non-Wall Aura, schedule and resolve its exact next-turn private draw, and preserve the reciprocal relation through the draw transaction."
+    },
+    {
+      "capability_id": "attachment.aura.typed_restriction",
       "evidence_class": "multiplayer",
       "test_id": "tests.test_aura_targeting_entry.AuraTargetingEntryEngineTests.test_opponent_player_aura_is_four_player_seat_scoped",
       "official_rule_ids": ["303.4", "303.4a", "303.4c", "303.4f", "303.4g", "608.2b", "701.3", "702.5a", "704.5m"],

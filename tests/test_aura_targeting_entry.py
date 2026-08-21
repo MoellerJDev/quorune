@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 from contextlib import contextmanager
+from dataclasses import replace
 import json
 from pathlib import Path
 import tempfile
@@ -9,7 +10,14 @@ import unittest
 import uuid
 from unittest.mock import patch
 
-from common import ROOT, keep_all, load_assets, make_session, set_fixture_turn
+from common import (
+    ROOT,
+    advance_fixture_turn,
+    keep_all,
+    load_assets,
+    make_session,
+    set_fixture_turn,
+)
 from quorune.aura import (
     AuraControllerRelation,
     AuraEnchantSubject,
@@ -551,7 +559,12 @@ class AuraTargetingEntryEngineTests(unittest.TestCase):
             if card.owner == seat and card.printed_name == name
         )
 
-    def fixture(self, *, restriction: str = "creature"):
+    def fixture(
+        self,
+        *,
+        restriction: str = "creature",
+        oracle_text: str | None = None,
+    ):
         session = self.make_session()
         engine = session.engine
         aura = self.card(engine, "A", "Island")
@@ -571,6 +584,8 @@ class AuraTargetingEntryEngineTests(unittest.TestCase):
             log=False,
         )
         record = aura_record(aura.oracle_id, restriction=restriction)
+        if oracle_text is not None:
+            record = replace(record, oracle_text=oracle_text)
         original = engine.card_record
 
         def record_for(value):
@@ -611,6 +626,9 @@ class AuraTargetingEntryEngineTests(unittest.TestCase):
                     capability_registry=load_default_capability_registry(),
                     capability_profile=engine.state.config.review_profile,
                     promote_exact_runtime_handlers=True,
+                    promote_exact_trigger_programs=True,
+                    promote_exact_effect_programs=True,
+                    promote_exact_capability_declarations=True,
                 )
                 yield
 
@@ -953,6 +971,70 @@ class AuraTargetingEntryEngineTests(unittest.TestCase):
             )
             self.assertFalse(engine._stabilize())
         self.assertEqual("graveyard", aura.zone)
+
+    def test_typed_aura_and_delayed_draw_compose(self):
+        restriction = "non-Wall creature you control"
+        session, aura, target, records = self.fixture(
+            restriction=restriction,
+            oracle_text=(
+                f"Enchant {restriction}\n"
+                "When this Aura enters, draw a card at the beginning of the "
+                "next turn's upkeep."
+            ),
+        )
+        engine = session.engine
+        engine.change_control(target.object_id, "A")
+        engine.state.players["A"].mana_pool["U"] = 1
+        with records:
+            engine._cast(
+                "A",
+                {
+                    "card": aura.ref,
+                    "targets": [target.ref],
+                    "pay": "manual",
+                    "payment": {"U": 1},
+                },
+            )
+            engine.permissions.invalidate_current()
+            engine.state.pending_decision = None
+            engine.state.priority_player = None
+            engine.state.priority_passes = []
+            engine._prepare_stack_resolution()
+            self.assertEqual(target.object_id, aura.attached_to)
+            self.assertTrue(engine.state.stack)
+
+            engine.permissions.invalidate_current()
+            engine.state.pending_decision = None
+            engine.state.priority_player = None
+            engine.state.priority_passes = []
+            engine._prepare_stack_resolution()
+            delayed = next(
+                trigger
+                for trigger in engine.state.delayed_triggers
+                if trigger.label
+                == "Draw at the beginning of the next turn's upkeep"
+            )
+            hand_before = len(engine.state.players["A"].zones["hand"])
+            advance_fixture_turn(engine)
+            engine.state.active_player = "B"
+            matches = engine._matching_delayed_triggers(
+                "step.begin",
+                {"phase": "beginning", "step": "upkeep", "player": "B"},
+            )
+            engine._start_trigger_batch(matches, after="grant_priority")
+            engine.permissions.invalidate_current()
+            engine.state.pending_decision = None
+            engine.state.priority_player = None
+            engine.state.priority_passes = []
+            engine._prepare_stack_resolution()
+
+        self.assertEqual(
+            hand_before + 1,
+            len(engine.state.players["A"].zones["hand"]),
+        )
+        self.assertFalse(delayed.active)
+        self.assertEqual(target.object_id, aura.attached_to)
+        self.assertIn(aura.object_id, target.attachments)
 
     def test_opponent_player_aura_is_four_player_seat_scoped(self):
         session = make_session(
