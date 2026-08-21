@@ -9,7 +9,7 @@ from typing import Any, Mapping, Sequence
 from .util import stable_json
 
 
-WORK_SELECTION_SCHEMA_VERSION = 1
+WORK_SELECTION_SCHEMA_VERSION = 2
 _CANDIDATE_CLASSES = {
     "ci_correctness",
     "replay_privacy_defect",
@@ -72,7 +72,7 @@ def _nonnegative_int(value: Any, label: str) -> int:
 
 
 def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
-    if int(policy.get("policy_version") or 0) != 1:
+    if int(policy.get("policy_version") or 0) != 2:
         raise WorkSelectionError("Unsupported work-selection policy")
     priority_classes = [str(value) for value in policy.get("priority_classes", [])]
     if (
@@ -103,6 +103,18 @@ def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
         coverage.get("minimum_material_residual_reduction"),
         "minimum_material_residual_reduction",
     )
+    minimum_prerequisite_gain = _nonnegative_int(
+        coverage.get("minimum_prerequisite_complete_card_gain"),
+        "minimum_prerequisite_complete_card_gain",
+    )
+    minimum_downstream_gain = _nonnegative_int(
+        coverage.get("minimum_prerequisite_downstream_card_gain"),
+        "minimum_prerequisite_downstream_card_gain",
+    )
+    maximum_consecutive_exceptions = _nonnegative_int(
+        coverage.get("maximum_consecutive_prerequisite_exceptions"),
+        "maximum_consecutive_prerequisite_exceptions",
+    )
     candidate_limit = _nonnegative_int(
         coverage.get("candidate_limit"), "candidate_limit"
     )
@@ -116,6 +128,10 @@ def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
         minimum_gain < 50
         or minimum_ability_gain < 100
         or minimum_residual_reduction < 100
+        or minimum_prerequisite_gain < 1
+        or minimum_prerequisite_gain >= minimum_gain
+        or minimum_downstream_gain < minimum_gain
+        or maximum_consecutive_exceptions < 1
         or candidate_limit < 1
         or len(rank_order) != len(set(rank_order))
         or set(rank_order) != expected_rank_fields
@@ -126,6 +142,79 @@ def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
     excluded_efforts = {
         str(value) for value in coverage.get("excluded_efforts", []) if value
     }
+    prerequisite_exceptions = list(
+        coverage.get("approved_prerequisite_exceptions", [])
+    )
+    prerequisite_exception_ids: set[str] = set()
+    for index, raw in enumerate(prerequisite_exceptions):
+        row = _mapping(
+            raw, f"approved_prerequisite_exceptions[{index}]"
+        )
+        expected = {
+            "candidate_id",
+            "expected_downstream_complete_card_gain",
+            _REASON_FIELD,
+        }
+        if set(row) != expected:
+            raise WorkSelectionError(
+                "Approved prerequisite exceptions have an invalid shape"
+            )
+        candidate_id = str(row.get("candidate_id") or "")
+        downstream_gain = _nonnegative_int(
+            row.get("expected_downstream_complete_card_gain"),
+            "expected_downstream_complete_card_gain",
+        )
+        reason = str(row.get(_REASON_FIELD) or "")
+        if (
+            not candidate_id
+            or candidate_id in prerequisite_exception_ids
+            or downstream_gain < minimum_downstream_gain
+            or not reason
+        ):
+            raise WorkSelectionError(
+                "Approved prerequisite exceptions must be unique, measured, "
+                "and complete"
+            )
+        prerequisite_exception_ids.add(candidate_id)
+    harvest_history = list(policy.get("harvest_outcome_history", []))
+    harvest_ids: set[str] = set()
+    for index, raw in enumerate(harvest_history):
+        row = _mapping(raw, f"harvest_outcome_history[{index}]")
+        expected = {
+            "candidate_id",
+            "expected_complete_card_gain",
+            "actual_complete_card_gain",
+            "actual_exact_ability_gain",
+            "actual_material_residual_reduction",
+        }
+        if set(row) != expected:
+            raise WorkSelectionError(
+                "Harvest outcome history entries have an invalid shape"
+            )
+        candidate_id = str(row.get("candidate_id") or "")
+        if not candidate_id or candidate_id in harvest_ids:
+            raise WorkSelectionError(
+                "Harvest outcome history candidate ids must be unique"
+            )
+        harvest_ids.add(candidate_id)
+        for field in expected - {"candidate_id"}:
+            _nonnegative_int(row.get(field), field)
+    consecutive_subthreshold = 0
+    for row in reversed(harvest_history):
+        if int(row["actual_complete_card_gain"]) >= minimum_gain:
+            break
+        consecutive_subthreshold += 1
+    subthreshold_harvests = sum(
+        int(row["actual_complete_card_gain"]) < minimum_gain
+        for row in harvest_history
+    )
+    card_gain_absolute_error = sum(
+        abs(
+            int(row["expected_complete_card_gain"])
+            - int(row["actual_complete_card_gain"])
+        )
+        for row in harvest_history
+    )
     history = list(policy.get("reviewed_rerank_history", []))
     history_ids: set[str] = set()
     for index, raw in enumerate(history):
@@ -148,15 +237,25 @@ def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
             )
         history_ids.add(candidate_id)
     return {
-        "policy_version": 1,
+        "policy_version": 2,
         "priority_classes": priority_classes,
         "starting_uncovered_high_risk_pairs": starting_uncovered,
         "minimum_complete_card_gain": minimum_gain,
         "minimum_exact_ability_gain": minimum_ability_gain,
         "minimum_material_residual_reduction": minimum_residual_reduction,
+        "minimum_prerequisite_complete_card_gain": minimum_prerequisite_gain,
+        "minimum_prerequisite_downstream_card_gain": minimum_downstream_gain,
+        "maximum_consecutive_prerequisite_exceptions": (
+            maximum_consecutive_exceptions
+        ),
+        "consecutive_subthreshold_harvests": consecutive_subthreshold,
+        "subthreshold_harvests": subthreshold_harvests,
+        "card_gain_absolute_error": card_gain_absolute_error,
         "candidate_limit": candidate_limit,
         "coverage_rank_order": rank_order,
         "excluded_efforts": excluded_efforts,
+        "approved_prerequisite_exceptions": prerequisite_exceptions,
+        "harvest_outcome_history": harvest_history,
         "reviewed_rerank_history": history,
     }
 
@@ -203,6 +302,9 @@ def load_work_selection_inputs(root: str | Path) -> dict[str, Any]:
         ),
         "reusable_piece_delta": _read_json(
             repository / "coverage" / "reusable-piece-delta.json"
+        ),
+        "reusable_piece_interactions": _read_gzip_json(
+            repository / "coverage" / "reusable-piece-interactions.json.gz"
         ),
     }
 
@@ -594,7 +696,7 @@ def _rules_candidate(selected_batch: Mapping[str, Any]) -> dict[str, Any]:
             f"{len(rules)} selected blocked behavioral rule records",
         ),
         assurance_readiness=_readiness(
-            "planned",
+            "measurement_required",
             f"{len(selected_batch.get('executable_test_ids', []))} existing test identities",
         ),
         affected_commander_cards=None,
@@ -609,31 +711,137 @@ def _rules_candidate(selected_batch: Mapping[str, Any]) -> dict[str, Any]:
         },
         estimated_effort="medium",
         reranking_reason=(
-            "The rules queue remains dependency-ready, but correctness, runtime-text, "
-            "owner, and assurance gates may rank ahead of its unknown card gain."
+            "The rules queue remains dependency-ready, but its complete-card gain is "
+            "unknown. Measure a broad harvest or a concrete correctness defect before "
+            "promoting it over the generated foreground."
         ),
-        eligible=True,
+        eligible=False,
     )
+
+
+def _fail_closed_foundation_candidates(
+    interactions: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    grouped: dict[str, list[Mapping[str, Any]]] = {}
+    for index, raw in enumerate(interactions.get("pairs", [])):
+        pair = _mapping(raw, f"reusable-piece interaction pair {index}")
+        assurance_kinds = {
+            str(value) for value in pair.get("evidence_assurance_kinds", [])
+        }
+        if (
+            pair.get("high_risk") is not True
+            or pair.get("covered") is not True
+            or "fail_closed_runtime_admission" not in assurance_kinds
+        ):
+            continue
+        residuals = [
+            str(value)
+            for value in pair.get("piece_ids", [])
+            if str(value).startswith("residual.")
+        ]
+        if not residuals or len(residuals) > 2:
+            raise WorkSelectionError(
+                "High-risk fail-closed interaction evidence must contain one or two "
+                "residual families"
+            )
+        for residual_id in residuals:
+            grouped.setdefault(residual_id, []).append(pair)
+
+    candidates = []
+    for residual_id, pairs in sorted(grouped.items()):
+        neighbors = sorted(
+            {
+                str(piece_id)
+                for pair in pairs
+                for piece_id in pair.get("piece_ids", [])
+                if str(piece_id) != residual_id
+            }
+        )
+        affected_cards = max(int(pair.get("card_count") or 0) for pair in pairs)
+        pair_count = len(pairs)
+        residual_parts = residual_id.split(".")
+        subsystem = residual_parts[1] if len(residual_parts) > 2 else "rules"
+        candidates.append(
+            _candidate(
+                candidate_id=f"interaction-implementation:{residual_id}",
+                candidate_class="rules_foundation",
+                universal_subsystem=subsystem,
+                reusable_piece_ids=[residual_id, *neighbors],
+                compiler_readiness=_readiness(
+                    "missing_typed_owner",
+                    f"{residual_id} remains a material compiler residual",
+                ),
+                runtime_readiness=_readiness(
+                    "safe_but_unimplemented",
+                    f"{pair_count} high-risk pairs are rejected at runtime admission",
+                ),
+                assurance_readiness=_readiness(
+                    "fail_closed_only",
+                    "replace rejection-only evidence with behavioral composition "
+                    "when the shared owner is implemented",
+                ),
+                affected_commander_cards=affected_cards,
+                sole_blocker_cards=None,
+                one_additional_blocker_cards=None,
+                two_additional_blocker_cards=None,
+                expected_exact_ability_gain=None,
+                expected_complete_card_gain=None,
+                expected_material_residual_reduction=None,
+                interaction_debt_introduced={
+                    _STATUS_FIELD: "safe_but_unimplemented",
+                    "high_risk_fail_closed_pair_incidence": pair_count,
+                    "neighbor_count": len(neighbors),
+                },
+                estimated_effort="large" if pair_count >= 20 else "medium",
+                reranking_reason=(
+                    f"{pair_count} applicable high-risk pairs touching up to "
+                    f"{affected_cards} corpus cards are currently safe only because at "
+                    f"least one side, including {residual_id}, is rejected. Implement "
+                    "this shared boundary and replace eligible fail-closed edges with "
+                    "real behavioral tests."
+                ),
+                eligible=True,
+                priority_within_class=(
+                    pair_count * 1_000_000
+                    + affected_cards * 1_000
+                    + len(neighbors)
+                ),
+            )
+        )
+    return candidates
 
 
 def _frontier_candidates(
     frontier: Mapping[str, Any], policy: Mapping[str, Any]
 ) -> list[dict[str, Any]]:
     candidates = []
+    retained_ids = {
+        str(row["selected_over"])
+        for row in policy["reviewed_rerank_history"]
+        if str(row["selected_over"]).startswith("frontier:")
+    }
+    exceptions = {
+        str(row["candidate_id"]): row
+        for row in policy["approved_prerequisite_exceptions"]
+    }
     for row in frontier.get("family_candidates", []):
         complete_gain = int(row.get("expected_exact_card_gain") or 0)
         ability_gain = int(row.get("expected_exact_ability_gain") or 0)
         residual_reduction = int(
             row.get("expected_material_residual_gain") or 0
         )
-        if (
+        candidate_id = f"frontier:{row.get('family_id') or ''}"
+        meets_auxiliary_threshold = not (
             complete_gain < int(policy["minimum_complete_card_gain"])
             and ability_gain < int(policy["minimum_exact_ability_gain"])
             and residual_reduction
             < int(policy["minimum_material_residual_reduction"])
-        ):
+        )
+        if not meets_auxiliary_threshold and candidate_id not in retained_ids:
             continue
-        if str(row.get("estimated_effort") or "") in policy["excluded_efforts"]:
+        effort = str(row.get("estimated_effort") or "unknown")
+        excluded_effort = effort in policy["excluded_efforts"]
+        if excluded_effort and candidate_id not in retained_ids:
             continue
         family_id = str(row.get("family_id") or "")
         if family_id.startswith("effect_clause:") or family_id.startswith(
@@ -645,9 +853,66 @@ def _frontier_candidates(
         else:
             candidate_class = "rules_foundation"
         prerequisites = [str(value) for value in row.get("prerequisites", [])]
+        sole_blockers = int(row.get("sole_blocker_cards") or 0)
+        broad_harvest = complete_gain >= int(policy["minimum_complete_card_gain"])
+        structural = complete_gain == 0 or sole_blockers == 0
+        exception = exceptions.get(candidate_id)
+        exception_allowed = bool(
+            exception
+            and complete_gain
+            >= int(policy["minimum_prerequisite_complete_card_gain"])
+            and int(policy["consecutive_subthreshold_harvests"])
+            < int(policy["maximum_consecutive_prerequisite_exceptions"])
+        )
+        if prerequisites:
+            readiness_status = "blocked_by_prerequisites"
+        elif excluded_effort:
+            readiness_status = "excluded_effort"
+        elif structural:
+            readiness_status = "structural_nonexecuting"
+        elif broad_harvest:
+            readiness_status = "candidate"
+        elif exception_allowed:
+            readiness_status = "approved_prerequisite_exception"
+        else:
+            readiness_status = "requires_broader_bundle"
+        eligible = bool(
+            not prerequisites
+            and not excluded_effort
+            and not structural
+            and (broad_harvest or exception_allowed)
+        )
+        if prerequisites:
+            reranking_reason = (
+                "Blocked prerequisites keep this high-yield frontier behind ready work."
+            )
+        elif excluded_effort:
+            reranking_reason = (
+                f"Estimated effort {effort} is excluded from a bounded foreground."
+            )
+        elif structural:
+            reranking_reason = (
+                "This aggregate has no executable complete-card gain or sole blockers; "
+                "classify its child grammars instead of selecting the structural carrier."
+            )
+        elif broad_harvest:
+            reranking_reason = (
+                "Meets the normal measured complete-card harvest floor and remains "
+                "behind higher-priority correctness gates."
+            )
+        elif exception_allowed:
+            reranking_reason = (
+                "A reviewed prerequisite exception supplies measured downstream card "
+                "gain and the consecutive-exception budget remains open."
+            )
+        else:
+            reranking_reason = (
+                "Ability or residual volume alone does not justify another subthreshold "
+                "harvest; bundle this grammar until it reaches the complete-card floor."
+            )
         candidates.append(
             _candidate(
-                candidate_id=f"frontier:{family_id}",
+                candidate_id=candidate_id,
                 candidate_class=candidate_class,
                 universal_subsystem=str(row.get("base_family") or family_id),
                 rules_dependency_ids=prerequisites,
@@ -656,7 +921,7 @@ def _frontier_candidates(
                     "generated card-unlock frontier",
                 ),
                 runtime_readiness=_readiness(
-                    "blocked_by_prerequisites" if prerequisites else "candidate",
+                    readiness_status,
                     f"{len(prerequisites)} recorded prerequisites",
                 ),
                 assurance_readiness=_readiness(
@@ -664,7 +929,7 @@ def _frontier_candidates(
                     f"interaction risk={row.get('interaction_risk') or 'unknown'}",
                 ),
                 affected_commander_cards=int(row.get("affected_cards") or 0),
-                sole_blocker_cards=int(row.get("sole_blocker_cards") or 0),
+                sole_blocker_cards=sole_blockers,
                 one_additional_blocker_cards=int(
                     row.get("one_additional_blocker_cards") or 0
                 ),
@@ -682,19 +947,30 @@ def _frontier_candidates(
                     _STATUS_FIELD: "unmeasured",
                     "risk": str(row.get("interaction_risk") or "unknown"),
                 },
-                estimated_effort=str(row.get("estimated_effort") or "unknown"),
-                reranking_reason=(
-                    "Blocked prerequisites keep this high-yield frontier behind ready work."
-                    if prerequisites
-                    else "Meets a post-stabilization card, exact-ability, or material-residual "
-                    "harvest threshold but remains behind higher-priority correctness gates."
-                ),
-                eligible=not prerequisites,
+                estimated_effort=effort,
+                reranking_reason=reranking_reason,
+                eligible=eligible,
             )
         )
-        if len(candidates) >= int(policy["candidate_limit"]):
-            break
-    return candidates
+    candidates.sort(
+        key=lambda row: (
+            not bool(row["eligible"]),
+            *(
+                -int(row[field] or 0)
+                for field in policy["coverage_rank_order"]
+            ),
+            str(row["candidate_id"]),
+        )
+    )
+    limited = candidates[: int(policy["candidate_limit"])]
+    limited_ids = {str(row["candidate_id"]) for row in limited}
+    limited.extend(
+        row
+        for row in candidates
+        if str(row["candidate_id"]) in retained_ids
+        and str(row["candidate_id"]) not in limited_ids
+    )
+    return limited
 
 
 def build_work_selection(
@@ -710,6 +986,7 @@ def build_work_selection(
         "compact_ci_dependencies",
         "platform_readiness",
         "reusable_piece_delta",
+        "reusable_piece_interactions",
     }
     if set(inputs) != required_inputs:
         raise WorkSelectionError(
@@ -725,6 +1002,12 @@ def build_work_selection(
         *_architecture_candidates(
             _mapping(inputs["architecture_audit"], "architecture audit")
         ),
+        *_fail_closed_foundation_candidates(
+            _mapping(
+                inputs["reusable_piece_interactions"],
+                "reusable-piece interactions",
+            )
+        ),
         _rules_candidate(selected_batch),
         *_frontier_candidates(
             _mapping(inputs["card_unlock_frontier"], "card-unlock frontier"),
@@ -735,6 +1018,13 @@ def build_work_selection(
     if len(ids) != len(set(ids)):
         raise WorkSelectionError("Work-selection candidate ids must be unique")
     candidate_ids = set(ids)
+    for row in validated["approved_prerequisite_exceptions"]:
+        candidate_id = str(row["candidate_id"])
+        if candidate_id not in candidate_ids:
+            raise WorkSelectionError(
+                "Approved prerequisite exception must reference a current serious "
+                f"frontier candidate: {candidate_id}"
+            )
     for row in validated["reviewed_rerank_history"]:
         selected_over = str(row["selected_over"])
         if selected_over not in candidate_ids:
@@ -790,6 +1080,9 @@ def build_work_selection(
             "reusable_piece_delta": str(
                 inputs["reusable_piece_delta"].get("fingerprint") or ""
             ),
+            "reusable_piece_interactions": str(
+                inputs["reusable_piece_interactions"].get("fingerprint") or ""
+            ),
         },
         "selection_policy": {
             "starting_uncovered_high_risk_pairs": validated[
@@ -804,10 +1097,35 @@ def build_work_selection(
             "minimum_material_residual_reduction": validated[
                 "minimum_material_residual_reduction"
             ],
+            "minimum_prerequisite_complete_card_gain": validated[
+                "minimum_prerequisite_complete_card_gain"
+            ],
+            "minimum_prerequisite_downstream_card_gain": validated[
+                "minimum_prerequisite_downstream_card_gain"
+            ],
+            "maximum_consecutive_prerequisite_exceptions": validated[
+                "maximum_consecutive_prerequisite_exceptions"
+            ],
+            "consecutive_subthreshold_harvests": validated[
+                "consecutive_subthreshold_harvests"
+            ],
+            "observed_harvest_count": len(
+                validated["harvest_outcome_history"]
+            ),
+            "observed_subthreshold_harvest_count": validated[
+                "subthreshold_harvests"
+            ],
+            "observed_card_gain_absolute_error": validated[
+                "card_gain_absolute_error"
+            ],
             "coverage_rank_order": validated["coverage_rank_order"],
             "coverage_candidate_limit": validated["candidate_limit"],
             "excluded_efforts": sorted(validated["excluded_efforts"]),
+            "approved_prerequisite_exceptions": validated[
+                "approved_prerequisite_exceptions"
+            ],
         },
+        "harvest_outcome_history": validated["harvest_outcome_history"],
         "reviewed_rerank_history": validated["reviewed_rerank_history"],
         "selected_candidate_id": (
             str(selected["candidate_id"]) if selected is not None else None

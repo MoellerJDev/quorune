@@ -65,6 +65,15 @@ def _reviewed_frontier_comparisons(inputs):
 
 def _with_dependency_ready_compiler_harvest(inputs):
     updated = deepcopy(inputs)
+    updated["reusable_piece_interactions"]["pairs"] = [
+        row
+        for row in updated["reusable_piece_interactions"]["pairs"]
+        if not (
+            row.get("high_risk") is True
+            and "fail_closed_runtime_admission"
+            in row.get("evidence_assurance_kinds", [])
+        )
+    ]
     updated["card_unlock_frontier"]["family_candidates"] = [
         {
             "family_id": "effect_clause:fixture-harvest",
@@ -87,7 +96,7 @@ def _with_dependency_ready_compiler_harvest(inputs):
 
 
 def _with_large_ability_compiler_harvest(inputs):
-    updated = deepcopy(inputs)
+    updated = _with_dependency_ready_compiler_harvest(inputs)
     updated["card_unlock_frontier"]["family_candidates"] = [
         {
             "family_id": "effect_clause:large-ability-fixture",
@@ -104,7 +113,7 @@ def _with_large_ability_compiler_harvest(inputs):
             "expected_material_residual_gain": 130,
             "interaction_risk": "high",
         },
-        *_reviewed_frontier_comparisons(updated),
+        *updated["card_unlock_frontier"]["family_candidates"],
     ]
     return updated
 
@@ -496,7 +505,7 @@ class RulesSchedulerTests(unittest.TestCase):
             },
         )
 
-    def test_large_exact_ability_harvest_can_rerank_unknown_gain_rules_work(self):
+    def test_complete_card_gain_outranks_large_ability_only_harvest(self):
         inputs = _with_large_ability_compiler_harvest(self.work_inputs)
         work = build_work_selection(
             selected_batch=self.queue["selected_batch"],
@@ -510,19 +519,197 @@ class RulesSchedulerTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            "frontier:effect_clause:large-ability-fixture",
+            "frontier:effect_clause:fixture-harvest",
             selected["candidate_id"],
         )
         self.assertEqual("compiler_harvest", selected["candidate_class"])
-        self.assertEqual(21, selected["expected_complete_card_gain"])
-        self.assertEqual(130, selected["expected_exact_ability_gain"])
+        narrow = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"]
+            == "frontier:effect_clause:large-ability-fixture"
+        )
+        self.assertFalse(narrow["eligible"])
+        self.assertEqual(
+            "requires_broader_bundle",
+            narrow["runtime_readiness"]["status"],
+        )
+        self.assertEqual(21, narrow["expected_complete_card_gain"])
+        self.assertEqual(130, narrow["expected_exact_ability_gain"])
         self.assertEqual(
             [
+                "expected_complete_card_gain",
                 "expected_exact_ability_gain",
                 "expected_material_residual_reduction",
-                "expected_complete_card_gain",
             ],
             work["selection_policy"]["coverage_rank_order"],
+        )
+
+    def test_prerequisite_exception_requires_measured_fanout_and_open_budget(self):
+        inputs = _with_large_ability_compiler_harvest(self.work_inputs)
+        policy = deepcopy(self.catalog["work_selection"])
+        policy["coverage_family"]["approved_prerequisite_exceptions"] = [
+            {
+                "candidate_id": "frontier:effect_clause:large-ability-fixture",
+                "expected_downstream_complete_card_gain": 130,
+                "reason": (
+                    "The fixture represents a measured shared prerequisite for a "
+                    "larger immediate card harvest."
+                ),
+            }
+        ]
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=policy,
+            inputs=inputs,
+        )
+        narrow = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"]
+            == "frontier:effect_clause:large-ability-fixture"
+        )
+        self.assertTrue(narrow["eligible"])
+        self.assertEqual(
+            "approved_prerequisite_exception",
+            narrow["runtime_readiness"]["status"],
+        )
+
+        policy["harvest_outcome_history"].append(
+            {
+                "candidate_id": "compiler:fixture-subthreshold-outcome",
+                "expected_complete_card_gain": 12,
+                "actual_complete_card_gain": 12,
+                "actual_exact_ability_gain": 40,
+                "actual_material_residual_reduction": 40,
+            }
+        )
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=policy,
+            inputs=inputs,
+        )
+        narrow = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"]
+            == "frontier:effect_clause:large-ability-fixture"
+        )
+        self.assertFalse(narrow["eligible"])
+        self.assertEqual(
+            "requires_broader_bundle",
+            narrow["runtime_readiness"]["status"],
+        )
+        self.assertEqual(
+            1,
+            work["selection_policy"]["consecutive_subthreshold_harvests"],
+        )
+
+    def test_harvest_history_exposes_repeated_subthreshold_results(self):
+        inputs = _with_dependency_ready_compiler_harvest(self.work_inputs)
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=inputs,
+        )
+        calibration = work["selection_policy"]
+
+        self.assertEqual(12, calibration["observed_harvest_count"])
+        self.assertEqual(
+            9, calibration["observed_subthreshold_harvest_count"]
+        )
+        self.assertEqual(0, calibration["observed_card_gain_absolute_error"])
+        self.assertEqual(0, calibration["consecutive_subthreshold_harvests"])
+
+    def test_fail_closed_high_risk_pairs_create_implementation_pressure(self):
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=self.work_inputs,
+        )
+        candidates = [
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"].startswith(
+                "interaction-implementation:"
+            )
+        ]
+        selected = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"] == work["selected_candidate_id"]
+        )
+
+        self.assertEqual(21, len(candidates))
+        self.assertEqual(
+            137,
+            sum(
+                row.get("high_risk") is True
+                and "fail_closed_runtime_admission"
+                in row.get("evidence_assurance_kinds", [])
+                for row in self.work_inputs[
+                    "reusable_piece_interactions"
+                ]["pairs"]
+            ),
+        )
+        self.assertEqual(
+            "interaction-implementation:residual.replacement."
+            "replacement-applicability",
+            selected["candidate_id"],
+        )
+        self.assertEqual("rules_foundation", selected["candidate_class"])
+        self.assertEqual(
+            "safe_but_unimplemented",
+            selected["runtime_readiness"]["status"],
+        )
+        self.assertEqual(
+            41,
+            selected["interaction_debt_introduced"][
+                "high_risk_fail_closed_pair_incidence"
+            ],
+        )
+        self.assertIn("real behavioral tests", selected["reranking_reason"])
+
+    def test_structural_frontier_volume_cannot_become_foreground(self):
+        inputs = _with_dependency_ready_compiler_harvest(self.work_inputs)
+        inputs["card_unlock_frontier"]["family_candidates"].insert(
+            0,
+            {
+                "family_id": "effect_clause:structural-fixture",
+                "base_family": "effect_clause:structural-fixture",
+                "expected_exact_card_gain": 0,
+                "estimated_effort": "small",
+                "prerequisites": [],
+                "runtime_compiler_readiness": "missing_lowering",
+                "affected_cards": 900,
+                "sole_blocker_cards": 0,
+                "one_additional_blocker_cards": 400,
+                "two_additional_blocker_cards": 300,
+                "expected_exact_ability_gain": 900,
+                "expected_material_residual_gain": 900,
+                "interaction_risk": "medium",
+            },
+        )
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=inputs,
+        )
+        structural = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"]
+            == "frontier:effect_clause:structural-fixture"
+        )
+
+        self.assertFalse(structural["eligible"])
+        self.assertEqual(
+            "structural_nonexecuting",
+            structural["runtime_readiness"]["status"],
+        )
+        self.assertEqual(
+            "frontier:effect_clause:fixture-harvest",
+            work["selected_candidate_id"],
         )
 
     def test_runtime_text_candidates_are_split_by_declared_subsystem(self):
@@ -627,6 +814,23 @@ class RulesSchedulerTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(
             WorkSelectionError, "selected_over must reference a current candidate"
+        ):
+            build_work_selection(
+                selected_batch=self.queue["selected_batch"],
+                policy=policy,
+                inputs=self.work_inputs,
+            )
+
+        policy = deepcopy(self.catalog["work_selection"])
+        policy["coverage_family"]["approved_prerequisite_exceptions"] = [
+            {
+                "candidate_id": "frontier:missing-prerequisite-fixture",
+                "expected_downstream_complete_card_gain": 100,
+                "reason": "A missing candidate must never become an exception.",
+            }
+        ]
+        with self.assertRaisesRegex(
+            WorkSelectionError, "current serious frontier candidate"
         ):
             build_work_selection(
                 selected_batch=self.queue["selected_batch"],
