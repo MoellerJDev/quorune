@@ -21,6 +21,7 @@ from quorune.work_selection import (
     WorkSelectionError,
     build_work_selection,
     load_work_selection_inputs,
+    selected_work_candidate,
 )
 from scripts.update_rules_scheduler import _compact_markdown
 
@@ -764,6 +765,33 @@ class RulesSchedulerTests(unittest.TestCase):
         self.assertIn("Selected cross-program work: `none`", markdown)
         self.assertIn("Selected work class: `none`", markdown)
         self.assertIn("No serious candidate currently meets", markdown)
+
+    def test_work_selection_selected_candidate_contract_handles_none(self):
+        work = deepcopy(self.queue["work_selection"])
+        work["selected_candidate_id"] = None
+        for candidate in work["candidates"]:
+            candidate["eligible"] = False
+            if candidate["selection_state"] == "selected":
+                candidate["selection_state"] = "blocked"
+        work["eligible_candidate_count"] = 0
+        self.assertIsNone(selected_work_candidate(work))
+
+        eligible = deepcopy(work)
+        eligible["candidates"][0]["eligible"] = True
+        eligible["eligible_candidate_count"] = 1
+        with self.assertRaisesRegex(
+            WorkSelectionError,
+            "none are eligible",
+        ):
+            selected_work_candidate(eligible)
+
+        missing = deepcopy(self.queue["work_selection"])
+        missing["selected_candidate_id"] = "fixture:missing"
+        with self.assertRaisesRegex(
+            WorkSelectionError,
+            "one eligible selected row",
+        ):
+            selected_work_candidate(missing)
 
     def test_runtime_text_candidates_are_split_by_declared_subsystem(self):
         work = self.queue["work_selection"]

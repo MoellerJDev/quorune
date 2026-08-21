@@ -1132,6 +1132,57 @@ def _rank_candidates(
     return selected
 
 
+def selected_work_candidate(
+    work_selection: Mapping[str, Any],
+) -> Mapping[str, Any] | None:
+    """Validate and return the selected candidate, including explicit none."""
+
+    if not isinstance(work_selection, Mapping):
+        raise WorkSelectionError("Work selection must be an object")
+    candidates = work_selection.get("candidates")
+    if not isinstance(candidates, list) or any(
+        not isinstance(candidate, Mapping) for candidate in candidates
+    ):
+        raise WorkSelectionError("Work-selection candidates must be objects")
+    eligible = [candidate for candidate in candidates if candidate.get("eligible") is True]
+    declared_count = work_selection.get("eligible_candidate_count")
+    if type(declared_count) is not int or declared_count != len(eligible):
+        raise WorkSelectionError(
+            "Work-selection eligible candidate count does not match candidates"
+        )
+    selected_id = work_selection.get("selected_candidate_id")
+    selected_rows = [
+        candidate
+        for candidate in candidates
+        if candidate.get("selection_state") == "selected"
+    ]
+    if selected_id is None:
+        if eligible or selected_rows:
+            raise WorkSelectionError(
+                "No selected candidate is valid only when none are eligible"
+            )
+        return None
+    if type(selected_id) is not str or not selected_id:
+        raise WorkSelectionError(
+            "Selected work candidate ID must be nonempty or null"
+        )
+    matches = [
+        candidate
+        for candidate in candidates
+        if candidate.get("candidate_id") == selected_id
+    ]
+    if (
+        len(matches) != 1
+        or matches[0].get("eligible") is not True
+        or matches[0].get("selection_state") != "selected"
+        or selected_rows != matches
+    ):
+        raise WorkSelectionError(
+            "Selected work candidate must name one eligible selected row"
+        )
+    return matches[0]
+
+
 def _source_fingerprints(inputs: Mapping[str, Any]) -> dict[str, str]:
     return {
         "architecture_audit": _hash(inputs["architecture_audit"]),
@@ -1225,4 +1276,5 @@ __all__ = [
     "WorkSelectionError",
     "build_work_selection",
     "load_work_selection_inputs",
+    "selected_work_candidate",
 ]

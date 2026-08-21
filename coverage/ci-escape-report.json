@@ -517,6 +517,22 @@
       "resolution": "The rules-queue writer now renders an explicit no-selection state and explanation when every serious candidate is deferred or complete. The cloud workflow already selected and failed in the exact rules-scheduler owner, so the correction adds a direct formatter regression rather than a new impact edge.",
       "run_id": 32455588984,
       "summary": "The recalibrated selector correctly produced no eligible candidate after typed Enchant assurance returned to zero, but the generated Markdown writer assumed selected_candidate_id always named a candidate and raised StopIteration."
+    },
+    {
+      "category": "source_correctness",
+      "deterministic": true,
+      "failed_surfaces": [
+        "generated-artifacts:verify-and-bundle"
+      ],
+      "head_sha": "94eebe51d89e7845bd8e1f41ebf38c957688ace9",
+      "id": "ci-20260821-31",
+      "impact_edge_status": "not_applicable",
+      "regressions": [
+        "test_rules_scheduler.RulesSchedulerTests.test_work_selection_selected_candidate_contract_handles_none"
+      ],
+      "resolution": "One shared work-selection validator now owns selected-row integrity for the loader, rules verifier, next-work query, and Markdown writer. It accepts null only when the declared and observed eligible counts are zero and rejects missing, ineligible, multiply selected, or inconsistent rows, preventing a third consumer-specific assumption.",
+      "run_id": 32457286832,
+      "summary": "After the Markdown writer accepted an explicit empty selection, final rules verification independently treated the same selected_candidate_id null value as a missing cross-program work-selection payload."
     }
   ],
   "known_flaky_tests": [],
@@ -524,7 +540,7 @@
     "average_pushes_per_merged_pr": "GitHub retained workflow runs are not equivalent to pushes, so push counts remain null rather than estimated.",
     "slot_b_inactive_seconds": "GitHub Actions does not observe local worktree activity, so this value remains null rather than estimated."
   },
-  "observed_at": "2026-08-21T07:04:25Z",
+  "observed_at": "2026-08-21T07:39:10Z",
   "recent_pull_requests": [
     {
       "critical_path_seconds": 1488.0,
@@ -569,7 +585,7 @@
   ],
   "repository": "NullPriority/quorune",
   "schema_version": 1,
-  "source_fingerprint": "cfa798107aba3d0997628e2b080c1bebfa082f59655611da840f6935e7027af2",
+  "source_fingerprint": "a6cb21f8cacf19864c2deda1fc3afbe5b695ebb31f603bd136b796799acf7c13",
   "summary": {
     "average_critical_path_seconds": 840.5,
     "average_pushes_per_merged_pr": null,
@@ -580,11 +596,11 @@
       "generated_artifact_drift": 2,
       "infrastructure": 1,
       "missing_affected_test": 8,
-      "source_correctness": 11
+      "source_correctness": 12
     },
     "current_missing_impact_edges": [],
-    "deterministic_escape_count": 25,
-    "escape_count": 30,
+    "deterministic_escape_count": 26,
+    "escape_count": 31,
     "exact_head_pass_rate": 1.0,
     "known_flaky_test_count": 0,
     "repeated_failure_categories": [

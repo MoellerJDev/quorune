@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-21T07:04:25Z",
+  "observed_at": "2026-08-21T07:39:10Z",
   "repository": "NullPriority/quorune",
   "escapes": [
     {
@@ -441,6 +441,18 @@
       "regressions": ["test_rules_scheduler.RulesSchedulerTests.test_scheduler_markdown_represents_no_eligible_candidate"],
       "impact_edge_status": "not_applicable",
       "resolution": "The rules-queue writer now renders an explicit no-selection state and explanation when every serious candidate is deferred or complete. The cloud workflow already selected and failed in the exact rules-scheduler owner, so the correction adds a direct formatter regression rather than a new impact edge."
+    },
+    {
+      "id": "ci-20260821-31",
+      "run_id": 32457286832,
+      "head_sha": "94eebe51d89e7845bd8e1f41ebf38c957688ace9",
+      "category": "source_correctness",
+      "deterministic": true,
+      "summary": "After the Markdown writer accepted an explicit empty selection, final rules verification independently treated the same selected_candidate_id null value as a missing cross-program work-selection payload.",
+      "failed_surfaces": ["generated-artifacts:verify-and-bundle"],
+      "regressions": ["test_rules_scheduler.RulesSchedulerTests.test_work_selection_selected_candidate_contract_handles_none"],
+      "impact_edge_status": "not_applicable",
+      "resolution": "One shared work-selection validator now owns selected-row integrity for the loader, rules verifier, next-work query, and Markdown writer. It accepts null only when the declared and observed eligible counts are zero and rejects missing, ineligible, multiply selected, or inconsistent rows, preventing a third consumer-specific assumption."
     }
   ],
   "recent_pull_requests": [

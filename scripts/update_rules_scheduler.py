@@ -15,6 +15,7 @@ from quorune.rules_scheduler import (
     build_rules_dependency_queue_from_root,
 )
 from quorune.util import stable_json
+from quorune.work_selection import selected_work_candidate
 
 
 JSON_OUTPUT = ROOT / "coverage" / "rules-dependency-queue.json"
@@ -29,14 +30,7 @@ def _compact_markdown(value: Mapping[str, Any]) -> str:
     summary = value["summary"]
     selected = value["selected_batch"]
     work = value["work_selection"]
-    selected_work = next(
-        (
-            candidate
-            for candidate in work["candidates"]
-            if candidate["candidate_id"] == work["selected_candidate_id"]
-        ),
-        None,
-    )
+    selected_work = selected_work_candidate(work)
     selected_work_id = (
         str(selected_work["candidate_id"])
         if selected_work is not None
