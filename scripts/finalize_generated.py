@@ -220,6 +220,48 @@ def check_all(
     return tuple(failures)
 
 
+def check_assembled(
+    specs: Sequence[GeneratorSpec],
+    *,
+    runner: CommandRunner = _run_command,
+) -> tuple[dict[str, object], ...]:
+    """Check only boundaries not already certified by reusable receipts."""
+
+    noncacheable = tuple(
+        spec
+        for spec in specs
+        if spec.reuse_policy != "safe"
+    )
+    failures: list[dict[str, object]] = []
+    for spec in topological_order(noncacheable):
+        command = check_command(spec)
+        returncode = runner(spec.id, command)
+        if returncode:
+            failures.append(
+                {
+                    "check": spec.id,
+                    "command": list(command),
+                    "returncode": returncode,
+                }
+            )
+    for check_id, arguments in POST_CHECKS:
+        command = (
+            (str(Path(sys.executable).resolve()), *arguments)
+            if arguments[0] != "git"
+            else arguments
+        )
+        returncode = runner(check_id, command)
+        if returncode:
+            failures.append(
+                {
+                    "check": check_id,
+                    "command": list(command),
+                    "returncode": returncode,
+                }
+            )
+    return tuple(failures)
+
+
 def changed_generated_outputs(
     specs: Sequence[GeneratorSpec], *, root: Path = ROOT
 ) -> tuple[str, ...]:
@@ -372,7 +414,16 @@ def main() -> int:
                 max_passes=args.max_passes,
                 initial_selected_ids=selected_ids,
             )
-        failures = check_all(specs)
+        if args.assemble:
+            from scripts.cloud_generated_artifacts import (
+                _owner_receipt_inventory,
+            )
+
+            inventory = _owner_receipt_inventory(specs, required=True)
+            result["owner_receipts"] = inventory
+            failures = check_assembled(specs)
+        else:
+            failures = check_all(specs)
         if failures:
             result["failures"] = failures
             print(json.dumps(result, indent=2, sort_keys=True))

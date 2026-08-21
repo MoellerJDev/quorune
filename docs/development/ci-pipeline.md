@@ -177,9 +177,11 @@ before their owning cloud jobs can regenerate them.
 
 After the parallel and dependency-ordered owners are assembled, the bundle job
 requires one strict reusable receipt for every automatic owner, runs every
-ordinary freshness and policy check in `--assemble` mode, and writes the local
-exact-head finalization receipt. It never reruns an owner in the tail pass. A
-main run then requires the assembled bytes to match the commit.
+noncacheable/manual check and cross-cutting policy check in `--assemble` mode,
+and writes the local exact-head finalization receipt. The validated reusable
+receipts replace duplicate automatic-owner checks in this tail; assembly never
+reruns an owner. A main run then requires the assembled bytes to match the
+commit.
 
 Ordinary feature branches run this workflow automatically when opened,
 reopened, or synchronized:

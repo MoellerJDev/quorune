@@ -69,6 +69,9 @@ Cross-run lookup accepts only completed executions of this workflow whose head
 repository is Quorune itself. A successfully checked owner receipt survives a
 later downstream workflow failure or cancellation; an owner that published no
 receipt retries. Fork-run artifacts are never reuse sources for `main`.
+At bundle assembly, those receipts replace duplicate automatic-owner checks;
+manual/noncacheable checks and cross-cutting architecture, documentation, and
+diff policies still run before the exact-head finalization receipt is written.
 
 This decision supersedes ADR 0042 only for generated-owner scheduling and
 intermediate reuse. ADR 0042 remains authoritative for single ownership,
