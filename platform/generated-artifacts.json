@@ -174,7 +174,6 @@
       ],
       "write_policy": "database",
       "input_groups": [
-        "platform-source",
         "rules-source"
       ],
       "input_paths": [],
@@ -335,7 +334,6 @@
       ],
       "write_policy": "database",
       "input_groups": [
-        "platform-source",
         "rules-source"
       ],
       "input_paths": [],
