@@ -501,7 +501,8 @@
         "compiler-corpus-coverage",
         "continuous-effect-performance",
         "module-classifications",
-        "platform-status"
+        "platform-status",
+        "reusable-pieces"
       ],
       "outputs": [
         "coverage/architecture-audit.json",
@@ -535,7 +536,6 @@
     {
       "id": "reusable-pieces",
       "depends_on": [
-        "architecture-audit",
         "card-unlock-frontier",
         "capability-evidence",
         "platform-status"

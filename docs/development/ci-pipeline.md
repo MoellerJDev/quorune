@@ -175,6 +175,11 @@ single fail-closed validation of the complete dependency graph. This keeps a
 manual upstream verifier from rejecting intentionally stale downstream files
 before their owning cloud jobs can regenerate them.
 
+Reusable-piece baseline and delta reports take architecture debt dimensions
+from the reviewed guard baseline. The full architecture audit follows reusable
+generation so its interaction-assurance and subsystem inventories see the final
+reusable artifacts; neither owner reads the other's output upstream.
+
 After the parallel and dependency-ordered owners are assembled, the bundle job
 requires one strict reusable receipt for every automatic owner, runs every
 noncacheable/manual check and cross-cutting policy check in `--assemble` mode,

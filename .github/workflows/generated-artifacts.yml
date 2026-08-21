@@ -375,7 +375,7 @@ jobs:
 
   architecture:
     name: Generated cloud / Architecture
-    needs: [plan, foundations, corpus, fanout]
+    needs: [plan, foundations, corpus, fanout, reusable]
     runs-on: ubuntu-latest
     env:
       CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}
@@ -444,7 +444,7 @@ jobs:
 
   reusable:
     name: Generated cloud / Reusable pieces
-    needs: [plan, database, foundations, corpus, fanout, architecture]
+    needs: [plan, database, foundations, corpus, fanout]
     runs-on: ubuntu-latest
     env:
       CLOUD_GENERATED_SOURCE_SHA: ${{ needs.plan.outputs.source_sha }}

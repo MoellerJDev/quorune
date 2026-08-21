@@ -1101,6 +1101,31 @@ def _build_complex_card_benchmark(
 def _architecture_metrics(
     architecture_audit: Mapping[str, Any],
 ) -> dict[str, int]:
+    if "architecture" not in architecture_audit:
+        engine = architecture_audit.get("engine") or {}
+        writes = architecture_audit.get("direct_game_state_writes_by_file") or {}
+        return {
+            "card_named_helpers": len(
+                architecture_audit.get("card_named_helpers") or ()
+            ),
+            "direct_game_state_writes": sum(
+                int(value) for value in writes.values()
+            ),
+            "engine_logical_lines": int(engine.get("logical_lines") or 0),
+            "legacy_card_specific_operations": len(
+                architecture_audit.get("legacy_card_specific_operations") or ()
+            ),
+            "oracle_id_literals": len(
+                architecture_audit.get("oracle_id_literals") or ()
+            ),
+            "oversized_functions_and_methods": len(
+                architecture_audit.get("oversized_functions_and_methods") or ()
+            ),
+            "oversized_modules": len(
+                architecture_audit.get("oversized_modules") or ()
+            ),
+            "prohibited_identity_dispatch_count": 0,
+        }
     dimensions = (
         architecture_audit.get("architecture", {})
         .get("debt_trend", {})

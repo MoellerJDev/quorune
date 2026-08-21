@@ -73,6 +73,12 @@ At bundle assembly, those receipts replace duplicate automatic-owner checks;
 manual/noncacheable checks and cross-cutting architecture, documentation, and
 diff policies still run before the exact-head finalization receipt is written.
 
+Reusable-piece baseline/delta generation consumes the reviewed architecture
+guard baseline for its debt dimensions. The full architecture audit runs after
+reusable-piece generation so its interaction-assurance and subsystem capsules
+observe the final reusable artifacts. This ordering avoids the former implicit
+architecture↔reusable fixed-point cycle while preserving identical debt metrics.
+
 This decision supersedes ADR 0042 only for generated-owner scheduling and
 intermediate reuse. ADR 0042 remains authoritative for single ownership,
 dependency ordering, tracked-output review, and exact final verification.
