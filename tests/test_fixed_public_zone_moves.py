@@ -614,6 +614,35 @@ class FixedPublicZoneMoveRuntimeTests(_RuntimeBase):
         self.assertEqual("graveyard", source.zone)
         self.assert_replays(session, "public-graveyard-exile-record")
 
+    def test_target_graveyard_exile_rejects_stale_target_and_replays(self):
+        session = self.session(729409, spell="Public Grave Exile")
+        engine = session.engine
+        target = self.card(engine, "B")
+        engine.move_card(target.object_id, "graveyard", log=False)
+        source, action = self.ready_spell(
+            session, "Public Grave Exile", {"B": 1}
+        )
+        accepted = session.act(
+            "pilot:A",
+            {
+                "action_id": action["id"],
+                "targets": [target.ref],
+                "pay": "manual",
+                "payment": {"B": 1},
+            },
+        )
+        self.assertTrue(accepted.ok, accepted.summary)
+
+        engine.move_card(target.object_id, "hand", log=False)
+        session.initial_checkpoint = checkpoint_envelope(engine.state)
+        session.commands.clear()
+        session.decisions.clear()
+        self.resolve_all(session)
+
+        self.assertEqual("hand", target.zone)
+        self.assertEqual("graveyard", source.zone)
+        self.assert_replays(session, "stale-public-graveyard-exile-record")
+
     def test_typed_graveyard_exile_advertises_and_replays(self):
         session = self.session(729408, spell="Public Creature Grave Exile")
         engine = session.engine

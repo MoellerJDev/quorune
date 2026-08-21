@@ -3930,6 +3930,49 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_target_graveyard_exile_rejects_stale_target_and_replays",
+      "piece_ids": [
+        "capability.target.revalidate_resolution",
+        "capability.zone.move.fixed_public_set"
+      ],
+      "capability_ids": [
+        "target.revalidate_resolution",
+        "zone.move.fixed_public_set"
+      ],
+      "interaction_order": 2,
+      "assertion": "A targeted public graveyard-set move captures one legal public object reference, rejects that reference after the object changes incarnation before resolution, commits no stale movement, and replays the fizzle exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_public_set_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.zone.move.fixed_public_set",
+        "residual.target_or_choice.conditional-effect"
+      ],
+      "capability_ids": [
+        "zone.move.fixed_public_set"
+      ],
+      "interaction_order": 2,
+      "assertion": "Descend upon the Sinful compiles its fixed public creature-set exile while its conditional Delirium result remains material, so the complete CardProgram is unavailable at strict runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_public_set_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.zone.move.fixed_public_set",
+        "residual.target_or_choice.target-predicate"
+      ],
+      "capability_ids": [
+        "zone.move.fixed_public_set"
+      ],
+      "interaction_order": 2,
+      "assertion": "Gideon, Champion of Justice compiles its fixed public-set exile while its controller-qualified target predicate remains material, so the complete CardProgram is unavailable at strict runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_typed_graveyard_exile_advertises_and_replays",
       "piece_ids": [
         "capability.card.exile.public_graveyard",
