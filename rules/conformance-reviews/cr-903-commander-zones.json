@@ -49,18 +49,16 @@
         "negative",
         "interaction",
         "multiplayer",
-        "privacy",
         "replay",
-        "rollback"
+        "hidden_information"
       ],
       "covered_scenarios": [
         "positive",
         "negative",
         "interaction",
         "multiplayer",
-        "privacy",
         "replay",
-        "rollback"
+        "hidden_information"
       ],
       "blockers": [],
       "notes": [
@@ -90,16 +88,16 @@
         "negative",
         "interaction",
         "multiplayer",
-        "privacy",
-        "replay"
+        "replay",
+        "hidden_information"
       ],
       "covered_scenarios": [
         "positive",
         "negative",
         "interaction",
         "multiplayer",
-        "privacy",
-        "replay"
+        "replay",
+        "hidden_information"
       ],
       "blockers": [],
       "notes": [
