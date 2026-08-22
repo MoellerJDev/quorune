@@ -14,6 +14,30 @@ FIXED_COUNTER_EVENT_TRIGGER_MECHANIC = "fixed-counter-event-trigger"
 FIXED_TYPED_EVENT_EFFECT_TRIGGER_MECHANIC = (
     "fixed-typed-event-effect-trigger"
 )
+FIXED_COUNTER_EVENT_TRIGGER_TEMPLATE_IDS = frozenset(
+    {
+        "fixed-counter-step-trigger-v1",
+        "fixed-counter-controlled-land-entry-trigger-v1",
+        "fixed-counter-controller-spell-cast-trigger-v1",
+        "fixed-counter-controller-life-gain-trigger-v1",
+        "fixed-counter-controller-card-draw-trigger-v1",
+        "fixed-counter-controller-second-draw-trigger-v1",
+        "fixed-counter-permanent-entry-trigger-v1",
+        "fixed-counter-artifact-entry-trigger-v1",
+        "fixed-counter-creature-entry-trigger-v1",
+        "fixed-counter-enchantment-entry-trigger-v1",
+        "fixed-counter-subtype-entry-trigger-v1",
+        "fixed-counter-creature-death-trigger-v1",
+    }
+)
+FIXED_TYPED_EVENT_EFFECT_TRIGGER_TEMPLATE_IDS = frozenset(
+    template_id.replace(
+        "fixed-counter-",
+        "fixed-typed-effect-",
+        1,
+    )
+    for template_id in FIXED_COUNTER_EVENT_TRIGGER_TEMPLATE_IDS
+)
 OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC = (
     "optional-fixed-counter-event-trigger"
 )
@@ -831,7 +855,9 @@ def fixed_typed_event_effect_trigger_node(
 
 __all__ = [
     "FIXED_COUNTER_EVENT_TRIGGER_MECHANIC",
+    "FIXED_COUNTER_EVENT_TRIGGER_TEMPLATE_IDS",
     "FIXED_TYPED_EVENT_EFFECT_TRIGGER_MECHANIC",
+    "FIXED_TYPED_EVENT_EFFECT_TRIGGER_TEMPLATE_IDS",
     "OPTIONAL_COUNTER_PLACEMENT_OPERATION",
     "OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC",
     "FixedCounterTriggerBinding",

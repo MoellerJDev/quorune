@@ -20,7 +20,9 @@ from quorune.damage_modifier_state import (
 from quorune.effect_runtime import dispatch_effect
 from quorune.compiler.fixed_counter_trigger_nodes import (
     FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
+    FIXED_COUNTER_EVENT_TRIGGER_TEMPLATE_IDS,
     FIXED_TYPED_EVENT_EFFECT_TRIGGER_MECHANIC,
+    FIXED_TYPED_EVENT_EFFECT_TRIGGER_TEMPLATE_IDS,
     OPTIONAL_COUNTER_PLACEMENT_OPERATION,
     OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC,
     FixedCounterTriggerBinding,
@@ -68,29 +70,15 @@ from scripts.build_test_database import build_fixture_database
 
 
 REGISTRY_PATH = ROOT / "quorune" / "rules" / "capability-registry.json"
-TEMPLATE_IDS = {
-    "fixed-counter-step-trigger-v1",
-    "fixed-counter-controlled-land-entry-trigger-v1",
-    "fixed-counter-controller-spell-cast-trigger-v1",
-    "fixed-counter-controller-life-gain-trigger-v1",
-    "fixed-counter-controller-card-draw-trigger-v1",
-    "fixed-counter-controller-second-draw-trigger-v1",
-    "fixed-counter-permanent-entry-trigger-v1",
-    "fixed-counter-artifact-entry-trigger-v1",
-    "fixed-counter-creature-entry-trigger-v1",
-    "fixed-counter-enchantment-entry-trigger-v1",
-    "fixed-counter-subtype-entry-trigger-v1",
-    "fixed-counter-creature-death-trigger-v1",
-}
+TEMPLATE_IDS = set(FIXED_COUNTER_EVENT_TRIGGER_TEMPLATE_IDS)
 OPTIONAL_TEMPLATE_IDS = {
     template_id.removesuffix("-v1") + "-optional-v1"
     for template_id in TEMPLATE_IDS
 }
 ALL_TEMPLATE_IDS = TEMPLATE_IDS | OPTIONAL_TEMPLATE_IDS
-FIXED_TYPED_EVENT_TEMPLATE_IDS = {
-    template_id.replace("fixed-counter-", "fixed-typed-effect-", 1)
-    for template_id in TEMPLATE_IDS
-}
+FIXED_TYPED_EVENT_TEMPLATE_IDS = set(
+    FIXED_TYPED_EVENT_EFFECT_TRIGGER_TEMPLATE_IDS
+)
 
 
 def focused_database(directory: str) -> CardDatabase:
@@ -193,6 +181,14 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                 "creature.enter",
                 "life",
                 "fixed-typed-effect-creature-entry-trigger-v1",
+            ),
+            (
+                "Whenever another Vampire you control enters, target "
+                "creature gets +1/+1 until end of turn.",
+                "Creature — Vampire Knight",
+                "permanent.enter",
+                "modify_stats_until_end_of_turn",
+                "fixed-typed-effect-subtype-entry-trigger-v1",
             ),
             (
                 "Whenever a creature dies, draw a card.",
