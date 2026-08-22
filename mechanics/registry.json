@@ -1,5 +1,5 @@
 {
-  "contract_count": 117,
+  "contract_count": 118,
   "contracts": [
     {
       "mechanic_id": "cr-602-activating-activated-abilities",
@@ -492,6 +492,12 @@
       "path": "mechanics/contracts/object-zone-identity.json",
       "sha256": "192432ebee1481c331922aa32a80b21e6dc79018a98d6f507a67333e58010d36",
       "version": 6
+    },
+    {
+      "mechanic_id": "partner",
+      "path": "mechanics/contracts/partner.json",
+      "sha256": "e3493374944ef43f49b120228285e19461b9716c5e9bd97c1acab966614e56e3",
+      "version": 1
     },
     {
       "mechanic_id": "persist",
@@ -3773,19 +3779,34 @@
     },
     {
       "category": "additional_rules",
-      "contract_path": null,
-      "coverage_status": "unclassified",
+      "contract_path": "mechanics/contracts/partner.json",
+      "contract_sha256": "e3493374944ef43f49b120228285e19461b9716c5e9bd97c1acab966614e56e3",
+      "contract_version": 1,
+      "coverage_status": "partial",
       "dependencies": [
         "702"
       ],
-      "implementation_component": null,
+      "implementation_component": "quorune.commander_pairing.validate_commander_pair, quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node, and quorune.commander.initial_commander_state",
+      "implementation_version": "typed-commander-pairing-v1",
       "kind": "keyword_ability",
+      "known_blockers": [
+        "Partner followed by named or ability-word text remains unsupported",
+        "Partner with and its enters-the-battlefield search remain unsupported",
+        "effects that grant, copy, remove, change, or refer to pairing abilities remain unsupported",
+        "aggregate two-commander deck-size, color-identity, and commander-reference enforcement remains incomplete outside the represented setup boundary"
+      ],
       "mechanic_id": "partner",
       "official_name": "Partner",
       "rule_references": [
         "702.124"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "test_pairing_keywords_compile_as_exact_typed_setup_declarations",
+        "test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+        "test_choose_a_background_and_doctors_companion_accept_exact_type_pairs",
+        "test_unsupported_or_mismatched_pairings_fail_closed_without_mutation",
+        "test_pairing_program_and_compiler_mutations_fail_closed"
+      ],
       "trust_level": "untrusted"
     },
     {
