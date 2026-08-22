@@ -36,6 +36,17 @@ and combat state. Direct exile and return snapshot owner, controller,
 and object identity through one closed single-object transition substrate before
 delegating their distinct requested destinations to that same replacement-aware
 zone owner.
+`public_zone_moves.py` extends that substrate with an immutable public-origin
+set selected by typed owner/controller relation and APNAP order. It commits the
+complete set through `ZoneTransitionOwner.move_cards_simultaneously`; it does
+not add another zone engine or mutate one object before every applicable
+replacement has been prepared. Empty affected sets are ordinary no-ops.
+`commander_zones.py` supplies CR 903.9's physical-designation boundary: owners
+may replace hand or library movement with the command zone, and each new public
+graveyard or exile incarnation receives one state-based command-zone choice.
+A decline is remembered only for that logical incarnation. Melded/merged CR
+903.9c cases and mixed-owner/controller replacement ordering outside the typed
+boundary remain explicit limitations.
 Represented single-target, fixed-set, lethal-damage, and Deathtouch destruction
 all snapshot the current canonical effective-keyword view before committing
 through `destruction.py`. The fine-grained
@@ -69,6 +80,11 @@ capabilities, and journals. The aggregate mechanics remain untrusted where
 regeneration, mass selection, linked exile, opponent-graveyard recursion,
 reanimation, conditional payment, alternate counter destinations, or other
 unsupported grammar and interactions are materially reachable.
+The fixed public-zone-move handlers are a separate broad grammar over the same
+owners: one handler revalidates a public graveyard-card target, while the set
+handler emits one typed simultaneous intent. Neither handler receives mutable
+state, parses Oracle prose, or bypasses commander, replacement, trigger,
+projection, or replay coordination.
 
 Continuous characteristics are a shared rules responsibility rather than a
 client reconstruction. `continuous_effect_state.py` owns the authoritative

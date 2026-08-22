@@ -30,6 +30,10 @@ from ..rules.delayed_draw_capability_shapes import (
 from ..rules.graveyard_card_targets import (
     targeted_own_graveyard_return_node_capabilities,
 )
+from ..rules.public_zone_move_capability_shapes import (
+    fixed_public_zone_move_set_node_capabilities,
+    public_graveyard_card_exile_node_capabilities,
+)
 from ..rules.counter_removal_capabilities import (
     all_counter_removal_node_capabilities,
     fixed_counter_removal_node_capabilities,
@@ -1182,6 +1186,52 @@ def _is_closed_targeted_own_graveyard_return_program(
     )
 
 
+def _is_closed_public_graveyard_card_exile_program(
+    program: SemanticProgram,
+) -> bool:
+    required = set(
+        public_graveyard_card_exile_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=(
+                value
+                for value in program.coverage
+                if value
+                in {"exile", "fixed-public-zone-move", "cr-115-targets"}
+            ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_public_zone_move_set_program(
+    program: SemanticProgram,
+) -> bool:
+    required = set(
+        fixed_public_zone_move_set_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=(
+                value
+                for value in program.coverage
+                if value
+                in {
+                    "exile",
+                    "return-to-owner-hand",
+                    "fixed-public-zone-move",
+                    "fixed-public-zone-move-set",
+                    "cr-115-targets",
+                }
+            ),
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
 def _is_closed_fixed_choose_one_modal_program(
     program: SemanticProgram,
 ) -> bool:
@@ -1268,6 +1318,8 @@ def _closed_effect_recognizers():
         _is_closed_targeted_exile_program,
         _is_closed_targeted_return_to_hand_program,
         _is_closed_targeted_own_graveyard_return_program,
+        _is_closed_public_graveyard_card_exile_program,
+        _is_closed_fixed_public_zone_move_set_program,
         _is_closed_targeted_tap_state_program,
     )
 

@@ -119,6 +119,8 @@ class ZoneChangeSubjectSnapshot:
     entry_face_id: str
     object_types: tuple[str, ...]
     is_card_object: bool
+    is_commander: bool = False
+    commander_designation_id: str | None = None
     requested_tapped: bool = False
     entry_pay_life: bool | None = None
     opponent_count: int = 0
@@ -147,6 +149,18 @@ class ZoneChangeSubjectSnapshot:
         if self.controller == "" or self.destination_controller == "":
             raise ZoneReplacementError(
                 "Zone replacement controllers cannot be empty"
+            )
+        if type(self.is_commander) is not bool:
+            raise ZoneReplacementError(
+                "Zone replacement commander state must be boolean"
+            )
+        if self.commander_designation_id == "":
+            raise ZoneReplacementError(
+                "Commander designation identity cannot be empty"
+            )
+        if self.commander_designation_id is not None and not self.is_commander:
+            raise ZoneReplacementError(
+                "Only a commander subject may carry a designation"
             )
         if self.destination not in SUPPORTED_ZONE_DESTINATIONS:
             raise ZoneReplacementError(

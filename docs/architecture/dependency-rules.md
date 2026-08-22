@@ -47,9 +47,13 @@ atomic result commit, and final-event dispatch. Direct destruction,
 permanent-exile, battlefield return-to-owner-hand, and own-graveyard card
 return intents route to
 `quorune/destruction.py`, `quorune/permanent_exile.py`, and
-`quorune/return_to_hand.py`. Exile and return share the closed
+`quorune/return_to_hand.py`. Fixed public-origin direct and affected-set intents
+route to `quorune/public_zone_moves.py`; CR 903.9 owner choices are modeled by
+`quorune/commander_zones.py` and the public nontarget choice owner. Exile,
+return, and public-set movement share the closed
 `rules/single_object_zone_transition.py` typed-origin preparation, stale-plan
-validation, and commit substrate while retaining distinct results and journals. Destruction
+validation, and the canonical simultaneous zone-transition substrate while
+retaining distinct results and journals. Destruction
 remains a separate disposition family. These transaction owners delegate
 authoritative counter or zone writes to existing canonical owners. Direct stack-counter intents route to
 `quorune/stack_counter.py`, which owns counterability, stack removal,

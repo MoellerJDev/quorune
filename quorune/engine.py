@@ -97,6 +97,10 @@ from .combat_constraints import (
     DeclarationSearchLimitError,
 )
 from .commander import initial_commander_state
+from .commander_zones import (
+    CommanderZoneError,
+    pending_commander_zone_state_choices,
+)
 from .declaration_costs import (
     DeclarationCost,
 )
@@ -1477,6 +1481,8 @@ class CommanderEngine(
             self._complete_cleanup_discard(decision)
         elif kind == "state.legend":
             self._complete_legend_choice(decision)
+        elif kind == "state.commander_zone":
+            self._complete_commander_zone_choice(decision)
         elif kind == "state.battle_protector":
             self._complete_battle_protector_choice(decision)
         elif kind == "battle.enter_protector":
@@ -7021,6 +7027,20 @@ class CommanderEngine(
 
             if self._remove_invalid_combat_objects():
                 continue
+
+            try:
+                commander_zone_choices = pending_commander_zone_state_choices(
+                    self.state.cards.values(),
+                    active_seats=self.active_seats,
+                    apnap_order=self.apnap_order(),
+                )
+            except CommanderZoneError as exc:
+                raise GameRuleError(str(exc)) from exc
+            if commander_zone_choices:
+                self._begin_commander_zone_choice(
+                    commander_zone_choices[0]
+                )
+                return True
 
             self._synchronize_world_supertype_timestamps()
             sba_batch = evaluate_state_based_actions(

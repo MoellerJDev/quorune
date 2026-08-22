@@ -1007,6 +1007,20 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/commander_zones.py",
+      "layer": "rules",
+      "owning_subsystem": "zones_and_object_identity",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiled_ability_fragments.py",
       "layer": "semantics",
       "owning_subsystem": "ability_fragments",
@@ -2103,6 +2117,21 @@
     },
     {
       "file": "quorune/compiler/proliferate_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/compiler/public_zone_move_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
       "allowed_dependency_layers": [
@@ -3993,6 +4022,20 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/public_zone_moves.py",
+      "layer": "rules",
+      "owning_subsystem": "zones_and_object_identity",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/python_runtime.py",
       "layer": "domain",
       "owning_subsystem": "legacy_domain",
@@ -4322,6 +4365,21 @@
     },
     {
       "file": "quorune/reusable_pieces/__init__.py",
+      "layer": "semantics",
+      "owning_subsystem": "reusable_piece_inventory",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/reusable_pieces/architecture_metrics.py",
       "layer": "semantics",
       "owning_subsystem": "reusable_piece_inventory",
       "allowed_dependency_layers": [
@@ -5012,6 +5070,20 @@
     },
     {
       "file": "quorune/rules/permanent_predicate_capability_shapes.py",
+      "layer": "rules",
+      "owning_subsystem": "rules_capabilities",
+      "allowed_dependency_layers": [
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
+      "file": "quorune/rules/public_zone_move_capability_shapes.py",
       "layer": "rules",
       "owning_subsystem": "rules_capabilities",
       "allowed_dependency_layers": [
@@ -6535,6 +6607,21 @@
       "replay_participation": "authoritative"
     },
     {
+      "file": "quorune/semantic_runtime/public_zone_move_handlers.py",
+      "layer": "semantics",
+      "owning_subsystem": "semantic_runtime",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/semantic_runtime/regeneration_handlers.py",
       "layer": "semantics",
       "owning_subsystem": "semantic_runtime",
@@ -7513,5 +7600,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "9c0a1c4c708376ab6bb639d9b79ecd9a517edb771952080fefcc7d39ad68b755"
+  "fingerprint": "3644ca215f73a073244155277219f18c6873523a4135c463b7c14d93d0126edc"
 }

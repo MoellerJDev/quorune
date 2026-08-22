@@ -179,7 +179,9 @@ def _split_type_list(text: str) -> tuple[str, ...] | None:
     return values if len(values) == len(words) else None
 
 
-def _mass_destruction_query(subject: str) -> tuple[ObjectQuerySpec, bool] | None:
+def fixed_affected_permanent_query(
+    subject: str,
+) -> tuple[ObjectQuerySpec, bool] | None:
     phrase = " ".join(subject.casefold().split())
     exclude_source = False
     if phrase.startswith("other "):
@@ -248,7 +250,7 @@ def mass_destruction_effect_template(
     )
     if match is None:
         return None
-    parsed = _mass_destruction_query(match.group("subject"))
+    parsed = fixed_affected_permanent_query(match.group("subject"))
     if parsed is None:
         return None
     query, exclude_source = parsed
@@ -307,6 +309,7 @@ def targeted_destruction_effect_template(
 
 
 __all__ = [
+    "fixed_affected_permanent_query",
     "MassDestructionEffectTemplate",
     "TargetedDestructionEffectTemplate",
     "mass_destruction_effect_template",

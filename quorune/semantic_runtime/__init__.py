@@ -218,6 +218,11 @@ from .permanent_exile_handlers import (
     ExilePermanentHandler,
     PERMANENT_EXILE_HANDLERS,
 )
+from .public_zone_move_handlers import (
+    ExilePublicGraveyardCardHandler,
+    MovePublicZoneSetHandler,
+    PUBLIC_ZONE_MOVE_HANDLERS,
+)
 from .fixed_damage_set_handlers import (
     FIXED_DAMAGE_SET_HANDLERS,
     FixedDamageSetHandler,
@@ -256,8 +261,10 @@ from .intents import (
     ExploreCompletedIntent,
     GrantZoneObjectKeywordIntent,
     ExilePermanentIntent,
+    ExilePublicGraveyardCardIntent,
     LifeChangeIntent,
     MoveObjectsSimultaneouslyIntent,
+    MovePublicZoneSetIntent,
     MoveLibraryCardsToBottomIntent,
     ScryLibraryIntent,
     SurveilLibraryIntent,
@@ -351,6 +358,7 @@ def default_semantic_handler_registry() -> SemanticHandlerRegistry:
             *DESTRUCTION_HANDLERS,
             *REGENERATION_HANDLERS,
             *PERMANENT_EXILE_HANDLERS,
+            *PUBLIC_ZONE_MOVE_HANDLERS,
             *FIXED_DAMAGE_SET_HANDLERS,
             *RETURN_TO_HAND_HANDLERS,
             *STACK_COUNTER_HANDLERS,

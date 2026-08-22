@@ -226,7 +226,13 @@ class GeneratedOwnerCacheTests(unittest.TestCase):
         )
 
     def test_migration_plan_and_compiler_sentinel_fail_conservatively(self):
-        plan = affected_owner_plan(base_ref="origin/main", root=ROOT)
+        with mock.patch(
+            "scripts.generated_owner_cache._manifest_at_ref",
+            side_effect=GeneratedOwnerCacheError(
+                "legacy manifest has no input closure"
+            ),
+        ):
+            plan = affected_owner_plan(base_ref="origin/main", root=ROOT)
         sentinel = compiler_identity_status(base_ref="origin/main", root=ROOT)
 
         self.assertEqual(

@@ -199,15 +199,14 @@ class ExactArtifactEngineTests(unittest.TestCase):
         self.assertTrue(result.ok, result.summary)
         self.assertEqual("graveyard", victim_one.zone)
         self.assertEqual("graveyard", victim_two.zone)
-
-        engine.permissions.invalidate_current()
-        engine.state.pending_decision = None
-        engine.state.priority_player = None
-        engine._dispatch_semantic_event(
-            "step.begin",
-            {"phase": "beginning", "step": "upkeep", "player": "A"},
+        self.assertEqual(
+            "state.commander_zone", engine.state.pending_decision.kind
         )
-        self.assertTrue(engine._stabilize())
+        result = session.act(
+            "pilot:B",
+            {"a": "choose", "choice": "remain"},
+        )
+        self.assertTrue(result.ok, result.summary)
         self.assertEqual(
             "semantic.target", engine.state.pending_decision.kind
         )

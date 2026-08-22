@@ -56,6 +56,16 @@ mutation. Broad legacy exile and return operations remain separate because they
 represent other origins, destinations, quantities, choices, or hidden-zone
 movement outside these closed direct-target grammars.
 
+The `effect.public-zone-move` family closes a broader but still typed boundary.
+One handler accepts exactly one public graveyard-card reference; the other
+accepts an immutable fixed affected-set descriptor with public origin,
+destination, owner/controller relation, source exclusion, and closed
+`ObjectQuerySpec`. Both lower to intents and delegate stale-identity checks,
+replacement ordering, simultaneous movement, new incarnations, normalized
+events, Commander choices, projection, and journaling to existing owners.
+Dynamic characteristic counts and linked or delayed movement never enter this
+handler family.
+
 Self-regeneration lowers through its own strict source-identity handler. It
 creates public until-cleanup shield state on the same logical source object;
 the destruction transaction consumes that state for represented effect or

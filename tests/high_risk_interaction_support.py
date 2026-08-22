@@ -307,6 +307,14 @@ _WITNESSES = {
         "Raid — If you attacked this turn, create a Treasure token.",
         "{2}{B}",
     ),
+    "descend-upon-the-sinful": _Witness(
+        "Descend upon the Sinful",
+        "Sorcery",
+        "Exile all creatures.\n"
+        "Delirium — Create a 4/4 white Angel creature token with flying if "
+        "there are four or more card types among cards in your graveyard.",
+        "{4}{W}{W}",
+    ),
     "sphinxs-insight": _Witness(
         "Sphinx's Insight",
         "Instant",
@@ -435,6 +443,20 @@ _WITNESSES = {
         "would be dealt to him this turn.",
         "{3}{W}{W}",
         loyalty="6",
+    ),
+    "gideon-champion-of-justice": _Witness(
+        "Gideon, Champion of Justice",
+        "Legendary Planeswalker — Gideon",
+        "+1: Put a loyalty counter on Gideon, Champion of Justice for each "
+        "creature target opponent controls.\n"
+        "0: Until end of turn, Gideon, Champion of Justice becomes an "
+        "indestructible Human Soldier creature with power and toughness "
+        "each equal to the number of loyalty counters on him. He's still a "
+        "planeswalker. Prevent all damage that would be dealt to him this "
+        "turn.\n"
+        "−15: Exile all other permanents.",
+        "{2}{W}{W}",
+        loyalty="4",
     ),
     "oko-trickster": _Witness(
         "Oko, the Trickster",
@@ -649,7 +671,11 @@ ZONE_AND_CHOICE_PAIRS = (
     _pair("capability.zone.entry.tapped_state", "residual.target_or_choice.multiple-targets"),
     _pair("capability.zone.entry.tapped_state", "residual.target_or_choice.random-outcome"),
     _pair("capability.zone.change.destination_replacement", "residual.target_or_choice.conditional-effect"),
+    _pair("capability.zone.move.fixed_public_set", "residual.target_or_choice.conditional-effect"),
+    _pair("capability.zone.move.fixed_public_set", "residual.target_or_choice.target-predicate"),
 )
+
+PUBLIC_SET_AND_CHOICE_PAIRS = ZONE_AND_CHOICE_PAIRS[-2:]
 
 COST_AND_REPLACEMENT_PAIRS = tuple(
     _pair(cost, replacement)
@@ -778,7 +804,9 @@ _bind("blur", ZONE_AND_CHOICE_PAIRS[5])
 _bind("madblind-mountain", ZONE_AND_CHOICE_PAIRS[6])
 _bind("wintermoon-mesa", ZONE_AND_CHOICE_PAIRS[7])
 _bind("ebony-fly", ZONE_AND_CHOICE_PAIRS[8])
-_bind("heartless-pillage", ZONE_AND_CHOICE_PAIRS[-1])
+_bind("heartless-pillage", ZONE_AND_CHOICE_PAIRS[9])
+_bind("descend-upon-the-sinful", PUBLIC_SET_AND_CHOICE_PAIRS[0])
+_bind("gideon-champion-of-justice", PUBLIC_SET_AND_CHOICE_PAIRS[1])
 _bind(
     "rasputin",
     COST_AND_REPLACEMENT_PAIRS[0],
@@ -982,6 +1010,7 @@ __all__ = [
     "DESTROY_DAMAGE_PREVENTION_PAIR",
     "EFFECT_AND_REPLACEMENT_PAIRS",
     "PREVENTION_AND_REPLACEMENT_PAIRS",
+    "PUBLIC_SET_AND_CHOICE_PAIRS",
     "TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS",
     "TRIGGER_AND_REPLACEMENT_PAIRS",
     "TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS",

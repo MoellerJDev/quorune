@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any, Literal, Mapping, TypeAlias
 
 from ..affected_permanents import AffectedPermanentSetSpec
+from ..public_zone_moves import PublicZoneMoveSetSpec
 from ..drawing.model import (
     DiscardDrawnCardUnlessType,
     DrawnCardAction,
@@ -256,6 +257,68 @@ class ExilePermanentIntent:
             _freeze_replacement_selections(
                 self.replacement_selections,
                 family="Permanent-exile",
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class ExilePublicGraveyardCardIntent:
+    actor: str
+    object_ref: str
+    reason: str
+    replacement_selections: tuple[str | FrozenMap, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not all((self.actor, self.object_ref, self.reason)):
+            raise ValueError(
+                "Public-graveyard exile intents require actor, object, and reason"
+            )
+        object.__setattr__(
+            self,
+            "replacement_selections",
+            _freeze_replacement_selections(
+                self.replacement_selections,
+                family="Public-graveyard exile",
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class MovePublicZoneSetIntent:
+    actor: str
+    spec: PublicZoneMoveSetSpec
+    reason: str
+    source_ref: str | None = None
+    replacement_selections: tuple[str | FrozenMap, ...] = ()
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not str or not value
+            for value in (self.actor, self.reason)
+        ):
+            raise ValueError(
+                "Public zone-move set intents require actor and reason"
+            )
+        if not isinstance(self.spec, PublicZoneMoveSetSpec):
+            raise ValueError(
+                "Public zone-move set intents require a typed affected set"
+            )
+        if self.source_ref is not None and (
+            type(self.source_ref) is not str or not self.source_ref
+        ):
+            raise ValueError(
+                "Public zone-move source must be a nonempty reference"
+            )
+        if self.spec.exclude_source and self.source_ref is None:
+            raise ValueError(
+                "Source-excluding public zone moves require a source"
+            )
+        object.__setattr__(
+            self,
+            "replacement_selections",
+            _freeze_replacement_selections(
+                self.replacement_selections,
+                family="Public zone-move set",
             ),
         )
 
@@ -1369,6 +1432,8 @@ SemanticIntent: TypeAlias = (
     | ReturnPermanentToOwnerHandIntent
     | ReturnGraveyardCardToOwnerHandIntent
     | ExilePermanentIntent
+    | ExilePublicGraveyardCardIntent
+    | MovePublicZoneSetIntent
     | DealFixedDamageSetIntent
     | AddManaIntent
     | SetCardDesignationIntent

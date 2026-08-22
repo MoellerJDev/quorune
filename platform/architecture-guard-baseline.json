@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "0b202a6ff83da5e76b7296c406cc09bcdd4ec241",
+  "baseline_commit": "c86e71e5f437a8bbcb7585b2b8e1a7d29dcfc5b4",
   "card_named_helpers": [
     {
       "file": "quorune/engine.py",
@@ -480,7 +480,7 @@
     "quorune/zone_transitions.py": 3
   },
   "engine": {
-    "logical_lines": 7080,
+    "logical_lines": 7096,
     "methods": [
       {
         "kind": "method",
@@ -1653,12 +1653,12 @@
         "visibility": "public"
       }
     ],
-    "physical_lines": 7595
+    "physical_lines": 7612
   },
   "exception_binding": {
-    "adr": "docs/adr/0077-typed-fixed-surveil-resolution.md",
-    "allowance_fingerprint": "f1e4599c42d3e2de5db815b618d1747acca97fe118eb4b4db7bc5b903b8ca85e",
-    "exception_id": "ARCH-EXC-0040"
+    "adr": "docs/adr/0079-typed-fixed-public-zone-moves.md",
+    "allowance_fingerprint": "537c013123026d88e05bd4d9be224286aff73059cf4588e202befe2e3aa6be4e",
+    "exception_id": "ARCH-EXC-0041"
   },
   "legacy_card_specific_operations": [
     "daretti_exchange",
@@ -1727,7 +1727,7 @@
     },
     {
       "file": "quorune/cli.py",
-      "logical_lines": 266,
+      "logical_lines": 280,
       "symbol": "_scripted_choice"
     },
     {
@@ -1777,7 +1777,7 @@
     },
     {
       "file": "quorune/engine.py",
-      "logical_lines": 248,
+      "logical_lines": 261,
       "symbol": "CommanderEngine._stabilize"
     },
     {
@@ -1826,6 +1826,11 @@
       "symbol": "validate_rule_conformance"
     },
     {
+      "file": "quorune/rules/capabilities.py",
+      "logical_lines": 157,
+      "symbol": "capability_covered_mechanics"
+    },
+    {
       "file": "quorune/rules_corpus.py",
       "logical_lines": 169,
       "symbol": "verify_rules_corpus"
@@ -1849,7 +1854,7 @@
   "oversized_modules": [
     {
       "file": "quorune/engine.py",
-      "logical_lines": 7080
+      "logical_lines": 7096
     },
     {
       "file": "quorune/record.py",
@@ -1858,6 +1863,10 @@
     {
       "file": "quorune/report.py",
       "logical_lines": 1754
+    },
+    {
+      "file": "quorune/semantic_runtime/zone_replacements.py",
+      "logical_lines": 1513
     },
     {
       "file": "web/src/App.tsx",
@@ -1938,6 +1947,7 @@
     "exile_graveyard",
     "exile_opponent_graveyards",
     "exile_permanent",
+    "exile_public_graveyard_card",
     "explore",
     "extra_turn",
     "fabricate",
@@ -1965,6 +1975,7 @@
     "modify_stats_until_end_of_turn",
     "move",
     "move_if_in_zone",
+    "move_public_zone_set",
     "next_spell_improvise",
     "next_spell_uncounterable",
     "note",

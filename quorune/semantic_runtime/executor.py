@@ -3,7 +3,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Protocol
 
-from .. import destruction, permanent_exile, regeneration, return_to_hand, tap_state
+from .. import (
+    destruction,
+    permanent_exile,
+    public_zone_moves,
+    regeneration,
+    return_to_hand,
+    tap_state,
+)
 from ..destruction import DestructionHost
 from ..permanent_exile import PermanentExileHost
 from ..regeneration import RegenerationHost
@@ -33,9 +40,11 @@ from .intents import (
     EliminatePlayersIntent,
     ExploreCompletedIntent,
     ExilePermanentIntent,
+    ExilePublicGraveyardCardIntent,
     GrantZoneObjectKeywordIntent,
     LifeChangeIntent,
     MoveObjectsSimultaneouslyIntent,
+    MovePublicZoneSetIntent,
     MoveLibraryCardsToBottomIntent,
     MillCardsIntent,
     ScryLibraryIntent,
@@ -235,6 +244,11 @@ class SemanticIntentSink(
         intent: DestroyPermanentSetIntent,
     ) -> Any: ...
 
+    def move_public_zone_set_intent(
+        self,
+        intent: MovePublicZoneSetIntent,
+    ) -> Any: ...
+
 @dataclass(frozen=True, slots=True)
 class DrawResolutionBatch:
     """Draw intents that must use the replacement-aware resolution path."""
@@ -306,6 +320,8 @@ PermanentObjectIntent = (
     | DestroyPermanentIntent
     | DestroyPermanentSetIntent
     | ExilePermanentIntent
+    | ExilePublicGraveyardCardIntent
+    | MovePublicZoneSetIntent
     | ReturnPermanentToOwnerHandIntent
     | ReturnGraveyardCardToOwnerHandIntent
 )
@@ -314,6 +330,8 @@ PERMANENT_OBJECT_INTENT_TYPES = (
     DestroyPermanentIntent,
     DestroyPermanentSetIntent,
     ExilePermanentIntent,
+    ExilePublicGraveyardCardIntent,
+    MovePublicZoneSetIntent,
     ReturnPermanentToOwnerHandIntent,
     ReturnGraveyardCardToOwnerHandIntent,
 )
@@ -358,6 +376,19 @@ def _execute_permanent_object_intent(
                 replacement_selections=intent.replacement_selections,
             ),
         )
+    if isinstance(intent, ExilePublicGraveyardCardIntent):
+        return (
+            intent.object_ref,
+            public_zone_moves.exile_public_graveyard_card(
+                sink,
+                intent.object_ref,
+                actor=intent.actor,
+                reason=intent.reason,
+                replacement_selections=intent.replacement_selections,
+            ),
+        )
+    if isinstance(intent, MovePublicZoneSetIntent):
+        return intent.actor, sink.move_public_zone_set_intent(intent)
     if isinstance(intent, ReturnPermanentToOwnerHandIntent):
         return (
             intent.object_ref,

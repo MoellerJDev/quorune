@@ -58,7 +58,7 @@ ORACLE_INPUT = ROOT / "coverage" / "oracle-coverage-commander.json"
 PROGRAM_INPUT = (
     ROOT / "coverage" / "card-program-coverage-commander.json"
 )
-ARCHITECTURE_INPUT = ROOT / "coverage" / "architecture-audit.json"
+ARCHITECTURE_INPUT = ROOT / "platform" / "architecture-guard-baseline.json"
 PLATFORM_INPUT = ROOT / "coverage" / "platform-readiness.json"
 INTERACTION_EVIDENCE_INPUT = (
     ROOT / "platform" / "reusable-piece-interaction-evidence.json"

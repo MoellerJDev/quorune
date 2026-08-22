@@ -245,6 +245,20 @@ the hand-return forms may remain independently executable on partial cards.
 Untapped, targeted, mass, optional, conditional, multiple-object, copied,
 granted, and text-changed movement stays source-spanned and residual.
 
+`compiler/public_zone_move_templates.py` owns fixed public-origin movement as
+one shared grammar across spell, triggered, activated, and modal bodies. It
+lowers a target physical card in any graveyard through a closed card-type,
+card-type-union, or excluded-type predicate, fixed graveyard-owner sweeps,
+and closed battlefield affected sets moving toward exile or each object's
+owner's hand. Set membership uses the same cycle-safe `ObjectQuerySpec`
+characteristic boundary as other affected-set owners and is frozen in APNAP
+order before the canonical simultaneous zone transaction. Variable, optional,
+linked-result, delayed-return, exception-list, chosen-quality, dynamic-count,
+numeric-characteristic, hidden-origin, reanimation, and multiple-destination
+forms remain source-spanned residuals. Commander-profile trust also requires
+the typed CR 903.9 owner choice; the compiler never excludes commanders from
+an otherwise universal Oracle instruction.
+
 The same activated-effect owner admits closed fixed characteristic results
 through the existing resolution-created continuous-effect capability. It
 lowers fixed numeric self power/toughness changes, fixed numeric

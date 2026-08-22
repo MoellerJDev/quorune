@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "b95d94df9f8cbad5de55f4a24eea46d912ca031884cc79e1df0225d36072dfd5"
+verified: "ca3978c06318b40f2c4c268e8281ee87702e240af5d0c2fbf02126a3fc8196b1"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,12 +11,12 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `fed8c9f78313f9e018bf6b1ff6e7e5f5875cee6f0cd6d4e0d8a65c5f46b1c03f`
+Source fingerprint: `fa9d3b0d67fe634b588a9c270b3a81b85d37dbfbcdc5ca015243cdda5100cb6a`
 
 ## Current top-level state
 
 - Pinned rules: `3309`
-- Queued rules: `2903`
+- Queued rules: `2900`
 - Subsystems: `21`
 - Selected subsystem: `replacement-prevention`
 - Selected batch: `counter-producer-replacement-closure`
@@ -57,7 +57,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 24 | blocked | `interaction-implementation:residual.target_or_choice.random-outcome` | `rules_foundation` | unknown | unknown | 0 | 0 |
 | 25 | blocked | `rules:counter-producer-replacement-closure` | `rules_foundation` | unknown | unknown | 0 | 0 |
 | 26 | blocked | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 16 | 106 | 0 | 0 |
-| 27 | blocked | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 263 | 0 | 0 |
+| 27 | blocked | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 0 | 261 | 0 | 0 |
 | 28 | blocked | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 0 | 0 | 0 | 54 |
 
 Selected reason: No serious candidate currently meets the generated eligibility policy; retain visible deferred pressure and recompute after the next measured frontier classification.

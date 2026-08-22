@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 126,
+  "registry_version": 127,
   "effective_date": "2026-08-07",
   "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "profiles": [
@@ -48,7 +48,8 @@
     {
       "mechanic_id": "cr-903-commander",
       "capabilities": [
-        "format.commander.damage.physical_identity"
+        "format.commander.damage.physical_identity",
+        "variant.commander.zone_return"
       ]
     },
     {
@@ -3648,6 +3649,87 @@
       "dependency_fail_closed_rationale": "The ordinary keyword capability closes over every represented destruction and lethal-assignment owner; tests block each dependency in turn and reject exact CardProgram promotion.",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_destruction_disposition_mutants_are_killed removes or misorders the Indestructible prohibition and the canonical destruction assertions reject each survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "variant.commander.zone_return",
+      "version": 1,
+      "official_rules": ["704.3", "903.9", "903.9a", "903.9b"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Give the designated physical commander's owner the represented optional command-zone replacement for hand or library movement and one public state-based command-zone choice for each new graveyard or exile incarnation.",
+        "inputs": ["physical commander designation identity", "requested hand or library zone event", "new public graveyard or exile logical incarnation", "owner APNAP order", "seat-scoped server-issued choice"],
+        "outputs": ["optional precommit command-zone replacement", "one checked graveyard/exile incarnation", "canonical command-zone move", "public choice journal", "exact replay"],
+        "exclusions": ["melded and merged permanents governed by CR 903.9c", "historical checkpoints without current commander designation identity", "simultaneous commander state choices combined with an unrepresented zone-moving state-based action", "competing commander-owner and controller-selected replacement effects with different choosers"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.commander_zones.commander_hand_library_replacement_effect", "quorune.commander_zones.pending_commander_zone_state_choices", "quorune.commander_zones.commit_commander_zone_choice_decline", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.selection.public_choice.PublicChoiceOwnerMixin._begin_commander_zone_choice", "quorune.selection.public_choice.PublicChoiceOwnerMixin._complete_commander_zone_choice", "CommanderEngine._stabilize", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
+      "positive_tests": ["test_commander_hand_and_library_replacement_uses_owner_choice_and_replays", "test_commander_graveyard_and_exile_state_choice_replays"],
+      "negative_tests": ["test_commander_zone_choice_stale_identity_rolls_back", "test_commander_zone_choice_model_mutations_fail_closed"],
+      "interaction_tests": ["test_mass_zone_moves_use_apnap_replacements_and_replay", "test_commander_graveyard_and_exile_state_choice_replays"],
+      "multiplayer_tests": ["test_mass_zone_moves_use_apnap_replacements_and_replay"],
+      "privacy_tests": ["test_commander_graveyard_and_exile_state_choice_replays"],
+      "replay_tests": ["test_commander_hand_and_library_replacement_uses_owner_choice_and_replays", "test_commander_graveyard_and_exile_state_choice_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The Commander zone-return boundary is an intrinsic format rule with no capability dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused model tests alter designation, origin, destination, checked incarnation, owner, and choice identity; every mutant is rejected before mutation.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "card.exile.public_graveyard",
+      "version": 1,
+      "official_rules": ["109.2", "115.1", "400.2", "400.7", "406.1", "406.2", "608.2b", "608.2c", "701.13", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and execute one mandatory instruction that targets one physical card through a closed card-type predicate in any public graveyard and moves it toward exile through target revalidation and the canonical replacement-aware zone-change owner.",
+        "inputs": ["one source-spanned typed target-card-from-a-graveyard clause", "one revalidated matching public graveyard card", "physical and logical object identity", "represented destination-replacement selections"],
+        "outputs": ["public graveyard target", "resolution-time target revalidation", "requested exile event", "new logical object identity", "replacement-aware final destination", "public typed result journal"],
+        "exclusions": ["optional, legendary, subtype, numeric-characteristic, modal-header-only, conditional, linked-result, cost, self, multiple-target, random, face-down, library, hand, command, stack, and temporary-exile clauses", "references to the exiled card's characteristics or identity", "tokens and noncard copies", "unrepresented destination replacements"]
+      },
+      "dependencies": ["target.revalidate_resolution", "variant.commander.zone_return", "zone.change.destination_replacement"],
+      "implementation_components": ["quorune.compiler.public_zone_move_templates.PublicGraveyardCardExileTemplate", "quorune.rules.public_zone_move_capability_shapes.public_graveyard_card_exile_node_capabilities", "quorune.semantic_runtime.public_zone_move_handlers.ExilePublicGraveyardCardHandler", "quorune.semantic_runtime.intents.ExilePublicGraveyardCardIntent", "quorune.public_zone_moves.exile_public_graveyard_card", "quorune.rules.single_object_zone_transition.commit_prevalidated_single_object_zone_transition"],
+      "positive_tests": ["test_type_qualified_public_graveyard_targets_compile_exact", "test_typed_graveyard_exile_advertises_and_replays"],
+      "negative_tests": ["test_unsupported_public_zone_move_shapes_remain_residual", "test_public_zone_move_dependencies_and_shape_mutations_fail_closed", "test_public_zone_move_privacy_and_stale_identity_roll_back"],
+      "interaction_tests": ["test_typed_graveyard_exile_advertises_and_replays", "test_mass_zone_moves_use_apnap_replacements_and_replay"],
+      "multiplayer_tests": ["test_target_graveyard_exile_revalidates_and_replays"],
+      "privacy_tests": ["test_public_zone_move_privacy_and_stale_identity_roll_back"],
+      "replay_tests": ["test_typed_graveyard_exile_advertises_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking target revalidation or canonical destination replacement prevents the public-graveyard exile node from receiving trusted closure.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler and shape mutation test removes the closed production or changes its target and effect descriptors, preventing exact trusted promotion.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "zone.move.fixed_public_set",
+      "version": 1,
+      "official_rules": ["108.3", "109.2", "400.2", "400.3", "400.7", "406.1", "406.2", "608.2b", "608.2c", "701.13", "701.13a"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and execute one mandatory fixed public battlefield or graveyard set moving simultaneously toward exile or each object's owner's hand through an immutable APNAP snapshot and the canonical replacement-aware zone-change owner.",
+        "inputs": ["one source-spanned fixed public-set zone-move clause", "closed ObjectQuerySpec without dynamic characteristic counts", "any, actor, opponents, or target-player owner/controller relation", "current public object identities", "represented destination-replacement selections"],
+        "outputs": ["immutable APNAP-ordered public set", "one simultaneous replacement-aware zone batch", "new logical object identities", "normalized zone events and trigger batch", "seat-projected owner-hand knowledge", "exact replay"],
+        "exclusions": ["variable, optional, modal-header-only, conditional, linked-result, delayed-return, random, chosen-color, numeric-characteristic, dynamic-count, named-card, attachment-expanded, attacking-or-blocking, and exception-list clauses", "graveyard-to-hand or battlefield movement", "library, hand, command, and stack origins", "multiple destinations or independently chosen subsets", "unrepresented target or destination-replacement interactions"]
+      },
+      "dependencies": ["target.revalidate_resolution", "variant.commander.zone_return", "zone.change.destination_replacement"],
+      "implementation_components": ["quorune.public_zone_moves.PublicZoneMoveSetSpec", "quorune.public_zone_moves.select_public_zone_move_objects", "quorune.public_zone_moves.resolve_public_zone_move_set", "quorune.compiler.public_zone_move_templates.PublicZoneMoveSetTemplate", "quorune.rules.public_zone_move_capability_shapes.fixed_public_zone_move_set_node_capabilities", "quorune.semantic_runtime.public_zone_move_handlers.MovePublicZoneSetHandler", "quorune.semantic_runtime.intents.MovePublicZoneSetIntent", "quorune.zone_transitions.ZoneTransitionOwner.move_cards_simultaneously"],
+      "positive_tests": ["test_fixed_public_zone_moves_compile_across_effect_contexts", "test_mass_zone_moves_use_apnap_replacements_and_replay"],
+      "negative_tests": ["test_unsupported_public_zone_move_shapes_remain_residual", "test_public_zone_move_dependencies_and_shape_mutations_fail_closed", "test_public_zone_move_privacy_and_stale_identity_roll_back"],
+      "interaction_tests": ["test_mass_zone_moves_use_apnap_replacements_and_replay", "test_target_graveyard_exile_revalidates_and_replays"],
+      "multiplayer_tests": ["test_mass_zone_moves_use_apnap_replacements_and_replay"],
+      "privacy_tests": ["test_public_zone_move_privacy_and_stale_identity_roll_back"],
+      "replay_tests": ["test_mass_zone_moves_use_apnap_replacements_and_replay"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "Blocking destination replacement or target revalidation prevents every fixed public-set node, including nontargeted forms, from receiving trusted closure.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "The focused compiler and model mutation test changes affected-set membership, relation, descriptor, or operation and the exact shape assertions reject each survivor.",
       "blockers": [],
       "status": "trusted"
     },

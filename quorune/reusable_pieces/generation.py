@@ -10,6 +10,7 @@ import re
 from typing import Any, Iterable, Mapping, Sequence
 
 from ..util import stable_json
+from .architecture_metrics import project_architecture_metrics as _architecture_metrics
 from .interactions import (
     _PIECE_ID,
     build_interactions as _build_interactions,
@@ -1096,21 +1097,6 @@ def _build_complex_card_benchmark(
             ),
         }
     )
-
-
-def _architecture_metrics(
-    architecture_audit: Mapping[str, Any],
-) -> dict[str, int]:
-    dimensions = (
-        architecture_audit.get("architecture", {})
-        .get("debt_trend", {})
-        .get("dimensions", {})
-    )
-    return {
-        str(key): int(value.get("current") or 0)
-        for key, value in sorted(dimensions.items())
-        if isinstance(value, Mapping)
-    }
 
 
 def build_program_baseline(

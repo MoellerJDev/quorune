@@ -161,6 +161,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/combat_evasion.py",
         "quorune/combat_evasion_engine_adapter.py",
         "quorune/commander.py",
+        "quorune/commander_zones.py",
         "quorune/convoke.py",
         "quorune/cast_timing.py",
         "quorune/continuous_effects.py",
@@ -221,6 +222,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/flashback.py",
         "quorune/casting_cost_host.py",
         "quorune/permanent_exile.py",
+        "quorune/public_zone_moves.py",
         "quorune/permanent_designations.py",
         "quorune/zone_object_state.py",
         "quorune/zone_transition_journal.py",
@@ -518,6 +520,11 @@ def _owner(relative: str, layer: str) -> str:
         return "return_to_hand"
     if relative == "quorune/permanent_exile.py":
         return "permanent_exile"
+    if relative in {
+        "quorune/commander_zones.py",
+        "quorune/public_zone_moves.py",
+    }:
+        return "zones_and_object_identity"
     if relative == "quorune/permanent_designations.py":
         return "permanent_designations"
     if relative in {

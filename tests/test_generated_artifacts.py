@@ -332,8 +332,8 @@ class GeneratedArtifactFinalizationTests(unittest.TestCase):
             ordered.index("architecture-audit"),
         )
         self.assertLess(
-            ordered.index("architecture-audit"),
             ordered.index("reusable-pieces"),
+            ordered.index("architecture-audit"),
         )
         rules_owner = next(spec for spec in specs if spec.id == "rules-derived")
         self.assertIn("rules/conformance-cases.json", rules_owner.outputs)

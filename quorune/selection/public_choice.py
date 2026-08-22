@@ -6,6 +6,11 @@ import copy
 from typing import Any, Mapping, Sequence
 
 from ..errors import GameRuleError, StateInvariantError
+from ..commander_zones import (
+    commit_commander_zone_choice_decline,
+    CommanderZoneError,
+    CommanderZoneStateChoice,
+)
 from ..model import CardInstance, StackItem
 from ..replacement.immutable import FrozenMap, thaw_value
 from .model import (
@@ -20,6 +25,7 @@ LEGEND_OPERATION_ID = "selection.nontarget.legend.v1"
 BATTLE_ENTRY_OPERATION_ID = "selection.nontarget.battle-entry-protector.v1"
 BATTLE_REPAIR_OPERATION_ID = "selection.nontarget.battle-protector.v1"
 SIEGE_CAST_OPERATION_ID = "selection.nontarget.siege-cast.v1"
+COMMANDER_ZONE_OPERATION_ID = "selection.nontarget.commander-zone.v1"
 
 
 class PublicChoiceOwnerMixin:
@@ -87,6 +93,125 @@ class PublicChoiceOwnerMixin:
             },
             continuation={"selection": continuation.to_dict()},
         )
+
+    def _begin_commander_zone_choice(
+        self,
+        candidate: CommanderZoneStateChoice,
+    ) -> None:
+        if not isinstance(candidate, CommanderZoneStateChoice):
+            raise GameRuleError(
+                "Commander zone choice requires a typed candidate"
+            )
+        continuation = SelectionContinuation(
+            contract=SelectionContract.NONTARGET_CHOICE,
+            operation_id=COMMANDER_ZONE_OPERATION_ID,
+            actor=candidate.owner,
+            state_revision=self.state.revision,
+            source_ref=candidate.ref,
+            visibility="public",
+            payload=FrozenMap(candidate.to_dict()),
+        )
+        self.permissions.issue(
+            kind="state.commander_zone",
+            role="pilot",
+            actors=[candidate.owner],
+            allowed_actions=["choose"],
+            payload_by_actor={
+                candidate.owner: {
+                    "commander": candidate.ref,
+                    "origin": candidate.zone,
+                    "choices": ["command", "remain"],
+                    "legal_actions": [
+                        {
+                            "id": "command",
+                            "action": "choose",
+                            "choice": "command",
+                            "choice_schema": {
+                                "choice": "command",
+                                "required": True,
+                            },
+                        },
+                        {
+                            "id": "remain",
+                            "action": "choose",
+                            "choice": "remain",
+                            "choice_schema": {
+                                "choice": "remain",
+                                "required": True,
+                            },
+                        },
+                    ],
+                }
+            },
+            continuation={"selection": continuation.to_dict()},
+        )
+
+    def _complete_commander_zone_choice(self, decision: Any) -> None:
+        seat = decision.actors[0]
+        selection = self._decode_public_choice(
+            decision,
+            operation_id=COMMANDER_ZONE_OPERATION_ID,
+            legacy=None,
+        )
+        try:
+            candidate = CommanderZoneStateChoice.from_dict(
+                thaw_value(selection.payload)
+            )
+        except CommanderZoneError as exc:
+            raise GameRuleError(str(exc)) from exc
+        card = self.state.cards.get(candidate.object_id)
+        if (
+            card is None
+            or not card.is_commander
+            or card.owner != seat
+            or card.ref != candidate.ref
+            or card.logical_object_id != candidate.logical_object_id
+            or card.zone != candidate.zone
+            or card.commander_designation_id != candidate.designation_id
+        ):
+            raise GameRuleError(
+                "Commander zone choice no longer matches that incarnation"
+            )
+        choice = str(
+            decision.responses[seat].get("choice")
+            or decision.responses[seat].get("option")
+            or ""
+        )
+        if choice not in {"command", "remain"}:
+            raise GameRuleError(
+                "Choose whether the commander moves to the command zone"
+            )
+        if choice == "command":
+            self._move_cards_simultaneously(
+                ((card.object_id, "command"),),
+                reason="commander state-based action",
+                log=False,
+            )
+        else:
+            try:
+                commit_commander_zone_choice_decline(card, candidate)
+            except CommanderZoneError as exc:
+                raise GameRuleError(str(exc)) from exc
+        self._log(
+            seat,
+            "state.commander_zone",
+            (
+                f"{seat} moved {card.ref} to the command zone."
+                if choice == "command"
+                else f"{seat} left {card.ref} in {card.zone}."
+            ),
+            {
+                "commander": card.ref,
+                "origin": candidate.zone,
+                "choice": choice,
+                "destination": card.zone,
+                "rule": "903.9a",
+            },
+            importance=2,
+            changed_objects=[card.object_id],
+            changed_players=[seat],
+        )
+        self._stabilize()
 
     def _complete_legend_choice(self, decision: Any) -> None:
         seat = decision.actors[0]

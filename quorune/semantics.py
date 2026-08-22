@@ -100,6 +100,7 @@ VALID_EFFECT_OPERATIONS = {
     "exile_all",
     "exile_graveyard",
     "exile_opponent_graveyards",
+    "exile_public_graveyard_card",
     "extra_turn",
     "grant_ability_marker",
     "grant_ability_fragment",
@@ -113,6 +114,7 @@ VALID_EFFECT_OPERATIONS = {
     "look_reorder_top",
     "move",
     "move_if_in_zone",
+    "move_public_zone_set",
     "modify_stats_until_end_of_turn",
     "mana",
     "mill",
@@ -171,9 +173,13 @@ VALID_EFFECT_OPERATIONS = {
 def _is_supported_effect_operation(operation: str) -> bool:
     if operation in VALID_EFFECT_OPERATIONS:
         return True
+    from .semantic_runtime import default_semantic_handler_registry
     from .semantic_choices.defaults import default_semantic_choice_registry
 
-    return operation in default_semantic_choice_registry().operations
+    return bool(
+        default_semantic_handler_registry().describe(operation)
+        or operation in default_semantic_choice_registry().operations
+    )
 
 
 @dataclass(slots=True)
