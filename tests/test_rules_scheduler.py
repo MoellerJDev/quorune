@@ -712,6 +712,13 @@ class RulesSchedulerTests(unittest.TestCase):
 
     def test_candidate_bundle_upper_bound_requires_bounded_cohort(self):
         work = self.queue["work_selection"]
+        selected = selected_work_candidate(work)
+        pairing_bundle = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"]
+            == "bundle:commander-pairing-keywords"
+        )
         token_bundle = next(
             candidate
             for candidate in work["candidates"]
@@ -719,7 +726,18 @@ class RulesSchedulerTests(unittest.TestCase):
             == "bundle:fixed-token-creation-contexts"
         )
 
-        self.assertIsNone(work["selected_candidate_id"])
+        self.assertIsNotNone(selected)
+        self.assertEqual(pairing_bundle, selected)
+        self.assertTrue(pairing_bundle["eligible"])
+        self.assertEqual(
+            "bounded_executable",
+            pairing_bundle["bundle"]["measurement_status"],
+        )
+        self.assertEqual(117, pairing_bundle["expected_exact_ability_gain"])
+        self.assertEqual(
+            117,
+            pairing_bundle["expected_material_residual_reduction"],
+        )
         self.assertFalse(token_bundle["eligible"])
         self.assertEqual(
             "requires_bounded_cohort",
@@ -748,6 +766,31 @@ class RulesSchedulerTests(unittest.TestCase):
                 "predicted_complete_cards_per_cycle_hour"
             ],
             2,
+        )
+
+    def test_bounded_bundle_fails_closed_when_lowerable_census_drifts(self):
+        inputs = deepcopy(self.work_inputs)
+        partner = next(
+            row
+            for row in inputs["card_unlock_frontier"]["family_candidates"]
+            if row["family_id"] == "keyword_dependency:partner"
+        )
+        partner["lowerable_untrusted_abilities"] -= 1
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=inputs,
+        )
+        pairing = next(
+            row
+            for row in work["candidates"]
+            if row["candidate_id"]
+            == "bundle:commander-pairing-keywords"
+        )
+        self.assertFalse(pairing["eligible"])
+        self.assertEqual(
+            "requires_bounded_cohort",
+            pairing["runtime_readiness"]["status"],
         )
 
     def test_material_residual_threshold_is_disjunctive(self):
@@ -831,7 +874,10 @@ class RulesSchedulerTests(unittest.TestCase):
         )
 
         self.assertTrue(candidates)
-        self.assertIsNone(work["selected_candidate_id"])
+        self.assertEqual(
+            "bundle:commander-pairing-keywords",
+            work["selected_candidate_id"],
+        )
         structural = next(
             candidate
             for candidate in work["candidates"]

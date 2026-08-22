@@ -4,7 +4,11 @@ import re
 from typing import Any, Mapping, Sequence
 
 
-_BUNDLE_CONTEXTS = {"activated", "modal", "spell", "triggered"}
+_BUNDLE_CONTEXTS = {"activated", "modal", "setup", "spell", "triggered"}
+_BUNDLE_MEASUREMENT_STATUSES = {
+    "bounded_executable",
+    "upper_bound_only",
+}
 _BUNDLE_OWNER = re.compile(r"^(?:capability|component):[A-Za-z0-9_.:-]+$")
 _EFFORT_HOURS = {
     "small": 5,
@@ -120,7 +124,7 @@ def validate_bundle_policy(
             or not owners
             or owners != sorted(set(owners))
             or any(not _BUNDLE_OWNER.fullmatch(value) for value in owners)
-            or len(contexts) < 2
+            or not contexts
             or contexts != sorted(set(contexts))
             or not set(contexts) <= _BUNDLE_CONTEXTS
             or not parameters
@@ -130,7 +134,8 @@ def validate_bundle_policy(
             or not str(row.get("expected_downstream_closure") or "")
             or not exclusions
             or exclusions != sorted(set(exclusions))
-            or row.get("measurement_status") != "upper_bound_only"
+            or row.get("measurement_status")
+            not in _BUNDLE_MEASUREMENT_STATUSES
         ):
             raise WorkSelectionBundleError(
                 "Candidate bundles require closed identities, owners, contexts, "
@@ -283,6 +288,19 @@ def candidate_frontier_measurements(
             )
         members = [family_rows[value] for value in member_ids]
         gains = _bundle_frontier_gains(cards, set(member_ids))
+        lowerable_occurrences = sum(
+            int(row.get("lowerable_untrusted_abilities") or 0)
+            for row in members
+        )
+        total_occurrences = sum(
+            int(row.get("occurrences") or 0) for row in members
+        )
+        bounded_executable_verified = bool(
+            lowerable_occurrences
+            and lowerable_occurrences == total_occurrences
+            and gains["exact_abilities"] == lowerable_occurrences
+            and gains["material_residuals"] >= lowerable_occurrences
+        )
         prerequisites = sorted(
             {
                 str(value)
@@ -316,6 +334,9 @@ def candidate_frontier_measurements(
                 "cycle_hours": cycle_hours,
                 "cards_per_hour": cards_per_hour,
                 "value_per_hour": value_per_hour,
+                "bounded_executable_verified": (
+                    bounded_executable_verified
+                ),
                 "interaction_risks": sorted(
                     {
                         str(row.get("interaction_risk") or "unknown")

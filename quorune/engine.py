@@ -450,14 +450,16 @@ class CommanderEngine(
         config: GameConfig | None = None,
         semantics: SemanticRegistry | None = None,
     ) -> "CommanderEngine":
+        semantic_registry = semantics or SemanticRegistry()
         state = initial_commander_state(
             card_db,
             decks,
             first_player=first_player,
             player_names=player_names,
             config=config,
+            semantics=semantic_registry,
         )
-        engine = cls(card_db, state, semantics)
+        engine = cls(card_db, state, semantic_registry)
         engine._log(
             None,
             "game.created",

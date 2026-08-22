@@ -315,7 +315,7 @@ def _validated_reviewed_history(
 def _validated_policy(
     policy: Mapping[str, Any], harvest_history: Mapping[str, Any]
 ) -> dict[str, Any]:
-    if int(policy.get("policy_version") or 0) != 4:
+    if int(policy.get("policy_version") or 0) != 5:
         raise WorkSelectionError("Unsupported work-selection policy")
     priority_classes, starting_uncovered = _validated_priority_policy(policy)
     coverage = _mapping(policy.get("coverage_family"), "coverage_family")
@@ -332,7 +332,7 @@ def _validated_policy(
         minimum_gain=int(validated_coverage["minimum_complete_card_gain"]),
     )
     return {
-        "policy_version": 4,
+        "policy_version": 5,
         "priority_classes": priority_classes,
         "starting_uncovered_high_risk_pairs": starting_uncovered,
         **validated_coverage,
@@ -1130,7 +1130,11 @@ def _synthesized_frontier_candidates(
             effort=effort,
             policy=policy,
         )
-        if bundle_policy["measurement_status"] == "upper_bound_only":
+        measurement_status = str(bundle_policy["measurement_status"])
+        bounded_verified = bool(
+            measurement["bounded_executable_verified"]
+        )
+        if measurement_status == "upper_bound_only" or not bounded_verified:
             readiness = "requires_bounded_cohort"
             eligible = False
             reason = (
@@ -1223,8 +1227,10 @@ def _synthesized_frontier_candidates(
                     "explicit_exclusions": list(
                         bundle_policy["explicit_exclusions"]
                     ),
-                    "measurement_status": str(
-                        bundle_policy["measurement_status"]
+                    "measurement_status": (
+                        "bounded_executable"
+                        if bounded_verified
+                        else measurement_status
                     ),
                     "synthesized": True,
                 },

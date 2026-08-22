@@ -223,7 +223,7 @@ class CommanderDamageIdentityTests(unittest.TestCase):
             {}, engine.state.players["B"].commander_damage_received
         )
 
-    def test_two_commander_setup_assigns_two_distinct_designations(self):
+    def test_arbitrary_two_commander_setup_is_rejected(self):
         two_commanders = DeckDefinition(
             name="Two-commanders identity fixture",
             entries=[
@@ -232,24 +232,13 @@ class CommanderDamageIdentityTests(unittest.TestCase):
             ],
             commanders=["Mishra, Eminent One", "Zimone and Dina"],
         )
-        engine = CommanderEngine.create(
-            self.db,
-            {"A": two_commanders, "B": two_commanders},
-            first_player="A",
-            config=GameConfig(seed=903_100_004),
-        )
-
-        designated = sorted(
-            (
-                card.commander_designation_id,
-                card.oracle_id,
+        with self.assertRaisesRegex(ValueError, "matching typed"):
+            CommanderEngine.create(
+                self.db,
+                {"A": two_commanders, "B": two_commanders},
+                first_player="A",
+                config=GameConfig(seed=903_100_004),
             )
-            for card in engine.state.cards.values()
-            if card.owner == "A" and card.is_commander
-        )
-        self.assertEqual(2, len(designated))
-        self.assertEqual(2, len({value[0] for value in designated}))
-        self.assertTrue(all(value[0] for value in designated))
 
     def test_save_load_preserves_new_identity_and_legacy_state_is_explicit(self):
         state = self.session(903_100_005).state

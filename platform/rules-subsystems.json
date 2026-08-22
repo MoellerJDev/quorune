@@ -335,7 +335,7 @@
     }
   ],
   "work_selection": {
-    "policy_version": 4,
+    "policy_version": 5,
     "priority_classes": [
       "ci_correctness",
       "replay_privacy_defect",
@@ -374,6 +374,40 @@
         "two_additional_blocker_card": 1
       },
       "candidate_bundles": [
+        {
+          "bundle_id": "bundle:commander-pairing-keywords",
+          "member_family_ids": [
+            "keyword_dependency:choose-a-background",
+            "keyword_dependency:doctor-s-companion",
+            "keyword_dependency:partner"
+          ],
+          "canonical_owner_ids": [
+            "capability:format.commander.pairing.choose_background",
+            "capability:format.commander.pairing.doctors_companion",
+            "capability:format.commander.pairing.partner",
+            "component:quorune.commander_pairing.validate_commander_pair"
+          ],
+          "source_contexts": [
+            "setup"
+          ],
+          "normalized_literal_parameters": [
+            "base-partner-symmetric",
+            "choose-background-type-predicate",
+            "doctors-companion-exact-subtypes"
+          ],
+          "shared_dependencies": [],
+          "shared_grammar": "exact printed Commander pairing declarations consumed by one typed game-setup owner",
+          "estimated_implementation_hours": 10,
+          "estimated_generation_hours": 1,
+          "expected_downstream_closure": "Establishes the shared pregame pairing boundary for later Partner-with search and named Partner variants without admitting those distinct grammars.",
+          "explicit_exclusions": [
+            "granted, copied, removed, and text-changed pairing abilities",
+            "partner followed by a named or ability-word variant",
+            "partner with and its enters-the-battlefield search",
+            "provisional, stale, duplicated, and noncanonical declarations"
+          ],
+          "measurement_status": "bounded_executable"
+        },
         {
           "bundle_id": "bundle:fixed-exile-contexts",
           "member_family_ids": [

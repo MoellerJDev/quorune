@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping, Protocol
 
 from .carddb import CardDatabase
+from .commander_pairing import validate_commander_pair
 from .deck import DeckDefinition
 from .model import (
     CONTROL_HISTORY_VERSION,
@@ -143,6 +144,7 @@ def initial_commander_state(
     first_player: str | None = None,
     player_names: Mapping[str, str] | None = None,
     config: GameConfig | None = None,
+    semantics: Any | None = None,
 ) -> GameState:
     """Build the authoritative setup state for one Commander game.
 
@@ -203,6 +205,19 @@ def initial_commander_state(
             for entry in deck.entries
             if entry.board == "commander"
         ]
+        if len(commander_names) > 2:
+            raise ValueError(
+                "Commander setup permits at most two designated commanders"
+            )
+        if len(commander_names) == 2:
+            commander_records = tuple(
+                card_db.lookup(name) for name in commander_names
+            )
+            validate_commander_pair(
+                card_db,
+                semantics,
+                commander_records,
+            )
         commander_remaining: dict[str, int] = {}
         commander_ordinal = 0
         for commander in commander_names:

@@ -42,6 +42,7 @@ from .cumulative_upkeep_nodes import (
     fixed_life_cumulative_upkeep_node,
     fixed_mana_cumulative_upkeep_node,
 )
+from .commander_pairing_nodes import commander_pairing_keyword_node
 from .cascade_nodes import CASCADE_MECHANIC_ID, cascade_keyword_node
 from .storm_nodes import STORM_MECHANIC_ID, storm_keyword_node
 from .bestow_nodes import fixed_mana_bestow_keyword_node
@@ -303,6 +304,9 @@ def closed_special_keyword_node(
     )
     if characteristic_definition is not None:
         return characteristic_definition
+    commander_pairing = commander_pairing_keyword_node(**values)
+    if commander_pairing is not None:
+        return commander_pairing
     bestow = fixed_mana_bestow_keyword_node(**values)
     if bestow is not None:
         return bestow

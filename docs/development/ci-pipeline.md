@@ -253,6 +253,10 @@ cohort establishes one executable grammar and lower bound. Bundle selection
 reports shared owner, source-context, grammar, card, ability, residual,
 blocker-closure, and cycle-hour fields before ranking within the existing
 correctness-first class order.
+A `bounded_executable` declaration is rechecked against every current member
+occurrence, lowerable ability, card row, and material residual. Census drift
+returns it to `requires_bounded_cohort` rather than preserving a stale
+selection.
 Performance baselines remain
 manual because observed latency is review evidence, not an automatic rewrite.
 Use `--check` for read-only diagnosis and in CI; a successful `--write` already

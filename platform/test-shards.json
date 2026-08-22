@@ -240,6 +240,7 @@
       "test_ante_rules",
       "test_command_zone_rules",
       "test_commander_damage_identity",
+      "test_commander_pairing",
       "test_concession_rules",
       "test_exact_deck_interactions",
       "test_monarch_rules",

@@ -47,6 +47,15 @@ to select the largest coarse family. The next development cycle must classify
 another family or add a generated bounded-cohort measurement; it must not copy
 an estimated lower bound into policy.
 
+A bundle may declare `bounded_executable` only when the generated frontier
+proves that every occurrence in every member family is already lowerable and
+untrusted, the recomputed cross-family card rows account for the same exact
+ability count, and at least that many material residuals are removable. Any
+drift in those generated counts demotes the bundle back to
+`requires_bounded_cohort`. A setup-only family may use the honest `setup`
+source context; it does not invent spell, trigger, or activation fan-out merely
+to rank more highly.
+
 This supersedes ADR 0080 only where it treated family-level bundle co-closure as
 an executable measurement. ADR 0080's immutable harvest receipts, bundle
 metadata, class-first correctness ordering, and auditable throughput fields
@@ -68,6 +77,8 @@ remain in force.
 
 - Generated bundle upper bounds cannot become foreground without an executable
   cohort measurement.
+- Reviewed bounded bundle declarations remain eligible only while the current
+  generated frontier independently verifies their executable census.
 - Already-lowered untrusted ability and residual families can still qualify
   through the documented OR thresholds.
 - A zero-eligible result is explicit and auditable.
