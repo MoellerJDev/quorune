@@ -11207,7 +11207,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 173254,
+      "logical_lines": 173284,
       "methods": {
         "dunder": 485,
         "private": 815,
@@ -11252,10 +11252,10 @@
         },
         {
           "file": "quorune/work_selection.py",
-          "functions_and_methods": 34,
+          "functions_and_methods": 33,
           "language": "python",
-          "logical_lines": 1483,
-          "physical_lines": 1561
+          "logical_lines": 1490,
+          "physical_lines": 1566
         },
         {
           "file": "quorune/compiler/program_generation.py",
@@ -12427,6 +12427,13 @@
           "physical_lines": 354
         },
         {
+          "file": "quorune/work_selection_bundles.py",
+          "functions_and_methods": 8,
+          "language": "python",
+          "logical_lines": 313,
+          "physical_lines": 336
+        },
+        {
           "file": "quorune/rules/graveyard_card_targets.py",
           "functions_and_methods": 14,
           "language": "python",
@@ -12474,13 +12481,6 @@
           "language": "python",
           "logical_lines": 292,
           "physical_lines": 345
-        },
-        {
-          "file": "quorune/work_selection_bundles.py",
-          "functions_and_methods": 7,
-          "language": "python",
-          "logical_lines": 290,
-          "physical_lines": 311
         },
         {
           "file": "web/src/api.ts",
@@ -15355,7 +15355,7 @@
           "physical_lines": 1604
         }
       ],
-      "physical_lines": 190049,
+      "physical_lines": 190079,
       "python_file_count": 527,
       "review_thresholds": {
         "function_logical_lines_review": 150,
@@ -26885,7 +26885,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "3747892814af9035f74fa92006a08c12c11531068f50db2349619184f5ab3d3f",
+      "fingerprint": "f81bf6cc6dab4958fe2139bcc9ccc96034c6b5f864019f9e143ddbde80eb11df",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {

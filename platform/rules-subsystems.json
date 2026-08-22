@@ -373,7 +373,7 @@
         "one_additional_blocker_card": 2,
         "two_additional_blocker_card": 1
       },
-      "coherent_bundles": [
+      "candidate_bundles": [
         {
           "bundle_id": "bundle:fixed-exile-contexts",
           "member_family_ids": [
@@ -409,7 +409,8 @@
             "hidden-zone and temporary exile",
             "linked returns and delayed results",
             "variable, optional, random, and cost exile"
-          ]
+          ],
+          "measurement_status": "upper_bound_only"
         },
         {
           "bundle_id": "bundle:fixed-token-creation-contexts",
@@ -442,7 +443,8 @@
             "conditional and linked-result token instructions",
             "custom quoted abilities and unsupported predefined tokens",
             "dynamic quantities, copies, and named legendary tokens"
-          ]
+          ],
+          "measurement_status": "upper_bound_only"
         }
       ],
       "approved_prerequisite_exceptions": []

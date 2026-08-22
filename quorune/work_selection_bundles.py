@@ -24,6 +24,27 @@ class WorkSelectionBundleError(ValueError):
     pass
 
 
+def single_candidate_bundle(candidate_id: str) -> dict[str, Any]:
+    return {
+        "bundle_id": candidate_id,
+        "member_family_ids": [candidate_id],
+        "canonical_owner_ids": [],
+        "source_contexts": [],
+        "normalized_literal_parameters": [],
+        "shared_dependencies": [],
+        "shared_grammar": None,
+        "estimated_implementation_hours": None,
+        "estimated_generation_hours": None,
+        "estimated_cycle_hours": None,
+        "predicted_complete_cards_per_cycle_hour": None,
+        "predicted_normalized_value_per_cycle_hour": None,
+        "expected_downstream_closure": None,
+        "explicit_exclusions": [],
+        "measurement_status": "not_applicable",
+        "synthesized": False,
+    }
+
+
 def _mapping(value: Any, label: str) -> Mapping[str, Any]:
     if not isinstance(value, Mapping):
         raise WorkSelectionBundleError(f"{label} must be an object")
@@ -71,14 +92,15 @@ def validate_bundle_policy(
         "estimated_generation_hours",
         "expected_downstream_closure",
         "explicit_exclusions",
+        "measurement_status",
     }
-    bundles = list(coverage.get("coherent_bundles", []))
+    bundles = list(coverage.get("candidate_bundles", []))
     seen: set[str] = set()
     for index, raw in enumerate(bundles):
-        row = _mapping(raw, f"coherent_bundles[{index}]")
+        row = _mapping(raw, f"candidate_bundles[{index}]")
         if set(row) != expected:
             raise WorkSelectionBundleError(
-                "Coherent bundle has an invalid shape"
+                "Candidate bundle has an invalid shape"
             )
         bundle_id = str(row.get("bundle_id") or "")
         members = [str(value) for value in row.get("member_family_ids", [])]
@@ -108,9 +130,10 @@ def validate_bundle_policy(
             or not str(row.get("expected_downstream_closure") or "")
             or not exclusions
             or exclusions != sorted(set(exclusions))
+            or row.get("measurement_status") != "upper_bound_only"
         ):
             raise WorkSelectionBundleError(
-                "Coherent bundles require closed identities, owners, contexts, "
+                "Candidate bundles require closed identities, owners, contexts, "
                 "grammar, parameters, dependencies, and exclusions"
             )
         for field in (
@@ -194,6 +217,7 @@ def atomic_frontier_bundle(
             "two_additional_blocker_cards": two_additional,
         },
         "explicit_exclusions": [],
+        "measurement_status": "atomic_frontier",
         "synthesized": False,
     }
 
@@ -233,7 +257,7 @@ def _bundle_frontier_gains(
     return result
 
 
-def coherent_frontier_measurements(
+def candidate_frontier_measurements(
     frontier: Mapping[str, Any],
     bundle_policies: Sequence[Mapping[str, Any]],
     weights: Mapping[str, int],
@@ -254,7 +278,7 @@ def coherent_frontier_measurements(
         missing = sorted(set(member_ids) - set(family_rows))
         if missing:
             raise WorkSelectionBundleError(
-                f"Coherent bundle {bundle_id} references missing families: "
+                f"Candidate bundle {bundle_id} references missing families: "
                 + ", ".join(missing)
             )
         members = [family_rows[value] for value in member_ids]
@@ -305,7 +329,8 @@ def coherent_frontier_measurements(
 
 __all__ = [
     "atomic_frontier_bundle",
-    "coherent_frontier_measurements",
+    "candidate_frontier_measurements",
+    "single_candidate_bundle",
     "validate_bundle_policy",
     "WorkSelectionBundleError",
 ]
