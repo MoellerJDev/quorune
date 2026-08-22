@@ -53,6 +53,7 @@ class StaticRuntimeTemplate:
     event: str
     dependency_reason: str
     active_zone: str = "battlefield"
+    runtime_coverage: tuple[str, ...] = ()
 
 
 def _trigger_multiplier_template(text: str) -> StaticRuntimeTemplate | None:
@@ -180,6 +181,7 @@ def _source_permanent_participation_template(
                 "fixed spell-cost reductions require their closed typed "
                 "runtime capability"
             ),
+            runtime_coverage=("static_ability",),
         )
     activation_restriction = static_activation_restriction_handler(text)
     if activation_restriction is not None:

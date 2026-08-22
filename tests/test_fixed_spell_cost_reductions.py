@@ -112,6 +112,7 @@ class FixedSpellCostReductionCompilerTests(unittest.TestCase):
                     (FIXED_SPELL_COST_REDUCTION_CAPABILITY_ID,),
                     node.capability_dependencies,
                 )
+                self.assertEqual(("static_ability",), node.runtime_coverage)
                 descriptor = node.handlers[0]
                 self.assertEqual(
                     FIXED_SPELL_COST_REDUCTION_HANDLER_ID,
