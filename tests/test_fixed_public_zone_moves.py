@@ -314,7 +314,6 @@ class FixedPublicZoneMoveCompilerTests(unittest.TestCase):
             "Exile target legendary creature card from a graveyard.",
             "Exile target Zombie card from a graveyard.",
             "Exile target card with mana value 3 from a graveyard.",
-            "Exile target card from a graveyard. You gain 3 life.",
             "Exile all creatures with mana value 3 or less.",
             "Exile all creatures. Return them at the next end step.",
             "Return all creatures except Krakens to their owners' hands.",

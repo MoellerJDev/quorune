@@ -202,6 +202,12 @@ class FixedEffectClauseSequenceCompilerTests(unittest.TestCase):
             ),
             (
                 sequence_record(
+                    "Exile target card from a graveyard. You gain 3 life."
+                ),
+                ("exile_public_graveyard_card", "life"),
+            ),
+            (
+                sequence_record(
                     "+2: You gain 2 life. Put two +1/+1 counters on up to "
                     "one target creature.",
                     type_line="Legendary Planeswalker — Ajani",
