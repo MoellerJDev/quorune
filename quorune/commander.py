@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import random
 import uuid
+from collections import Counter
 from dataclasses import dataclass
 from typing import Any, Mapping, Protocol
 
@@ -200,19 +201,44 @@ def initial_commander_state(
 
     for seat in all_seats:
         deck = decks[seat]
-        commander_names = list(deck.commanders) or [
+        board_commander_names = [
             entry.name
             for entry in deck.entries
             if entry.board == "commander"
+            for _ in range(entry.quantity)
         ]
+        commander_names = list(deck.commanders) or board_commander_names
         if len(commander_names) > 2:
             raise ValueError(
                 "Commander setup permits at most two designated commanders"
             )
-        if len(commander_names) == 2:
-            commander_records = tuple(
-                card_db.lookup(name) for name in commander_names
+        commander_records = tuple(
+            card_db.lookup(name) for name in commander_names
+        )
+        commander_record_counts = Counter(
+            record.name for record in commander_records
+        )
+        available_record_counts = Counter(
+            card_db.lookup(entry.name).name
+            for entry in deck.entries
+            if entry.board in {"mainboard", "commander"}
+            for _ in range(entry.quantity)
+        )
+        if commander_record_counts - available_record_counts:
+            raise ValueError(
+                "Every designated commander must exist in the submitted deck"
             )
+        if deck.commanders:
+            board_record_counts = Counter(
+                card_db.lookup(name).name
+                for name in board_commander_names
+            )
+            if board_record_counts - commander_record_counts:
+                raise ValueError(
+                    "Commander-board entries must match the designated "
+                    "commander list"
+                )
+        if len(commander_names) == 2:
             validate_commander_pair(
                 card_db,
                 semantics,
@@ -220,11 +246,8 @@ def initial_commander_state(
             )
         commander_remaining: dict[str, int] = {}
         commander_ordinal = 0
-        for commander in commander_names:
-            canonical = card_db.lookup(commander).name
-            commander_remaining[canonical] = (
-                commander_remaining.get(canonical, 0) + 1
-            )
+        for canonical, quantity in commander_record_counts.items():
+            commander_remaining[canonical] = quantity
         serial = 0
         for entry in deck.entries:
             if entry.board not in {"mainboard", "commander"}:

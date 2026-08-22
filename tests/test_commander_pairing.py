@@ -280,6 +280,36 @@ class CommanderPairingTests(unittest.TestCase):
                 semantics=registry,
             )
 
+        inconsistent_board = pairing_deck(
+            "Thrasios, Triton Hero",
+            "Tymna the Weaver",
+        )
+        inconsistent_board.entries.append(
+            DeckEntry("Wilson, Refined Grizzly", board="commander")
+        )
+        with self.assertRaisesRegex(ValueError, "must match"):
+            initial_commander_state(
+                self.db,
+                {"A": inconsistent_board, "B": inconsistent_board},
+                first_player="A",
+                config=GameConfig(seed=702_124_004),
+                semantics=registry,
+            )
+
+        missing_designation = pairing_deck(
+            "Thrasios, Triton Hero",
+            "Tymna the Weaver",
+        )
+        missing_designation.entries.pop()
+        with self.assertRaisesRegex(ValueError, "must exist"):
+            initial_commander_state(
+                self.db,
+                {"A": missing_designation, "B": missing_designation},
+                first_player="A",
+                config=GameConfig(seed=702_124_005),
+                semantics=registry,
+            )
+
     def test_pairing_program_and_compiler_mutations_fail_closed(self):
         names = ("Thrasios, Triton Hero", "Tymna the Weaver")
         registry = self.registry_for(*names)
