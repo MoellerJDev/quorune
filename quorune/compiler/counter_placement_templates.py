@@ -30,17 +30,17 @@ from .direct_target import (
     DirectPermanentTargetSpec,
     direct_permanent_target_spec,
 )
-from .fixed_numbers import fixed_number
+from .fixed_numbers import FIXED_COUNT_PATTERN, fixed_number
 
 
-_COUNT = r"a|an|one|two|three|four|five|six|seven|eight|nine|ten|\d+"
+_COUNT = rf"(?:an|{FIXED_COUNT_PATTERN})"
 _COUNTER_PLURAL = "counters"
-_COUNTER_NAME = (
+FIXED_COUNTER_NAME_PATTERN = (
     r"[+-]\d+/[+-]\d+|"
     r"[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){0,2}"
 )
 _PLACEMENT = re.compile(
-    rf"put (?P<count>{_COUNT}) (?P<counter>{_COUNTER_NAME}) "
+    rf"put (?P<count>{_COUNT}) (?P<counter>{FIXED_COUNTER_NAME_PATTERN}) "
     r"(?P<plural>counter|counters) on (?P<subject>.+?)\.?",
     re.IGNORECASE,
 )
@@ -828,7 +828,7 @@ def fixed_counter_placement_batch_effect_template(
     if not 2 <= len(raw_entries) <= 3:
         return None
     entry_pattern = re.compile(
-        rf"(?P<count>{_COUNT}) (?P<counter>{_COUNTER_NAME}) "
+        rf"(?P<count>{_COUNT}) (?P<counter>{FIXED_COUNTER_NAME_PATTERN}) "
         r"(?P<plural>counter|counters)",
         re.IGNORECASE,
     )
@@ -1113,7 +1113,8 @@ def _fixed_counter_set_state_clause(
     """Remove one closed public-state suffix from an affected-set phrase."""
 
     counter_state = re.fullmatch(
-        rf"(?P<body>.+) with (?:a|an) (?P<counter>{_COUNTER_NAME}) "
+        rf"(?P<body>.+) with (?:a|an) "
+        rf"(?P<counter>{FIXED_COUNTER_NAME_PATTERN}) "
         r"counter on it",
         phrase,
         re.IGNORECASE,
@@ -1354,7 +1355,8 @@ def fixed_counter_placement_set_effect_template(
 _PLAYER_COUNTER_WORDING = re.compile(
     rf"(?P<subject>you|target player|target opponent|each player|each opponent) "
     rf"(?P<verb>get|gets) (?P<count>{_COUNT}) "
-    rf"(?P<counter>{_COUNTER_NAME}) (?P<plural>counter|counters)\.?",
+    rf"(?P<counter>{FIXED_COUNTER_NAME_PATTERN}) "
+    rf"(?P<plural>counter|counters)\.?",
     re.IGNORECASE,
 )
 _PLAYER_COUNTER_SYMBOLS = re.compile(
@@ -1486,6 +1488,7 @@ def fixed_player_counter_placement_effect_template(
 __all__ = [
     "CounterPlacementSubject",
     "ExistingTargetCounterPlacementTemplate",
+    "FIXED_COUNTER_NAME_PATTERN",
     "FIXED_COUNTER_SET_KEYWORDS",
     "FixedCounterPlacementTemplate",
     "FixedCounterPlacementBatchTemplate",

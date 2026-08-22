@@ -34,6 +34,9 @@ from .draw_templates import (
     static_draw_restriction_handler,
 )
 from .entry_state_templates import static_entry_state_handler
+from .fixed_self_entry_counter_templates import (
+    fixed_self_entry_counter_handler,
+)
 from ..entry_state_conditions import FIXED_ENTRY_CONDITION_HANDLER_ID
 from .life_templates import static_life_handler
 from .token_templates import static_additional_token_replacement_handler
@@ -341,6 +344,22 @@ def static_runtime_template(
     """Select one closed static runtime production for an Oracle line."""
 
     if source_permanent:
+        if source_name is not None and not source_is_class:
+            entry_counter = fixed_self_entry_counter_handler(
+                text,
+                source_name=source_name,
+            )
+            if entry_counter is not None:
+                return StaticRuntimeTemplate(
+                    compiled=entry_counter,
+                    kind="replacement_effect",
+                    event="zone.change",
+                    active_zone="all",
+                    dependency_reason=(
+                        "generic fixed self-entry counters depend on the "
+                        "canonical zone and counter replacement owners"
+                    ),
+                )
         participation = _source_permanent_participation_template(
             text,
             source_name=source_name,
