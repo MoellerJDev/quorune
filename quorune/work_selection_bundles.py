@@ -183,6 +183,27 @@ def coverage_scores(
     )
 
 
+def bundle_measurement_decision(
+    declared_status: str,
+    bounded_verified: bool,
+) -> tuple[str, str | None]:
+    if declared_status == "bounded_executable" and bounded_verified:
+        return "bounded_executable", None
+    if declared_status == "bounded_executable":
+        return (
+            "upper_bound_only",
+            "The declared bounded executable census no longer matches the "
+            "generated frontier; a new bounded cohort is required before this "
+            "bundle can become foreground.",
+        )
+    return (
+        "upper_bound_only",
+        "The synthesized family closure is only an upper bound; declared "
+        "exclusions and sibling grammar require a bounded executable cohort "
+        "before this bundle can become foreground.",
+    )
+
+
 def atomic_frontier_bundle(
     *,
     candidate_id: str,
@@ -356,6 +377,7 @@ def candidate_frontier_measurements(
 
 __all__ = [
     "atomic_frontier_bundle",
+    "bundle_measurement_decision",
     "candidate_frontier_measurements",
     "single_candidate_bundle",
     "validate_bundle_policy",

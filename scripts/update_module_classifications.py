@@ -377,7 +377,10 @@ def _owner(relative: str, layer: str) -> str:
         return "drawing"
     if relative.startswith("quorune/replacement/"):
         return "replacement_effects"
-    if relative == "quorune/commander.py":
+    if relative in {
+        "quorune/commander.py",
+        "quorune/commander_pairing.py",
+    }:
         return "commander_variant"
     if relative in {
         "quorune/attack_transition_engine_adapter.py",
@@ -590,6 +593,7 @@ def build_classifications() -> dict[str, Any]:
         allowed_dependencies = list(ALLOWED_DEPENDENCIES[layer])
         if relative in {
             "quorune/commander.py",
+            "quorune/commander_pairing.py",
             "quorune/engine.py",
             "quorune/mana.py",
             "quorune/rules_corpus.py",

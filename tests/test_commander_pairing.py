@@ -17,6 +17,7 @@ from quorune.commander_pairing import (
     validate_commander_pair,
 )
 from quorune.deck import DeckDefinition, DeckEntry
+from quorune.engine import CommanderEngine
 from quorune.model import GameConfig, GameState
 from quorune.oracle_ir import compile_oracle_card, register_generated_programs
 from quorune.rules.capabilities import load_default_capability_registry
@@ -184,6 +185,27 @@ class CommanderPairingTests(unittest.TestCase):
                     {value.kind for value in forward if value is not None},
                 )
                 self.assertEqual(tuple(reversed(forward)), reverse)
+
+    def test_engine_create_shares_pairing_registry_with_setup(self):
+        names = ("Thrasios, Triton Hero", "Tymna the Weaver")
+        registry = self.registry_for(*names)
+        deck = pairing_deck(*names)
+
+        engine = CommanderEngine.create(
+            self.db,
+            {"A": deck, "B": deck},
+            first_player="A",
+            config=GameConfig(seed=702_124_001),
+            semantics=registry,
+        )
+
+        self.assertIs(registry, engine.semantics)
+        self.assertTrue(
+            all(
+                len(engine.state.players[seat].zones["command"]) == 2
+                for seat in engine.state.turn_order
+            )
+        )
 
     def test_unsupported_or_mismatched_pairings_fail_closed_without_mutation(self):
         all_names = (

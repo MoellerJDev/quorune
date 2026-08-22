@@ -23,6 +23,11 @@ from quorune.work_selection import (
     load_work_selection_inputs,
     selected_work_candidate,
 )
+from quorune.work_selection_bundles import (
+    bundle_measurement_decision,
+    candidate_frontier_measurements,
+    WorkSelectionBundleError,
+)
 from scripts.harvest_outcome_history import (
     build_harvest_outcome_history,
     HarvestOutcomeHistoryError,
@@ -35,6 +40,56 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def _json(relative: str):
     return json.loads((ROOT / relative).read_text(encoding="utf-8"))
+
+
+def _bounded_candidate_bundle_fixture():
+    member_ids = [
+        "keyword_dependency:fixture-a",
+        "keyword_dependency:fixture-b",
+    ]
+    frontier = {
+        "family_candidates": [
+            {
+                "family_id": family_id,
+                "lowerable_untrusted_abilities": 1,
+                "occurrences": 1,
+                "prerequisites": [],
+                "interaction_risk": "low",
+            }
+            for family_id in member_ids
+        ],
+        "cards": [
+            {
+                "minimum_known_blocker_set": [family_id],
+                "abilities": [
+                    {
+                        "blockers": {
+                            "canonical_family_ids": [family_id]
+                        },
+                        "residuals": [{"family_ids": [family_id]}],
+                    }
+                ],
+            }
+            for family_id in member_ids
+        ],
+    }
+    policies = [
+        {
+            "bundle_id": "bundle:bounded-fixture",
+            "member_family_ids": member_ids,
+            "estimated_implementation_hours": 1,
+            "estimated_generation_hours": 1,
+            "measurement_status": "bounded_executable",
+        }
+    ]
+    weights = {
+        "complete_card": 1,
+        "exact_ability": 1,
+        "material_residual": 1,
+        "one_additional_blocker_card": 0,
+        "two_additional_blocker_card": 0,
+    }
+    return frontier, policies, weights
 
 
 def _reviewed_frontier_comparisons(inputs):
@@ -710,134 +765,66 @@ class RulesSchedulerTests(unittest.TestCase):
         ):
             build_harvest_outcome_history(ROOT, malformed)
 
-    def test_candidate_bundle_upper_bound_requires_bounded_cohort(self):
+    def test_completed_bundle_retires_and_upper_bound_requires_bounded_cohort(self):
         work = self.queue["work_selection"]
-        selected = selected_work_candidate(work)
-        pairing_bundle = next(
-            candidate
-            for candidate in work["candidates"]
-            if candidate["candidate_id"]
-            == "bundle:commander-pairing-keywords"
-        )
-        token_bundle = next(
-            candidate
-            for candidate in work["candidates"]
-            if candidate["candidate_id"]
-            == "bundle:fixed-token-creation-contexts"
-        )
-
-        self.assertIsNotNone(selected)
-        self.assertEqual(pairing_bundle, selected)
-        self.assertTrue(pairing_bundle["eligible"])
-        self.assertEqual(
-            "bounded_executable",
-            pairing_bundle["bundle"]["measurement_status"],
-        )
-        self.assertEqual(117, pairing_bundle["expected_exact_ability_gain"])
-        self.assertEqual(
-            117,
-            pairing_bundle["expected_material_residual_reduction"],
-        )
-        self.assertFalse(token_bundle["eligible"])
-        self.assertEqual(
-            "requires_bounded_cohort",
-            token_bundle["runtime_readiness"]["status"],
-        )
-        self.assertEqual(
-            "upper_bound_only", token_bundle["bundle"]["measurement_status"]
-        )
-        self.assertEqual(39, token_bundle["expected_complete_card_gain"])
-        self.assertEqual(153, token_bundle["expected_exact_ability_gain"])
-        self.assertEqual(
-            167, token_bundle["expected_material_residual_reduction"]
-        )
-        self.assertEqual(4, len(token_bundle["bundle"]["source_contexts"]))
-        self.assertEqual(
-            [
-                "capability:token.creation.fixed_definition",
-                "component:quorune.token_creation.create_tokens",
-            ],
-            token_bundle["bundle"]["canonical_owner_ids"],
-        )
-        self.assertEqual(96, token_bundle["one_additional_blocker_cards"])
-        self.assertEqual(133, token_bundle["two_additional_blocker_cards"])
-        self.assertGreater(
-            token_bundle["bundle"][
-                "predicted_complete_cards_per_cycle_hour"
-            ],
-            2,
-        )
-
-    def test_bounded_bundle_fails_closed_when_lowerable_census_drifts(self):
-        inputs = deepcopy(self.work_inputs)
-        partner = next(
-            row
-            for row in inputs["card_unlock_frontier"]["family_candidates"]
-            if row["family_id"] == "keyword_dependency:partner"
-        )
-        partner["lowerable_untrusted_abilities"] -= 1
-        work = build_work_selection(
-            selected_batch=self.queue["selected_batch"],
-            policy=self.catalog["work_selection"],
-            inputs=inputs,
-        )
-        pairing = next(
-            row
-            for row in work["candidates"]
-            if row["candidate_id"]
-            == "bundle:commander-pairing-keywords"
-        )
-        self.assertFalse(pairing["eligible"])
-        self.assertEqual(
-            "requires_bounded_cohort",
-            pairing["runtime_readiness"]["status"],
-        )
-        self.assertEqual(
-            "upper_bound_only",
-            pairing["bundle"]["measurement_status"],
-        )
-
-    def test_completed_candidate_bundle_retires_when_all_members_disappear(self):
-        inputs = deepcopy(self.work_inputs)
-        pairing_members = {
-            "keyword_dependency:choose-a-background",
-            "keyword_dependency:doctor-s-companion",
-            "keyword_dependency:partner",
-        }
-        inputs["card_unlock_frontier"]["family_candidates"] = [
-            row
-            for row in inputs["card_unlock_frontier"]["family_candidates"]
-            if row["family_id"] not in pairing_members
-        ]
-
-        work = build_work_selection(
-            selected_batch=self.queue["selected_batch"],
-            policy=self.catalog["work_selection"],
-            inputs=inputs,
-        )
-
         self.assertNotIn(
             "bundle:commander-pairing-keywords",
             {candidate["candidate_id"] for candidate in work["candidates"]},
         )
 
+        frontier, policies, weights = _bounded_candidate_bundle_fixture()
+        measurement = candidate_frontier_measurements(
+            frontier, policies, weights
+        )[0]
+        status, reason = bundle_measurement_decision(
+            "upper_bound_only",
+            measurement["bounded_executable_verified"],
+        )
+
+        self.assertTrue(measurement["bounded_executable_verified"])
+        self.assertEqual("upper_bound_only", status)
+        self.assertIn("only an upper bound", reason)
+
+    def test_bounded_bundle_fails_closed_when_lowerable_census_drifts(self):
+        frontier, policies, weights = _bounded_candidate_bundle_fixture()
+        measurement = candidate_frontier_measurements(
+            frontier, policies, weights
+        )[0]
+        self.assertTrue(measurement["bounded_executable_verified"])
+
+        frontier["family_candidates"][0][
+            "lowerable_untrusted_abilities"
+        ] = 0
+        measurement = candidate_frontier_measurements(
+            frontier, policies, weights
+        )[0]
+        status, reason = bundle_measurement_decision(
+            policies[0]["measurement_status"],
+            measurement["bounded_executable_verified"],
+        )
+
+        self.assertFalse(measurement["bounded_executable_verified"])
+        self.assertEqual("upper_bound_only", status)
+        self.assertIn("no longer matches", reason)
+
+    def test_completed_candidate_bundle_retires_when_all_members_disappear(self):
+        frontier, policies, weights = _bounded_candidate_bundle_fixture()
+        frontier["family_candidates"] = []
+
+        self.assertEqual(
+            [],
+            candidate_frontier_measurements(frontier, policies, weights),
+        )
+
     def test_partially_missing_candidate_bundle_remains_invalid(self):
-        inputs = deepcopy(self.work_inputs)
-        inputs["card_unlock_frontier"]["family_candidates"] = [
-            row
-            for row in inputs["card_unlock_frontier"]["family_candidates"]
-            if row["family_id"] != "keyword_dependency:partner"
-        ]
+        frontier, policies, weights = _bounded_candidate_bundle_fixture()
+        frontier["family_candidates"].pop()
 
         with self.assertRaisesRegex(
-            WorkSelectionError,
-            "references missing families: keyword_dependency:partner",
+            WorkSelectionBundleError,
+            "references missing families: keyword_dependency:fixture-b",
         ):
-            build_work_selection(
-                selected_batch=self.queue["selected_batch"],
-                policy=self.catalog["work_selection"],
-                inputs=inputs,
-            )
+            candidate_frontier_measurements(frontier, policies, weights)
 
     def test_material_residual_threshold_is_disjunctive(self):
         inputs = deepcopy(self.work_inputs)

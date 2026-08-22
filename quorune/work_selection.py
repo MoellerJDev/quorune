@@ -9,6 +9,7 @@ from typing import Any, Mapping, Sequence
 from .util import stable_json
 from .work_selection_bundles import (
     atomic_frontier_bundle,
+    bundle_measurement_decision,
     candidate_frontier_measurements,
     single_candidate_bundle,
     validate_bundle_policy,
@@ -1130,30 +1131,16 @@ def _synthesized_frontier_candidates(
             effort=effort,
             policy=policy,
         )
-        measurement_status = str(bundle_policy["measurement_status"])
-        bounded_verified = bool(
-            measurement["bounded_executable_verified"]
+        effective_measurement_status, demotion_reason = (
+            bundle_measurement_decision(
+                str(bundle_policy["measurement_status"]),
+                bool(measurement["bounded_executable_verified"]),
+            )
         )
-        effective_measurement_status = (
-            "bounded_executable"
-            if measurement_status == "bounded_executable"
-            and bounded_verified
-            else "upper_bound_only"
-        )
-        if effective_measurement_status != "bounded_executable":
+        if demotion_reason is not None:
             readiness = "requires_bounded_cohort"
             eligible = False
-            reason = (
-                "The declared bounded executable census no longer matches the "
-                "generated frontier; a new bounded cohort is required before this "
-                "bundle can become foreground."
-                if measurement_status == "bounded_executable"
-                else (
-                    "The synthesized family closure is only an upper bound; declared "
-                    "exclusions and sibling grammar require a bounded executable "
-                    "cohort before this bundle can become foreground."
-                )
-            )
+            reason = demotion_reason
         contexts = [str(value) for value in bundle_policy["source_contexts"]]
         interaction_risks = measurement["interaction_risks"]
         result.append(

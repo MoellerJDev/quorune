@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Protocol
@@ -8,6 +9,7 @@ from .characteristic_evaluation import type_parts
 
 if TYPE_CHECKING:
     from .carddb import CardDatabase, CardRecord
+    from .deck import DeckDefinition
     from .semantics import SemanticProgram
 
 
@@ -227,6 +229,49 @@ def validate_commander_pair(
     )
 
 
+def validated_commander_counts(
+    card_db: "CardDatabase",
+    registry: PairingProgramRegistry | None,
+    deck: "DeckDefinition",
+) -> dict[str, int]:
+    """Validate one deck's physical and typed Commander designations."""
+
+    board_names = tuple(
+        entry.name
+        for entry in deck.entries
+        if entry.board == "commander"
+        for _ in range(entry.quantity)
+    )
+    commander_names = tuple(deck.commanders) or board_names
+    if len(commander_names) > 2:
+        raise ValueError(
+            "Commander setup permits at most two designated commanders"
+        )
+    commander_records = tuple(
+        card_db.lookup(name) for name in commander_names
+    )
+    commander_counts = Counter(record.name for record in commander_records)
+    available_counts = Counter(
+        card_db.lookup(entry.name).name
+        for entry in deck.entries
+        if entry.board in {"mainboard", "commander"}
+        for _ in range(entry.quantity)
+    )
+    if commander_counts - available_counts:
+        raise ValueError(
+            "Every designated commander must exist in the submitted deck"
+        )
+    if deck.commanders:
+        board_counts = Counter(card_db.lookup(name).name for name in board_names)
+        if board_counts - commander_counts:
+            raise ValueError(
+                "Commander-board entries must match the designated commander list"
+            )
+    if len(commander_records) == 2:
+        validate_commander_pair(card_db, registry, commander_records)
+    return dict(commander_counts)
+
+
 __all__ = [
     "COMMANDER_PAIRING_COVERAGE",
     "COMMANDER_PAIRING_EVENT",
@@ -238,4 +283,5 @@ __all__ = [
     "commander_pairing_declaration",
     "pairing_kind_for_material_line",
     "validate_commander_pair",
+    "validated_commander_counts",
 ]
