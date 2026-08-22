@@ -91,6 +91,11 @@ class FixedSurveilCompilerTests(unittest.TestCase):
                 "Artifact",
             ),
             self.record(
+                "Fixed Surveil Upkeep Trigger",
+                "At the beginning of your upkeep, surveil 2.",
+                "Enchantment",
+            ),
+            self.record(
                 "Fixed Surveil Activation",
                 "{2}, {T}: Surveil 1.",
                 "Artifact",
@@ -131,7 +136,6 @@ class FixedSurveilCompilerTests(unittest.TestCase):
             "Target player surveils 2.",
             "Surveil 2, then draw a card for each card put into your graveyard this way.",
             "Whenever you surveil, draw a card.",
-            "At the beginning of your upkeep, surveil 2.",
         )
         for index, text in enumerate(variants):
             with self.subTest(text=text):

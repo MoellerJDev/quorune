@@ -1300,7 +1300,7 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
 
         record = self.db.lookup("Landfall Counter Trigger Fixture")
         with patch(
-            "quorune.oracle_ir.fixed_counter_event_trigger_node",
+            "quorune.compiler.fixed_counter_trigger_nodes.fixed_counter_event_trigger_node",
             return_value=None,
         ):
             mutated = compile_oracle_card(
