@@ -240,9 +240,12 @@ architecture-derived delta metadata without rebuilding the pinned corpus.
 The automatic `rules-derived` owner rebuilds conformance cases, pinned manifest
 hashes, the mechanic registry, and rules/mechanics coverage from authoritative
 review overlays and mechanic contracts without downloading or reparsing the
-Comprehensive Rules. The rules scheduler and platform status explicitly depend
-on that owner, so a rules review or contract edit cannot leave their inputs
-stale while the finalizer still reports success.
+Comprehensive Rules. It normalizes temporary text outputs to LF before
+freshness comparison and hashing, so a signed Linux bundle remains current on a
+Windows checkout instead of producing false CRLF-only staleness. The rules
+scheduler and platform status explicitly depend on that owner, so a rules review
+or contract edit cannot leave their inputs stale while the finalizer still
+reports success.
 The rules-scheduler owner also generates
 `coverage/harvest-outcome-history.json` from immutable base/head Git blobs for
 the Commander CardProgram corpus and card-unlock frontier. Static policy stores

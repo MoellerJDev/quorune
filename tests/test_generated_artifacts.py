@@ -28,6 +28,7 @@ from scripts.update_compiler_corpus_coverage import (
     CompilerCorpusCoverageError,
     validate_reports,
 )
+from scripts.update_rules_derived import _normalized_generated_bytes
 from scripts.generated_artifacts import (
     GeneratedArtifactDiscoverySpec,
     GeneratedArtifactManifestError,
@@ -58,6 +59,16 @@ from quorune.rules.capabilities import load_default_capability_registry
 
 
 class GeneratedArtifactFinalizationTests(unittest.TestCase):
+    def test_rules_derived_normalizes_platform_line_endings(self):
+        with TemporaryDirectory() as raw:
+            output = Path(raw) / "generated.json"
+            output.write_bytes(b'{"ok":true}\r\n')
+
+            self.assertEqual(
+                b'{"ok":true}\n',
+                _normalized_generated_bytes(output),
+            )
+
     def test_cloud_installer_compares_git_normalized_line_endings(self):
         local = ROOT / "local"
         local.mkdir(exist_ok=True)
