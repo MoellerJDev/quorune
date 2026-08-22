@@ -1,8 +1,8 @@
 ---
 title: "Counter placement and removal transactions"
 status: "current"
-authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_names.py, quorune/counter_state.py, quorune/counter_maximums.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/player_result_events.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/fixed_keyword_entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_maximum_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_counter_trigger_nodes.py, quorune/compiler/fixed_keyword_entry_nodes.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, quorune/rules/optional_counter_capability_shapes.py, semantic_runtime/ability_fragments.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, semantic_choices/optional_counter_placement.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
-verified: "2026-08-14"
+authoritative_source: "quorune/counter_placement.py, quorune/counter_removal.py, quorune/counter_names.py, quorune/counter_state.py, quorune/counter_maximums.py, quorune/counter_placement_sets.py, quorune/counter_placement_targets.py, quorune/damage_results.py, quorune/player_result_events.py, quorune/token_creation.py, quorune/keyword_counters.py, quorune/attachment_references.py, quorune/entry_counter_model.py, quorune/entry_counters.py, quorune/fixed_keyword_entry_counters.py, quorune/saga_progression.py, quorune/turn_counter_coordination.py, quorune/death_return.py, quorune/unleash.py, quorune/mentor.py, quorune/attack_counter_triggers.py, quorune/renown.py, quorune/modular.py, quorune/amass.py, quorune/zone_object_subtype_grants.py, quorune/relative_power_target.py, quorune/target_predicates.py, quorune/permanent_designations.py, quorune/zone_object_state.py, quorune/compiler/amass_templates.py, quorune/compiler/counter_maximum_templates.py, quorune/compiler/counter_removal_templates.py, quorune/compiler/fixed_counter_trigger_nodes.py, quorune/compiler/fixed_keyword_entry_nodes.py, quorune/compiler/fixed_self_entry_counter_templates.py, quorune/compiler/fixed_target_effect_sequences.py, quorune/compiler/fixed_source_effect_sequences.py, quorune/compiler/self_counter_keyword_actions.py, quorune/rules/optional_counter_capability_shapes.py, semantic_runtime/ability_fragments.py, semantic_runtime/counter_replacements.py, semantic_runtime/counter_removal_handlers.py, semantic_runtime/token_replacements.py, semantic_runtime/zone_replacements.py, semantic_runtime/self_entry_counters.py, semantic_runtime/block_restrictions.py, semantic_choices/amass.py, semantic_choices/death_return.py, semantic_choices/modular.py, semantic_choices/optional_counter_placement.py, ADR 0011, ADR 0034, ADR 0036, ADR 0037, ADR 0038, ADR 0039, ADR 0048, and ADR 0054"
+verified: "2026-08-22"
 audience: "rules, semantics, replay, and architecture contributors"
 maintenance: "hand-maintained"
 ---
@@ -451,6 +451,15 @@ Bare Vanishing, nonpositive or variable values, Oracle-equivalent prose, and
 granted, copied, or removed abilities outside the future shared typed
 ability-presence boundary also remain residual rather than gaining a
 family-specific runtime check.
+
+Generic fixed prose self-entry counters use that same all-zone owner. The
+compiler accepts only one complete source sentence in which this object or its
+bounded printed name enters with one through ten counters of one canonical
+kind on itself. It records the amount and counter kind in the immutable
+replacement descriptor and routes the placement through the existing nested
+zone-change and quantity-replacement transaction. Variable, zero, larger,
+optional, conditional, additional, multikind, linked, and another-object forms
+remain material residuals; the grammar does not infer or parse them at runtime.
 
 Ordinary printed Sunburst now has a dedicated cast-payment entry owner. Cast
 commit freezes the distinct WUBRG colors actually spent on the spell as a

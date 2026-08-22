@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "0b1feb19ad5da696727e92c13373022eb5335afa3949f8524279f4c6899443d7",
-  "declaration_source_fingerprint": "61b8f7944688b6109042230050067fcbf806bb0c39caa2e00fa9716fc27fa868",
+  "registry_fingerprint": "898e6b27fef46075d17c688eaa0ddcb67735574fbd0d51fa9b5ebfcd958cec44",
+  "declaration_source_fingerprint": "bea20ccf883ff5b5b30eb9e429cd1ede84508a26ee0dc43d1821932f651bbe99",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -19557,6 +19557,195 @@
         "commander_review"
       ],
       "applicability_note": "Replay the selected player target, four priority passes, and typed rad-counter result to the identical authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_fixed_self_entry_keyword_counter_uses_shared_characteristics",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Place one Deathtouch counter during source entry and consume the resulting public counter state through the shared layer-6 effective-characteristics boundary."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_fixed_self_entry_uses_quantity_replacement",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Route one fixed prose self-entry counter through the nested quantity-replacement event so Doubling Season changes three +1/+1 counters to six before battlefield entry commits."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_four_player_fixed_self_entry_is_private_and_replays_exactly",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Resolve one fixed self-entry counter in four-player state and route competing replacement ordering only to the destination controller."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_fixed_self_entry_runtime_mutation_is_killed",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the shared affected-object self-entry replacement and prove the generic fixed entry counters disappear."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryCompilerTests.test_unsupported_fixed_self_entry_forms_and_dependency_fail_closed",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep variable, optional, conditional, additional, multikind, non-source, malformed-plural, and dependency-blocked entry-counter forms material."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryCompilerTests.test_fixed_self_entry_counter_grammar_is_closed",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile generic this-object and bounded source-name sentences with counts from one through ten into one all-zone source-spanned self-entry descriptor."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_four_player_fixed_self_entry_is_private_and_replays_exactly",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Project pending entry replacement options only to the destination controller without exposing authoritative physical object identity to other seats."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_four_player_fixed_self_entry_is_private_and_replays_exactly",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the destination-controller replacement order, fixed self-entry event, and final counter result to the same authoritative state hash."
+    },
+    {
+      "capability_id": "counter.producer.fixed_self_entry",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_fixed_keyword_entry_counters.FixedKeywordEntryRuntimeTests.test_stale_fixed_self_entry_aborts_without_card_mutation",
+      "official_rule_ids": [
+        "122.1",
+        "122.1a",
+        "122.1b",
+        "122.6",
+        "614.1c",
+        "614.12",
+        "614.16",
+        "616.1"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Abort a stale generic entry continuation after the proposed object leaves the stack without placing counters, reentering the object, or mutating any card snapshot."
     },
     {
       "capability_id": "counter.producer.intrinsic_entry",
@@ -44276,5 +44465,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "538b713dc41bb56dec2977b17e4b5a996116eb375e38e6d42c125fd699c63d08"
+  "fingerprint": "33dcee825f00651d17a4b07e8522d574a6fbddeffb3ff7d5e0cf5a81f2ca4457"
 }

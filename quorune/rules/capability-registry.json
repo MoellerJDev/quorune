@@ -1757,6 +1757,33 @@
       "status": "trusted"
     },
     {
+      "id": "counter.producer.fixed_self_entry",
+      "version": 1,
+      "official_rules": ["122.1", "122.1a", "122.1b", "122.6", "614.1c", "614.12", "614.16", "616.1"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Compile and resolve mandatory self-relative Oracle sentences that make the source enter with one fixed positive count of one canonical counter kind through the canonical zone-change and counter-placement replacement tree.",
+        "inputs": ["one whole source-spanned fixed self-entry sentence", "the same physical source proposing battlefield entry", "one count from one through ten", "one canonical counter name", "prospective battlefield controller", "complete represented zone and counter replacement set"],
+        "outputs": ["one mandatory all-zone affected-object entry replacement", "one nested replacement-aware fixed counter placement", "affected-controller ordering", "canonical replacement journal", "seat-scoped suspension", "exact replay"],
+        "exclusions": ["variable, zero, negative, nonintegral, or greater-than-ten counts", "optional, conditional, additional, repeated, distributed, or linked entry counters", "multiple counter kinds in one sentence", "counter placement on another object", "enters-with-counters keyword reminder text owned by a distinct keyword compiler", "granted, copied, or removed abilities outside the shared typed ability-presence boundary", "unrepresented zone, counter, or keyword-counter characteristic families"]
+      },
+      "dependencies": ["counter.placement.quantity_replacement"],
+      "implementation_components": ["quorune.compiler.fixed_self_entry_counter_templates.FixedSelfEntryCounterTemplate", "quorune.compiler.runtime_templates.static_runtime_template", "quorune.compiler.static_runtime_nodes.static_runtime_node", "quorune.semantic_runtime.self_entry_counters.SelfEntryCounterHandler", "quorune.semantic_runtime.zone_replacements.capture_zone_change_replacement_snapshot", "quorune.semantic_runtime.zone_replacements.commit_counter_events_from_resolution"],
+      "positive_tests": ["test_fixed_self_entry_counter_grammar_is_closed"],
+      "negative_tests": ["test_unsupported_fixed_self_entry_forms_and_dependency_fail_closed", "test_fixed_self_entry_compiler_mutation_is_killed", "test_fixed_self_entry_runtime_mutation_is_killed", "test_stale_fixed_self_entry_aborts_without_card_mutation"],
+      "interaction_tests": ["test_fixed_self_entry_keyword_counter_uses_shared_characteristics", "test_fixed_self_entry_uses_quantity_replacement"],
+      "multiplayer_tests": ["test_four_player_fixed_self_entry_is_private_and_replays_exactly"],
+      "privacy_tests": ["test_four_player_fixed_self_entry_is_private_and_replays_exactly"],
+      "replay_tests": ["test_four_player_fixed_self_entry_is_private_and_replays_exactly"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "passed",
+      "dependency_fail_closed_rationale": "The source-spanned entry replacement remains material whenever the canonical counter quantity-replacement owner or any separately required keyword-counter characteristic capability is unavailable.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "Focused compiler and runtime mutations remove the generic source-spanned descriptor or its affected-object entry replacement, and the representative fixed counter assertion rejects both survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "counter.producer.intrinsic_entry",
       "version": 2,
       "official_rules": ["122.1", "122.6", "306.5b", "310.4b", "614.1c", "614.16", "616.1", "616.1f"],

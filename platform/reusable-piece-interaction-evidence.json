@@ -4122,6 +4122,36 @@
       ],
       "interaction_order": 2,
       "assertion": "The closed multi-search shape requires every selected object to be a land entering tapped, and the canonical simultaneous zone owner commits both tapped entries with one destination timestamp before shuffling once."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_fixed_self_entry_uses_quantity_replacement",
+      "piece_ids": [
+        "capability.counter.placement.quantity_replacement",
+        "capability.counter.producer.fixed_self_entry"
+      ],
+      "capability_ids": [
+        "counter.placement.quantity_replacement",
+        "counter.producer.fixed_self_entry"
+      ],
+      "interaction_order": 2,
+      "assertion": "One mandatory fixed prose self-entry counter becomes a nested canonical counter event and consumes represented quantity replacement before battlefield entry commits."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_fixed_self_entry_keyword_counter_uses_shared_characteristics",
+      "piece_ids": [
+        "capability.counter.characteristic.keyword",
+        "capability.counter.producer.fixed_self_entry"
+      ],
+      "capability_ids": [
+        "counter.characteristic.keyword",
+        "counter.producer.fixed_self_entry"
+      ],
+      "interaction_order": 2,
+      "assertion": "A fixed Deathtouch self-entry counter is placed by the shared replacement transaction and immediately consumed by the cycle-safe effective layer-6 characteristic query."
     }
   ]
 }
