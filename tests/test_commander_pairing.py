@@ -198,6 +198,7 @@ class CommanderPairingTests(unittest.TestCase):
         )
         registry = self.registry_for(*all_names)
         thrasios = self.db.lookup("Thrasios, Triton Hero")
+        tymna = self.db.lookup("Tymna the Weaver")
         wilson = self.db.lookup("Wilson, Refined Grizzly")
         rose = self.db.lookup("Rose Tyler")
         doctor = self.db.lookup("The Tenth Doctor")
@@ -205,6 +206,13 @@ class CommanderPairingTests(unittest.TestCase):
             (thrasios, wilson),
             (self.db.lookup("Toothy, Imaginary Friend"), thrasios),
             (self.db.lookup("Bjorna, Nightfall Alchemist"), thrasios),
+            (
+                replace(
+                    thrasios,
+                    type_line="Legendary Enchantment",
+                ),
+                tymna,
+            ),
             (
                 wilson,
                 replace(

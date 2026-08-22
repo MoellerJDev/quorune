@@ -201,7 +201,7 @@ def validate_commander_pair(
     if kinds == (
         CommanderPairingKind.PARTNER,
         CommanderPairingKind.PARTNER,
-    ):
+    ) and all(_is_legendary_creature(card) for card in commanders):
         return declarations
     if (
         kinds[0] == CommanderPairingKind.CHOOSE_A_BACKGROUND
