@@ -259,6 +259,21 @@ forms remain source-spanned residuals. Commander-profile trust also requires
 the typed CR 903.9 owner choice; the compiler never excludes commanders from
 an otherwise universal Oracle instruction.
 
+`compiler/library_search_templates.py` owns fixed restrictive searches of the
+controller's library directly to the battlefield across spell, triggered,
+activated, and modal bodies. The compiler emits one typed hidden-zone selector
+that uses the shared cycle-safe `ObjectQuerySpec` effective-characteristic
+boundary. The searching seat receives an actor-private candidate set and may
+fail to find a stated quality under CR 701.23b; opponents see the identity only
+after a selected card reaches the public battlefield. A single supported
+permanent enters through ordinary replacement-aware entry. Bounded multi-card
+support is limited to land cards that all enter tapped, so the canonical zone
+owner can commit one simultaneous entry batch before the deterministic shuffle.
+Named and different-name sets, attachments, linked results, compound tails,
+cross-field alternatives, searches of other players, multiple untapped or
+nonland entrants, search-limiting replacements, and search or shuffle triggers
+remain source-spanned residuals or outside this capability's trust boundary.
+
 The same activated-effect owner admits closed fixed characteristic results
 through the existing resolution-created continuous-effect capability. It
 lowers fixed numeric self power/toughness changes, fixed numeric

@@ -68,6 +68,11 @@ from .token_creation_capability_shapes import (
     fixed_token_creation_node_capabilities,
 )
 from .mill_capability_shapes import fixed_mill_node_capabilities
+from .library_search_capability_shapes import (
+    FIXED_LIBRARY_SEARCH_CAPABILITY_ID,
+    FIXED_LIBRARY_SEARCH_MECHANIC_ID,
+    fixed_library_search_node_capabilities,
+)
 from .surveil_capability_shapes import fixed_surveil_node_capabilities
 from .optional_counter_capability_shapes import (
     optional_fixed_counter_event_trigger_node_capabilities,
@@ -944,6 +949,7 @@ def _targeted_effect_capabilities(
         fixed_affected_player_discard_node_capabilities,
         fixed_affected_player_sacrifice_node_capabilities,
         fixed_mill_node_capabilities,
+        fixed_library_search_node_capabilities,
         fixed_life_node_capabilities,
         fixed_controller_effect_sequence_node_capabilities,
         fixed_counter_controller_effect_sequence_node_capabilities,
@@ -1197,6 +1203,18 @@ def _affected_player_choice_covered_mechanics(
     return covered
 
 
+def _shape_gated_covered_mechanics(supplied: set[str]) -> set[str]:
+    mapping = {
+        "zone.mill.fixed": "mill",
+        FIXED_LIBRARY_SEARCH_CAPABILITY_ID: FIXED_LIBRARY_SEARCH_MECHANIC_ID,
+    }
+    return {
+        mechanic
+        for capability, mechanic in mapping.items()
+        if capability in supplied
+    }
+
+
 def _has_aura_attachment_capability(supplied: set[str]) -> bool:
     return bool(
         supplied.intersection(
@@ -1255,8 +1273,7 @@ def capability_covered_mechanics(
         covered.add("return-to-owner-hand")
     if "stack.counter.effect" in supplied:
         covered.add("counter")
-    if "zone.mill.fixed" in supplied:
-        covered.add("mill")
+    covered.update(_shape_gated_covered_mechanics(supplied))
     if supplied.intersection(
         {
             "zone.draw.result_generated_ordering",

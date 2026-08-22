@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "a983795e0ee666a1b67730adf23e38353bdfe73b7fa8eda680a294ae68ab9adc",
-  "declaration_source_fingerprint": "9b0ce9ce89115222520c2ae3666513fa8ca40d371b413ec0d4389e6d4483200b",
+  "registry_fingerprint": "0b1feb19ad5da696727e92c13373022eb5335afa3949f8524279f4c6899443d7",
+  "declaration_source_fingerprint": "61b8f7944688b6109042230050067fcbf806bb0c39caa2e00fa9716fc27fa868",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -29550,6 +29550,248 @@
       "applicability_note": "Replay the exact private partition response to the same authoritative library order and final state hash."
     },
     {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchRuntimeTests.test_generated_search_uses_effective_hidden_characteristics_and_replays",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compose the generated hidden-zone search with the all-zone Changeling characteristic definition and the shared ObjectQuerySpec matcher before battlefield entry."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchRuntimeTests.test_multi_land_search_commits_one_tapped_simultaneous_batch",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Move two selected basic lands with one destination timestamp through the canonical simultaneous replacement-aware zone owner, then shuffle once."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchRuntimeTests.test_generated_search_uses_effective_hidden_characteristics_and_replays",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Issue the searching player one private four-seat decision while every opponent retains only the public stack representation."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchCompilerTests.test_fixed_search_shape_and_dependencies_fail_closed",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the compiler production, block every ambient dependency, and mutate destination, count, selector, shuffle, and simultaneous-entry shape so exact trust cannot survive."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchCompilerTests.test_fixed_search_shape_and_dependencies_fail_closed",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject open fields, unsupported destinations, non-shuffling results, name selectors, oversized counts, and nonuniform multi-entry shapes before capability closure."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchCompilerTests.test_named_linked_attachment_compound_and_open_searches_remain_residual",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep named, different-name, attachment, linked-result, compound-tail, and cross-field disjunction searches source-spanned and residual."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchCompilerTests.test_fixed_search_compiles_across_spell_trigger_activation_and_modal_contexts",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Lower the same restrictive fixed search through spell, triggered, activated, and modal bodies to one capability-shaped runtime operation."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchCompilerTests.test_multi_tapped_land_search_compiles_as_one_closed_batch",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Admit bounded multi-card searches only when every selected object is a land entering tapped through one uniform simultaneous batch."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchRuntimeTests.test_generated_search_uses_effective_hidden_characteristics_and_replays",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep candidate identities and effective hidden characteristics private to the searching seat until the chosen card enters a public zone."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_library_searches.FixedLibrarySearchRuntimeTests.test_generated_search_uses_effective_hidden_characteristics_and_replays",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the private generated choice, public battlefield result, deterministic shuffle, semantic continuation, and final authoritative hash exactly."
+    },
+    {
+      "capability_id": "library.search.fixed_to_battlefield",
+      "evidence_class": "rollback",
+      "test_id": "tests.test_semantic_searches.SemanticPrivateSearchTests.test_search_envelope_tampering_fails_before_mutation",
+      "official_rule_ids": [
+        "109.2a",
+        "400.7",
+        "608.2c",
+        "701.23",
+        "701.23a",
+        "701.23b",
+        "701.24",
+        "701.24a",
+        "701.24b"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reject actor, revision, source, visibility, and legal-candidate continuation tampering before any search result, shuffle, or stack mutation commits."
+    },
+    {
       "capability_id": "library.surveil.fixed_controller",
       "evidence_class": "interaction",
       "test_id": "tests.test_surveil_rules.FixedSurveilRuntimeTests.test_surveil_destination_replacement_resumes_before_public_commit",
@@ -44034,5 +44276,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "b276e4360e79de5e6d6fad364d2920bb8eff0c8823982ed081fe9942cb9147b6"
+  "fingerprint": "538b713dc41bb56dec2977b17e4b5a996116eb375e38e6d42c125fd699c63d08"
 }

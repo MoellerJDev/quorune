@@ -55,6 +55,9 @@ from .compiler.fixed_keyword_entry_nodes import fixed_keyword_entry_nodes
 from .compiler.explore_templates import single_explore_effect_template
 from .compiler.keyword_templates import keyword_mechanics
 from .compiler.life_templates import fixed_life_effect_template
+from .compiler.library_search_templates import (
+    fixed_library_search_effect_template,
+)
 from .compiler.mill_templates import fixed_mill_effect_template
 from .compiler.modal_templates import fixed_choose_one_modal_spell_template
 from .compiler.keyword_nodes import (
@@ -109,7 +112,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v112"
+ORACLE_COMPILER_VERSION = "oracle-ir-v113"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -290,6 +293,9 @@ def _effect_template(
     mill_template = fixed_mill_effect_template(normalized)
     if mill_template is not None:
         return mill_template.compiled()
+    library_search = fixed_library_search_effect_template(normalized)
+    if library_search is not None:
+        return library_search.compiled()
     sequence = fixed_controller_effect_sequence_template(normalized)
     if sequence is not None:
         return sequence.compiled()
