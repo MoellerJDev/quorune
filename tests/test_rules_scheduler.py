@@ -1098,9 +1098,30 @@ class RulesSchedulerTests(unittest.TestCase):
             )
 
         policy = deepcopy(self.catalog["work_selection"])
-        policy["coverage_family"]["candidate_bundles"][0][
-            "source_contexts"
-        ].append("spell")
+        duplicate_context_bundle = next(
+            row
+            for row in policy["coverage_family"]["candidate_bundles"]
+            if row["measurement_status"] == "upper_bound_only"
+        )
+        duplicate_context_bundle["source_contexts"].append(
+            duplicate_context_bundle["source_contexts"][0]
+        )
+        with self.assertRaisesRegex(
+            WorkSelectionError, "closed identities"
+        ):
+            build_work_selection(
+                selected_batch=self.queue["selected_batch"],
+                policy=policy,
+                inputs=self.work_inputs,
+            )
+
+        policy = deepcopy(self.catalog["work_selection"])
+        upper_bound = next(
+            row
+            for row in policy["coverage_family"]["candidate_bundles"]
+            if row["measurement_status"] == "upper_bound_only"
+        )
+        upper_bound["source_contexts"] = ["spell"]
         with self.assertRaisesRegex(
             WorkSelectionError, "closed identities"
         ):

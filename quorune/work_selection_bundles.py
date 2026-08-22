@@ -115,6 +115,7 @@ def validate_bundle_policy(
         ]
         dependencies = [str(value) for value in row.get("shared_dependencies", [])]
         exclusions = [str(value) for value in row.get("explicit_exclusions", [])]
+        measurement_status = str(row.get("measurement_status") or "")
         if (
             not bundle_id.startswith("bundle:")
             or bundle_id in seen
@@ -125,6 +126,10 @@ def validate_bundle_policy(
             or owners != sorted(set(owners))
             or any(not _BUNDLE_OWNER.fullmatch(value) for value in owners)
             or not contexts
+            or (
+                len(contexts) < 2
+                and measurement_status != "bounded_executable"
+            )
             or contexts != sorted(set(contexts))
             or not set(contexts) <= _BUNDLE_CONTEXTS
             or not parameters
@@ -134,8 +139,7 @@ def validate_bundle_policy(
             or not str(row.get("expected_downstream_closure") or "")
             or not exclusions
             or exclusions != sorted(set(exclusions))
-            or row.get("measurement_status")
-            not in _BUNDLE_MEASUREMENT_STATUSES
+            or measurement_status not in _BUNDLE_MEASUREMENT_STATUSES
         ):
             raise WorkSelectionBundleError(
                 "Candidate bundles require closed identities, owners, contexts, "
