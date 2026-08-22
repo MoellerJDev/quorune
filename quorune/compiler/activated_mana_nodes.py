@@ -336,6 +336,7 @@ def _activated_effect_dependency_gate(
             "modify_all_matching_permanents_until_end_of_turn",
             "modify_stats_until_end_of_turn",
             "scry",
+            "search",
             "surveil",
             "self_zone_move",
             "tap",

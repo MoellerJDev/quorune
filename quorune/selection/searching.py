@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import copy
 from dataclasses import dataclass
-import re
 from typing import Any, Mapping, Protocol, Sequence
 
 from ..errors import GameRuleError
 from ..model import CardInstance, StackItem
+from ..object_predicate import ObjectQueryError, ObjectQuerySpec
+from ..object_query import object_matches_query, object_query_result
 from ..replacement.immutable import FrozenMap, thaw_value
+from ..zone_transitions import ZoneTransitionOwner
 from .model import (
     SelectionContract,
     SelectionContinuation,
@@ -40,6 +42,10 @@ class HiddenSearchHost(Protocol):
     permissions: Any
 
     def card_record(self, card: Any) -> Any: ...
+    def _effective_card_data(self, card: Any) -> Mapping[str, Any]: ...
+    def _type_parts(
+        self, type_line: str
+    ) -> tuple[set[str], set[str], set[str]]: ...
     def move_card(self, object_id: str, destination: str, **kwargs: Any) -> Any: ...
     def shuffle_library(self, seat: str, *, reason: str) -> None: ...
 
@@ -343,15 +349,6 @@ class HiddenSearchOwnerMixin:
             note="Built-in fetchland search resolved",
         )
 
-    @staticmethod
-    def _search_type_words(type_line: str) -> tuple[set[str], set[str]]:
-        normalized = type_line.replace("—", "-")
-        left, _, right = normalized.partition("-")
-        return (
-            {word.casefold() for word in re.findall(r"[A-Za-z]+", left)},
-            {word.casefold() for word in re.findall(r"[A-Za-z]+", right)},
-        )
-
     def _search_candidate_matches(
         self,
         card: CardInstance,
@@ -360,30 +357,36 @@ class HiddenSearchOwnerMixin:
         record = self.card_record(card)
         if record is None:
             return False
-        type_words, subtype_words = self._search_type_words(record.type_line)
-        required_types = {
-            str(value).casefold() for value in selector.get("types") or []
-        }
-        required_subtypes = {
-            str(value).casefold() for value in selector.get("subtypes") or []
-        }
-        required_supertypes = {
-            str(value).casefold()
-            for value in selector.get("supertypes") or []
-        }
-        if not required_types.issubset(type_words):
-            return False
-        if not required_subtypes.issubset(subtype_words):
-            return False
-        if not required_supertypes.issubset(type_words):
+        effective = self._effective_card_data(card)
+        types, subtypes, supertypes = self._type_parts(
+            str(effective.get("type_line") or "")
+        )
+        try:
+            query = ObjectQuerySpec(
+                zones=(card.zone,),
+                types_all=tuple(selector.get("types") or ()),
+                types_any=tuple(selector.get("types_any") or ()),
+                subtypes_all=tuple(selector.get("subtypes") or ()),
+                subtypes_any=tuple(selector.get("subtypes_any") or ()),
+                supertypes_all=tuple(selector.get("supertypes") or ()),
+                colors_all=tuple(selector.get("colors") or ()),
+                colors_any=tuple(selector.get("colors_any") or ()),
+            )
+        except (ObjectQueryError, TypeError) as exc:
+            raise GameRuleError("Malformed semantic search selector") from exc
+        row = object_query_result(
+            card,
+            effective,
+            type_parts=(types, subtypes, supertypes),
+            known_to_actor=True,
+            attached_to_ref=None,
+        )
+        if not object_matches_query(row, query):
             return False
         names = {
             str(value).casefold() for value in selector.get("names") or []
         }
         if names and record.name.casefold() not in names:
-            return False
-        colors = {str(value).upper() for value in selector.get("colors") or []}
-        if colors and not colors.issubset(set(record.colors)):
             return False
         mana_value = selector.get("mana_value")
         if mana_value is not None:
@@ -394,33 +397,33 @@ class HiddenSearchOwnerMixin:
             )
             if (
                 constraint.get("equal") is not None
-                and record.mana_value != float(constraint["equal"])
+                and row.mana_value != float(constraint["equal"])
             ):
                 return False
             if (
                 constraint.get("minimum") is not None
-                and record.mana_value < float(constraint["minimum"])
+                and row.mana_value < float(constraint["minimum"])
             ):
                 return False
             if (
                 constraint.get("maximum") is not None
-                and record.mana_value > float(constraint["maximum"])
+                and row.mana_value > float(constraint["maximum"])
             ):
                 return False
         predicate = selector.get("predicate")
         if predicate in {None, ""}:
             return True
         if predicate == "noncreature":
-            return "creature" not in type_words
+            return "creature" not in row.types
         if predicate == "instant_or_sorcery":
-            return bool(type_words.intersection({"instant", "sorcery"}))
+            return bool(set(row.types).intersection({"instant", "sorcery"}))
         if predicate == "mana_cost_0_or_1":
             return record.mana_cost in {"{0}", "{1}"}
         if predicate == "land_with_basic_land_type":
             return (
-                "land" in type_words
+                "land" in row.types
                 and bool(
-                    subtype_words.intersection(
+                    set(row.subtypes).intersection(
                         {"plains", "island", "swamp", "mountain", "forest"}
                     )
                 )
@@ -463,9 +466,12 @@ class HiddenSearchOwnerMixin:
             selector.get(key)
             for key in (
                 "types",
+                "types_any",
                 "subtypes",
+                "subtypes_any",
                 "supertypes",
                 "colors",
+                "colors_any",
                 "names",
                 "mana_value",
                 "mana_value_total",
@@ -829,7 +835,7 @@ class HiddenSearchOwnerMixin:
         effect = context.effect
         item = context.item
         reveal = bool(effect.get("reveal", False))
-        moved: list[CardInstance] = []
+        selected_cards: list[CardInstance] = []
         for ref in values:
             card = self._resolve_object(
                 seat,
@@ -837,6 +843,24 @@ class HiddenSearchOwnerMixin:
                 zones=set(search_zones),
                 owned_only=True,
             )
+            selected_cards.append(card)
+        if (
+            len(selected_cards) > 1
+            and destination == "battlefield"
+            and effect.get("enters_tapped_override") is True
+        ):
+            return ZoneTransitionOwner(self).move_cards_simultaneously(
+                tuple(
+                    (card.object_id, destination)
+                    for card in selected_cards
+                ),
+                tapped=True,
+                reason=f"{item.label} search",
+                log=False,
+            )
+
+        moved: list[CardInstance] = []
+        for card in selected_cards:
             tapped = bool(effect.get("enters_tapped_override", False))
             pay_entry_life = False
             if (

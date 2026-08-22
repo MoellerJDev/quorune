@@ -60,6 +60,12 @@ def _json_bytes(value: Mapping[str, Any]) -> bytes:
     ).encode("utf-8")
 
 
+def _normalized_generated_bytes(path: Path) -> bytes:
+    """Read generated text with platform newlines normalized to LF."""
+
+    return path.read_text(encoding="utf-8").encode("utf-8")
+
+
 def expected_outputs() -> dict[str, bytes]:
     """Build review- and contract-derived artifacts without network access."""
 
@@ -122,7 +128,9 @@ def expected_outputs() -> dict[str, bytes]:
         )
         _write_coverage(temporary, rules_coverage(temporary))
         for relative in OUTPUTS[3:]:
-            result[relative] = (temporary / relative).read_bytes()
+            result[relative] = _normalized_generated_bytes(
+                temporary / relative
+            )
     return result
 
 

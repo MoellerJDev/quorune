@@ -4077,6 +4077,51 @@
       ],
       "interaction_order": 2,
       "assertion": "Each new designated commander's graveyard or exile incarnation receives one owner-scoped public state choice whose decline or command-zone result replays exactly."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_generated_search_uses_effective_hidden_characteristics_and_replays",
+      "piece_ids": [
+        "capability.continuous.characteristics.changeling",
+        "capability.library.search.fixed_to_battlefield"
+      ],
+      "capability_ids": [
+        "continuous.characteristics.changeling",
+        "library.search.fixed_to_battlefield"
+      ],
+      "interaction_order": 2,
+      "assertion": "The actor-private search candidate query consumes the shared all-zone effective characteristics, recognizes a represented Changeling as a Goblin without a search-specific type branch, then preserves privacy and exact replay through public entry."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_multi_land_search_commits_one_tapped_simultaneous_batch",
+      "piece_ids": [
+        "capability.library.search.fixed_to_battlefield",
+        "capability.zone.change.destination_replacement"
+      ],
+      "capability_ids": [
+        "library.search.fixed_to_battlefield",
+        "zone.change.destination_replacement"
+      ],
+      "interaction_order": 2,
+      "assertion": "Two actor-selected basic lands enter one immutable destination-replacement preparation with the requested tapped state before either card mutates, then share one destination timestamp and one post-search shuffle."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_multi_land_search_commits_one_tapped_simultaneous_batch",
+      "piece_ids": [
+        "capability.library.search.fixed_to_battlefield",
+        "capability.zone.entry.tapped_state"
+      ],
+      "capability_ids": [
+        "library.search.fixed_to_battlefield",
+        "zone.entry.tapped_state"
+      ],
+      "interaction_order": 2,
+      "assertion": "The closed multi-search shape requires every selected object to be a land entering tapped, and the canonical simultaneous zone owner commits both tapped entries with one destination timestamp before shuffling once."
     }
   ]
 }

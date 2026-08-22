@@ -787,6 +787,7 @@ class ZoneTransitionOwner:
         *,
         reason: str,
         log: bool = False,
+        tapped: bool | None = None,
         replacement_selections: Sequence[str | None | Mapping[str, Any]] = (),
         transition_kinds: Mapping[str, ZoneTransitionKind] | None = None,
     ) -> list[CardInstance]:
@@ -803,6 +804,10 @@ class ZoneTransitionOwner:
         prepared = prepare_zone_change_replacement_batch(
             self.host,
             tuple(changes),
+            requested_tapped={
+                object_id: bool(tapped) if tapped is not None else False
+                for object_id, _destination in changes
+            },
             sources=sources,
             source_zones=source_snapshot.source_zones,
             selections=tuple(replacement_selections),
@@ -824,6 +829,7 @@ class ZoneTransitionOwner:
                 object_id,
                 destination,
                 zone_timestamp=destination_timestamp,
+                tapped=tapped,
                 reason=reason,
                 log=log,
                 semantic_events=False,

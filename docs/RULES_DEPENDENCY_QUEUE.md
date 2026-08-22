@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "e401b67a179892895c160ce2689202b5cccc310d2d4accf514bf38879330c3fc"
+verified: "1c37b0fa1ca80a76da7c0d30bee7894d356ac328df4e31c799fe25bdb9641d31"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `3dd28d5ca9fd2b2b127b873d79e111bb0fe4a807f1a356c7fad4164851d37933`
+Source fingerprint: `aace1b6a188fca34b369d2f51225f61edba6257ff0c20ebb36346ef5106463ab`
 
 ## Current top-level state
 
@@ -35,7 +35,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 2 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 1 | 0 | 0 | 0 | unknown | 0 | 0 |
 | 3 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 1 | 0 | 0 | 0 | unknown | 0 | 0 |
 | 4 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 1 | 0 | 0 | 0 | unknown | 0 | 0 |
-| 5 | blocked | `frontier:continuous_layer:continuous-effect-layers-and-dependencies` | `rules_foundation` | 1 | 0 | 3788 | 8702 | 62.098361 | 0 | 0 |
+| 5 | blocked | `frontier:continuous_layer:continuous-effect-layers-and-dependencies` | `rules_foundation` | 1 | 0 | 3792 | 8702 | 62.163934 | 0 | 0 |
 | 6 | blocked | `interaction-implementation:residual.replacement.replacement-applicability` | `rules_foundation` | 1 | 0 | unknown | unknown | unknown | 0 | 0 |
 | 7 | blocked | `interaction-implementation:residual.replacement.self-replacement-and-prevention-ordering` | `rules_foundation` | 1 | 0 | unknown | unknown | unknown | 0 | 0 |
 | 8 | blocked | `interaction-implementation:residual.replacement.damage-prevention` | `rules_foundation` | 1 | 0 | unknown | unknown | unknown | 0 | 0 |
@@ -59,7 +59,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 26 | blocked | `rules:counter-producer-replacement-closure` | `rules_foundation` | 1 | 0 | unknown | unknown | unknown | 0 | 0 |
 | 27 | blocked | `bundle:fixed-token-creation-contexts` | `compiler_harvest` | 2 | 4 | 39 | 167 | 2.294118 | 0 | 0 |
 | 28 | blocked | `bundle:fixed-exile-contexts` | `compiler_harvest` | 2 | 4 | 14 | 106 | 0.933333 | 0 | 0 |
-| 29 | blocked | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 1 | 3 | 16 | 106 | 0.761905 | 0 | 0 |
+| 29 | blocked | `frontier:effect_clause:typed-spell-additional-cost-clause` | `compiler_harvest` | 1 | 3 | 17 | 106 | 0.809524 | 0 | 0 |
 | 30 | blocked | `frontier:effect_clause:unparsed-choose-one` | `compiler_harvest` | 1 | 3 | 0 | 261 | 0.0 | 0 | 0 |
 | 31 | blocked | `architecture:engine-mutation-and-specificity-debt` | `architecture_debt` | 1 | 0 | 0 | 0 | unknown | 0 | 54 |
 

@@ -72,6 +72,9 @@ from ..rules.token_creation_capability_shapes import (
     fixed_token_creation_node_capabilities,
 )
 from ..rules.mill_capability_shapes import fixed_mill_node_capabilities
+from ..rules.library_search_capability_shapes import (
+    fixed_library_search_node_capabilities,
+)
 from ..rules.surveil_capability_shapes import fixed_surveil_node_capabilities
 from ..rules.fixed_controller_effect_shapes import (
     fixed_counter_controller_effect_sequence_node_capabilities,
@@ -514,6 +517,23 @@ def _is_closed_fixed_mill_program(program: SemanticProgram) -> bool:
 
     required = set(
         fixed_mill_node_capabilities(
+            effects=program.effects,
+            target_schema=program.target_schema,
+            mechanic_ids=program.coverage,
+        )
+    )
+    return bool(required) and required.issubset(
+        program.capability_dependencies
+    )
+
+
+def _is_closed_fixed_library_search_program(
+    program: SemanticProgram,
+) -> bool:
+    """Recognize one restrictive fixed library search to the battlefield."""
+
+    required = set(
+        fixed_library_search_node_capabilities(
             effects=program.effects,
             target_schema=program.target_schema,
             mechanic_ids=program.coverage,
@@ -1284,6 +1304,7 @@ def _closed_effect_recognizers():
         _is_closed_fixed_next_turn_draw_program,
         _is_closed_fixed_draw_program,
         _is_closed_fixed_mill_program,
+        _is_closed_fixed_library_search_program,
         _is_closed_fixed_life_program,
         _is_closed_fixed_scry_program,
         _is_closed_fixed_surveil_program,
