@@ -2,7 +2,7 @@
 title: "Compact CI card dependencies"
 status: "generated"
 authoritative_source: "tests/fixtures/compact-ci-fixtures.json and platform/test-shards.json"
-verified: "bd4bb2c21b81cf083f5b0c78154d5bc1f0b7aa8a535a63f2b1981195da49d0d4"
+verified: "73340b4d1c93c76f1ef1ea3a711fb6d9cde143c37b719635160091e27d123fbf"
 audience: "maintainers and contributors"
 maintenance: "generated"
 ---
@@ -17,11 +17,11 @@ Overall closure: **closed**.
 
 | Measure | Value |
 | --- | ---: |
-| Fixture files | 32 |
-| Cards | 391 |
+| Fixture files | 33 |
+| Cards | 396 |
 | Rulings | 727 |
-| Modules inspected | 301 |
-| Static requirements | 796 |
+| Modules inspected | 302 |
+| Static requirements | 798 |
 | Declared dynamic requirements | 8 |
 | Unresolved dynamic sites | 0 |
 | Missing cards | 0 |
@@ -32,7 +32,7 @@ Overall closure: **closed**.
 
 | Shard | Modules | Status |
 | --- | ---: | --- |
-| casting-costs-mana | 41 | closed |
+| casting-costs-mana | 42 | closed |
 | combat-declarations | 21 | closed |
 | compiler-cardprogram | 46 | closed |
 | core-domain | 14 | closed |

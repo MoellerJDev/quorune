@@ -1381,6 +1381,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/cast_cost_modifier_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "none"
+    },
+    {
       "file": "quorune/compiler/casting_activation_metadata_templates.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -7644,5 +7659,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "17f3617b4e7c5f1ad5fbc63a949a0ecac9c101691a1e60e4d7b33ae70d0e0092"
+  "fingerprint": "c81ba249847e73f990ba283a555c0ae909d3facbbe6c88a8d8c15cf633c5cc8c"
 }
