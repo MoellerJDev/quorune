@@ -397,6 +397,16 @@ _WITNESSES = {
         "{1}{W}{U}",
         ("Enchant",),
     ),
+    "mourners-shield": _Witness(
+        "Mourner's Shield",
+        "Artifact",
+        "Imprint — When this artifact enters, you may exile target card "
+        "from a graveyard.\n"
+        "{2}, {T}: Prevent all damage that would be dealt this turn by a "
+        "source of your choice that shares a color with the exiled card.",
+        "{4}",
+        ("Imprint",),
+    ),
     "ovinomancer": _Witness(
         "Ovinomancer",
         "Creature — Human Wizard",
@@ -851,7 +861,7 @@ _bind("floating-shield", *COST_AND_REPLACEMENT_PAIRS[6:8])
 _bind("prismatic-circle", CONTINUOUS_AND_REPLACEMENT_PAIRS[0])
 _bind("kirtars-wrath", CONTINUOUS_AND_REPLACEMENT_PAIRS[1])
 _bind("floating-shield", *CONTINUOUS_AND_REPLACEMENT_PAIRS[2:4])
-_bind("rasputin", CONTINUOUS_AND_REPLACEMENT_PAIRS[4])
+_bind("mourners-shield", CONTINUOUS_AND_REPLACEMENT_PAIRS[4])
 _bind("avatar-of-woe", CONTINUOUS_AND_REPLACEMENT_PAIRS[5])
 _bind("floating-shield", *CONTINUOUS_AND_REPLACEMENT_PAIRS[6:8])
 _bind("gideon-oathsworn", CONTINUOUS_AND_REPLACEMENT_PAIRS[8])
