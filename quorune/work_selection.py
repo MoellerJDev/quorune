@@ -1134,13 +1134,25 @@ def _synthesized_frontier_candidates(
         bounded_verified = bool(
             measurement["bounded_executable_verified"]
         )
-        if measurement_status == "upper_bound_only" or not bounded_verified:
+        effective_measurement_status = (
+            "bounded_executable"
+            if measurement_status == "bounded_executable"
+            and bounded_verified
+            else "upper_bound_only"
+        )
+        if effective_measurement_status != "bounded_executable":
             readiness = "requires_bounded_cohort"
             eligible = False
             reason = (
-                "The synthesized family closure is only an upper bound; declared "
-                "exclusions and sibling grammar require a bounded executable cohort "
-                "before this bundle can become foreground."
+                "The declared bounded executable census no longer matches the "
+                "generated frontier; a new bounded cohort is required before this "
+                "bundle can become foreground."
+                if measurement_status == "bounded_executable"
+                else (
+                    "The synthesized family closure is only an upper bound; declared "
+                    "exclusions and sibling grammar require a bounded executable "
+                    "cohort before this bundle can become foreground."
+                )
             )
         contexts = [str(value) for value in bundle_policy["source_contexts"]]
         interaction_risks = measurement["interaction_risks"]
@@ -1227,11 +1239,7 @@ def _synthesized_frontier_candidates(
                     "explicit_exclusions": list(
                         bundle_policy["explicit_exclusions"]
                     ),
-                    "measurement_status": (
-                        "bounded_executable"
-                        if bounded_verified
-                        else measurement_status
-                    ),
+                    "measurement_status": effective_measurement_status,
                     "synthesized": True,
                 },
             )

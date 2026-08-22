@@ -792,6 +792,10 @@ class RulesSchedulerTests(unittest.TestCase):
             "requires_bounded_cohort",
             pairing["runtime_readiness"]["status"],
         )
+        self.assertEqual(
+            "upper_bound_only",
+            pairing["bundle"]["measurement_status"],
+        )
 
     def test_material_residual_threshold_is_disjunctive(self):
         inputs = deepcopy(self.work_inputs)
