@@ -19043,6 +19043,21 @@
     },
     {
       "capability_id": "variant.monarch.designate",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_semantic_handlers.TypedSemanticHandlerTests.test_monarch_designation_mutant_is_killed",
+      "official_rule_ids": [
+        "725.1",
+        "725.2"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the canonical designation commit and require the authoritative monarch state assertion to reject the survivor."
+    },
+    {
+      "capability_id": "variant.monarch.designate",
       "evidence_class": "negative",
       "test_id": "tests.test_monarch_rules.MonarchRuleTests.test_nonqualifying_damage_does_not_create_a_transfer_trigger",
       "official_rule_ids": [
@@ -19055,6 +19070,21 @@
         "commander_review"
       ],
       "applicability_note": "Designate one active player as monarch through the canonical unique public designation path."
+    },
+    {
+      "capability_id": "variant.monarch.designate",
+      "evidence_class": "positive",
+      "test_id": "tests.test_monarch_rules.MonarchRuleTests.test_fixed_monarch_effects_are_capability_closed_across_contexts",
+      "official_rule_ids": [
+        "725.1",
+        "725.2"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile mandatory controller designation in triggered and activated contexts through the strict monarch capability shape."
     },
     {
       "capability_id": "variant.monarch.designate",

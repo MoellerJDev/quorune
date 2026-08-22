@@ -39,6 +39,7 @@ _PREDEFINED_CAPABILITIES = {
 _AUXILIARY_MECHANICS = frozenset(
     {
         "activated_ability",
+        "cr-601-casting-spells",
         "cr-603-handling-triggered-abilities",
         "exhaust",
         "generated_oracle_ir",
@@ -98,7 +99,7 @@ def _fixed_creature_effect_mechanics(
     ) is None:
         return None
     if re.fullmatch(
-        rf"Token (?:Artifact )?Creature — {re.escape(name)}",
+        rf"Token (?:Artifact )?Creature(?: Enchantment)? — {re.escape(name)}",
         str(characteristics.get("type_line") or ""),
     ) is None:
         return None

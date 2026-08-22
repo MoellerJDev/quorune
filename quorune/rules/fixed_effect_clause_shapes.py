@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Iterable, Mapping, Sequence
 
+from .affected_player_sacrifice_capability_shapes import (
+    fixed_affected_player_sacrifice_node_capabilities,
+)
 from .affected_player_discard_capability_shapes import (
     fixed_affected_player_discard_node_capabilities,
 )
@@ -15,6 +18,9 @@ from .counter_removal_capabilities import (
     fixed_counter_removal_node_capabilities,
 )
 from .fixed_controller_effect_shapes import fixed_life_node_capabilities
+from .fixed_resolution_characteristic_shapes import (
+    fixed_controlled_characteristic_set_node_capabilities,
+)
 from .graveyard_card_targets import (
     targeted_own_graveyard_return_node_capabilities,
 )
@@ -41,6 +47,14 @@ from .node_capability_shapes import (
     targeted_return_to_hand_node_capabilities,
     targeted_tap_state_node_capabilities,
 )
+from .library_search_capability_shapes import (
+    fixed_library_search_node_capabilities,
+)
+from .mill_capability_shapes import fixed_mill_node_capabilities
+from .public_zone_move_capability_shapes import (
+    fixed_public_zone_move_set_node_capabilities,
+    public_graveyard_card_exile_node_capabilities,
+)
 from .token_creation_capability_shapes import (
     fixed_token_creation_node_capabilities,
 )
@@ -55,6 +69,7 @@ FIXED_EFFECT_CLAUSE_SEQUENCE_CAPABILITY = (
 _COMPONENT_RESOLVERS = (
     all_counter_removal_node_capabilities,
     fixed_affected_player_discard_node_capabilities,
+    fixed_affected_player_sacrifice_node_capabilities,
     fixed_counter_placement_batch_node_capabilities,
     fixed_counter_placement_group_node_capabilities,
     fixed_counter_placement_node_capabilities,
@@ -64,11 +79,14 @@ _COMPONENT_RESOLVERS = (
     fixed_player_counter_placement_node_capabilities,
     fixed_target_characteristics_node_capabilities,
     fixed_damage_node_capabilities,
+    fixed_controlled_characteristic_set_node_capabilities,
     mass_destruction_node_capabilities,
     fixed_draw_node_capabilities,
     fixed_life_node_capabilities,
     fixed_scry_node_capabilities,
     fixed_surveil_node_capabilities,
+    fixed_mill_node_capabilities,
+    fixed_library_search_node_capabilities,
     single_explore_node_capabilities,
     single_proliferate_node_capabilities,
     self_regeneration_node_capabilities,
@@ -81,13 +99,18 @@ _COMPONENT_RESOLVERS = (
     targeted_own_graveyard_return_node_capabilities,
     targeted_return_to_hand_node_capabilities,
     targeted_tap_state_node_capabilities,
+    public_graveyard_card_exile_node_capabilities,
+    fixed_public_zone_move_set_node_capabilities,
     fixed_token_creation_node_capabilities,
 )
 
 
 def _contains_target_reference(value: Any) -> bool:
     if isinstance(value, str):
-        return value == "$target" or value.startswith("$target.")
+        return (
+            value in {"$target", "$targets"}
+            or value.startswith("$target.")
+        )
     if isinstance(value, Mapping):
         return any(_contains_target_reference(child) for child in value.values())
     if isinstance(value, (list, tuple)):

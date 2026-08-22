@@ -66,7 +66,7 @@ _FIXED_CREATURE_TOKEN = re.compile(
     r"(?P<colors>white|blue|black|red|green|colorless)"
     r"(?: and (?P<second_color>white|blue|black|red|green))? "
     r"(?P<subtypes>[A-Za-z][A-Za-z' -]*?) "
-    r"(?P<artifact>artifact )?creature tokens?"
+    r"(?P<card_types>(?:(?:artifact|enchantment) )*)creature tokens?"
     r"(?: with (?P<keywords>[A-Za-z ,'-]+))?\.?$",
     re.IGNORECASE,
 )
@@ -190,6 +190,19 @@ def _positive_fixed_number(value: str) -> int | None:
     return amount if amount > 0 else None
 
 
+def _fixed_creature_token_types(value: str) -> tuple[str, ...] | None:
+    types = tuple(part.casefold() for part in value.split())
+    if len(types) != len(set(types)) or not set(types).issubset(
+        {"artifact", "enchantment"}
+    ):
+        return None
+    return tuple(
+        card_type
+        for card_type in ("artifact", "enchantment")
+        if card_type in types
+    )
+
+
 def _single_fixed_token_creation_effect_template(
     text: str,
 ) -> FixedTokenCreationTemplate | None:
@@ -240,16 +253,17 @@ def _single_fixed_token_creation_effect_template(
         creature.group("colors"), creature.group("second_color")
     )
     keywords = _fixed_keyword_list(creature.group("keywords"))
-    if colors is None or keywords is None:
+    card_types = _fixed_creature_token_types(creature.group("card_types"))
+    if colors is None or keywords is None or card_types is None:
         return None
     subtypes = " ".join(creature.group("subtypes").split())
-    artifact = bool(creature.group("artifact"))
+    ordered_types = (
+        *(("Artifact",) if "artifact" in card_types else ()),
+        "Creature",
+        *(("Enchantment",) if "enchantment" in card_types else ()),
+    )
     characteristics: dict[str, Any] = {
-        "type_line": (
-            "Token "
-            + ("Artifact " if artifact else "")
-            + f"Creature — {subtypes}"
-        ),
+        "type_line": f"Token {' '.join(ordered_types)} — {subtypes}",
         "colors": colors,
         "power": creature.group("power"),
         "toughness": creature.group("toughness"),

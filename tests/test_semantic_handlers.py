@@ -307,6 +307,30 @@ class TypedSemanticHandlerTests(unittest.TestCase):
             [event for event in engine.state.events if event.code == "monarch.change"][-1].code,
         )
 
+    def test_monarch_designation_mutant_is_killed(self):
+        control = self.session(7250402)
+        mutant = self.session(7250403)
+
+        control.engine.apply_effect(
+            {"op": "become_monarch", "player": "B"},
+            actor="A",
+        )
+        with patch(
+            "quorune.engine.CommanderEngine.become_monarch",
+            return_value=None,
+        ):
+            mutant.engine.apply_effect(
+                {"op": "become_monarch", "player": "B"},
+                actor="A",
+            )
+
+        self.assertEqual("B", control.state.monarch)
+        self.assertIsNone(mutant.state.monarch)
+        self.assertNotEqual(
+            authoritative_state_hash(control.state),
+            authoritative_state_hash(mutant.state),
+        )
+
     def test_tap_state_handlers_lower_typed_intents_through_read_only_context(self):
         context = self.context(actor="B")
         tap = TapPermanentHandler().lower(

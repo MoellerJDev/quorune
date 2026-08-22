@@ -39,7 +39,10 @@ from quorune.object_predicate import ObjectQuerySpec
 from quorune.oracle_ir import compile_oracle_card, register_generated_programs
 from quorune.projection import StateProjector
 from quorune.record import checkpoint_envelope, replay_record
-from quorune.rules.capabilities import load_default_capability_registry
+from quorune.rules.capabilities import (
+    capability_dependencies_for_node,
+    load_default_capability_registry,
+)
 from quorune.semantic_runtime import (
     ContinuousEffectSourceContext,
     FixedQueryPowerToughnessAnthemHandler,
@@ -468,6 +471,49 @@ class ContinuousEffectModelTests(unittest.TestCase):
             "Other creatures you control get +1/+1 until end of turn."
         )
         self.assertEqual("$source", other[1][0]["predicate"]["exclude_ref"])
+
+    def test_fixed_resolution_characteristic_shape_excludes_dynamic_queries(self):
+        template = controlled_creature_until_end_of_turn_effect(
+            "Other creatures you control get +1/+1 until end of turn."
+        )
+        self.assertIsNotNone(template)
+        assert template is not None
+        _template_id, effects, mechanics = template
+        capability = (
+            "continuous.resolution.fixed_characteristics_until_end_of_turn"
+        )
+        self.assertIn(
+            capability,
+            capability_dependencies_for_node(
+                effects=effects,
+                target_schema=None,
+                mechanic_ids=mechanics,
+            ),
+        )
+        effect = effects[0]
+        for mutated in (
+            {**effect, "power": {"kind": "dynamic"}},
+            {
+                **effect,
+                "predicate": {**effect["predicate"], "token": True},
+            },
+            {
+                **effect,
+                "predicate": {
+                    **effect["predicate"],
+                    "controller": "$target.0",
+                },
+            },
+        ):
+            with self.subTest(effect=mutated):
+                self.assertNotIn(
+                    capability,
+                    capability_dependencies_for_node(
+                        effects=(mutated,),
+                        target_schema=None,
+                        mechanic_ids=mechanics,
+                    ),
+                )
 
     def test_activated_fixed_characteristic_effects_are_capability_closed(self):
         registry = load_default_capability_registry()

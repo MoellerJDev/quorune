@@ -88,6 +88,7 @@ class FixedTokenCreationCompilerTests(unittest.TestCase):
                 "spell_ability",
                 "create-fixed-creature-token-v2",
                 {"combat.block.flying", "token.creation.fixed_definition"},
+                "Token Creature — Spirit",
             ),
             (
                 token_record(
@@ -104,6 +105,7 @@ class FixedTokenCreationCompilerTests(unittest.TestCase):
                     "trigger.event.normalized_zone_change",
                     "trigger.placement.apnap",
                 },
+                "Token Creature — Spirit",
             ),
             (
                 token_record(
@@ -115,9 +117,34 @@ class FixedTokenCreationCompilerTests(unittest.TestCase):
                 "activated_ability",
                 "create-fixed-food-token-v1",
                 {"life.change.effect", "token.creation.fixed_definition"},
+                "Token Artifact — Food",
+            ),
+            (
+                token_record(
+                    "Fixed Glimmer Spell",
+                    "Create a 1/1 white Glimmer enchantment creature token.",
+                    470004,
+                ),
+                "spell_ability",
+                "create-fixed-creature-token-v2",
+                {"token.creation.fixed_definition"},
+                "Token Creature Enchantment — Glimmer",
+            ),
+            (
+                token_record(
+                    "Fixed Golem Activation",
+                    "{2}, {T}: Create a 3/3 colorless Golem enchantment "
+                    "artifact creature token.",
+                    470005,
+                    type_line="Artifact",
+                ),
+                "activated_ability",
+                "create-fixed-creature-token-v2",
+                {"token.creation.fixed_definition"},
+                "Token Artifact Creature Enchantment — Golem",
             ),
         )
-        for record, kind, template_id, required in fixtures:
+        for record, kind, template_id, required, token_type_line in fixtures:
             with self.subTest(record=record.name):
                 ir = compile_oracle_card(
                     record,
@@ -129,6 +156,10 @@ class FixedTokenCreationCompilerTests(unittest.TestCase):
                 self.assertEqual(kind, node.kind)
                 self.assertEqual(template_id, node.template_id)
                 self.assertTrue(required.issubset(node.capability_dependencies))
+                self.assertEqual(
+                    token_type_line,
+                    node.effects[0]["characteristics"]["type_line"],
+                )
                 self.assertEqual(
                     record.oracle_text[node.span.start : node.span.end],
                     node.text,
@@ -144,7 +175,7 @@ class FixedTokenCreationCompilerTests(unittest.TestCase):
             promote_exact_trigger_programs=True,
             promote_exact_effect_programs=True,
         )
-        self.assertEqual(3, result["exact_programs_promoted"])
+        self.assertEqual(5, result["exact_programs_promoted"])
         self.assertEqual(
             {"trusted"}, {program.trust_level for program in registry.programs()}
         )
@@ -161,6 +192,7 @@ class FixedTokenCreationCompilerTests(unittest.TestCase):
             "Create a 1/1 blue and red Otter creature token with prowess.",
             "Create Ashaya, the Awoken World, a legendary 4/4 green Elemental creature token.",
             "Create a tapped Powerstone token.",
+            "Create a 3/3 colorless Golem artifact artifact creature token.",
             "Create 0 1/1 green Saproling creature tokens.",
         )
         base = token_record("Unsupported Token Fixture", unsupported[0], 470010)
@@ -178,6 +210,64 @@ class FixedTokenCreationCompilerTests(unittest.TestCase):
                 )
                 self.assertNotEqual("exact", ir.status)
                 self.assertTrue(ir.material_residuals)
+
+    def test_enchantment_tokens_and_additional_cost_spell_are_closed(self):
+        fixtures = (
+            (
+                token_record(
+                    "Golem Enchantment Fixture",
+                    "{2}, {T}: Create a 3/3 colorless Golem enchantment "
+                    "artifact creature token.",
+                    470006,
+                    type_line="Artifact",
+                ),
+                "Token Artifact Creature Enchantment — Golem",
+            ),
+            (
+                token_record(
+                    "Cleric Enchantment Fixture",
+                    "{2}, {T}: Create a 2/1 white Cleric enchantment "
+                    "creature token.",
+                    470007,
+                    type_line="Artifact",
+                ),
+                "Token Creature Enchantment — Cleric",
+            ),
+            (
+                token_record(
+                    "Additional Cost Token Fixture",
+                    "As an additional cost to cast this spell, sacrifice an "
+                    "artifact.\nCreate three 1/1 red Goblin creature tokens.",
+                    470008,
+                    type_line="Sorcery",
+                ),
+                "Token Creature — Goblin",
+            ),
+        )
+        for record, token_type_line in fixtures:
+            with self.subTest(card_name=record.name):
+                ir = compile_oracle_card(
+                    record,
+                    capability_registry=self.capabilities,
+                    capability_profile="commander_review",
+                )
+                node = next(
+                    node
+                    for face in ir.faces
+                    for node in face.nodes
+                    if "create-fixed-creature-token-v2" in str(
+                        node.template_id
+                    )
+                )
+                self.assertTrue(node.exact, ir.material_residuals)
+                self.assertIn(
+                    "token.creation.fixed_definition",
+                    node.capability_dependencies,
+                )
+                self.assertEqual(
+                    token_type_line,
+                    node.effects[0]["characteristics"]["type_line"],
+                )
 
     def test_fixed_token_capability_shape_rejects_malformed_effects(self):
         template = fixed_token_creation_effect_template(
@@ -618,6 +708,24 @@ class FixedTokenCreationRuntimeTests(unittest.TestCase):
         self.assertEqual(1, len(data["activated_abilities"]))
         self.assertEqual("", data["oracle_text"])
         self.assertIn("You gain 3 life", data["display_oracle_text"])
+
+        self._resolve_compiled_program(
+            engine,
+            "Create a 3/3 colorless Golem enchantment artifact creature token.",
+            470103,
+        )
+        golem = next(
+            card
+            for card in engine.state.cards.values()
+            if card.is_token and card.printed_name == "Golem"
+        )
+        golem_data = engine._effective_card_data(golem)
+        self.assertEqual(
+            "Artifact Creature Enchantment — Golem",
+            golem_data["type_line"],
+        )
+        self.assertEqual("3", golem_data["power"])
+        self.assertEqual("3", golem_data["toughness"])
 
     def test_compiled_fixed_token_batch_is_one_simultaneous_transaction(self):
         session = self.session(470130)

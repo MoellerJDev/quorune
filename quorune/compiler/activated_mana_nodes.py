@@ -294,6 +294,7 @@ def _activated_effect_dependency_gate(
         and str(effects[0].get("op") or "")
         in {
             "amass",
+            "become_monarch",
             "bounce",
             "counter_stack_target",
             "create_damage_prevention_shield",
@@ -302,6 +303,7 @@ def _activated_effect_dependency_gate(
             "choose_cards_apnap",
             "choose_option",
             "damage",
+            "damage_fixed_set",
             "damage_each_opponent",
             "drain_each_opponent",
             "drain_opponent",

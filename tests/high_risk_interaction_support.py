@@ -217,6 +217,19 @@ _WITNESSES = {
         "{4}{R}",
         loyalty="5",
     ),
+    "jaya-task-mage": _Witness(
+        "Jaya Ballard, Task Mage",
+        "Legendary Creature — Human Spellshaper",
+        "{R}, {T}, Discard a card: Destroy target blue permanent.\n"
+        "{1}{R}, {T}, Discard a card: Jaya Ballard deals 3 damage to any "
+        "target. A creature dealt damage this way can't be regenerated "
+        "this turn.\n"
+        "{5}{R}{R}, {T}, Discard a card: Jaya Ballard deals 6 damage to "
+        "each creature and each player.",
+        "{1}{R}{R}",
+        power="2",
+        toughness="2",
+    ),
     "decode-transmissions": _Witness(
         "Decode Transmissions",
         "Sorcery",
@@ -698,6 +711,16 @@ EFFECT_AND_REPLACEMENT_PAIRS = (
     DESTROY_DAMAGE_PREVENTION_PAIR,
 )
 
+FIXED_SET_DAMAGE_AND_REGENERATION_PAIRS = tuple(
+    _pair(capability, "residual.replacement.regeneration")
+    for capability in (
+        "capability.damage.amount.positive",
+        "capability.damage.batch.fixed_set",
+        "capability.damage.result.multitype_permanent",
+        "capability.damage.result.player_life",
+    )
+)
+
 ZONE_AND_CHOICE_PAIRS = (
     _pair("capability.zone.change.destination_replacement", "residual.target_or_choice.target-predicate"),
     _pair("capability.zone.draw.library_to_hand", "residual.target_or_choice.conditional-effect"),
@@ -777,6 +800,7 @@ ALL_HIGH_RISK_BOUNDARY_PAIRS = tuple(
             *ATTACHMENT_AND_CONTINUOUS_PAIRS,
             *TYPED_ATTACHMENT_AND_CONTINUOUS_PAIRS,
             *EFFECT_AND_REPLACEMENT_PAIRS,
+            *FIXED_SET_DAMAGE_AND_REGENERATION_PAIRS,
             *ZONE_AND_CHOICE_PAIRS,
             *COST_AND_REPLACEMENT_PAIRS,
             *CONTINUOUS_AND_REPLACEMENT_PAIRS,
@@ -835,6 +859,10 @@ _bind(
     *EFFECT_AND_REPLACEMENT_PAIRS[31:34],
 )
 _bind("gideon-jura", DESTROY_DAMAGE_PREVENTION_PAIR)
+_bind(
+    "jaya-task-mage",
+    *FIXED_SET_DAMAGE_AND_REGENERATION_PAIRS,
+)
 _bind("dauthi-voidwalker", ZONE_AND_CHOICE_PAIRS[0])
 _bind("sphinxs-insight", ZONE_AND_CHOICE_PAIRS[1])
 _bind("electrolyze", ZONE_AND_CHOICE_PAIRS[2], ZONE_AND_CHOICE_PAIRS[4])
@@ -1050,6 +1078,7 @@ __all__ = [
     "DECLARATION_AND_REPLACEMENT_PAIRS",
     "DESTROY_DAMAGE_PREVENTION_PAIR",
     "EFFECT_AND_REPLACEMENT_PAIRS",
+    "FIXED_SET_DAMAGE_AND_REGENERATION_PAIRS",
     "FIXED_SELF_ENTRY_AND_REPLACEMENT_PAIRS",
     "PREVENTION_AND_REPLACEMENT_PAIRS",
     "PUBLIC_SET_AND_CHOICE_PAIRS",

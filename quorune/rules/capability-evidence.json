@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "898e6b27fef46075d17c688eaa0ddcb67735574fbd0d51fa9b5ebfcd958cec44",
-  "declaration_source_fingerprint": "bea20ccf883ff5b5b30eb9e429cd1ede84508a26ee0dc43d1821932f651bbe99",
+  "registry_fingerprint": "3b1d9f798ea57aafd25d106c91a089a49cfc6c71a48b0878fb9575c703a6c460",
+  "declaration_source_fingerprint": "4a397e86a0bcd789311d4760fb51903705b15e96ca39fc9820a967e785812bd4",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -41899,6 +41899,21 @@
     },
     {
       "capability_id": "variant.monarch.designate",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_semantic_handlers.TypedSemanticHandlerTests.test_monarch_designation_mutant_is_killed",
+      "official_rule_ids": [
+        "725.1",
+        "725.2"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove the canonical designation commit and require the authoritative monarch state assertion to reject the survivor."
+    },
+    {
+      "capability_id": "variant.monarch.designate",
       "evidence_class": "negative",
       "test_id": "tests.test_monarch_rules.MonarchRuleTests.test_nonqualifying_damage_does_not_create_a_transfer_trigger",
       "official_rule_ids": [
@@ -41911,6 +41926,21 @@
         "commander_review"
       ],
       "applicability_note": "Designate one active player as monarch through the canonical unique public designation path."
+    },
+    {
+      "capability_id": "variant.monarch.designate",
+      "evidence_class": "positive",
+      "test_id": "tests.test_monarch_rules.MonarchRuleTests.test_fixed_monarch_effects_are_capability_closed_across_contexts",
+      "official_rule_ids": [
+        "725.1",
+        "725.2"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile mandatory controller designation in triggered and activated contexts through the strict monarch capability shape."
     },
     {
       "capability_id": "variant.monarch.designate",
@@ -44465,5 +44495,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "33dcee825f00651d17a4b07e8522d574a6fbddeffb3ff7d5e0cf5a81f2ca4457"
+  "fingerprint": "b64dc0c4b162291b8314c1102e72411771642acd8bc250e3f87e8cfd0833e386"
 }

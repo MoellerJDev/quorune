@@ -2,7 +2,7 @@
 title: "Oracle compiler architecture"
 status: "current"
 authoritative_source: "quorune/oracle_ir.py, quorune/compiler, and quorune/card_programs"
-verified: "2026-08-17"
+verified: "2026-08-22"
 audience: "compiler and rules contributors"
 maintenance: "hand-maintained"
 ---
@@ -116,11 +116,26 @@ source-spanned residuals.
 two-sentence composition boundary. It accepts exactly two top-level,
 period-separated, mandatory clauses when each clause independently lowers to
 one effect through an existing reviewed atomic owner and the pair contains at
-most one direct target schema. The composed node preserves printed order and
-the exact union of both component capabilities across spell, triggered, and
-activated contexts. Optional, modal, conditional, linked-result, pronoun,
-variable, repeated, multi-target, quoted-boundary, parenthetical-boundary, and
-larger sequences remain source-spanned residuals.
+most one target schema. Direct targets and bounded optional target sets are
+associated with their component through typed target references; every other
+component must remain nontargeted. The composed node preserves printed order
+and the exact union of both component capabilities across spell, triggered,
+and activated contexts. Optional, modal, conditional, linked-result, pronoun,
+variable, repeated, independently targeted, quoted-boundary,
+parenthetical-boundary, and larger sequences remain source-spanned residuals.
+
+`compiler/monarch_templates.py` owns the mandatory controller-becomes-monarch
+instruction. Its strict node shape declares only the existing canonical
+designation capability; combat-damage transfer, end-step draw, and
+player-leaves behavior retain their separate monarch owners. The same leaf is
+available to triggered and activated contexts without trusting the complete
+CR 725 mechanic family from prose alone.
+
+`compiler/self_return_templates.py` owns one mandatory nontargeted return of
+the source artifact, creature, enchantment, or permanent to its owner's hand.
+It emits `$source` and a narrow shape-gated mechanic rather than claiming the
+broad zone-change rules family. Targeted returns, source-zone costs, and other
+destinations continue through their existing independent owners.
 
 `compiler/affected_player_sacrifice_templates.py` owns one mandatory fixed
 affected-player sacrifice leaf shared by spell, triggered, activated, and
@@ -278,11 +293,14 @@ The same activated-effect owner admits closed fixed characteristic results
 through the existing resolution-created continuous-effect capability. It
 lowers fixed numeric self power/toughness changes, fixed numeric
 controller-creature affected sets, and the closed self keyword vocabulary to
-the canonical duration journal and effective-characteristic query. Dynamic or
-state-derived quantities, unsupported keywords, missing or alternate
-durations, copy and face-down semantics, and player or game-rule effects remain
-residual. This producer adds no family-specific ability-presence check and
-performs no dynamic characteristic count.
+the canonical duration journal and effective-characteristic query. The shared
+affected-set shape accepts only compiler-canonical battlefield queries over a
+fixed controller relation and closed type, subtype, color, or supertype
+qualifier. Dynamic or state-derived quantities, state predicates, token
+predicates, unsupported keywords, missing or alternate durations, copy and
+face-down semantics, and player or game-rule effects remain residual. This
+producer adds no family-specific ability-presence check and performs no dynamic
+characteristic count.
 
 `compiler/continuous_templates.py` owns the fixed-query keyword-grant grammar.
 It accepts only live battlefield sets representable by `ObjectQuerySpec`: a
@@ -436,7 +454,9 @@ characteristic boundary owns them.
 spell, triggered, and activated effects. The closed production emits one
 positive fixed quantity, an optional tapped entry state, and either a
 represented Treasure, Food, or Map definition or a fixed creature definition
-with at most two colors and capability-backed keywords. The corresponding
+with at most two colors, optional Artifact and Enchantment card types, and
+capability-backed keywords. Card-type words are parsed separately from the
+creature subtype and serialized in canonical type-line order. The corresponding
 node capability shape validates every emitted field and adds the keyword or
 predefined-token ability dependencies before promotion. Resolution uses the
 existing `create_token` semantic operation and the replacement-aware

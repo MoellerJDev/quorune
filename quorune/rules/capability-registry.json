@@ -1039,8 +1039,8 @@
         "exclusions": ["combat-damage transfer trigger", "monarch end-step draw", "player-leaves transfer"]
       },
       "dependencies": [],
-      "implementation_components": ["quorune.semantic_runtime.generic.BecomeMonarchHandler", "quorune.semantic_runtime.executor.execute_intent_plan", "CommanderEngine.become_monarch"],
-      "positive_tests": ["test_monarch_handler_uses_canonical_engine_mutation_path"],
+      "implementation_components": ["quorune.compiler.monarch_templates.fixed_monarch_effect_template", "quorune.rules.monarch_capability_shapes.fixed_monarch_node_capabilities", "quorune.semantic_runtime.generic.BecomeMonarchHandler", "quorune.semantic_runtime.executor.execute_intent_plan", "CommanderEngine.become_monarch"],
+      "positive_tests": ["test_fixed_monarch_effects_are_capability_closed_across_contexts", "test_monarch_handler_uses_canonical_engine_mutation_path"],
       "negative_tests": ["test_nonqualifying_damage_does_not_create_a_transfer_trigger"],
       "interaction_tests": ["test_creature_combat_damage_transfers_only_on_trigger_resolution"],
       "multiplayer_tests": ["test_designation_is_public_serialized_and_unique"],
@@ -1049,10 +1049,10 @@
       "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
       "dependency_fail_closed_status": "not_applicable",
       "dependency_fail_closed_rationale": "This capability has no capability dependencies.",
-      "implementation_mutation_status": "not_run",
-      "implementation_mutation_rationale": "",
-      "blockers": ["Focused mutation evidence remains pending."],
-      "status": "tested"
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_monarch_designation_mutant_is_killed removes the canonical designation commit and the authoritative monarch state assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
     },
     {
       "id": "token.creation.fixed_definition",
