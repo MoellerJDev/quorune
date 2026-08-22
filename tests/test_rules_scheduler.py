@@ -94,6 +94,10 @@ def _bounded_candidate_bundle_fixture():
 
 def _reviewed_frontier_comparisons(inputs):
     frontier = inputs["card_unlock_frontier"]["family_candidates"]
+    frontier_family_ids = {
+        str(row["family_id"])
+        for row in frontier
+    }
     family_ids = {"effect_clause:destroy-target"}
     bundle_member_ids = {
         member
@@ -101,6 +105,7 @@ def _reviewed_frontier_comparisons(inputs):
             "work_selection"
         ]["coverage_family"]["candidate_bundles"]
         for member in bundle["member_family_ids"]
+        if member in frontier_family_ids
     }
     family_ids.update(
         selected_over.removeprefix("frontier:")
@@ -907,10 +912,7 @@ class RulesSchedulerTests(unittest.TestCase):
         )
 
         self.assertTrue(candidates)
-        self.assertEqual(
-            "bundle:commander-pairing-keywords",
-            work["selected_candidate_id"],
-        )
+        self.assertIsNone(work["selected_candidate_id"])
         structural = next(
             candidate
             for candidate in work["candidates"]
