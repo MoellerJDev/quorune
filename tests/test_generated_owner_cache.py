@@ -164,6 +164,7 @@ class GeneratedOwnerCacheTests(unittest.TestCase):
             spec for spec in specs if spec.id == "architecture-audit"
         )
         self.assertIn("tests-source", architecture.input_groups)
+        self.assertIn("web/tests/**/*.ts", architecture.input_paths)
 
     def test_automatic_plan_inherits_unchanged_owner_without_generation(self):
         selected = GeneratorSpec(

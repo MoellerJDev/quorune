@@ -526,7 +526,9 @@
         "rules-source",
         "tests-source"
       ],
-      "input_paths": [],
+      "input_paths": [
+        "web/tests/**/*.ts"
+      ],
       "implementation_inputs": [
         "scripts/update_architecture_audit.py"
       ],
