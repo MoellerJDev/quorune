@@ -1567,6 +1567,42 @@
     {
       "evidence_class": "interaction",
       "assurance_kind": "runtime_composition",
+      "test_id": "test_aura_reducer_uses_bestow_spell_characteristics",
+      "piece_ids": ["capability.casting.bestow.fixed_mana", "capability.casting.cost.modifier.fixed_query"],
+      "capability_ids": ["casting.bestow.fixed_mana", "casting.cost.modifier.fixed_query"],
+      "interaction_order": 2,
+      "assertion": "A creature card cast for its represented Bestow cost is evaluated as an Aura spell, allowing an Aura-query fixed reduction while rejecting a creature-only reduction."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_reduction_applies_to_kicker_total_before_payment",
+      "piece_ids": ["capability.casting.cost.modifier.fixed_query", "capability.casting.kicker.fixed_mana"],
+      "capability_ids": ["casting.cost.modifier.fixed_query", "casting.kicker.fixed_mana"],
+      "interaction_order": 2,
+      "assertion": "A represented fixed spell reduction applies after Kicker is added to the total cost and before the combined cost is paid."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_fixed_query_reduction_applies_before_convoke_payment",
+      "piece_ids": ["capability.casting.cost.modifier.fixed_query", "capability.casting.payment.convoke"],
+      "capability_ids": ["casting.cost.modifier.fixed_query", "casting.payment.convoke"],
+      "interaction_order": 2,
+      "assertion": "A represented fixed spell reduction changes the generic remainder before Convoke selects and taps a creature to pay it."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
+      "test_id": "test_colorless_reducer_uses_devoid_spell_characteristics",
+      "piece_ids": ["capability.casting.cost.modifier.fixed_query", "capability.continuous.characteristics.devoid"],
+      "capability_ids": ["casting.cost.modifier.fixed_query", "continuous.characteristics.devoid"],
+      "interaction_order": 2,
+      "assertion": "A represented Devoid spell is colorless in the all-zone characteristic view consumed by a colorless-query fixed reduction."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "runtime_composition",
       "test_id": "test_counter_additional_cost_replacement_suspends_before_mutation_and_replays",
       "piece_ids": ["capability.casting.additional_cost.fixed_counter_placement", "capability.counter.placement.quantity_replacement"],
       "capability_ids": ["casting.additional_cost.fixed_counter_placement", "counter.placement.quantity_replacement"],

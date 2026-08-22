@@ -119,6 +119,7 @@
       "test_fixed_counter_keyword_activations",
       "test_fixed_mana_abilities",
       "test_fixed_sacrifice_additional_costs",
+      "test_fixed_spell_cost_reductions",
       "test_fixed_zone_change_additional_costs",
       "test_flash_cast_timing",
       "test_flashback_rules",

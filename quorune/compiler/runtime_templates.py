@@ -11,6 +11,9 @@ from .casting_activation_metadata_templates import (
     static_loyalty_cost_modifier_handler,
     static_self_zone_cast_permission_handler,
 )
+from .cast_cost_modifier_templates import (
+    static_fixed_spell_cost_reduction_handler,
+)
 from .combat_metadata_templates import static_goad_prohibition_handler
 from .continuous_templates import (
     attached_fixed_characteristics_handler,
@@ -165,6 +168,17 @@ def _source_permanent_participation_template(
             dependency_reason=(
                 "loyalty-cost modification detection requires its closed "
                 "typed runtime capability"
+            ),
+        )
+    spell_cost_reduction = static_fixed_spell_cost_reduction_handler(text)
+    if spell_cost_reduction is not None:
+        return StaticRuntimeTemplate(
+            compiled=spell_cost_reduction,
+            kind="static_ability",
+            event="cast.cost.modify",
+            dependency_reason=(
+                "fixed spell-cost reductions require their closed typed "
+                "runtime capability"
             ),
         )
     activation_restriction = static_activation_restriction_handler(text)

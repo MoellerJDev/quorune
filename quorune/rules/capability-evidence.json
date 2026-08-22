@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "registry_fingerprint": "4497260f13ee405abda4a629726a3c08a00838e7ea284804a123d86cf75c5356",
-  "declaration_source_fingerprint": "c65b5c317690d98bd737bcc3310bfff62154cde3a31c098fb0efc174945c90b9",
+  "registry_fingerprint": "a983795e0ee666a1b67730adf23e38353bdfe73b7fa8eda680a294ae68ab9adc",
+  "declaration_source_fingerprint": "9b0ce9ce89115222520c2ae3666513fa8ca40d371b413ec0d4389e6d4483200b",
   "declarations": [
     {
       "capability_id": "activation.counter_keyword.fixed",
@@ -5340,6 +5340,186 @@
       "applicability_note": "Pin the alternate-cost selection, target, attachment relation, and characteristic transition into an exact Game Record replay."
     },
     {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_aura_reducer_uses_bestow_spell_characteristics",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Evaluate the announced Bestow Aura type through the same fixed predicate before reducing its generic total cost."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_colorless_reducer_uses_devoid_spell_characteristics",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Use the cycle-safe all-zone Devoid color result when applying an unconditional colorless-spell reduction."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_fixed_query_reduction_applies_before_convoke_payment",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Reduce the announced generic total before one real Convoke contribution and the remaining colored mana payment are planned."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_reduction_applies_to_kicker_total_before_payment",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Apply one static generic reduction after the selected Kicker addition has formed the spell's total cost and before payment."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_reduced_cast_is_seat_scoped_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep a four-player reduced cast offer scoped to the static source's controller while publishing only the committed stack and resolution results."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_compiler_and_runtime_reduction_mutants_are_killed",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Remove compiler production and runtime collection independently so the exact residual and unreduced offer assertions reject both mutants."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionCompilerTests.test_unsupported_spell_reduction_grammar_remains_residual",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Keep dynamic, historical, chosen, zone-relative, keyword-qualified, opponent-relative, colored, and composite reductions material and nonauthoritative."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "negative",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_stale_reducer_program_is_ignored",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Ignore a runtime handler that fails the current trusted-program boundary rather than applying an uncertified reduction."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionCompilerTests.test_fixed_spell_reducers_compile_typed_query_descriptors",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Compile fixed type, color, colorless, supertype, subtype, and exclusion subjects into one source-spanned typed predicate descriptor."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "positive",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_runtime_cost_reductions_stack_and_floor_generic",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Stack independently applicable trusted sources, reduce only generic mana, and floor the resulting generic total at zero."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "privacy",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_reduced_cast_is_seat_scoped_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Withhold another seat's hand action and physical object identity while retaining the controller's reduced offer."
+    },
+    {
+      "capability_id": "casting.cost.modifier.fixed_query",
+      "evidence_class": "replay",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_reduced_cast_is_seat_scoped_and_replays",
+      "official_rule_ids": [
+        "601.2f",
+        "601.2h"
+      ],
+      "supported_profiles": [
+        "traditional",
+        "commander_duel",
+        "commander_review"
+      ],
+      "applicability_note": "Replay the reduced cost offer, mana payment, stack transition, draw resolution, and final authoritative hash exactly."
+    },
+    {
       "capability_id": "casting.flashback.fixed_mana",
       "evidence_class": "interaction",
       "test_id": "tests.test_flashback_rules.FixedManaFlashbackRuntimeTests.test_countered_flashback_uses_self_replacement_before_competing_destination",
@@ -6367,7 +6547,7 @@
     {
       "capability_id": "casting.payment.convoke",
       "evidence_class": "interaction",
-      "test_id": "tests.test_convoke_rules.ConvokeRuntimeTests.test_convoke_applies_after_static_cost_reduction",
+      "test_id": "tests.test_fixed_spell_cost_reductions.FixedSpellCostReductionRuntimeTests.test_fixed_query_reduction_applies_before_convoke_payment",
       "official_rule_ids": [
         "601.2f",
         "601.2g",
@@ -6384,7 +6564,7 @@
         "commander_duel",
         "commander_review"
       ],
-      "applicability_note": "Apply represented static generic reduction while determining total cost, then use Convoke only during payment of that resulting total."
+      "applicability_note": "Consume the real typed fixed-query reduction before selecting one Convoke contribution against the resulting total cost."
     },
     {
       "capability_id": "casting.payment.convoke",
@@ -43854,5 +44034,5 @@
       "applicability_note": "Replay the fixed-cost activation, stack source identity, canonical owner-zone move, public-to-hidden projection, and final authoritative hash."
     }
   ],
-  "fingerprint": "53b1dbb819d3e59a212b9e50e2d3affb62024e305b50e32c3ff7b916f7009425"
+  "fingerprint": "b276e4360e79de5e6d6fad364d2920bb8eff0c8823982ed081fe9942cb9147b6"
 }

@@ -569,6 +569,33 @@
       "status": "trusted"
     },
     {
+      "id": "casting.cost.modifier.fixed_query",
+      "version": 1,
+      "official_rules": ["601.2f", "601.2h"],
+      "supported_profiles": ["traditional", "commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Reduce the generic total cost of a spell cast by a static source's controller when the spell matches one closed characteristic predicate.",
+        "inputs": ["one source-spanned unconditional generic reduction", "one phased-in battlefield source controlled by the caster", "the selected spell's cycle-safe current cast characteristics", "one fixed card-type, color, colorless, supertype, subtype, or noncreature predicate"],
+        "outputs": ["one typed source-controller cost modifier", "one nonnegative generic reduction in the total-cost pipeline", "stacked reductions from independently applicable sources", "one deterministic cost-reduction journal entry"],
+        "exclusions": ["dynamic counts and variable reductions", "first, next, or second spell and turn-history conditions", "chosen, named, targeted, zone-relative, or opponent-relative predicates", "layer-6 addition or removal of the reducer ability and keyword-qualified spell predicates until the shared ability-applicability query exists", "colored reductions, cost increases, floors, and alternate costs", "face-down, the multicolored quality, historic, commander, and other unsupported composite predicates"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.compiler.cast_cost_modifier_templates.static_fixed_spell_cost_reduction_handler", "quorune.semantic_runtime.cast_costs.FixedSpellCostReductionHandler", "quorune.semantic_runtime.cast_costs.active_fixed_spell_cost_reductions", "quorune.rules.casting.costs._static_generic_reduction", "quorune.rules.casting.costs._apply_static_reductions"],
+      "positive_tests": ["test_fixed_spell_reducers_compile_typed_query_descriptors", "test_runtime_cost_reductions_stack_and_floor_generic"],
+      "negative_tests": ["test_unsupported_spell_reduction_grammar_remains_residual", "test_stale_reducer_program_is_ignored"],
+      "interaction_tests": ["test_reduction_applies_to_kicker_total_before_payment", "test_fixed_query_reduction_applies_before_convoke_payment", "test_aura_reducer_uses_bestow_spell_characteristics", "test_colorless_reducer_uses_devoid_spell_characteristics"],
+      "multiplayer_tests": ["test_reduced_cast_is_seat_scoped_and_replays"],
+      "privacy_tests": ["test_reduced_cast_is_seat_scoped_and_replays"],
+      "replay_tests": ["test_reduced_cast_is_seat_scoped_and_replays"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "privacy", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "This bounded modifier consumes only the source's trusted descriptor, the current casting card's fixed characteristics, and the canonical total-cost pipeline; it has no optional capability dependency and explicitly excludes dynamic characteristic counts plus layer-6 addition or removal of the reducer ability until the shared ability-applicability query exists.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_compiler_and_runtime_reduction_mutants_are_killed removes compiler production and runtime collection independently; source-spanned exact compilation and a real reduced cost offer reject both survivors.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
       "id": "casting.payment.affinity_artifacts",
       "version": 1,
       "official_rules": ["601.2f", "601.2g", "601.2h", "702.41", "702.41a", "702.41b"],
@@ -610,7 +637,7 @@
       "implementation_components": ["quorune.convoke.ConvokePaymentPlan", "quorune.semantic_runtime.cast_costs.ConvokeCostHandler", "quorune.compiled_cast_costs.compiled_convoke_specs", "quorune.rules.casting.costs._apply_convoke", "quorune.rules.casting.commit._commit_tap_costs", "quorune.tap_state.set_permanent_tapped"],
       "positive_tests": ["test_ordinary_convoke_compiles_face_pinned_typed_program", "test_convoke_offer_and_submission_share_whole_vector_payment", "test_typed_convoke_pays_colored_x_cost_without_using_mana_sources"],
       "negative_tests": ["test_raw_keyword_without_compiled_convoke_fails_closed", "test_convoke_descriptor_and_plan_reject_malformed_values", "test_stale_convoke_characteristics_roll_back_before_payment"],
-      "interaction_tests": ["test_convoke_applies_after_static_cost_reduction", "test_multicolor_creature_uses_the_payable_colored_assignment", "test_convoke_creature_cannot_also_activate_for_mana"],
+      "interaction_tests": ["test_fixed_query_reduction_applies_before_convoke_payment", "test_multicolor_creature_uses_the_payable_colored_assignment", "test_convoke_creature_cannot_also_activate_for_mana"],
       "multiplayer_tests": ["test_four_player_convoke_offer_is_controller_scoped"],
       "privacy_tests": ["test_four_player_convoke_offer_is_controller_scoped"],
       "replay_tests": ["test_convoke_payment_replays_exactly"],

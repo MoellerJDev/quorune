@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import copy
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
 from typing import Any, Protocol
 
 from ...additional_cost_vocabulary import ZONE_CHANGE_COST_KIND
@@ -21,6 +20,9 @@ from ...convoke import (
     canonical_mana_requirements,
     find_convoke_plan,
     select_convoke_plan,
+)
+from ...semantic_runtime.cast_costs import (
+    active_fixed_spell_cost_reductions,
 )
 from ..action_proposals import CastCostOption
 from ..casting_additional_costs import (
@@ -449,24 +451,6 @@ def _initial_options(
     return expanded, mandatory, mechanics, has_x
 
 
-@dataclass(frozen=True, slots=True)
-class StaticCastCostModifier:
-    spell_type: str
-    generic_reduction: int
-
-    @classmethod
-    def from_descriptor(
-        cls, value: Mapping[str, Any]
-    ) -> "StaticCastCostModifier":
-        if set(value) != {"spell_type", "generic_reduction"}:
-            raise ValueError("Static cast-cost modifier fields are closed")
-        spell_type = str(value.get("spell_type") or "").casefold()
-        amount = value.get("generic_reduction")
-        if not spell_type or type(amount) is not int or amount < 1:
-            raise ValueError("Static cast-cost reductions require a type and positive amount")
-        return cls(spell_type=spell_type, generic_reduction=amount)
-
-
 def _static_generic_reduction(
     host: CastCostHost,
     seat: str,
@@ -474,27 +458,15 @@ def _static_generic_reduction(
     *,
     cast_type_line: str | None = None,
 ) -> int:
-    spell_types, _, _ = host._type_parts(
-        str(
-            cast_type_line
-            if cast_type_line is not None
-            else host._effective_card_data(card).get("type_line") or ""
+    return sum(
+        reduction.generic_reduction
+        for reduction in active_fixed_spell_cost_reductions(
+            host,
+            seat,
+            card,
+            cast_type_line=cast_type_line,
         )
     )
-    total = 0
-    for object_id in host.state.players[seat].zones["battlefield"]:
-        source = host.state.cards[object_id]
-        if source.controller != seat or source.phased_out:
-            continue
-        program = host.semantics.get(f"{source.oracle_id}:spell:front")
-        if program is None or not host.semantic_program_is_current_trusted(program):
-            continue
-        schema = dict(program.cost_schema or {})
-        for raw in schema.get("static_modifiers", []):
-            modifier = StaticCastCostModifier.from_descriptor(dict(raw))
-            if modifier.spell_type in spell_types:
-                total += modifier.generic_reduction
-    return total
 
 
 def _apply_static_reductions(
@@ -517,7 +489,7 @@ def _apply_static_reductions(
     option["requirements"]["GENERIC"] -= applied
     option.setdefault("cost_reductions", []).append(
         {
-            "kind": "static_spell_type",
+            "kind": "fixed_query",
             "count": applied,
         }
     )

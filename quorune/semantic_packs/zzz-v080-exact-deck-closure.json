@@ -1964,14 +1964,9 @@
       "active_zone": "stack",
       "event": "resolve",
       "effects": [],
-      "cost_schema": {
-        "static_modifiers": [
-          {"spell_type": "artifact", "generic_reduction": 1}
-        ]
-      },
       "destination": "battlefield",
       "trust_level": "trusted",
-      "coverage": ["spell_resolution", "static_ability", "cost_reduction"],
+      "coverage": ["spell_resolution"],
       "tests": ["test_shuri_reduces_artifact_spells_and_copies_nonlegendary"],
       "provenance": {
         "source_oracle_hash": "f72b8bc960c4883e53dfc7d2d2a7f542a377f4fa765556a04b17dcfe4f9b5a0c",
