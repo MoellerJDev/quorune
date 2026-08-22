@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 
 
 ASSURANCE_SCHEMA_VERSION = 1
-ASSURANCE_ALGORITHM_VERSION = "fixed-target-corpus-assurance-v5"
+ASSURANCE_ALGORITHM_VERSION = "fixed-target-corpus-assurance-v6"
 STANDALONE_TEMPLATE_ID = (
     "fixed-target-characteristics-until-end-of-turn-v1"
 )
@@ -45,7 +45,7 @@ SEQUENCE_TEMPLATE_ID = (
 TARGET_TEMPLATE_IDS = frozenset(
     {STANDALONE_TEMPLATE_ID, SEQUENCE_TEMPLATE_ID}
 )
-COMPOSING_TEMPLATE_IDS = frozenset(
+_COUNTER_COMPOSING_TEMPLATE_IDS = frozenset(
     {
         "fixed-counter-step-trigger-v1",
         "fixed-counter-controlled-land-entry-trigger-v1",
@@ -59,6 +59,14 @@ COMPOSING_TEMPLATE_IDS = frozenset(
         "fixed-counter-enchantment-entry-trigger-v1",
         "fixed-counter-creature-death-trigger-v1",
     }
+)
+COMPOSING_TEMPLATE_IDS = _COUNTER_COMPOSING_TEMPLATE_IDS | frozenset(
+    template_id.replace(
+        "fixed-counter-",
+        "fixed-typed-effect-",
+        1,
+    )
+    for template_id in _COUNTER_COMPOSING_TEMPLATE_IDS
 )
 SUPPORTED_CONTEXTS = (
     "activated_ability",

@@ -217,6 +217,7 @@ class FixedCounterEventTriggerCompilerTests(unittest.TestCase):
                     capability_registry=self.capabilities,
                     capability_profile="commander_review",
                 )
+                TargetEffectCorpusCollector().observe(record, ir)
                 self.assertEqual("exact", ir.status)
                 node = next(
                     value
