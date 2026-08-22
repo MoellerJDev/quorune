@@ -487,9 +487,11 @@ then looks for a live successful certification receipt for the same pull
 request and exact head. When that receipt and the checked-out tracked-source
 fingerprint match, every expensive Linux, Windows, package, generated, and
 browser job is skipped and `PR / Certification` publishes a provenance-carrying
-reuse receipt. Missing, expired, malformed, mismatched, or unavailable evidence
-falls back to the complete matrix. Open, synchronize, and reopen events always
-run the complete matrix.
+reuse receipt. If the unchanged head is still being certified, the metadata
+run waits for that earlier run and reuses its receipt instead of starting a
+second matrix. Missing, expired, malformed, mismatched, or unavailable evidence
+with no active exact-head run falls back to the complete matrix. Open,
+synchronize, and reopen events always run the complete matrix.
 
 The PR workflow intentionally does not subscribe to `ready_for_review`; moving
 an unchanged draft into review therefore does not start regression by itself.

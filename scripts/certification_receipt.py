@@ -33,6 +33,9 @@ ROOT = Path(__file__).resolve().parents[1]
 RECEIPT_SCHEMA_VERSION = 2
 RECEIPT_FILENAME = "certification-receipt.json"
 CERTIFICATION_MODES = frozenset({"executed", "reused"})
+ACTIVE_WORKFLOW_RUN_STATUSES = frozenset(
+    {"pending", "queued", "requested", "waiting", "in_progress"}
+)
 REQUIRED_CHECK_SUITE = frozenset(
     {
         "browser",
@@ -493,6 +496,57 @@ def find_previous_pr_certification(
     )
 
 
+def wait_for_previous_pr_certification(
+    *,
+    repository: str,
+    pull_request: int,
+    exact_head_sha: str,
+    current_workflow_run_id: int,
+    token: str,
+    wait_seconds: int,
+    poll_seconds: int = 15,
+    root: Path = ROOT,
+) -> CertificationReceipt:
+    """Wait for an older unchanged-head run instead of duplicating its matrix."""
+
+    if wait_seconds < 0:
+        raise CertificationReceiptError("wait_seconds must not be negative")
+    if poll_seconds <= 0:
+        raise CertificationReceiptError("poll_seconds must be positive")
+    deadline = time.monotonic() + wait_seconds
+    api = f"https://api.github.com/repos/{repository}"
+    runs_url = (
+        f"{api}/actions/workflows/ci.yml/runs?event=pull_request"
+        f"&head_sha={quote(exact_head_sha)}&per_page=100"
+    )
+    while True:
+        try:
+            return find_previous_pr_certification(
+                repository=repository,
+                pull_request=pull_request,
+                exact_head_sha=exact_head_sha,
+                current_workflow_run_id=current_workflow_run_id,
+                token=token,
+                root=root,
+            )
+        except CertificationReceiptError as exc:
+            last_error = exc
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise last_error
+        runs = successful_pr_runs(
+            _github_json(runs_url, token),
+            exact_head_sha=exact_head_sha,
+        )
+        if not any(
+            int(run["id"]) != current_workflow_run_id
+            and run.get("status") in ACTIVE_WORKFLOW_RUN_STATUSES
+            for run in runs
+        ):
+            raise last_error
+        time.sleep(min(float(poll_seconds), remaining))
+
+
 def verify_main_certification(
     *,
     repository: str,
@@ -617,6 +671,7 @@ def main(argv: list[str] | None = None) -> int:
     can_reuse.add_argument("--exact-head-sha", required=True)
     can_reuse.add_argument("--workflow-run-id", type=int, required=True)
     can_reuse.add_argument("--event-action", required=True)
+    can_reuse.add_argument("--wait-seconds", type=int, default=0)
     can_reuse.add_argument("--github-output", required=True)
     reuse = subparsers.add_parser("reuse-pr")
     reuse.add_argument("--repository", required=True)
@@ -650,12 +705,13 @@ def main(argv: list[str] | None = None) -> int:
             reason = "source-changing or non-edit event"
             if args.event_action == "edited":
                 try:
-                    find_previous_pr_certification(
+                    wait_for_previous_pr_certification(
                         repository=args.repository,
                         pull_request=args.pull_request,
                         exact_head_sha=args.exact_head_sha,
                         current_workflow_run_id=args.workflow_run_id,
                         token=token,
+                        wait_seconds=args.wait_seconds,
                     )
                     reusable = True
                     reason = "validated prior exact-head certification"

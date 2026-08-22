@@ -21,6 +21,7 @@ from scripts.certification_receipt import (
     successful_pr_runs,
     validate_receipt,
     verify_main_certification,
+    wait_for_previous_pr_certification,
 )
 from scripts.source_tree_fingerprint import (
     tracked_ref_source_fingerprint,
@@ -364,6 +365,47 @@ class CertificationReceiptTests(unittest.TestCase):
                 token="test-token",
             )
         self.assertEqual(prior, found)
+
+    def test_metadata_edit_waits_for_active_unchanged_head_certification(self):
+        prior = receipt()
+        active_runs = {
+            "workflow_runs": [
+                {
+                    "id": prior.workflow_run_id,
+                    "event": "pull_request",
+                    "head_sha": prior.exact_head_sha,
+                    "name": "PR",
+                    "path": ".github/workflows/ci.yml",
+                    "status": "in_progress",
+                }
+            ]
+        }
+        with (
+            patch(
+                "scripts.certification_receipt."
+                "find_previous_pr_certification",
+                side_effect=(
+                    CertificationReceiptError("receipt is pending"),
+                    prior,
+                ),
+            ),
+            patch(
+                "scripts.certification_receipt._github_json",
+                return_value=active_runs,
+            ),
+            patch("scripts.certification_receipt.time.sleep") as sleep,
+        ):
+            actual = wait_for_previous_pr_certification(
+                repository=prior.repository,
+                pull_request=prior.pull_request,
+                exact_head_sha=prior.exact_head_sha,
+                current_workflow_run_id=23456,
+                token="test-token",
+                wait_seconds=30,
+            )
+
+        self.assertEqual(prior, actual)
+        sleep.assert_called_once_with(15.0)
 
     def test_workflow_preserves_required_gates_and_publishes_receipt(self):
         workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(
