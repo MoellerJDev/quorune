@@ -2,7 +2,7 @@
 title: "Rules dependency queue"
 status: "generated"
 authoritative_source: "coverage/rules-dependency-queue.json"
-verified: "5914ea6f4bdbb529d76dde96995fe7451237fda0de44d75ae8f8e48b881a9d05"
+verified: "e401b67a179892895c160ce2689202b5cccc310d2d4accf514bf38879330c3fc"
 audience: "rules, compiler, and engine contributors"
 maintenance: "generated"
 generated_source: "coverage/rules-dependency-queue.json"
@@ -11,7 +11,7 @@ generation_command: ".\.venv\Scripts\python.exe scripts\update_rules_scheduler.p
 
 # Rules dependency queue
 
-Source fingerprint: `be0ed75c6d496cc13201b94539ca3e4ad7d3529b187e7d86f8d627b305ec77cc`
+Source fingerprint: `3dd28d5ca9fd2b2b127b873d79e111bb0fe4a807f1a356c7fad4164851d37933`
 
 ## Current top-level state
 
@@ -35,7 +35,7 @@ Priority classes: `ci_correctness` → `replay_privacy_defect` → `architecture
 | 2 | complete | `correctness:replay-privacy-recovery` | `replay_privacy_defect` | 1 | 0 | 0 | 0 | unknown | 0 | 0 |
 | 3 | complete | `architecture:dedicated-owner-extraction` | `architecture_owner_extraction` | 1 | 0 | 0 | 0 | unknown | 0 | 0 |
 | 4 | complete | `assurance:critical-interaction-recovery` | `interaction_assurance` | 1 | 0 | 0 | 0 | unknown | 0 | 0 |
-| 5 | blocked | `frontier:continuous_layer:continuous-effect-layers-and-dependencies` | `rules_foundation` | 1 | 0 | 3832 | 8807 | 62.819672 | 0 | 0 |
+| 5 | blocked | `frontier:continuous_layer:continuous-effect-layers-and-dependencies` | `rules_foundation` | 1 | 0 | 3788 | 8702 | 62.098361 | 0 | 0 |
 | 6 | blocked | `interaction-implementation:residual.replacement.replacement-applicability` | `rules_foundation` | 1 | 0 | unknown | unknown | unknown | 0 | 0 |
 | 7 | blocked | `interaction-implementation:residual.replacement.self-replacement-and-prevention-ordering` | `rules_foundation` | 1 | 0 | unknown | unknown | unknown | 0 | 0 |
 | 8 | blocked | `interaction-implementation:residual.replacement.damage-prevention` | `rules_foundation` | 1 | 0 | unknown | unknown | unknown | 0 | 0 |
