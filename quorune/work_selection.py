@@ -7,9 +7,15 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from .util import stable_json
+from .work_selection_bundles import (
+    atomic_frontier_bundle,
+    coherent_frontier_measurements,
+    validate_bundle_policy,
+    WorkSelectionBundleError,
+)
 
 
-WORK_SELECTION_SCHEMA_VERSION = 2
+WORK_SELECTION_SCHEMA_VERSION = 3
 _CANDIDATE_CLASSES = {
     "ci_correctness",
     "replay_privacy_defect",
@@ -46,9 +52,27 @@ _REQUIRED_CANDIDATE_FIELDS = {
     "reranking_reason",
     "eligible",
     "priority_within_class",
+    "bundle",
 }
 _REASON_FIELD = "reason"
 _STATUS_FIELD = "status"
+_BUNDLE_OUTPUT_FIELDS = {
+    "bundle_id",
+    "member_family_ids",
+    "canonical_owner_ids",
+    "source_contexts",
+    "normalized_literal_parameters",
+    "shared_dependencies",
+    "shared_grammar",
+    "estimated_implementation_hours",
+    "estimated_generation_hours",
+    "estimated_cycle_hours",
+    "predicted_complete_cards_per_cycle_hour",
+    "predicted_normalized_value_per_cycle_hour",
+    "expected_downstream_closure",
+    "explicit_exclusions",
+    "synthesized",
+}
 
 
 class WorkSelectionError(ValueError):
@@ -172,14 +196,38 @@ def _validated_prerequisite_exceptions(
     return exceptions
 
 
+def _validated_coherent_bundles(
+    coverage: Mapping[str, Any],
+) -> tuple[list[Mapping[str, Any]], dict[str, int]]:
+    try:
+        return validate_bundle_policy(coverage)
+    except WorkSelectionBundleError as exc:
+        raise WorkSelectionError(str(exc)) from exc
+
+
 def _validated_harvest_history(
-    policy: Mapping[str, Any], *, minimum_gain: int
+    value: Mapping[str, Any], *, minimum_gain: int
 ) -> dict[str, Any]:
-    history = list(policy.get("harvest_outcome_history", []))
+    if set(value) != {
+        "schema_version",
+        "algorithm_version",
+        "entries",
+        "outcome_basis",
+        "fingerprint",
+    } or int(value.get("schema_version") or 0) != 1:
+        raise WorkSelectionError("Generated harvest history has an invalid shape")
+    fingerprint_payload = dict(value)
+    fingerprint = str(fingerprint_payload.pop("fingerprint") or "")
+    if fingerprint != _hash(fingerprint_payload):
+        raise WorkSelectionError("Generated harvest history fingerprint is stale")
+    history = list(value.get("entries", []))
     ids: set[str] = set()
     expected = {
-        "candidate_id",
+        "bundle_id",
+        "candidate_ids",
         "expected_complete_card_gain",
+        "base_receipt",
+        "head_receipt",
         "actual_complete_card_gain",
         "actual_exact_ability_gain",
         "actual_material_residual_reduction",
@@ -190,13 +238,26 @@ def _validated_harvest_history(
             raise WorkSelectionError(
                 "Harvest outcome history entries have an invalid shape"
             )
-        candidate_id = str(row.get("candidate_id") or "")
-        if not candidate_id or candidate_id in ids:
+        bundle_id = str(row.get("bundle_id") or "")
+        candidate_ids = [str(value) for value in row.get("candidate_ids", [])]
+        if (
+            not bundle_id.startswith("bundle:")
+            or bundle_id in ids
+            or not candidate_ids
+            or candidate_ids != sorted(set(candidate_ids))
+            or not isinstance(row.get("base_receipt"), Mapping)
+            or not isinstance(row.get("head_receipt"), Mapping)
+        ):
             raise WorkSelectionError(
-                "Harvest outcome history candidate ids must be unique"
+                "Harvest outcome history bundle identities must be unique"
             )
-        ids.add(candidate_id)
-        for field in expected - {"candidate_id"}:
+        ids.add(bundle_id)
+        for field in (
+            "expected_complete_card_gain",
+            "actual_complete_card_gain",
+            "actual_exact_ability_gain",
+            "actual_material_residual_reduction",
+        ):
             _nonnegative_int(row.get(field), field)
     consecutive_subthreshold = 0
     for row in reversed(history):
@@ -249,8 +310,10 @@ def _validated_reviewed_history(
     return history
 
 
-def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
-    if int(policy.get("policy_version") or 0) != 3:
+def _validated_policy(
+    policy: Mapping[str, Any], harvest_history: Mapping[str, Any]
+) -> dict[str, Any]:
+    if int(policy.get("policy_version") or 0) != 4:
         raise WorkSelectionError("Unsupported work-selection policy")
     priority_classes, starting_uncovered = _validated_priority_policy(policy)
     coverage = _mapping(policy.get("coverage_family"), "coverage_family")
@@ -261,16 +324,19 @@ def _validated_policy(policy: Mapping[str, Any]) -> dict[str, Any]:
             validated_coverage["minimum_prerequisite_downstream_card_gain"]
         ),
     )
+    coherent_bundles, value_weights = _validated_coherent_bundles(coverage)
     harvest = _validated_harvest_history(
-        policy,
+        harvest_history,
         minimum_gain=int(validated_coverage["minimum_complete_card_gain"]),
     )
     return {
-        "policy_version": 3,
+        "policy_version": 4,
         "priority_classes": priority_classes,
         "starting_uncovered_high_risk_pairs": starting_uncovered,
         **validated_coverage,
         **harvest,
+        "coherent_bundles": coherent_bundles,
+        "value_weights": value_weights,
         "approved_prerequisite_exceptions": prerequisite_exceptions,
         "reviewed_rerank_history": _validated_reviewed_history(policy),
     }
@@ -301,7 +367,11 @@ def _read_gzip_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def load_work_selection_inputs(root: str | Path) -> dict[str, Any]:
+def load_work_selection_inputs(
+    root: str | Path,
+    *,
+    harvest_outcome_history: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     repository = Path(root)
     return {
         "architecture_audit": _read_json(
@@ -309,6 +379,13 @@ def load_work_selection_inputs(root: str | Path) -> dict[str, Any]:
         ),
         "card_unlock_frontier": _read_gzip_json(
             repository / "coverage" / "card-unlock-frontier.json.gz"
+        ),
+        "harvest_outcome_history": (
+            dict(harvest_outcome_history)
+            if harvest_outcome_history is not None
+            else _read_json(
+                repository / "coverage" / "harvest-outcome-history.json"
+            )
         ),
         "compact_ci_dependencies": _read_json(
             repository / "coverage" / "compact-ci-card-dependencies.json"
@@ -331,6 +408,26 @@ def _readiness(status: str, evidence: str) -> dict[str, str]:
 
 def _debt(value: int | None, basis: str) -> dict[str, Any]:
     return {"expected_count": value, "basis": basis}
+
+
+def _single_candidate_bundle(candidate_id: str) -> dict[str, Any]:
+    return {
+        "bundle_id": candidate_id,
+        "member_family_ids": [candidate_id],
+        "canonical_owner_ids": [],
+        "source_contexts": [],
+        "normalized_literal_parameters": [],
+        "shared_dependencies": [],
+        "shared_grammar": None,
+        "estimated_implementation_hours": None,
+        "estimated_generation_hours": None,
+        "estimated_cycle_hours": None,
+        "predicted_complete_cards_per_cycle_hour": None,
+        "predicted_normalized_value_per_cycle_hour": None,
+        "expected_downstream_closure": None,
+        "explicit_exclusions": [],
+        "synthesized": False,
+    }
 
 
 def _candidate(
@@ -359,9 +456,18 @@ def _candidate(
     engine_extraction: Mapping[str, Any] | None = None,
     runtime_oracle_text_removal: Mapping[str, Any] | None = None,
     priority_within_class: int = 0,
+    bundle: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     if candidate_class not in _CANDIDATE_CLASSES:
         raise WorkSelectionError(f"Unknown candidate class: {candidate_class}")
+    bundle_payload = dict(bundle or _single_candidate_bundle(candidate_id))
+    if (
+        set(bundle_payload) != _BUNDLE_OUTPUT_FIELDS
+        or not str(bundle_payload.get("bundle_id") or "")
+        or not bundle_payload.get("member_family_ids")
+        or type(bundle_payload.get("synthesized")) is not bool
+    ):
+        raise WorkSelectionError("Work-selection bundle output is incomplete")
     row = {
         "candidate_id": candidate_id,
         "candidate_class": candidate_class,
@@ -391,6 +497,7 @@ def _candidate(
         "priority_within_class": _nonnegative_int(
             priority_within_class, "priority_within_class"
         ),
+        "bundle": bundle_payload,
     }
     if set(row) != _REQUIRED_CANDIDATE_FIELDS:
         raise WorkSelectionError("Work-selection candidate shape is incomplete")
@@ -845,7 +952,7 @@ def _frontier_decision(
     candidate_id: str,
     complete_gain: int,
     ability_gain: int,
-    lowerable_untrusted_abilities: int,
+    residual_gain: int,
     sole_blockers: int,
     prerequisites: Sequence[str],
     effort: str,
@@ -855,13 +962,11 @@ def _frontier_decision(
     broad = complete_gain >= int(policy["minimum_complete_card_gain"])
     major_ability_harvest = bool(
         ability_gain >= int(policy["minimum_exact_ability_gain"])
-        and lowerable_untrusted_abilities
-        >= int(policy["minimum_exact_ability_gain"])
     )
-    structural = bool(
-        (complete_gain == 0 or sole_blockers == 0)
-        and not major_ability_harvest
+    major_residual_harvest = bool(
+        residual_gain >= int(policy["minimum_material_residual_reduction"])
     )
+    structural = complete_gain == 0 and sole_blockers == 0
     exceptions = {
         str(row["candidate_id"])
         for row in policy["approved_prerequisite_exceptions"]
@@ -902,8 +1007,15 @@ def _frontier_decision(
         return (
             "major_exact_ability_harvest",
             True,
-            "Meets the measured major exact-ability floor with already lowered "
-            "untrusted nodes, so capability closure harvests one reusable boundary.",
+            "Meets the measured major exact-ability floor inside one reusable "
+            "grammar boundary.",
+        )
+    if major_residual_harvest:
+        return (
+            "major_material_residual_harvest",
+            True,
+            "Meets the measured material-residual reduction floor inside one "
+            "coherent reusable boundary.",
         )
     if exception_allowed:
         return (
@@ -915,8 +1027,8 @@ def _frontier_decision(
     return (
         "requires_broader_bundle",
         False,
-        "Ability or residual volume alone does not justify another subthreshold "
-        "harvest; bundle this grammar until it reaches the complete-card floor.",
+        "This family does not meet the card, exact-ability, or material-residual "
+        "harvest floor; bundle it with coherent sibling grammar.",
     )
 
 
@@ -928,9 +1040,6 @@ def _frontier_candidate(
     prerequisites = [str(value) for value in row.get("prerequisites", [])]
     complete_gain = int(row.get("expected_exact_card_gain") or 0)
     ability_gain = int(row.get("expected_exact_ability_gain") or 0)
-    lowerable_untrusted_abilities = int(
-        row.get("lowerable_untrusted_abilities") or 0
-    )
     residual_gain = int(row.get("expected_material_residual_gain") or 0)
     sole_blockers = int(row.get("sole_blocker_cards") or 0)
     effort = str(row.get("estimated_effort") or "unknown")
@@ -938,12 +1047,14 @@ def _frontier_candidate(
         candidate_id=candidate_id,
         complete_gain=complete_gain,
         ability_gain=ability_gain,
-        lowerable_untrusted_abilities=lowerable_untrusted_abilities,
+        residual_gain=residual_gain,
         sole_blockers=sole_blockers,
         prerequisites=prerequisites,
         effort=effort,
         policy=policy,
     )
+    one_additional = int(row.get("one_additional_blocker_cards") or 0)
+    two_additional = int(row.get("two_additional_blocker_cards") or 0)
     return _candidate(
         candidate_id=candidate_id,
         candidate_class=_frontier_candidate_class(family_id),
@@ -962,12 +1073,8 @@ def _frontier_candidate(
         ),
         affected_commander_cards=int(row.get("affected_cards") or 0),
         sole_blocker_cards=sole_blockers,
-        one_additional_blocker_cards=int(
-            row.get("one_additional_blocker_cards") or 0
-        ),
-        two_additional_blocker_cards=int(
-            row.get("two_additional_blocker_cards") or 0
-        ),
+        one_additional_blocker_cards=one_additional,
+        two_additional_blocker_cards=two_additional,
         expected_exact_ability_gain=ability_gain,
         expected_complete_card_gain=complete_gain,
         expected_material_residual_reduction=residual_gain,
@@ -978,7 +1085,147 @@ def _frontier_candidate(
         estimated_effort=effort,
         reranking_reason=reason,
         eligible=eligible,
+        bundle=atomic_frontier_bundle(
+            candidate_id=candidate_id,
+            family_id=family_id,
+            base_family=str(row.get("base_family") or family_id),
+            effort=effort,
+            complete_cards=complete_gain,
+            exact_abilities=ability_gain,
+            residuals=residual_gain,
+            one_additional=one_additional,
+            two_additional=two_additional,
+            weights=policy["value_weights"],
+        ),
     )
+
+
+def _coherent_frontier_candidates(
+    frontier: Mapping[str, Any], policy: Mapping[str, Any]
+) -> list[dict[str, Any]]:
+    result: list[dict[str, Any]] = []
+    try:
+        measurements = coherent_frontier_measurements(
+            frontier,
+            policy["coherent_bundles"],
+            policy["value_weights"],
+        )
+    except WorkSelectionBundleError as exc:
+        raise WorkSelectionError(str(exc)) from exc
+    for measurement in measurements:
+        bundle_policy = measurement["policy"]
+        bundle_id = str(bundle_policy["bundle_id"])
+        member_ids = measurement["member_ids"]
+        gains = measurement["gains"]
+        prerequisites = measurement["prerequisites"]
+        implementation_hours = measurement["implementation_hours"]
+        effort = (
+            "small"
+            if implementation_hours <= 8
+            else "medium"
+            if implementation_hours <= 20
+            else "large"
+        )
+        readiness, eligible, reason = _frontier_decision(
+            candidate_id=bundle_id,
+            complete_gain=gains["exact_cards"],
+            ability_gain=gains["exact_abilities"],
+            residual_gain=gains["material_residuals"],
+            sole_blockers=gains["exact_cards"],
+            prerequisites=prerequisites,
+            effort=effort,
+            policy=policy,
+        )
+        contexts = [str(value) for value in bundle_policy["source_contexts"]]
+        interaction_risks = measurement["interaction_risks"]
+        result.append(
+            _candidate(
+                candidate_id=bundle_id,
+                candidate_class="compiler_harvest",
+                universal_subsystem="compiler_coherent_bundle",
+                reusable_piece_ids=[
+                    "residual." + value.replace(":", ".", 1)
+                    for value in member_ids
+                ],
+                rules_dependency_ids=prerequisites,
+                compiler_readiness=_readiness(
+                    "coherent_bundle",
+                    "Static shared-owner grammar validated against current frontier members",
+                ),
+                runtime_readiness=_readiness(
+                    readiness, f"{len(prerequisites)} recorded prerequisites"
+                ),
+                assurance_readiness=_readiness(
+                    "required_before_trust",
+                    "interaction risks=" + ",".join(interaction_risks),
+                ),
+                affected_commander_cards=gains["affected_cards"],
+                sole_blocker_cards=gains["exact_cards"],
+                one_additional_blocker_cards=gains[
+                    "one_additional_blocker_cards"
+                ],
+                two_additional_blocker_cards=gains[
+                    "two_additional_blocker_cards"
+                ],
+                expected_exact_ability_gain=gains["exact_abilities"],
+                expected_complete_card_gain=gains["exact_cards"],
+                expected_material_residual_reduction=gains[
+                    "material_residuals"
+                ],
+                interaction_debt_introduced={
+                    _STATUS_FIELD: "unmeasured",
+                    "risks": interaction_risks,
+                },
+                estimated_effort=effort,
+                reranking_reason=(
+                    f"{reason} The bundle shares {len(bundle_policy['canonical_owner_ids'])} "
+                    f"canonical owners across {len(contexts)} source contexts and "
+                    f"is predicted at {measurement['cards_per_hour']} complete cards "
+                    "per cycle hour."
+                ),
+                eligible=eligible,
+                bundle={
+                    "bundle_id": bundle_id,
+                    "member_family_ids": member_ids,
+                    "canonical_owner_ids": list(
+                        bundle_policy["canonical_owner_ids"]
+                    ),
+                    "source_contexts": contexts,
+                    "normalized_literal_parameters": list(
+                        bundle_policy["normalized_literal_parameters"]
+                    ),
+                    "shared_dependencies": list(
+                        bundle_policy["shared_dependencies"]
+                    ),
+                    "shared_grammar": str(bundle_policy["shared_grammar"]),
+                    "estimated_implementation_hours": implementation_hours,
+                    "estimated_generation_hours": measurement["generation_hours"],
+                    "estimated_cycle_hours": measurement["cycle_hours"],
+                    "predicted_complete_cards_per_cycle_hour": measurement[
+                        "cards_per_hour"
+                    ],
+                    "predicted_normalized_value_per_cycle_hour": measurement[
+                        "value_per_hour"
+                    ],
+                    "expected_downstream_closure": {
+                        "description": str(
+                            bundle_policy["expected_downstream_closure"]
+                        ),
+                        "one_additional_blocker_cards": gains[
+                            "one_additional_blocker_cards"
+                        ],
+                        "two_additional_blocker_cards": gains[
+                            "two_additional_blocker_cards"
+                        ],
+                    },
+                    "explicit_exclusions": list(
+                        bundle_policy["explicit_exclusions"]
+                    ),
+                    "synthesized": True,
+                },
+            )
+        )
+    return result
 
 
 def _frontier_candidates(
@@ -989,6 +1236,10 @@ def _frontier_candidates(
         for row in policy["reviewed_rerank_history"]
         if str(row["selected_over"]).startswith("frontier:")
     }
+    retained_ids.update(
+        str(row["candidate_id"])
+        for row in policy["approved_prerequisite_exceptions"]
+    )
     candidates = []
     for row in frontier.get("family_candidates", []):
         candidate_id = f"frontier:{row.get('family_id') or ''}"
@@ -1036,6 +1287,7 @@ def _work_selection_candidates(
     required_inputs = {
         "architecture_audit",
         "card_unlock_frontier",
+        "harvest_outcome_history",
         "compact_ci_dependencies",
         "platform_readiness",
         "reusable_piece_delta",
@@ -1063,6 +1315,10 @@ def _work_selection_candidates(
         ),
         _rules_candidate(selected_batch),
         *_frontier_candidates(
+            _mapping(inputs["card_unlock_frontier"], "card-unlock frontier"),
+            validated,
+        ),
+        *_coherent_frontier_candidates(
             _mapping(inputs["card_unlock_frontier"], "card-unlock frontier"),
             validated,
         ),
@@ -1107,6 +1363,21 @@ def _rank_candidates(
         key=lambda row: (
             not bool(row["eligible"]),
             priorities[str(row["candidate_class"])],
+            -float(
+                row["bundle"].get(
+                    "predicted_complete_cards_per_cycle_hour"
+                )
+                or 0
+            ),
+            -len(row["bundle"].get("source_contexts") or ()),
+            -int(row["one_additional_blocker_cards"] or 0),
+            -int(row["two_additional_blocker_cards"] or 0),
+            -float(
+                row["bundle"].get(
+                    "predicted_normalized_value_per_cycle_hour"
+                )
+                or 0
+            ),
             -int(row["priority_within_class"]),
             *(
                 -int(row[field] or 0)
@@ -1189,6 +1460,9 @@ def _source_fingerprints(inputs: Mapping[str, Any]) -> dict[str, str]:
         "card_unlock_frontier": str(
             inputs["card_unlock_frontier"].get("fingerprint") or ""
         ),
+        "harvest_outcome_history": str(
+            inputs["harvest_outcome_history"].get("fingerprint") or ""
+        ),
         "compact_ci_dependencies": _hash(inputs["compact_ci_dependencies"]),
         "platform_readiness": _hash(inputs["platform_readiness"]),
         "reusable_piece_delta": str(
@@ -1235,6 +1509,10 @@ def _selection_policy_payload(validated: Mapping[str, Any]) -> dict[str, Any]:
         "approved_prerequisite_exceptions": validated[
             "approved_prerequisite_exceptions"
         ],
+        "coherent_bundle_ids": [
+            str(row["bundle_id"]) for row in validated["coherent_bundles"]
+        ],
+        "value_weights": validated["value_weights"],
     }
 
 
@@ -1244,7 +1522,10 @@ def build_work_selection(
     policy: Mapping[str, Any],
     inputs: Mapping[str, Any],
 ) -> dict[str, Any]:
-    validated = _validated_policy(policy)
+    harvest_history = _mapping(
+        inputs.get("harvest_outcome_history"), "harvest_outcome_history"
+    )
+    validated = _validated_policy(policy, harvest_history)
     candidates = _work_selection_candidates(
         selected_batch=selected_batch,
         validated=validated,

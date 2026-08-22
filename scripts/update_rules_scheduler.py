@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 from pathlib import Path
 import sys
 from typing import Any, Mapping
@@ -16,10 +17,12 @@ from quorune.rules_scheduler import (
 )
 from quorune.util import stable_json
 from quorune.work_selection import selected_work_candidate
+from scripts.harvest_outcome_history import build_harvest_outcome_history
 
 
 JSON_OUTPUT = ROOT / "coverage" / "rules-dependency-queue.json"
 MARKDOWN_OUTPUT = ROOT / "docs" / "RULES_DEPENDENCY_QUEUE.md"
+HARVEST_HISTORY_OUTPUT = ROOT / "coverage" / "harvest-outcome-history.json"
 
 
 def _json_text(value: Mapping[str, Any]) -> str:
@@ -91,8 +94,8 @@ def _compact_markdown(value: Mapping[str, Any]) -> str:
         "Priority classes: "
         + " → ".join(f"`{item}`" for item in work["priority_classes"]),
         "",
-        "| Rank | State | Candidate | Class | Complete cards | Residuals | Runtime text | Direct writes |",
-        "|---:|---|---|---|---:|---:|---:|---:|",
+        "| Rank | State | Candidate | Class | Members | Contexts | Complete cards | Residuals | Cards/hour | Runtime text | Direct writes |",
+        "|---:|---|---|---|---:|---:|---:|---:|---:|---:|---:|",
         *(
             "| "
             + " | ".join(
@@ -101,6 +104,8 @@ def _compact_markdown(value: Mapping[str, Any]) -> str:
                     str(candidate["selection_state"]),
                     f"`{candidate['candidate_id']}`",
                     f"`{candidate['candidate_class']}`",
+                    str(len(candidate["bundle"]["member_family_ids"])),
+                    str(len(candidate["bundle"]["source_contexts"])),
                     (
                         str(candidate["expected_complete_card_gain"])
                         if candidate["expected_complete_card_gain"] is not None
@@ -109,6 +114,18 @@ def _compact_markdown(value: Mapping[str, Any]) -> str:
                     (
                         str(candidate["expected_material_residual_reduction"])
                         if candidate["expected_material_residual_reduction"] is not None
+                        else "unknown"
+                    ),
+                    (
+                        str(
+                            candidate["bundle"].get(
+                                "predicted_complete_cards_per_cycle_hour"
+                            )
+                        )
+                        if candidate["bundle"].get(
+                            "predicted_complete_cards_per_cycle_hour"
+                        )
+                        is not None
                         else "unknown"
                     ),
                     (
@@ -162,10 +179,25 @@ def main() -> int:
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    value = build_rules_dependency_queue_from_root(ROOT)
+    catalog = json.loads(
+        (ROOT / "platform" / "rules-subsystems.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    work_policy = catalog.get("work_selection") or {}
+    harvest_history = build_harvest_outcome_history(
+        ROOT, work_policy.get("harvest_provenance")
+    )
+    value = build_rules_dependency_queue_from_root(
+        ROOT, harvest_outcome_history=harvest_history
+    )
+    expected_history = _json_text(harvest_history)
     expected_json = _json_text(value)
     expected_markdown = _compact_markdown(value)
     if args.write:
+        HARVEST_HISTORY_OUTPUT.write_text(
+            expected_history, encoding="utf-8", newline="\n"
+        )
         JSON_OUTPUT.write_text(
             expected_json, encoding="utf-8", newline="\n"
         )
@@ -175,6 +207,7 @@ def main() -> int:
         return 0
     stale = []
     for path, expected in (
+        (HARVEST_HISTORY_OUTPUT, expected_history),
         (JSON_OUTPUT, expected_json),
         (MARKDOWN_OUTPUT, expected_markdown),
     ):

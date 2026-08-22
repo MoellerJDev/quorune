@@ -238,6 +238,7 @@ def _layer(relative: str, protected_rules_modules: set[str]) -> str:
         "quorune/rules_corpus.py",
         "quorune/rules_scheduler.py",
         "quorune/work_selection.py",
+        "quorune/work_selection_bundles.py",
         "quorune/saga_lifecycle.py",
         "quorune/saga_progression.py",
         "quorune/self_zone_move.py",
@@ -565,6 +566,7 @@ def _owner(relative: str, layer: str) -> str:
     if relative in {
         "quorune/rules_scheduler.py",
         "quorune/work_selection.py",
+        "quorune/work_selection_bundles.py",
     }:
         return "rules_governance"
     if relative in {
