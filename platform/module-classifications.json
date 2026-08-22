@@ -1951,6 +1951,21 @@
       "replay_participation": "none"
     },
     {
+      "file": "quorune/compiler/fixed_self_entry_counter_templates.py",
+      "layer": "semantics",
+      "owning_subsystem": "oracle_compiler",
+      "allowed_dependency_layers": [
+        "adapter",
+        "domain",
+        "rules",
+        "semantics"
+      ],
+      "game_state_access": "none",
+      "card_specificity_policy": "generic_no_growth",
+      "visibility_sensitivity": "authoritative_internal",
+      "replay_participation": "authoritative"
+    },
+    {
       "file": "quorune/compiler/fixed_source_effect_sequences.py",
       "layer": "semantics",
       "owning_subsystem": "oracle_compiler",
@@ -7688,5 +7703,5 @@
       "replay_participation": "none"
     }
   ],
-  "fingerprint": "bd22f3c6a5d9ea31ac0f775c167303b5f15752429b71b3b93d5b1ab172e3d407"
+  "fingerprint": "e3dc428f3c73c02b8c983552466ef16495c7b2924d1c0086e0f5ae7492f3e232"
 }
