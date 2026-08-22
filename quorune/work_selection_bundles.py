@@ -285,6 +285,8 @@ def candidate_frontier_measurements(
         bundle_id = str(bundle_policy["bundle_id"])
         member_ids = [str(value) for value in bundle_policy["member_family_ids"]]
         missing = sorted(set(member_ids) - set(family_rows))
+        if len(missing) == len(member_ids):
+            continue
         if missing:
             raise WorkSelectionBundleError(
                 f"Candidate bundle {bundle_id} references missing families: "

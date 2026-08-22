@@ -797,6 +797,48 @@ class RulesSchedulerTests(unittest.TestCase):
             pairing["bundle"]["measurement_status"],
         )
 
+    def test_completed_candidate_bundle_retires_when_all_members_disappear(self):
+        inputs = deepcopy(self.work_inputs)
+        pairing_members = {
+            "keyword_dependency:choose-a-background",
+            "keyword_dependency:doctor-s-companion",
+            "keyword_dependency:partner",
+        }
+        inputs["card_unlock_frontier"]["family_candidates"] = [
+            row
+            for row in inputs["card_unlock_frontier"]["family_candidates"]
+            if row["family_id"] not in pairing_members
+        ]
+
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=inputs,
+        )
+
+        self.assertNotIn(
+            "bundle:commander-pairing-keywords",
+            {candidate["candidate_id"] for candidate in work["candidates"]},
+        )
+
+    def test_partially_missing_candidate_bundle_remains_invalid(self):
+        inputs = deepcopy(self.work_inputs)
+        inputs["card_unlock_frontier"]["family_candidates"] = [
+            row
+            for row in inputs["card_unlock_frontier"]["family_candidates"]
+            if row["family_id"] != "keyword_dependency:partner"
+        ]
+
+        with self.assertRaisesRegex(
+            WorkSelectionError,
+            "references missing families: keyword_dependency:partner",
+        ):
+            build_work_selection(
+                selected_batch=self.queue["selected_batch"],
+                policy=self.catalog["work_selection"],
+                inputs=inputs,
+            )
+
     def test_material_residual_threshold_is_disjunctive(self):
         inputs = deepcopy(self.work_inputs)
         inputs["card_unlock_frontier"]["family_candidates"] = [
