@@ -11,6 +11,9 @@ from .ir_model import OracleNode, OracleResidual, SourceSpan, append_residual
 
 
 FIXED_COUNTER_EVENT_TRIGGER_MECHANIC = "fixed-counter-event-trigger"
+FIXED_TYPED_EVENT_EFFECT_TRIGGER_MECHANIC = (
+    "fixed-typed-event-effect-trigger"
+)
 OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC = (
     "optional-fixed-counter-event-trigger"
 )
@@ -233,7 +236,7 @@ class FixedCounterZoneSubject:
 
 @dataclass(frozen=True, slots=True)
 class FixedCounterTriggerBinding:
-    """Immutable event subscription for one fixed counter-effect trigger."""
+    """Immutable event subscription shared by closed fixed-effect triggers."""
 
     event: FixedCounterTriggerEvent
     variant: str
@@ -287,6 +290,16 @@ class FixedCounterTriggerBinding:
             FixedCounterTriggerEvent.CREATURE_DIES:
                 "fixed-counter-creature-death-trigger-v1",
         }[self.event]
+
+    @property
+    def typed_effect_template_id(self) -> str:
+        """Return the generic typed-effect composition identity."""
+
+        return self.template_id.replace(
+            "fixed-counter-",
+            "fixed-typed-effect-",
+            1,
+        )
 
     @property
     def event_mechanics(self) -> tuple[str, ...]:
@@ -701,8 +714,124 @@ def fixed_counter_event_trigger_node(
     )
 
 
+def fixed_typed_event_effect_trigger_node(
+    *,
+    node_id: str,
+    line: str,
+    material_line: str,
+    span: SourceSpan,
+    card_name: str,
+    trusted_mechanics: frozenset[str],
+    capability_registry: CapabilityRegistry | None,
+    capability_profile: str,
+    residuals: list[OracleResidual],
+    effect_template: Callable[..., tuple[
+        str | None,
+        tuple[Mapping[str, Any], ...],
+        Mapping[str, Any] | None,
+        tuple[str, ...],
+    ]],
+) -> OracleNode | None:
+    """Compose one closed event binding with one reviewed typed effect body."""
+
+    counter_node = fixed_counter_event_trigger_node(
+        node_id=node_id,
+        line=line,
+        material_line=material_line,
+        span=span,
+        card_name=card_name,
+        trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+        residuals=residuals,
+        effect_template=effect_template,
+    )
+    if counter_node is not None:
+        return counter_node
+
+    binding = fixed_counter_trigger_binding(
+        material_line,
+        card_name=card_name,
+    )
+    if binding is None or re.fullmatch(
+        r"you may .+",
+        binding.body,
+        re.IGNORECASE,
+    ):
+        return None
+    template, effects, target_schema, body_mechanics = effect_template(
+        binding.body,
+        card_name=card_name,
+    )
+    if (
+        template is None
+        or not effects
+        or _COUNTER_PLACEMENT_OPERATIONS.intersection(
+            _nested_operations(effects)
+        )
+    ):
+        return None
+    mechanics = (
+        "cr-603-handling-triggered-abilities",
+        FIXED_TYPED_EVENT_EFFECT_TRIGGER_MECHANIC,
+        *binding.event_mechanics,
+        *body_mechanics,
+    )
+    gate = dependency_gate(
+        mechanics=mechanics,
+        effects=effects,
+        target_schema=target_schema,
+        trusted_mechanics=trusted_mechanics,
+        capability_registry=capability_registry,
+        capability_profile=capability_profile,
+    )
+    residual_ids = (
+        (
+            append_residual(
+                residuals,
+                kind="dependency_contract",
+                text=line,
+                span=span,
+                reason=(
+                    "fixed typed event-effect trigger lacks a trusted "
+                    "capability closure"
+                ),
+                blockers=gate.blockers,
+            ),
+        )
+        if gate.blockers
+        else ()
+    )
+    closure = gate.closure
+    return OracleNode(
+        node_id=node_id,
+        kind="triggered_ability",
+        text=line,
+        span=span,
+        active_zone="battlefield",
+        event=binding.event.value,
+        event_condition=binding.event_condition,
+        lowerable=True,
+        exact=not residual_ids,
+        template_id=binding.typed_effect_template_id,
+        effects=effects,
+        target_schema=target_schema,
+        mechanics=mechanics,
+        residual_ids=residual_ids,
+        capability_dependencies=gate.capabilities,
+        capability_closure=(
+            closure.reachable if closure is not None else ()
+        ),
+        capability_profile=(closure.profile if closure is not None else None),
+        capability_fingerprint=(
+            closure.fingerprint if closure is not None else None
+        ),
+    )
+
+
 __all__ = [
     "FIXED_COUNTER_EVENT_TRIGGER_MECHANIC",
+    "FIXED_TYPED_EVENT_EFFECT_TRIGGER_MECHANIC",
     "OPTIONAL_COUNTER_PLACEMENT_OPERATION",
     "OPTIONAL_FIXED_COUNTER_EVENT_TRIGGER_MECHANIC",
     "FixedCounterTriggerBinding",
@@ -711,4 +840,5 @@ __all__ = [
     "FixedCounterZoneSubject",
     "fixed_counter_event_trigger_node",
     "fixed_counter_trigger_binding",
+    "fixed_typed_event_effect_trigger_node",
 ]
