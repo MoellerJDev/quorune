@@ -80,6 +80,25 @@
       "legalities": {"commander": "legal"}
     },
     {
+      "oracle_id": "4dde484a-8d5b-4eb6-ab4a-e30cc370431c",
+      "name": "Zellix, Sanity Flayer",
+      "mana_cost": "{2}{U}",
+      "cmc": 3.0,
+      "type_line": "Legendary Creature \u2014 Horror",
+      "oracle_text": "Hive Mind \u2014 Whenever a player mills one or more creature cards, you create a 1/1 black Horror creature token.\n{1}, {T}: Target player mills three cards.\nChoose a Background (You can have a Background as a second commander.)",
+      "power": "2",
+      "toughness": "3",
+      "loyalty": null,
+      "defense": null,
+      "colors": ["U"],
+      "color_identity": ["U"],
+      "keywords": ["Choose a background", "Hive Mind", "Mill"],
+      "produced_mana": [],
+      "layout": "normal",
+      "released_at": "2022-06-10",
+      "legalities": {"commander": "legal"}
+    },
+    {
       "oracle_id": "2f56de72-80d7-48c6-9b57-84fbd252c699",
       "name": "Rose Tyler",
       "mana_cost": "{1}{W}",

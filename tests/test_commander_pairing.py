@@ -207,6 +207,88 @@ class CommanderPairingTests(unittest.TestCase):
             )
         )
 
+    def test_pairing_and_activated_mill_preserve_commander_identity(self):
+        names = ("Zellix, Sanity Flayer", "Flaming Fist")
+        registry = SemanticRegistry(include_builtin_packs=False)
+        register_generated_programs(
+            self.db,
+            registry,
+            [self.db.lookup(name) for name in names],
+            trust_level="provisional",
+            capability_registry=self.capabilities,
+            capability_profile="commander_review",
+            promote_exact_runtime_handlers=True,
+            promote_exact_trigger_programs=True,
+            promote_exact_effect_programs=True,
+            promote_exact_capability_declarations=True,
+        )
+        deck = pairing_deck(*names)
+        deck.entries.extend(
+            DeckEntry(name)
+            for name in (
+                "Thrasios, Triton Hero",
+                "Tymna the Weaver",
+                "Wilson, Refined Grizzly",
+                "Rose Tyler",
+            )
+        )
+        state = initial_commander_state(
+            self.db,
+            {seat: deck for seat in "ABCD"},
+            first_player="A",
+            config=GameConfig(seed=702_124_006),
+            semantics=registry,
+        )
+        engine = CommanderEngine(self.db, state, registry)
+        source = next(
+            card
+            for card in state.cards.values()
+            if card.owner == "A" and card.printed_name == names[0]
+        )
+        designation_id = source.commander_designation_id
+        source = engine.move_card(source.object_id, "battlefield", log=False)
+        top_cards = tuple(
+            state.cards[object_id]
+            for object_id in reversed(
+                state.players["B"].zones["library"][-3:]
+            )
+        )
+        engine.state.active_player = "A"
+        engine.state.phase = "precombat_main"
+        engine.state.step = "main"
+        engine.state.priority_player = "A"
+        engine.state.players["A"].turns_begun = 1
+        source.acquired_control_turn_count = 0
+        engine.state.players["A"].mana_pool["C"] = 1
+        ability = engine._activated_abilities(source)[0]
+
+        engine._activate(
+            "A",
+            {
+                "source": source.ref,
+                "ability": ability.ability_id,
+                "targets": ["B"],
+            },
+        )
+        engine.permissions.invalidate_current()
+        engine.state.pending_decision = None
+        engine.state.priority_player = None
+        engine._prepare_stack_resolution()
+
+        self.assertEqual(
+            ["graveyard", "graveyard", "graveyard"],
+            [card.zone for card in top_cards],
+        )
+        self.assertTrue(source.tapped)
+        self.assertTrue(source.is_commander)
+        self.assertEqual(designation_id, source.commander_designation_id)
+        self.assertIn(source.oracle_id, state.commander_oracle_ids["A"])
+        self.assertEqual(2, len(state.players["B"].zones["command"]))
+        self.assertEqual(
+            state.to_dict(),
+            GameState.from_dict(state.to_dict()).to_dict(),
+        )
+
     def test_unsupported_or_mismatched_pairings_fail_closed_without_mutation(self):
         all_names = (
             "Thrasios, Triton Hero",
