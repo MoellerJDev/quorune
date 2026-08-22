@@ -4152,6 +4152,48 @@
       ],
       "interaction_order": 2,
       "assertion": "A fixed Deathtouch self-entry counter is placed by the shared replacement transaction and immediately consumed by the cycle-safe effective layer-6 characteristic query."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_fixed_self_entry_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.counter.producer.fixed_self_entry",
+        "residual.replacement.damage-prevention"
+      ],
+      "capability_ids": [
+        "counter.producer.fixed_self_entry"
+      ],
+      "interaction_order": 2,
+      "assertion": "Rasputin Dreamweaver compiles its mandatory fixed dream-counter entry replacement while its damage-prevention ability remains material, so the complete CardProgram is unavailable at strict or compatible runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_fixed_self_entry_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.counter.producer.fixed_self_entry",
+        "residual.replacement.replacement-applicability"
+      ],
+      "capability_ids": [
+        "counter.producer.fixed_self_entry"
+      ],
+      "interaction_order": 2,
+      "assertion": "Chromatic Armor compiles its mandatory fixed sleight-counter entry replacement while its color-choice replacement applicability remains material, so the complete CardProgram is unavailable at strict or compatible runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_fixed_self_entry_residual_pairs_fail_closed_at_runtime_boundary",
+      "piece_ids": [
+        "capability.counter.producer.fixed_self_entry",
+        "residual.replacement.self-replacement-and-prevention-ordering"
+      ],
+      "capability_ids": [
+        "counter.producer.fixed_self_entry"
+      ],
+      "interaction_order": 2,
+      "assertion": "Chromatic Armor compiles its mandatory fixed sleight-counter entry replacement while its self-replacement and prevention ordering remains material, so the complete CardProgram is unavailable at strict or compatible runtime admission."
     }
   ]
 }

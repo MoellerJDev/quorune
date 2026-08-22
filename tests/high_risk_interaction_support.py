@@ -384,6 +384,19 @@ _WITNESSES = {
         power="4",
         toughness="1",
     ),
+    "chromatic-armor": _Witness(
+        "Chromatic Armor",
+        "Enchantment — Aura",
+        "Enchant creature\n"
+        "As this Aura enters, choose a color.\n"
+        "This Aura enters with a sleight counter on it.\n"
+        "Prevent all damage that would be dealt to enchanted creature by "
+        "sources of the last chosen color.\n"
+        "{X}: Put a sleight counter on this Aura and choose a color. X is "
+        "the number of sleight counters on this Aura.",
+        "{1}{W}{U}",
+        ("Enchant",),
+    ),
     "ovinomancer": _Witness(
         "Ovinomancer",
         "Creature — Human Wizard",
@@ -561,6 +574,21 @@ PREVENTION_AND_REPLACEMENT_PAIRS = (
     ),
     _pair(
         "capability.damage.prevention.persistent_amount",
+        "residual.replacement.self-replacement-and-prevention-ordering",
+    ),
+)
+
+FIXED_SELF_ENTRY_AND_REPLACEMENT_PAIRS = (
+    _pair(
+        "capability.counter.producer.fixed_self_entry",
+        "residual.replacement.damage-prevention",
+    ),
+    _pair(
+        "capability.counter.producer.fixed_self_entry",
+        "residual.replacement.replacement-applicability",
+    ),
+    _pair(
+        "capability.counter.producer.fixed_self_entry",
         "residual.replacement.self-replacement-and-prevention-ordering",
     ),
 )
@@ -745,6 +773,7 @@ ALL_HIGH_RISK_BOUNDARY_PAIRS = tuple(
             *TRIGGER_AND_REPLACEMENT_PAIRS,
             *DECLARATION_AND_REPLACEMENT_PAIRS,
             *PREVENTION_AND_REPLACEMENT_PAIRS,
+            *FIXED_SELF_ENTRY_AND_REPLACEMENT_PAIRS,
             *TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS,
         }
     )
@@ -835,6 +864,8 @@ _bind("kindred-discovery", *TRIGGER_AND_REPLACEMENT_PAIRS[6:8])
 _bind("teferis-moat", *DECLARATION_AND_REPLACEMENT_PAIRS)
 _bind("hallowed-healer", PREVENTION_AND_REPLACEMENT_PAIRS[0])
 _bind("winds-of-qal-sisma", *PREVENTION_AND_REPLACEMENT_PAIRS[1:])
+_bind("rasputin", FIXED_SELF_ENTRY_AND_REPLACEMENT_PAIRS[0])
+_bind("chromatic-armor", *FIXED_SELF_ENTRY_AND_REPLACEMENT_PAIRS[1:])
 _bind(
     "bewitching-leechcraft",
     TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS[0],
@@ -1009,6 +1040,7 @@ __all__ = [
     "DECLARATION_AND_REPLACEMENT_PAIRS",
     "DESTROY_DAMAGE_PREVENTION_PAIR",
     "EFFECT_AND_REPLACEMENT_PAIRS",
+    "FIXED_SELF_ENTRY_AND_REPLACEMENT_PAIRS",
     "PREVENTION_AND_REPLACEMENT_PAIRS",
     "PUBLIC_SET_AND_CHOICE_PAIRS",
     "TAP_STATE_HIGH_RISK_BOUNDARY_PAIRS",
