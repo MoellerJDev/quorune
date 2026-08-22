@@ -4194,6 +4194,62 @@
       ],
       "interaction_order": 2,
       "assertion": "Chromatic Armor compiles its mandatory fixed sleight-counter entry replacement while its self-replacement and prevention ordering remains material, so the complete CardProgram is unavailable at strict or compatible runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_fixed_set_damage_with_regeneration_residual_fails_closed",
+      "piece_ids": [
+        "capability.damage.amount.positive",
+        "residual.replacement.regeneration"
+      ],
+      "capability_ids": [
+        "damage.amount.positive"
+      ],
+      "interaction_order": 2,
+      "assertion": "Jaya Ballard, Task Mage compiles its fixed simultaneous-set damage ability while the separate linked regeneration prohibition remains material, so the complete CardProgram is unavailable at strict or compatible runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_fixed_set_damage_with_regeneration_residual_fails_closed",
+      "piece_ids": [
+        "capability.damage.batch.fixed_set",
+        "residual.replacement.regeneration"
+      ],
+      "capability_ids": [
+        "damage.batch.fixed_set"
+      ],
+      "interaction_order": 2,
+      "assertion": "Jaya Ballard, Task Mage compiles its fixed simultaneous-set damage ability while the separate linked regeneration prohibition remains material, so the complete CardProgram is unavailable at strict or compatible runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_fixed_set_damage_with_regeneration_residual_fails_closed",
+      "piece_ids": [
+        "capability.damage.result.multitype_permanent",
+        "residual.replacement.regeneration"
+      ],
+      "capability_ids": [
+        "damage.result.multitype_permanent"
+      ],
+      "interaction_order": 2,
+      "assertion": "Jaya Ballard, Task Mage compiles the permanent-result branch of its fixed simultaneous-set damage ability while the separate linked regeneration prohibition remains material, so the complete CardProgram is unavailable at strict or compatible runtime admission."
+    },
+    {
+      "evidence_class": "interaction",
+      "assurance_kind": "fail_closed_runtime_admission",
+      "test_id": "test_fixed_set_damage_with_regeneration_residual_fails_closed",
+      "piece_ids": [
+        "capability.damage.result.player_life",
+        "residual.replacement.regeneration"
+      ],
+      "capability_ids": [
+        "damage.result.player_life"
+      ],
+      "interaction_order": 2,
+      "assertion": "Jaya Ballard, Task Mage compiles the player-life branch of its fixed simultaneous-set damage ability while the separate linked regeneration prohibition remains material, so the complete CardProgram is unavailable at strict or compatible runtime admission."
     }
   ]
 }
