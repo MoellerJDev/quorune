@@ -335,7 +335,7 @@
     }
   ],
   "work_selection": {
-    "policy_version": 3,
+    "policy_version": 4,
     "priority_classes": [
       "ci_correctness",
       "replay_privacy_defect",
@@ -366,99 +366,185 @@
       "excluded_efforts": [
         "very_large"
       ],
+      "value_weights": {
+        "complete_card": 100,
+        "exact_ability": 10,
+        "material_residual": 5,
+        "one_additional_blocker_card": 2,
+        "two_additional_blocker_card": 1
+      },
+      "coherent_bundles": [
+        {
+          "bundle_id": "bundle:fixed-exile-contexts",
+          "member_family_ids": [
+            "activated_effect:exile",
+            "effect_clause:exile"
+          ],
+          "canonical_owner_ids": [
+            "capability:card.exile.public_graveyard",
+            "capability:zone.move.fixed_public_set",
+            "component:quorune.semantic_runtime.permanent_exile_handlers.ExilePermanentHandler"
+          ],
+          "source_contexts": [
+            "activated",
+            "modal",
+            "spell",
+            "triggered"
+          ],
+          "normalized_literal_parameters": [
+            "closed-public-origin",
+            "fixed-destination-exile",
+            "typed-public-object-predicate"
+          ],
+          "shared_dependencies": [
+            "target.revalidate_resolution",
+            "zone.change.destination_replacement"
+          ],
+          "shared_grammar": "fixed public-object exile across effect contexts",
+          "estimated_implementation_hours": 14,
+          "estimated_generation_hours": 1,
+          "expected_downstream_closure": "Unblocks one- and two-additional-blocker public-zone, modal, and linked-result cohorts after their separate typed owners are ready.",
+          "explicit_exclusions": [
+            "combat-state and numeric-characteristic predicates",
+            "hidden-zone and temporary exile",
+            "linked returns and delayed results",
+            "variable, optional, random, and cost exile"
+          ]
+        },
+        {
+          "bundle_id": "bundle:fixed-token-creation-contexts",
+          "member_family_ids": [
+            "activated_effect:create-token",
+            "effect_clause:create-token"
+          ],
+          "canonical_owner_ids": [
+            "capability:token.creation.fixed_definition",
+            "component:quorune.token_creation.create_tokens"
+          ],
+          "source_contexts": [
+            "activated",
+            "modal",
+            "spell",
+            "triggered"
+          ],
+          "normalized_literal_parameters": [
+            "closed-token-definition",
+            "fixed-positive-quantity",
+            "one-to-three-definition-batch"
+          ],
+          "shared_dependencies": [],
+          "shared_grammar": "fixed token creation through the canonical token transaction",
+          "estimated_implementation_hours": 16,
+          "estimated_generation_hours": 1,
+          "expected_downstream_closure": "Unblocks one- and two-additional-blocker token, modal, replacement, and linked-result cohorts while reusing the shared token owner.",
+          "explicit_exclusions": [
+            "attached, attacking, and Role tokens",
+            "conditional and linked-result token instructions",
+            "custom quoted abilities and unsupported predefined tokens",
+            "dynamic quantities, copies, and named legendary tokens"
+          ]
+        }
+      ],
       "approved_prerequisite_exceptions": []
     },
-    "harvest_outcome_history": [
+    "harvest_provenance": [
       {
-        "candidate_id": "compiler:typed-combat-prevention",
+        "bundle_id": "bundle:typed-combat-prevention",
+        "candidate_ids": ["compiler:typed-combat-prevention"],
         "expected_complete_card_gain": 90,
-        "actual_complete_card_gain": 90,
-        "actual_exact_ability_gain": 110,
-        "actual_material_residual_reduction": 116
+        "base_commit": "57e84224ef94e7d9a295115336a69bafaf099c03",
+        "head_commit": "df595f203df287a3fe9afd5bb60292aa4d720a7c"
       },
       {
-        "candidate_id": "compiler:ordinary-cascade",
+        "bundle_id": "bundle:ordinary-cascade",
+        "candidate_ids": ["compiler:ordinary-cascade"],
         "expected_complete_card_gain": 19,
-        "actual_complete_card_gain": 19,
-        "actual_exact_ability_gain": 42,
-        "actual_material_residual_reduction": 37
+        "base_commit": "026690af2c435ab09fb25c81d21a21e9248a9f7c",
+        "head_commit": "05656532ff0a42f31b5353c0fa5b1e04930b247b"
       },
       {
-        "candidate_id": "compiler:fixed-mill-instructions",
+        "bundle_id": "bundle:fixed-mill-instructions",
+        "candidate_ids": ["compiler:fixed-mill-instructions"],
         "expected_complete_card_gain": 44,
-        "actual_complete_card_gain": 44,
-        "actual_exact_ability_gain": 62,
-        "actual_material_residual_reduction": 105
+        "base_commit": "05656532ff0a42f31b5353c0fa5b1e04930b247b",
+        "head_commit": "748aa4861d864245a0295c1b5197bf79c29e3a76"
       },
       {
-        "candidate_id": "compiler:fixed-surveil-instructions",
+        "bundle_id": "bundle:fixed-surveil-instructions",
+        "candidate_ids": ["compiler:fixed-surveil-instructions"],
         "expected_complete_card_gain": 62,
-        "actual_complete_card_gain": 62,
-        "actual_exact_ability_gain": 63,
-        "actual_material_residual_reduction": 103
+        "base_commit": "748aa4861d864245a0295c1b5197bf79c29e3a76",
+        "head_commit": "f914524e092e0d1524c67876ecce841cdd322559"
       },
       {
-        "candidate_id": "compiler:fixed-entry-state-conditions",
+        "bundle_id": "bundle:fixed-entry-state-conditions",
+        "candidate_ids": ["compiler:fixed-entry-state-conditions"],
         "expected_complete_card_gain": 46,
-        "actual_complete_card_gain": 46,
-        "actual_exact_ability_gain": 73,
-        "actual_material_residual_reduction": 73
+        "base_commit": "f914524e092e0d1524c67876ecce841cdd322559",
+        "head_commit": "4e3264d2d30a0f2200737c3dba1ab1fb4fcbe272"
       },
       {
-        "candidate_id": "compiler:ordinary-fixed-mana-bestow",
+        "bundle_id": "bundle:ordinary-fixed-mana-bestow",
+        "candidate_ids": ["compiler:ordinary-fixed-mana-bestow"],
         "expected_complete_card_gain": 17,
-        "actual_complete_card_gain": 17,
-        "actual_exact_ability_gain": 41,
-        "actual_material_residual_reduction": 41
+        "base_commit": "2a067369b9826b3a274be566b887ac45bf0e0b30",
+        "head_commit": "c1eebf47cf285c6b1ff5fd74f2dafcecd0b2d33d"
       },
       {
-        "candidate_id": "compiler:qualified-object-enchant",
+        "bundle_id": "bundle:qualified-object-enchant",
+        "candidate_ids": ["compiler:qualified-object-enchant"],
         "expected_complete_card_gain": 7,
-        "actual_complete_card_gain": 7,
-        "actual_exact_ability_gain": 28,
-        "actual_material_residual_reduction": 167
+        "base_commit": "d43bdbe21af247fe28a41c125669e6c2cd837dd5",
+        "head_commit": "114221155c14bc00f07e0076762219ddd60d046e"
       },
       {
-        "candidate_id": "compiler:fixed-next-turn-upkeep-draw",
+        "bundle_id": "bundle:fixed-next-turn-upkeep-draw",
+        "candidate_ids": ["compiler:fixed-next-turn-upkeep-draw"],
         "expected_complete_card_gain": 18,
-        "actual_complete_card_gain": 18,
-        "actual_exact_ability_gain": 46,
-        "actual_material_residual_reduction": 46
+        "base_commit": "b17ad66f4c76b33e293a78989d8d4d7d57517106",
+        "head_commit": "a1c2312ab0ca51f489cd558d1659f65727b56466"
       },
       {
-        "candidate_id": "compiler:ordinary-storm",
+        "bundle_id": "bundle:ordinary-storm",
+        "candidate_ids": ["compiler:ordinary-storm"],
         "expected_complete_card_gain": 13,
-        "actual_complete_card_gain": 13,
-        "actual_exact_ability_gain": 33,
-        "actual_material_residual_reduction": 33
+        "base_commit": "a1c2312ab0ca51f489cd558d1659f65727b56466",
+        "head_commit": "2ce611e9210683e2eefeaa26153f221ae1caf2b1"
       },
       {
-        "candidate_id": "compiler:fixed-affected-player-sacrifice",
+        "bundle_id": "bundle:fixed-affected-player-sacrifice",
+        "candidate_ids": ["compiler:fixed-affected-player-sacrifice"],
         "expected_complete_card_gain": 20,
-        "actual_complete_card_gain": 20,
-        "actual_exact_ability_gain": 32,
-        "actual_material_residual_reduction": 45
+        "base_commit": "1bbf32499660c170e052ee8662c046da217cbd11",
+        "head_commit": "336d2b63875272b6a8356b5df616199bbafcdcdc"
       },
       {
-        "candidate_id": "compiler:fixed-mana-value-direct-targets",
+        "bundle_id": "bundle:fixed-mana-value-direct-targets",
+        "candidate_ids": ["compiler:fixed-mana-value-direct-targets"],
         "expected_complete_card_gain": 14,
-        "actual_complete_card_gain": 14,
-        "actual_exact_ability_gain": 18,
-        "actual_material_residual_reduction": 21
+        "base_commit": "336d2b63875272b6a8356b5df616199bbafcdcdc",
+        "head_commit": "f515c67d32929fff33ce45d0a896e88123978a94"
       },
       {
-        "candidate_id": "compiler:fixed-affected-player-discards",
+        "bundle_id": "bundle:fixed-affected-player-discards",
+        "candidate_ids": ["compiler:fixed-affected-player-discards"],
         "expected_complete_card_gain": 51,
-        "actual_complete_card_gain": 51,
-        "actual_exact_ability_gain": 54,
-        "actual_material_residual_reduction": 93
+        "base_commit": "f515c67d32929fff33ce45d0a896e88123978a94",
+        "head_commit": "9f8c28240ba573eb7c3a3531f28c80b61690bd17"
       },
       {
-        "candidate_id": "compiler:fixed-flashback-costs",
+        "bundle_id": "bundle:fixed-flashback-costs",
+        "candidate_ids": ["compiler:fixed-flashback-costs"],
         "expected_complete_card_gain": 50,
-        "actual_complete_card_gain": 50,
-        "actual_exact_ability_gain": 181,
-        "actual_material_residual_reduction": 181
+        "base_commit": "9ed6bc8c65f2520307e6ef08d283efe4fac4ee6b",
+        "head_commit": "76f2bd63f4e0dc129636305458ff1c35a6b3caa6"
+      },
+      {
+        "bundle_id": "bundle:fixed-public-zone-moves",
+        "candidate_ids": ["compiler:fixed-public-zone-moves"],
+        "expected_complete_card_gain": 37,
+        "base_commit": "e700c6f6bb0dbcefc0060679e3d3bdbc76bab482",
+        "head_commit": "ba67509f49cf60b1f26ac50e90d68d38bf8370dd"
       }
     ],
     "reviewed_rerank_history": [

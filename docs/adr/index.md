@@ -94,3 +94,4 @@ deployment modes, or architecture review thresholds.
 - [ADR 0077 — typed fixed Surveil resolution](0077-typed-fixed-surveil-resolution.md)
 - [ADR 0078 — input-fingerprinted generated-owner reuse](0078-input-fingerprinted-generated-owner-reuse.md)
 - [ADR 0079 — typed fixed public-zone moves](0079-typed-fixed-public-zone-moves.md)
+- [ADR 0080 — bundle-aware work selection](0080-bundle-aware-work-selection.md)

@@ -381,6 +381,7 @@
         "rules-derived"
       ],
       "outputs": [
+        "coverage/harvest-outcome-history.json",
         "coverage/rules-dependency-queue.json",
         "docs/RULES_DEPENDENCY_QUEUE.md"
       ],

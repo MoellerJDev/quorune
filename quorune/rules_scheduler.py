@@ -690,8 +690,14 @@ def build_rules_dependency_queue(
 
 def build_rules_dependency_queue_from_root(
     root: str | Path,
+    *,
+    harvest_outcome_history: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     repository = Path(root)
+    work_inputs = load_work_selection_inputs(
+        repository,
+        harvest_outcome_history=harvest_outcome_history,
+    )
     return build_rules_dependency_queue(
         _load(repository / "rules" / "rule-index.json"),
         _load(repository / "rules" / "conformance-cases.json"),
@@ -703,7 +709,7 @@ def build_rules_dependency_queue_from_root(
             / "capability-registry.json"
         ),
         repository_root=repository,
-        work_selection_inputs=load_work_selection_inputs(repository),
+        work_selection_inputs=work_inputs,
     )
 
 

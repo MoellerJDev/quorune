@@ -23,6 +23,10 @@ from quorune.work_selection import (
     load_work_selection_inputs,
     selected_work_candidate,
 )
+from scripts.harvest_outcome_history import (
+    build_harvest_outcome_history,
+    HarvestOutcomeHistoryError,
+)
 from scripts.update_rules_scheduler import _compact_markdown
 
 
@@ -36,6 +40,13 @@ def _json(relative: str):
 def _reviewed_frontier_comparisons(inputs):
     frontier = inputs["card_unlock_frontier"]["family_candidates"]
     family_ids = {"effect_clause:destroy-target"}
+    bundle_member_ids = {
+        member
+        for bundle in _json("platform/rules-subsystems.json")[
+            "work_selection"
+        ]["coverage_family"]["coherent_bundles"]
+        for member in bundle["member_family_ids"]
+    }
     family_ids.update(
         selected_over.removeprefix("frontier:")
         for row in _json("platform/rules-subsystems.json")[
@@ -45,13 +56,17 @@ def _reviewed_frontier_comparisons(inputs):
             "frontier:"
         )
     )
+    family_ids.update(bundle_member_ids)
     comparisons = []
     for row in frontier:
         family_id = str(row["family_id"])
         if family_id not in family_ids:
             continue
         comparison = deepcopy(row)
-        if family_id != "effect_clause:destroy-target":
+        if (
+            family_id != "effect_clause:destroy-target"
+            and family_id not in bundle_member_ids
+        ):
             comparison["prerequisites"] = [
                 *comparison.get("prerequisites", []),
                 "fixture:reviewed-rerank-context",
@@ -540,9 +555,9 @@ class RulesSchedulerTests(unittest.TestCase):
             if candidate["candidate_id"]
             == "frontier:effect_clause:large-ability-fixture"
         )
-        self.assertFalse(narrow["eligible"])
+        self.assertTrue(narrow["eligible"])
         self.assertEqual(
-            "requires_broader_bundle",
+            "major_exact_ability_harvest",
             narrow["runtime_readiness"]["status"],
         )
         self.assertEqual(21, narrow["expected_complete_card_gain"])
@@ -558,7 +573,17 @@ class RulesSchedulerTests(unittest.TestCase):
 
     def test_prerequisite_exception_requires_measured_fanout_and_open_budget(self):
         inputs = _with_large_ability_compiler_harvest(self.work_inputs)
+        prerequisite = next(
+            row
+            for row in inputs["card_unlock_frontier"]["family_candidates"]
+            if row["family_id"] == "effect_clause:large-ability-fixture"
+        )
+        prerequisite["expected_exact_ability_gain"] = 80
+        prerequisite["expected_material_residual_gain"] = 80
         policy = deepcopy(self.catalog["work_selection"])
+        policy["coverage_family"][
+            "maximum_consecutive_prerequisite_exceptions"
+        ] = 2
         policy["coverage_family"]["approved_prerequisite_exceptions"] = [
             {
                 "candidate_id": "frontier:effect_clause:large-ability-fixture",
@@ -586,15 +611,9 @@ class RulesSchedulerTests(unittest.TestCase):
             narrow["runtime_readiness"]["status"],
         )
 
-        policy["harvest_outcome_history"].append(
-            {
-                "candidate_id": "compiler:fixture-subthreshold-outcome",
-                "expected_complete_card_gain": 12,
-                "actual_complete_card_gain": 12,
-                "actual_exact_ability_gain": 40,
-                "actual_material_residual_reduction": 40,
-            }
-        )
+        policy["coverage_family"][
+            "maximum_consecutive_prerequisite_exceptions"
+        ] = 1
         work = build_work_selection(
             selected_batch=self.queue["selected_batch"],
             policy=policy,
@@ -624,7 +643,7 @@ class RulesSchedulerTests(unittest.TestCase):
             inputs=inputs,
         )
         calibration = work["selection_policy"]
-        history = self.catalog["work_selection"]["harvest_outcome_history"]
+        history = self.work_inputs["harvest_outcome_history"]["entries"]
         minimum_gain = self.catalog["work_selection"]["coverage_family"][
             "minimum_complete_card_gain"
         ]
@@ -659,6 +678,106 @@ class RulesSchedulerTests(unittest.TestCase):
         self.assertEqual(
             expected_consecutive,
             calibration["consecutive_subthreshold_harvests"],
+        )
+
+    def test_harvest_history_is_derived_from_immutable_git_receipts(self):
+        provenance = self.catalog["work_selection"]["harvest_provenance"]
+        self.assertTrue(provenance)
+        self.assertTrue(
+            all(
+                not any(str(field).startswith("actual_") for field in row)
+                for row in provenance
+            )
+        )
+        derived = build_harvest_outcome_history(ROOT, provenance)
+        self.assertEqual(
+            self.work_inputs["harvest_outcome_history"], derived
+        )
+        latest = derived["entries"][-1]
+        self.assertEqual("bundle:fixed-public-zone-moves", latest["bundle_id"])
+        self.assertEqual(37, latest["actual_complete_card_gain"])
+        self.assertEqual(66, latest["actual_exact_ability_gain"])
+        self.assertEqual(82, latest["actual_material_residual_reduction"])
+        self.assertNotEqual(
+            latest["base_receipt"]["frontier_blob_oid"],
+            latest["head_receipt"]["frontier_blob_oid"],
+        )
+
+        malformed = deepcopy(provenance)
+        malformed[-1]["actual_complete_card_gain"] = 37
+        with self.assertRaisesRegex(
+            HarvestOutcomeHistoryError, "invalid shape"
+        ):
+            build_harvest_outcome_history(ROOT, malformed)
+
+    def test_coherent_bundle_ranks_shared_owner_throughput(self):
+        work = self.queue["work_selection"]
+        selected = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"] == work["selected_candidate_id"]
+        )
+
+        self.assertEqual(
+            "bundle:fixed-token-creation-contexts",
+            selected["candidate_id"],
+        )
+        self.assertEqual(39, selected["expected_complete_card_gain"])
+        self.assertEqual(153, selected["expected_exact_ability_gain"])
+        self.assertEqual(167, selected["expected_material_residual_reduction"])
+        self.assertEqual(4, len(selected["bundle"]["source_contexts"]))
+        self.assertEqual(
+            [
+                "capability:token.creation.fixed_definition",
+                "component:quorune.token_creation.create_tokens",
+            ],
+            selected["bundle"]["canonical_owner_ids"],
+        )
+        self.assertEqual(96, selected["one_additional_blocker_cards"])
+        self.assertEqual(133, selected["two_additional_blocker_cards"])
+        self.assertGreater(
+            selected["bundle"][
+                "predicted_complete_cards_per_cycle_hour"
+            ],
+            2,
+        )
+
+    def test_material_residual_threshold_is_disjunctive(self):
+        inputs = deepcopy(self.work_inputs)
+        inputs["card_unlock_frontier"]["family_candidates"] = [
+            {
+                "family_id": "effect_clause:residual-floor-fixture",
+                "base_family": "effect_clause",
+                "expected_exact_card_gain": 10,
+                "estimated_effort": "medium",
+                "prerequisites": [],
+                "runtime_compiler_readiness": "missing_lowering",
+                "affected_cards": 140,
+                "sole_blocker_cards": 10,
+                "one_additional_blocker_cards": 30,
+                "two_additional_blocker_cards": 40,
+                "expected_exact_ability_gain": 20,
+                "expected_material_residual_gain": 120,
+                "interaction_risk": "medium",
+            },
+            *_reviewed_frontier_comparisons(inputs),
+        ]
+        work = build_work_selection(
+            selected_batch=self.queue["selected_batch"],
+            policy=self.catalog["work_selection"],
+            inputs=inputs,
+        )
+        candidate = next(
+            row
+            for row in work["candidates"]
+            if row["candidate_id"]
+            == "frontier:effect_clause:residual-floor-fixture"
+        )
+
+        self.assertTrue(candidate["eligible"])
+        self.assertEqual(
+            "major_material_residual_harvest",
+            candidate["runtime_readiness"]["status"],
         )
 
     def test_covered_fail_closed_pressure_does_not_block_major_ability_harvest(self):
@@ -709,7 +828,7 @@ class RulesSchedulerTests(unittest.TestCase):
 
         self.assertTrue(candidates)
         self.assertEqual(
-            "frontier:effect_clause:major-ability-fixture",
+            "bundle:fixed-token-creation-contexts",
             selected["candidate_id"],
         )
         self.assertEqual("compiler_harvest", selected["candidate_class"])
@@ -717,12 +836,23 @@ class RulesSchedulerTests(unittest.TestCase):
             "major_exact_ability_harvest",
             selected["runtime_readiness"]["status"],
         )
-        self.assertEqual(108, selected["expected_exact_ability_gain"])
+        self.assertEqual(153, selected["expected_exact_ability_gain"])
         self.assertGreaterEqual(
             selected["expected_exact_ability_gain"],
             self.catalog["work_selection"]["coverage_family"][
                 "minimum_exact_ability_gain"
             ],
+        )
+        structural = next(
+            candidate
+            for candidate in work["candidates"]
+            if candidate["candidate_id"]
+            == "frontier:effect_clause:major-ability-fixture"
+        )
+        self.assertFalse(structural["eligible"])
+        self.assertEqual(
+            "structural_nonexecuting",
+            structural["runtime_readiness"]["status"],
         )
         self.assertFalse(pressure["eligible"])
         self.assertEqual(
@@ -891,6 +1021,7 @@ class RulesSchedulerTests(unittest.TestCase):
             "reranking_reason",
             "eligible",
             "priority_within_class",
+            "bundle",
             "rank",
             "selection_state",
         }
@@ -925,6 +1056,32 @@ class RulesSchedulerTests(unittest.TestCase):
                 selected_batch=self.queue["selected_batch"],
                 policy=policy,
                 inputs=self.work_inputs,
+            )
+
+        policy = deepcopy(self.catalog["work_selection"])
+        policy["coverage_family"]["coherent_bundles"][0][
+            "source_contexts"
+        ].append("spell")
+        with self.assertRaisesRegex(
+            WorkSelectionError, "closed identities"
+        ):
+            build_work_selection(
+                selected_batch=self.queue["selected_batch"],
+                policy=policy,
+                inputs=self.work_inputs,
+            )
+
+        inputs = deepcopy(self.work_inputs)
+        inputs["harvest_outcome_history"]["entries"][-1][
+            "actual_complete_card_gain"
+        ] += 1
+        with self.assertRaisesRegex(
+            WorkSelectionError, "fingerprint is stale"
+        ):
+            build_work_selection(
+                selected_batch=self.queue["selected_batch"],
+                policy=self.catalog["work_selection"],
+                inputs=inputs,
             )
 
         policy = deepcopy(self.catalog["work_selection"])

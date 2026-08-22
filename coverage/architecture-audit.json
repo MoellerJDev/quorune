@@ -8172,7 +8172,7 @@
           "module": "quorune.zone_transitions"
         }
       ],
-      "internal_edges": 2227,
+      "internal_edges": 2228,
       "modules": [
         {
           "fan_in": 2,
@@ -10726,8 +10726,13 @@
         },
         {
           "fan_in": 1,
-          "fan_out": 1,
+          "fan_out": 2,
           "module": "quorune.work_selection"
+        },
+        {
+          "fan_in": 1,
+          "fan_out": 0,
+          "module": "quorune.work_selection_bundles"
         },
         {
           "fan_in": 2,
@@ -10869,7 +10874,7 @@
       ]
     },
     "production": {
-      "file_count": 542,
+      "file_count": 543,
       "largest_functions_and_methods": [
         {
           "end_line": 1619,
@@ -11202,7 +11207,7 @@
           "visibility": "public"
         }
       ],
-      "logical_lines": 172683,
+      "logical_lines": 173254,
       "methods": {
         "dunder": 485,
         "private": 815,
@@ -11244,6 +11249,13 @@
           "language": "python",
           "logical_lines": 1513,
           "physical_lines": 1604
+        },
+        {
+          "file": "quorune/work_selection.py",
+          "functions_and_methods": 34,
+          "language": "python",
+          "logical_lines": 1483,
+          "physical_lines": 1561
         },
         {
           "file": "quorune/compiler/program_generation.py",
@@ -11342,13 +11354,6 @@
           "language": "python",
           "logical_lines": 1292,
           "physical_lines": 1371
-        },
-        {
-          "file": "quorune/work_selection.py",
-          "functions_and_methods": 31,
-          "language": "python",
-          "logical_lines": 1208,
-          "physical_lines": 1280
         },
         {
           "file": "server/app.py",
@@ -11547,18 +11552,18 @@
           "physical_lines": 1002
         },
         {
+          "file": "quorune/rules_scheduler.py",
+          "functions_and_methods": 22,
+          "language": "python",
+          "logical_lines": 825,
+          "physical_lines": 877
+        },
+        {
           "file": "quorune/compiler/prevention_templates.py",
           "functions_and_methods": 24,
           "language": "python",
           "logical_lines": 823,
           "physical_lines": 883
-        },
-        {
-          "file": "quorune/rules_scheduler.py",
-          "functions_and_methods": 22,
-          "language": "python",
-          "logical_lines": 819,
-          "physical_lines": 871
         },
         {
           "file": "quorune/effect_runtime/damage_life_and_turns.py",
@@ -12469,6 +12474,13 @@
           "language": "python",
           "logical_lines": 292,
           "physical_lines": 345
+        },
+        {
+          "file": "quorune/work_selection_bundles.py",
+          "functions_and_methods": 7,
+          "language": "python",
+          "logical_lines": 290,
+          "physical_lines": 311
         },
         {
           "file": "web/src/api.ts",
@@ -15343,8 +15355,8 @@
           "physical_lines": 1604
         }
       ],
-      "physical_lines": 189451,
-      "python_file_count": 526,
+      "physical_lines": 190049,
+      "python_file_count": 527,
       "review_thresholds": {
         "function_logical_lines_review": 150,
         "module_logical_lines_review": 1500
@@ -15361,7 +15373,7 @@
           "web/src"
         ]
       },
-      "top_level_functions": 2437,
+      "top_level_functions": 2447,
       "web_file_count": 16
     },
     "runtime_oracle_text_access": {
@@ -26873,7 +26885,7 @@
       "worktree_clean": true
     },
     "evaluated_source_tree": {
-      "fingerprint": "8427399d81ccc92c038b1cd2d69749c715bf4e006ac36ee133e0b5d206d929ba",
+      "fingerprint": "3747892814af9035f74fa92006a08c12c11531068f50db2349619184f5ab3d3f",
       "fingerprint_algorithm": "tracked-git-clean-blobs-sha256-v3"
     },
     "historical_audit_observation": {
@@ -27731,8 +27743,8 @@
       "named_deterministic_fuzz_cases": 1
     },
     "python": {
-      "conventional_ast_cases": 3283,
-      "discovered_total": 6592,
+      "conventional_ast_cases": 3286,
+      "discovered_total": 6595,
       "generated_rule_conformance_cases": 3309,
       "named_cross_cutting_counts": {
         "compiler_named": 169,

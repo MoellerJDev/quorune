@@ -243,6 +243,13 @@ review overlays and mechanic contracts without downloading or reparsing the
 Comprehensive Rules. The rules scheduler and platform status explicitly depend
 on that owner, so a rules review or contract edit cannot leave their inputs
 stale while the finalizer still reports success.
+The rules-scheduler owner also generates
+`coverage/harvest-outcome-history.json` from immutable base/head Git blobs for
+the Commander CardProgram corpus and card-unlock frontier. Static policy stores
+only provenance and coherent bundle definitions; actual harvest counts are
+derived downstream. Bundle selection measures shared owner, source-context,
+grammar, card, ability, residual, blocker-closure, and cycle-hour fields before
+ranking within the existing correctness-first class order.
 Performance baselines remain
 manual because observed latency is review evidence, not an automatic rewrite.
 Use `--check` for read-only diagnosis and in CI; a successful `--write` already
