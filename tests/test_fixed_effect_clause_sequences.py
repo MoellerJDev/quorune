@@ -181,6 +181,81 @@ class FixedEffectClauseSequenceCompilerTests(unittest.TestCase):
                 self.db.lookup("Biomathematician"),
                 ("create_token", "place_counters_on_set"),
             ),
+            (
+                sequence_record(
+                    "{1}{B}{R}: Creatures you control get +2/+0 until end "
+                    "of turn. Each opponent loses 2 life.",
+                    type_line="Creature — Test",
+                    name="Sauron Sequence Fixture",
+                ),
+                (
+                    "modify_all_matching_permanents_until_end_of_turn",
+                    "lose_life_each_opponent",
+                ),
+            ),
+            (
+                sequence_record(
+                    "Exile target card from a graveyard. Create a 1/1 white "
+                    "and black Spirit creature token with flying."
+                ),
+                ("exile_public_graveyard_card", "create_token"),
+            ),
+            (
+                sequence_record(
+                    "+2: You gain 2 life. Put two +1/+1 counters on up to "
+                    "one target creature.",
+                    type_line="Legendary Planeswalker — Ajani",
+                ),
+                ("life", "place_counters_on_targets"),
+            ),
+            (
+                sequence_record(
+                    "+1: Draw a card. Target player mills a card.",
+                    type_line="Legendary Planeswalker — Jace",
+                ),
+                ("draw", "mill"),
+            ),
+            (
+                sequence_record(
+                    "Search your library for up to three basic land cards, "
+                    "put them onto the battlefield tapped, then shuffle. "
+                    "You gain 7 life."
+                ),
+                ("search", "life"),
+            ),
+            (
+                sequence_record(
+                    "{2}, {T}, Sacrifice Stone of Erech: Exile target "
+                    "player's graveyard. Draw a card.",
+                    type_line="Legendary Artifact",
+                    name="Stone of Erech",
+                ),
+                ("move_public_zone_set", "draw"),
+            ),
+            (
+                sequence_record(
+                    "Each player sacrifices a creature of their choice. "
+                    "Each opponent loses 1 life and you gain 1 life."
+                ),
+                ("choose_cards_apnap", "drain_each_opponent"),
+            ),
+            (
+                sequence_record(
+                    "Zombies you control get +2/+1 until end of turn. Other "
+                    "creatures you control get +1/+1 until end of turn."
+                ),
+                (
+                    "modify_all_matching_permanents_until_end_of_turn",
+                    "modify_all_matching_permanents_until_end_of_turn",
+                ),
+            ),
+            (
+                sequence_record(
+                    "Create two 2/2 blue Bird enchantment creature tokens "
+                    "with flying. Scry 1."
+                ),
+                ("create_token", "scry"),
+            ),
         )
         for record, operations in fixtures:
             with self.subTest(name=record.name):

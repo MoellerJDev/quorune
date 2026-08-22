@@ -19,6 +19,7 @@ from quorune.record import (
     checkpoint_envelope,
     replay_record,
 )
+from quorune.rules.capabilities import load_default_capability_registry
 
 
 class MonarchRuleTests(unittest.TestCase):
@@ -394,6 +395,59 @@ class MonarchRuleTests(unittest.TestCase):
             "become_monarch",
             ir.faces[0].nodes[0].effects[0]["op"],
         )
+
+    def test_fixed_monarch_effects_are_capability_closed_across_contexts(self):
+        capabilities = load_default_capability_registry()
+        base = self.db.lookup("Arcum Dagsson")
+        fixtures = (
+            (
+                replace(
+                    base,
+                    name="Monarch Trigger Fixture",
+                    oracle_text=(
+                        "When this creature enters, you become the monarch."
+                    ),
+                    type_line="Creature — Test",
+                    keywords=(),
+                    faces=(),
+                ),
+                "triggered_ability",
+            ),
+            (
+                replace(
+                    base,
+                    name="Monarch Activation Fixture",
+                    oracle_text="{4}, {T}: You become the monarch.",
+                    type_line="Artifact",
+                    keywords=(),
+                    faces=(),
+                ),
+                "activated_ability",
+            ),
+        )
+        for record, kind in fixtures:
+            with self.subTest(card_name=record.name):
+                ir = compile_oracle_card(
+                    record,
+                    capability_registry=capabilities,
+                    capability_profile="commander_review",
+                )
+                node = next(
+                    node
+                    for face in ir.faces
+                    for node in face.nodes
+                    if node.template_id == "become-monarch-controller-v1"
+                )
+                self.assertTrue(node.exact, ir.material_residuals)
+                self.assertEqual(kind, node.kind)
+                self.assertEqual(
+                    {"op": "become_monarch", "player": "$controller"},
+                    node.effects[0],
+                )
+                self.assertIn(
+                    "variant.monarch.designate",
+                    node.capability_dependencies,
+                )
 
 
 if __name__ == "__main__":

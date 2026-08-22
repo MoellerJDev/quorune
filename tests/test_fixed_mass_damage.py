@@ -289,6 +289,26 @@ class FixedMassDamageCompilerTests(unittest.TestCase):
         )
         self.assertIn("target.revalidate_resolution", node.capability_dependencies)
 
+    def test_activated_fixed_damage_set_uses_the_shared_capability_gate(self):
+        text = "{T}: Fixture deals 1 damage to each player."
+        ir = self.compile(text, type_line="Creature — Test")
+        node = ir.faces[0].nodes[0]
+
+        self.assertEqual("exact", ir.status, ir.material_residuals)
+        self.assertTrue(node.exact)
+        self.assertEqual("activated_ability", node.kind)
+        self.assertEqual(
+            "damage-fixed-simultaneous-set-v1",
+            node.template_id,
+        )
+        self.assertTrue(
+            {
+                "damage.amount.positive",
+                "damage.batch.fixed_set",
+                "damage.result.player_life",
+            }.issubset(node.capability_dependencies)
+        )
+
     def test_unsupported_mass_damage_wording_remains_residual(self):
         variants = (
             "each creature without flying",

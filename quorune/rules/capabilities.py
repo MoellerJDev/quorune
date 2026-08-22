@@ -68,12 +68,20 @@ from .token_creation_capability_shapes import (
     fixed_token_creation_node_capabilities,
 )
 from .mill_capability_shapes import fixed_mill_node_capabilities
+from .monarch_capability_shapes import (
+    MONARCH_DESIGNATION_CAPABILITY,
+    fixed_monarch_node_capabilities,
+)
 from .library_search_capability_shapes import (
     FIXED_LIBRARY_SEARCH_CAPABILITY_ID,
     FIXED_LIBRARY_SEARCH_MECHANIC_ID,
     fixed_library_search_node_capabilities,
 )
 from .surveil_capability_shapes import fixed_surveil_node_capabilities
+from .self_return_capability_shapes import fixed_self_return_node_capabilities
+from .fixed_resolution_characteristic_shapes import (
+    fixed_controlled_characteristic_set_node_capabilities,
+)
 from .optional_counter_capability_shapes import (
     optional_fixed_counter_event_trigger_node_capabilities,
 )
@@ -103,6 +111,8 @@ from ..compiler.delayed_draw_templates import (
     FIXED_NEXT_TURN_DRAW_CAPABILITY,
     FIXED_NEXT_TURN_DRAW_MECHANIC,
 )
+from ..compiler.monarch_templates import MONARCH_MECHANIC
+from ..compiler.self_return_templates import FIXED_SELF_RETURN_MECHANIC
 
 from ..util import stable_json
 
@@ -357,6 +367,8 @@ _SHAPE_GATED_MECHANICS = frozenset(
         _ECHO_MECHANIC,
         _CREW_MECHANIC,
         _STATION_MECHANIC,
+        MONARCH_MECHANIC,
+        FIXED_SELF_RETURN_MECHANIC,
     }
 )
 _CAPABILITY_ID = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)+$")
@@ -949,6 +961,7 @@ def _targeted_effect_capabilities(
         fixed_affected_player_discard_node_capabilities,
         fixed_affected_player_sacrifice_node_capabilities,
         fixed_mill_node_capabilities,
+        fixed_monarch_node_capabilities,
         fixed_library_search_node_capabilities,
         fixed_life_node_capabilities,
         fixed_controller_effect_sequence_node_capabilities,
@@ -956,6 +969,8 @@ def _targeted_effect_capabilities(
         fixed_effect_clause_sequence_node_capabilities,
         fixed_scry_node_capabilities,
         fixed_surveil_node_capabilities,
+        fixed_self_return_node_capabilities,
+        fixed_controlled_characteristic_set_node_capabilities,
         single_explore_node_capabilities,
         single_proliferate_node_capabilities,
         self_regeneration_node_capabilities,
@@ -1133,7 +1148,6 @@ def capability_dependencies_for_node(
                 "add_type_until_end_of_turn",
                 "add_types_until_end_of_turn",
                 "grant_keyword_until_end_of_turn",
-                "modify_all_matching_permanents_until_end_of_turn",
                 "modify_stats_until_end_of_turn",
                 "pump_controlled_creatures",
             }
@@ -1207,6 +1221,8 @@ def _shape_gated_covered_mechanics(supplied: set[str]) -> set[str]:
     mapping = {
         "zone.mill.fixed": "mill",
         FIXED_LIBRARY_SEARCH_CAPABILITY_ID: FIXED_LIBRARY_SEARCH_MECHANIC_ID,
+        MONARCH_DESIGNATION_CAPABILITY: MONARCH_MECHANIC,
+        "permanent.return.owner_hand": FIXED_SELF_RETURN_MECHANIC,
     }
     return {
         mechanic

@@ -60,6 +60,7 @@ from .compiler.library_search_templates import (
 )
 from .compiler.mill_templates import fixed_mill_effect_template
 from .compiler.modal_templates import fixed_choose_one_modal_spell_template
+from .compiler.monarch_templates import fixed_monarch_effect_template
 from .compiler.keyword_nodes import (
     bloodthirst_keyword_node,
     closed_special_keyword_node,
@@ -91,6 +92,7 @@ from .compiler.resolution_effect_templates import (
     typed_resolution_effect_template,
 )
 from .compiler.scry_templates import fixed_scry_effect_template
+from .compiler.self_return_templates import fixed_self_return_effect_template
 from .compiler.storm_nodes import STORM_MECHANIC_ID
 from .compiler.surveil_templates import fixed_surveil_effect_template
 from .compiler.static_runtime_nodes import (
@@ -112,7 +114,7 @@ from .util import stable_json
 
 
 ORACLE_IR_SCHEMA_VERSION = 1
-ORACLE_COMPILER_VERSION = "oracle-ir-v114"
+ORACLE_COMPILER_VERSION = "oracle-ir-v115"
 ORACLE_OPERATIONS = {"parse", "explain", "residuals", "coverage"}
 _TRIGGER_PREFIX = re.compile(
     r"^(when|whenever|at the beginning of)\b",
@@ -265,22 +267,9 @@ def _effect_template(
     """Compile only whole, reviewed Oracle sentence templates."""
 
     normalized = text.strip()
-    if re.fullmatch(
-        r"you become the monarch\.?",
-        normalized,
-        re.IGNORECASE,
-    ):
-        return (
-            "become-monarch-controller-v1",
-            (
-                {
-                    "op": "become_monarch",
-                    "player": "$controller",
-                },
-            ),
-            None,
-            ("cr-725-the-monarch",),
-        )
+    monarch = fixed_monarch_effect_template(normalized)
+    if monarch is not None:
+        return monarch.compiled()
     delayed_draw = fixed_next_turn_upkeep_draw_effect_template(normalized)
     if delayed_draw is not None:
         return delayed_draw.compiled()
@@ -376,19 +365,9 @@ def _effect_template(
             None,
             ("cr-611-continuous-effects", keyword),
         )
-    match = re.fullmatch(
-        r"return this (?P<kind>artifact|creature|enchantment|permanent) "
-        r"to its owner'?s hand\.?",
-        normalized,
-        re.IGNORECASE,
-    )
-    if match:
-        return (
-            f"bounce-self-{match.group('kind').casefold()}-v1",
-            ({"op": "bounce", "card": "$source"},),
-            None,
-            ("cr-400-general",),
-        )
+    self_return = fixed_self_return_effect_template(normalized)
+    if self_return is not None:
+        return self_return.compiled()
     token_creation = fixed_token_creation_effect_template(normalized)
     if token_creation is not None:
         return token_creation.compiled()

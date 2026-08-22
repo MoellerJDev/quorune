@@ -12,6 +12,10 @@ from quorune.compiler.return_to_hand_templates import (
     TargetedReturnToHandEffectTemplate,
     targeted_return_to_hand_effect_template,
 )
+from quorune.compiler.self_return_templates import (
+    FIXED_SELF_RETURN_MECHANIC,
+    fixed_self_return_effect_template,
+)
 from quorune.oracle_ir import (
     compile_oracle_card,
     register_generated_programs,
@@ -182,6 +186,45 @@ class TargetedReturnToHandCompilerTests(unittest.TestCase):
                     },
                 )
                 self.assertEqual(text, text[node.span.start : node.span.end])
+
+    def test_fixed_self_return_activation_is_capability_closed(self):
+        text = "{2}{U}: Return this creature to its owner's hand."
+        ir = self.compile(text, type_line="Creature — Test")
+        node = ir.faces[0].nodes[0]
+
+        self.assertEqual("exact", ir.status, ir.material_residuals)
+        self.assertTrue(node.exact)
+        self.assertEqual("activated_ability", node.kind)
+        self.assertEqual("bounce-self-creature-v1", node.template_id)
+        self.assertEqual((FIXED_SELF_RETURN_MECHANIC,), node.mechanics)
+        self.assertEqual(
+            ({"op": "bounce", "card": "$source"},),
+            node.effects,
+        )
+        self.assertIn(
+            "permanent.return.owner_hand",
+            node.capability_dependencies,
+        )
+
+        template = fixed_self_return_effect_template(
+            "Return this enchantment to its owner's hand."
+        )
+        self.assertIsNotNone(template)
+        assert template is not None
+        self.assertEqual("bounce-self-enchantment-v1", template.template_id)
+        for effects, schema, mechanics in (
+            (template.compiled()[1], {"count": 1}, template.compiled()[3]),
+            (({"op": "bounce", "card": "$target.0"},), None, template.compiled()[3]),
+            (template.compiled()[1], None, ("cr-400-general",)),
+        ):
+            with self.subTest(effects=effects, schema=schema):
+                self.assertFalse(
+                    capability_dependencies_for_node(
+                        effects=effects,
+                        target_schema=schema,
+                        mechanic_ids=mechanics,
+                    )
+                )
 
     def test_unsupported_return_variants_remain_material_residuals(self):
         for text in (
