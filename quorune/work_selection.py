@@ -9,6 +9,7 @@ from typing import Any, Mapping, Sequence
 from .util import stable_json
 from .work_selection_bundles import (
     atomic_frontier_bundle,
+    bundle_measurement_decision,
     candidate_frontier_measurements,
     single_candidate_bundle,
     validate_bundle_policy,
@@ -315,7 +316,7 @@ def _validated_reviewed_history(
 def _validated_policy(
     policy: Mapping[str, Any], harvest_history: Mapping[str, Any]
 ) -> dict[str, Any]:
-    if int(policy.get("policy_version") or 0) != 4:
+    if int(policy.get("policy_version") or 0) != 5:
         raise WorkSelectionError("Unsupported work-selection policy")
     priority_classes, starting_uncovered = _validated_priority_policy(policy)
     coverage = _mapping(policy.get("coverage_family"), "coverage_family")
@@ -332,7 +333,7 @@ def _validated_policy(
         minimum_gain=int(validated_coverage["minimum_complete_card_gain"]),
     )
     return {
-        "policy_version": 4,
+        "policy_version": 5,
         "priority_classes": priority_classes,
         "starting_uncovered_high_risk_pairs": starting_uncovered,
         **validated_coverage,
@@ -1130,14 +1131,16 @@ def _synthesized_frontier_candidates(
             effort=effort,
             policy=policy,
         )
-        if bundle_policy["measurement_status"] == "upper_bound_only":
+        effective_measurement_status, demotion_reason = (
+            bundle_measurement_decision(
+                str(bundle_policy["measurement_status"]),
+                bool(measurement["bounded_executable_verified"]),
+            )
+        )
+        if demotion_reason is not None:
             readiness = "requires_bounded_cohort"
             eligible = False
-            reason = (
-                "The synthesized family closure is only an upper bound; declared "
-                "exclusions and sibling grammar require a bounded executable cohort "
-                "before this bundle can become foreground."
-            )
+            reason = demotion_reason
         contexts = [str(value) for value in bundle_policy["source_contexts"]]
         interaction_risks = measurement["interaction_risks"]
         result.append(
@@ -1223,9 +1226,7 @@ def _synthesized_frontier_candidates(
                     "explicit_exclusions": list(
                         bundle_policy["explicit_exclusions"]
                     ),
-                    "measurement_status": str(
-                        bundle_policy["measurement_status"]
-                    ),
+                    "measurement_status": effective_measurement_status,
                     "synthesized": True,
                 },
             )

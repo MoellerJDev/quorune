@@ -75029,23 +75029,27 @@
       "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "static_traceability",
+      "blockers": [],
       "case_id": "cr-702.124",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "definition_only",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_keywords_compile_as_exact_typed_setup_declarations"
+      ],
+      "implementation_components": [
+        "quorune.rules.capabilities.CapabilityRegistry"
+      ],
+      "notes": [
+        "Keyword heading; three fine-grained setup capabilities cover the bounded ordinary Partner, Choose a Background, and Doctor's companion declarations."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.124",
       "rule_text_sha256": "29035e784f9305c0eb62aa33662b296306f6a77bedaca7c67f2e3432dd43ace2",
       "schema_version": 1,
@@ -75054,26 +75058,40 @@
         "end_line": 4907,
         "start_line": 4906
       },
-      "status": "unreviewed"
+      "status": "definition_only"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Partner followed by named text and Partner with remain separate unsupported declaration grammars"
       ],
       "case_id": "cr-702.124a",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_keywords_compile_as_exact_typed_setup_declarations",
+        "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation"
+      ],
+      "implementation_components": [
+        "quorune.commander_pairing.validate_commander_pair",
+        "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node"
+      ],
+      "notes": [
+        "The represented declarations function only at authoritative game setup and are never reconstructed from runtime Oracle prose or broad keyword metadata."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "702.124a",
       "rule_text_sha256": "16700e29fb390237f1e9ef03af986267b4ecb2a34687f928060b0390ab0c22e5",
       "schema_version": 1,
@@ -75082,26 +75100,41 @@
         "end_line": 4909,
         "start_line": 4908
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "the lower-level engine setup boundary does not itself enforce an exact 100-card submitted deck"
       ],
       "case_id": "cr-702.124b",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips"
+      ],
+      "implementation_components": [
+        "quorune.commander.initial_commander_state",
+        "quorune.deck.DeckLoader.validate_commander_deck"
+      ],
+      "notes": [
+        "Both accepted physical commanders begin in the public command zone and receive distinct designations."
+      ],
+      "required_scenarios": [
+        "positive",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.124b",
       "rule_text_sha256": "821b521feae4a800e76c8dcad0ca5107ed56cbf8f2ff5d8f1b8aecb65beb1933",
       "schema_version": 1,
@@ -75110,26 +75143,28 @@
         "end_line": 4911,
         "start_line": 4910
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "combined color identity is reported during deck validation but is not yet an authoritative engine-creation admission gate"
       ],
       "case_id": "cr-702.124c",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "behavioral",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
       "executable_test_ids": [],
-      "implementation_components": [],
+      "implementation_components": [
+        "quorune.deck.DeckLoader.validate_commander_deck"
+      ],
       "notes": [],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.124c",
       "rule_text_sha256": "a01989d3dbd0771fe69d3719f38a7b40c0e2c8e90d7d7a6b7e539c3bd2f85e3a",
       "schema_version": 1,
@@ -75138,26 +75173,44 @@
         "end_line": 4913,
         "start_line": 4912
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "the bounded pairing tests do not yet prove independent commander tax for both members through a complete cast replay"
       ],
       "case_id": "cr-702.124d",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+        "tests.test_commander_damage_identity.CommanderDamageIdentityTests.test_same_named_commanders_remain_separate_and_drive_four_player_sba"
+      ],
+      "implementation_components": [
+        "quorune.commander.commander_damage_key",
+        "quorune.commander.initial_commander_state"
+      ],
+      "notes": [
+        "Physical commander identity and damage ledgers are already independent for every designation."
+      ],
+      "required_scenarios": [
+        "positive",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.124d",
       "rule_text_sha256": "3ea1e3434eb32a806dd055302b277f65dc69ae1c6621b186bfed14876e9d5459",
       "schema_version": 1,
@@ -75166,26 +75219,28 @@
         "end_line": 4915,
         "start_line": 4914
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "effects that refer generically to your commander do not yet share one typed either-designation choice owner"
       ],
       "case_id": "cr-702.124e",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "behavioral",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
       "executable_test_ids": [],
-      "implementation_components": [],
+      "implementation_components": [
+        "quorune.commander_pairing.validate_commander_pair"
+      ],
       "notes": [],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.124e",
       "rule_text_sha256": "18627147180164770859db17c3301a3bdc36be2d80fb7b764dc51ebf9a8a49af",
       "schema_version": 1,
@@ -75194,26 +75249,38 @@
         "end_line": 4917,
         "start_line": 4916
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "unsupported Partner-with and named Partner variants are rejected rather than positively modeled"
       ],
       "case_id": "cr-702.124f",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative",
+        "interaction"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation"
+      ],
+      "implementation_components": [
+        "quorune.commander_pairing.validate_commander_pair"
+      ],
+      "notes": [
+        "Every represented cross-variant combination fails before state construction."
+      ],
+      "required_scenarios": [
+        "negative",
+        "interaction"
+      ],
+      "reviewed": true,
       "rule_id": "702.124f",
       "rule_text_sha256": "3a7fdde49a8045d39a447ded5ebd2bf3f511d56b4a8c78b7890d79945f3dec8a",
       "schema_version": 1,
@@ -75222,26 +75289,37 @@
         "end_line": 4919,
         "start_line": 4918
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "selection among multiple distinct pairing abilities on the same physical card is not yet represented"
       ],
       "case_id": "cr-702.124g",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation"
+      ],
+      "implementation_components": [
+        "quorune.commander.initial_commander_state",
+        "quorune.commander_pairing.validate_commander_pair"
+      ],
+      "notes": [
+        "More than two proposed commanders are rejected before state construction."
+      ],
+      "required_scenarios": [
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "702.124g",
       "rule_text_sha256": "36196de7966ba6580ead8160a50c1a1c99058a419efeee5ee3b4261120dde05f",
       "schema_version": 1,
@@ -75250,26 +75328,47 @@
         "end_line": 4921,
         "start_line": 4920
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.124h",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_keywords_compile_as_exact_typed_setup_declarations",
+        "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+        "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation",
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed"
+      ],
+      "implementation_components": [
+        "quorune.commander_pairing.validate_commander_pair",
+        "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node",
+        "quorune.commander.initial_commander_state"
+      ],
+      "notes": [
+        "Both distinct legendary creature cards require one current exact ordinary Partner declaration in their canonical CardPrograms."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.124h",
       "rule_text_sha256": "13a1652f9ffffd5f90dac7079c4a6077e804c1579f8800ccaf48a39158a7fca3",
       "schema_version": 1,
@@ -75278,26 +75377,38 @@
         "end_line": 4923,
         "start_line": 4922
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "Character select, Father and son, Friends forever, and Survivors require distinct exact declaration identities"
       ],
       "case_id": "cr-702.124i",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_keywords_compile_as_exact_typed_setup_declarations",
+        "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation"
+      ],
+      "implementation_components": [
+        "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node",
+        "quorune.commander_pairing.validate_commander_pair"
+      ],
+      "notes": [
+        "Named variants do not fall back to broad Scryfall Partner keyword metadata."
+      ],
+      "required_scenarios": [
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "702.124i",
       "rule_text_sha256": "be54224c8286f0d66708cabf68f66bfdf44f67366f73842e6f0d824257d613bd",
       "schema_version": 1,
@@ -75306,26 +75417,38 @@
         "end_line": 4925,
         "start_line": 4924
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "named mutual pairing and its enters-the-battlefield search need separate typed declaration and trigger owners"
       ],
       "case_id": "cr-702.124j",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "negative"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_keywords_compile_as_exact_typed_setup_declarations",
+        "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation"
+      ],
+      "implementation_components": [
+        "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node",
+        "quorune.commander_pairing.validate_commander_pair"
+      ],
+      "notes": [
+        "Partner with cards cannot acquire ordinary Partner setup authority from broad keyword metadata."
+      ],
+      "required_scenarios": [
+        "negative"
+      ],
+      "reviewed": true,
       "rule_id": "702.124j",
       "rule_text_sha256": "3842530fd5c5b7308f8ccdc261b12044ccf9e838d38439a51a89927e45a83889",
       "schema_version": 1,
@@ -75334,26 +75457,47 @@
         "end_line": 4927,
         "start_line": 4926
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.124k",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_keywords_compile_as_exact_typed_setup_declarations",
+        "tests.test_commander_pairing.CommanderPairingTests.test_choose_a_background_and_doctors_companion_accept_exact_type_pairs",
+        "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation",
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed"
+      ],
+      "implementation_components": [
+        "quorune.commander_pairing.validate_commander_pair",
+        "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node",
+        "quorune.characteristic_evaluation.type_parts"
+      ],
+      "notes": [
+        "The companion declaration must be current and exact; the other card must be a legendary enchantment with the Background subtype."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.124k",
       "rule_text_sha256": "2410eb9b9e8194c5bd747391c6533731166915b6d3bf9a7aa25b68ca8d63c457",
       "schema_version": 1,
@@ -75362,26 +75506,47 @@
         "end_line": 4929,
         "start_line": 4928
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
-      "blockers": [
-        "semantic_review_not_completed"
-      ],
+      "assertion_kind": "executable_engine",
+      "blockers": [],
       "case_id": "cr-702.124m",
       "case_version": 1,
-      "classification": "unclassified",
-      "covered_scenarios": [],
+      "classification": "behavioral",
+      "covered_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
-      "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
-      "required_scenarios": [],
-      "reviewed": false,
+      "executable_test_ids": [
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_keywords_compile_as_exact_typed_setup_declarations",
+        "tests.test_commander_pairing.CommanderPairingTests.test_choose_a_background_and_doctors_companion_accept_exact_type_pairs",
+        "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation",
+        "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed"
+      ],
+      "implementation_components": [
+        "quorune.commander_pairing.validate_commander_pair",
+        "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node",
+        "quorune.characteristic_evaluation.type_parts"
+      ],
+      "notes": [
+        "The companion must itself be a legendary creature; the other card must have exactly the Time Lord and Doctor creature subtypes."
+      ],
+      "required_scenarios": [
+        "positive",
+        "negative",
+        "interaction",
+        "multiplayer",
+        "replay"
+      ],
+      "reviewed": true,
       "rule_id": "702.124m",
       "rule_text_sha256": "c369983576cc3b65b121701d6f25033d06a00639ba12bef53a0244b0ff96529c",
       "schema_version": 1,
@@ -75390,26 +75555,30 @@
         "end_line": 4931,
         "start_line": 4930
       },
-      "status": "unreviewed"
+      "status": "passing"
     },
     {
-      "assertion_kind": "inventory_only",
+      "assertion_kind": "unsupported_fail_closed",
       "blockers": [
-        "semantic_review_not_completed"
+        "runtime effects that refer to pairing abilities by specific or aggregate name are not yet represented"
       ],
       "case_id": "cr-702.124n",
       "case_version": 1,
-      "classification": "unclassified",
+      "classification": "behavioral",
       "covered_scenarios": [],
       "dependency_rule_ids": [
         "702.124"
       ],
       "effective_date": "2026-08-07",
       "executable_test_ids": [],
-      "implementation_components": [],
-      "notes": [],
+      "implementation_components": [
+        "quorune.commander_pairing.validate_commander_pair"
+      ],
+      "notes": [
+        "Setup capability IDs remain distinct and do not authorize cross-variant fallback."
+      ],
       "required_scenarios": [],
-      "reviewed": false,
+      "reviewed": true,
       "rule_id": "702.124n",
       "rule_text_sha256": "928930a6eebe3d3994381d48c5c692c35d13888ee7552ca0829c44bc17d8d1cd",
       "schema_version": 1,
@@ -75418,7 +75587,7 @@
         "end_line": 4933,
         "start_line": 4932
       },
-      "status": "unreviewed"
+      "status": "blocked"
     },
     {
       "assertion_kind": "inventory_only",
@@ -103601,7 +103770,7 @@
         "tests.test_commander_damage_identity.CommanderDamageIdentityTests.test_same_named_commanders_remain_separate_and_drive_four_player_sba",
         "tests.test_commander_damage_identity.CommanderDamageIdentityTests.test_designation_survives_zone_and_control_changes",
         "tests.test_commander_damage_identity.CommanderDamageIdentityTests.test_ordinary_copy_of_commander_has_no_designation",
-        "tests.test_commander_damage_identity.CommanderDamageIdentityTests.test_two_commander_setup_assigns_two_distinct_designations",
+        "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
         "tests.test_commander_damage_identity.CommanderDamageIdentityTests.test_command_replay_preserves_designation_damage_key"
       ],
       "implementation_components": [

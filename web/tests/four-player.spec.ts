@@ -9,6 +9,8 @@ import {
   viewRevision,
 } from "./support/progress";
 
+const COLD_DECK_VALIDATION_TIMEOUT_MS = 90_000;
+
 async function enter(page: Page, name: string) {
   await page.goto("/");
   await page.getByTestId("display-name").fill(name);
@@ -23,10 +25,11 @@ async function submitNamedDeck(page: Page, name: string, commander: string, text
   await page.getByTestId("submit-deck").click();
   // These duplicated lists exercise the browser protocol, not matchup or
   // semantic-coverage evidence. A draft mechanic contract may correctly keep
-  // the ready list behind a visible fail-closed fidelity warning.
+  // the ready list behind a visible fail-closed fidelity warning. The first
+  // hosted validation also cold-populates compiler/preflight caches.
   await expect(
     page.locator(".success-banner, .warning-banner").filter({ hasText: /Deck (validated|accepted)/ }),
-  ).toBeVisible({ timeout: 30_000 });
+  ).toBeVisible({ timeout: COLD_DECK_VALIDATION_TIMEOUT_MS });
   await expect(page.getByTestId("deck-ready-summary")).toContainText(name);
 }
 

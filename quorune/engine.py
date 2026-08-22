@@ -455,7 +455,7 @@ class CommanderEngine(
             decks,
             first_player=first_player,
             player_names=player_names,
-            config=config,
+            config=config, semantics=semantics,
         )
         engine = cls(card_db, state, semantics)
         engine._log(

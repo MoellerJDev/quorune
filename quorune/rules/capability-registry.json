@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "registry_version": 127,
+  "registry_version": 128,
   "effective_date": "2026-08-07",
   "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
   "profiles": [
@@ -49,7 +49,28 @@
       "mechanic_id": "cr-903-commander",
       "capabilities": [
         "format.commander.damage.physical_identity",
+        "format.commander.pairing.choose_background",
+        "format.commander.pairing.doctors_companion",
+        "format.commander.pairing.partner",
         "variant.commander.zone_return"
+      ]
+    },
+    {
+      "mechanic_id": "partner",
+      "capabilities": [
+        "format.commander.pairing.partner"
+      ]
+    },
+    {
+      "mechanic_id": "choose a background",
+      "capabilities": [
+        "format.commander.pairing.choose_background"
+      ]
+    },
+    {
+      "mechanic_id": "doctor's companion",
+      "capabilities": [
+        "format.commander.pairing.doctors_companion"
       ]
     },
     {
@@ -5269,6 +5290,87 @@
       "dependency_fail_closed_rationale": "",
       "implementation_mutation_status": "killed",
       "implementation_mutation_rationale": "test_keyword_damage_result_mutants_are_killed removes toxic result leaves and the behavioral assertion rejects the survivor.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "format.commander.pairing.partner",
+      "version": 1,
+      "official_rules": ["702.124a", "702.124f", "702.124h", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Allow exactly two distinct legendary commanders when both carry current compiler-certified ordinary Partner declarations.",
+        "inputs": ["two distinct legendary Commander cards", "one current trusted ordinary Partner declaration on each card", "Commander game setup"],
+        "outputs": ["one accepted two-commander designation", "two independent public commander designation identities"],
+        "exclusions": ["Partner with", "Partner followed by an ability-word variant", "mixed pairing variants", "granted, copied, removed, or text-changed Partner", "provisional, stale, duplicated, or noncanonical declarations"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.commander_pairing.validate_commander_pair", "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node", "quorune.commander.initial_commander_state"],
+      "positive_tests": ["test_partner_pair_is_designated_in_four_player_public_state_and_round_trips"],
+      "negative_tests": ["test_unsupported_or_mismatched_pairings_fail_closed_without_mutation"],
+      "interaction_tests": ["test_pairing_program_and_compiler_mutations_fail_closed"],
+      "multiplayer_tests": ["test_partner_pair_is_designated_in_four_player_public_state_and_round_trips"],
+      "privacy_tests": [],
+      "replay_tests": ["test_partner_pair_is_designated_in_four_player_public_state_and_round_trips"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The ordinary Partner declaration has no downstream capability dependency; its own trusted declaration, current source, and canonical CardProgram membership are checked directly.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_pairing_program_and_compiler_mutations_fail_closed removes or corrupts each typed declaration and proves arbitrary two-commander setup remains rejected.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "format.commander.pairing.choose_background",
+      "version": 1,
+      "official_rules": ["702.124a", "702.124f", "702.124k", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Allow a compiler-certified Choose a Background commander to pair with one legendary Background enchantment.",
+        "inputs": ["one legendary card with a current trusted Choose a Background declaration", "one distinct legendary enchantment with the Background subtype", "Commander game setup"],
+        "outputs": ["one accepted two-commander designation", "two independent public commander designation identities"],
+        "exclusions": ["nonlegendary Backgrounds", "Background-like names without the subtype", "mixed pairing variants", "granted, copied, removed, or text-changed declarations", "provisional, stale, duplicated, or noncanonical declarations"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.commander_pairing.validate_commander_pair", "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node", "quorune.commander.initial_commander_state"],
+      "positive_tests": ["test_choose_a_background_and_doctors_companion_accept_exact_type_pairs"],
+      "negative_tests": ["test_unsupported_or_mismatched_pairings_fail_closed_without_mutation"],
+      "interaction_tests": ["test_pairing_program_and_compiler_mutations_fail_closed"],
+      "multiplayer_tests": ["test_partner_pair_is_designated_in_four_player_public_state_and_round_trips"],
+      "privacy_tests": [],
+      "replay_tests": ["test_partner_pair_is_designated_in_four_player_public_state_and_round_trips"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The setup owner reads a cycle-safe printed type line and the trusted declaration directly, with no downstream runtime capability dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_pairing_program_and_compiler_mutations_fail_closed removes or corrupts each typed declaration and proves type-line resemblance alone cannot authorize the pair.",
+      "blockers": [],
+      "status": "trusted"
+    },
+    {
+      "id": "format.commander.pairing.doctors_companion",
+      "version": 1,
+      "official_rules": ["702.124a", "702.124f", "702.124m", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability": {
+        "summary": "Allow a compiler-certified Doctor's companion commander to pair with one legendary creature whose only creature subtypes are Time Lord and Doctor.",
+        "inputs": ["one legendary card with a current trusted Doctor's companion declaration", "one distinct legendary creature with exactly the Time Lord and Doctor subtypes", "Commander game setup"],
+        "outputs": ["one accepted two-commander designation", "two independent public commander designation identities"],
+        "exclusions": ["Doctors with any additional subtype", "noncreature or nonlegendary Doctors", "mixed pairing variants", "granted, copied, removed, or text-changed declarations", "provisional, stale, duplicated, or noncanonical declarations"]
+      },
+      "dependencies": [],
+      "implementation_components": ["quorune.commander_pairing.validate_commander_pair", "quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node", "quorune.commander.initial_commander_state"],
+      "positive_tests": ["test_choose_a_background_and_doctors_companion_accept_exact_type_pairs"],
+      "negative_tests": ["test_unsupported_or_mismatched_pairings_fail_closed_without_mutation"],
+      "interaction_tests": ["test_pairing_program_and_compiler_mutations_fail_closed"],
+      "multiplayer_tests": ["test_partner_pair_is_designated_in_four_player_public_state_and_round_trips"],
+      "privacy_tests": [],
+      "replay_tests": ["test_partner_pair_is_designated_in_four_player_public_state_and_round_trips"],
+      "required_evidence": ["positive", "negative", "interaction", "multiplayer", "replay"],
+      "dependency_fail_closed_status": "not_applicable",
+      "dependency_fail_closed_rationale": "The setup owner reads a cycle-safe printed type line and the trusted declaration directly, with no downstream runtime capability dependency.",
+      "implementation_mutation_status": "killed",
+      "implementation_mutation_rationale": "test_pairing_program_and_compiler_mutations_fail_closed removes or corrupts each typed declaration and proves Doctor subtype resemblance alone cannot authorize the pair.",
       "blockers": [],
       "status": "trusted"
     },

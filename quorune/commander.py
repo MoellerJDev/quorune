@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping, Protocol
 
 from .carddb import CardDatabase
+from .commander_pairing import validated_commander_counts
 from .deck import DeckDefinition
 from .model import (
     CONTROL_HISTORY_VERSION,
@@ -143,6 +144,7 @@ def initial_commander_state(
     first_player: str | None = None,
     player_names: Mapping[str, str] | None = None,
     config: GameConfig | None = None,
+    semantics: Any | None = None,
 ) -> GameState:
     """Build the authoritative setup state for one Commander game.
 
@@ -198,18 +200,10 @@ def initial_commander_state(
 
     for seat in all_seats:
         deck = decks[seat]
-        commander_names = list(deck.commanders) or [
-            entry.name
-            for entry in deck.entries
-            if entry.board == "commander"
-        ]
-        commander_remaining: dict[str, int] = {}
+        commander_remaining = validated_commander_counts(
+            card_db, semantics, deck
+        )
         commander_ordinal = 0
-        for commander in commander_names:
-            canonical = card_db.lookup(commander).name
-            commander_remaining[canonical] = (
-                commander_remaining.get(canonical, 0) + 1
-            )
         serial = 0
         for entry in deck.entries:
             if entry.board not in {"mainboard", "commander"}:

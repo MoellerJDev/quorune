@@ -253,6 +253,10 @@ cohort establishes one executable grammar and lower bound. Bundle selection
 reports shared owner, source-context, grammar, card, ability, residual,
 blocker-closure, and cycle-hour fields before ranking within the existing
 correctness-first class order.
+A `bounded_executable` declaration is rechecked against every current member
+occurrence, lowerable ability, card row, and material residual. Census drift
+returns it to `requires_bounded_cohort` rather than preserving a stale
+selection.
 Performance baselines remain
 manual because observed latency is review evidence, not an automatic rewrite.
 Use `--check` for read-only diagnosis and in CI; a successful `--write` already
@@ -483,9 +487,11 @@ then looks for a live successful certification receipt for the same pull
 request and exact head. When that receipt and the checked-out tracked-source
 fingerprint match, every expensive Linux, Windows, package, generated, and
 browser job is skipped and `PR / Certification` publishes a provenance-carrying
-reuse receipt. Missing, expired, malformed, mismatched, or unavailable evidence
-falls back to the complete matrix. Open, synchronize, and reopen events always
-run the complete matrix.
+reuse receipt. If the unchanged head is still being certified, the metadata
+run waits for that earlier run and reuses its receipt instead of starting a
+second matrix. Missing, expired, malformed, mismatched, or unavailable evidence
+with no active exact-head run falls back to the complete matrix. Open,
+synchronize, and reopen events always run the complete matrix.
 
 The PR workflow intentionally does not subscribe to `ready_for_review`; moving
 an unchanged draft into review therefore does not start regression by itself.

@@ -128,6 +128,7 @@
     "quorune/combat_evasion.py",
     "quorune/combat_evasion_engine_adapter.py",
     "quorune/commander.py",
+    "quorune/commander_pairing.py",
     "quorune/characteristic_evaluation.py",
     "quorune/dynamic_characteristics.py",
     "quorune/continuous_effect_state.py",

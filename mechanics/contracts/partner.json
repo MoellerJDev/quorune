@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "contract_version": 1,
+  "mechanic_id": "partner",
+  "official_name": "Partner",
+  "effective_date": "2026-08-07",
+  "source_sha256": "68dab840bfb200a4fca4a061793269c40d57f83364cb1091ea9094b5b8f04769",
+  "rule_references": ["702.124", "702.124a", "702.124f", "702.124g", "702.124h", "702.124i", "702.124j", "702.124k", "702.124m", "702.124n", "903.3"],
+  "glossary_references": ["partner-partner-text-partner-with-name"],
+  "dependencies": ["commander"],
+  "coverage_status": "partial",
+  "trust_level": "untrusted",
+  "behavior": {
+    "zones": ["the exact printed declarations function before the game and are represented as all-zone CardProgram declarations", "accepted physical commander cards begin in the public command zone"],
+    "objects": ["two distinct legendary cards", "ordinary Partner pairs", "one Choose a Background card and one legendary Background enchantment", "one Doctor's companion creature and one legendary Time Lord Doctor creature with no other creature types"],
+    "events": ["authoritative Commander game setup"],
+    "state_reads": ["current canonical CardProgram declarations", "source-pinned Oracle and rulings hashes", "printed card type lines"],
+    "state_writes": ["two independent public physical commander designations per accepted seat"],
+    "costs": [],
+    "timing": ["validation completes before any GameState card or zone object is created"],
+    "targets": [],
+    "choices": ["the supplied pair determines which single supported pairing predicate is used", "reversing the supplied pair does not change legality"],
+    "hidden_information": ["pairing declarations, type lines, command-zone cards, and designation identities are public"],
+    "apnap": ["each seat is validated independently before turn order affects play"],
+    "layers": ["setup consumes exact current compiler declarations and does not infer granted, removed, copied, or text-changed abilities"],
+    "replacement_effects": [],
+    "copy": ["copies and noncanonical semantic declarations cannot authorize a commander pair"],
+    "control_change": ["later control changes do not alter either physical commander designation"],
+    "zone_change": ["each accepted commander keeps its own designation across represented zone changes"],
+    "source_leaves": ["not applicable before setup; later source departure does not erase a designation"]
+  },
+  "variants": ["ordinary Partner in either order", "Choose a Background in either order", "Doctor's companion in either order", "four-player setup", "missing, stale, duplicated, and corrupted declarations", "mixed pairing abilities", "Partner with", "Partner followed by named text", "invalid Background and Doctor type lines", "more than two proposed commanders"],
+  "witness_cards": [
+    {"name": "Thrasios, Triton Hero", "oracle_id": "3d867016-2601-4a37-a73d-308898d3bd37"},
+    {"name": "Tymna the Weaver", "oracle_id": "d15642e4-e61c-4d29-af48-de837991245e"},
+    {"name": "Wilson, Refined Grizzly", "oracle_id": "d2766fd7-5cf9-4037-9f34-9ae3982c613a"},
+    {"name": "Flaming Fist", "oracle_id": "cdaefc96-4560-43bb-9514-bf87657bd481"},
+    {"name": "Rose Tyler", "oracle_id": "2f56de72-80d7-48c6-9b57-84fbd252c699"},
+    {"name": "The Tenth Doctor", "oracle_id": "23af0a0a-1d12-47c7-b191-2bd3f84eea93"}
+  ],
+  "rulings": [],
+  "test_ids": ["test_pairing_keywords_compile_as_exact_typed_setup_declarations", "test_partner_pair_is_designated_in_four_player_public_state_and_round_trips", "test_choose_a_background_and_doctors_companion_accept_exact_type_pairs", "test_unsupported_or_mismatched_pairings_fail_closed_without_mutation", "test_pairing_program_and_compiler_mutations_fail_closed"],
+  "implementation": {
+    "component": "quorune.commander_pairing.validate_commander_pair, quorune.compiler.commander_pairing_nodes.commander_pairing_keyword_node, and quorune.commander.initial_commander_state",
+    "version": "typed-commander-pairing-v1",
+    "capability_ids": ["format.commander.pairing.partner", "format.commander.pairing.choose_background", "format.commander.pairing.doctors_companion"],
+    "supported_slice": "Exact ordinary Partner, Choose a Background, and Doctor's companion printed declarations consumed by one fail-closed Commander setup owner."
+  },
+  "known_blockers": ["Partner followed by named or ability-word text remains unsupported", "Partner with and its enters-the-battlefield search remain unsupported", "effects that grant, copy, remove, change, or refer to pairing abilities remain unsupported", "aggregate two-commander deck-size, color-identity, and commander-reference enforcement remains incomplete outside the represented setup boundary"],
+  "review_status": "reviewed"
+}

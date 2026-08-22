@@ -12116,6 +12116,150 @@
       "applicability_note": "Attribute combat damage to the designated physical commander card across zone and control changes and apply the separate 21-damage state-based action ledger."
     },
     {
+      "capability_id": "format.commander.pairing.choose_background",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124k", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Remove or corrupt the typed declaration and prove a matching printed type line cannot authorize setup by itself."
+    },
+    {
+      "capability_id": "format.commander.pairing.choose_background",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124k", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Exercise the shared two-commander setup owner across four seats and preserve two public physical designations per seat."
+    },
+    {
+      "capability_id": "format.commander.pairing.choose_background",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124k", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the exact setup node and removal of its canonical CardProgram declaration."
+    },
+    {
+      "capability_id": "format.commander.pairing.choose_background",
+      "evidence_class": "negative",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124k", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Reject nonlegendary Backgrounds, mixed variants, arbitrary pairs, and stale or absent declarations before state construction."
+    },
+    {
+      "capability_id": "format.commander.pairing.choose_background",
+      "evidence_class": "positive",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_choose_a_background_and_doctors_companion_accept_exact_type_pairs",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124k", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Accept either ordering of one exact Choose a Background declaration and one legendary Background enchantment."
+    },
+    {
+      "capability_id": "format.commander.pairing.choose_background",
+      "evidence_class": "replay",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124k", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Round-trip the shared setup owner's resulting public commander designations exactly."
+    },
+    {
+      "capability_id": "format.commander.pairing.doctors_companion",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124m", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Remove or corrupt the typed declaration and prove matching Doctor subtypes cannot authorize setup by themselves."
+    },
+    {
+      "capability_id": "format.commander.pairing.doctors_companion",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124m", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Exercise the shared two-commander setup owner across four seats and preserve two public physical designations per seat."
+    },
+    {
+      "capability_id": "format.commander.pairing.doctors_companion",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124m", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the exact setup node and removal of its canonical CardProgram declaration."
+    },
+    {
+      "capability_id": "format.commander.pairing.doctors_companion",
+      "evidence_class": "negative",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124m", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Reject Doctors with extra subtypes, mixed variants, arbitrary pairs, and stale or absent declarations before state construction."
+    },
+    {
+      "capability_id": "format.commander.pairing.doctors_companion",
+      "evidence_class": "positive",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_choose_a_background_and_doctors_companion_accept_exact_type_pairs",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124m", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Accept either ordering of one exact Doctor's companion declaration and one legendary creature with exactly the Time Lord and Doctor subtypes."
+    },
+    {
+      "capability_id": "format.commander.pairing.doctors_companion",
+      "evidence_class": "replay",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124m", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Round-trip the shared setup owner's resulting public commander designations exactly."
+    },
+    {
+      "capability_id": "format.commander.pairing.partner",
+      "evidence_class": "interaction",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124h", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Remove or corrupt one typed Partner declaration and prove its matching card cannot authorize setup by keyword metadata or prose."
+    },
+    {
+      "capability_id": "format.commander.pairing.partner",
+      "evidence_class": "multiplayer",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124h", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Accept ordinary Partner across four seats and preserve two public physical commander designations per seat."
+    },
+    {
+      "capability_id": "format.commander.pairing.partner",
+      "evidence_class": "mutation",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_pairing_program_and_compiler_mutations_fail_closed",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124h", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Kill removal of the exact setup node and removal of one canonical CardProgram declaration."
+    },
+    {
+      "capability_id": "format.commander.pairing.partner",
+      "evidence_class": "negative",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_unsupported_or_mismatched_pairings_fail_closed_without_mutation",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124h", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Reject Partner with, named Partner variants, mixed variants, duplicate cards, and absent declarations before state construction."
+    },
+    {
+      "capability_id": "format.commander.pairing.partner",
+      "evidence_class": "positive",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124h", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Compile and consume two current ordinary Partner declarations during authoritative Commander setup."
+    },
+    {
+      "capability_id": "format.commander.pairing.partner",
+      "evidence_class": "replay",
+      "test_id": "tests.test_commander_pairing.CommanderPairingTests.test_partner_pair_is_designated_in_four_player_public_state_and_round_trips",
+      "official_rule_ids": ["702.124a", "702.124f", "702.124h", "903.3"],
+      "supported_profiles": ["commander_duel", "commander_review"],
+      "applicability_note": "Round-trip all eight public physical commander designations without changing their setup identities."
+    },
+    {
       "capability_id": "keyword_action.adapt.fixed",
       "evidence_class": "interaction",
       "test_id": "tests.test_self_counter_keyword_actions.PermanentDesignationTests.test_adapt_uses_canonical_counter_replacement_and_replays",
