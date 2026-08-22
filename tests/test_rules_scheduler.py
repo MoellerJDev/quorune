@@ -44,7 +44,7 @@ def _reviewed_frontier_comparisons(inputs):
         member
         for bundle in _json("platform/rules-subsystems.json")[
             "work_selection"
-        ]["coverage_family"]["coherent_bundles"]
+        ]["coverage_family"]["candidate_bundles"]
         for member in bundle["member_family_ids"]
     }
     family_ids.update(
@@ -555,9 +555,9 @@ class RulesSchedulerTests(unittest.TestCase):
             if candidate["candidate_id"]
             == "frontier:effect_clause:large-ability-fixture"
         )
-        self.assertTrue(narrow["eligible"])
+        self.assertFalse(narrow["eligible"])
         self.assertEqual(
-            "major_exact_ability_harvest",
+            "requires_broader_bundle",
             narrow["runtime_readiness"]["status"],
         )
         self.assertEqual(21, narrow["expected_complete_card_gain"])
@@ -710,33 +710,41 @@ class RulesSchedulerTests(unittest.TestCase):
         ):
             build_harvest_outcome_history(ROOT, malformed)
 
-    def test_coherent_bundle_ranks_shared_owner_throughput(self):
+    def test_candidate_bundle_upper_bound_requires_bounded_cohort(self):
         work = self.queue["work_selection"]
-        selected = next(
+        token_bundle = next(
             candidate
             for candidate in work["candidates"]
-            if candidate["candidate_id"] == work["selected_candidate_id"]
+            if candidate["candidate_id"]
+            == "bundle:fixed-token-creation-contexts"
         )
 
+        self.assertIsNone(work["selected_candidate_id"])
+        self.assertFalse(token_bundle["eligible"])
         self.assertEqual(
-            "bundle:fixed-token-creation-contexts",
-            selected["candidate_id"],
+            "requires_bounded_cohort",
+            token_bundle["runtime_readiness"]["status"],
         )
-        self.assertEqual(39, selected["expected_complete_card_gain"])
-        self.assertEqual(153, selected["expected_exact_ability_gain"])
-        self.assertEqual(167, selected["expected_material_residual_reduction"])
-        self.assertEqual(4, len(selected["bundle"]["source_contexts"]))
+        self.assertEqual(
+            "upper_bound_only", token_bundle["bundle"]["measurement_status"]
+        )
+        self.assertEqual(39, token_bundle["expected_complete_card_gain"])
+        self.assertEqual(153, token_bundle["expected_exact_ability_gain"])
+        self.assertEqual(
+            167, token_bundle["expected_material_residual_reduction"]
+        )
+        self.assertEqual(4, len(token_bundle["bundle"]["source_contexts"]))
         self.assertEqual(
             [
                 "capability:token.creation.fixed_definition",
                 "component:quorune.token_creation.create_tokens",
             ],
-            selected["bundle"]["canonical_owner_ids"],
+            token_bundle["bundle"]["canonical_owner_ids"],
         )
-        self.assertEqual(96, selected["one_additional_blocker_cards"])
-        self.assertEqual(133, selected["two_additional_blocker_cards"])
+        self.assertEqual(96, token_bundle["one_additional_blocker_cards"])
+        self.assertEqual(133, token_bundle["two_additional_blocker_cards"])
         self.assertGreater(
-            selected["bundle"][
+            token_bundle["bundle"][
                 "predicted_complete_cards_per_cycle_hour"
             ],
             2,
@@ -758,6 +766,7 @@ class RulesSchedulerTests(unittest.TestCase):
                 "two_additional_blocker_cards": 40,
                 "expected_exact_ability_gain": 20,
                 "expected_material_residual_gain": 120,
+                "lowerable_untrusted_abilities": 120,
                 "interaction_risk": "medium",
             },
             *_reviewed_frontier_comparisons(inputs),
@@ -780,7 +789,7 @@ class RulesSchedulerTests(unittest.TestCase):
             candidate["runtime_readiness"]["status"],
         )
 
-    def test_covered_fail_closed_pressure_does_not_block_major_ability_harvest(self):
+    def test_covered_fail_closed_pressure_does_not_create_false_foreground(self):
         inputs = deepcopy(self.work_inputs)
         reviewed_comparisons = _reviewed_frontier_comparisons(inputs)
         inputs["card_unlock_frontier"]["family_candidates"] = [
@@ -814,11 +823,6 @@ class RulesSchedulerTests(unittest.TestCase):
                 "interaction-implementation:"
             )
         ]
-        selected = next(
-            candidate
-            for candidate in work["candidates"]
-            if candidate["candidate_id"] == work["selected_candidate_id"]
-        )
         pressure = max(
             candidates,
             key=lambda candidate: candidate["interaction_debt_introduced"][
@@ -827,22 +831,7 @@ class RulesSchedulerTests(unittest.TestCase):
         )
 
         self.assertTrue(candidates)
-        self.assertEqual(
-            "bundle:fixed-token-creation-contexts",
-            selected["candidate_id"],
-        )
-        self.assertEqual("compiler_harvest", selected["candidate_class"])
-        self.assertEqual(
-            "major_exact_ability_harvest",
-            selected["runtime_readiness"]["status"],
-        )
-        self.assertEqual(153, selected["expected_exact_ability_gain"])
-        self.assertGreaterEqual(
-            selected["expected_exact_ability_gain"],
-            self.catalog["work_selection"]["coverage_family"][
-                "minimum_exact_ability_gain"
-            ],
-        )
+        self.assertIsNone(work["selected_candidate_id"])
         structural = next(
             candidate
             for candidate in work["candidates"]
@@ -1059,7 +1048,7 @@ class RulesSchedulerTests(unittest.TestCase):
             )
 
         policy = deepcopy(self.catalog["work_selection"])
-        policy["coverage_family"]["coherent_bundles"][0][
+        policy["coverage_family"]["candidate_bundles"][0][
             "source_contexts"
         ].append("spell")
         with self.assertRaisesRegex(

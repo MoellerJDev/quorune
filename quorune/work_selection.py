@@ -9,7 +9,8 @@ from typing import Any, Mapping, Sequence
 from .util import stable_json
 from .work_selection_bundles import (
     atomic_frontier_bundle,
-    coherent_frontier_measurements,
+    candidate_frontier_measurements,
+    single_candidate_bundle,
     validate_bundle_policy,
     WorkSelectionBundleError,
 )
@@ -71,6 +72,7 @@ _BUNDLE_OUTPUT_FIELDS = {
     "predicted_normalized_value_per_cycle_hour",
     "expected_downstream_closure",
     "explicit_exclusions",
+    "measurement_status",
     "synthesized",
 }
 
@@ -196,7 +198,7 @@ def _validated_prerequisite_exceptions(
     return exceptions
 
 
-def _validated_coherent_bundles(
+def _validated_candidate_bundles(
     coverage: Mapping[str, Any],
 ) -> tuple[list[Mapping[str, Any]], dict[str, int]]:
     try:
@@ -324,7 +326,7 @@ def _validated_policy(
             validated_coverage["minimum_prerequisite_downstream_card_gain"]
         ),
     )
-    coherent_bundles, value_weights = _validated_coherent_bundles(coverage)
+    candidate_bundles, value_weights = _validated_candidate_bundles(coverage)
     harvest = _validated_harvest_history(
         harvest_history,
         minimum_gain=int(validated_coverage["minimum_complete_card_gain"]),
@@ -335,7 +337,7 @@ def _validated_policy(
         "starting_uncovered_high_risk_pairs": starting_uncovered,
         **validated_coverage,
         **harvest,
-        "coherent_bundles": coherent_bundles,
+        "candidate_bundles": candidate_bundles,
         "value_weights": value_weights,
         "approved_prerequisite_exceptions": prerequisite_exceptions,
         "reviewed_rerank_history": _validated_reviewed_history(policy),
@@ -410,26 +412,6 @@ def _debt(value: int | None, basis: str) -> dict[str, Any]:
     return {"expected_count": value, "basis": basis}
 
 
-def _single_candidate_bundle(candidate_id: str) -> dict[str, Any]:
-    return {
-        "bundle_id": candidate_id,
-        "member_family_ids": [candidate_id],
-        "canonical_owner_ids": [],
-        "source_contexts": [],
-        "normalized_literal_parameters": [],
-        "shared_dependencies": [],
-        "shared_grammar": None,
-        "estimated_implementation_hours": None,
-        "estimated_generation_hours": None,
-        "estimated_cycle_hours": None,
-        "predicted_complete_cards_per_cycle_hour": None,
-        "predicted_normalized_value_per_cycle_hour": None,
-        "expected_downstream_closure": None,
-        "explicit_exclusions": [],
-        "synthesized": False,
-    }
-
-
 def _candidate(
     *,
     candidate_id: str,
@@ -460,7 +442,7 @@ def _candidate(
 ) -> dict[str, Any]:
     if candidate_class not in _CANDIDATE_CLASSES:
         raise WorkSelectionError(f"Unknown candidate class: {candidate_class}")
-    bundle_payload = dict(bundle or _single_candidate_bundle(candidate_id))
+    bundle_payload = dict(bundle or single_candidate_bundle(candidate_id))
     if (
         set(bundle_payload) != _BUNDLE_OUTPUT_FIELDS
         or not str(bundle_payload.get("bundle_id") or "")
@@ -953,6 +935,7 @@ def _frontier_decision(
     complete_gain: int,
     ability_gain: int,
     residual_gain: int,
+    lowerable_untrusted_abilities: int,
     sole_blockers: int,
     prerequisites: Sequence[str],
     effort: str,
@@ -962,9 +945,13 @@ def _frontier_decision(
     broad = complete_gain >= int(policy["minimum_complete_card_gain"])
     major_ability_harvest = bool(
         ability_gain >= int(policy["minimum_exact_ability_gain"])
+        and lowerable_untrusted_abilities
+        >= int(policy["minimum_exact_ability_gain"])
     )
     major_residual_harvest = bool(
         residual_gain >= int(policy["minimum_material_residual_reduction"])
+        and lowerable_untrusted_abilities
+        >= int(policy["minimum_material_residual_reduction"])
     )
     structural = complete_gain == 0 and sole_blockers == 0
     exceptions = {
@@ -1048,6 +1035,9 @@ def _frontier_candidate(
         complete_gain=complete_gain,
         ability_gain=ability_gain,
         residual_gain=residual_gain,
+        lowerable_untrusted_abilities=int(
+            row.get("lowerable_untrusted_abilities") or 0
+        ),
         sole_blockers=sole_blockers,
         prerequisites=prerequisites,
         effort=effort,
@@ -1100,14 +1090,14 @@ def _frontier_candidate(
     )
 
 
-def _coherent_frontier_candidates(
+def _synthesized_frontier_candidates(
     frontier: Mapping[str, Any], policy: Mapping[str, Any]
 ) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     try:
-        measurements = coherent_frontier_measurements(
+        measurements = candidate_frontier_measurements(
             frontier,
-            policy["coherent_bundles"],
+            policy["candidate_bundles"],
             policy["value_weights"],
         )
     except WorkSelectionBundleError as exc:
@@ -1131,25 +1121,37 @@ def _coherent_frontier_candidates(
             complete_gain=gains["exact_cards"],
             ability_gain=gains["exact_abilities"],
             residual_gain=gains["material_residuals"],
+            lowerable_untrusted_abilities=sum(
+                int(row.get("lowerable_untrusted_abilities") or 0)
+                for row in measurement["members"]
+            ),
             sole_blockers=gains["exact_cards"],
             prerequisites=prerequisites,
             effort=effort,
             policy=policy,
         )
+        if bundle_policy["measurement_status"] == "upper_bound_only":
+            readiness = "requires_bounded_cohort"
+            eligible = False
+            reason = (
+                "The synthesized family closure is only an upper bound; declared "
+                "exclusions and sibling grammar require a bounded executable cohort "
+                "before this bundle can become foreground."
+            )
         contexts = [str(value) for value in bundle_policy["source_contexts"]]
         interaction_risks = measurement["interaction_risks"]
         result.append(
             _candidate(
                 candidate_id=bundle_id,
                 candidate_class="compiler_harvest",
-                universal_subsystem="compiler_coherent_bundle",
+                universal_subsystem="compiler_bundle_hypothesis",
                 reusable_piece_ids=[
                     "residual." + value.replace(":", ".", 1)
                     for value in member_ids
                 ],
                 rules_dependency_ids=prerequisites,
                 compiler_readiness=_readiness(
-                    "coherent_bundle",
+                    "bundle_hypothesis",
                     "Static shared-owner grammar validated against current frontier members",
                 ),
                 runtime_readiness=_readiness(
@@ -1220,6 +1222,9 @@ def _coherent_frontier_candidates(
                     },
                     "explicit_exclusions": list(
                         bundle_policy["explicit_exclusions"]
+                    ),
+                    "measurement_status": str(
+                        bundle_policy["measurement_status"]
                     ),
                     "synthesized": True,
                 },
@@ -1318,7 +1323,7 @@ def _work_selection_candidates(
             _mapping(inputs["card_unlock_frontier"], "card-unlock frontier"),
             validated,
         ),
-        *_coherent_frontier_candidates(
+        *_synthesized_frontier_candidates(
             _mapping(inputs["card_unlock_frontier"], "card-unlock frontier"),
             validated,
         ),
@@ -1509,8 +1514,8 @@ def _selection_policy_payload(validated: Mapping[str, Any]) -> dict[str, Any]:
         "approved_prerequisite_exceptions": validated[
             "approved_prerequisite_exceptions"
         ],
-        "coherent_bundle_ids": [
-            str(row["bundle_id"]) for row in validated["coherent_bundles"]
+        "candidate_bundle_ids": [
+            str(row["bundle_id"]) for row in validated["candidate_bundles"]
         ],
         "value_weights": validated["value_weights"],
     }

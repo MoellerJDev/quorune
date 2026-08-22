@@ -246,10 +246,13 @@ stale while the finalizer still reports success.
 The rules-scheduler owner also generates
 `coverage/harvest-outcome-history.json` from immutable base/head Git blobs for
 the Commander CardProgram corpus and card-unlock frontier. Static policy stores
-only provenance and coherent bundle definitions; actual harvest counts are
-derived downstream. Bundle selection measures shared owner, source-context,
-grammar, card, ability, residual, blocker-closure, and cycle-hour fields before
-ranking within the existing correctness-first class order.
+only provenance and candidate-bundle owner hypotheses; actual harvest counts
+are derived downstream. Family-level bundle closure is reported as
+`upper_bound_only` and cannot become foreground until a generated bounded
+cohort establishes one executable grammar and lower bound. Bundle selection
+reports shared owner, source-context, grammar, card, ability, residual,
+blocker-closure, and cycle-hour fields before ranking within the existing
+correctness-first class order.
 Performance baselines remain
 manual because observed latency is review evidence, not an automatic rewrite.
 Use `--check` for read-only diagnosis and in CI; a successful `--write` already
