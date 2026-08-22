@@ -66,7 +66,7 @@ class StormCompilerTests(unittest.TestCase):
 
     def test_all_real_storm_cards_lower_typed_stack_trigger(self):
         self.assertEqual(33, len(self.storm_names))
-        exact_cards = 0
+        exact_cards = set()
         program_count = 0
         for name in self.storm_names:
             with self.subTest(card=name):
@@ -115,10 +115,29 @@ class StormCompilerTests(unittest.TestCase):
                 self.assertEqual(1, len(programs))
                 self.assertTrue(programs[0].capability_closure["trusted"])
                 program_count += len(programs)
-                exact_cards += ir.status == "exact"
+                if ir.status == "exact":
+                    exact_cards.add(name)
 
         self.assertEqual(33, program_count)
-        self.assertEqual(13, exact_cards)
+        self.assertEqual(
+            {
+                "Astral Steel",
+                "Brain Freeze",
+                "Chatterstorm",
+                "Dragonstorm",
+                "Empty the Warrens",
+                "Grapeshot",
+                "Hunting Pack",
+                "Radstorm",
+                "Reaping the Graves",
+                "Scattershot",
+                "Stormscale Scion",
+                "Temporal Fissure",
+                "Volcanic Awakening",
+                "Weather the Storm",
+            },
+            exact_cards,
+        )
 
     def test_multiple_storm_instances_compile_separately(self):
         record = replace(
